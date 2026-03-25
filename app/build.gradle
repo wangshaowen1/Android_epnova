@@ -1,0 +1,351 @@
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+    id 'kotlin-kapt'
+    id 'kotlin-parcelize'
+    id 'org.jetbrains.kotlin.plugin.serialization' version "2.2.10"
+
+    id 'com.google.gms.google-services'
+    id 'com.google.firebase.crashlytics'
+    id 'com.google.firebase.firebase-perf'
+}
+
+void genProguardDict() {
+    def file = file('proguard-dict.txt')
+    if (file.exists()) {
+        file.delete()
+    }
+    def r = new Random()
+    def firstChars = ["o", "O"]
+    def chars = ["o", "O", "0", "Ò", "Ó", "Ô", "Õ", "Ö"]
+    int firstSize = firstChars.size()
+    int size = chars.size()
+    def dict = []
+    for (int length = 10; length <= 30; length++) {
+        for (int firstIndex = 0; firstIndex < 10; firstIndex++) {
+            def word = firstChars.get(r.nextInt(firstSize))
+            for (int appendLength = 1; appendLength <= length; appendLength++) {
+                word += chars.get(r.nextInt(size))
+            }
+            dict.add(word)
+        }
+    }
+    // 打乱顺序
+    Collections.shuffle(dict, r)
+    file.write(dict.join(System.lineSeparator()))
+    println('genProguardDict')
+}
+
+genProguardDict()
+android {
+    compileSdk rootProject.ext.android.compileSdkVersion
+
+    defaultConfig {
+        applicationId rootProject.ext.android.applicationId
+        minSdkVersion rootProject.ext.android.minSdkVersion
+        targetSdkVersion rootProject.ext.android.targetSdkVersion
+        versionName rootProject.ext.android.versionName
+        versionCode rootProject.ext.android.versionCodeRelease
+        multiDexEnabled true
+        buildConfigField "long", "BUILD_TIMESTAMP", System.currentTimeMillis() + "L"
+        //指定room.schemaLocation生成的文件路径
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = ["room.schemaLocation": "$projectDir/schemas".toString()]
+            }
+        }
+        packagingOptions {
+            doNotStrip "*/armeabi-v7a/*.so"
+            doNotStrip "*/x86/*.so"
+            doNotStrip "*/arm64-v8a/*.so"
+            doNotStrip "*/x86_64/*.so"
+            doNotStrip "armeabi.so"
+        }
+
+        bundle {
+            language {
+                enableSplit = false
+            }
+            density {
+                enableSplit = true
+            }
+            abi {
+                enableSplit = true
+            }
+        }
+    }
+
+    signingConfigs {
+        debug {
+            keyAlias 'epnova'
+            keyPassword '111111'
+            storeFile file("../com.kuaigeglobal.epnova.jks")
+            storePassword '111111'
+        }
+        release {
+            keyAlias 'epnova'
+            keyPassword '111111'
+            storeFile file("../com.kuaigeglobal.epnova.jks")
+            storePassword '111111'
+        }
+    }
+
+    dataBinding {
+        enabled = true
+    }
+
+    buildFeatures {
+        viewBinding = true
+        buildConfig true
+    }
+
+
+    buildTypes {
+        release {
+            ndk {
+                //app/build/intermediates/symbol_list/release/native-debug-symbols.zip     上传到Google Play Console的下载里面（用于 native 崩溃分析）
+                debugSymbolLevel 'FULL'
+            }
+
+            minifyEnabled true
+            //版本号
+            buildConfigField "String", "APP_VERSION", '"' + rootProject.ext.android.versionCodeRelease + '"'
+            //Zipalign优化
+            zipAlignEnabled true
+            //移除无用的resource文件
+            shrinkResources true
+            signingConfig signingConfigs.release
+            //网络请求地址
+            buildConfigField "boolean", "DEBUG_MODEL", "false" //是否是debug哦是
+
+
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            firebaseCrashlytics {
+                mappingFileUploadEnabled true
+            }
+        }
+
+        debug {
+            firebaseCrashlytics {
+                mappingFileUploadEnabled false
+            }
+            minifyEnabled false
+            jniDebuggable false
+            //版本号
+            buildConfigField "String", "APP_VERSION", '"' + rootProject.ext.android.versionCodeDebug + '"'
+            //Zipalign优化 , m,
+            zipAlignEnabled false
+            //移除无用的resource文件
+            shrinkResources false
+
+            buildConfigField "boolean", "DEBUG_MODEL", "true" //是否是debug模式
+
+            versionNameSuffix ""
+            signingConfig signingConfigs.debug
+
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+
+
+        /**
+         * 打包或运行时再注入版本号
+         */
+        applicationVariants.all { variant ->
+            def buildType = variant.buildType.name
+            def createTime = new Date().format("yyyyMMdd_HHmmss", TimeZone.getTimeZone("GMT+08:00"))
+            if (buildType == "release") {
+                //variant.getPackageApplicationProvider().get().outputDirectory = new File(project.rootDir.absolutePath + "/apks/release/${createTime}")
+            }
+
+            variant.outputs.each { output ->
+                output.versionCodeOverride = rootProject.ext.android.versionCodeRelease
+            }
+
+            variant.outputs.all { output ->
+                def name = (project.name != "app") ? project.name : rootProject.name
+                outputFileName = name + "_" +
+                        variant.versionName + "_" + //版本号
+                        variant.flavorName + (variant.flavorName.endsWith("_") ? "" : "_") + //渠道名
+                        createTime + "_" +
+                        buildType +
+                        ".apk"
+            }
+        }
+    }
+
+
+    kotlinOptions {
+        jvmTarget = '17'
+    }
+    compileOptions {
+        coreLibraryDesugaringEnabled true
+        encoding "UTF-8"
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+    packagingOptions {
+        jniLibs {
+            useLegacyPackaging true
+            pickFirsts += ['lib/x86/libc++_shared.so', 'lib/x86_64/libc++_shared.so', 'lib/arm64-v8a/libc++_shared.so', 'lib/armeabi-v7a/libc++_shared.so']
+        }
+        resources {
+            merges += ['META-INF/proguard/androidx-annotations.pro', 'META-INF/proguard/coroutines.pro']
+        }
+    }
+    flavorDimensions = ['env', 'arch']
+    productFlavors {
+        //开发测试环境
+        develop {
+            dimension 'env'
+            buildConfigField 'String', 'SERVER_URL', '"https://kcp-test.kwaige.cn"'
+        }
+        //预发布
+        preview {
+            dimension 'env'
+            buildConfigField 'String', 'SERVER_URL', '"http://120.24.240.28:9010"'
+        }
+        //生产环境
+        production {
+            dimension 'env'
+            buildConfigField 'String', 'SERVER_URL', '"https://kuaichupianjk.kuaigeai.cn"'
+        }
+        arch32 {
+            dimension 'arch'
+            ndk {
+                abiFilters 'armeabi-v7a', 'arm64-v8a'
+            }
+        }
+        arch64 {
+            dimension 'arch'
+            ndk {
+                abiFilters 'arm64-v8a'
+            }
+        }
+    }
+    namespace 'com.kuaigeglobal.epnova'
+    lint {
+        abortOnError false
+        checkReleaseBuilds false
+    }
+}
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
+
+//        debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.14'
+    implementation project(':magicindicator')
+    implementation project(':datepicker')
+    implementation project(':matisse')
+    //公共依赖
+    implementation libs.kotlinx.serialization.json
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.material)
+
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
+
+    implementation libs.ultra.ptr
+    implementation libs.androidx.constraintlayout
+    implementation libs.legacy.support.v4
+    implementation libs.multidex
+
+    implementation libs.androidx.databinding.common
+    implementation libs.androidx.splashscreen
+    implementation rootProject.ext.modules.baselibrary.gav
+    implementation rootProject.ext.modules.imageloader.gav
+    implementation rootProject.ext.modules.oss.gav
+    implementation rootProject.ext.modules.videoedit.gav
+    implementation rootProject.ext.modules.luban.gav
+    implementation rootProject.ext.modules.permissionx.gav
+    implementation rootProject.ext.modules.ucrop.gav
+    implementation rootProject.ext.modules.mvchelper.gav
+    implementation "me.leolin:ShortcutBadger:1.1.22@aar"
+    implementation 'com.github.gzu-liyujiang:Android_CN_OAID:4.2.4'
+    implementation libs.androidx.lifecycle.livedata.ktx
+    implementation libs.androidx.lifecycle.viewmodel.ktx
+    implementation("io.github.cymchad:BaseRecyclerViewAdapterHelper:4.0.0", {
+        exclude group: 'androidx.lifecycle'
+        exclude group: 'androidx.recyclerview'
+    })
+    implementation 'com.airbnb.android:lottie:6.7.1'
+    implementation 'org.ahocorasick:ahocorasick:0.6.3'
+    //Room
+    def room_version = "2.7.2"
+    implementation "androidx.room:room-common:$room_version"
+    implementation "androidx.room:room-runtime:$room_version"
+    implementation "androidx.room:room-paging:$room_version" // Room 与 Paging 的集成库
+    kapt "androidx.room:room-compiler:$room_version"
+    implementation 'jp.wasabeef:recyclerview-animators:4.0.2'
+    implementation 'androidx.paging:paging-runtime-ktx:3.4.2'
+    implementation 'com.github.zhpanvip:bannerviewpager:3.5.7'
+    implementation 'com.github.jenly1314:zxing-lite:3.4.1'
+    //https://github.com/liangjingkanji/spannable Spannable富文本工具
+    implementation 'com.github.liangjingkanji:spannable:1.2.7'
+
+    implementation libs.blankj.utilcodex
+
+    def media3_version = "1.9.3"
+    // For media playback using ExoPlayer
+    implementation "androidx.media3:media3-exoplayer:$media3_version"
+    implementation "androidx.media3:media3-datasource:$media3_version"
+    // For building media playback UIs
+    implementation "androidx.media3:media3-ui:$media3_version"
+    implementation "androidx.media3:media3-common:$media3_version"
+    //提取图片的主要颜色
+    implementation 'androidx.palette:palette-ktx:1.0.0'
+    implementation libs.androidx.fragment.ktx
+    implementation 'com.dinuscxj:circleprogressbar:1.3.6'
+
+    //默认使用maven仓库中最高版本，当前建议使用7.0.2.xxx版本,7.0.2.x版本存在local token，local token说明可参考下方 设备token说明部分
+    //注意，线上必须使用以mlBusiness结尾的版本，不能使用以Auth结尾的
+    //implementation 'com.volcengine.bizssdk:ml:7.0.2.5.mlBusiness'
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.5'
+
+    //implementation 'com.github.barteksc:android-pdf-viewer:2.8.2'
+    //implementation 'io.github.oothp:android-pdf-viewer:3.2.0-beta05'
+    implementation 'com.github.lihangleo2:ShadowLayout:3.4.0'
+
+    //下拉刷新控件
+    implementation libs.refresh.layout.kernel      //核心必须依赖
+    implementation libs.refresh.header.classics    //经典刷新头
+    implementation libs.refresh.footer.classics    //经典加载
+
+    implementation 'com.google.android.flexbox:flexbox:3.0.0'
+    implementation 'com.github.mmin18:realtimeblurview:1.2.1'
+    implementation 'com.github.Dimezis:BlurView:version-3.2.0'
+    implementation libs.jsoup
+    //implementation libs.face.detection
+
+    implementation 'com.arthenica:ffmpeg-kit-full-gpl:6.0-2'
+    implementation 'org.jcodec:jcodec:0.2.5'        // 基础库
+    implementation 'com.tencent:mmkv:2.4.0'
+    implementation libs.okhttp3.okhttp
+    implementation libs.okhttp3.sse
+    implementation libs.okhttp3.logging.interceptor
+
+    implementation libs.retrofit2.retrofit
+    implementation libs.retrofit2.converter.gson
+
+    implementation 'com.facebook.shimmer:shimmer:0.5.0'
+    // 经典的字符探测库，体积小，零外部依赖
+    implementation("com.googlecode.juniversalchardet:juniversalchardet:1.0.3")
+
+
+    implementation 'com.android.billingclient:billing-ktx:8.2.1'
+    implementation 'com.google.android.gms:play-services-base:18.9.0'
+    implementation libs.play.services.auth
+    implementation libs.play.services.ads.identifier
+
+    implementation 'com.google.android.libraries.identity.googleid:googleid:1.1.1' // 新的一键登录库
+    implementation "androidx.credentials:credentials:1.5.0"
+    implementation "androidx.credentials:credentials-play-services-auth:1.5.0"
+
+    implementation platform('com.google.firebase:firebase-bom:34.7.0')
+    implementation 'com.google.firebase:firebase-analytics'
+    implementation 'com.google.firebase:firebase-crashlytics-ndk'
+    implementation 'com.google.firebase:firebase-perf'
+    implementation 'com.google.firebase:firebase-messaging'
+
+    implementation "com.android.installreferrer:installreferrer:2.2"
+}

@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="layout"
+            type="com.kuaigeglobal.epnova.feature.series.management.WorksManagementViewModel" />
+
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <com.kuaigeglobal.epnova.widget.StatusBarView
+            android:id="@+id/statusBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/tvSelectCount"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/action_bar_size"
+                android:gravity="center"
+                android:textAppearance="@style/Text14"
+                android:textColor="?attr/textColor4"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="已选择 0 个" />
+
+            <TextView
+                android:id="@+id/btnSelectAll"
+                singleClick="@{layout.clickHandler::onClick}"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/action_bar_size"
+                android:gravity="center"
+                android:paddingHorizontal="15dp"
+                android:text="@string/check_all"
+                android:textAppearance="@style/Text14"
+                android:textColor="?attr/textColor3"
+                app:layout_constraintStart_toStartOf="@+id/tvSelectCount"
+                app:layout_constraintTop_toTopOf="@+id/tvSelectCount" />
+
+            <TextView
+                android:id="@+id/btnComplete"
+                singleClick="@{layout.clickHandler::onClick}"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/action_bar_size"
+                android:gravity="center"
+                android:paddingHorizontal="15dp"
+                android:text="@string/complete"
+                android:textAppearance="@style/Text14"
+                android:textColor="?attr/textColor3"
+                app:layout_constraintEnd_toEndOf="@+id/tvSelectCount"
+                app:layout_constraintTop_toTopOf="@+id/tvSelectCount" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <com.scwang.smart.refresh.layout.SmartRefreshLayout
+            android:id="@+id/swipeRefreshLayout"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:overScrollMode="never"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            app:layout_constraintDimensionRatio="375:324"
+            app:layout_constraintTop_toBottomOf="@+id/tvSubtitle"
+            app:srlAccentColor="@color/color_121212"
+            app:srlEnablePreviewInEditMode="true"
+            app:srlPrimaryColor="@color/transparent">
+
+            <com.kuaigeglobal.epnova.widget.LoadStateViewHolder
+                android:id="@+id/loadStateViewHolder"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:clipToPadding="false"
+                    android:overScrollMode="never"
+                    android:paddingHorizontal="9dp"
+                    android:paddingVertical="6dp"
+                    android:scrollbars="none"
+                    app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
+                    app:spanCount="3"
+                    tools:listitem="@layout/item_my_episode_info" />
+            </com.kuaigeglobal.epnova.widget.LoadStateViewHolder>
+        </com.scwang.smart.refresh.layout.SmartRefreshLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_delete"
+            singleClick="@{layout.clickHandler::onClick}"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/main_bottom_nav_height"
+            android:gravity="center"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/icon_delete_red"
+                android:drawablePadding="8dp"
+                android:text="@string/del"
+                android:textAppearance="@style/Text14"
+                android:textColor="?attr/funcColorFailure" />
+        </LinearLayout>
+    </LinearLayout>
+</layout>

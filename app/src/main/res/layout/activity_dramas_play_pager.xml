@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="layout"
+            type="com.kuaigeglobal.epnova.feature.play.DramasPlayPagerViewModel" />
+
+        <import type="android.view.View" />
+
+        <import type="android.text.TextUtils" />
+    </data>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:keepScreenOn="true"
+        android:layout_height="match_parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:listitem="@layout/item_video_feed" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            tools:background="?android:windowBackground">
+
+            <com.kuaigeglobal.epnova.widget.StatusBarView
+                android:id="@+id/statusBar1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/btnBack"
+                    singleClick="@{(v)->layout.back()}"
+                    android:layout_width="48dp"
+                    android:layout_height="@dimen/action_bar_size"
+                    android:paddingVertical="10dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/icon_back_left" />
+
+                <TextView
+                    android:id="@+id/tvTitle"
+                    style="@style/Text16"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="48dp"
+                    android:textColor="?attr/textColor1"
+                    tools:text="第几集" />
+
+                <ImageView
+                    android:id="@+id/btnEdit"
+                    setVisible="@{layout.currentWork.isMine()}"
+                    android:layout_width="40dp"
+                    android:layout_height="@dimen/action_bar_size"
+                    android:layout_gravity="end"
+                    android:layout_marginEnd="44dp"
+                    android:paddingVertical="10dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/icon_edit_full_rounded" />
+
+                <ImageView
+                    android:id="@+id/btnMenu"
+                    android:layout_width="40dp"
+                    android:layout_height="@dimen/action_bar_size"
+                    android:layout_gravity="end"
+                    android:layout_marginEnd="4dp"
+                    android:paddingVertical="10dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/icon_more_h" />
+            </FrameLayout>
+        </LinearLayout>
+    </FrameLayout>
+</layout>

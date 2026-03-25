@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright 2017 Zhihu Inc.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  -->
+<resources>
+
+    //====================================== Theme Zhihu ===========================================
+    <style name="AnimMatisseActivity" parent="@android:style/Animation.Activity">
+        <item name="android:activityOpenEnterAnimation">@anim/push_bottom_in</item>
+        <item name="android:activityCloseExitAnimation">@anim/push_bottom_out</item>
+    </style>
+<!--    <style name="AnimBottomPush" parent="@android:style/Animation">-->
+<!--        <item name="android:windowEnterAnimation">@anim/push_bottom_in</item>-->
+<!--        <item name="android:windowExitAnimation">@anim/push_bottom_out</item>-->
+<!--    </style>-->
+    <style name="Matisse.Zhihu" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/zhihu_primary</item>
+        <item name="colorPrimaryDark">@color/zhihu_primary_dark</item>
+        <item name="toolbar">@style/Toolbar.Zhihu</item>
+        <item name="album.dropdown.title.color">@color/zhihu_album_dropdown_title_text</item>
+        <item name="album.dropdown.count.color">@color/zhihu_album_dropdown_count_text</item>
+        <item name="album.element.color">#333333</item>
+        <item name="album.thumbnail.placeholder">@color/zhihu_album_dropdown_thumbnail_placeholder</item>
+        <item name="album.emptyView">@drawable/ic_empty_zhihu</item>
+        <item name="album.emptyView.textColor">@color/zhihu_album_empty_view</item>
+        <item name="item.placeholder">@color/zhihu_item_placeholder</item>
+        <item name="item.checkCircle.backgroundColor">@color/zhihu_item_checkCircle_backgroundColor</item>
+        <item name="item.checkCircle.borderColor">@color/zhihu_item_checkCircle_borderColor</item>
+        <item name="page.bg">@color/zhihu_page_bg</item>
+        <item name="bottomToolbar.bg">@color/zhihu_bottom_toolbar_bg</item>
+        <item name="bottomToolbar.preview.textColor">@color/zhihu_bottom_toolbar_preview</item>
+        <item name="bottomToolbar.apply.textColor">@color/zhihu_bottom_toolbar_apply</item>
+        <item name="preview.bottomToolbar.back.textColor">@color/zhihu_preview_bottom_toolbar_back_text</item>
+        <item name="preview.bottomToolbar.apply.textColor">@color/zhihu_preview_bottom_toolbar_apply</item>
+        <item name="listPopupWindowStyle">@style/Popup.Zhihu</item>
+        <item name="capture.textColor">@color/zhihu_capture</item>
+<!--        <item name="android:windowAnimationStyle">@style/AnimMatisseActivity</item>-->
+    </style>
+
+    <style name="Toolbar.Zhihu" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+
+    </style>
+
+    <style name="Popup.Zhihu" parent="Widget.AppCompat.Light.ListPopupWindow">
+        <item name="android:popupBackground">@color/zhihu_album_popup_bg</item>
+    </style>
+
+    //===================================== Theme Dracula ==========================================
+
+    <style name="Matisse.Dracula" parent="Theme.AppCompat.NoActionBar">
+        <item name="colorPrimary">@color/dracula_primary</item>
+        <item name="colorPrimaryDark">@color/dracula_primary_dark</item>
+        <item name="toolbar">@style/Toolbar.Dracula</item>
+        <item name="album.dropdown.title.color">@color/dracula_album_dropdown_title_text</item>
+        <item name="album.dropdown.count.color">@color/dracula_album_dropdown_count_text</item>
+        <item name="album.element.color">@android:color/white</item>
+        <item name="album.thumbnail.placeholder">@color/dracula_album_dropdown_thumbnail_placeholder</item>
+        <item name="album.emptyView">@drawable/ic_empty_dracula</item>
+        <item name="album.emptyView.textColor">@color/dracula_album_empty_view</item>
+        <item name="item.placeholder">@color/dracula_item_placeholder</item>
+        <item name="item.checkCircle.backgroundColor">@color/dracula_item_checkCircle_backgroundColor</item>
+        <item name="item.checkCircle.borderColor">@color/dracula_item_checkCircle_borderColor</item>
+        <item name="page.bg">@color/dracula_page_bg</item>
+        <item name="bottomToolbar.bg">@color/dracula_bottom_toolbar_bg</item>
+        <item name="bottomToolbar.preview.textColor">@color/dracula_bottom_toolbar_preview</item>
+        <item name="bottomToolbar.apply.textColor">@color/dracula_bottom_toolbar_apply</item>
+        <item name="preview.bottomToolbar.back.textColor">@color/dracula_preview_bottom_toolbar_back_text</item>
+        <item name="preview.bottomToolbar.apply.textColor">@color/dracula_preview_bottom_toolbar_apply</item>
+        <item name="android:listPopupWindowStyle">@style/Popup.Dracula</item>
+        <item name="listPopupWindowStyle">@style/Popup.Dracula</item>
+        <item name="capture.textColor">@color/dracula_capture</item>
+    </style>
+
+    <style name="Toolbar.Dracula" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+
+    </style>
+
+    <style name="Popup.Dracula" parent="Widget.AppCompat.ListPopupWindow">
+        <item name="android:popupBackground">@color/dracula_album_popup_bg</item>
+    </style>
+
+    //===================================== Theme AiFace ==========================================
+
+    <style name="Matisse.AiFace" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@drawable/matisse_bg_window</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="colorPrimary">@color/aiface_primary</item>
+        <item name="colorPrimaryDark">@color/aiface_primary_dark</item>
+        <item name="toolbar">@style/Toolbar.AiFace</item>
+        <item name="album.dropdown.title.color">@color/aiface_album_dropdown_title_text</item>
+        <item name="album.dropdown.count.color">@color/aiface_album_dropdown_count_text</item>
+        <item name="album.element.color">@android:color/white</item>
+        <item name="album.thumbnail.placeholder">@color/aiface_album_dropdown_thumbnail_placeholder</item>
+        <item name="album.emptyView">@drawable/ic_empty_dracula</item>
+        <item name="album.emptyView.textColor">@color/aiface_album_empty_view</item>
+        <item name="item.placeholder">@color/aiface_item_placeholder</item>
+        <item name="item.checkCircle.backgroundColor">@color/aiface_item_checkCircle_backgroundColor</item>
+        <item name="item.checkCircle.borderColor">@color/aiface_item_checkCircle_borderColor</item>
+        <item name="page.bg">@drawable/matisse_bg_window</item>
+        <item name="bottomToolbar.bg">@color/aiface_bottom_toolbar_bg</item>
+        <item name="bottomToolbar.preview.textColor">@color/aiface_bottom_toolbar_preview</item>
+        <item name="bottomToolbar.apply.textColor">@color/aiface_bottom_toolbar_apply</item>
+        <item name="preview.bottomToolbar.back.textColor">@color/aiface_preview_bottom_toolbar_back_text</item>
+        <item name="preview.bottomToolbar.apply.textColor">@color/aiface_preview_bottom_toolbar_apply</item>
+        <item name="android:listPopupWindowStyle">@style/Popup.AiFace</item>
+        <item name="listPopupWindowStyle">@style/Popup.AiFace</item>
+        <item name="capture.textColor">@color/aiface_capture</item>
+    </style>
+    <style name="Toolbar.AiFace" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+    </style>
+    <style name="Popup.AiFace" parent="Widget.AppCompat.ListPopupWindow">
+        <item name="android:popupBackground">@color/aiface_album_popup_bg</item>
+    </style>
+    //===================================== Theme Kuaige ==========================================
+    <style name="Matisse.Kuaige" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@color/kuaige_page_bg</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="colorPrimary">@color/kuaige_primary</item>
+        <item name="colorPrimaryDark">@color/kuaige_primary_dark</item>
+        <item name="toolbar">@style/Toolbar.Kuaige</item>
+        <item name="album.dropdown.title.color">@color/kuaige_album_dropdown_title_text</item>
+        <item name="album.dropdown.count.color">@color/kuaige_album_dropdown_count_text</item>
+        <item name="album.element.color">@android:color/white</item>
+        <item name="album.thumbnail.placeholder">@color/kuaige_album_dropdown_thumbnail_placeholder</item>
+        <item name="album.emptyView">@drawable/ic_empty_dracula</item>
+        <item name="album.emptyView.textColor">@color/kuaige_album_empty_view</item>
+        <item name="item.placeholder">@color/kuaige_item_placeholder</item>
+        <item name="item.checkCircle.backgroundColor">@color/kuaige_item_checkCircle_backgroundColor</item>
+        <item name="item.checkCircle.borderColor">@color/kuaige_item_checkCircle_borderColor</item>
+        <item name="page.bg">@color/kuaige_page_bg</item>
+        <item name="bottomToolbar.bg">@color/kuaige_bottom_toolbar_bg</item>
+        <item name="bottomToolbar.preview.textColor">@color/kuaige_bottom_toolbar_preview</item>
+        <item name="bottomToolbar.apply.textColor">@color/kuaige_bottom_toolbar_apply</item>
+        <item name="preview.bottomToolbar.back.textColor">@color/kuaige_preview_bottom_toolbar_back_text</item>
+        <item name="preview.bottomToolbar.apply.textColor">@color/kuaige_preview_bottom_toolbar_apply</item>
+        <item name="android:listPopupWindowStyle">@style/Popup.Kuaige</item>
+        <item name="listPopupWindowStyle">@style/Popup.Kuaige</item>
+        <item name="capture.textColor">@color/kuaige_capture</item>
+    </style>
+    <style name="Toolbar.Kuaige" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+    </style>
+    <style name="Popup.Kuaige" parent="Widget.AppCompat.ListPopupWindow">
+        <item name="android:popupBackground">@color/kuaige_album_popup_bg</item>
+    </style>
+    <style name="roundStyle_r6">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">6dp</item>
+    </style>
+
+    <style name="roundStyle_r7">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">7dp</item>
+    </style>
+
+</resources>

@@ -1,0 +1,45 @@
+package com.kuaigeglobal.epnova.common.utils
+
+import com.kuaigeglobal.epnova.BuildConfig
+
+object DebugUtils {
+    val ipsName by lazy {
+        arrayOf(
+            "廖嘉宁：192.168.12.177",
+            "郭义明：192.168.10.44",
+            "刘子帆：192.168.13.167",
+            "测试外网：kcp-test.kwaige.cn",
+            "预发布：120.24.240.28:9010",
+            "正式环境：kuaichupianjk.kuaigeai.cn"
+        )
+    }
+    val ips by lazy {
+        arrayOf(
+            "http://192.168.12.177:8088",
+            "http://192.168.10.44:8088",
+            "http://192.168.13.167:8088",
+            "https://kcp-test.kwaige.cn",
+            "http://120.24.240.28:7010",
+            "https://kuaichupianjk.kuaigeai.cn"
+        )
+    }
+
+    private val debugFlavor by lazy {
+        arrayOf(
+            "preview",
+            "develop"
+        )
+    }
+
+    @JvmStatic
+    fun isDebug(): Boolean {
+        if (BuildConfig.DEBUG) return true
+        val flavorEnv = BuildConfig.FLAVOR_env
+        for (i in debugFlavor.indices) {
+            if (debugFlavor[i].contains(flavorEnv)) {
+                return true
+            }
+        }
+        return false
+    }
+}

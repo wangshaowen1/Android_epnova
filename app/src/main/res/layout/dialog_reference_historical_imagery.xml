@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="layout"
+            type="com.kuaigeglobal.epnova.feature.creator.assets.edit.ReferenceHistoricalImageryViewModel" />
+
+        <import type="android.view.View" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_color2_tr20"
+        android:orientation="vertical"
+        android:paddingHorizontal="@dimen/spacing_l">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_m">
+
+            <TextView
+                android:id="@+id/title"
+                style="@style/Text16"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/reference_historical_avatar"
+                android:textColor="?attr/textColor1" />
+
+            <ImageView
+                android:id="@+id/close"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|end"
+                android:importantForAccessibility="no"
+                android:onClick="@{()->layout.dismiss()}"
+                android:padding="3dp"
+                android:src="@drawable/icon_close" />
+        </FrameLayout>
+
+        <TextView
+            style="@style/Text14"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_xl"
+            android:text="@string/historical_character"
+            android:textColor="?attr/textColor1"
+            android:textStyle="bold" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_m"
+            android:adapter="@{layout.MAdapterVm.MAdapter}"
+            android:orientation="horizontal"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/item_reference_historical_imagery" />
+
+        <TextView
+            style="@style/Text12"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_m"
+            android:text="@string/reference_generation_logic_description"
+            android:textColor="?attr/textColor4" />
+
+        <LinearLayout
+            android:id="@+id/llBottom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_xl"
+            android:layout_marginBottom="30dp"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <Button
+                android:id="@+id/btnCancel"
+                style="@style/Button.Bold.Cancel"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:text="@string/no_reference" />
+
+            <!-- 保存按钮 -->
+            <Button
+                android:id="@+id/btnConfirm"
+                style="@style/Button.Bold"
+                android:layout_width="0dp"
+                android:layout_marginStart="@dimen/spacing_l"
+                android:layout_weight="1"
+                android:text="@string/reference" />
+        </LinearLayout>
+    </LinearLayout>
+</layout>

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?><!--欢迎页-->
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="layout"
+            type="com.kuaigeglobal.epnova.feature.splash.newer.GuideStep3ViewModel" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#0a0d20"
+        android:paddingHorizontal="@dimen/spacing_l">
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/iv_hero_loading"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginTop="84dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:lottie_autoPlay="true"
+            app:lottie_fileName="loading_ball/loading_ball.json"
+            app:lottie_imageAssetsFolder="loading_ball/images"
+            app:lottie_loop="true"
+            app:lottie_repeatMode="reverse" />
+
+        <TextView
+            android:id="@+id/tv_main_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_l"
+            android:text="@string/generating_short_video"
+            android:textColor="?attr/textColor1"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/iv_hero_loading" />
+
+        <TextView
+            android:id="@+id/tv_subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_s"
+            android:text="@string/estimated_wait_time"
+            android:textColor="@color/color_40_ffffff"
+            android:textSize="13sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_main_title" />
+
+        <View
+            android:id="@+id/view_track_bg"
+            android:layout_width="0dp"
+            android:layout_height="6dp"
+            android:layout_marginTop="@dimen/spacing_l"
+            android:background="@drawable/fill_color1_r8"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_subtitle" />
+
+        <View
+            android:id="@+id/view_progress_bar"
+            android:layout_width="5dp"
+            android:layout_height="6dp"
+            android:background="@drawable/guide_step3_progress_style"
+            app:layout_constraintBottom_toBottomOf="@+id/view_track_bg"
+            app:layout_constraintStart_toStartOf="@+id/view_track_bg"
+            app:layout_constraintTop_toTopOf="@+id/view_track_bg" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_generation_steps"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="28dp"
+            android:adapter="@{layout.step3Adapter.MAdapter}"
+            android:clipToPadding="false"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/view_track_bg"
+            tools:listitem="@layout/item_generation_step" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

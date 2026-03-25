@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item name="emo_panel_image" type="id" />
+    <item name="emo_panel_side_icon" type="id" />
+    <item name="menu" type="id" />
+    <item name="vm_key" type="id" />
+    <item name="vm_key2" type="id" />
+    <item type="id" name="last_delay_animation_position" />
+    <item name="shakeAnim" type="id" />
+    <item name="triggerLastTimeKey" type="id"/>
+    <item name="triggerDelayKey" type="id"/>
+    <item name="expandable_text" type="id" />
+    <item name="expand_collapse" type="id" />
+    <item name="expand_collapse_icon" type="id" />
+    <item name="expand_collapse_layout" type="id" />
+    <item name="grid_item_picture" type="id" />
+    <item name="grid_item_delete_icon" type="id" />
+    <item name="grid_item_delete_button" type="id" />
+    <item name="add_photo" type="id" />
+    <item name="iv_blur_background" type="id" />
+    <item name="iv_blur_src" type="id" />
+</resources>

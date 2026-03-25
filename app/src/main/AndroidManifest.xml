@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.kuaigeglobal.epnova"
+    tools:ignore="LockedOrientationActivity">
+
+    <uses-permission
+        android:name="android.permission.CALL_PHONE"
+        tools:ignore="PermissionImpliesUnsupportedChromeOsHardware"
+        tools:node="remove" />
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!--    <uses-permission android:name="android.permission.RECORD_AUDIO" />-->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32"
+        tools:ignore="ScopedStorage" />
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
+    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
+    <uses-permission android:name="android.permission.READ_MEDIA_VISUAL_USER_SELECTED" />
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <!--    <uses-permission android:name="android.permission.GET_TASKS" /> &lt;!&ndash; 如果有视频相关的广告且使用textureView播放，请务必添加，否则黑屏 &ndash;&gt;-->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <!-- // 在应用的AndroidManifest.xml添加如下标签  // 指定微信包名  兼容android11 -->
+    <!-- -->
+    <uses-permission android:name="android.permission.GET_INSTALLED_APPS" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
+    <uses-permission android:name="com.android.vending.BILLING" />
+    <uses-permission android:name="com.google.android.gms.permission.AD_ID" />
+
+    <application
+        android:name="com.kuaigeglobal.epnova.App"
+        android:allowBackup="true"
+        android:hardwareAccelerated="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:networkSecurityConfig="@xml/network_security_config"
+        android:requestLegacyExternalStorage="true"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme"
+        tools:replace="android:label,android:allowBackup">
+        <uses-library
+            android:name="org.apache.http.legacy"
+            android:required="false" /> <!-- 适配全面屏手机 -->
+        <meta-data
+            android:name="android.max_aspect"
+            android:value="2.4" />
+        <meta-data
+            android:name="android.notch_support"
+            android:value="true" />
+        <meta-data
+            android:name="notch.config"
+            android:value="portrait|landscape" />
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true"
+            tools:replace="android:authorities">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_provider_paths"
+                tools:replace="android:resource" />
+        </provider>
+        <activity
+            android:name="com.nhsd.crop.CropActivity"
+            android:screenOrientation="portrait" />
+
+        <service android:name="com.kuaigeglobal.epnova.service.DownloadService" />
+
+        <receiver
+            android:name="androidx.media.session.MediaButtonReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MEDIA_BUTTON" />
+            </intent-filter>
+        </receiver>
+
+        <activity
+            android:name="com.kuaigeglobal.epnova.feature.splash.SplashActivity"
+            android:exported="true"
+            android:screenOrientation="portrait"
+            android:theme="@style/SplashScreen"
+            android:windowSoftInputMode="stateHidden">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="epnova" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.kuaigeglobal.epnova.feature.PhotoPagerActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.PhotoPager" />
+        <activity
+            android:name="com.kuaigeglobal.epnova.feature.web.SimpleBrowserActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:screenOrientation="unspecified"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name="com.kuaigeglobal.epnova.feature.BringForegroundActivity"
+            android:screenOrientation="portrait" />
+
+        <!--主页-->
+        <activity
+            android:name="com.kuaigeglobal.epnova.feature.main.MainActivity"
+            android:exported="true"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize">
+        </activity>
+
+        <!--设置-->
+        <activity
+            android:name=".feature.settings.SettingsActivity"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <!--关于我们-->
+        <activity
+            android:name=".feature.settings.about.AboutUsActivity"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <!--建议-->
+        <activity
+            android:name=".feature.settings.feedback.FeedbackActivity"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <!--举报-->
+        <activity
+            android:name=".feature.settings.report.ReportActivity"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <!--注销-->
+        <activity android:name=".feature.settings.logoff.LogoffActivity" />
+        <!--申请注销-->
+        <activity android:name=".feature.settings.logoff.ApplyLogOffActivity" />
+        <!--绑定手机号-->
+        <activity
+            android:name=".feature.login.bind.BindPhoneActivity"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <!--手机号登录-->
+        <activity
+            android:name=".feature.login.flash.PhoneLoginDialogActivity"
+            android:windowSoftInputMode="stateVisible" />
+        <!--手机号登录-->
+        <activity
+            android:name=".feature.login.LoginActivity"
+            android:screenOrientation="behind"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <!--手机号登录-->
+        <activity
+            android:name=".feature.login.unified.UnifiedLoginActivity"
+            android:screenOrientation="behind"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+
+        <!--闪验登录入口-->
+        <activity
+            android:name=".feature.login.phone.PhoneLoginActivity"
+            android:screenOrientation="behind"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+
+        <!--充值消耗明细-->
+        <activity
+            android:name=".feature.details.ComputingPowerDetailsActivity"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+
+        <!--作品管理-->
+        <activity
+            android:name=".feature.series.management.WorksManagementActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true"
+            tools:replace="android:authorities">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_provider_paths"
+                tools:replace="android:resource" />
+        </provider>
+        <activity
+            android:name=".feature.creator.generate.StoryEditorActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".feature.editor.EditStoryboardVideoActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".feature.editor.EditStoryboardActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".feature.mine.PhoneShowActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".feature.creator.CreationRootActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".feature.series.SeriesActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".feature.creator.continuewriting.ContinueWritingActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".feature.play.DramasPlayPagerActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".feature.editor.info.DramaInfoEditActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".feature.recharge.MyBalanceActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".feature.splash.newer.GuideStep1AdActivity"   android:screenOrientation="portrait" />
+        <activity android:name=".feature.splash.newer.GuideStep2StorySelectActivity"  android:screenOrientation="portrait"/>
+        <activity android:name=".feature.splash.newer.GuideStep3GeneratingActivity"  android:screenOrientation="portrait"/>
+        <activity android:name=".feature.splash.newer.GuideStep4VideoActivity"  android:screenOrientation="portrait"/>
+    </application>
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.MAIN" />
+        </intent>
+    </queries>
+</manifest>

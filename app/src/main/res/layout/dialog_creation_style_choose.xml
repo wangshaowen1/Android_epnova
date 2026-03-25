@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="layout"
+            type="com.kuaigeglobal.epnova.feature.creator.set.allstyle.CreationStyleChooseViewModel" />
+
+        <import type="android.view.View" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_color2_tr20">
+
+        <TextView
+            android:id="@+id/title"
+            style="@style/Text16"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_l"
+            android:text="@string/all_styles"
+            android:textColor="?attr/textColor1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/spacing_l"
+            android:onClick="@{()->layout.dismiss()}"
+            android:padding="3dp"
+            android:src="@drawable/icon_close"
+            app:layout_constraintBottom_toBottomOf="@id/title"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/title" />
+
+        <com.kuaigeglobal.epnova.widget.LoadStateViewHolder
+            android:id="@+id/loadState"
+            android:layout_width="match_parent"
+            android:layout_height="408dp"
+            android:layout_marginTop="@dimen/spacing_l"
+            android:layout_marginBottom="@dimen/spacing_m"
+            app:layout_constraintBottom_toTopOf="@id/llBottom"
+            app:layout_constraintTop_toBottomOf="@id/title">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView"
+                setGridLayoutManager="@{3}"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginHorizontal="16dp"
+                android:adapter="@{layout.MStyleAdapterVm.MAdapter}"
+                tools:listitem="@layout/item_creation_style_all" />
+        </com.kuaigeglobal.epnova.widget.LoadStateViewHolder>
+
+        <LinearLayout
+            android:id="@+id/llBottom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/spacing_l"
+            android:layout_marginBottom="30dp"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <Button
+                android:id="@+id/btnCancel"
+                style="@style/Button.Bold.Cancel"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:text="@string/cancel" />
+
+            <!-- 保存按钮 -->
+            <Button
+                android:id="@+id/btnConfirm"
+                style="@style/Button.Bold"
+                android:layout_width="0dp"
+                android:layout_marginStart="@dimen/spacing_l"
+                android:layout_weight="1"
+                android:text="@string/confirm" />
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

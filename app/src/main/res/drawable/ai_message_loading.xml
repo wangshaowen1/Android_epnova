@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animation-list
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:oneshot="false"> <!-- oneshot="true" 表示只播放一次 -->
+
+    <!-- 定义每一帧的图片和持续时间（单位：毫秒） -->
+    <item
+        android:drawable="@drawable/ic_message_loading1"
+        android:duration="350" />
+    <item
+        android:drawable="@drawable/ic_message_loading2"
+        android:duration="350" />
+    <item
+        android:drawable="@drawable/ic_message_loading3"
+        android:duration="350" />
+    <!-- 添加更多帧... -->
+</animation-list>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:lib="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_white_rectangle_top_corner_r24"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/cancel_btn"
+            style="@style/Text.Medium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textColor="@color/color_50_121212"
+            android:paddingHorizontal="18dp"
+            android:paddingVertical="20dp"
+            android:text="@string/cancel"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/title"
+            style="@style/Text.Bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/select_birthday"
+            android:textColor="@color/textColorPrimary"
+            android:textSize="16sp"
+            />
+
+        <TextView
+            android:id="@+id/confirm_btn"
+            style="@style/Text.Medium"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:paddingVertical="20dp"
+            android:paddingHorizontal="18dp"
+            android:text="@string/confirm_ok"
+            android:textColor="@color/textColorPrimary"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <com.flqy.datepicker.DatePicker
+            android:id="@+id/datePicker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="30dp"
+            lib:dp_calendarViewShown="false"
+            lib:dp_spinnersShown="true" />
+    </LinearLayout>
+
+
+</LinearLayout>

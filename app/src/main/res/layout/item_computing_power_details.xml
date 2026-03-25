@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="item"
+            type="com.kuaigeglobal.epnova.feature.details.ItemComputingPowerDetailsVm" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tv_title"
+            style="@style/Text14"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="@{item.data.tradeTitle}"
+            android:textColor="?attr/textColor1"
+            app:layout_constraintEnd_toStartOf="@id/tv_amount_money"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="积分到期清零" />
+
+        <TextView
+            android:id="@+id/tv_time"
+            style="@style/Text12"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="@{item.data.tradeDate}"
+            android:textColor="?attr/textColor4"
+            app:layout_constraintEnd_toStartOf="@id/tv_amount_money"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_title"
+            tools:text="2025.09.02 00:12" />
+
+        <TextView
+            android:id="@+id/tv_amount_money"
+            style="@style/Text14"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="5dp"
+            android:text="@{item.quantity()}"
+            android:textColor="?attr/textColor1"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/iv_amount_money"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="-66" />
+
+        <ImageView
+            android:id="@+id/iv_amount_money"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:importantForAccessibility="no"
+            android:src="@drawable/ic_point_54"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="10dp"
+            android:background="@color/border_color_1_dark"
+            app:layout_constraintTop_toBottomOf="@id/tv_time" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

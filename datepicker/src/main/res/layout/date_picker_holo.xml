@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+**
+** Copyright 2011, The Android Open Source Project
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+-->
+
+
+<!-- Layout of date picker -->
+
+
+<!--
+     Warning: everything within the "pickers" layout is removed and re-ordered
+     depending on the date format selected by the user.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:lib="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal"
+    android:gravity="center"
+    android:orientation="horizontal" >
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+    <View android:layout_width="0dp"
+        android:layout_height="50dp"
+        lib:layout_constraintTop_toTopOf="@id/pickers"
+        lib:layout_constraintBottom_toBottomOf="@id/pickers"
+        lib:layout_constraintStart_toStartOf="@id/pickers"
+        lib:layout_constraintEnd_toEndOf="@id/pickers"
+        />
+
+        <TextView
+            android:id="@+id/yearSuffix"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/year"
+            android:textColor="#121212"
+            android:textSize="16sp"
+            lib:layout_constraintEnd_toStartOf="@+id/monthSuffix"
+            lib:layout_constraintHorizontal_bias="0.6"
+            lib:layout_constraintHorizontal_chainStyle="spread"
+            lib:layout_constraintStart_toStartOf="parent"
+            lib:layout_constraintTop_toTopOf="parent"
+            lib:layout_constraintBottom_toBottomOf="parent"
+            android:gravity="end"/>
+
+        <TextView
+            android:id="@+id/monthSuffix"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/month"
+            android:textColor="#121212"
+            android:textSize="16sp"
+            lib:layout_constraintEnd_toStartOf="@id/daySuffix"
+            lib:layout_constraintHorizontal_bias="0.5"
+            lib:layout_constraintStart_toEndOf="@+id/yearSuffix"
+            lib:layout_constraintTop_toTopOf="parent"
+            lib:layout_constraintBottom_toBottomOf="parent"
+            android:gravity="end"
+            android:paddingEnd="20dp"
+            />
+        <TextView
+            android:id="@+id/daySuffix"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/day"
+            android:textColor="#121212"
+            android:textSize="16sp"
+            lib:layout_constraintEnd_toEndOf="parent"
+            lib:layout_constraintHorizontal_bias="0.5"
+            lib:layout_constraintStart_toEndOf="@+id/monthSuffix"
+            lib:layout_constraintTop_toTopOf="parent"
+            lib:layout_constraintBottom_toBottomOf="parent"
+            android:gravity="end"
+            android:paddingEnd="20dp"
+            />
+
+    <LinearLayout
+        android:id="@+id/pickers"
+        lib:layout_constraintTop_toTopOf="parent"
+        lib:layout_constraintStart_toStartOf="parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingEnd="10dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="horizontal" >
+
+        <!-- Month -->
+
+        <com.flqy.datepicker.NumberPicker
+            android:id="@+id/month"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:focusable="true"
+            lib:internalLayout="@layout/number_picker_with_selector_wheel"
+            android:focusableInTouchMode="true" />
+
+        <!-- Day -->
+
+        <com.flqy.datepicker.NumberPicker
+            android:id="@+id/day"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:focusable="true"
+            lib:internalLayout="@layout/number_picker_with_selector_wheel"
+            android:focusableInTouchMode="true" />
+
+        <!-- Year -->
+
+        <com.flqy.datepicker.NumberPicker
+            android:id="@+id/year"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:focusable="true"
+            lib:internalLayout="@layout/number_picker_with_selector_wheel"
+            android:focusableInTouchMode="true" />
+    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- calendar view -->
+
+    <com.flqy.datepicker.CalendarView
+        android:id="@+id/calendar_view"
+        android:layout_width="245dip"
+        android:layout_height="280dip"
+        android:layout_marginLeft="16dip"
+        android:layout_marginRight="16dip"
+        android:layout_weight="1"
+        android:focusable="true"
+        android:focusableInTouchMode="true" />
+
+</LinearLayout>

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="layout"
+            type="com.kuaigeglobal.epnova.feature.creator.CreationRootViewModel" />
+
+        <import type="android.view.View" />
+
+        <import type="android.text.TextUtils" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:src="@drawable/bg_guang"
+            app:layout_constraintDimensionRatio="375:543"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <include
+            android:id="@+id/toolbar"
+            layout="@layout/view_model_toolbar"
+            app:layout_constraintTop_toTopOf="parent"
+            app:toolbar="@{layout.mToolbarVM}" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/tabs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginHorizontal="@dimen/spacing_l"
+            android:layout_marginTop="@dimen/spacing_m"
+            android:background="@drawable/bg_fill_color_1_r50"
+            android:padding="@dimen/spacing_xs"
+            app:layout_constraintTop_toBottomOf="@id/toolbar">
+
+            <View
+                setHorizontalBias="@{layout.tabIndicatorPosition}"
+                android:layout_width="0dp"
+                android:layout_height="34dp"
+                android:background="@drawable/bg_fill_color_2_r50"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintWidth_percent="0.5" />
+
+            <TextView
+                android:id="@+id/rbLeft"
+                setTextBold="@{layout.selectedTab == 0}"
+                android:layout_width="0dp"
+                android:layout_height="34dp"
+                android:gravity="center"
+                android:onClick="@{layout.clickHandler::onClick}"
+                android:selected="@{layout.selectedTab == 0}"
+                android:text="@string/creative_gen_inspiration"
+                android:textColor="@color/tab_text_selector"
+                android:textSize="14dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintWidth_percent="0.5"
+                tools:textColor="?attr/textColor1"
+                tools:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/rbRight"
+                setTextBold="@{layout.selectedTab == 1}"
+                android:layout_width="0dp"
+                android:layout_height="34dp"
+                android:gravity="center"
+                android:onClick="@{layout.clickHandler::onClick}"
+                android:selected="@{layout.selectedTab == 1}"
+                android:text="@string/novel_adapt"
+                android:textColor="@color/tab_text_selector"
+                android:textSize="14dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintWidth_percent="0.5" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/viewPager"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="@dimen/spacing_l"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tabs" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

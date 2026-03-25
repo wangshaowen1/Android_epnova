@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="banner"
+            type="com.kuaigeglobal.epnova.core.network.apis.response.SimpleBannerInfo" />
+
+        <import type="com.kuaigeglobal.epnova.router.AppRouter" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        setVisible="@{banner!=null}"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/image"
+            loadHQThumbnailUri="@{banner.bannerUrl}"
+            placeHolder="@{@drawable/img_default_cover_16_9}"
+            singleClick="@{(v) -> AppRouter.jump(banner.jumpUri)}"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:scaleType="centerCrop"
+            app:layout_constraintDimensionRatio="345:96"
+            app:layout_constraintTop_toTopOf="parent"
+            app:shapeAppearance="@style/roundStyle_r12"
+            tools:src="@drawable/img_default_cover_16_9" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

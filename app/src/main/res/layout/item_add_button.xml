@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="item"
+            type="com.kuaigeglobal.epnova.feature.creator.assets.ItemAddVM" />
+    </data>
+
+
+    <com.kuaigeglobal.epnova.widget.BorderConstraintLayout
+        android:id="@+id/btnAdd"
+        marginTopDp="@{item.marginTopDp}"
+        singleClick="@{(v)->item.onItemClick.invoke(v)}"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="15dp"
+        android:layout_marginBottom="16dp"
+        app:backgroundStartColor="?fillColor2"
+        app:borderStartColor="?borderColor1"
+        app:roundCornerRadius="8dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            app:layout_constraintDimensionRatio="345:44">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/icon_add" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:text="@{item.text}"
+                android:textAppearance="@style/Text14"
+                android:textColor="?attr/textColor2"
+                tools:text="添加角色" />
+
+        </LinearLayout>
+
+    </com.kuaigeglobal.epnova.widget.BorderConstraintLayout>
+</layout>

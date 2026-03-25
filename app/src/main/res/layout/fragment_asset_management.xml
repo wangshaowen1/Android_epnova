@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="layout"
+            type="com.kuaigeglobal.epnova.feature.creator.assets.AssetManagementViewModel" />
+    </data>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:keepScreenOn="true">
+
+        <com.kuaigeglobal.epnova.widget.LoadStateViewHolder
+            displayChild="@{layout.loadState}"
+            onRetry="@{layout::retry}"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <RadioGroup
+                    android:id="@+id/rgAssetType"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="3dp">
+
+                    <RadioButton
+                        android:id="@+id/rbRoles"
+                        setVisible="@{layout.hasRole}"
+                        android:layout_width="wrap_content"
+                        android:layout_height="32dp"
+                        android:button="@null"
+                        android:checked="true"
+                        android:gravity="center"
+                        android:onClick="@{layout.clickHandler::onClick}"
+                        android:paddingHorizontal="12dp"
+                        android:text="@string/roles"
+                        android:textAppearance="@style/Text14"
+                        android:textColor="@color/sel_text2_text3" />
+
+                    <RadioButton
+                        android:id="@+id/rbScenes"
+                        setVisible="@{layout.hasScene}"
+                        android:layout_width="wrap_content"
+                        android:layout_height="32dp"
+                        android:button="@null"
+                        android:gravity="center"
+                        android:onClick="@{layout.clickHandler::onClick}"
+                        android:paddingHorizontal="12dp"
+                        android:text="@string/scenes"
+                        android:textAppearance="@style/Text14"
+                        android:textColor="@color/sel_text2_text3" />
+
+                    <RadioButton
+                        android:id="@+id/rbProps"
+                        setVisible="@{layout.hasProp}"
+                        android:layout_width="wrap_content"
+                        android:layout_height="32dp"
+                        android:button="@null"
+                        android:gravity="center"
+                        android:onClick="@{layout.clickHandler::onClick}"
+                        android:paddingHorizontal="12dp"
+                        android:text="@string/props"
+                        android:textAppearance="@style/Text14"
+                        android:textColor="@color/sel_text2_text3" />
+
+                </RadioGroup>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvAssets"
+                    setPaddingBottomPx="@{layout.keyboardHeight}"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_weight="1"
+                    android:adapter="@{layout.adapter}"
+                    android:clipToPadding="false"
+                    android:orientation="vertical"
+                    android:overScrollMode="never"
+                    android:scrollbars="none"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:listitem="@layout/item_asset_management" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    setVisible="@{layout.buttonText(layout.step,layout.cost).length() > 0}"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingVertical="10dp">
+
+                    <TextView
+                        android:id="@+id/btnNext"
+                        setEnabled="@{layout.buttonEnable(layout.step)}"
+                        singleClick="@{layout.clickHandler::onClick}"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_marginHorizontal="15dp"
+                        android:background="@drawable/selector_common_button"
+                        android:gravity="center"
+                        android:text="@{layout.buttonText(layout.step,layout.cost)}"
+                        android:textAppearance="@style/Text16"
+                        android:textColor="@color/fixed_white_1"
+                        app:layout_constraintDimensionRatio="345:44"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:text="下一步" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </LinearLayout>
+
+        </com.kuaigeglobal.epnova.widget.LoadStateViewHolder>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/loadingLayout"
+            setVisible="@{layout.promptGenerating}"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clickable="true"
+            android:focusable="true">
+
+            <include
+                duration="@{`15-30秒`}"
+                layout="@layout/layout_description_generating"
+                tips="@{`正在生成资产信息...`}"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.35" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </FrameLayout>
+
+</layout>

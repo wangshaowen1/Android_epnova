@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="item"
+            type="com.kuaigeglobal.epnova.feature.creator.assets.ItemAssetVM" />
+
+        <import type="android.view.View" />
+    </data>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp">
+
+        <com.kuaigeglobal.epnova.widget.roundedimageview.RoundedImageView
+            android:id="@+id/ivCover"
+            loadThumbnailUri="@{item.assetImage}"
+            placeHolder="@{@drawable/img_default_cover_3_4}"
+            singleClick="@{(v)->item.onItemClick.invoke(v)}"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="15dp"
+            android:scaleType="centerCrop"
+            android:src="?attr/fillColor1"
+            android:visibility="@{item.status == 2 ? View.VISIBLE : View.INVISIBLE}"
+            app:layout_constraintDimensionRatio="108:152"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintWidth_percent="0.288"
+            app:riv_corner_radius="8dp"
+            tools:src="@drawable/img_default_cover_3_4" />
+
+        <ImageView
+            setVisible="@{item.status == 2}"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="6dp"
+            app:layout_constraintStart_toStartOf="@+id/ivCover"
+            app:layout_constraintTop_toTopOf="@+id/ivCover" />
+
+        <ImageView
+            setVisible="@{item.status == 2}"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:padding="8dp"
+            android:src="@drawable/icon_magnify"
+            app:layout_constraintBottom_toBottomOf="@+id/ivCover"
+            app:layout_constraintEnd_toEndOf="@+id/ivCover" />
+
+        <com.kuaigeglobal.epnova.widget.AutoRotateLayout
+            autoRotate="@{item.status == 1}"
+            setVisible="@{item.status == 1}"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:background="@drawable/icon_loading1"
+            app:duration="2000"
+            app:layout_constraintBottom_toBottomOf="@+id/ivCover"
+            app:layout_constraintEnd_toEndOf="@+id/ivCover"
+            app:layout_constraintStart_toStartOf="@+id/ivCover"
+            app:layout_constraintTop_toTopOf="@+id/ivCover" />
+
+        <ImageView
+            setVisible="@{item.status &lt; 1}"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/icon_ai_image_text4"
+            android:tintMode="src_in"
+            app:layout_constraintBottom_toBottomOf="@+id/ivCover"
+            app:layout_constraintEnd_toEndOf="@+id/ivCover"
+            app:layout_constraintStart_toStartOf="@+id/ivCover"
+            app:layout_constraintTop_toTopOf="@+id/ivCover" />
+
+        <ImageView
+            setVisible="@{item.status == 3 || item.status == 4}"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/icon_image_fail"
+            android:tint="?attr/textColor4"
+            android:tintMode="src_in"
+            app:layout_constraintBottom_toBottomOf="@+id/ivCover"
+            app:layout_constraintEnd_toEndOf="@+id/ivCover"
+            app:layout_constraintStart_toStartOf="@+id/ivCover"
+            app:layout_constraintTop_toTopOf="@+id/ivCover" />
+
+        <com.kuaigeglobal.epnova.widget.GradientBorderView
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:borderStartColor="?attr/borderColor2"
+            app:borderWidth="1dp"
+            app:layout_constraintBottom_toBottomOf="@+id/ivCover"
+            app:layout_constraintEnd_toEndOf="@+id/ivCover"
+            app:layout_constraintStart_toStartOf="@+id/ivCover"
+            app:layout_constraintTop_toTopOf="@+id/ivCover"
+            app:roundCornerRadius="8dp" />
+
+        <com.kuaigeglobal.epnova.widget.RecyclerEditText
+            android:id="@+id/etAssetDesc"
+            content="@{item.assetDesc}"
+            onTextInputListener="@{item.assetDescInputListener}"
+            setEditing="@{item.editingAssetDesc}"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="15dp"
+            android:background="@drawable/fill_color1_r8"
+            android:ellipsize="end"
+            android:gravity="top"
+            android:hint="@{item.assetDescHint}"
+            android:lineSpacingExtra="@dimen/lineSpacingExtraShort"
+            android:maxLength="200"
+            android:onClick="@{(v)->item.onItemClick.invoke(v)}"
+            android:padding="12dp"
+            android:textAppearance="@style/Text13"
+            android:textColor="?attr/textColor2"
+            android:textColorHint="?attr/textColor4"
+            app:layout_constraintDimensionRatio="229:130"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/ivCover"
+            app:layout_constraintTop_toTopOf="@+id/ivCover"
+            tools:hint="角色描述词" />
+
+        <com.kuaigeglobal.epnova.widget.RecyclerEditText
+            android:id="@+id/etAssetName"
+            content="@{item.assetName}"
+            onTextInputListener="@{item.assetNameInputListener}"
+            setEditing="@{item.editingAssetName}"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="6dp"
+            android:background="@drawable/fill_color1_r4"
+            android:drawableEnd="@{item.data==null?@drawable/icon_edit_text4_16:null}"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:hint="@{item.assetNameHint}"
+            android:maxLength="20"
+            android:paddingHorizontal="12dp"
+            android:singleLine="true"
+            android:textAppearance="@style/Text13"
+            android:textColor="?attr/textColor2"
+            android:textColorHint="?attr/textColor4"
+            app:layout_constraintDimensionRatio="109:32"
+            app:layout_constraintStart_toStartOf="@+id/etAssetDesc"
+            app:layout_constraintTop_toBottomOf="@+id/etAssetDesc"
+            app:layout_constraintWidth_percent="0.29"
+            tools:drawableEnd="@drawable/icon_edit_text4_16"
+            tools:hint="角色名" />
+
+        <View
+            android:id="@+id/etAssetNameCover"
+            setEnabled="@{item.data==null}"
+            setVisible="@{!item.editingAssetName}"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:onClick="@{(v)->item.onItemClick.invoke(v)}"
+            app:layout_constraintBottom_toBottomOf="@+id/etAssetName"
+            app:layout_constraintEnd_toEndOf="@+id/etAssetName"
+            app:layout_constraintStart_toStartOf="@+id/etAssetName"
+            app:layout_constraintTop_toTopOf="@+id/etAssetName" />
+
+        <FrameLayout
+            android:id="@+id/btnGenerate"
+            singleClick="@{(v)->item.clickGenerate()}"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginHorizontal="8dp"
+            android:background="@drawable/fill_color1_r4"
+            app:layout_constraintBottom_toBottomOf="@+id/etAssetName"
+            app:layout_constraintEnd_toStartOf="@+id/btnDelete"
+            app:layout_constraintStart_toEndOf="@+id/etAssetName"
+            app:layout_constraintTop_toTopOf="@+id/etAssetName">
+
+            <com.kuaigeglobal.epnova.widget.GradientTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@{item.status &lt; 1 ? item.generateButtonText : @string/regenerate}"
+                android:textAppearance="@style/Text13"
+                android:textColor="@android:color/white"
+                app:endColor="#8F83FF"
+                app:startColor="#68BFF9"
+                tools:text="生成角色" />
+        </FrameLayout>
+
+        <ImageView
+            android:id="@+id/btnDelete"
+            singleClick="@{(v)->item.onItemClick.invoke(v)}"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/fill_color1_r4"
+            android:scaleType="centerInside"
+            android:src="@drawable/icon_delete_text4_16"
+            app:layout_constraintBottom_toBottomOf="@+id/etAssetName"
+            app:layout_constraintDimensionRatio="1"
+            app:layout_constraintEnd_toEndOf="@+id/etAssetDesc"
+            app:layout_constraintTop_toTopOf="@+id/etAssetName" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

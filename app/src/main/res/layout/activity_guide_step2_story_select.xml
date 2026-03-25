@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?><!--欢迎页-->
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="layout"
+            type="com.kuaigeglobal.epnova.feature.splash.newer.GuideStep2ViewModel" />
+
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/img_splash"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <com.kuaigeglobal.epnova.widget.StatusBarView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/btnIgnore"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginHorizontal="@dimen/spacing_l"
+            android:layout_marginVertical="@dimen/spacing_s"
+            android:background="@drawable/bg_40_000000_r50"
+            android:paddingHorizontal="@dimen/spacing_l"
+            android:paddingVertical="6dp"
+            android:text="@string/skip"
+            android:textColor="?attr/textColor2"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/guide_step2_text" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_s"
+            android:text="@string/one_click_gen_ai_drama"
+            android:textColor="?attr/textColor3"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_m"
+            android:background="@drawable/bg_ffffff_stroke_round"
+            android:paddingHorizontal="18dp"
+            android:paddingVertical="6dp"
+            android:text="@string/select_template"
+            android:textColor="?attr/textColor2"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/banner"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="20dp"
+            android:layout_weight="1"
+            android:clipChildren="false"
+            android:clipToPadding="false" />
+
+        <com.kuaigeglobal.epnova.widget.PillIndicatorView
+            android:id="@+id/iv_indicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="16dp"
+            app:pi_activeColor="?attr/textColor1"
+            app:pi_activeWidth="20dp"
+            app:pi_inactiveColor="@color/color_20_ffffff"
+            app:pi_indicatorHeight="7dp"
+            app:pi_indicatorSpacing="8dp" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:layout_marginBottom="33dp">
+
+            <ImageView
+                android:id="@+id/btnConfirm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/guide_common_button"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="-7dp"
+                android:src="@drawable/guide_step2_tip"
+                app:layout_constraintBottom_toTopOf="@id/btnConfirm"
+                app:layout_constraintEnd_toEndOf="@id/btnConfirm" />
+
+            <TextView
+                style="@style/Text18"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableStart="@drawable/icon_new"
+                android:drawablePadding="@dimen/spacing_s"
+                android:gravity="center"
+                android:text="@string/generate_short_video_now"
+                android:textColor="@color/white"
+                app:layout_constraintBottom_toBottomOf="@id/btnConfirm"
+                app:layout_constraintEnd_toEndOf="@id/btnConfirm"
+                app:layout_constraintStart_toStartOf="@id/btnConfirm"
+                app:layout_constraintTop_toTopOf="@id/btnConfirm" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
+</layout>

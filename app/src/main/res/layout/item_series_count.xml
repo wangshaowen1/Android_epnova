@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="item"
+            type="com.kuaigeglobal.epnova.feature.creator.set.ItemVideoConfigVm" />
+
+        <import type="android.view.View" />
+
+        <import type="android.text.TextUtils" />
+    </data>
+
+    <com.kuaigeglobal.epnova.widget.BorderConstraintLayout
+        selected="@{item.checked}"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/spacing_m"
+        android:background="@drawable/selector_item_stroke"
+        android:onClick="@{(v)->item.onItemClick.invoke(v)}"
+        android:paddingHorizontal="@dimen/spacing_l"
+        android:paddingVertical="@dimen/spacing_s"
+        app:borderEndColor="@color/gradient_btn_end_dark"
+        app:borderStartColor="@color/gradient_btn_start_dark"
+        app:borderWidth="1.5dp"
+        app:roundCornerRadius="@dimen/radius_m"
+        app:showBorder="@{item.checked}">
+
+        <TextView
+            android:id="@+id/tvName"
+            style="@style/Text14"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:minWidth="52dp"
+            android:text="@{item.data.configName}"
+            android:textColor="?attr/textColor2"
+            android:visibility="@{item.data.customInput&amp;&amp;item.checked?View.GONE:View.VISIBLE}"
+            tools:text="自定义集数"
+            tools:visibility="gone" />
+
+        <FrameLayout
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:visibility="@{item.data.customInput&amp;&amp;item.checked?View.VISIBLE:View.GONE}">
+
+            <EditText
+                android:id="@+id/etInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@null"
+                android:gravity="center"
+                android:hint="0"
+                android:imeOptions="actionDone"
+                android:inputType="number"
+                android:maxLength="2"
+                android:paddingEnd="16dp"
+                android:text="@={item.input}"
+                android:textColor="?attr/textColor2"
+                android:textColorHint="@color/transparent"
+                android:textSize="14sp"
+                tools:text="99" />
+            <TextView
+                style="@style/Text14"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|end"
+                android:layout_marginEnd="14dp"
+                android:text="@string/vol_number"
+                android:textColor="?attr/textColor2" />
+        </FrameLayout>
+    </com.kuaigeglobal.epnova.widget.BorderConstraintLayout>
+</layout>

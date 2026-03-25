@@ -1,0 +1,382 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="layout"
+            type="com.kuaigeglobal.epnova.feature.login.phone.PhoneLoginViewModel" />
+
+        <import type="android.view.View" />
+
+        <import type="com.kuaigeglobal.epnova.common.utils.DebugUtils" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <com.kuaigeglobal.epnova.widget.StatusBarView
+            android:id="@+id/statusBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/btnClose"
+                singleClick="@{layout.clickHandler::onClick}"
+                android:layout_width="44dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="@dimen/spacing_s"
+                android:importantForAccessibility="no"
+                android:padding="10dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/icon_close" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1" />
+
+            <Button
+                android:id="@+id/bt_settings"
+                style="@style/Button.Menu"
+                singleClick="@{layout.clickHandler::onClick}"
+                android:layout_marginEnd="16dp"
+                android:text="@string/title_settings"
+                android:visibility="@{DebugUtils.INSTANCE.isDebug()?View.VISIBLE:View.GONE}"
+                app:layout_constraintBottom_toBottomOf="@id/btnClose"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/btnClose" />
+        </LinearLayout>
+
+        <ViewAnimator
+            displayChild="@{layout.showState}"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            tools:displayedChild="1">
+
+            <!--初始化闪验的时候背景-->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <!--一键登录布局-->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:id="@+id/iv_logo"
+                    android:layout_width="76dp"
+                    android:layout_height="76dp"
+                    android:importantForAccessibility="no"
+                    android:src="@mipmap/ic_launcher"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.10248447" />
+
+                <ImageView
+                    android:id="@+id/iv_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="24dp"
+                    android:layout_marginTop="16dp"
+                    android:adjustViewBounds="true"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/ic_log_in_title"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/iv_logo" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:text="@{layout.flashTestPreFetchNumber.number}"
+                    android:textColor="?attr/textColor1"
+                    android:textSize="26sp"
+                    app:layout_constraintBottom_toTopOf="@id/tv_service_provider"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    tools:text="185****8891" />
+
+                <TextView
+                    android:id="@+id/tv_service_provider"
+                    style="@style/Text12"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="28dp"
+                    android:text="@{layout.flashTestPreFetchNumber.authenticationService}"
+                    android:textColor="?attr/textColor3"
+                    app:layout_constraintBottom_toTopOf="@id/tv_phone"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    tools:text="电信统一认证服务条款" />
+
+                <TextView
+                    android:id="@+id/tv_phone"
+                    style="@style/Text16"
+                    singleClick="@{layout.clickHandler::onClick}"
+                    android:layout_width="0dp"
+                    android:layout_height="48dp"
+                    android:layout_marginHorizontal="@dimen/spacing_xl"
+                    android:background="@drawable/gradient_button_bg_r50"
+                    android:gravity="center"
+                    android:text="@string/sim_card_quick_login"
+                    android:textColor="?attr/textColor1"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.50744047619" />
+
+
+                <LinearLayout
+                    android:id="@+id/ll_agreement"
+                    singleClick="@{layout.clickHandler::onClick}"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="35dp"
+                    android:layout_marginTop="24dp"
+                    android:gravity="center_horizontal"
+                    android:orientation="horizontal"
+                    app:layout_constraintTop_toBottomOf="@id/tv_phone">
+
+                    <ImageView
+                        android:id="@+id/ivCheck"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:importantForAccessibility="no"
+                        android:scaleType="fitCenter"
+                        android:src="@{layout.checkedPolicy?@drawable/icon_choose_checked:@drawable/icon_choose_normal_dark}"
+                        tools:src="@drawable/icon_choose_checked" />
+
+
+                    <TextView
+                        android:id="@+id/tv_agreement"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:lineSpacingExtra="@dimen/lineSpacingExtra"
+                        android:textColor="?attr/textColor3"
+                        android:textColorHighlight="@android:color/transparent"
+                        android:textSize="12sp"
+                        tools:text="我已阅读并同意《用户协议》、《隐私政策》" />
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/iv_login_wx"
+                    singleClick="@{layout.clickHandler::onClick}"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:layout_marginBottom="66dp"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/ic_login_wx"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/iv_login_mobile_phone_number"
+                    app:layout_constraintHorizontal_chainStyle="packed"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+                <ImageView
+                    android:id="@+id/iv_login_mobile_phone_number"
+                    singleClick="@{layout.clickHandler::onClick}"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:layout_marginStart="44dp"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/ic_login_mobile_phone_number"
+                    app:layout_constraintBottom_toBottomOf="@id/iv_login_wx"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_chainStyle="packed"
+                    app:layout_constraintStart_toEndOf="@id/iv_login_wx"
+                    app:layout_constraintTop_toTopOf="@id/iv_login_wx" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <!--手机号登录-->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/tv_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/spacing_xl"
+                    android:layout_marginTop="40dp"
+                    android:text="@{layout.isBind?@string/bind_phone_number:@string/login_for_more_highlights}"
+                    android:textColor="?attr/textColor1"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="@string/login_for_more_highlights" />
+
+                <TextView
+                    android:id="@+id/tv_binding_prompt"
+                    style="@style/Text14"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_m"
+                    android:text="@{layout.isBind?@string/binding_prompt:@string/login_as_registration}"
+                    android:textColor="?attr/textColor3"
+                    app:layout_constraintStart_toStartOf="@id/tv_title"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_title"
+                    tools:text="@string/login_as_registration"
+                    tools:visibility="visible" />
+
+                <LinearLayout
+                    android:id="@+id/llPhone"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_marginHorizontal="@dimen/spacing_xl"
+                    android:layout_marginTop="44dp"
+                    android:background="@drawable/bg_fill_color_1_r50"
+                    android:gravity="center_vertical"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_binding_prompt">
+
+                    <TextView
+                        style="@style/Text16"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:gravity="center"
+                        android:paddingStart="20dp"
+                        android:paddingEnd="@dimen/spacing_m"
+                        android:text="@string/mobile_phone_prefix"
+                        android:textColor="?attr/textColor2" />
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="20dp"
+                        android:background="?attr/borderColor2" />
+
+                    <EditText
+                        android:id="@+id/et_phone"
+                        style="@style/Text14"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="@null"
+                        android:hint="@string/please_enter_your_phone_number"
+                        android:inputType="phone"
+                        android:maxLength="11"
+                        android:paddingHorizontal="@dimen/spacing_m"
+                        android:text="@={layout.mobile}"
+                        android:textColor="?attr/textColor1"
+                        android:textColorHint="?attr/textColor4"
+                        android:textCursorDrawable="@drawable/edittext_cursor" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/llCode"
+                    android:layout_width="0dp"
+                    android:layout_height="48dp"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/bg_fill_color_1_r50"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    app:layout_constraintEnd_toEndOf="@+id/llPhone"
+                    app:layout_constraintStart_toStartOf="@+id/llPhone"
+                    app:layout_constraintTop_toBottomOf="@+id/llPhone">
+
+                    <EditText
+                        android:id="@+id/et_verify_code"
+                        style="@style/Text14"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="@null"
+                        android:hint="@string/please_enter_the_verification_code"
+                        android:inputType="number"
+                        android:maxLength="4"
+                        android:paddingHorizontal="20dp"
+                        android:text="@={layout.code}"
+                        android:textColor="?attr/textColor1"
+                        android:textColorHint="?attr/textColor4"
+                        android:textCursorDrawable="@drawable/edittext_cursor" />
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="20dp"
+                        android:background="?attr/borderColor2" />
+
+                    <TextView
+                        android:id="@+id/btnSend"
+                        singleClick="@{layout.clickHandler::onClick}"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:enabled="@{layout.sendCodeEnable}"
+                        android:gravity="center"
+                        android:paddingStart="@dimen/spacing_m"
+                        android:paddingEnd="20dp"
+                        android:text="@{layout.sendCodeText}"
+                        android:textColor="@color/enable_theme1_selector"
+                        android:textSize="12sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:text="获取验证码" />
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/bt_verification_code_login"
+                    style="@style/Button.Bold"
+                    singleClick="@{layout.clickHandler::onClick}"
+                    android:layout_width="0dp"
+                    android:layout_height="48dp"
+                    android:layout_marginVertical="40dp"
+                    android:text="@{layout.isBind()?@string/bind_now:@string/log_in_now}"
+                    app:layout_constraintEnd_toEndOf="@+id/llPhone"
+                    app:layout_constraintStart_toStartOf="@+id/llPhone"
+                    app:layout_constraintTop_toBottomOf="@+id/llCode"
+                    tools:text="@string/log_in_now" />
+
+                <LinearLayout
+                    android:id="@+id/ll_agreement_captcha"
+                    singleClick="@{layout.clickHandler::onClick}"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="35dp"
+                    android:layout_marginTop="24dp"
+                    android:gravity="center_horizontal"
+                    android:orientation="horizontal"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/bt_verification_code_login">
+
+                    <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:importantForAccessibility="no"
+                        android:scaleType="fitCenter"
+                        android:src="@{layout.checkedPolicy?@drawable/icon_choose_checked:@drawable/icon_choose_normal_dark}"
+                        tools:src="@drawable/icon_choose_checked" />
+
+
+                    <TextView
+                        android:id="@+id/tv_agreement_captcha"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:lineSpacingExtra="@dimen/lineSpacingExtra"
+                        android:textColor="?attr/textColor3"
+                        android:textColorHighlight="@android:color/transparent"
+                        android:textSize="12sp"
+                        tools:text="我已阅读并同意《用户协议》、《隐私政策》" />
+                </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </ViewAnimator>
+    </LinearLayout>
+</layout>

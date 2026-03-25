@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="layout"
+            type="com.kuaigeglobal.epnova.feature.recharge.PowerConsumeConfirmViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_color2_tr20">
+
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@{layout.title}"
+            android:textAppearance="@style/Text16"
+            android:textColor="?attr/textColor1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="生成资产图片" />
+
+        <TextView
+            android:id="@+id/tvCost"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="40dp"
+            android:layout_marginTop="40dp"
+            android:text="@string/estimated_compute_cost"
+            android:textAppearance="@style/Text14"
+            android:textColor="?attr/textColor2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvTitle" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:text="@{layout.cost+``}"
+            android:textAppearance="@style/Text14"
+            android:textColor="?attr/textColor2"
+            app:layout_constraintBottom_toBottomOf="@+id/ivPower"
+            app:layout_constraintEnd_toStartOf="@+id/ivPower"
+            app:layout_constraintTop_toTopOf="@+id/ivPower"
+            tools:text="800" />
+
+        <ImageView
+            android:id="@+id/ivPower"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginEnd="40dp"
+            android:src="@drawable/icon_power"
+            app:layout_constraintBottom_toBottomOf="@+id/tvCost"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tvCost" />
+
+        <TextView
+            android:id="@+id/btnConfirm"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginHorizontal="15dp"
+            android:layout_marginTop="35dp"
+            android:background="@drawable/selector_common_button"
+            android:gravity="center"
+            android:text="@string/confirm"
+            android:textAppearance="@style/Text16"
+            android:textColor="@color/fixed_white_1"
+            app:layout_constraintDimensionRatio="345:44"
+            app:layout_constraintTop_toBottomOf="@+id/tvCost" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:onClick="@{(v)->layout.checkPolicy()}"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnConfirm">
+
+            <ImageView
+                android:id="@+id/ivCheck"
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                android:importantForAccessibility="no"
+                android:scaleType="fitCenter"
+                android:src="@{layout.checkedPolicy?@drawable/icon_choose_checked:@drawable/icon_choose_normal_dark}"
+                tools:src="@drawable/icon_choose_checked" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_s"
+                android:paddingVertical="@dimen/spacing_m"
+                android:text="@string/dont_remind_me_again"
+                android:textAppearance="@style/Text12"
+                android:textColor="?attr/textColor3" />
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="54dp"
+            android:layout_height="54dp"
+            android:onClick="@{(v)->layout.dismiss()}"
+            android:paddingHorizontal="15dp"
+            android:src="@drawable/icon_close"
+            app:layout_constraintBottom_toBottomOf="@+id/tvTitle"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tvTitle" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingDefaultResource">
+    <dimen name="font_18">18sp</dimen>
+    <dimen name="action_bar_size">44dp</dimen>
+    <dimen name="lineSpacingExtraShort">3dp</dimen>
+    <dimen name="lineSpacingExtra">5dp</dimen>
+    <!--佩戴的勋章最大尺寸-->
+    <!--佩戴的勋章最大尺寸（小号的）-->
+
+    <!--ActionSheet 相关-->
+    <dimen name="common_action_sheet_layout_padding">8dp</dimen>
+    <!--标题文字大小-->
+    <dimen name="actionsheet_title_textSize">16sp</dimen>
+    <!--标题文字高度-->
+    <dimen name="actionsheet_title_height">40dp</dimen>
+
+    <dimen name="actionsheet_msg_textSize">12sp</dimen>
+    <!--消息距离底部间距-->
+    <dimen name="marginBottom_alert_msg">25dp</dimen>
+    <dimen name="actionsheet_msg_bottom_margin">14dp</dimen>
+    <!--窗口模式左右两边到屏幕的间距-->
+    <dimen name="actionsheet_left_right_margin">0dp</dimen>
+    <dimen name="actionsheet_cancel_top_margin">8dp</dimen>
+    <dimen name="actionsheet_cancel_bottom_padding">12dp</dimen>
+    <dimen name="actionsheet_bottom_margin">0dp</dimen>
+
+    <!--线条粗细-->
+    <dimen name="actionsheet_divier_height">1px</dimen>
+    <!--按钮的高度-->
+    <dimen name="actionsheet_button_height">56dp</dimen>
+    <!--按钮文字大小-->
+    <dimen name="actionsheet_button_textSize">16sp</dimen>
+    <!--圆角-->
+    <dimen name="actionsheet_radius">12dp</dimen>
+    <dimen name="actionsheet_cancel_radius">0dp</dimen>
+    <dimen name="actionsheet_cancel_divider_height">4dp</dimen>
+
+    <!--ActionSheet 相关结束-->
+
+
+    <dimen name="main_bottom_nav_height">62dp</dimen>
+    <dimen name="dp1">1dp</dimen>
+    <dimen name="dp20">20dp</dimen>
+    <dimen name="music_hub_divider_height">19dp</dimen>
+    <integer name="blur_dialog_animation_duration">300</integer>
+    <bool name="blur_dialog_has_bottom_navigation_bar">true</bool>
+
+    <dimen name="sp_16">16sp</dimen>
+    <dimen name="sp_20">20sp</dimen>
+
+    <!--16px 大圆角 应用在主按钮、图层模块-->
+    <dimen name="radius_xl">16dp</dimen>
+    <!--12px 中大圆角 应用在大组件模块、弹窗-->
+    <dimen name="radius_l">12dp</dimen>
+    <!--8px 中圆角 应用在卡片/模态框/小组件-->
+    <dimen name="radius_m">8dp</dimen>
+    <!--4px 小圆角 应用在输入框/按钮/小标签-->
+    <dimen name="radius_s">4dp</dimen>
+
+    <!--24px  超大间距 主要用在页面与模块之间的大间距，页面中信息较丰富需要组件严格分割、页边距-->
+    <dimen name="spacing_xl">24dp</dimen>
+    <!--16px  大间距 主要用在不同模块之间需要严格划分的大间距、卡片间距-->
+    <dimen name="spacing_l">16dp</dimen>
+    <!--12px  中间距 主要用在输入框中文字与边框的距离、按钮文字与边缘-->
+    <dimen name="spacing_m">12dp</dimen>
+    <!--8px  小间距 主要用在列表之间的垂直间距、图标与文字间隔、行内元素-->
+    <dimen name="spacing_s">8dp</dimen>
+    <!--4px  最小间距 主要用在小组件中的内间距-->
+    <dimen name="spacing_xs">4dp</dimen>
+</resources>

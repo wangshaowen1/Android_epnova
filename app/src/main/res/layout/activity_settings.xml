@@ -1,0 +1,424 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="layout"
+            type="com.kuaigeglobal.epnova.feature.settings.SettingsViewModel" />
+
+        <import type="com.kuaigeglobal.epnova.common.utils.DebugUtils" />
+
+        <import type="android.view.View" />
+
+        <import type="android.text.TextUtils" />
+
+        <import type="com.kuaigeglobal.epnova.common.ext.FormatUtils" />
+    </data>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="?android:windowBackground"
+        android:orientation="vertical">
+
+        <include
+            android:id="@+id/toolbar"
+            layout="@layout/view_model_toolbar"
+            app:toolbar="@{layout.mToolbarVM}" />
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="@dimen/spacing_m"
+            android:layout_weight="1">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/spacing_l"
+                    android:background="@drawable/bg_06_ffffff_r8"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:id="@+id/sll_personal_information"
+                        singleClick="@{layout.clickHandler::onClick}"
+                        android:layout_width="match_parent"
+                        android:layout_height="52dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingHorizontal="@dimen/spacing_l"
+                        android:visibility="gone">
+
+                        <TextView
+                            style="@style/Text14"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/app_personal_information"
+                            android:textColor="?attr/textColor3" />
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:importantForAccessibility="no"
+                            android:src="@drawable/arrow_right_gray36" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/sll_phone"
+                        singleClick="@{layout.clickHandler::onClick}"
+                        android:layout_width="match_parent"
+                        android:layout_height="52dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingHorizontal="@dimen/spacing_l"
+                        android:visibility="gone">
+
+                        <TextView
+                            style="@style/Text14"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/phone_number"
+                            android:textColor="?attr/textColor3" />
+
+                        <TextView
+                            style="@style/Text14"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="8dp"
+                            android:hint="@string/unbound"
+                            android:text="@{TextUtils.isEmpty(layout.phone)?``:FormatUtils.encryptPhoneNum(layout.phone)}"
+                            android:textColor="?attr/textColor3"
+                            android:textColorHint="?attr/textColor4" />
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:importantForAccessibility="no"
+                            android:src="@drawable/arrow_right_gray36" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/sll_about_us"
+                        singleClick="@{layout.clickHandler::onClick}"
+                        android:layout_width="match_parent"
+                        android:layout_height="52dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingHorizontal="@dimen/spacing_l"
+                        android:visibility="gone">
+
+                        <TextView
+                            style="@style/Text14"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/app_about_us"
+                            android:textColor="?attr/textColor3" />
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:importantForAccessibility="no"
+                            android:src="@drawable/arrow_right_gray36" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/sll_contact_customer_service"
+                        singleClick="@{layout.clickHandler::onClick}"
+                        android:layout_width="match_parent"
+                        android:layout_height="52dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingHorizontal="@dimen/spacing_l"
+                        android:visibility="gone">
+
+                        <TextView
+                            style="@style/Text14"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/app_contact_customer_service"
+                            android:textColor="?attr/textColor3" />
+
+                        <TextView
+                            style="@style/Text14"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="8dp"
+                            android:text="@string/app_customer_service_hours"
+                            android:textColor="?attr/textColor3" />
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:importantForAccessibility="no"
+                            android:src="@drawable/arrow_right_gray36" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/sll_suggestion_and_feedback"
+                        singleClick="@{layout.clickHandler::onClick}"
+                        android:layout_width="match_parent"
+                        android:layout_height="52dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingHorizontal="@dimen/spacing_l"
+                        android:visibility="gone">
+
+                        <TextView
+                            style="@style/Text14"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/app_suggestion_and_feedback"
+                            android:textColor="?attr/textColor3" />
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:importantForAccessibility="no"
+                            android:src="@drawable/arrow_right_gray36" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/ll_privacy_policy"
+                        singleClick="@{layout.clickHandler::onClick}"
+                        android:layout_width="match_parent"
+                        android:layout_height="52dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingHorizontal="@dimen/spacing_l">
+
+                        <TextView
+                            style="@style/Text14"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/app_privacy_policy"
+                            android:textColor="?attr/textColor3" />
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:importantForAccessibility="no"
+                            android:src="@drawable/arrow_right_gray36" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/ll_user_agreement"
+                        singleClick="@{layout.clickHandler::onClick}"
+                        android:layout_width="match_parent"
+                        android:layout_height="52dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingHorizontal="@dimen/spacing_l">
+
+                        <TextView
+                            style="@style/Text14"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/app_user_agreement"
+                            android:textColor="?attr/textColor3" />
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:importantForAccessibility="no"
+                            android:src="@drawable/arrow_right_gray36" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/ll_information_collection"
+                        singleClick="@{layout.clickHandler::onClick}"
+                        android:layout_width="match_parent"
+                        android:layout_height="52dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingHorizontal="@dimen/spacing_l">
+
+                        <TextView
+                            style="@style/Text14"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/app_information_collection"
+                            android:textColor="?attr/textColor3" />
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:importantForAccessibility="no"
+                            android:src="@drawable/arrow_right_gray36" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/ll_shared_list"
+                        singleClick="@{layout.clickHandler::onClick}"
+                        android:layout_width="match_parent"
+                        android:layout_height="52dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingHorizontal="@dimen/spacing_l">
+
+                        <TextView
+                            style="@style/Text14"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/app_shared_list"
+                            android:textColor="?attr/textColor3" />
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:importantForAccessibility="no"
+                            android:src="@drawable/arrow_right_gray36" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/ll_algorithm_formula"
+                        singleClick="@{layout.clickHandler::onClick}"
+                        android:layout_width="match_parent"
+                        android:layout_height="52dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingHorizontal="@dimen/spacing_l">
+
+                        <TextView
+                            style="@style/Text14"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/app_algorithm_formula"
+                            android:textColor="?attr/textColor3" />
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:importantForAccessibility="no"
+                            android:src="@drawable/arrow_right_gray36" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/sll_filing_number"
+                        singleClick="@{layout.clickHandler::onClick}"
+                        android:layout_width="match_parent"
+                        android:layout_height="52dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingHorizontal="@dimen/spacing_l">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/app_filing_number"
+                            android:textColor="?attr/textColor3"
+                            style="@style/Text14" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@{layout.beiAn}"
+                            android:textColor="?attr/textColor4"
+                            style="@style/Text14"
+                            tools:text="粤ICP备2020100243号-19A" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/sll_cancel_the_account"
+                        singleClick="@{layout.clickHandler::onClick}"
+                        android:layout_width="match_parent"
+                        android:layout_height="52dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingHorizontal="@dimen/spacing_l">
+
+                        <TextView
+                            style="@style/Text14"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/app_cancel_the_account"
+                            android:textColor="?attr/textColor3" />
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:importantForAccessibility="no"
+                            android:src="@drawable/arrow_right_gray36" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:layout_marginHorizontal="@dimen/spacing_l"
+                    android:layout_marginTop="@dimen/spacing_l"
+                    android:background="@drawable/bg_06_ffffff_r8"
+                    android:gravity="center_vertical"
+                    android:paddingHorizontal="@dimen/spacing_l"
+                    android:visibility="@{DebugUtils.INSTANCE.isDebug()?View.VISIBLE:View.GONE}">
+
+                    <TextView
+                        style="@style/Text14"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="测试IP="
+                        android:textColor="?attr/textColor3" />
+
+                    <EditText
+                        android:id="@+id/etIp"
+                        style="@style/Text14"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="@null"
+                        android:text="@={layout.debugIp}"
+                        android:textColor="?attr/textColor3" />
+
+                    <TextView
+                        android:id="@+id/btnIPConfirm"
+                        style="@style/Text14"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="确定 "
+                        android:textColor="?attr/textColor3" />
+
+                    <TextView
+                        android:id="@+id/btnIPSelect"
+                        style="@style/Text14"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=" 选择"
+                        android:textColor="?attr/textColor3" />
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/stv_log_out"
+                    style="@style/Text14"
+                    singleClick="@{layout.clickHandler::onClick}"
+                    android:layout_width="match_parent"
+                    android:layout_height="44dp"
+                    android:layout_marginHorizontal="@dimen/spacing_l"
+                    android:layout_marginTop="32dp"
+                    android:background="@drawable/bg_06_ffffff_r100"
+                    android:gravity="center"
+                    android:text="@string/app_log_out"
+                    android:textColor="?attr/funcColorFailure" />
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+    </LinearLayout>
+</layout>

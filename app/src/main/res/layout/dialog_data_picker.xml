@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/bg_121212_tr16">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/cancel"
+            style="@style/Text.Common"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingHorizontal="18dp"
+            android:paddingVertical="20dp"
+            android:text="@string/cancel"
+            android:textColor="@color/color_30_ffffff"
+            android:textSize="14sp" />
+
+        <TextView
+            android:visibility="invisible"
+            android:id="@+id/titleView"
+            style="@style/Text.Common"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="标题"
+            android:textSize="16sp"
+            android:textColor="@color/textColorPrimary" />
+
+        <TextView
+            android:id="@+id/confirm"
+            android:textSize="14sp"
+            style="@style/Text.Common"
+            android:paddingHorizontal="18dp"
+            android:paddingVertical="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textColor="@color/textColorPrimary"
+            android:text="@string/confirm_ok" />
+    </LinearLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center">
+        <View android:layout_width="0dp"
+            android:layout_height="40dp"
+            app:layout_constraintTop_toTopOf="@id/dataPicker"
+            app:layout_constraintBottom_toBottomOf="@id/dataPicker"
+            app:layout_constraintStart_toStartOf="@id/dataPicker"
+            app:layout_constraintEnd_toEndOf="@id/dataPicker"
+            android:background="@drawable/bg_wheel"
+            />
+        <com.flqy.datepicker.NumberPicker
+            android:id="@+id/dataPicker"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:internalLayout="@layout/data_picker_with_selector_wheel"
+            app:internalMinWidth="290dp"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</LinearLayout>

@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="layout"
+            type="com.kuaigeglobal.epnova.feature.main.MainViewModel" />
+
+        <import type="android.view.View" />
+
+        <import type="com.kuaigeglobal.epnova.common.ext.FormatUtils" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <FrameLayout
+            android:id="@+id/fragment"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toTopOf="@id/mrg"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.kuaigeglobal.epnova.widget.MultRadioGroup
+            android:id="@+id/mrg"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/main_bottom_nav_height"
+            android:background="@drawable/bg_color2_tr20"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:visibility="@{layout.showBottomBar?View.VISIBLE:View.GONE}"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <FrameLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <com.kuaigeglobal.epnova.widget.FixedAnimatedRadioButton
+                    android:id="@+id/rbHome"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:button="@null"
+                    android:drawableTop="@drawable/cb_main_tab_home"
+                    android:drawablePadding="4dp"
+                    android:gravity="center"
+                    android:text="@string/creation"
+                    android:textColor="@color/cb_main_tab_txt"
+                    android:textSize="10sp"
+                    tools:checked="true" />
+
+                <View
+                    android:id="@+id/tabHome"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:onClick="@{layout.clickHandler::onClick}" />
+
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <com.kuaigeglobal.epnova.widget.FixedAnimatedRadioButton
+                    android:id="@+id/rbWorks"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:button="@null"
+                    android:drawableTop="@drawable/cb_main_tab_folder"
+                    android:drawablePadding="4dp"
+                    android:gravity="center"
+                    android:text="@string/works"
+                    android:textColor="@color/cb_main_tab_txt"
+                    android:textSize="10sp"
+                    tools:checked="false" />
+
+                <View
+                    android:id="@+id/tabWorks"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:onClick="@{layout.clickHandler::onClick}" />
+
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <com.kuaigeglobal.epnova.widget.FixedAnimatedRadioButton
+                    android:id="@+id/rbMine"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:button="@null"
+                    android:drawableTop="@drawable/cb_main_tab_mine"
+                    android:drawablePadding="4dp"
+                    android:gravity="center"
+                    android:text="@string/tab_mine"
+                    android:textColor="@color/cb_main_tab_txt"
+                    android:textSize="10sp"
+                    tools:checked="false" />
+
+                <View
+                    android:id="@+id/tabMine"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:onClick="@{layout.clickHandler::onClick}" />
+
+            </FrameLayout>
+
+        </com.kuaigeglobal.epnova.widget.MultRadioGroup>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

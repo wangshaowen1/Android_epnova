@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="layout"
+            type="com.kuaigeglobal.epnova.feature.mine.MineViewModel" />
+
+        <import type="android.view.View" />
+
+        <import type="android.text.TextUtils" />
+    </data>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="?android:windowBackground"
+            android:orientation="vertical">
+
+            <com.kuaigeglobal.epnova.widget.StatusBarView
+                android:id="@+id/sbv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <LinearLayout
+                android:id="@+id/btnMyBalance"
+                singleClick="@{layout.clickHandler::onClick}"
+                android:layout_width="wrap_content"
+                android:layout_height="28dp"
+                android:layout_gravity="end"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="15dp"
+                android:background="@drawable/bg_fill_color_2_r50"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingHorizontal="10dp">
+
+                <ImageView
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:src="@drawable/icon_power" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:fontFamily="@font/d_din_pro_600_semibold"
+                    android:text="@{layout.balance}"
+                    android:textAppearance="@style/Text16"
+                    android:textColor="?attr/textColor1"
+                    tools:text="8392" />
+
+            </LinearLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_l">
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/siv_avatar"
+                    loadUri="@{layout.userInfo[`avatar`]}"
+                    placeHolder="@{@drawable/ic_default_avatar}"
+                    singleClick="@{layout.clickHandler::onClick}"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:layout_marginStart="@dimen/spacing_l"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_default_avatar"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:shapeAppearanceOverlay="@style/roundStyle_circle" />
+
+                <TextView
+                    android:id="@+id/tv_login"
+                    style="@style/Text18"
+                    singleClick="@{layout.clickHandler::onClick}"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/spacing_m"
+                    android:text="@string/login_or_register"
+                    android:textColor="?attr/textColor1"
+                    android:visibility="@{layout.isLogin()?View.GONE:View.VISIBLE}"
+                    app:layout_constraintBottom_toBottomOf="@id/siv_avatar"
+                    app:layout_constraintStart_toEndOf="@id/siv_avatar"
+                    app:layout_constraintTop_toTopOf="@id/siv_avatar"
+                    tools:visibility="gone" />
+
+                <androidx.constraintlayout.widget.Group
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="@{layout.isLogin()?View.VISIBLE:View.GONE}"
+                    app:constraint_referenced_ids="tv_name,tv_id,iv_copy" />
+
+                <TextView
+                    android:id="@+id/tv_name"
+                    style="@style/Text18"
+                    singleClick="@{layout.clickHandler::onClick}"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/spacing_m"
+                    android:layout_marginTop="@dimen/spacing_s"
+                    android:text="@{layout.userInfo[`nickname`]}"
+                    android:textColor="?attr/textColor1"
+                    app:layout_constraintBottom_toTopOf="@id/tv_id"
+                    app:layout_constraintStart_toEndOf="@id/siv_avatar"
+                    app:layout_constraintTop_toTopOf="@id/siv_avatar"
+                    tools:text="Duebass" />
+
+                <TextView
+                    android:id="@+id/tv_id"
+                    style="@style/Text14"
+                    singleClick="@{layout.clickHandler::onClick}"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/spacing_s"
+                    android:text="@{`ID:`+layout.userInfo[`id`]}"
+                    android:textColor="?attr/textColor3"
+                    app:layout_constraintBottom_toBottomOf="@id/siv_avatar"
+                    app:layout_constraintStart_toStartOf="@id/tv_name"
+                    app:layout_constraintTop_toBottomOf="@id/tv_name"
+                    tools:text="ID:10000" />
+
+                <ImageView
+                    android:id="@+id/iv_copy"
+                    singleClick="@{layout.clickHandler::onClick}"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_marginStart="6dp"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/ic_copy"
+                    app:layout_constraintBottom_toBottomOf="@id/tv_id"
+                    app:layout_constraintStart_toEndOf="@id/tv_id"
+                    app:layout_constraintTop_toTopOf="@id/tv_id" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <include
+                android:id="@+id/banner"
+                banner="@{layout.workCourseBanner}"
+                layout="@layout/layout_common_banner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/spacing_l"
+                android:layout_marginTop="24dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/spacing_l"
+                android:layout_marginTop="24dp"
+                android:background="@drawable/bg_06_ffffff_r12"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/ll_qa"
+                    singleClick="@{layout.clickHandler::onClick}"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="@dimen/spacing_l">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:importantForAccessibility="no"
+                        android:src="@drawable/icon_doubt" />
+
+                    <TextView
+                        style="@style/Text14"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/spacing_m"
+                        android:layout_weight="1"
+                        android:text="@string/help_center"
+                        android:textColor="?attr/textColor3" />
+
+                    <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:importantForAccessibility="no"
+                        android:src="@drawable/arrow_right_gray36" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/suggestions_feedback"
+                    singleClick="@{layout.clickHandler::onClick}"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="@dimen/spacing_l">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:importantForAccessibility="no"
+                        android:src="@drawable/ic_mine_feedback_suggestions" />
+
+                    <TextView
+                        style="@style/Text14"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/spacing_m"
+                        android:layout_weight="1"
+                        android:text="@string/suggest_and_feedback"
+                        android:textColor="?attr/textColor3" />
+
+                    <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:importantForAccessibility="no"
+                        android:src="@drawable/arrow_right_gray36" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_settings"
+                    singleClick="@{layout.clickHandler::onClick}"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="@dimen/spacing_l">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:importantForAccessibility="no"
+                        android:src="@drawable/ic_mine_settings" />
+
+                    <TextView
+                        style="@style/Text14"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/spacing_m"
+                        android:layout_weight="1"
+                        android:text="@string/title_settings"
+                        android:textColor="?attr/textColor3" />
+
+                    <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:importantForAccessibility="no"
+                        android:src="@drawable/arrow_right_gray36" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <com.kuaigeglobal.epnova.widget.MoveFrameLayout
+            android:id="@+id/floating_ball"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|bottom"
+            android:layout_marginBottom="14dp"
+            android:padding="@dimen/spacing_m"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/ivFloating"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:importantForAccessibility="no"
+                android:src="@drawable/img_floating" />
+        </com.kuaigeglobal.epnova.widget.MoveFrameLayout>
+    </FrameLayout>
+</layout>

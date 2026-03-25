@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="layout"
+            type="com.kuaigeglobal.epnova.feature.download.DownloadingViewModel" />
+
+        <import type="android.view.View" />
+    </data>
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:background="@drawable/bg_color3_r20"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <com.dinuscxj.progressbar.CircleProgressBar
+                max="@{100}"
+                progress="@{layout.statusHolder.downloadProgress}"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:layout_gravity="center"
+                app:progress_background_color="?attr/textColor5"
+                app:progress_end_color="?attr/textColor1"
+                app:progress_start_color="?attr/textColor1"
+                app:progress_start_degree="-90"
+                app:progress_stroke_cap="round"
+                app:progress_stroke_width="3dp"
+                app:progress_style="solid_line"
+                app:progress_text_color="@android:color/white"
+                app:progress_text_size="12dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="@string/saving_to_local"
+                android:textColor="?attr/textColor2"
+                android:textSize="14dp" />
+
+        </LinearLayout>
+
+    </FrameLayout>
+
+</layout>

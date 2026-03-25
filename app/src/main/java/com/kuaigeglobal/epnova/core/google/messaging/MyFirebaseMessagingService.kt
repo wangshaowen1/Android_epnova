@@ -1,0 +1,178 @@
+package com.kuaigeglobal.epnova.core.google.messaging
+
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.content.Intent
+import android.os.Build
+import android.text.TextUtils
+import androidx.core.app.NotificationCompat
+import androidx.core.net.toUri
+import com.google.firebase.messaging.FirebaseMessagingService
+import com.google.firebase.messaging.RemoteMessage
+import com.kuaigeglobal.epnova.R
+import com.kuaigeglobal.epnova.common.Constants
+import com.kuaigeglobal.epnova.common.ext.ioScope
+import com.kuaigeglobal.epnova.common.jsbridge.BridgeDataUtils
+import com.kuaigeglobal.epnova.core.User
+import com.kuaigeglobal.epnova.core.model.PushMessageInfo
+import com.kuaigeglobal.epnova.core.network.apis.ApiFactory
+import com.kuaigeglobal.epnova.core.network.apis.request.FcmTokenBody
+import com.kuaigeglobal.epnova.feature.splash.SplashActivity
+import com.nhsd.basic.ext.launchNoCrash
+import com.nhsd.basic.utils.Logger
+import kotlinx.coroutines.delay
+import java.io.IOException
+
+
+class MyFirebaseMessagingService : FirebaseMessagingService() {
+
+    override fun onMessageReceived(message: RemoteMessage) {
+        super.onMessageReceived(message)
+        Logger.d("MyFirebaseMessagingService", "onMessageReceived: ${message.data}")
+        val notification: RemoteMessage.Notification? = message.getNotification()
+        val title = notification?.title ?: ""
+        val body = notification?.body ?: ""
+        val data: MutableMap<String?, String?>? = message.getData()
+        val custom = data?.get("custom")
+        Logger.d("MyFirebaseMessagingService", "onMessageReceived custom: $custom")
+        val messageInfo = BridgeDataUtils.parseJson(custom, PushMessageInfo::class.java)
+        Logger.d("MyFirebaseMessagingService", "onMessageReceived messageInfo: $messageInfo")
+        messageInfo?.let {
+            getNotification(it)
+        }
+        showNotification(title, body, messageInfo?.pushMsgJumpUri)
+    }
+
+    fun getNotification(messageInfo: PushMessageInfo?) {
+        if (messageInfo != null) {
+            if (messageInfo.pushMsgType == PushMessageInfo.WARNING) {
+//                EventBus.getDefault().post(PushEvent(PushEvent.MSG_WARNING, messageInfo.pushMsgContent, messageInfo.msgId))
+            }
+            try {
+                val uri = messageInfo.pushMsgJumpUri.toUri()
+                val host = uri.host
+                if (Constants.APP_SCHEME == uri.scheme && !TextUtils.isEmpty(host)) {
+                    when (host) {
+//                        "musicGenerated" -> {
+//                            launchJump(uri)
+//                            EventBus.getDefault().post(TrackCreatedEvent(uri.getQueryParameter("musicId")))
+//                        }
+//
+//                        "musicGenerationFailed" -> EventBus.getDefault().post(TrackCreatedEvent())
+//                        "publishMusic" ->                             //发布动态失败，刷新歌曲列表
+//                            EventBus.getDefault().post(TrackPublishEvent())
+//
+//                        "unlockMusician" -> {
+//                            launchJump(uri)
+//                            EventBus.getDefault().post(UnlockArtistEvent())
+//                        }
+//
+//                        "timbreCloneSuccess" -> {
+//                            //kuaige://timbreCloneSuccess?name=音色名&avatar=音色头像   //AI音色克隆成功弹窗
+//                            launchJump(uri)
+//                            EventBus.getDefault().post(TimbreCloneSuccessEvent())
+//                        }
+//
+//                        "timbreSwapSuccess" -> {
+//                            //kuaige://timbreSwapSuccess?title=歌曲名&cover=歌曲封面&id=歌曲id&name=音色名     //换声成功弹窗
+//                            launchJump(uri)
+//                            EventBus.getDefault().post(CloneMusicSuccessEvent(uri.getQueryParameter("id")))
+//                        }
+
+                        else -> {}
+                    }
+                }
+            } catch (e: Throwable) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+    private fun showNotification(title: String, body: String, scheme: String?) {
+        val channelId = "default_notification_channel_id"
+        val channelName = "Push Notifications"
+        val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        // Android 8.0+ 必须先创建通知渠道
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(
+                channelId,
+                channelName,
+                NotificationManager.IMPORTANCE_HIGH
+            )
+            channel.description = "App Push Notifications"
+            notificationManager.createNotificationChannel(channel)
+        }
+
+        val intent = Intent(this, SplashActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            putExtra("scheme", scheme)
+        }
+        val pendingIntent = PendingIntent.getActivity(
+            this,
+            0,
+            intent,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        )
+
+        // 构建通知
+        val notification = NotificationCompat.Builder(this, channelId)
+            .setSmallIcon(R.mipmap.ic_launcher)
+            .setContentTitle(title)
+            .setContentText(body)
+            .setAutoCancel(true)
+            .setContentIntent(pendingIntent)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .build()
+
+        notificationManager.notify(System.currentTimeMillis().toInt(), notification)
+    }
+
+    override fun onNewToken(token: String) {
+        //1. 不是每次启动都会回调
+        //onNewToken() 只会在以下情况下触发：
+        //应用第一次在设备上安装并向 FCM 注册；
+        //用户清除应用数据（或删除并重装应用）；
+        //令牌被 Google 判定需要刷新（可能几天到几周一次）；
+        //你手动调用了 FirebaseMessaging.getInstance().deleteToken() 或 FirebaseMessaging.getInstance().token。
+        //如果设备上已经有有效 token，启动时不会重复回调。
+
+        Logger.d("MyFirebaseMessagingService", "onNewToken: $token")
+        super.onNewToken(token)
+        User.get().storeFcmToken(token)
+        if (User.get().isVisitor) return
+        ioScope.launchNoCrash {
+            val maxRetries = 3
+            var currentRetry = 0
+            var delayMillis = 1000L // 初始延迟1秒
+
+            while (currentRetry < maxRetries) {
+                try {
+                    Logger.d("MyFirebaseMessagingService", "Attempt ${currentRetry + 1}/$maxRetries to refresh FCM token")
+//                    val response = ApiFactory.apiService.fcmTokenRefresh(FcmTokenBody(token))
+//                    if (response.isSuccess) {
+//                        Logger.d("MyFirebaseMessagingService", "FCM token refresh succeeded")
+//                        return@launchNoCrash
+//                    } else {
+//                        Logger.w("MyFirebaseMessagingService", "FCM token refresh failed: ${response.errorMsg}")
+//                    }
+                } catch (e: Exception) {
+                    when (e) {
+                        is IOException -> Logger.w("MyFirebaseMessagingService", "Network error: ${e.message}")
+                        else -> Logger.e("MyFirebaseMessagingService", "Unexpected error: ${e.message}")
+                    }
+                }
+                // 准备下一次重试
+                currentRetry++
+                if (currentRetry < maxRetries) {
+                    // 指数退避：每次延迟时间翻倍
+                    Logger.d("MyFirebaseMessagingService", "Retrying in ${delayMillis}ms...")
+                    delay(delayMillis)
+                    delayMillis *= 2
+                }
+            }
+
+            Logger.e("MyFirebaseMessagingService", "Failed to refresh FCM token after $maxRetries attempts")
+        }
+    }
+}

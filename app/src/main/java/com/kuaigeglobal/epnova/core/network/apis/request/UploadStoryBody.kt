@@ -1,0 +1,120 @@
+package com.kuaigeglobal.epnova.core.network.apis.request
+
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+/**
+ * {
+ *     "workNovelUrl": "小说地址",
+ *     "novelCharCount": "小说字符数"
+ * }
+ */
+@Parcelize
+data class UploadStoryBody(
+    val novelCharCount: Int? = null,
+    val novelFileUrl: String? = null,
+    val novelFileName: String? = null,//小说文件名
+    val novelFileType: String? = null,//小说文件类型
+    val workTitle: String? = null,
+    val totalEpisodeCntCode: String? = null,
+    val totalEpisodeCnt: String? = null,
+    val workRatio: String? = null,
+    val workStyleCode: String? = null,
+) : Parcelable
+
+/**
+ *  {
+ *         "workId": "作品ID",
+ *         "genStatus": "[枚举]生成状态 [0=待生成 1=生成中 2=成功 3=失败]"
+ *     }
+ */
+data class WorkTaskData(
+    val genStatus: Int? = null,
+    val workId: String? = null
+)
+
+/**
+ * {
+ *         "workId": "作品ID",
+ *         "genStatus": "[枚举]生成状态 [0=待生成 1=生成中 2=成功 3=失败 4=算力不足，请充值 5=审核失败]
+ *         "result": "生成结果（作品梗概内容）"
+ *     }
+ */
+@Parcelize
+data class PollSummaryData(
+    val genStatus: Int? = null,
+    val toastTextProgress: String? = null,//用户提示-进度文本;例如正在读取小说内容
+    val toastTextTime: String? = null,//用户提示-剩余时间文本;例如12-15分钟
+    val novelCharCount: Int? = null,//小说字符数
+    val novelFileName: String? = null,//小说文件名
+    val toastTextAuditFailed: String? = null,//用户提示-审核失败;发现23处敏感词
+    val result: RollNovelSummaryResult? = null,
+    val workId: String? = null
+) : Parcelable {
+    fun isSuccess(): Boolean {
+        return genStatus == 2
+    }
+
+    fun isFail(): Boolean {
+        return genStatus == 3
+    }
+
+    fun isSensitive(): Boolean {
+        return genStatus == 5
+    }
+}
+
+@Parcelize
+data class RollNovelSummaryResult(
+    val workDesc: String? = null,
+    val workTitle: String? = null,
+    val structureList: List<RollNovelStructure>? = null,
+) : Parcelable{
+    fun getFirstStoryId(): String? {
+        return structureList?.get(0)?.storyId
+    }
+}
+
+/**
+ * {
+ *             "workTitle": "作品名称",
+ *             "workDesc": "作品简介",
+ *             "structureList": [
+ *                 {
+ *                     "id": "主键ID",
+ *                     "storyId": "剧集ID",
+ *                     "storyTitle": "剧集标题",
+ *                     "storySummary": "剧集梗概"
+ *                 }
+ *             ]
+ *         }
+ */
+@Parcelize
+data class RollNovelStructure(
+    val id: String? = null,
+    val storyId: String? = null,
+    val storySummary: String? = null,
+    val storyTitle: String? = null
+) : Parcelable
+
+data class PollScriptBody(
+    val workId: String? = null,
+    val storyId: String? = null,
+    val workType: Int? = null//作品类型：1-灵感创作;2-小说改编;
+)
+
+data class PollScriptData(
+    val workId: String? = null,
+    val storyId: String? = null,
+    val sortNo: Int? = null,//集数序号
+    val genStatus: Int? = null,//[枚举]生成状态 [0=待生成 1=生成中 2=成功 3=失败 4=算力不足，请充值]
+    val storyContent: String? = null,
+){
+    fun isSuccess(): Boolean {
+        return genStatus == 2
+    }
+
+    fun isFail(): Boolean {
+        return genStatus == 3
+    }
+}

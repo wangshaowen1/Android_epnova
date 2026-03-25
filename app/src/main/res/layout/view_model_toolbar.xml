@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <import type="android.text.TextUtils" />
+
+        <variable
+            name="toolbar"
+            type="com.kuaigeglobal.epnova.base.viewmodel.ToolbarViewModel" />
+
+    </data>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@{toolbar.mBackground}"
+        android:paddingTop="@{toolbar.paddingTop}">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/tool_bar"
+            navigationClick="@{()->toolbar.navigationAction.invoke()}"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/action_bar_size"
+            android:background="@null"
+            android:minHeight="0dp"
+            app:contentInsetEnd="0dp"
+            app:contentInsetLeft="0dp"
+            app:contentInsetStart="0dp"
+            app:navigationIcon="@{toolbar.navigationDrawable}"
+            app:popupTheme="@style/ToolbarPopupTheme"
+            app:theme="@style/ToolbarTheme"
+            app:title=""
+            tools:navigationIcon="@drawable/icon_back_left">
+
+            <TextView
+                android:id="@+id/navigationText"
+                style="@style/Text16"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|left"
+                android:fontFamily="sans-serif"
+                android:minWidth="0dp"
+                android:minHeight="0dp"
+                android:text="@{toolbar.MNavigationText}"
+                android:textColor="@{toolbar.navigationColor}"
+                android:visibility="@{toolbar.MNavigationText==null?View.GONE:View.VISIBLE}" />
+
+            <TextView
+                android:id="@+id/toolbarTitle"
+                style="@style/Text16"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/action_bar_size"
+                android:layout_gravity="center"
+                android:alpha="@{toolbar.mTitleAlpha}"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:maxWidth="180dp"
+                android:maxLines="1"
+                android:text="@{toolbar.mTitle}"
+                android:textColor="@{toolbar.titleColor}"
+                tools:text="Title"
+                tools:textColor="?attr/textColor1" />
+
+            <TextView
+                android:id="@+id/menuText"
+                style="@style/Text.Medium"
+                textColorRes="@{toolbar.MMenuTextColor}"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|end"
+                android:drawableStart="@{toolbar.MMenuDrawableStart}"
+                android:drawableEnd="@{toolbar.MMenuDrawableEnd}"
+                android:drawablePadding="@{toolbar.menuTextDrawablePadding}"
+                android:enabled="@{toolbar.MMenuEnable}"
+                android:minWidth="0dp"
+                android:minHeight="0dp"
+                android:onClick="@{(v)->toolbar.menuAction.invoke(v)}"
+                android:text="@{toolbar.MMenuText}"
+                android:textSize="@{toolbar.mMenuTextSize}"
+                android:visibility="@{TextUtils.isEmpty(toolbar.MMenuText)?View.GONE:View.VISIBLE}"
+                app:marginEnd="@{toolbar.menuTextMarginEnd}"
+                app:paddingHorizontal="@{toolbar.menuTextHorPadding}"
+                app:paddingVertical="@{toolbar.menuTextVerPadding}"
+                tools:text="submit"
+                tools:visibility="gone" />
+
+            <ImageView
+                android:id="@+id/menuIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|center_vertical"
+                android:enabled="@{toolbar.MMenuEnable}"
+                android:onClick="@{(v)->toolbar.menuAction.invoke(v)}"
+                android:src="@{toolbar.MMenuIconRes}"
+                android:visibility="@{(toolbar.MMenuIconRes==null||toolbar.MMenuIconRes==0)?View.GONE:View.VISIBLE}"
+                app:marginEnd="@{toolbar.menuIconMarginEnd}" />
+
+            <Button
+                android:id="@+id/menuButton"
+                style="@style/Button.Menu"
+                android:layout_gravity="end|center_vertical"
+                android:background="@{toolbar.mMenuButtonBackground}"
+                android:drawableStart="@{toolbar.MMenuButtonDrawableStart}"
+                android:drawableEnd="@{toolbar.MMenuButtonDrawableEnd}"
+                android:drawablePadding="@{toolbar.menuButtonDrawablePadding}"
+                android:enabled="@{toolbar.MMenuEnable}"
+                android:onClick="@{(v)->toolbar.menuAction.invoke(v)}"
+                android:text="@{toolbar.MMenuButtonText}"
+                android:textAllCaps="@{toolbar.mMenuButtonTextAllCaps}"
+                android:textColor="@{toolbar.menuButtonTextColor}"
+                android:visibility="@{TextUtils.isEmpty(toolbar.MMenuButtonText)?View.GONE:View.VISIBLE}"
+                app:marginEnd="@{toolbar.menuButtonMarginEnd}"
+                app:paddingHorizontal="@{toolbar.menuButtonHorPadding}"
+                app:paddingVertical="@{toolbar.menuButtonVerPadding}"
+                tools:text="submit" />
+        </androidx.appcompat.widget.Toolbar>
+    </FrameLayout>
+
+</layout>

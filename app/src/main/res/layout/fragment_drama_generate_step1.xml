@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="layout"
+            type="com.kuaigeglobal.epnova.feature.creator.generate.DramaGenerateStep1ViewModel" />
+
+        <import type="android.view.View" />
+
+        <import type="android.text.TextUtils" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:keepScreenOn="true"
+        android:orientation="vertical">
+
+        <ViewAnimator
+            displayChild="@{layout.displayChild}"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <androidx.core.widget.NestedScrollView
+                android:layout_width="match_parent"
+                isScrollable="@{!layout.isSummaryLoading()}"
+                android:layout_height="match_parent">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:paddingHorizontal="@dimen/spacing_l"
+                    android:paddingTop="20dp">
+
+                    <TextView
+                        style="@style/Text14"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/story_summary"
+                        android:textColor="?attr/textColor1"
+                        android:textStyle="bold"
+                        android:visibility="@{!layout.isSummaryLoading?View.VISIBLE:View.GONE}" />
+
+                    <TextView
+                        android:id="@+id/tvStoryDesc"
+                        style="@style/Text14"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_m"
+                        android:text="@{layout.storySummaryResult.result.workDesc}"
+                        android:textColor="?attr/textColor3"
+                        android:visibility="@{!layout.isSummaryLoading?View.VISIBLE:View.GONE}"
+                        tools:text="唐三在武魂觉醒仪式上，意外觉醒出被视为“废武魂”的蓝银草，却暗中展现出不寻常的天赋..." />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/fill_color1_r16"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:paddingVertical="20dp"
+                        android:visibility="@{layout.isSummaryLoading?View.VISIBLE : View.GONE}">
+
+                        <com.airbnb.lottie.LottieAnimationView
+                            android:id="@+id/loading_image"
+                            android:layout_width="60dp"
+                            android:layout_height="60dp"
+                            app:lottie_autoPlay="true"
+                            app:lottie_fileName="loading_ball/loading_ball.json"
+                            app:lottie_imageAssetsFolder="loading_ball/images"
+                            app:lottie_loop="true"
+                            app:lottie_repeatMode="reverse" />
+
+                        <TextView
+                            style="@style/Text16"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/spacing_m"
+                            android:text="@{layout.storySummaryResult.toastTextProgress}"
+                            android:textColor="?attr/textColor1"
+                            tools:text="正在读取小说内容..." />
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/spacing_m"
+                            android:gravity="center">
+
+                            <TextView
+                                style="@style/Text13"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/estimated_time_remaining"
+                                android:textColor="?attr/textColor4" />
+
+                            <TextView
+                                style="@style/Text13"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@{layout.storySummaryResult.toastTextTime}"
+                                android:textColor="?attr/textColor1"
+                                android:textStyle="bold"
+                                tools:text="12-15分钟" />
+                        </LinearLayout>
+
+                        <TextView
+                            style="@style/Text13"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:text="@string/ai_generation_continues_on_exit"
+                            android:textColor="?attr/textColor4" />
+                    </LinearLayout>
+
+                    <TextView
+                        style="@style/Text14"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_l"
+                        android:layout_marginBottom="@dimen/spacing_m"
+                        android:text="@string/directory"
+                        android:textColor="?attr/textColor1"
+                        android:textStyle="bold" />
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <com.facebook.shimmer.ShimmerFrameLayout
+                            android:id="@+id/shimmerView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:visibility="@{layout.isSummaryLoading?View.VISIBLE : View.GONE}"
+                            app:shimmer_base_alpha="0.7"
+                            app:shimmer_dropoff="0.5"
+                            app:shimmer_duration="1500"
+                            app:shimmer_highlight_alpha="0.3">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical">
+
+                                <include layout="@layout/item_skeleton_story_summary" />
+
+                                <include layout="@layout/item_skeleton_story_summary" />
+
+                                <include layout="@layout/item_skeleton_story_summary" />
+
+                                <include layout="@layout/item_skeleton_story_summary" />
+
+                                <include layout="@layout/item_skeleton_story_summary" />
+                            </LinearLayout>
+                        </com.facebook.shimmer.ShimmerFrameLayout>
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/recyclerView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:nestedScrollingEnabled="false"
+                            android:visibility="@{layout.isSummaryLoading ? View.GONE : View.VISIBLE}"
+                            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                            tools:listitem="@layout/item_story_summary_generate" />
+                    </FrameLayout>
+                </LinearLayout>
+            </androidx.core.widget.NestedScrollView>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:drawableTop="@drawable/ic_loading_fail"
+                    android:gravity="center"
+                    android:text="@string/loading_failed"
+                    android:textColor="?attr/textColor4"
+                    android:textSize="14sp" />
+
+                <Button
+                    android:id="@+id/btnRegenerate"
+                    style="@style/Button.Bold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="@dimen/spacing_m"
+                    android:gravity="center"
+                    android:paddingHorizontal="20dp"
+                    android:paddingVertical="6dp"
+                    android:text="@string/regenerate"
+                    android:textSize="12sp" />
+            </LinearLayout>
+        </ViewAnimator>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp"
+            android:paddingHorizontal="@dimen/spacing_l"
+            android:paddingVertical="@dimen/spacing_m">
+
+            <Button
+                android:id="@+id/btnNext"
+                style="@style/Button.Bold"
+                android:layout_width="match_parent"
+                android:enabled="@{layout.nextStepEnabled}"
+                android:text="@string/next_create_script"
+                tools:enabled="false" />
+
+            <Button
+                android:id="@+id/btnNextDisable"
+                style="@style/Button.Bold"
+                android:layout_width="match_parent"
+                android:background="@color/transparent"
+                android:visibility="@{layout.nextStepEnabled?View.GONE:View.VISIBLE}" />
+        </FrameLayout>
+    </LinearLayout>
+</layout>

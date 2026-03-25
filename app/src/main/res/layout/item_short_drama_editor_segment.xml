@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="item"
+            type="com.kuaigeglobal.epnova.feature.editor.ItemStoryboardVM" />
+
+        <import type="android.view.View" />
+    </data>
+
+    <com.kuaigeglobal.epnova.widget.BorderConstraintLayout
+        showBorder="@{item.selected}"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginHorizontal="5dp"
+        android:onClick="@{(v)->item.onItemClick.invoke(v)}"
+        app:backgroundStartColor="?attr/fillColor4"
+        app:borderStartColor="@color/fixed_white_1"
+        app:borderWidth="1.5dp"
+        app:roundCornerRadius="8dp">
+
+        <com.kuaigeglobal.epnova.widget.roundedimageview.RoundedImageView
+            android:id="@+id/ivCover"
+            loadVideoFirstFrame="@{item.data.videoUrl}"
+            placeHolder="@{@drawable/img_default_cover_4_3}"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:visibility="@{item.data.videoGenerating ? View.INVISIBLE:View.VISIBLE}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="100:75"
+            app:layout_constraintStart_toStartOf="parent"
+            app:riv_corner_radius="8dp"
+            tools:src="@drawable/img_default_cover_4_3" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/bg_mask_opacity_60_dark_br8"
+            android:gravity="center"
+            android:text="@{item.genStatus(item.data)}"
+            android:textAppearance="@style/Text12"
+            android:textColor="?attr/textColor1"
+            android:textSize="10dp"
+            app:layout_constraintBottom_toBottomOf="@+id/ivCover"
+            app:layout_constraintDimensionRatio="100:24"
+            app:layout_constraintEnd_toEndOf="@+id/ivCover"
+            app:layout_constraintStart_toStartOf="@+id/ivCover"
+            tools:text="分镜1" />
+
+        <com.airbnb.lottie.LottieAnimationView
+            setVisible="@{item.data.videoGenerating}"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            app:layout_constraintBottom_toBottomOf="@+id/ivCover"
+            app:layout_constraintEnd_toEndOf="@+id/ivCover"
+            app:layout_constraintStart_toStartOf="@+id/ivCover"
+            app:layout_constraintTop_toTopOf="@+id/ivCover"
+            app:layout_constraintVertical_bias="0.4"
+            app:lottie_autoPlay="true"
+            app:lottie_fileName="loading_star/loading_star.json"
+            app:lottie_imageAssetsFolder="loading_star/images"
+            app:lottie_loop="true"
+            app:lottie_repeatMode="reverse" />
+
+        <ImageView
+            setVisible="@{item.data.videoGenerateFailed}"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:alpha="0.5"
+            android:src="@drawable/icon_image_fail"
+            app:layout_constraintBottom_toBottomOf="@+id/ivCover"
+            app:layout_constraintEnd_toEndOf="@+id/ivCover"
+            app:layout_constraintStart_toStartOf="@+id/ivCover"
+            app:layout_constraintTop_toTopOf="@+id/ivCover"
+            app:layout_constraintVertical_bias="0.32" />
+
+    </com.kuaigeglobal.epnova.widget.BorderConstraintLayout>
+</layout>

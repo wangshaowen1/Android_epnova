@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:paddingHorizontal="16dp">
+
+
+    <FrameLayout
+        android:id="@+id/right"
+        android:layout_width="132dp"
+        android:layout_height="50dp"
+        android:background="@drawable/shape_bg_player_float_left"
+        app:layout_constraintStart_toStartOf="@+id/rotate"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/btnCloseRight"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="end"
+            android:paddingHorizontal="6dp"
+            android:layout_marginEnd="6dp"
+            android:layout_marginVertical="4dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_close_float_ball" />
+
+    </FrameLayout>
+    <com.kuaigeglobal.epnova.widget.EdgeTransparentView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:edge_position="left|right"
+        app:edge_width="15dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="50dp"
+        android:layout_marginEnd="32dp">
+    <com.kuaigeglobal.epnova.widget.MarqueeTextView
+        android:id="@+id/songName"
+        style="@style/Text.Medium"
+        android:textSize="12sp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="song title marquee"/>
+    </com.kuaigeglobal.epnova.widget.EdgeTransparentView>
+
+    <com.kuaigeglobal.epnova.widget.AutoRotateLayout
+        android:id="@+id/rotate"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        app:duration="6000"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.kuaigeglobal.epnova.widget.roundedimageview.RoundedImageView
+            android:id="@+id/ivCover"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:layout_gravity="center"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_home_track_cover"
+            app:riv_oval="true" />
+    </com.kuaigeglobal.epnova.widget.AutoRotateLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

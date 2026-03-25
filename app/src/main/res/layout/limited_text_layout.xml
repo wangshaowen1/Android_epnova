@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    tools:parentTag="android.widget.FrameLayout">
+
+    <com.kuaigeglobal.epnova.widget.EditTextWithScrollView
+        android:id="@+id/contentInput"
+        style="@style/Text.Medium"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fadeScrollbars="false"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:gravity="top|left"
+        android:lineSpacingExtra="6dp"
+        android:scrollbarSize="2dp"
+        android:scrollbarThumbVertical="@color/white"
+        android:scrollbarTrackVertical="@color/white"
+        android:scrollbars="none"
+        android:singleLine="false"
+        android:textCursorDrawable="@drawable/edittext_cursor"
+        android:textSize="14sp" />
+
+    <LinearLayout
+        android:id="@+id/hint_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right|bottom"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/inputLength"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/color_80_ffffff"
+            android:textSize="15sp"
+            tools:text="8" />
+
+        <TextView
+            android:id="@+id/inputLengthHint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/color_80_ffffff"
+            android:textSize="15sp"
+            tools:text="/20" />
+    </LinearLayout>
+</merge>

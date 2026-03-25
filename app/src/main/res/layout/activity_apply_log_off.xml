@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="layout"
+            type="com.kuaigeglobal.epnova.feature.settings.logoff.ApplyLogOffViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <include
+            android:id="@+id/toolbar"
+            layout="@layout/view_model_toolbar"
+            app:layout_constraintTop_toTopOf="parent"
+            app:toolbar="@{layout.toolbar}" />
+
+        <TextView
+            android:id="@+id/reasonTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_l"
+            android:layout_marginTop="@dimen/spacing_m"
+            android:textColor="?attr/textColor2"
+            style="@style/Text12"
+            android:text="@string/unregister_reason"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/toolbar" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/content"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="8dp"
+            android:elevation="0dp"
+            app:cardBackgroundColor="?attr/fillColor1"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="0dp"
+            app:cardMaxElevation="0dp"
+            app:layout_constraintHeight_percent="0.4766"
+            app:layout_constraintTop_toBottomOf="@+id/reasonTitle">
+
+            <EditText
+                android:id="@+id/etContent"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/transparent"
+                android:gravity="top"
+                android:hint="@string/hint_unregister_request_reason"
+                android:lineSpacingExtra="@dimen/lineSpacingExtra"
+                android:maxLength="200"
+                android:orientation="horizontal"
+                android:paddingHorizontal="@dimen/spacing_l"
+                android:paddingTop="@dimen/spacing_l"
+                android:paddingBottom="45dp"
+                android:text="@={layout.content}"
+                android:textColor="?attr/textColor2"
+                android:textColorHint="?attr/textColor4"
+                style="@style/Text14"
+                app:layout_constraintDimensionRatio="343:280"
+                app:layout_constraintTop_toBottomOf="@+id/work" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|end"
+                android:layout_margin="@dimen/spacing_l"
+                android:text="@{(layout.content==null?0:layout.content.length)+`/200`}"
+                android:textColor="?attr/textColor2"
+                style="@style/Text12"
+                tools:text="0/200" />
+
+        </androidx.cardview.widget.CardView>
+
+        <TextView
+            android:id="@+id/btnLogOff"
+            tools:background="@drawable/gradient_left_50_73b0f8_right_50_7567f0_r100"
+            singleClick="@{layout.clickHandler::onClick}"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="32dp"
+            android:background="@{layout.content.length()>9?@drawable/gradient_left_73b0f8_right_7567f0_r100:@drawable/gradient_left_50_73b0f8_right_50_7567f0_r100}"
+            android:gravity="center"
+            android:text="@string/unregister_confirm"
+            android:textColor="?attr/textColor1"
+            style="@style/Text16"
+            app:layout_constraintDimensionRatio="297:48"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/content"
+            app:layout_constraintWidth_percent="0.792" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

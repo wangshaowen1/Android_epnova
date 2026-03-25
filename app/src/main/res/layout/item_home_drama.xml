@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="item"
+            type="com.kuaigeglobal.epnova.feature.home.ItemHomeDramaVm" />
+
+        <import type="android.view.View" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        singleClick="@{(v)->item.onItemClick.invoke(v)}"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <!-- 左侧头像区域 -->
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/ivCover"
+            loadHQThumbnailUri="@{item.data.workCoverUrl}"
+            placeHolder="@{@drawable/img_default_cover_3_4}"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:scaleType="centerCrop"
+            app:layout_constraintDimensionRatio="169:226"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:shapeAppearance="@style/roundStyle_tr12"
+            tools:src="@drawable/img_default_cover_3_4" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/spacing_s"
+            android:padding="3dp"
+            android:shadowColor="@color/color_05_000000"
+            android:shadowDx="0"
+            android:shadowDy="0"
+            android:shadowRadius="1.5"
+            android:textColor="?attr/textColor2"
+            android:textSize="9sp"
+            app:layout_constraintStart_toStartOf="@id/ivCover"
+            app:layout_constraintTop_toTopOf="@id/ivCover"
+            tools:background="@drawable/bg_90_ffffff_stroke_r3"
+            tools:text="AI生成" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:background="@drawable/gradient_top_00_000000_bottom_60_000000"
+            app:layout_constraintBottom_toBottomOf="@id/ivCover" />
+
+        <TextView
+            style="@style/Text10"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/spacing_s"
+            android:drawablePadding="2dp"
+            android:text="@{item.data.getFormatPlaycount()}"
+            android:textColor="?attr/textColor1"
+            android:textStyle="bold"
+            app:drawableStartCompat="@drawable/icon_play12"
+            app:layout_constraintBottom_toBottomOf="@id/ivCover"
+            app:layout_constraintEnd_toEndOf="@id/ivCover"
+            tools:text="7.6k" />
+
+        <TextView
+            android:id="@+id/tv_name"
+            style="@style/Text12"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/spacing_s"
+            android:layout_marginTop="@dimen/spacing_s"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:paddingBottom="10dp"
+            android:text="@{item.data.workTitle}"
+            android:textColor="?attr/textColor1"
+            app:layout_constraintEnd_toEndOf="@id/ivCover"
+            app:layout_constraintStart_toStartOf="@id/ivCover"
+            app:layout_constraintTop_toBottomOf="@id/ivCover"
+            tools:text="都市丽人柳如烟" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

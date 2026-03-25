@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="item"
+            type="com.kuaigeglobal.epnova.feature.splash.newer.ItemGuideStep2Vm" />
+
+        <import type="android.view.View" />
+    </data>
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:onClick="@{(v)->item.onItemClick.invoke(v)}"
+        app:cardBackgroundColor="@android:color/transparent"
+        app:strokeColor="@android:color/transparent"
+        android:outlineAmbientShadowColor="@color/color_50_ffffff"
+        android:outlineSpotShadowColor="@color/color_50_ffffff"
+        android:theme="@style/Theme.Material3.DayNight.NoActionBar"
+        app:cardCornerRadius="32dp"
+        app:cardElevation="20dp"
+        app:cardPreventCornerOverlap="true"
+        app:cardUseCompatPadding="false"
+        app:strokeWidth="0dp">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/llImage"
+            loadUri="@{item.data.workCoverUrl}"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            app:shapeAppearance="@style/roundStyle_r32" />
+
+        <TextView
+            android:id="@+id/tvDiscount"
+            style="@style/Text12"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:background="@drawable/bg_gradient_5eecff_5c4ffe_leaf_right_top_r32"
+            android:paddingVertical="7dp"
+            android:paddingStart="20dp"
+            android:paddingEnd="@dimen/spacing_l"
+            android:text="@string/limited_time_free"
+            android:textColor="?attr/textColor1" />
+
+        <TextView
+            android:id="@+id/tvName"
+            style="@style/Text18"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center_horizontal"
+            android:layout_marginHorizontal="@dimen/spacing_l"
+            android:layout_marginBottom="42dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="@{`《`+item.data.workTitle+`》`}"
+            android:textColor="?attr/textColor1"
+            tools:text="《我的邻居是总裁大佬》" />
+
+        <TextView
+            android:id="@+id/tvValue"
+            style="@style/Text14"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center_horizontal"
+            android:layout_marginHorizontal="@dimen/spacing_l"
+            android:layout_marginBottom="18dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="@{item.data.workDesc}"
+            android:textColor="?attr/textColor3"
+            android:textStyle="bold"
+            tools:text="原来那个帮她扛快递、陪她吃路边摊的穷邻居，竟是身价千亿的集团总裁？" />
+    </com.google.android.material.card.MaterialCardView>
+</layout>

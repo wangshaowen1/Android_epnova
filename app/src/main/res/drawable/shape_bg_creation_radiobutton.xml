@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/gradient_left_ff4332_right_ffa029_r12" android:state_checked="true" />
+    <item android:drawable="@drawable/bg_ffffff_r12" android:state_checked="false" />
+</selector>

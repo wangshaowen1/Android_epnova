@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="layout"
+            type="com.kuaigeglobal.epnova.feature.settings.report.ReportViewModel" />
+
+        <import type="android.view.View" />
+
+        <import type="com.kuaigeglobal.epnova.common.utils.Utils" />
+    </data>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true">
+
+        <include
+            android:id="@+id/toolbar"
+            layout="@layout/view_model_toolbar"
+            app:layout_constraintTop_toTopOf="parent"
+            app:toolbar="@{layout.mToolbarVM}" />
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/action_bar_size">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="13dp"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:paddingBottom="60dp">
+
+                <LinearLayout
+                    android:id="@+id/typeLayout"
+                    singleClick="@{layout.clickHandler::onClick}"
+                    android:layout_width="match_parent"
+                    android:layout_height="44dp"
+                    android:background="@drawable/bg_white_rectangle_corner_r12"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="14dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/select_type"
+                        android:textColor="@color/textColorPrimary"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/feedbackTypeName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:drawableEnd="@drawable/arrow_right_gray48"
+                        android:drawablePadding="8dp"
+                        android:gravity="end"
+                        android:text="@{layout.type.value}"
+                        android:textColor="@color/textColorPrimary"
+                        android:textSize="14sp"
+                        tools:text="色情低俗" />
+                </LinearLayout>
+
+                <com.kuaigeglobal.epnova.widget.CounterInputLayout
+                    android:id="@+id/feedbackInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:background="@drawable/bg_white_rectangle_corner_r12"
+                    app:inputCounterGravity="right|bottom"
+                    app:inputCounterTextColor="@color/color_50_121212"
+                    app:inputCounterTextSize="13sp"
+                    app:inputHint="@string/report_details_required_10_plus"
+                    app:inputHorizontalPadding="16dp"
+                    app:inputLines="5"
+                    app:inputMaxLength="300"
+                    app:inputTextColor="@color/textColorPrimary"
+                    app:inputTextColorHint="@color/color_30_121212"
+                    app:inputTextSize="14sp"
+                    app:inputVerticalPadding="16dp" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layout_marginTop="20dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start"
+                        android:text="@{@string/image_description_limit(layout.photoSize, 4)}"
+                        android:textColor="@color/textColorPrimary"
+                        android:textSize="12sp"
+                        tools:text="图片描述（0/4）:" />
+
+                    <TextView
+                        android:layout_width="340dp"
+                        android:layout_height="20dp"
+                        android:text="@string/not_required"
+                        android:textColor="@color/color_50_121212"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+                <com.kuaigeglobal.epnova.widget.PhotoGridView
+                    android:id="@+id/photo_grid"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:columnCount="4"
+                    android:minHeight="80dp"
+                    app:add_button_src="@drawable/icon_feedback_addpicture"
+                    app:add_button_visible="true"
+                    app:delete_button_src="@drawable/ic_feedback_close"
+                    app:divider_space="5dp"
+                    app:max_child_count="4" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layout_marginTop="20dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start"
+                        android:text="@string/contact_info"
+                        android:textColor="@color/textColorPrimary"
+                        android:textSize="12sp" />
+
+
+                </LinearLayout>
+
+                <com.kuaigeglobal.epnova.widget.XEditText
+                    android:id="@+id/contact"
+                    style="@style/Text.Common"
+                    android:layout_width="match_parent"
+                    android:layout_height="46dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/bg_white_rectangle_corner_r12"
+                    android:hint="@string/enter_phone_number"
+                    android:inputType="phone"
+                    android:maxLength="20"
+                    android:paddingHorizontal="14dp"
+                    android:text="@={layout.phoneNumber}"
+                    android:textSize="14sp" />
+
+                <Button
+                    android:id="@+id/commit"
+                    style="@style/Button.Bold"
+                    singleClick="@{layout.clickHandler::onClick}"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_gravity="bottom"
+                    android:layout_marginHorizontal="34sp"
+                    android:layout_marginTop="84dp"
+                    android:layout_marginBottom="20dp"
+                    android:alpha="0.5"
+                    android:text="@string/submit_feedback" />
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+
+    </FrameLayout>
+</layout>

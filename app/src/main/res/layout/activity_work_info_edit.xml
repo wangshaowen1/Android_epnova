@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="layout"
+            type="com.kuaigeglobal.epnova.feature.editor.info.DramaInfoEditViewModel" />
+
+        <import type="android.view.View" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <include
+            android:id="@+id/toolbar"
+            layout="@layout/view_model_toolbar"
+            app:toolbar="@{layout.mToolbarVM}" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/btnChangeCover"
+            singleClick="@{layout.clickHandler::onClick}"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/spacing_m">
+
+            <com.kuaigeglobal.epnova.widget.CropShapeImageView
+                loadHQThumbnailUri="@{layout.cover}"
+                placeHolder="@{@drawable/img_default_cover_3_4}"
+                android:layout_width="127dp"
+                android:layout_height="168dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:shapeAppearance="@style/roundStyle_r8"
+                tools:src="@drawable/img_default_cover_3_4" />
+
+            <TextView
+                style="@style/Text10"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_s"
+                android:background="@drawable/bg_40_000000_r50"
+                android:drawablePadding="4dp"
+                android:gravity="center"
+                android:includeFontPadding="false"
+                android:paddingHorizontal="@dimen/spacing_s"
+                android:paddingVertical="@dimen/spacing_xs"
+                android:text="@string/reupload"
+                android:textColor="?attr/textColor1"
+                app:drawableStartCompat="@drawable/icon_cemara16"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <TextView
+            style="@style/Text14"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_l"
+            android:layout_marginTop="@dimen/spacing_l"
+            android:text="@string/work_title"
+            android:textColor="?attr/textColor1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnCreate" />
+
+        <com.kuaigeglobal.epnova.widget.CounterInputLayout
+            android:id="@+id/nameInputer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/spacing_l"
+            android:layout_marginTop="@dimen/spacing_m"
+            android:background="@drawable/bg_fill_color_1_r8"
+            android:textCursorDrawable="@drawable/edittext_cursor"
+            app:inputCounterGravity="right"
+            app:inputCounterRightMargin="0dp"
+            app:inputCounterTextColor="?attr/textColor4"
+            app:inputCounterTextSize="12sp"
+            app:inputCounterVisible="true"
+            app:inputHorizontalPadding="@dimen/spacing_m"
+            app:inputMaxLength="20"
+            app:inputTextColor="?attr/textColor2"
+            app:inputTextColorHint="?attr/textColor4"
+            app:inputTextSize="14sp"
+            app:inputVerticalPadding="@dimen/spacing_m" />
+
+        <TextView
+            style="@style/Text14"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_l"
+            android:layout_marginTop="@dimen/spacing_l"
+            android:text="@string/work_description"
+            android:textColor="?attr/textColor1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnCreate" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginHorizontal="@dimen/spacing_l"
+            android:layout_marginTop="@dimen/spacing_m"
+            android:layout_weight="1"
+            android:background="@drawable/bg_fill_color_1_r8"
+            android:orientation="vertical">
+
+            <com.kuaigeglobal.epnova.widget.CounterInputLayout
+                android:id="@+id/descInputer"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:maxLength="200"
+                app:inputCounterGravity="right"
+                app:inputCounterRightMargin="0dp"
+                app:inputCounterTextColor="?attr/textColor4"
+                app:inputCounterTextSize="12sp"
+                app:inputCounterVisible="false"
+                app:inputHorizontalPadding="@dimen/spacing_m"
+                app:inputMaxLength="200"
+                app:inputTextColor="?attr/textColor2"
+                app:inputTextColorHint="?attr/textColor4"
+                app:inputTextSize="14sp"
+                app:inputVerticalPadding="@dimen/spacing_m" />
+
+            <LinearLayout
+                android:id="@+id/llBottom"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_m"
+                android:gravity="center"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toBottomOf="@id/tvContentLength"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/tvContentLength">
+
+                <TextView
+                    android:id="@+id/btnOptimize"
+                    style="@style/Text12"
+                    singleClick="@{layout.clickHandler::onClick}"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/spacing_m"
+                    android:background="@drawable/bg_fill_color_3_r50"
+                    android:drawablePadding="@dimen/spacing_xs"
+                    android:gravity="center_vertical"
+                    android:includeFontPadding="false"
+                    android:paddingHorizontal="@dimen/spacing_s"
+                    android:paddingVertical="@dimen/spacing_xs"
+                    android:text="@string/ai_refine"
+                    android:textColor="?attr/textColor2"
+                    android:visibility="@{layout.desc.length()>0?View.VISIBLE:View.GONE}"
+                    app:drawableStartCompat="@drawable/icon_optimize12" />
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="18dp"
+                    android:layout_marginHorizontal="@dimen/spacing_s"
+                    android:background="?attr/borderColor2"
+                    android:visibility="@{layout.desc.length()>0?View.VISIBLE:View.GONE}" />
+
+                <ImageView
+                    android:id="@+id/btnDelete"
+                    singleClick="@{layout.clickHandler::onClick}"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:padding="4dp"
+                    android:src="@drawable/icon_delete"
+                    android:visibility="@{layout.desc.length()>0?View.VISIBLE:View.GONE}" />
+
+                <androidx.legacy.widget.Space
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+
+                <TextView
+                    android:id="@+id/tvContentLength"
+                    style="@style/Text12"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/spacing_m"
+                    android:maxLength="200"
+                    android:text="@{layout.desc.length()+`/200`}"
+                    android:textColor="?attr/textColor4"
+                    tools:text="0/200" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnConfirm"
+            style="@style/Button.Bold"
+            singleClick="@{layout.clickHandler::onClick}"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:layout_marginHorizontal="@dimen/spacing_l"
+            android:layout_marginTop="50dp"
+            android:layout_marginBottom="30dp"
+            android:text="@string/confirm_ok" />
+    </LinearLayout>
+</layout>

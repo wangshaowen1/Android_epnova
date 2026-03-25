@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="tips"
+            type="String" />
+
+        <variable
+            name="duration"
+            type="String" />
+
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/loading_image"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            app:lottie_autoPlay="true"
+            app:lottie_fileName="loading_ball/loading_ball.json"
+            app:lottie_imageAssetsFolder="loading_ball/images"
+            app:lottie_loop="true"
+            app:lottie_repeatMode="reverse" />
+
+        <TextView
+            style="@style/Text16"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_m"
+            android:text="@{tips}"
+            android:textColor="?attr/textColor1"
+            tools:text="正在生成资产信息..." />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_m"
+            android:gravity="center">
+
+            <TextView
+                style="@style/Text13"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/estimated_time_remaining"
+                android:textColor="?attr/textColor4" />
+
+            <TextView
+                style="@style/Text13"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{duration}"
+                android:textColor="?attr/textColor1"
+                android:textStyle="bold"
+                tools:text="15-30秒" />
+        </LinearLayout>
+
+        <TextView
+            style="@style/Text13"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="@string/ai_generation_continues_on_exit"
+            android:textColor="?attr/textColor4" />
+    </LinearLayout>
+</layout>

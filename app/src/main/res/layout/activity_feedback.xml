@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="layout"
+            type="com.kuaigeglobal.epnova.feature.settings.feedback.FeedbackViewModel" />
+
+        <import type="android.view.View" />
+
+        <import type="com.kuaigeglobal.epnova.common.utils.Utils" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="?android:windowBackground"
+        android:fitsSystemWindows="true"
+        android:orientation="vertical">
+
+        <include
+            android:id="@+id/toolbar"
+            layout="@layout/view_model_toolbar"
+            app:layout_constraintTop_toTopOf="parent"
+            app:toolbar="@{layout.mToolbarVM}" />
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="@dimen/spacing_m"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:paddingBottom="60dp">
+
+                <LinearLayout
+                    android:id="@+id/typeLayout"
+                    singleClick="@{layout.clickHandler::onClick}"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:background="@drawable/bg_06_ffffff_r8"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="14dp">
+
+                    <TextView
+                        style="@style/Text14"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/select_type"
+                        android:textColor="?attr/textColor4" />
+
+                    <TextView
+                        android:id="@+id/feedbackTypeName"
+                        style="@style/Text14"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:drawableEnd="@drawable/arrow_right_gray48"
+                        android:drawablePadding="8dp"
+                        android:gravity="end"
+                        android:text="@{layout.type.value}"
+                        android:textColor="?attr/textColor2"
+                        tools:text="产品建议" />
+                </LinearLayout>
+
+                <com.kuaigeglobal.epnova.widget.CounterInputLayout
+                    android:id="@+id/feedbackInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_m"
+                    android:background="@drawable/bg_06_ffffff_r8"
+                    app:inputCounterGravity="right|bottom"
+                    app:inputCounterTextColor="?attr/textColor2"
+                    app:inputCounterTextSize="13sp"
+                    app:inputHint="@string/feedback_details_required_10_plus"
+                    app:inputHorizontalPadding="16dp"
+                    app:inputLines="5"
+                    app:inputMaxLength="500"
+                    app:inputTextColor="?attr/textColor2"
+                    app:inputTextColorHint="?attr/textColor4"
+                    app:inputTextSize="14sp"
+                    app:inputVerticalPadding="16dp" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layout_marginTop="@dimen/spacing_m"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/Text14"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start"
+                        android:text="@{@string/upload_photo_limit(layout.photoSize, 4)}"
+                        android:textColor="?attr/textColor2"
+                        tools:text="建议截图（0/4）:" />
+
+                </LinearLayout>
+
+                <com.kuaigeglobal.epnova.widget.PhotoGridView
+                    android:id="@+id/photo_grid"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_m"
+                    android:columnCount="4"
+                    android:minHeight="80dp"
+                    app:add_button_src="@drawable/icon_feedback_addpicture"
+                    app:add_button_visible="true"
+                    app:delete_button_src="@drawable/ic_feedback_close"
+                    app:divider_space="5dp"
+                    app:max_child_count="4" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layout_marginTop="@dimen/spacing_m"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/Text14"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start"
+                        android:text="@string/contact_info"
+                        android:textColor="?attr/textColor2" />
+
+                </LinearLayout>
+
+                <com.kuaigeglobal.epnova.widget.XEditText
+                    android:id="@+id/contact"
+                    style="@style/Text14"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:layout_marginTop="@dimen/spacing_m"
+                    android:background="@drawable/bg_06_ffffff_r8"
+                    android:hint="@string/enter_phone_number"
+                    android:inputType="phone"
+                    android:maxLength="20"
+                    android:paddingHorizontal="@dimen/spacing_m"
+                    android:text="@={layout.phoneNumber}"
+                    android:textColor="?attr/textColor2"
+                    android:textColorHint="?attr/textColor4"
+                    android:textCursorDrawable="@drawable/edittext_cursor" />
+
+                <Button
+                    android:id="@+id/commit"
+                    style="@style/Text16"
+                    singleClick="@{layout.clickHandler::onClick}"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_gravity="bottom"
+                    android:layout_marginTop="84dp"
+                    android:alpha="0.5"
+                    android:background="@drawable/gradient_left_73b0f8_right_7567f0_r100"
+                    android:text="@string/submit_feedback" />
+
+                <LinearLayout
+                    android:id="@+id/ll_contact_customer"
+                    singleClick="@{layout.clickHandler::onClick}"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom|center_horizontal"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginBottom="30dp"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/Text12"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/tap_customer_service"
+                        android:textColor="?attr/textColor3" />
+                </LinearLayout>
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+    </LinearLayout>
+</layout>

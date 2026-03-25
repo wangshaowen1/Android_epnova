@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?><!--导出视频水印-->
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <import type="com.kuaigeglobal.epnova.core.User" />
+    </data>
+
+    <ScrollView
+        android:layout_width="1px"
+        android:layout_height="1px">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/overlay"
+            android:layout_width="750dp"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/logo"
+                android:layout_width="78dp"
+                android:layout_height="32dp"
+                android:layout_marginVertical="32dp"
+                android:layout_marginStart="24dp"
+                android:src="@drawable/ic_export_video_logo"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginEnd="20dp"
+                android:shadowColor="@color/color_40_000000"
+                android:shadowDx="0"
+                android:shadowDy="4"
+                android:shadowRadius="3.0"
+                android:text="@string/generated_by_ai"
+                android:textColor="@color/color_50_ffffff"
+                android:textSize="20dp"
+                app:layout_constraintBottom_toBottomOf="@+id/logo"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/logo" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+</layout>

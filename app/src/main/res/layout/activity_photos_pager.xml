@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/contentView"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical">
+
+    <com.kuaigeglobal.epnova.widget.HackyViewPager
+        android:id="@+id/hackpager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+    <!--<TextView -->
+    <!--android:id="@+id/photo_counts"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:textSize="@dimen/w28"-->
+    <!--android:textColor="@color/white"-->
+    <!--android:layout_gravity="bottom|center"-->
+    <!--android:layout_marginBottom="@dimen/h20"-->
+    <!--android:padding="@dimen/h10"-->
+    <!--android:gravity="center"-->
+    <!--android:text="0/0"/>-->
+
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:minHeight="50dp">
+
+        <FrameLayout
+            android:id="@+id/footerLayout"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_gravity="bottom"
+            android:background="#5f000000"
+            android:visibility="gone">
+
+            <CheckBox
+                android:id="@+id/photoCheckedStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right|center_vertical"
+                android:layout_marginRight="15dp"
+                android:background="@null"
+                android:drawablePadding="10dp"
+                android:text="@string/current_checked"
+                android:textColor="@color/white"
+                android:textSize="14sp" />
+        </FrameLayout>
+        <com.kuaigeglobal.epnova.widget.PagerIndicator
+            android:id="@+id/photoIndicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
+            app:indicator_type="fraction" />
+    </FrameLayout>
+
+
+</FrameLayout>

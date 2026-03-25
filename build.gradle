@@ -1,0 +1,99 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+buildscript {
+    apply from: "modules.gradle"
+    apply from: "config.gradle"
+    repositories {
+        mavenLocal()
+        maven { url 'https://developer.huawei.com/repo/' }
+        maven { url 'https://maven.aliyun.com/repository/central' }
+        maven { url 'https://maven.aliyun.com/repository/public' }
+        maven { url 'https://maven.aliyun.com/repository/google' }
+        maven { url 'https://maven.aliyun.com/repository/jcenter' }
+        maven { url 'https://maven.aliyun.com/repository/gradle-plugin' }
+
+        maven { url 'https://jitpack.io' }
+        maven { url 'https://repo1.maven.org/maven2/' }
+        maven { url "https://s01.oss.sonatype.org/content/groups/public" }//banner 依赖用到得
+        maven { url 'https://plugins.gradle.org/m2/' } //复制这行
+
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+        maven {
+            credentials {
+                username '5fc45272d3c4ecfbf34b90fd'
+                password 'rcv8Li625sKw'
+            }
+            url 'https://packages.aliyun.com/maven/repository/2053204-release-IwccRW/'
+        }
+        maven {
+            credentials {
+                username '5fc45272d3c4ecfbf34b90fd'
+                password 'rcv8Li625sKw'
+            }
+            url 'https://packages.aliyun.com/maven/repository/2053204-snapshot-0LQaae/'
+        }
+        // 配置HMS Core SDK的Maven仓地址。
+        maven { url 'https://developer.huawei.com/repo/' }
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:8.13.0'
+        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:2.2.0'
+
+        classpath 'com.google.gms:google-services:4.4.4'
+        classpath 'com.google.firebase:firebase-crashlytics-gradle:3.0.6'
+        classpath 'com.google.firebase:perf-plugin:2.0.2'
+    }
+}
+
+allprojects {
+    configurations.all {
+        resolutionStrategy {
+            force 'org.xerial:sqlite-jdbc:3.34.0'
+        }
+    }
+    repositories {
+        mavenLocal()
+        maven { url 'https://artifact.bytedance.com/repository/Volcengine/' }//穿山甲
+        maven { url 'https://artifact.bytedance.com/repository/AwemeOpenSDK' }//抖音
+        maven { url 'https://maven.aliyun.com/repository/central' }
+        maven { url 'https://maven.aliyun.com/repository/public' }
+        maven { url 'https://maven.aliyun.com/repository/google' }
+        maven { url 'https://maven.aliyun.com/repository/jcenter' }
+
+        maven { url 'https://developer.huawei.com/repo/' }
+        maven { url 'https://jitpack.io' }
+        maven { url "https://dl.bintray.com/thelasterstar/maven/" }
+
+        google()
+        mavenCentral()
+
+        maven {
+            credentials {
+                username '5fc45272d3c4ecfbf34b90fd'
+                password 'rcv8Li625sKw'
+            }
+            url 'https://packages.aliyun.com/maven/repository/2053204-release-IwccRW/'
+        }
+        maven {
+            credentials {
+                username '5fc45272d3c4ecfbf34b90fd'
+                password 'rcv8Li625sKw'
+            }
+            url 'https://packages.aliyun.com/maven/repository/2053204-snapshot-0LQaae/'
+        }
+        //Android生产库
+        maven {
+            credentials {
+                username '66988f5d595d2a8bee37566f'
+                password '=hk_Z8-1[CZb'
+            }
+            url 'https://packages.aliyun.com/669762019bc4550a6d341126/maven/2482282-release-m2vz15'
+        }
+        maven { url 'https://repo1.maven.org/maven2/' }
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}

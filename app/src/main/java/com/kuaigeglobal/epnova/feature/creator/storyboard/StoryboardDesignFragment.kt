@@ -1,0 +1,112 @@
+package com.kuaigeglobal.epnova.feature.creator.storyboard
+
+import android.view.View
+import androidx.databinding.Observable
+import com.kuaigeglobal.epnova.R
+import com.kuaigeglobal.epnova.common.ext.applySmartFocusManager
+import com.kuaigeglobal.epnova.common.ext.showCommonDialog
+import com.kuaigeglobal.epnova.core.Global
+import com.kuaigeglobal.epnova.core.manager.AppEvent
+import com.kuaigeglobal.epnova.core.manager.EventManager
+import com.kuaigeglobal.epnova.databinding.FragmentStoryboardDesignBinding
+import com.kuaigeglobal.epnova.feature.creator.data.DramaGenerateConstants
+import com.kuaigeglobal.epnova.feature.creator.generate.OnBackPressedHandler
+import com.kuaigeglobal.epnova.feature.creator.generate.StoryEditorActivity
+import com.kuaigeglobal.epnova.feature.creator.generate.StoryEditorViewModel
+import com.kuaigeglobal.epnova.feature.editor.EditStoryboardVideoActivity
+import com.kuaigeglobal.epnova.feature.series.SeriesActivity
+import com.kuaigeglobal.epnova.feature.works.MyWorksFragment
+import com.nhsd.basic.BaseViewModelFragment
+import com.nhsd.basic.ext.getParentViewModel
+import com.nhsd.basic.ext.getResString
+import com.nhsd.basic.ext.showToast
+
+/**
+ * 分镜设计
+ */
+class StoryboardDesignFragment :
+    BaseViewModelFragment<FragmentStoryboardDesignBinding, StoryboardDesignViewModel>(), OnBackPressedHandler {
+
+    companion object {
+        fun newInstance() = StoryboardDesignFragment()
+    }
+
+    private val hostVm by lazy { getParentViewModel<StoryEditorViewModel>() }
+    val from by lazy { hostVm?.from }
+
+    override fun onPrepareView() {
+        super.onPrepareView()
+        binding.root.applySmartFocusManager()
+        mRealVM.workId = hostVm?.workId
+        mRealVM.storyId = hostVm?.storyId
+        mRealVM.taskId = hostVm?.taskId
+        mRealVM.step.addOnPropertyChangedCallback(object : Observable.OnPropertyChangedCallback() {
+            override fun onPropertyChanged(sender: Observable?, propertyId: Int) {
+                Global.refreshBalance()
+            }
+        })
+        mRealVM.retry()
+        EventManager.onAppTrack(AppEvent.SF_VIEW_STORYBOARD_DESIGN_PAGE)
+    }
+
+    override fun <Data> onClick(view: View, data: Data?) {
+        super.onClick(view, data)
+        when (view.id) {
+            R.id.btnNext -> {
+                mRealVM.clickNext { workId, storyId, taskId ->
+                    EditStoryboardVideoActivity.start(
+                        hostVm?.title?.value?.let { "$it：第${hostVm?.chapterIndex ?: 1}集" },
+                        workId,
+                        storyId,
+                        hostVm?.videoRatio,
+                        null,
+                        from = from,
+                        model = hostVm?.model
+                    )
+                    activity?.finish()
+                }
+            }
+        }
+    }
+
+    override fun handleBackPressed(): Boolean {
+        if (mRealVM.notSaved()) {
+            activity?.showCommonDialog(
+                tip = getString(R.string.save_storyboard_changes_prompt),
+                cancelText = R.string.discard.getResString(),
+                cancel = {
+                    toSeries()
+                },
+                confirmText = R.string.save_and_exit.getResString(),
+                confirm = {
+                    mRealVM.saveAndFinish {
+                        toSeries()
+                    }
+                })
+            return true
+        }
+        if (mRealVM.generating) {
+            getString(R.string.ai_generating_auto_saved).showToast()
+        } else {
+            getString(R.string.auto_saved_as_draft).showToast()
+        }
+        toSeries()
+        return true
+    }
+
+    fun toSeries() {
+        if (hostVm?.model == DramaGenerateConstants.MODEL_STORY_SINGLE) {
+            if (from != StoryEditorActivity.FROM_MY_WORKS) {
+                MyWorksFragment.start()
+            } else {
+                mActivity.finish()
+            }
+        } else {
+            if (from != StoryEditorActivity.FROM_SERIES) {
+                SeriesActivity.start(mRealVM.workId)
+            }
+            mActivity.finish()
+        }
+    }
+
+}

@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="layout"
+            type="com.kuaigeglobal.epnova.feature.login.flash.PhoneLoginViewModel" />
+
+        <import type="android.view.View" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        marginBottomPx="@{layout.inputOffset}"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <include
+            android:id="@+id/toolbar"
+            layout="@layout/view_model_toolbar"
+            app:toolbar="@{layout.mToolbarVM}" />
+
+        <TextView
+            android:id="@+id/iv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_xl"
+            android:layout_marginTop="40dp"
+            android:text="@{layout.isBind?@string/bind_phone_number:@string/login_for_more_highlights}"
+            android:textColor="?attr/textColor1"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/toolbar"
+            tools:text="@string/login_for_more_highlights" />
+
+        <TextView
+            android:id="@+id/tv_binding_prompt"
+            style="@style/Text14"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_m"
+            android:text="@{layout.isBind?@string/binding_prompt:@string/login_as_registration}"
+            android:textColor="?attr/textColor3"
+            app:layout_constraintStart_toStartOf="@id/iv_title"
+            app:layout_constraintTop_toBottomOf="@+id/iv_title"
+            tools:text="@string/login_as_registration"
+            tools:visibility="visible" />
+
+        <LinearLayout
+            android:id="@+id/llPhone"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginHorizontal="@dimen/spacing_xl"
+            android:layout_marginTop="44dp"
+            android:background="@drawable/bg_fill_color_1_r50"
+            android:gravity="center_vertical"
+            app:layout_constraintTop_toBottomOf="@+id/tv_binding_prompt">
+
+            <TextView
+                style="@style/Text16"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:gravity="center"
+                android:paddingStart="20dp"
+                android:paddingEnd="@dimen/spacing_m"
+                android:text="@string/mobile_phone_prefix"
+                android:textColor="?attr/textColor2" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="20dp"
+                android:background="?attr/borderColor2" />
+
+            <EditText
+                android:id="@+id/et_phone"
+                style="@style/Text14"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@null"
+                android:textCursorDrawable="@drawable/edittext_cursor"
+                android:hint="@string/please_enter_your_phone_number"
+                android:inputType="phone"
+                android:maxLength="11"
+                android:paddingHorizontal="@dimen/spacing_m"
+                android:text="@={layout.mobile}"
+                android:textColor="?attr/textColor1"
+                android:textColorHint="?attr/textColor4" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llCode"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/bg_fill_color_1_r50"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="@+id/llPhone"
+            app:layout_constraintStart_toStartOf="@+id/llPhone"
+            app:layout_constraintTop_toBottomOf="@+id/llPhone">
+
+            <EditText
+                android:id="@+id/et_verify_code"
+                style="@style/Text14"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@null"
+                android:hint="@string/please_enter_the_verification_code"
+                android:inputType="number"
+                android:textCursorDrawable="@drawable/edittext_cursor"
+                android:maxLength="4"
+                android:paddingHorizontal="20dp"
+                android:text="@={layout.code}"
+                android:textColor="?attr/textColor1"
+                android:textColorHint="?attr/textColor4" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="20dp"
+                android:background="?attr/borderColor2" />
+
+            <TextView
+                android:id="@+id/btnSend"
+                singleClick="@{layout.clickHandler::onClick}"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:enabled="@{layout.sendCodeEnable}"
+                android:gravity="center"
+                android:paddingStart="@dimen/spacing_m"
+                android:paddingEnd="20dp"
+                android:text="@{layout.sendCodeText}"
+                android:textColor="@color/enable_theme1_selector"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="获取验证码" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnLogin"
+            style="@style/Button.Bold"
+            singleClick="@{layout.clickHandler::onClick}"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_marginVertical="40dp"
+            android:text="@{layout.isBind()?@string/bind_now:@string/log_in_now}"
+            app:layout_constraintEnd_toEndOf="@+id/llPhone"
+            app:layout_constraintStart_toStartOf="@+id/llPhone"
+            app:layout_constraintTop_toBottomOf="@+id/llCode"
+            tools:text="@string/log_in_now" />
+
+        <LinearLayout
+            android:id="@+id/btnPolicy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_l"
+            android:layout_marginBottom="10dp"
+            android:gravity="center_vertical"
+            android:onClick="@{layout.clickHandler::onClick}"
+            android:visibility="@{layout.isBind()?View.GONE:View.VISIBLE}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnLogin">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:importantForAccessibility="no"
+                android:scaleType="fitCenter"
+                android:src="@{layout.checkedPolicy?@drawable/icon_choose_checked:@drawable/icon_choose_normal_dark}"
+                tools:src="@drawable/icon_choose_normal_dark" />
+
+            <TextView
+                style="@style/Text12"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:text="@string/i_have_read_and_agree_to"
+                android:textColor="?attr/textColor3" />
+
+            <TextView
+                android:id="@+id/btnPrivacyPolicy"
+                style="@style/Text12"
+                singleClick="@{layout.clickHandler::onClick}"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:paddingVertical="10dp"
+                android:text="@string/tvPrivateService"
+                android:textColor="?attr/textColor1" />
+
+            <TextView
+                style="@style/Text12"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/and"
+                android:textColor="?attr/textColor3" />
+
+            <TextView
+                android:id="@+id/btnUserPolicy"
+                style="@style/Text12"
+                singleClick="@{layout.clickHandler::onClick}"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:paddingVertical="10dp"
+                android:text="@string/tvUserService"
+                android:textColor="?attr/textColor1" />
+        </LinearLayout>
+
+        <com.kuaigeglobal.epnova.widget.NavBarView
+            android:id="@+id/nav_bar_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btnPolicy"
+            app:layout_goneMarginTop="40dp" />
+
+        <com.kuaigeglobal.epnova.widget.ToastView
+            android:id="@+id/toast"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:alpha="0"
+            android:background="@drawable/bg_toast"
+            android:gravity="center"
+            android:lineSpacingExtra="4dp"
+            android:minHeight="40dp"
+            android:orientation="vertical"
+            android:paddingHorizontal="20dp"
+            android:paddingVertical="10dp"
+            android:textColor="@android:color/white"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:alpha="1"
+            tools:text="toast" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

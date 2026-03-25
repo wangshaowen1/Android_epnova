@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="item"
+            type="com.kuaigeglobal.epnova.feature.creator.assets.edit.ItemReferenceImageVm" />
+
+        <import type="android.view.View" />
+    </data>
+
+    <com.kuaigeglobal.epnova.widget.BorderConstraintLayout
+        android:layout_width="80dp"
+        android:layout_height="107dp"
+        android:layout_marginEnd="@dimen/spacing_s"
+        android:onClick="@{(v)->item.onItemClick.invoke(v)}"
+        app:borderEndColor="@color/gradient_btn_end_dark"
+        app:borderStartColor="@color/gradient_btn_start_dark"
+        app:borderWidth="1.5dp"
+        app:roundCornerRadius="@dimen/radius_m"
+        app:showBorder="@{item.checked}">
+
+        <com.kuaigeglobal.epnova.widget.CropShapeImageView
+            loadThumbnailUri="@{item.data.imageUrl}"
+            placeHolder="@{@drawable/img_default_cover_3_4}"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:shapeAppearanceOverlay="@style/roundStyle_r8"
+            tools:srcCompat="@drawable/img_default_cover_3_4" />
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_margin="6dp"
+            android:src="@drawable/icon_choose_checked"
+            android:visibility="@{item.checked?View.VISIBLE:View.GONE}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </com.kuaigeglobal.epnova.widget.BorderConstraintLayout>
+</layout>

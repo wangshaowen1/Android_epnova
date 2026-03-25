@@ -1,0 +1,14 @@
+*.iml
+.gradle
+/local.properties
+/.idea
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+.cxx
+local.properties
+/app/proguard-dict.txt
+/app/developArch64/
+/app/mapping.txt
+/app/seeds.txt

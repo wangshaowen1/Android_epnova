@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="item"
+            type="com.kuaigeglobal.epnova.feature.play.ItemVideoFeedVm" />
+
+    </data>
+
+    <com.kuaigeglobal.epnova.widget.LoadStateViewHolder
+        android:id="@+id/lsv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:background="@color/black">
+
+            <com.kuaigeglobal.epnova.widget.CoverPlayerView
+                android:id="@+id/playerView"
+                track="@{item.data}"
+                android:background="?attr/bgColor1"
+                app:shutter_background_color="?attr/bgColor1"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:saveEnabled="false"
+                app:coverScaleType="fitCenter"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintDimensionRatio="H,9:16"
+                app:layout_constraintTop_toTopOf="parent"
+                app:resize_mode="fit"
+                app:use_controller="false" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_m"
+                android:layout_marginTop="92dp"
+                android:padding="3dp"
+                android:shadowColor="@color/color_05_000000"
+                android:shadowDx="0"
+                android:shadowDy="0"
+                android:shadowRadius="1.5"
+                android:textColor="?attr/textColor2"
+                android:textSize="12sp"
+                app:layout_constraintStart_toStartOf="@id/playerView"
+                app:layout_constraintTop_toTopOf="@id/playerView"
+                tools:background="@drawable/bg_90_ffffff_stroke_r3"
+                tools:text="AI生成" />
+
+            <ImageView
+                android:id="@+id/btnPause"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/icon_play_off"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.5" />
+
+            <LinearLayout
+                android:id="@+id/pbBuffering"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:background="@drawable/bg_color3_r20"
+                android:gravity="center"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.5">
+
+                <ImageView
+                    android:id="@+id/animBuffering"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/icon_loading2" />
+
+                <TextView
+                    style="@style/Text14"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_s"
+                    android:gravity="center"
+                    android:text="@string/loading"
+                    android:textColor="?attr/textColor2" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_title"
+                style="@style/Text18"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_l"
+                android:layout_marginBottom="@dimen/spacing_xs"
+                android:text="@{item.data.workTitle}"
+                android:textColor="?attr/textColor1"
+                app:layout_constraintBottom_toTopOf="@id/tvContent"
+                tools:text="代码纪元：觉醒指令" />
+
+            <!--        android:onClick="@{(v)->item.onItemClick.invoke(v)}"-->
+            <com.kuaigeglobal.epnova.widget.expandtextview.ExpandableTextView
+                android:id="@+id/tvContent"
+                expandContent="@{item.data.workDesc}"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_l"
+                android:layout_marginEnd="80dp"
+                android:layout_marginBottom="64dp"
+                android:lineSpacingExtra="@dimen/lineSpacingExtra"
+                android:saveEnabled="false"
+                android:textColor="?attr/textColor3"
+                android:textSize="14dp"
+                app:collapseLines="3"
+                app:collapseTipLabel="@string/collapse"
+                app:expandTipLabel="@string/expand"
+                app:expandable="true"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:tipPosition="align_right"
+                app:tipsColor="?attr/textColor2"
+                app:tipsSize="14dp"
+                tools:text="夏天是最美好的季节。阳光炽热而灿烂，天空湛夏天是最美好的季节。阳光炽热而灿烂，天空湛蓝如宝石。阳光炽热而灿而灿阳…"
+                tools:visibility="visible" />
+
+            <com.kuaigeglobal.epnova.widget.PlayerSeekbar
+                android:id="@+id/seekbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="30dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.kuaigeglobal.epnova.widget.LoadStateViewHolder>
+</layout>

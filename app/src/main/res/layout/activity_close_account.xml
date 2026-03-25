@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="layout"
+            type="com.kuaigeglobal.epnova.feature.settings.logoff.LogoffViewModel" />
+
+        <import type="com.kuaigeglobal.epnova.feature.settings.logoff.LogoffViewModel" />
+
+        <import type="android.view.View" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <include
+            android:id="@+id/toolbar"
+            layout="@layout/view_model_toolbar"
+            app:toolbar="@{layout.mToolbarVM}" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginHorizontal="@dimen/spacing_l"
+            android:layout_weight="1"
+            android:background="@drawable/bg_06_ffffff_b1_2e2e30_r12"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/spacing_m"
+                android:text="@string/user_notice"
+                android:textAppearance="@style/Text16"
+                android:textColor="?attr/textColor2" />
+
+            <androidx.core.widget.NestedScrollView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:lineSpacingExtra="@dimen/lineSpacingExtra"
+                    android:paddingHorizontal="@dimen/spacing_m"
+                    android:paddingBottom="@dimen/spacing_m"
+                    android:text="@string/app_log_off"
+                    android:textAppearance="@style/Text14"
+                    android:textColor="?attr/textColor3" />
+            </androidx.core.widget.NestedScrollView>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_agreement"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            android:onClick="@{(v)->layout.checkPolicy()}"
+            android:orientation="horizontal"
+            android:visibility="@{layout.removeAccountState==LogoffViewModel.REMOVE_ACCOUNT_STATE_APPLY_NOT_CLICK?View.GONE:View.VISIBLE}">
+
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_marginTop="1dp"
+                android:layout_marginEnd="4dp"
+                android:importantForAccessibility="no"
+                android:scaleType="fitCenter"
+                android:src="@{layout.checkedPolicy?@drawable/icon_choose_checked:@drawable/icon_choose_normal_dark}"
+                tools:src="@drawable/icon_choose_normal_dark" />
+
+            <TextView
+                android:id="@+id/tv_purchase_instructions"
+                style="@style/Text12"
+                setSpanText="@{@string/app_purchase_instructions}"
+                singleClick="@{layout.clickHandler::onClick}"
+                spanColor="@{@color/func_failure_dark}"
+                spanText="@{@string/account_deletion_title}"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="4dp"
+                android:text="@string/app_purchase_instructions"
+                android:textColor="?attr/textColor3" />
+        </LinearLayout>
+
+        <LinearLayout
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/spacing_l"
+            android:layout_marginTop="18dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <TextView
+                style="@style/Text16"
+                singleClick="@{(v)->layout.logOff()}"
+                android:layout_width="0dp"
+                android:layout_height="44dp"
+                android:layout_weight="1"
+                android:background="@drawable/btn_common_cancel"
+                android:enabled="@{layout.checkedPolicy}"
+                android:gravity="center"
+                android:text="@string/unregister_request"
+                android:textColor="@{layout.checkedPolicy?@color/textColorPrimary:@color/color_40_21213b}"
+                tools:textColor="?attr/textColor3" />
+
+            <TextView
+                style="@style/Text16"
+                singleClick="@{(v)->layout.back()}"
+                android:layout_width="0dp"
+                android:layout_height="44dp"
+                android:layout_marginStart="8dp"
+                android:layout_weight="1"
+                android:background="@drawable/gradient_left_73b0f8_right_7567f0_r100"
+                android:gravity="center"
+                android:text="@string/rethink"
+                android:textColor="?attr/textColor1" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnCancel"
+            style="@style/Button.Bold.Gray"
+            singleClick="@{layout.clickHandler::onClick}"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:layout_marginHorizontal="@dimen/spacing_l"
+            android:layout_marginTop="18dp"
+            android:layout_marginBottom="30dp"
+            android:enabled="@{layout.removeAccountState==LogoffViewModel.REMOVE_ACCOUNT_STATE_APPLY}"
+            android:gravity="center"
+            android:text="@{layout.submitApplyText}"
+            tools:text="申请注销中"
+            tools:visibility="visible" />
+    </LinearLayout>
+</layout>

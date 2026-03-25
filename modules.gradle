@@ -1,0 +1,73 @@
+/**
+ * 快歌公共模块Maven仓库版本
+ */
+ext {
+    modules = [
+            baselibrary: [
+                    groupId   : 'com.kuaige',
+                    artifactId: 'baselibrary',
+                    version   : '1.0.5',
+                    gav       : 'com.kuaige:baselibrary:1.0.5'
+            ],
+            imageloader: [
+                    groupId   : 'com.kuaige',
+                    artifactId: 'imageloader',
+                    version   : '1.0.2',
+                    gav       : 'com.kuaige:imageloader:1.0.2'
+            ],
+            oss        : [
+                    groupId   : 'com.kuaige',
+                    artifactId: 'oss',
+                    version   : '1.0.3',
+                    gav       : 'com.kuaige:oss:1.0.3'
+            ],
+            payment    : [
+                    groupId   : 'com.kuaige',
+                    artifactId: 'payment',
+                    version   : '1.0.3',
+                    gav       : 'com.kuaige:payment:1.0.3'
+            ],
+            videoedit  : [
+                    groupId   : 'com.kuaige',
+                    artifactId: 'videoedit',
+                    version   : '1.0.0',
+                    gav       : 'com.kuaige:videoedit:1.0.0'
+            ],
+            luban      : [
+                    groupId   : 'com.kuaige.thirdparty',
+                    artifactId: 'luban',
+                    version   : '1.0.0',
+                    gav       : 'com.kuaige.thirdparty:luban:1.0.0'
+            ],
+            matisse    : [
+                    groupId   : 'com.kuaige.thirdparty',
+                    artifactId: 'matisse',
+                    version   : '1.0.0',
+                    gav       : 'com.kuaige.thirdparty:matisse:1.0.0'
+            ],
+            ucrop      : [
+                    groupId   : 'com.kuaige.thirdparty',
+                    artifactId: 'ucrop',
+                    version   : '1.0.1',
+                    gav       : 'com.kuaige.thirdparty:ucrop:1.0.1'
+            ],
+            permissionx: [
+                    groupId   : 'com.kuaige.thirdparty',
+                    artifactId: 'permissionx',
+                    version   : '1.0.0',
+                    gav       : 'com.kuaige.thirdparty:permissionx:1.0.0'
+            ],
+            mvchelper  : [
+                    groupId   : 'com.kuaige.thirdparty',
+                    artifactId: 'mvchelper',
+                    version   : '1.0.0',
+                    gav       : 'com.kuaige.thirdparty:mvchelper:1.0.0'
+            ],
+            umeng      : [
+                    groupId   : 'com.kuaige.thirdparty',
+                    artifactId: 'umeng',
+                    version   : '1.0.1',
+                    gav       : 'com.kuaige.thirdparty:umeng:1.0.1'
+            ]
+    ]
+}

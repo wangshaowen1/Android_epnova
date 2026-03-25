@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.kuaigeglobal.epnova.widget.BorderConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_color3_r20"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:paddingBottom="20dp"
+    tools:layout_width="293dp">
+
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="@string/terms_and_privacy"
+        android:textAppearance="@style/Text16"
+        android:textColor="?attr/textColor1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvContent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginTop="12dp"
+        android:textAppearance="@style/Text14"
+        android:textColor="?attr/textColor3"
+        app:layout_constraintTop_toBottomOf="@+id/tvTitle"
+        tools:text="欢迎使用快出片！
+在使用本产品或服务前，请您认证阅读并理解本应用的《用户协议》和《隐私政策》的全部条款，以了解我们的服务内容和我们在收集和使用您相关个人信息时的处理规则。我们严格按照用户协议和隐私政策为您提供服务，保护您的个人信息。
+“不同意”，您将无法使用我们的产品和服务。" />
+
+    <TextView
+        android:id="@+id/tvReject"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/btn_fill1_r50"
+        android:gravity="center"
+        android:text="@string/disagree"
+        android:textColor="?attr/textColor2"
+        android:textSize="16sp"
+        app:layout_constraintDimensionRatio="3:1"
+        app:layout_constraintEnd_toStartOf="@+id/tvAgree"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvContent" />
+
+    <TextView
+        android:id="@+id/tvAgree"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="20dp"
+        android:background="@drawable/btn_theme1_r50"
+        android:gravity="center"
+        android:text="@string/agree"
+        android:textColor="@color/fixed_white_1"
+        android:textSize="16sp"
+        app:layout_constraintDimensionRatio="3:1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/tvReject"
+        app:layout_constraintTop_toBottomOf="@id/tvReject"
+        app:layout_constraintTop_toTopOf="@+id/tvReject" />
+
+</com.kuaigeglobal.epnova.widget.BorderConstraintLayout>

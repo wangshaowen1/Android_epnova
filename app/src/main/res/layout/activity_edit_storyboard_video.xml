@@ -1,0 +1,441 @@
+<?xml version="1.0" encoding="utf-8"?><!--编辑分镜视频-->
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="layout"
+            type="com.kuaigeglobal.epnova.feature.editor.EditStoryboardVideoViewModel" />
+
+        <import type="android.text.TextUtils" />
+
+        <import type="com.kuaigeglobal.epnova.common.ext.TextViewExtKt" />
+    </data>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.kuaigeglobal.epnova.widget.LoadStateViewHolder
+            android:id="@+id/loadState"
+            displayChild="@{layout.loadState}"
+            onRetry="@{()->layout.getStoryboardList()}"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:noData="暂无分镜视频">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <com.kuaigeglobal.epnova.widget.StatusBarView
+                    android:id="@+id/statusBar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/tvTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/action_bar_size"
+                    android:layout_marginStart="@dimen/action_bar_size"
+                    android:layout_marginEnd="16dp"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:lines="1"
+                    android:text="@{layout.storyTitle}"
+                    android:textAppearance="@style/Text16"
+                    android:textColor="?attr/textColor1"
+                    app:layout_constraintEnd_toStartOf="@+id/btnGenerate"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/statusBar"
+                    tools:text="代码纪元：觉醒指令代码纪元：觉醒指令代码纪元：觉醒指令" />
+
+                <androidx.constraintlayout.widget.Placeholder
+                    android:id="@+id/previewArea"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_marginTop="26dp"
+                    android:layout_marginBottom="44dp"
+                    app:layout_constraintBottom_toTopOf="@+id/rvStoryboard"
+                    app:layout_constraintTop_toBottomOf="@+id/tvTitle" />
+
+                <androidx.constraintlayout.widget.Placeholder
+                    android:id="@+id/playerArea"
+                    setDimensionRatio="@{layout.workRatio}"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/previewArea"
+                    app:layout_constraintEnd_toEndOf="@+id/previewArea"
+                    app:layout_constraintStart_toStartOf="@+id/previewArea"
+                    app:layout_constraintTop_toTopOf="@+id/previewArea"
+                    tools:layout_constraintDimensionRatio="16:9" />
+
+                <androidx.media3.ui.PlayerView
+                    android:id="@+id/storyboardPlayer"
+                    player="@{layout.storyboardPlayer}"
+                    setVisible="@{layout.currentStoryboard.data.videoGenerated}"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:onClick="@{(v)->layout.play()}"
+                    app:layout_constraintBottom_toBottomOf="@+id/playerArea"
+                    app:layout_constraintEnd_toEndOf="@+id/playerArea"
+                    app:layout_constraintStart_toStartOf="@+id/playerArea"
+                    app:layout_constraintTop_toTopOf="@+id/playerArea"
+                    app:use_controller="false"
+                    tools:visibility="invisible" />
+
+                <TextView
+                    setTextSizeDp="@{TextUtils.equals(layout.workRatio,`16:9`)?15f:10f}"
+                    setVerticalBias="@{TextUtils.equals(layout.workRatio,`16:9`)?0.9148936f:0.83263598f}"
+                    setVisible="@{layout.subtitle.length()>0}"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:paddingHorizontal="12dp"
+                    android:shadowColor="@color/fixed_black_1"
+                    android:shadowDx="0"
+                    android:shadowDy="0"
+                    android:shadowRadius="3"
+                    android:text="@{layout.subtitle}"
+                    android:textColor="@color/fixed_white_1"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="@+id/storyboardPlayer"
+                    app:layout_constraintEnd_toEndOf="@+id/storyboardPlayer"
+                    app:layout_constraintStart_toStartOf="@+id/storyboardPlayer"
+                    app:layout_constraintTop_toTopOf="@+id/storyboardPlayer"
+                    tools:layout_constraintVertical_bias="0.9148936"
+                    tools:text="恭喜你，完成初步觉醒"
+                    tools:textSize="15dp" />
+
+                <ImageView
+                    setVisible="@{layout.currentStoryboard.data.videoGenerated}"
+                    android:layout_width="32dp"
+                    android:layout_height="16dp"
+                    android:layout_margin="8dp"
+                    app:layout_constraintStart_toStartOf="@+id/storyboardPlayer"
+                    app:layout_constraintTop_toTopOf="@+id/storyboardPlayer"
+                    tools:text="AI生成" />
+
+                <ImageView
+                    setVisible="@{layout.currentStoryboard.data.videoGenerated &amp;&amp; !layout.playing}"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/ic_short_drama_editor_play"
+                    app:layout_constraintBottom_toBottomOf="@+id/storyboardPlayer"
+                    app:layout_constraintEnd_toEndOf="@+id/storyboardPlayer"
+                    app:layout_constraintStart_toStartOf="@+id/storyboardPlayer"
+                    app:layout_constraintTop_toTopOf="@+id/storyboardPlayer" />
+
+                <LinearLayout
+                    setVisible="@{layout.currentStoryboard.data != null &amp;&amp; !layout.currentStoryboard.data.videoGenerated}"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:background="?attr/fillColor1"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    app:layout_constraintBottom_toBottomOf="@+id/playerArea"
+                    app:layout_constraintEnd_toEndOf="@+id/playerArea"
+                    app:layout_constraintStart_toStartOf="@+id/playerArea"
+                    app:layout_constraintTop_toTopOf="@+id/playerArea">
+
+                    <ImageView
+                        setVisible="@{layout.currentStoryboard.data.videoGenerateFailed}"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_marginBottom="12dp"
+                        android:alpha="0.5"
+                        android:src="@drawable/icon_image_fail" />
+
+                    <com.airbnb.lottie.LottieAnimationView
+                        setVisible="@{layout.currentStoryboard.data.videoGenerating}"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_marginBottom="12dp"
+                        app:lottie_autoPlay="true"
+                        app:lottie_fileName="loading_star/loading_star.json"
+                        app:lottie_imageAssetsFolder="loading_star/images"
+                        app:lottie_loop="true"
+                        app:lottie_repeatMode="reverse" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@{layout.currentStoryboard.genStatusBig(layout.currentStoryboard.data)}"
+                        android:textAppearance="@style/Text12"
+                        android:textColor="@color/fixed_white_1"
+                        tools:text="图片生成排队中" />
+
+                    <TextView
+                        setVisible="@{layout.currentStoryboard.data.videoGenerating}"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:text="@string/gen_continue_after_exit"
+                        android:textAppearance="@style/Text10"
+                        android:textColor="?attr/textColor4" />
+
+                    <TextView
+                        android:id="@+id/btnRetry"
+                        setVisible="@{layout.currentStoryboard.data.videoGenerateFailed}"
+                        singleClick="@{() -> layout.currentStoryboard.generate(layout.storyInfo)}"
+                        android:layout_width="88dp"
+                        android:layout_height="28dp"
+                        android:layout_marginTop="12dp"
+                        android:background="@drawable/btn_theme1_r50"
+                        android:gravity="center"
+                        android:text="@string/click_retry"
+                        android:textAppearance="@style/Text12"
+                        android:textColor="@color/fixed_white_1"
+                        android:textStyle="bold"
+                        tools:visibility="visible" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:background="?attr/fillColor1"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/rvStoryboard" />
+
+                <LinearLayout
+                    setVisible="@{layout.currentStoryboard.data.videoGenerated &amp;&amp; layout.currentStoryboard.data.subtitleGenerating}"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    app:layout_constraintBottom_toTopOf="@+id/rvStoryboard"
+                    app:layout_constraintTop_toBottomOf="@+id/playerArea">
+
+                    <ImageView
+                        rotateLoading="@{layout.currentStoryboard.data.subtitleGenerating}"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/icon_loading2" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="@string/subtitle_processing"
+                        android:textAppearance="@style/Text13"
+                        android:textColor="?attr/textColor1" />
+
+                </LinearLayout>
+
+                <com.kuaigeglobal.epnova.widget.BorderConstraintLayout
+                    setVisible="@{layout.currentStoryboard.data.videoGenerated &amp;&amp; layout.currentStoryboard.data.subtitleGenerateFailed}"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="12dp"
+                    android:paddingVertical="6dp"
+                    app:backgroundEndColor="#2E781212"
+                    app:backgroundStartColor="#38B41E1E"
+                    app:borderStartColor="#52FF544F"
+                    app:borderWidth="1dp"
+                    app:layout_constraintBottom_toTopOf="@+id/rvStoryboard"
+                    app:roundCornerRadius="10dp">
+
+                    <ImageView
+                        android:id="@+id/ivFailed"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginStart="12dp"
+                        android:src="@drawable/icon_subtitle_failed"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/tvFailed"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="@string/error_subtitle_gen"
+                        android:textAppearance="@style/Text13"
+                        android:textColor="?attr/textColor1"
+                        app:layout_constraintBottom_toTopOf="@+id/tvFailedTip"
+                        app:layout_constraintStart_toEndOf="@+id/ivFailed"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_chainStyle="packed" />
+
+                    <TextView
+                        android:id="@+id/tvFailedTip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="@string/video_done_sub_error"
+                        android:textColor="?attr/textColor4"
+                        android:textSize="11sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="@+id/tvFailed"
+                        app:layout_constraintTop_toBottomOf="@+id/tvFailed" />
+
+                    <TextView
+                        android:id="@+id/btnRetrySubtitle"
+                        singleClick="@{(v)->layout.currentStoryboard.generateSubtitle()}"
+                        android:layout_width="wrap_content"
+                        android:layout_height="30dp"
+                        android:layout_marginEnd="12dp"
+                        android:background="@drawable/bg_08_ffffff_r20"
+                        android:gravity="center"
+                        android:paddingHorizontal="12dp"
+                        android:text="@string/click_retry"
+                        android:textAppearance="@style/Text12"
+                        android:textColor="?attr/textColor1"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                </com.kuaigeglobal.epnova.widget.BorderConstraintLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvStoryboard"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_marginBottom="16dp"
+                    android:adapter="@{layout.adapter}"
+                    android:clipToPadding="false"
+                    android:orientation="horizontal"
+                    android:overScrollMode="never"
+                    android:paddingHorizontal="10dp"
+                    android:paddingTop="20dp"
+                    android:scrollbars="none"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:layout_constraintBottom_toTopOf="@+id/tvStoryboardDescTitle"
+                    app:layout_constraintDimensionRatio="375:82"
+                    tools:listitem="@layout/item_short_drama_editor_segment" />
+
+                <TextView
+                    android:id="@+id/tvStoryboardDescTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    android:text="@string/storyboard_desc"
+                    android:textAppearance="@style/Text14"
+                    android:textColor="?attr/textColor1"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toTopOf="@+id/tvStoryboardDesc"
+                    app:layout_constraintStart_toStartOf="@+id/tvStoryboardDesc" />
+
+                <ScrollView
+                    android:id="@+id/tvStoryboardDesc"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_marginHorizontal="15dp"
+                    android:background="@drawable/fill_color2_r8"
+                    android:overScrollMode="never"
+                    android:scrollbars="none"
+                    app:layout_constraintBottom_toTopOf="@+id/btnRegenerate"
+                    app:layout_constraintDimensionRatio="345:130">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:lineSpacingExtra="@dimen/lineSpacingExtraShort"
+                        android:padding="12dp"
+                        android:text="@{layout.currentStoryboard.data.storyBoardDesc}"
+                        android:textAppearance="@style/Text13"
+                        android:textColor="?attr/textColor2"
+                        tools:text="白天，史莱克学院后山茂密的森林，阳光穿透层层叠叠的树叶，在铺满落叶的空地上洒下斑驳光影。唐三与小舞相对而立，清风吹过。唐三微微领首，脚下升起数圈魂环，地面开始震动。唐三..." />
+
+                </ScrollView>
+
+                <TextView
+                    android:id="@+id/btnRegenerate"
+                    singleClick="@{layout.clickHandler::onClick}"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:drawableTop="@drawable/icon_ai_image"
+                    android:drawablePadding="8dp"
+                    android:gravity="center"
+                    android:paddingVertical="16dp"
+                    android:text="@string/storyboard_redraw"
+                    android:textAppearance="@style/Text12"
+                    android:textColor="?attr/textColor3"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/btnDownload"
+                    app:layout_constraintHorizontal_chainStyle="packed"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+                <TextView
+                    android:id="@+id/btnDownload"
+                    singleClick="@{layout.clickHandler::onClick}"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:drawableTop="@drawable/icon_download"
+                    android:drawablePadding="8dp"
+                    android:gravity="center"
+                    android:paddingVertical="16dp"
+                    android:text="@string/download_video"
+                    android:textAppearance="@style/Text12"
+                    android:textColor="?attr/textColor3"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/btnDelete"
+                    app:layout_constraintStart_toEndOf="@+id/btnRegenerate" />
+
+                <TextView
+                    android:id="@+id/btnDelete"
+                    singleClick="@{layout.clickHandler::onClick}"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:drawableTop="@drawable/icon_delete"
+                    android:drawablePadding="8dp"
+                    android:gravity="center"
+                    android:paddingVertical="16dp"
+                    android:text="@string/delete_storyboard"
+                    android:textAppearance="@style/Text12"
+                    android:textColor="?attr/textColor3"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/btnDownload" />
+
+                <TextView
+                    android:id="@+id/btnGenerate"
+                    singleClick="@{layout.clickHandler::onClick}"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:layout_marginEnd="13dp"
+                    android:background="@drawable/selector_common_button"
+                    android:drawableStart="@drawable/icon_synthesis"
+                    android:drawablePadding="4dp"
+                    android:gravity="center"
+                    android:paddingHorizontal="12dp"
+                    android:text="@string/compose"
+                    android:textAppearance="@style/Text14"
+                    android:textColor="?attr/textColor1"
+                    app:layout_constraintBottom_toBottomOf="@+id/tvTitle"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/tvTitle" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.kuaigeglobal.epnova.widget.LoadStateViewHolder>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <com.kuaigeglobal.epnova.widget.StatusBarView
+                android:id="@+id/statusBar1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/btnBack"
+                singleClick="@{(v)->layout.back()}"
+                android:layout_width="@dimen/action_bar_size"
+                android:layout_height="@dimen/action_bar_size"
+                android:paddingStart="12dp"
+                android:paddingEnd="8dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/icon_back_left"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/statusBar1" />
+        </LinearLayout>
+
+    </FrameLayout>
+</layout>

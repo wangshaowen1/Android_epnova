@@ -1,0 +1,63 @@
+{
+  "project_info": {
+    "project_number": "707414526754",
+    "project_id": "droptune-468207",
+    "storage_bucket": "droptune-468207.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:707414526754:android:19f95a16fe61e73a4ab37b",
+        "android_client_info": {
+          "package_name": "com.kuaigeglobal.epnova"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "707414526754-2f9285e8rsekh8t38n4e7r32qvliks0e.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.kuaigeglobal.epnova",
+            "certificate_hash": "d6495b5cd27749aecd34e58d470e1e2680159c73"
+          }
+        },
+        {
+          "client_id": "707414526754-v82dbntprnkejroek18qm3fgkr9qd261.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.kuaigeglobal.epnova",
+            "certificate_hash": "da66fb6ad7d3e42c69751c972bd64cc076d20b03"
+          }
+        },
+        {
+          "client_id": "707414526754-o32uj00k6kh4v540ncerse069nf112c0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyASyFvsQfOctdsi6ss4JAz-KIRq2bE0CeE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "707414526754-o32uj00k6kh4v540ncerse069nf112c0.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "707414526754-qehbabj7fh83pqforcu97jki35ou136r.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.kuaigeglobal.epnova",
+                "app_store_id": "6749748976"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="item"
+            type="com.kuaigeglobal.epnova.feature.series.ItemSeriesEpisodeVM" />
+
+        <import type="android.view.View" />
+
+        <import type="com.kuaigeglobal.epnova.core.network.apis.entity.EpisodeInfo" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="6dp"
+        android:layout_marginBottom="12dp"
+        android:onClick="@{(v)->item.onClick()}">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/ivCover"
+            loadUri="@{item.data.workCoverUrl}"
+            placeHolder="@{@drawable/img_default_cover_3_4}"
+            setVisible="@{!item.data.notCreated}"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:scaleType="centerCrop"
+            android:visibility="@{item.data.notCreated ? View.INVISIBLE : View.VISIBLE}"
+            app:layout_constraintDimensionRatio="107:142"
+            app:layout_constraintTop_toTopOf="parent"
+            app:shapeAppearanceOverlay="@style/roundStyle_r8"
+            tools:src="@drawable/img_default_cover_3_4" />
+
+        <com.kuaigeglobal.epnova.widget.BorderConstraintLayout
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:visibility="@{item.data.generating&amp;&amp;item.isView()?View.VISIBLE:View.GONE}"
+            app:backgroundStartColor="@color/mask_opacity_60_dark"
+            app:layout_constraintBottom_toBottomOf="@+id/ivCover"
+            app:layout_constraintEnd_toEndOf="@+id/ivCover"
+            app:layout_constraintStart_toStartOf="@+id/ivCover"
+            app:layout_constraintTop_toTopOf="@+id/ivCover"
+            app:roundCornerRadius="@dimen/radius_m">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableTop="@drawable/icon_ai"
+                android:drawablePadding="12dp"
+                android:gravity="center"
+                android:text="@{item.data.statusCopy}"
+                android:textAppearance="@style/Text12"
+                android:textColor="@color/fixed_white_1"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="视频生成中..." />
+
+        </com.kuaigeglobal.epnova.widget.BorderConstraintLayout>
+
+        <com.kuaigeglobal.epnova.widget.BorderConstraintLayout
+            setVisible="@{item.data.notCreated}"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:backgroundStartColor="?attr/fillColor1"
+            app:borderStartColor="?attr/borderColor2"
+            app:borderWidth="1dp"
+            app:layout_constraintBottom_toBottomOf="@+id/ivCover"
+            app:layout_constraintEnd_toEndOf="@+id/ivCover"
+            app:layout_constraintStart_toStartOf="@+id/ivCover"
+            app:layout_constraintTop_toTopOf="@+id/ivCover"
+            app:roundCornerRadius="@dimen/radius_m">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableTop="@drawable/icon_add"
+                android:drawablePadding="8dp"
+                android:gravity="center"
+                android:text="@string/to_be_created"
+                android:textAppearance="@style/Text12"
+                android:textColor="?attr/textColor3"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </com.kuaigeglobal.epnova.widget.BorderConstraintLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="16dp"
+            android:layout_margin="4dp"
+            android:background="@drawable/bg_fixed_white_1_round"
+            android:gravity="center"
+            android:paddingHorizontal="6dp"
+            android:text="@string/draft"
+            android:textAppearance="@style/Text10"
+            android:textColor="@color/fixed_black_1"
+            android:visibility="@{(item.data.draft&amp;&amp;item.isView())?View.VISIBLE:View.GONE}"
+            app:layout_constraintEnd_toEndOf="@+id/ivCover"
+            app:layout_constraintTop_toTopOf="@+id/ivCover" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="16dp"
+            android:layout_margin="4dp"
+            android:background="@drawable/bg_60_000000_round"
+            android:gravity="center"
+            android:paddingHorizontal="6dp"
+            android:text="@string/waiting_to_synthesize"
+            android:textAppearance="@style/Text10"
+            android:textColor="@color/func_special_dark"
+            android:visibility="@{(item.data.waitingComposing&amp;&amp;item.isView())?View.VISIBLE:View.GONE}"
+            app:layout_constraintEnd_toEndOf="@+id/ivCover"
+            app:layout_constraintTop_toTopOf="@+id/ivCover" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="6dp"
+            android:text="@{item.formatDuration()}"
+            android:textColor="?attr/textColor1"
+            android:textSize="12sp"
+            android:visibility="@{(item.data.isCompleted&amp;&amp;item.isView())?View.VISIBLE:View.GONE}"
+            app:layout_constraintBottom_toBottomOf="@id/ivCover"
+            app:layout_constraintEnd_toEndOf="@id/ivCover"
+            tools:text="03:26" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:ellipsize="end"
+            android:lines="1"
+            android:text="@{@string/episode_number_format(item.data.sortNo)}"
+            android:textAppearance="@style/Text12"
+            android:textColor="?textColor2"
+            app:layout_constraintEnd_toEndOf="@+id/ivCover"
+            app:layout_constraintStart_toStartOf="@+id/ivCover"
+            app:layout_constraintTop_toBottomOf="@+id/ivCover"
+            tools:text="第几集" />
+
+        <ImageView
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginTop="6dp"
+            android:layout_marginEnd="8dp"
+            android:importantForAccessibility="no"
+            android:src="@{item.isSelected()?@drawable/ic_my_work_selected:@drawable/ic_my_work_not_selected}"
+            android:visibility="@{item.isView()?View.GONE:View.VISIBLE}"
+            app:layout_constraintEnd_toEndOf="@id/ivCover"
+            app:layout_constraintTop_toTopOf="@id/ivCover"
+            tools:src="@drawable/ic_my_work_selected" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/actionsheet_divier_height"
+        android:background="?attr/borderColor1" />
+
+    <TextView
+        android:id="@+id/tvAlert"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/actionsheet_button_height"
+        android:gravity="center"
+        android:textColor="?attr/textColor2"
+        style="@style/Text16" />
+</LinearLayout>

@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="item"
+            type="com.kuaigeglobal.epnova.feature.recharge.ItemRechargePowerVM" />
+
+        <import type="com.kuaigeglobal.epnova.R" />
+
+        <import type="android.view.View" />
+    </data>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="6dp"
+        android:layout_marginBottom="2dp">
+
+        <com.kuaigeglobal.epnova.widget.BorderConstraintLayout
+            backgroundColorAttr="@{item.isChecked ? R.attr.bgColor2 : R.attr.bgColor3}"
+            showBorder="@{item.isChecked}"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:onClick="@{(it)->item.onItemClick.invoke(it)}"
+            app:borderCenterColor="@color/gradient_btn_center_dark"
+            app:borderEndColor="@color/gradient_btn_end_dark"
+            app:borderStartColor="@color/gradient_btn_start_dark"
+            app:borderWidth="1.5dp"
+            app:roundCornerRadius="12dp"
+            tools:backgroundStartColor="?attr/bgColor2">
+
+            <androidx.constraintlayout.widget.Placeholder
+                android:id="@+id/scope"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                app:layout_constraintDimensionRatio="107:85"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/ivPower"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginTop="6dp"
+                android:src="@drawable/icon_power"
+                app:layout_constraintBottom_toTopOf="@id/tvGivePower"
+                app:layout_constraintEnd_toStartOf="@+id/tvPower"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toStartOf="@+id/scope"
+                app:layout_constraintTop_toTopOf="@+id/scope"
+                app:layout_constraintVertical_chainStyle="spread" />
+
+            <TextView
+                android:id="@+id/tvPower"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:fontFamily="@font/d_din_pro_600_semibold"
+                android:text="@{item.data.pointNum}"
+                android:textAppearance="@style/Text20"
+                android:textColor="?attr/textColor2"
+                app:layout_constraintBottom_toBottomOf="@+id/ivPower"
+                app:layout_constraintEnd_toEndOf="@+id/scope"
+                app:layout_constraintStart_toEndOf="@+id/ivPower"
+                app:layout_constraintTop_toTopOf="@+id/ivPower"
+                tools:text="500" />
+
+            <TextView
+                android:id="@+id/tvGivePower"
+                setVisible="@{item.data.discountValid}"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{item.data.pointMarketingText}"
+                android:textColor="#9A90FF"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toTopOf="@id/tvPrice"
+                app:layout_constraintEnd_toEndOf="@+id/scope"
+                app:layout_constraintStart_toStartOf="@+id/scope"
+                app:layout_constraintTop_toBottomOf="@id/ivPower"
+                tools:text="+送200算力"
+                tools:visibility="gone" />
+
+            <TextView
+                android:id="@+id/tvPrice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="6dp"
+                android:text="@{`¥`+item.data.pointPrice}"
+                android:textColor="?attr/textColor3"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="@+id/scope"
+                app:layout_constraintEnd_toEndOf="@+id/scope"
+                app:layout_constraintStart_toStartOf="@+id/scope"
+                app:layout_constraintTop_toBottomOf="@id/tvGivePower"
+                tools:text="¥49.99" />
+        </com.kuaigeglobal.epnova.widget.BorderConstraintLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_gradient_discount"
+            android:fontFamily="monospace"
+            android:paddingHorizontal="6dp"
+            android:paddingVertical="3dp"
+            android:text="@{item.discountText}"
+            android:textColor="@color/white"
+            android:textSize="9dp"
+            android:visibility="@{item.data.discountValid?View.VISIBLE:View.INVISIBLE}"
+            tools:text="赠30% 23:59:59" />
+    </FrameLayout>
+</layout>

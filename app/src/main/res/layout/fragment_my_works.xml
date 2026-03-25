@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="layout"
+            type="com.kuaigeglobal.epnova.feature.works.MyWorksViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="?android:windowBackground">
+
+        <com.kuaigeglobal.epnova.widget.StatusBarView
+            android:id="@+id/statusBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/group_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:constraint_referenced_ids="tvTitle,btnEdit"
+            tools:visibility="visible" />
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/groud_edit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:constraint_referenced_ids="tvSelectCount,btnSelectAll,btnComplete,btnDelete"
+            tools:visibility="visible" />
+
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/action_bar_size"
+            android:gravity="center"
+            android:text="@string/my_works"
+            android:textAppearance="@style/Text18"
+            android:textColor="?attr/textColor1"
+            app:layout_constraintTop_toBottomOf="@+id/statusBar" />
+
+        <ImageView
+            android:id="@+id/btnEdit"
+            singleClick="@{layout.clickHandler::onClick}"
+            android:layout_width="54dp"
+            android:layout_height="@dimen/action_bar_size"
+            android:importantForAccessibility="no"
+            android:paddingHorizontal="15dp"
+            android:src="@drawable/icon_edit"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="@+id/tvTitle"
+            app:layout_constraintTop_toTopOf="@+id/tvTitle" />
+
+        <TextView
+            android:id="@+id/tvSelectCount"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/action_bar_size"
+            android:gravity="center"
+            android:textAppearance="@style/Text14"
+            android:textColor="?attr/textColor4"
+            app:layout_constraintTop_toBottomOf="@+id/statusBar"
+            tools:text="已选择 0 个" />
+
+        <TextView
+            android:id="@+id/btnSelectAll"
+            singleClick="@{layout.clickHandler::onClick}"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/action_bar_size"
+            android:gravity="center"
+            android:paddingHorizontal="15dp"
+            android:text="@string/check_all"
+            android:textAppearance="@style/Text14"
+            android:textColor="?attr/textColor3"
+            app:layout_constraintStart_toStartOf="@+id/tvSelectCount"
+            app:layout_constraintTop_toTopOf="@+id/tvSelectCount" />
+
+        <TextView
+            android:id="@+id/btnComplete"
+            singleClick="@{layout.clickHandler::onClick}"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/action_bar_size"
+            android:gravity="center"
+            android:paddingHorizontal="15dp"
+            android:text="@string/complete"
+            android:textAppearance="@style/Text14"
+            android:textColor="?attr/textColor3"
+            app:layout_constraintEnd_toEndOf="@+id/tvSelectCount"
+            app:layout_constraintTop_toTopOf="@+id/tvSelectCount" />
+
+        <com.scwang.smart.refresh.layout.SmartRefreshLayout
+            android:id="@+id/srl"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="@dimen/action_bar_size"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:overScrollMode="never"
+            app:layout_constraintBottom_toTopOf="@+id/btnDelete"
+            app:layout_constraintTop_toBottomOf="@+id/statusBar"
+            app:srlAccentColor="@color/white"
+            app:srlEnablePreviewInEditMode="true"
+            app:srlPrimaryColor="@color/transparent">
+
+            <com.kuaigeglobal.epnova.widget.LoadStateViewHolder
+                android:id="@+id/lsv"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:noData="@string/empty_creation_history">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:clipToPadding="false"
+                    android:overScrollMode="never"
+                    android:paddingHorizontal="9dp"
+                    android:paddingVertical="6dp"
+                    android:scrollbars="none"
+                    app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                    app:spanCount="3"
+                    tools:itemCount="2"
+                    tools:listitem="@layout/item_my_work" />
+            </com.kuaigeglobal.epnova.widget.LoadStateViewHolder>
+        </com.scwang.smart.refresh.layout.SmartRefreshLayout>
+
+        <LinearLayout
+            android:id="@+id/btnDelete"
+            singleClick="@{layout.clickHandler::onClick}"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/main_bottom_nav_height"
+            android:gravity="center"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/icon_delete_red"
+                android:drawablePadding="8dp"
+                android:text="@string/del"
+                android:textAppearance="@style/Text14"
+                android:textColor="?attr/funcColorFailure" />
+        </LinearLayout>
+
+        <com.kuaigeglobal.epnova.widget.MoveFrameLayout
+            android:id="@+id/floating_ball"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|bottom"
+            android:layout_marginBottom="14dp"
+            android:padding="@dimen/spacing_m"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <ImageView
+                android:id="@+id/ivFloating"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:importantForAccessibility="no"
+                android:src="@drawable/img_floating" />
+        </com.kuaigeglobal.epnova.widget.MoveFrameLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

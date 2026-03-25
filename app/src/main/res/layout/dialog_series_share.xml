@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="layout"
+            type="com.kuaigeglobal.epnova.feature.series.share.SeriesShareViewModel" />
+
+        <import type="android.view.View" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_f5f5f5_tr24"
+        android:clickable="true"
+        android:focusable="true">
+
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/share_to"
+            android:textColor="@color/textColorPrimary"
+            android:textSize="16dp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/btnWx"
+            singleClick="@{layout.clickHandler::onClick}"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="36dp"
+            android:layout_marginBottom="50dp"
+            android:drawableTop="@drawable/ic_share_wx_light"
+            android:drawablePadding="9dp"
+            android:gravity="center"
+            android:text="@string/wechat"
+            android:textColor="@color/textColorPrimary"
+            android:textSize="12dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvTitle"
+            app:layout_constraintWidth_percent="0.208" />
+
+        <TextView
+            android:id="@+id/btnPyq"
+            singleClick="@{layout.clickHandler::onClick}"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:drawableTop="@drawable/ic_share_pyq_light"
+            android:drawablePadding="9dp"
+            android:gravity="center"
+            android:text="@string/wechat_moments"
+            android:textColor="@color/textColorPrimary"
+            android:textSize="12dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/btnCopy"
+            app:layout_constraintStart_toEndOf="@+id/btnWx"
+            app:layout_constraintTop_toTopOf="@+id/btnWx"
+            app:layout_constraintWidth_percent="0.208" />
+
+        <TextView
+            android:id="@+id/btnCopy"
+            singleClick="@{layout.clickHandler::onClick}"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:drawableTop="@drawable/ic_share_copy_light"
+            android:drawablePadding="9dp"
+            android:gravity="center"
+            android:text="@string/copy_link"
+            android:textColor="@color/textColorPrimary"
+            android:textSize="12dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/btnReport"
+            app:layout_constraintStart_toEndOf="@+id/btnPyq"
+            app:layout_constraintTop_toTopOf="@+id/btnWx"
+            app:layout_constraintWidth_percent="0.208" />
+
+        <TextView
+            android:id="@+id/btnReport"
+            singleClick="@{layout.clickHandler::onClick}"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:drawableTop="@drawable/ic_share_report_light"
+            android:drawablePadding="9dp"
+            android:gravity="center"
+            android:text="@string/report"
+            android:textColor="@color/textColorPrimary"
+            android:textSize="12dp"
+            android:visibility="@{layout.isMine ? View.INVISIBLE : View.VISIBLE}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/btnWx"
+            app:layout_constraintWidth_percent="0.208" />
+
+        <FrameLayout
+            setVisible="@{layout.loading}"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:clickable="true"
+            android:focusable="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <include
+                layout="@layout/progress_bar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center" />
+
+        </FrameLayout>
+
+        <ImageView
+            singleClick="@{() -> layout.dismiss()}"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_marginEnd="8dp"
+            android:padding="16dp"
+            android:src="@drawable/ic_light_dialog_close"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

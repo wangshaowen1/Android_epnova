@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?><!--欢迎页-->
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="layout"
+            type="com.kuaigeglobal.epnova.feature.splash.newer.GuideStep4ViewModel" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.kuaigeglobal.epnova.widget.AutoResizeImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/bg_newcomer_short2" />
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="120dp">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="68dp"
+                    android:src="@drawable/img_success"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/bgVideo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="116dp"
+                    android:src="@drawable/img_short_map"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    style="@style/Text16"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_l"
+                    android:text="@{`《`+layout.example.workTitle+`》`}"
+                    android:textColor="@color/white"
+                    app:layout_constraintEnd_toEndOf="@id/bgVideo"
+                    app:layout_constraintStart_toStartOf="@id/bgVideo"
+                    app:layout_constraintTop_toTopOf="@id/bgVideo"
+                    tools:text="《我的邻居是总裁大佬》" />
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/llPlayerView"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/spacing_m"
+                    android:layout_marginTop="56dp"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="0dp"
+                    app:cardPreventCornerOverlap="false"
+                    app:layout_constraintEnd_toEndOf="@id/bgVideo"
+                    app:layout_constraintStart_toStartOf="@id/bgVideo"
+                    app:layout_constraintTop_toTopOf="@id/bgVideo">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <androidx.media3.ui.PlayerView
+                            android:id="@+id/playerView"
+                            player="@{layout.player}"
+                            setDimensionRatio="@{`16:9`}"
+                            android:layout_width="0dp"
+                            android:layout_height="0dp"
+                            android:background="@color/transparent"
+                            android:onClick="@{(v)->layout.play()}"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:shutter_background_color="@color/transparent"
+                            tools:layout_constraintDimensionRatio="16:9" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </androidx.cardview.widget.CardView>
+
+                <!--                <ImageView-->
+                <!--                    android:id="@+id/btnPlay"-->
+                <!--                    setVisible="@{!layout.playing}"-->
+                <!--                    android:layout_width="60dp"-->
+                <!--                    android:layout_height="60dp"-->
+                <!--                    android:src="@drawable/icon_play12"-->
+                <!--                    app:layout_constraintBottom_toBottomOf="@id/llPlayerView"-->
+                <!--                    app:layout_constraintEnd_toEndOf="@id/llPlayerView"-->
+                <!--                    app:layout_constraintStart_toStartOf="@id/llPlayerView"-->
+                <!--                    app:layout_constraintTop_toTopOf="@id/llPlayerView" />-->
+
+                <TextView
+                    style="@style/Text13"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/spacing_m"
+                    android:layout_marginTop="@dimen/spacing_m"
+                    android:layout_marginBottom="@dimen/spacing_l"
+                    android:ellipsize="end"
+                    android:maxLines="2"
+                    android:text="@{layout.example.workDesc}"
+                    android:textColor="?attr/textColor2"
+                    app:layout_constraintBottom_toBottomOf="@id/bgVideo"
+                    app:layout_constraintEnd_toEndOf="@id/bgVideo"
+                    app:layout_constraintStart_toStartOf="@id/bgVideo"
+                    app:layout_constraintTop_toBottomOf="@id/llPlayerView"
+                    tools:text="普通居民楼的楼道里，阳光透过窗户洒进，落在干净的台阶上，女主抱着快递盒，不小心脱手，物品散落一地。这时身旁房门打开，深蓝色长发束起的男子缓步走出，穿着简约的浅灰色休闲装，身姿挺拔，面容清俊温和，没有丝毫张扬气场，看起来就是再普通不过的邻居。他停下脚步，没有多余言语，默默弯腰帮女主捡拾物品，动作轻柔利落，目光平静温和，没有多余情绪，递回物品时只是淡淡点头示意，声音低沉平缓：“小心点。”全程客气疏离，没有多余攀谈，转身便走进楼道，背影平淡无奇，完全看不出隐藏的强悍实力，背景是普通居民楼的日常场景，氛围温馨平淡，突出极致的反差铺垫" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="30dp"
+                    android:src="@drawable/img_one_stop_separation"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/bgVideo" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.core.widget.NestedScrollView>
+
+        <ImageView
+            android:id="@+id/btnNext"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="34dp"
+            android:src="@drawable/guide_common_button"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            style="@style/Text18"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/start_creation_monetization"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="@id/btnNext"
+            app:layout_constraintEnd_toEndOf="@id/btnNext"
+            app:layout_constraintStart_toStartOf="@id/btnNext"
+            app:layout_constraintTop_toTopOf="@id/btnNext" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

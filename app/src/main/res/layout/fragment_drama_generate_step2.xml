@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="layout"
+            type="com.kuaigeglobal.epnova.feature.creator.generate.DramaGenerateStep2ViewModel" />
+
+        <import type="android.view.View" />
+
+        <import type="android.text.TextUtils" />
+
+        <import type="com.kuaigeglobal.epnova.feature.creator.data.DramaGenerateConstants" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/rootLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:keepScreenOn="true">
+
+        <TextView
+            android:id="@+id/tvTopTitle"
+            style="@style/Text14"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_l"
+            android:layout_marginTop="20dp"
+            android:text="@string/story_content"
+            android:textColor="?attr/textColor1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginHorizontal="@dimen/spacing_l"
+            android:layout_marginTop="@dimen/spacing_m"
+            android:layout_marginBottom="38dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_fill_color_1_r8"
+            app:layout_constraintBottom_toTopOf="@id/btnNext"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvTopTitle">
+
+            <androidx.core.widget.NestedScrollView
+                android:id="@+id/scrollContainer"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginBottom="@dimen/spacing_m"
+                android:fillViewport="true"
+                app:layout_constraintBottom_toTopOf="@id/llBottom"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tvEpisodeTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="@dimen/spacing_m"
+                        android:layout_marginTop="@dimen/spacing_m"
+                        android:text="@{layout.episodeTitle}"
+                        android:textColor="?attr/textColor2"
+                        android:textColorHint="?attr/textColor4"
+                        android:textSize="14sp"
+                        android:visibility="@{layout.model!=DramaGenerateConstants.MODEL_STORY_SINGLE&amp;&amp;layout.outputComplete?View.VISIBLE:View.GONE}"
+                        tools:text="《时代之光》第1集"
+                        tools:visibility="invisible" />
+
+                    <EditText
+                        android:id="@+id/inputView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@null"
+                        android:cursorVisible="false"
+                        android:enabled="@{!layout.isScriptLoading()}"
+                        android:focusable="false"
+                        android:gravity="top|start"
+                        android:maxLength="@{layout.maxInputLength}"
+                        android:minHeight="200dp"
+                        android:padding="@dimen/spacing_m"
+                        android:textColor="?attr/textColor2"
+                        android:textColorHint="?attr/textColor4"
+                        android:textSize="14sp" />
+                </LinearLayout>
+            </androidx.core.widget.NestedScrollView>
+
+            <LinearLayout
+                singleClick="@{layout.clickHandler::onClick}"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:visibility="@{layout.outputFail?View.VISIBLE:View.GONE}"
+                app:layout_constraintBottom_toBottomOf="@id/scrollContainer"
+                app:layout_constraintEnd_toEndOf="@id/scrollContainer"
+                app:layout_constraintStart_toStartOf="@id/scrollContainer"
+                app:layout_constraintTop_toTopOf="@id/scrollContainer">
+
+                <ImageView
+                    android:layout_width="84dp"
+                    android:layout_height="84dp"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/ic_loading_fail" />
+
+                <TextView
+                    style="@style/Text14"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:text="@string/generation_failed"
+                    android:textColor="?attr/textColor4" />
+
+                <TextView
+                    android:id="@+id/retry_btn"
+                    style="@style/Button.Bold"
+                    singleClick="@{layout.clickHandler::onClick}"
+                    android:layout_width="wrap_content"
+                    android:layout_height="36dp"
+                    android:layout_marginTop="24dp"
+                    android:background="@drawable/btn_theme1_r50"
+                    android:gravity="center"
+                    android:paddingHorizontal="40dp"
+                    android:text="@string/retry"
+                    android:textColor="@color/white"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                setVisible="@{layout.isScriptLoading()}"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:gravity="center"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <com.airbnb.lottie.LottieAnimationView
+                    android:id="@+id/loading_image"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    app:lottie_autoPlay="true"
+                    app:lottie_fileName="loading_ball/loading_ball.json"
+                    app:lottie_imageAssetsFolder="loading_ball/images"
+                    app:lottie_loop="true"
+                    app:lottie_repeatMode="reverse" />
+
+                <TextView
+                    style="@style/Text16"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_m"
+                    android:text="@string/generating_story_script"
+                    android:textColor="?attr/textColor1" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_m"
+                    android:gravity="center">
+
+                    <TextView
+                        style="@style/Text13"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/estimated_time_remaining"
+                        android:textColor="?attr/textColor4" />
+
+                    <TextView
+                        style="@style/Text13"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/estimated_duration_2_3m"
+                        android:textColor="?attr/textColor1"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <TextView
+                    style="@style/Text13"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="@string/ai_generation_continues_on_exit"
+                    android:textColor="?attr/textColor4" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/llBottom"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:visibility="@{layout.outputComplete?View.VISIBLE:View.GONE}"
+                app:layout_constraintBottom_toBottomOf="@id/tvContentLength"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/tvContentLength">
+
+                <TextView
+                    android:id="@+id/btnRegenerate"
+                    style="@style/Text12"
+                    singleClick="@{layout.clickHandler::onClick}"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/spacing_m"
+                    android:background="@drawable/bg_fill_color_3_r50"
+                    android:drawablePadding="@dimen/spacing_xs"
+                    android:gravity="center_vertical"
+                    android:includeFontPadding="false"
+                    android:paddingHorizontal="@dimen/spacing_s"
+                    android:paddingVertical="@dimen/spacing_xs"
+                    android:text="@string/regenerate"
+                    android:textColor="?attr/textColor2"
+                    app:drawableStartCompat="@drawable/icon_refresh_1_12" />
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="18dp"
+                    android:layout_marginHorizontal="@dimen/spacing_s"
+                    android:background="?attr/borderColor2"
+                    android:visibility="@{layout.input.length()>0?View.VISIBLE:View.GONE}" />
+
+                <ImageView
+                    android:id="@+id/btnDelete"
+                    singleClick="@{layout.clickHandler::onClick}"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:padding="4dp"
+                    android:src="@drawable/icon_delete"
+                    android:visibility="@{layout.input.length()>0?View.VISIBLE:View.GONE}" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvContentLength"
+                style="@style/Text12"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/spacing_m"
+                android:layout_marginBottom="@dimen/spacing_l"
+                android:text="@{layout.input.length()+`/`+layout.maxInputLength}"
+                android:textColor="@{layout.getLimitColor(layout.input.length)}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                tools:text="0/5000" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <Button
+            android:id="@+id/btnNext"
+            style="@style/Button.Bold"
+            singleClick="@{layout.clickHandler::onClick}"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:layout_marginHorizontal="@dimen/spacing_l"
+            android:layout_marginBottom="30dp"
+            android:enabled="@{layout.nextStepEnabled&amp;&amp;layout.input.length()>0}"
+            android:text="@string/next_create_assets"
+            app:layout_constraintBottom_toBottomOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

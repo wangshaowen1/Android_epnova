@@ -1,0 +1,30 @@
+/**
+ * ProjectName: DesktopPet
+ * Author: Xie
+ * 说明: 1,项目基础配置文件,项目中用的到的第三方sdk都应该在这里申明
+ *      2,理论上每个包都应该对应一个gradle配置
+ * CreateDate: 2020/3/17 9:37
+ * UpdateUser:
+ * UpdateDate: 2020/3/17 9:37
+ * Version:  1.0
+ */
+ext {
+
+    /**
+     * gradle配置
+     */
+    android = [
+            compileSdkVersion : 35,
+            applicationId     : "com.kuaigeglobal.epnova",
+            minSdkVersion     : 24,
+            targetSdkVersion  : 35,
+            buildToolsVersion : "35.0.0",
+            versionCodeRelease: 1,
+            versionCodeDebug  : 1,
+            //版本名称
+            versionName       : "1.0.0",
+
+            //数据库版本号
+            databaseVersion   : 100000
+    ]
+}

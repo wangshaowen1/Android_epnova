@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="layout"
+            type="com.kuaigeglobal.epnova.feature.creator.set.VideoSetViewModel" />
+
+        <import type="android.view.View" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_color2_tr20"
+        android:orientation="vertical"
+        android:paddingHorizontal="@dimen/spacing_l">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_m">
+
+            <TextView
+                android:id="@+id/title"
+                style="@style/Text16"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/create_work"
+                android:textColor="?attr/textColor1" />
+
+            <ImageView
+                android:id="@+id/close"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|end"
+                android:onClick="@{()->layout.dismiss()}"
+                android:padding="3dp"
+                android:src="@drawable/icon_close" />
+        </FrameLayout>
+
+        <TextView
+            style="@style/Text12"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/spacing_xs"
+            android:text="@string/auto_generate_video_description"
+            android:textColor="?attr/textColor4" />
+
+        <TextView
+            android:id="@+id/tvSubtitle"
+            style="@style/Text14"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_xl"
+            android:text="@string/work_title"
+            android:textColor="?attr/textColor1"
+            android:textStyle="bold" />
+
+        <com.kuaigeglobal.epnova.widget.CounterInputLayout
+            android:id="@+id/nameInputer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_m"
+            android:background="@drawable/bg_fill_color_1_r8"
+            app:inputCounterGravity="right"
+            app:inputCounterRightMargin="0dp"
+            app:inputCounterTextColor="?attr/textColor4"
+            app:inputCounterTextSize="12sp"
+            app:inputCounterVisible="true"
+            app:inputHint="@string/name_your_creation"
+            app:inputHorizontalPadding="@dimen/spacing_m"
+            app:inputMaxLength="20"
+            app:inputMaxLines="1"
+            app:inputTextColor="?attr/textColor2"
+            app:inputTextColorHint="?attr/textColor4"
+            app:inputTextSize="14sp"
+            app:inputVerticalPadding="@dimen/spacing_m"
+            app:layout_constraintTop_toBottomOf="@id/tvSubtitle" />
+
+        <TextView
+            style="@style/Text14"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="@string/total_episodes"
+            android:textColor="?attr/textColor1"
+            android:textStyle="bold" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_m"
+            android:adapter="@{layout.mEpisodeAdapterVm.MAdapter}"
+            android:orientation="horizontal"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/item_series_count" />
+
+        <TextView
+            style="@style/Text14"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="@string/video_aspect_ratio"
+            android:textColor="?attr/textColor1"
+            android:textStyle="bold" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/videoRatioRv"
+            setGridLayoutManager="@{2}"
+            setItemDecoration="@{layout.mRatioAdapterVm.MItemDecoration}"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_m"
+            android:adapter="@{layout.mRatioAdapterVm.MAdapter}"
+            tools:itemCount="1"
+            tools:listitem="@layout/item_video_ratio" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp">
+
+            <TextView
+                style="@style/Text14"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="@string/select_style"
+                android:textColor="?attr/textColor1"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/btnAllStyle"
+                style="@style/Text12"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|center_vertical"
+                android:drawableEnd="@drawable/arrow_right_gray48"
+                android:text="@string/view_all"
+                android:textColor="?attr/textColor4" />
+        </FrameLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_m"
+            android:adapter="@{layout.MStyleAdapterVm.MAdapter}"
+            android:orientation="horizontal"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/item_creation_style" />
+
+        <!-- 保存按钮 -->
+        <Button
+            android:id="@+id/btnConfirm"
+            style="@style/Button.Bold"
+            android:layout_width="match_parent"
+            android:layout_marginTop="37dp"
+            android:layout_marginBottom="30dp"
+            android:text="@string/start_creating"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+    </LinearLayout>
+</layout>

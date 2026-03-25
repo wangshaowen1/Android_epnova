@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="step"
+            type="Integer" />
+
+        <variable
+            name="startFrom"
+            type="Integer" />
+
+        <import type="android.view.View" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:paddingHorizontal="@dimen/spacing_m">
+
+        <TextView
+            android:id="@+id/step1_indicator"
+            foregroundLevel='@{step != null ? (step > 1 ? 1 : 0) : 0}'
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:background="@drawable/selector_step_circle"
+            android:foreground="@drawable/fg_step_check"
+            android:gravity="center"
+            android:selected="@{step != null ? step == 1 : false}"
+            android:text="1"
+            android:textColor="@color/sel_text1_text4"
+            android:textSize="12sp"
+            android:visibility='@{(startFrom != null &amp;&amp; startFrom == 2) ? View.GONE : View.VISIBLE}'
+            app:layout_constraintEnd_toEndOf="@+id/step1_text"
+            app:layout_constraintStart_toStartOf="@+id/step1_text"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/step1_text"
+            style="@style/Text12"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:selected="@{step != null ? step == 1 : false}"
+            android:text="@string/story_synopsis"
+            android:textColor="@color/sel_text1_text4"
+            android:visibility='@{(startFrom != null &amp;&amp; startFrom == 2) ? View.GONE : View.VISIBLE}'
+            app:layout_constraintEnd_toStartOf="@+id/step2_text"
+            app:layout_constraintHorizontal_chainStyle="spread_inside"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/step1_indicator" />
+
+        <View
+            android:id="@+id/line1"
+            android:layout_width="0dp"
+            android:layout_height="2dp"
+            android:layout_marginHorizontal="@dimen/spacing_s"
+            android:background="@drawable/shape_dashed_line"
+            android:layerType="software"
+            android:visibility='@{(startFrom != null &amp;&amp; startFrom == 2) ? View.GONE : View.VISIBLE}'
+            app:layout_constraintBottom_toBottomOf="@id/step1_indicator"
+            app:layout_constraintEnd_toStartOf="@id/step2_indicator"
+            app:layout_constraintStart_toEndOf="@id/step1_indicator"
+            app:layout_constraintTop_toTopOf="@id/step1_indicator" />
+
+        <TextView
+            android:id="@+id/step2_indicator"
+            foregroundLevel='@{step != null ? (step > 2 ? 1 : 0) : 0}'
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:background="@drawable/selector_step_circle"
+            android:foreground="@drawable/fg_step_check"
+            android:gravity="center"
+            android:selected='@{step != null ? step == 2 : false}'
+            android:text='@{String.valueOf((startFrom != null &amp;&amp; startFrom == 2) ? 1 : 2)}'
+            android:textColor="@color/sel_text1_text4"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="@+id/step2_text"
+            app:layout_constraintStart_toStartOf="@+id/step2_text"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/step2_text"
+            style="@style/Text12"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:selected='@{step != null ? step == 2 : false}'
+            android:text="@string/story_script"
+            android:textColor="@color/sel_text1_text4"
+            app:layout_constraintEnd_toStartOf="@+id/step3_text"
+            app:layout_constraintStart_toEndOf="@id/step1_text"
+            app:layout_constraintTop_toBottomOf="@id/step2_indicator" />
+
+        <View
+            android:id="@+id/line2"
+            android:layout_width="0dp"
+            android:layout_height="2dp"
+            android:layout_marginHorizontal="@dimen/spacing_s"
+            android:background="@drawable/shape_dashed_line"
+            android:layerType="software"
+            app:layout_constraintBottom_toBottomOf="@id/step2_indicator"
+            app:layout_constraintEnd_toStartOf="@id/step3_indicator"
+            app:layout_constraintStart_toEndOf="@id/step2_indicator"
+            app:layout_constraintTop_toTopOf="@id/step2_indicator" />
+
+        <TextView
+            android:id="@+id/step3_indicator"
+            foregroundLevel='@{step != null ? (step > 3 ? 1 : 0) : 0}'
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:background="@drawable/selector_step_circle"
+            android:foreground="@drawable/fg_step_check"
+            android:gravity="center"
+            android:selected='@{step != null ? step == 3 : false}'
+            android:text='@{String.valueOf((startFrom != null &amp;&amp; startFrom == 2) ? 2 : 3)}'
+            android:textColor="@color/sel_text1_text4"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="@+id/step3_text"
+            app:layout_constraintStart_toStartOf="@+id/step3_text"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/step3_text"
+            style="@style/Text12"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:selected='@{step != null ? step == 3 : false}'
+            android:text="@string/asset_management"
+            android:textColor="@color/sel_text1_text4"
+            app:layout_constraintEnd_toStartOf="@+id/step4_text"
+            app:layout_constraintStart_toEndOf="@id/step2_text"
+            app:layout_constraintTop_toBottomOf="@id/step3_indicator" />
+
+        <View
+            android:id="@+id/line3"
+            android:layout_width="0dp"
+            android:layout_height="2dp"
+            android:layout_marginHorizontal="@dimen/spacing_s"
+            android:background="@drawable/shape_dashed_line"
+            android:layerType="software"
+            app:layout_constraintBottom_toBottomOf="@id/step3_indicator"
+            app:layout_constraintEnd_toStartOf="@id/step4_indicator"
+            app:layout_constraintStart_toEndOf="@id/step3_indicator"
+            app:layout_constraintTop_toTopOf="@id/step3_indicator" />
+
+        <TextView
+            android:id="@+id/step4_indicator"
+            foregroundLevel='@{step != null ? (step > 4 ? 1 : 0) : 0}'
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:background="@drawable/selector_step_circle"
+            android:foreground="@drawable/fg_step_check"
+            android:gravity="center"
+            android:selected='@{step != null ? step == 4 : false}'
+            android:text='@{String.valueOf((startFrom != null &amp;&amp; startFrom == 2) ? 3 : 4)}'
+            android:textColor="@color/sel_text1_text4"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="@+id/step4_text"
+            app:layout_constraintStart_toStartOf="@+id/step4_text"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/step4_text"
+            style="@style/Text12"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:selected='@{step != null ? step == 4 : false}'
+            android:text="@string/storyboard_design"
+            android:textColor="@color/sel_text1_text4"
+            app:layout_constraintEnd_toStartOf="@+id/step5_text"
+            app:layout_constraintStart_toEndOf="@id/step3_text"
+            app:layout_constraintTop_toBottomOf="@id/step4_indicator" />
+
+        <View
+            android:id="@+id/line4"
+            android:layout_width="0dp"
+            android:layout_height="2dp"
+            android:layout_marginHorizontal="@dimen/spacing_s"
+            android:background="@drawable/shape_dashed_line"
+            android:layerType="software"
+            app:layout_constraintBottom_toBottomOf="@id/step4_indicator"
+            app:layout_constraintEnd_toStartOf="@id/step5_indicator"
+            app:layout_constraintStart_toEndOf="@id/step4_indicator"
+            app:layout_constraintTop_toTopOf="@id/step4_indicator" />
+
+        <TextView
+            android:id="@+id/step5_indicator"
+            foregroundLevel='@{step != null ? (step > 5 ? 1 : 0) : 0}'
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:background="@drawable/selector_step_circle"
+            android:foreground="@drawable/fg_step_check"
+            android:gravity="center"
+            android:selected='@{step != null ? step == 5 : false}'
+            android:text='@{String.valueOf((startFrom != null &amp;&amp; startFrom == 2) ? 4 : 5)}'
+            android:textColor="@color/sel_text1_text4"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="@+id/step5_text"
+            app:layout_constraintStart_toStartOf="@+id/step5_text"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/step5_text"
+            style="@style/Text12"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:selected='@{step != null ? step == 5 : false}'
+            android:text="@string/storyboard_preview"
+            android:textColor="@color/sel_text1_text4"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/step4_text"
+            app:layout_constraintTop_toBottomOf="@id/step5_indicator" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

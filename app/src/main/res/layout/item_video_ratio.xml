@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="item"
+            type="com.kuaigeglobal.epnova.feature.creator.set.ItemVideoConfigVm" />
+
+        <import type="android.view.View" />
+    </data>
+
+    <com.kuaigeglobal.epnova.widget.BorderConstraintLayout
+        selected="@{item.checked}"
+        android:layout_width="match_parent"
+        android:layout_height="66dp"
+        android:background="@drawable/selector_item_stroke"
+        android:onClick="@{(v)->item.onItemClick.invoke(v)}"
+        app:borderEndColor="@color/gradient_btn_end_dark"
+        app:borderStartColor="@color/gradient_btn_start_dark"
+        app:borderWidth="1.5dp"
+        app:roundCornerRadius="@dimen/radius_m"
+        app:showBorder="@{item.checked}">
+
+        <ImageView
+            android:id="@+id/llImage"
+            loadUri="@{item.data.extraConfig}"
+            android:layout_width="37dp"
+            android:layout_height="37dp"
+            android:layout_gravity="center"
+            android:layout_marginStart="20dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/tvName"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tvName"
+            style="@style/Text14"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_m"
+            android:text="@{item.data.configName}"
+            android:textColor="?attr/textColor2"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@id/tvValue"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/llImage"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed"
+            tools:text="横屏" />
+
+        <TextView
+            android:id="@+id/tvValue"
+            style="@style/Text14"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="@{item.data.configValue}"
+            android:textColor="?attr/textColor3"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/tvName"
+            app:layout_constraintStart_toStartOf="@id/tvName"
+            app:layout_constraintTop_toBottomOf="@id/tvName"
+            tools:text="9:16" />
+    </com.kuaigeglobal.epnova.widget.BorderConstraintLayout>
+</layout>

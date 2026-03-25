@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_2a2a2b_r20"
+    android:padding="20dp">
+
+
+    <TextView
+        android:id="@+id/tvContent"
+        style="@style/Text14"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:lineSpacingExtra="@dimen/lineSpacingExtra"
+        android:textColor="?attr/textColor3"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="阅读并同意《中国移动认证服务条款》以及《用户协议》和《隐私政策》" />
+
+    <LinearLayout
+        android:id="@+id/ll_menu"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvContent">
+
+        <TextView
+            android:id="@+id/btnReject"
+            style="@style/Text16"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/btn_common_cancel"
+            android:gravity="center"
+            android:text="@string/app_not_agree_and_quit"
+            android:textColor="?attr/textColor2" />
+
+        <Button
+            android:id="@+id/btnAgree"
+            style="@style/Text16"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="16dp"
+            android:layout_weight="1"
+            android:background="@drawable/gradient_button_bg_r50"
+            android:gravity="center"
+            android:text="@string/app_agree_and_sign_in"
+            android:textColor="?attr/textColor1"
+            android:textSize="14sp" />
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

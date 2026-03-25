@@ -1,0 +1,88 @@
+[versions]
+agp = "8.13.0"
+androidxCoreSplashscreen = "1.0.1"
+androidxDatabindingCommon = "8.13.0"
+annotation = "1.9.1"
+appcompat = "1.7.1"
+cameraview = "2.7.2"
+constraintlayout = "2.2.1"
+coreKtx = "1.16.0"
+espressoCore = "3.7.0"
+fragmentKtx = "1.8.9"
+gestureViews = "2.8.3"
+glide = "4.16.0"
+glideExtra = "4.16.0"
+immersionbar = "3.2.2"
+jsoup = "1.21.2"
+kotlin = "2.2.10"
+junit = "4.13.2"
+junitVersion = "1.3.0"
+imagezoom = "1.0.4"
+kotlinxCoroutinesAndroid = "1.10.2"#3.0.0
+kotlinxSerializationJson = "1.9.0"
+legacySupportV4Version = "1.0.0"
+lifecycleLivedataKtx = "2.10.0"
+lifecycleViewmodelKtx = "2.10.0"
+material = "1.13.0"
+multidexVersion = "2.0.1"
+recyclerviewVersion = "1.4.0"
+refreshHeaderClassics = "2.0.1"
+refreshFooterClassics = "2.0.1"
+refreshLayoutKernel = "2.0.1"
+retrofit = "2.11.0"
+rxbinding = "2.2.0"
+rxjava = "2.2.21"
+squareupOkhttp = "4.12.0"
+ultraPtr = "1.0.11"
+utilcodex = "1.31.1"
+playServicesAdsIdentifier = "18.2.0"
+playServicesAuth = "21.4.0"
+
+[libraries]
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+androidx-annotation = { module = "androidx.annotation:annotation", version.ref = "annotation" }
+androidx-constraintlayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "constraintlayout" }
+androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-databinding-common = { module = "androidx.databinding:databinding-common", version.ref = "androidxDatabindingCommon" }
+androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+androidx-fragment-ktx = { module = "androidx.fragment:fragment-ktx", version.ref = "fragmentKtx" }
+androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
+androidx-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "lifecycleViewmodelKtx" }
+androidx-lifecycle-livedata-ktx = { module = "androidx.lifecycle:lifecycle-livedata-ktx", version.ref = "lifecycleLivedataKtx" }
+androidx-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "androidxCoreSplashscreen" }
+blankj-utilcodex = { module = "com.blankj:utilcodex", version.ref = "utilcodex" }
+cameraview = { module = "com.otaliastudios:cameraview", version.ref = "cameraview" }
+gesture-views = { module = "com.alexvasilkov:gesture-views", version.ref = "gestureViews" }
+glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
+glide-compiler = { module = "com.github.bumptech.glide:compiler", version.ref = "glideExtra" }
+glide-okhttp3-integration = { module = "com.github.bumptech.glide:okhttp3-integration", version.ref = "glideExtra" }
+glide-avif-integration = { module = "com.github.bumptech.glide:avif-integration", version.ref = "glideExtra" }
+immersionbar = { module = "com.geyifeng.immersionbar:immersionbar", version.ref = "immersionbar" }
+imagezoom = { module = "it.sephiroth.android.library.imagezoom:library", version.ref = "imagezoom" }
+jsoup = { module = "org.jsoup:jsoup", version.ref = "jsoup" }
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinxCoroutinesAndroid" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
+legacy-support-v4 = { module = "androidx.legacy:legacy-support-v4", version.ref = "legacySupportV4Version" }
+okhttp3-okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "squareupOkhttp" }
+okhttp3-sse = { module = "com.squareup.okhttp3:okhttp-sse", version.ref = "squareupOkhttp" }
+okhttp3-logging-interceptor = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "squareupOkhttp" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+multidex = { module = "androidx.multidex:multidex", version.ref = "multidexVersion" }
+recyclerview = { module = "androidx.recyclerview:recyclerview", version.ref = "recyclerviewVersion" }
+refresh-layout-kernel = { module = "com.scwang.smart:refresh-layout-kernel", version.ref = "refreshLayoutKernel" }
+refresh-footer-classics = { module = "com.scwang.smart:refresh-footer-classics", version.ref = "refreshFooterClassics" }
+refresh-header-classics = { module = "com.scwang.smart:refresh-header-classics", version.ref = "refreshHeaderClassics" }
+retrofit2-retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
+retrofit2-converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofit" }
+retrofit2-adapter-rxjava2 = { module = "com.squareup.retrofit2:adapter-rxjava2", version.ref = "retrofit" }
+rxbinding = { module = "com.jakewharton.rxbinding2:rxbinding", version.ref = "rxbinding" }
+rxjava = { module = "io.reactivex.rxjava2:rxjava", version.ref = "rxjava" }
+ultra-ptr = { module = "in.srain.cube:ultra-ptr", version.ref = "ultraPtr" }
+play-services-ads-identifier = { group = "com.google.android.gms", name = "play-services-ads-identifier", version.ref = "playServicesAdsIdentifier" }
+play-services-auth = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "playServicesAuth" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+

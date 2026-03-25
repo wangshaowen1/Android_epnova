@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="item"
+            type="com.kuaigeglobal.epnova.feature.splash.newer.ItemGuideStep3Vm" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:background="@{item.itemBg}"
+        android:paddingHorizontal="@dimen/spacing_l"
+        android:paddingVertical="@dimen/spacing_m">
+
+        <ImageView
+            android:id="@+id/iv_step_icon"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            tools:background="@drawable/bg_30_5a6afe_r14"
+            android:background="@{item.iconBg}"
+            android:src="@{item.data.icon}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@drawable/icon_advance" />
+
+        <TextView
+            android:id="@+id/tv_step_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_m"
+            android:text="@{item.stepTitle}"
+            android:textColor="@{item.descColor}"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/tv_step_status_desc"
+            app:layout_constraintEnd_toStartOf="@+id/fl_status_indicator"
+            app:layout_constraintStart_toEndOf="@+id/iv_step_icon"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed"
+            tools:text="创作故事剧本" />
+
+        <TextView
+            android:id="@+id/tv_step_status_desc"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_m"
+            android:layout_marginTop="2dp"
+            android:text="@{item.stepDesc}"
+            android:textColor="@{item.descColor}"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/fl_status_indicator"
+            app:layout_constraintStart_toEndOf="@+id/iv_step_icon"
+            app:layout_constraintTop_toBottomOf="@+id/tv_step_title"
+            tools:text="剧本完成" />
+
+        <FrameLayout
+            android:id="@+id/fl_status_indicator"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/iv_status_complete"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/guide_step3_finish"
+                android:visibility="@{item.isCompleteVisible}" />
+
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/lottie_status_loading"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="@{item.isLoadingVisible}"
+                app:lottie_autoPlay="true"
+                app:lottie_loop="true"
+                app:lottie_rawRes="@raw/loading_guide" />
+        </FrameLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
