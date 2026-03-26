@@ -39,6 +39,7 @@ import com.kuaigeglobal.epnova.core.network.apis.request.AIExpandBody
 import com.kuaigeglobal.epnova.core.network.apis.request.AISynopsisBody
 import com.kuaigeglobal.epnova.core.network.apis.request.BannerBody
 import com.kuaigeglobal.epnova.core.network.apis.request.BindPhoneBody
+import com.kuaigeglobal.epnova.core.network.apis.request.BookShelfIdPagedBody
 import com.kuaigeglobal.epnova.core.network.apis.request.CompleteUserDataInfoBody
 import com.kuaigeglobal.epnova.core.network.apis.request.ContentBody
 import com.kuaigeglobal.epnova.core.network.apis.request.ContinueTaskBody
@@ -47,6 +48,7 @@ import com.kuaigeglobal.epnova.core.network.apis.request.CreateStoryWorkBody
 import com.kuaigeglobal.epnova.core.network.apis.request.CreateTaskBody
 import com.kuaigeglobal.epnova.core.network.apis.request.CreateWorkBody
 import com.kuaigeglobal.epnova.core.network.apis.request.CreationGeneratePreBody
+import com.kuaigeglobal.epnova.core.network.apis.request.CurrentWorkIdBody
 import com.kuaigeglobal.epnova.core.network.apis.request.DeleteWorkBody
 import com.kuaigeglobal.epnova.core.network.apis.request.DetailTypeBody
 import com.kuaigeglobal.epnova.core.network.apis.request.DramaContentBody
@@ -67,13 +69,14 @@ import com.kuaigeglobal.epnova.core.network.apis.request.LoginByPhoneBody
 import com.kuaigeglobal.epnova.core.network.apis.request.LoginByThirdBody
 import com.kuaigeglobal.epnova.core.network.apis.request.MusicGenerateSourceBody
 import com.kuaigeglobal.epnova.core.network.apis.request.MyWorkBody
-import com.kuaigeglobal.epnova.core.network.apis.request.PollScriptBody
 import com.kuaigeglobal.epnova.core.network.apis.request.OptimizeContentData
 import com.kuaigeglobal.epnova.core.network.apis.request.OptimizeRoleImageDescBody
 import com.kuaigeglobal.epnova.core.network.apis.request.OrderStatusBody
 import com.kuaigeglobal.epnova.core.network.apis.request.PagedBody
 import com.kuaigeglobal.epnova.core.network.apis.request.PlayEventBody
+import com.kuaigeglobal.epnova.core.network.apis.request.PollScriptBody
 import com.kuaigeglobal.epnova.core.network.apis.request.PollScriptData
+import com.kuaigeglobal.epnova.core.network.apis.request.PollSummaryData
 import com.kuaigeglobal.epnova.core.network.apis.request.PopularRecommendDramasIdBody
 import com.kuaigeglobal.epnova.core.network.apis.request.PowerCalculateBody
 import com.kuaigeglobal.epnova.core.network.apis.request.PowerCalculateData
@@ -83,12 +86,12 @@ import com.kuaigeglobal.epnova.core.network.apis.request.ReportSubmissionBody
 import com.kuaigeglobal.epnova.core.network.apis.request.RoleIdBody
 import com.kuaigeglobal.epnova.core.network.apis.request.RoleImageRegenerateBody
 import com.kuaigeglobal.epnova.core.network.apis.request.RoleSwitchBody
-import com.kuaigeglobal.epnova.core.network.apis.request.PollSummaryData
 import com.kuaigeglobal.epnova.core.network.apis.request.SSEContentBody
 import com.kuaigeglobal.epnova.core.network.apis.request.SaveEpisodeScriptBody
 import com.kuaigeglobal.epnova.core.network.apis.request.SavePropBody
 import com.kuaigeglobal.epnova.core.network.apis.request.SaveRoleBody
 import com.kuaigeglobal.epnova.core.network.apis.request.SaveSceneBody
+import com.kuaigeglobal.epnova.core.network.apis.request.SaveScriptBody
 import com.kuaigeglobal.epnova.core.network.apis.request.SaveSequelNovelStoryBody
 import com.kuaigeglobal.epnova.core.network.apis.request.SaveStoryboardBody
 import com.kuaigeglobal.epnova.core.network.apis.request.SceneContentEditBody
@@ -109,7 +112,7 @@ import com.kuaigeglobal.epnova.core.network.apis.request.SynthesisUploadBody
 import com.kuaigeglobal.epnova.core.network.apis.request.TaskIdBody
 import com.kuaigeglobal.epnova.core.network.apis.request.TipOffBody
 import com.kuaigeglobal.epnova.core.network.apis.request.UploadStoryBody
-import com.kuaigeglobal.epnova.core.network.apis.request.SaveScriptBody
+import com.kuaigeglobal.epnova.core.network.apis.request.UserPlayBody
 import com.kuaigeglobal.epnova.core.network.apis.request.UserShareUrlBody
 import com.kuaigeglobal.epnova.core.network.apis.request.UserTokenBody
 import com.kuaigeglobal.epnova.core.network.apis.request.VideoSynthesisBody
@@ -122,11 +125,16 @@ import com.kuaigeglobal.epnova.core.network.apis.response.ActivityConfigData
 import com.kuaigeglobal.epnova.core.network.apis.response.AppConfigData
 import com.kuaigeglobal.epnova.core.network.apis.response.BalanceData
 import com.kuaigeglobal.epnova.core.network.apis.response.CharacterListData
+import com.kuaigeglobal.epnova.core.network.apis.response.CollectData
 import com.kuaigeglobal.epnova.core.network.apis.response.ComputingPowerDetailsInfo
 import com.kuaigeglobal.epnova.core.network.apis.response.DramasIdData
 import com.kuaigeglobal.epnova.core.network.apis.response.DramasSeriesIdData
+import com.kuaigeglobal.epnova.core.network.apis.response.EpisodeDirectoryData
+import com.kuaigeglobal.epnova.core.network.apis.response.EpisodePlayData
 import com.kuaigeglobal.epnova.core.network.apis.response.FirstRechargeDialogData
 import com.kuaigeglobal.epnova.core.network.apis.response.FollowingData
+import com.kuaigeglobal.epnova.core.network.apis.response.HomeBookShelfData
+import com.kuaigeglobal.epnova.core.network.apis.response.LikeData
 import com.kuaigeglobal.epnova.core.network.apis.response.PictureBook
 import com.kuaigeglobal.epnova.core.network.apis.response.PointAmountData
 import com.kuaigeglobal.epnova.core.network.apis.response.PointConfigData
@@ -135,6 +143,7 @@ import com.kuaigeglobal.epnova.core.network.apis.response.ShortLikeData
 import com.kuaigeglobal.epnova.core.network.apis.response.StoryboardListData
 import com.kuaigeglobal.epnova.core.network.apis.response.UpgradeData
 import com.kuaigeglobal.epnova.core.network.apis.response.UserHomeData
+import com.kuaigeglobal.epnova.core.network.apis.response.UserPlayData
 import com.kuaigeglobal.epnova.core.network.apis.response.WorkIdData
 import kotlinx.coroutines.flow.Flow
 import retrofit2.http.Body
@@ -1121,4 +1130,76 @@ interface ApiService {
      */
     @POST(ApiConstants.USER_COLLECTION_PAGE)
     suspend fun userCollectionPage(@Body body: PagedBody): ApiResponse<PagedList<WorkVOInfo>?>
+
+    /**
+     * 首页-书架首页聚合（横滑全部作品，和瀑布流id）
+     */
+    @POST(ApiConstants.BOOKSHELF_HOME)
+    suspend fun bookShelfHome(): ApiResponse<HomeBookShelfData?>
+
+    /**
+     * 首页-分页查询书架瀑布流
+     */
+    @POST(ApiConstants.HOME_WATERFALL_PAGE)
+    suspend fun homeWaterfallPage(@Body body: BookShelfIdPagedBody): ApiResponse<PagedList<WorkVOInfo>?>
+
+    /**
+     * 播放器-作品剧集目录分集分页
+     */
+    @POST(ApiConstants.EPISODE_DIRECTORY_PAGE)
+    suspend fun episodeDirectoryPage(@Body body: WorkIdPagedBody): ApiResponse<PagedList<EpisodeInfo>?>
+
+    /**
+     * 播放器-作品剧集目录分集分页
+     */
+    @POST(ApiConstants.EPISODE_DIRECTORY_INFO)
+    suspend fun episodeDirectoryInfo(@Body body: WorkIdBody): ApiResponse<EpisodeDirectoryData?>
+
+    /**
+     * 播放器-单集播放信息
+     */
+    @POST(ApiConstants.EPISODE_PLAY_INFO)
+    suspend fun episodePlayInfo(@Body body: WorkBody): ApiResponse<EpisodePlayData?>
+
+    /**
+     * 播放器-书架作品详情
+     */
+    @POST(ApiConstants.SIMPLE_WORK_INFO)
+    suspend fun simpleWorkInfo(@Body body: WorkIdBody): ApiResponse<WorkVOInfo?>
+
+    /**
+     * 播放器-播放量累加
+     */
+    @POST(ApiConstants.PLAY_COUNT_INC)
+    suspend fun playCountInc(@Body body: WorkBody): ApiResponse<Any?>
+
+    /**
+     * 点赞-切换点赞/取消
+     */
+    @POST(ApiConstants.LIKE_TOGGLE)
+    suspend fun likeToggle(@Body body: WorkBody): ApiResponse<LikeData?>
+
+    /**
+     * 收藏-切换收藏/取消收藏作品
+     */
+    @POST(ApiConstants.COLLECT_TOGGLE)
+    suspend fun collectToggle(@Body body: WorkIdBody): ApiResponse<CollectData?>
+
+    /**
+     * 播放器-下一部作品推荐
+     */
+    @POST(ApiConstants.NEXT_WORK_RECOMMEND)
+    suspend fun nextWorkRecommend(@Body body: CurrentWorkIdBody): ApiResponse<WorkVOInfo?>
+
+    /**
+     * 播放器-用户态查询
+     */
+    @POST(ApiConstants.USER_PLAYER_STATE)
+    suspend fun userPlayerState(@Body body: WorkBody): ApiResponse<UserPlayData?>
+
+    /**
+     *播放-播放行为上报
+     */
+    @POST(ApiConstants.USER_PLAY_REPORT)
+    suspend fun userPlayReport(@Body body: UserPlayBody): ApiResponse<Any?>
 }

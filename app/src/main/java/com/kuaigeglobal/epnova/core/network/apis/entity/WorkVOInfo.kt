@@ -13,11 +13,16 @@ package com.kuaigeglobal.epnova.core.network.apis.entity
  */
 data class WorkVOInfo(
     val workId: String? = null,
-    val lastSortNo: Int? = null,
-    val playProgress: Int? = null,
-    val totalEpisodeCnt: Int? = null,
+    val workTitle: String? = null,
+    val workDesc: String? = null,
     val workCoverUrl: String? = null,
+    val lastSortNo: Int? = null,
+    val workRatio: String? = null,
+    val playProgress: Int? = null,
+    val playCount: Int? = null,
+    val collectCount: Int? = null,
+    val totalEpisodeCnt: Int? = null,
     val lastPlayTime: Long? = null,
     val collectionTime: Long? = null,
-    val workTitle: String? = null
 )
+

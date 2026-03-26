@@ -25,3 +25,10 @@ data class ContinueGenerateBody(
     val dramasSeriesId: String?,
     val inputContent: String?//输入内容
 ) : UserTokenBody()
+
+data class CurrentWorkIdBody(
+    /**
+     * 当前刚播放结束的作品 ID，用于排除自身并作为推荐上下文
+     */
+    val currentWorkId: String?
+) : UserTokenBody()

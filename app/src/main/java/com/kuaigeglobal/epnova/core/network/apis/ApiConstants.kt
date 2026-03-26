@@ -791,4 +791,64 @@ object ApiConstants {
      * 收藏-分页查询收藏列表
      */
     const val USER_COLLECTION_PAGE = "user/work/collection/page"
+
+    /**
+     * 首页-分页查询书架瀑布流
+     */
+    const val HOME_WATERFALL_PAGE = "app/bookshelf/waterfall/page"
+
+    /**
+     * 首页-书架首页聚合（横滑全部作品，和瀑布流id）
+     */
+    const val BOOKSHELF_HOME = "app/bookshelf/home"
+
+    /**
+     * 播放器-作品剧集目录分集分页
+     */
+    const val EPISODE_DIRECTORY_PAGE = "app/bookshelf/story/catalog/item/page"
+
+    /**
+     * 播放器-作品剧集目录头信息
+     */
+    const val EPISODE_DIRECTORY_INFO = "app/bookshelf/story/catalog/info"
+
+    /**
+     * 播放器-单集播放信息
+     */
+    const val EPISODE_PLAY_INFO = "app/bookshelf/story/play/detail"
+
+    /**
+     * 播放器-作品简要详情
+     */
+    const val SIMPLE_WORK_INFO = "app/bookshelf/work/detail"
+
+    /**
+     * 播放器-播放量累加
+     */
+    const val PLAY_COUNT_INC = "app/bookshelf/playCount/inc"
+
+    /**
+     * 点赞-切换点赞/取消
+     */
+    const val LIKE_TOGGLE = "user/work/story/like/toggle"
+
+    /**
+     * 收藏-切换收藏/取消收藏作品
+     */
+    const val COLLECT_TOGGLE = "user/work/collection/toggle"
+
+    /**
+     * 播放器-下一部作品推荐
+     */
+    const val NEXT_WORK_RECOMMEND = "user/work/next/recommend"
+
+    /**
+     * 播放器-用户状态查询
+     */
+    const val USER_PLAYER_STATE = "user/work/player/state"
+
+    /**
+     * 播放-播放行为上报
+     */
+    const val USER_PLAY_REPORT = "user/work/play/report"
 }
