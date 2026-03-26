@@ -345,7 +345,7 @@
     <string name="account_deletion_title">Account Deletion Notice</string>
     <string name="creation_progress_format">%1$d of %2$d Episodes Created</string>
     <string name="image_description_limit">Image Description (%1$d/%2$d): </string>
-    <string name="episode_progress_format">Ep. %1$d / %2$d</string>
+    <string name="episode_progress_format">Done %1$d/%2$d EP</string>
     <string name="auto_saved_as_draft">Auto-saved as draft</string>
     <string name="ai_generating_auto_saved">AI is generating. Auto-saved as draft.</string>
     <string name="ai_generating_auto_saved_2">AI is generating. Auto-saved.</string>
@@ -483,4 +483,7 @@
     <string name="no_data">No Data</string>
     <string name="delete_episode">Delete Episode</string>
     <string name="delete_episode_warning">Deleting this episode will permanently erase its script, asset images, and storyboard videos. Credits used cannot be refunded.</string>
+    <string name="my_creations">My Creations</string>
+    <string name="history">History</string>
+    <string name="collection">Collection</string>
 </resources>

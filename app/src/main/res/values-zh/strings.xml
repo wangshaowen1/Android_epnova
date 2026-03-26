@@ -484,5 +484,8 @@
     <string name="no_data">暂无数据</string>
     <string name="delete_episode">删除剧集</string>
     <string name="delete_episode_warning">删除后，该集的剧本、资产图、分镜视频等将被清空，已消耗算力将无法恢复</string>
+    <string name="my_creations">My Creations</string>
+    <string name="history">History</string>
+    <string name="collection">Collection</string>
 </resources>
 

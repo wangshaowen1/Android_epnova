@@ -96,15 +96,9 @@ fun ViewPager2.setClipPadding(leftPadding: Int, rightPadding: Int) {
     recyclerView.clipToPadding = false
 }
 
+//去掉 ViewPager2 滑动到尽头（边界）时的发光阻尼效果
 fun ViewPager2.removeTheRipples() {
-    try {
-        val mRecyclerView = this.javaClass.getDeclaredField("mRecyclerView")
-        mRecyclerView.isAccessible = true
-        val recyclerView = mRecyclerView.get(this) as RecyclerView
-        recyclerView.overScrollMode = View.OVER_SCROLL_NEVER
-    } catch (e: Exception) {
-        e.printStackTrace()
-    }
+    (getChildAt(0) as? RecyclerView)?.overScrollMode = View.OVER_SCROLL_NEVER
 }
 
 

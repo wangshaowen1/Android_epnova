@@ -16,12 +16,18 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="?android:windowBackground">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:src="@drawable/bg_mine_top" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="?android:windowBackground"
             android:orientation="vertical">
 
             <com.kuaigeglobal.epnova.widget.StatusBarView
@@ -31,39 +37,50 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <LinearLayout
-                android:id="@+id/btnMyBalance"
-                singleClick="@{layout.clickHandler::onClick}"
-                android:layout_width="wrap_content"
-                android:layout_height="28dp"
-                android:layout_gravity="end"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:layout_marginEnd="15dp"
-                android:background="@drawable/bg_fill_color_2_r50"
-                android:gravity="center"
-                android:orientation="horizontal"
-                android:paddingHorizontal="10dp">
+                android:gravity="end|center_vertical">
+
+                <LinearLayout
+                    android:id="@+id/btnMyBalance"
+                    singleClick="@{layout.clickHandler::onClick}"
+                    android:layout_width="wrap_content"
+                    android:layout_height="28dp"
+                    android:background="@drawable/bg_fill_color_1_stroke_r50"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="10dp">
+
+                    <ImageView
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:src="@drawable/icon_power" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:fontFamily="@font/d_din_pro_600_semibold"
+                        android:text="@{layout.balance}"
+                        android:textAppearance="@style/Text16"
+                        android:textColor="?attr/textColor1"
+                        tools:text="8392" />
+                </LinearLayout>
 
                 <ImageView
-                    android:layout_width="18dp"
-                    android:layout_height="18dp"
-                    android:src="@drawable/icon_power" />
-
-                <TextView
+                    android:id="@+id/btnSettings"
+                    singleClick="@{layout.clickHandler::onClick}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="4dp"
-                    android:fontFamily="@font/d_din_pro_600_semibold"
-                    android:text="@{layout.balance}"
-                    android:textAppearance="@style/Text16"
-                    android:textColor="?attr/textColor1"
-                    tools:text="8392" />
-
+                    android:paddingHorizontal="@dimen/spacing_l"
+                    android:src="@drawable/icon_setting" />
             </LinearLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_l">
+                android:layout_marginTop="22dp">
 
                 <com.google.android.material.imageview.ShapeableImageView
                     android:id="@+id/siv_avatar"
@@ -122,12 +139,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/spacing_s"
-                    android:text="@{`ID:`+layout.userInfo[`id`]}"
+                    android:text="@{`UID:`+layout.userInfo[`id`]}"
                     android:textColor="?attr/textColor3"
                     app:layout_constraintBottom_toBottomOf="@id/siv_avatar"
                     app:layout_constraintStart_toStartOf="@id/tv_name"
                     app:layout_constraintTop_toBottomOf="@id/tv_name"
-                    tools:text="ID:10000" />
+                    tools:text="UID:10000" />
 
                 <ImageView
                     android:id="@+id/iv_copy"
@@ -142,116 +159,18 @@
                     app:layout_constraintTop_toTopOf="@id/tv_id" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <include
-                android:id="@+id/banner"
-                banner="@{layout.workCourseBanner}"
-                layout="@layout/layout_common_banner"
+            <com.nhsd.magicindicator.MagicIndicator
+                android:id="@+id/magic_indicator"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/spacing_l"
+                android:layout_height="34dp"
                 android:layout_marginTop="24dp" />
 
-            <LinearLayout
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/view_pager"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/spacing_l"
-                android:layout_marginTop="24dp"
-                android:background="@drawable/bg_06_ffffff_r12"
-                android:orientation="vertical">
-
-                <LinearLayout
-                    android:id="@+id/ll_qa"
-                    singleClick="@{layout.clickHandler::onClick}"
-                    android:layout_width="match_parent"
-                    android:layout_height="52dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:paddingHorizontal="@dimen/spacing_l">
-
-                    <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:importantForAccessibility="no"
-                        android:src="@drawable/icon_doubt" />
-
-                    <TextView
-                        style="@style/Text14"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/spacing_m"
-                        android:layout_weight="1"
-                        android:text="@string/help_center"
-                        android:textColor="?attr/textColor3" />
-
-                    <ImageView
-                        android:layout_width="16dp"
-                        android:layout_height="16dp"
-                        android:importantForAccessibility="no"
-                        android:src="@drawable/arrow_right_gray36" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/suggestions_feedback"
-                    singleClick="@{layout.clickHandler::onClick}"
-                    android:layout_width="match_parent"
-                    android:layout_height="52dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:paddingHorizontal="@dimen/spacing_l">
-
-                    <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:importantForAccessibility="no"
-                        android:src="@drawable/ic_mine_feedback_suggestions" />
-
-                    <TextView
-                        style="@style/Text14"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/spacing_m"
-                        android:layout_weight="1"
-                        android:text="@string/suggest_and_feedback"
-                        android:textColor="?attr/textColor3" />
-
-                    <ImageView
-                        android:layout_width="16dp"
-                        android:layout_height="16dp"
-                        android:importantForAccessibility="no"
-                        android:src="@drawable/arrow_right_gray36" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/ll_settings"
-                    singleClick="@{layout.clickHandler::onClick}"
-                    android:layout_width="match_parent"
-                    android:layout_height="52dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:paddingHorizontal="@dimen/spacing_l">
-
-                    <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:importantForAccessibility="no"
-                        android:src="@drawable/ic_mine_settings" />
-
-                    <TextView
-                        style="@style/Text14"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/spacing_m"
-                        android:layout_weight="1"
-                        android:text="@string/title_settings"
-                        android:textColor="?attr/textColor3" />
-
-                    <ImageView
-                        android:layout_width="16dp"
-                        android:layout_height="16dp"
-                        android:importantForAccessibility="no"
-                        android:src="@drawable/arrow_right_gray36" />
-                </LinearLayout>
-            </LinearLayout>
+                android:layout_height="0dp"
+                android:layout_marginTop="@dimen/spacing_l"
+                android:layout_weight="1" />
         </LinearLayout>
 
         <com.kuaigeglobal.epnova.widget.MoveFrameLayout

@@ -782,4 +782,13 @@ object ApiConstants {
      * 获取新人专享礼
      */
     const val GET_FIRST_RECHARGE_DIALOG_INFO = "app/window/newUserGift"
+
+    /**
+     * 播放-分页查询播放历史列表
+     */
+    const val USER_PLAY_HISTORY_PAGE = "user/work/history/page"
+    /**
+     * 收藏-分页查询收藏列表
+     */
+    const val USER_COLLECTION_PAGE = "user/work/collection/page"
 }

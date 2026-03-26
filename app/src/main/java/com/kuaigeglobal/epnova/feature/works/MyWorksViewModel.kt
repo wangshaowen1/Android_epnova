@@ -134,20 +134,25 @@ class MyWorksViewModel : AppRepositoryViewModel<AppRepository>() {
             stopCheckGenerating()
             return
         }
-        // 如果已经在运行，先取消
-        checkGeneratingJob?.cancel()
         if (checkGeneratingJob?.isActive == true) return
-        checkGeneratingJob = viewModelScope.launch(Dispatchers.IO) {
-            while (isActive) {
+        checkGeneratingJob = viewModelScope.launch {
+            // 注意：内部 checkGenerating 涉及网络，切换到 Dispatchers.IO
+            while (isActive && isShow.get()) {
                 try {
-                    checkGenerating()
-                    delay(3000)
-                } catch (e: CancellationException) {
-                    // 这是正常关闭（通过 stopCheckGenerating() 或 ViewModel 销毁）,正常退出，不需要额外处理
-                    break
+                    // 将网络请求包装在 withContext(Dispatchers.IO)
+                    val hasGenerating = doCheckGeneratingWork()
+
+                    // 如果已经没有正在生成的了，自动停掉轮询节省资源
+                    if (!hasGenerating) {
+                        stopCheckGenerating()
+                        break
+                    }
+
+                    delay(3000) // 间隔
                 } catch (e: Exception) {
+                    if (e is CancellationException) throw e
                     e.printStackTrace()
-                    stopCheckGenerating()
+                    delay(5000) // 出错后延长下次重试时间
                 }
             }
         }
@@ -156,54 +161,43 @@ class MyWorksViewModel : AppRepositoryViewModel<AppRepository>() {
     /**
      *查询是否有正在生成中的
      */
-    private suspend fun checkGenerating() {
-        if (User.get().isVisitor || !isShow.get()) {
-            workInformationIds.clear()
-            stopCheckGenerating()
-            return
-        }
+    private suspend fun doCheckGeneratingWork(): Boolean = withContext(Dispatchers.IO) {
         val beam = mRepo.api.getWorkStatusList(UserTokenBody())
-        if (beam.isSuccess.not()) return
+        if (!beam.isSuccess) return@withContext false
+
         val items = beam.data
+
+        // 逻辑处理：如果没有生成中的数据
         if (items.isNullOrEmpty()) {
-            //没有正在生成的绘本
             if (workInformationIds.isNotEmpty()) {
-                //原来有但现在没了，需要刷新一下
-                withContext(Dispatchers.Main) {
-                    isRefresh.value = true
-                }
+                withContext(Dispatchers.Main) { isRefresh.value = true }
                 workInformationIds.clear()
             }
-            stopCheckGenerating()
-            return
+            return@withContext false
         }
-        //有那就需要刷新了
+
+        // 处理逻辑：更新数据库和内存状态
         val newWorkInformationId = hashMapOf<String, WorkInfo>()
-        items.forEach { workInformation ->
-            newWorkInformationId[workInformation.workId ?: ""] = workInformation
-        }
-        //更新数据库
+        items.forEach { newWorkInformationId[it.workId ?: ""] = it }
+
         upsertByPictureBookIdAndType(items)
+
         if (newWorkInformationId.keys != workInformationIds.keys) {
-            //跟上次的不相同，表示有新的绘本已经完成了，需要更新一下ui
             workInformationIds.clear()
             workInformationIds.putAll(newWorkInformationId)
-            withContext(Dispatchers.Main) {
-                isRefresh.value = true
-            }
+            withContext(Dispatchers.Main) { isRefresh.value = true }
         }
+        return@withContext true // 还有正在生成的，继续轮询
     }
 
-    fun upsertByPictureBookIdAndType(pictureBook: List<WorkInfo>?) {
+    suspend fun upsertByPictureBookIdAndType(pictureBook: List<WorkInfo>?) {
         if (pictureBook == null) return
-        viewModelScope.launch {
-            val pictureBooks = pictureBook.map {
-                WorkInformationInfo(
-                    work = it
-                )
-            }
-            mRepo.appDatabase.workInformationDao().upsertWorkInformationDao(pictureBooks)
+        val pictureBooks = pictureBook.map {
+            WorkInformationInfo(
+                work = it
+            )
         }
+        mRepo.appDatabase.workInformationDao().upsertWorkInformationDao(pictureBooks)
     }
 
     /**
@@ -238,7 +232,6 @@ class MyWorksViewModel : AppRepositoryViewModel<AppRepository>() {
      * 关闭（彻底停止）
      */
     fun stopCheckGenerating() {
-        workInformationIds.clear()
         checkGeneratingJob?.cancel()
         checkGeneratingJob = null
     }

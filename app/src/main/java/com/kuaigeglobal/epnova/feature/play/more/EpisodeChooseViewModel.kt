@@ -6,6 +6,8 @@ import com.kuaigeglobal.epnova.base.RecyclerViewVM
 import com.kuaigeglobal.epnova.base.viewmodel.AppRepositoryViewModel
 import com.kuaigeglobal.epnova.common.Constants
 import com.kuaigeglobal.epnova.core.AppRepository
+import com.kuaigeglobal.epnova.core.network.apis.entity.EpisodeInfo
+import com.kuaigeglobal.epnova.core.network.apis.entity.EpisodeRangeInfo
 
 class EpisodeChooseViewModel : AppRepositoryViewModel<AppRepository>() {
 
@@ -48,7 +50,7 @@ class EpisodeChooseViewModel : AppRepositoryViewModel<AppRepository>() {
 
     private fun initEpisodes() {
         for (i in 1..totalEpisodes) {
-            val info = EpisodeInfo(episodeNumber = i)
+            val info = EpisodeInfo(sortNo = i)
             val vm = ItemEpisodeNumberVm(info).apply {
                 if (i == currentEpisode) {
                     checked.set(true)

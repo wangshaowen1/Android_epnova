@@ -7,6 +7,7 @@ import android.view.View
 import com.kuaigeglobal.epnova.BuildConfig
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.ext.showConfirmPrompt
+import com.kuaigeglobal.epnova.common.ext.topActivity
 import com.kuaigeglobal.epnova.common.utils.DebugUtils
 import com.kuaigeglobal.epnova.core.Config
 import com.kuaigeglobal.epnova.core.User
@@ -147,13 +148,8 @@ class SettingsActivity : BaseViewModelActivity<ActivitySettingsBinding, Settings
                 )
             }
 
-            R.id.ll_information_collection -> {
-                //个人信息收集清单
-                SimpleBrowserActivity.launch(
-                    this,
-                    Config.get().appConfig.personalInfoCollectionListUrl,
-                    getString(R.string.app_information_collection)
-                )
+            R.id.ll_qa -> {
+                SimpleBrowserActivity.launch(this, Config.get().appConfig.appHelpCenterUrl)
             }
 
             R.id.sll_filing_number -> {
@@ -174,13 +170,12 @@ class SettingsActivity : BaseViewModelActivity<ActivitySettingsBinding, Settings
                 )
             }
 
-            R.id.ll_algorithm_formula -> {
-                //算法公示
-                SimpleBrowserActivity.launch(
-                    this,
-                    Config.get().algorithmUrl,
-                            getString(R.string.app_algorithm_formula)
-                )
+            R.id.suggestions_feedback -> {
+                if (AppNavigator.checkLoginIntercepted(false)) {
+                    return
+                }
+                //建议与反馈
+                FeedbackActivity.start(this)
             }
         }
     }

@@ -240,7 +240,7 @@
                     </LinearLayout>
 
                     <LinearLayout
-                        android:id="@+id/ll_information_collection"
+                        android:id="@+id/ll_qa"
                         singleClick="@{layout.clickHandler::onClick}"
                         android:layout_width="match_parent"
                         android:layout_height="52dp"
@@ -253,7 +253,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="@string/app_information_collection"
+                            android:text="@string/help_center"
                             android:textColor="?attr/textColor3" />
 
                         <ImageView
@@ -268,6 +268,7 @@
                         singleClick="@{layout.clickHandler::onClick}"
                         android:layout_width="match_parent"
                         android:layout_height="52dp"
+                        android:visibility="gone"
                         android:gravity="center_vertical"
                         android:orientation="horizontal"
                         android:paddingHorizontal="@dimen/spacing_l">
@@ -288,7 +289,7 @@
                     </LinearLayout>
 
                     <LinearLayout
-                        android:id="@+id/ll_algorithm_formula"
+                        android:id="@+id/suggestions_feedback"
                         singleClick="@{layout.clickHandler::onClick}"
                         android:layout_width="match_parent"
                         android:layout_height="52dp"
@@ -301,7 +302,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="@string/app_algorithm_formula"
+                            android:text="@string/suggest_and_feedback"
                             android:textColor="?attr/textColor3" />
 
                         <ImageView
@@ -318,6 +319,7 @@
                         android:layout_height="52dp"
                         android:gravity="center_vertical"
                         android:orientation="horizontal"
+                        android:visibility="gone"
                         android:paddingHorizontal="@dimen/spacing_l">
 
                         <TextView

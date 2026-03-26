@@ -34,6 +34,7 @@ import com.kuaigeglobal.epnova.core.network.apis.entity.VideoConfigData
 import com.kuaigeglobal.epnova.core.network.apis.entity.VipConfigInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.WalletInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.WorkInfo
+import com.kuaigeglobal.epnova.core.network.apis.entity.WorkVOInfo
 import com.kuaigeglobal.epnova.core.network.apis.request.AIExpandBody
 import com.kuaigeglobal.epnova.core.network.apis.request.AISynopsisBody
 import com.kuaigeglobal.epnova.core.network.apis.request.BannerBody
@@ -1108,4 +1109,16 @@ interface ApiService {
      */
     @POST(ApiConstants.GET_FIRST_RECHARGE_DIALOG_INFO)
     suspend fun getFirstRechargeDialogInfo(): ApiResponse<FirstRechargeDialogData?>
+
+    /**
+     * 播放-分页查询播放历史列表
+     */
+    @POST(ApiConstants.USER_PLAY_HISTORY_PAGE)
+    suspend fun userPlayHistoryPage(@Body body: PagedBody): ApiResponse<PagedList<WorkVOInfo>?>
+
+    /**
+     * 播放-分页查询播放历史列表
+     */
+    @POST(ApiConstants.USER_COLLECTION_PAGE)
+    suspend fun userCollectionPage(@Body body: PagedBody): ApiResponse<PagedList<WorkVOInfo>?>
 }
