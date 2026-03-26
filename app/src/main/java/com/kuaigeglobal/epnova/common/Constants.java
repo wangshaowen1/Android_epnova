@@ -141,7 +141,7 @@ public class Constants {
         String SHOW_SHARE_DIALOG = "showShareDialog";
         String EXTRA_ID = "EXTRA_ID";
         String TEMPLATE = "template";
-        String SHOW_MV = "showMv";
+        String BROWSERS = "browsers";
         String FRAME_ACTIVITY = "frameActivity";
         String DOWNLOAD_ACCOMPANY = "downloadAccompany";
         String FROM_NEW_USER_WRITE = "fromNewUserWrite";

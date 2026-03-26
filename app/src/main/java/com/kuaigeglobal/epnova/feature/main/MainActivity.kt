@@ -23,6 +23,7 @@ import com.kuaigeglobal.epnova.core.manager.EventManager
 import com.kuaigeglobal.epnova.core.manager.UpgradeManager
 import com.kuaigeglobal.epnova.databinding.ActivityMainBinding
 import com.kuaigeglobal.epnova.feature.aicompose.generating.GeneratingViewModel
+import com.kuaigeglobal.epnova.feature.creator.CreationRootActivity
 import com.kuaigeglobal.epnova.feature.home.HomeFragment
 import com.kuaigeglobal.epnova.feature.mine.MineFragment
 import com.kuaigeglobal.epnova.feature.splash.newer.FirstRechargeDialog
@@ -169,10 +170,7 @@ class MainActivity : BaseViewModelActivity<ActivityMainBinding, MainViewModel>()
                     EventManager.onAppTrack(AppEvent.SF_VIEW_WORKS_TAB_PAGE)
                     setKeepScreenOn(false)
                     mRealVM.showTab.set(1)
-                    supportFragmentManager.switchFragment(
-                        R.id.fragment,
-                        MyWorksFragment::class.java
-                    )
+                    CreationRootActivity.start(this)
                 }
 
 

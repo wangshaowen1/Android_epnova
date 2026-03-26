@@ -20,6 +20,7 @@ import com.kuaigeglobal.epnova.feature.play.manger.FeedListController
 import com.kuaigeglobal.epnova.feature.play.manger.FeedPlayerManager
 import com.kuaigeglobal.epnova.feature.play.menu.ListPopupWindow
 import com.kuaigeglobal.epnova.feature.play.menu.OnItemSelectedListener
+import com.kuaigeglobal.epnova.feature.play.more.EpisodeChooseDialog
 import com.kuaigeglobal.epnova.feature.settings.report.ReportDialog
 import com.kuaigeglobal.epnova.router.AppNavigator
 import com.nhsd.basic.BaseViewModelActivity
@@ -244,6 +245,9 @@ class DramasPlayPagerActivity :
     // --- 交互回调 ---
     override fun onTogglePlay(position: Int) = playerManager.togglePlay()
     override fun onSeek(position: Int, progress: Long) = playerManager.seekTo(progress)
+    override fun showEpisodeSelectDialog(position: Int) {
+        EpisodeChooseDialog.newInstance(null, null, null, 0, 0).show(supportFragmentManager)
+    }
 
     // --- 生命周期 ---
     override fun onPause() {

@@ -24,16 +24,16 @@
             <com.kuaigeglobal.epnova.widget.CoverPlayerView
                 android:id="@+id/playerView"
                 track="@{item.data}"
-                android:background="?attr/bgColor1"
-                app:shutter_background_color="?attr/bgColor1"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
+                android:background="?attr/bgColor1"
                 android:saveEnabled="false"
                 app:coverScaleType="fitCenter"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintDimensionRatio="H,9:16"
                 app:layout_constraintTop_toTopOf="parent"
                 app:resize_mode="fit"
+                app:shutter_background_color="?attr/bgColor1"
                 app:use_controller="false" />
 
             <TextView
@@ -131,14 +131,126 @@
                 tools:text="夏天是最美好的季节。阳光炽热而灿烂，天空湛夏天是最美好的季节。阳光炽热而灿烂，天空湛蓝如宝石。阳光炽热而灿而灿阳…"
                 tools:visibility="visible" />
 
+            <LinearLayout
+                android:id="@+id/ll_interaction_side"
+                android:layout_width="40dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="12dp"
+                android:layout_marginBottom="134dp"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toTopOf="@id/llEpisodeSelect"
+                app:layout_constraintEnd_toEndOf="parent"
+                tools:background="@color/color_50_000000">
+
+                <LinearLayout
+                    android:id="@+id/btn_favorite"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/icon_play_collection0" />
+
+                    <TextView
+                        style="@style/Text12"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:ellipsize="end"
+                        android:maxWidth="40dp"
+                        android:maxLines="1"
+                        android:shadowColor="@color/color_05_000000"
+                        android:shadowRadius="2"
+                        android:textColor="?attr/textColor1"
+                        tools:text="998" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/btn_like"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/icon_play_like0" />
+
+                    <TextView
+                        style="@style/Text12"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:ellipsize="end"
+                        android:maxWidth="40dp"
+                        android:maxLines="1"
+                        android:shadowColor="@color/color_05_000000"
+                        android:shadowRadius="2"
+                        android:textColor="?attr/textColor1"
+                        tools:text="968.1k" />
+                </LinearLayout>
+
+            </LinearLayout>
+
             <com.kuaigeglobal.epnova.widget.PlayerSeekbar
                 android:id="@+id/seekbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="30dp"
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginBottom="@dimen/spacing_m"
+                app:layout_constraintBottom_toTopOf="@id/llEpisodeSelect"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
+
+            <LinearLayout
+                android:id="@+id/llEpisodeSelect"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginHorizontal="@dimen/spacing_l"
+                android:layout_marginBottom="@dimen/spacing_l"
+                android:background="@drawable/fill_color1_r16"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingHorizontal="@dimen/spacing_l"
+                android:paddingVertical="10dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent">
+
+                <ImageView
+                    android:id="@+id/iv_episode_list"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:contentDescription="选集"
+                    android:src="@drawable/icon_play_menu" />
+
+                <TextView
+                    style="@style/Text12"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/spacing_s"
+                    android:textColor="?attr/textColor2"
+                    tools:text="EP.1" />
+
+                <TextView
+                    style="@style/Text12"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textColor="?attr/textColor4"
+                    tools:text="/EP.64" />
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:contentDescription="全屏"
+                    android:src="@drawable/icon_up" />
+            </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.kuaigeglobal.epnova.widget.LoadStateViewHolder>
 </layout>

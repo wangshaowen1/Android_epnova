@@ -50,6 +50,7 @@
 
 
     <!-- 新色值定义放上面 -->
+    <color name="color_ff2e55">#ff2e55</color>
     <color name="color_1d1b1b">#1d1b1b</color>
     <color name="color_121212">#121212</color>
     <color name="color_00_121212">#00121212</color>

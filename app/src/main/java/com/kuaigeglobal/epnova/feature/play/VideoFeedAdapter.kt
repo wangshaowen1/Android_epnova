@@ -11,7 +11,9 @@ import com.kuaigeglobal.epnova.common.ext.getVm
 import com.kuaigeglobal.epnova.core.network.apis.entity.WorkInfo
 import com.kuaigeglobal.epnova.databinding.ItemVideoFeedBinding
 import com.kuaigeglobal.epnova.feature.play.manger.FeedPlayerManager
+import com.kuaigeglobal.epnova.feature.play.more.EpisodeChooseDialog
 import com.kuaigeglobal.epnova.widget.PlayerSeekbar
+import com.nhsd.basic.ext.setOnSingleClickListener
 import com.nhsd.basic.item.BindingViewHolder
 
 class VideoFeedAdapter(private val interactionListener: InteractionListener) :
@@ -21,6 +23,8 @@ class VideoFeedAdapter(private val interactionListener: InteractionListener) :
     interface InteractionListener {
         fun onTogglePlay(position: Int)
         fun onSeek(position: Int, progress: Long)
+
+        fun showEpisodeSelectDialog(position: Int)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VideoViewHolder {
@@ -77,6 +81,24 @@ class VideoFeedAdapter(private val interactionListener: InteractionListener) :
             binding.lsv.setRetryListener {
                 interactionListener.onTogglePlay(bindingAdapterPosition)
             }
+
+            binding.llEpisodeSelect.setOnSingleClickListener {
+                interactionListener.showEpisodeSelectDialog(bindingAdapterPosition)
+            }
+
+//            // 在Activity或Fragment中调用
+//            val dialog = EpisodeChooseDialog.newInstance(
+//                title = "My wife doesn't love my anymore",
+//                cover = "https://xxx.com/cover.jpg",
+//                views = "604k",
+//                totalEpisodes = 70,
+//                currentEpisode = 15
+//            )
+//            dialog.onEpisodeSelected = { episodeNumber ->
+//                // 处理选集回调
+//                playEpisode(episodeNumber)
+//            }
+//            dialog.show(supportFragmentManager, "episode_choose")
         }
 
         override fun bind(position: Int) {
