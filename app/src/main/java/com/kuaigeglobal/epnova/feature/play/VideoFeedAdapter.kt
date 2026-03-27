@@ -129,12 +129,9 @@ class VideoFeedAdapter(private val interactionListener: InteractionListener) :
             binding.item?.showPauseBtn?.set(state is FeedPlayerManager.FeedPlayerState.Pause)
 
             if (isBuffering) {
-                binding.pbBuffering.visibility = View.VISIBLE
-                if (binding.animBuffering.animation == null) {
-                    binding.animBuffering.startAnimation(rotateAnim)
-                }
+                binding.animBuffering.clearAnimation()
+                binding.animBuffering.startAnimation(rotateAnim)
             } else {
-                binding.pbBuffering.visibility = View.GONE
                 binding.animBuffering.clearAnimation()
             }
 

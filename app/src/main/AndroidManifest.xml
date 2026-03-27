@@ -131,8 +131,7 @@
             android:name="com.kuaigeglobal.epnova.feature.main.MainActivity"
             android:exported="true"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustResize">
-        </activity>
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize"></activity>
 
         <!--设置-->
         <activity
@@ -200,6 +199,7 @@
                 android:resource="@xml/file_provider_paths"
                 tools:replace="android:resource" />
         </provider>
+
         <activity
             android:name=".feature.creator.generate.StoryEditorActivity"
             android:screenOrientation="portrait" />
@@ -221,19 +221,25 @@
         <activity
             android:name=".feature.creator.continuewriting.ContinueWritingActivity"
             android:screenOrientation="portrait" />
-        <activity
-            android:name=".feature.play.DramasPlayPagerActivity"
-            android:screenOrientation="portrait" />
+        <activity android:name=".feature.play.DramasPlayPagerActivity" />
         <activity
             android:name=".feature.editor.info.DramaInfoEditActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".feature.recharge.MyBalanceActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".feature.splash.newer.GuideStep1AdActivity"   android:screenOrientation="portrait" />
-        <activity android:name=".feature.splash.newer.GuideStep2StorySelectActivity"  android:screenOrientation="portrait"/>
-        <activity android:name=".feature.splash.newer.GuideStep3GeneratingActivity"  android:screenOrientation="portrait"/>
-        <activity android:name=".feature.splash.newer.GuideStep4VideoActivity"  android:screenOrientation="portrait"/>
+        <activity
+            android:name=".feature.splash.newer.GuideStep1AdActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".feature.splash.newer.GuideStep2StorySelectActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".feature.splash.newer.GuideStep3GeneratingActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".feature.splash.newer.GuideStep4VideoActivity"
+            android:screenOrientation="portrait" />
     </application>
     <queries>
         <intent>
