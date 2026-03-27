@@ -47,6 +47,11 @@ public class StaggeredGridSpaceItemDecoration extends RecyclerView.ItemDecoratio
 
             // 设置底部间距
             outRect.bottom = verticalSpacing;
+        } else {
+            // 新增：给 FullSpan 的书架模块也加上垂直边距，防止上下模块贴脸
+            outRect.top = verticalSpacing;
+            outRect.bottom = verticalSpacing;
+            // 注意：左右不需要加，因为书架内部的第一个 item 通常会有自己的 left padding
         }
     }
 }

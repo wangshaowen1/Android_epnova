@@ -2,19 +2,32 @@ package com.kuaigeglobal.epnova.feature.home
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import androidx.paging.ExperimentalPagingApi
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import androidx.paging.cachedIn
+import androidx.paging.map
 import com.kuaigeglobal.epnova.base.viewmodel.AppRepositoryViewModel
 import com.kuaigeglobal.epnova.core.AppRepository
 import com.kuaigeglobal.epnova.core.EntityCache
+import com.kuaigeglobal.epnova.core.db.mapper.toDomain
 import com.kuaigeglobal.epnova.core.ext.launch
 import com.kuaigeglobal.epnova.core.network.apis.entity.BannerInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.WorkInfo
+import com.kuaigeglobal.epnova.core.network.apis.entity.WorkVOInfo
 import com.kuaigeglobal.epnova.core.network.apis.request.BannerBody
+import com.kuaigeglobal.epnova.core.network.apis.response.HomeBookShelfData
 import com.kuaigeglobal.epnova.core.response
-import com.kuaigeglobal.epnova.feature.play.data.FeedRepository
+import com.kuaigeglobal.epnova.feature.home.data.VideoRemoteMediator
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 
@@ -25,44 +38,58 @@ class HomeViewModel : AppRepositoryViewModel<AppRepository>() {
         object : EntityCache<List<BannerInfo>>("HomeBannerList") {}
     }
 
+    val bookShelfData = MutableLiveData<HomeBookShelfData>()
+    private val bookShelfCache: EntityCache<HomeBookShelfData> by lazy {
+        object : EntityCache<HomeBookShelfData>("HomeBookShelfData") {}
+    }
+
     override fun onCreate() {
         super.onCreate()
+        bannerCache.cache?.let { bannerData.value = it }
+        bookShelfCache.cache?.let { bookShelfData.value = it }
         getData()
+        loadData()
     }
 
     fun getData() {
         launch({
             response(mRepo.api.getAppBanner(BannerBody(BannerBody.LOCATION_HOME)), {
                 bannerData.value = this.data
-                bannerCache.cache(this.data)
-            }) {
-                bannerCache.cache?.let {
-                    bannerData.value = it
+                bannerCache.cache(this.data) // 更新缓存
+            })
+        })
+    }
+
+    fun loadData() {
+        launch({
+            response(mRepo.api.bookShelfHome(), {
+                bookShelfData.value = data
+                bookShelfCache.cache(data) // 更新缓存
+            })
+        })
+    }
+
+
+    // 用于触发瀑布流加载的 ID。当它改变时，flatMapLatest 会自动取消旧的 Pager 并创建新的
+    val currentWaterfallId = MutableStateFlow<String>("")
+
+    @OptIn(ExperimentalPagingApi::class, ExperimentalCoroutinesApi::class)
+    val feedFlow: Flow<PagingData<WorkVOInfo>> = currentWaterfallId
+        .flatMapLatest { bookshelfId ->
+            // 【新增逻辑】：如果后端没有下发瀑布流配置，或者 ID 为空
+            if (bookshelfId.isEmpty()) {
+                // 直接返回空的 Paging 流，ConcatAdapter 会自动清空底部瀑布流 UI
+                kotlinx.coroutines.flow.flowOf(PagingData.empty())
+            } else {
+                // 如果有真实的 ID，才去构建 Pager 发起数据库和网络请求
+                Pager(
+                    config = PagingConfig(pageSize = 10, enablePlaceholders = false, prefetchDistance = 6),
+                    remoteMediator = VideoRemoteMediator(bookshelfId, mRepo.appDatabase, mRepo.api),
+                    pagingSourceFactory = { mRepo.appDatabase.workDao.getPagingData() }
+                ).flow.map { pagingData ->
+                    pagingData.map { entity -> entity.toDomain() }
                 }
             }
-        }) {
-            bannerCache.cache?.let {
-                bannerData.value = it
-            }
         }
-    }
-
-    // 1. 定义 UI 需要观察的数据流
-    private val _feedFlow = MutableStateFlow<PagingData<WorkInfo>>(PagingData.empty())
-    val feedFlow: Flow<PagingData<WorkInfo>> = _feedFlow
-
-    init {
-        loadData()
-    }
-
-    // 2. 加载数据
-    fun loadData() {
-        viewModelScope.launch {
-            // [关键] 调用单例 FeedRepository 获取带缓存的流
-//            FeedRepository.getFeedFlow(isSeriesMode = false, null)
-//                .collectLatest { pagingData ->
-//                    _feedFlow.value = pagingData
-//                }
-        }
-    }
+        .cachedIn(viewModelScope)
 }

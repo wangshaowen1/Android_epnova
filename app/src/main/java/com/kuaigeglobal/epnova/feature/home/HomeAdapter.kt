@@ -8,12 +8,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.kuaigeglobal.epnova.common.ext.getVm
 import com.kuaigeglobal.epnova.core.manager.AppEvent
 import com.kuaigeglobal.epnova.core.manager.EventManager
-import com.kuaigeglobal.epnova.core.network.apis.entity.WorkInfo
+import com.kuaigeglobal.epnova.core.network.apis.entity.WorkVOInfo
 import com.kuaigeglobal.epnova.databinding.ItemHomeDramaBinding
 import com.kuaigeglobal.epnova.feature.play.DramasPlayPagerActivity
 import com.nhsd.basic.item.BindingViewHolder
 
-class HomeAdapter() : PagingDataAdapter<WorkInfo, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
+class HomeAdapter() : PagingDataAdapter<WorkVOInfo, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
@@ -51,17 +51,17 @@ class HomeAdapter() : PagingDataAdapter<WorkInfo, RecyclerView.ViewHolder>(DIFF_
 
 
     companion object {
-        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<WorkInfo>() {
+        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<WorkVOInfo>() {
             override fun areItemsTheSame(
-                oldItem: WorkInfo,
-                newItem: WorkInfo
+                oldItem: WorkVOInfo,
+                newItem: WorkVOInfo
             ): Boolean {
-                return oldItem.hashCode() == newItem.hashCode()
+                return oldItem.workId == newItem.workId
             }
 
             override fun areContentsTheSame(
-                oldItem: WorkInfo,
-                newItem: WorkInfo
+                oldItem: WorkVOInfo,
+                newItem: WorkVOInfo
             ): Boolean {
                 return oldItem == newItem
             }

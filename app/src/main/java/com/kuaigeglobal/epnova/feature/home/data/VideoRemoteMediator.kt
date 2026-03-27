@@ -11,10 +11,11 @@ import com.kuaigeglobal.epnova.core.db.entity.WorkInfoEntity
 import com.kuaigeglobal.epnova.core.db.mapper.toEntity
 import com.kuaigeglobal.epnova.core.network.apis.ApiException
 import com.kuaigeglobal.epnova.core.network.apis.ApiService
-import com.kuaigeglobal.epnova.core.network.apis.request.PagedBody
+import com.kuaigeglobal.epnova.core.network.apis.request.BookShelfIdPagedBody
 
 @OptIn(ExperimentalPagingApi::class)
 class VideoRemoteMediator(
+    private val bookShelfId: String?,
     private val database: AppDatabase,
     private val api: ApiService
 ) : RemoteMediator<Int, WorkInfoEntity>() {
@@ -40,7 +41,7 @@ class VideoRemoteMediator(
 
         return try {
             // 2. 发起网络请求
-            val response = api.recommendWorkList(PagedBody(page, state.config.pageSize))
+            val response = api.homeWaterfallPage(BookShelfIdPagedBody(bookShelfId, page, state.config.pageSize))
 
             // 原版直接取 data，如果接口报错（如 token 失效），会吞掉异常并被误认为是列表到底了。
             if (!response.isSuccess) {

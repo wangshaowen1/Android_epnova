@@ -23,13 +23,14 @@
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
             android:elevation="0dp"
+            android:paddingBottom="@dimen/spacing_m"
             android:stateListAnimator="@drawable/appbar_elevation">
 
             <com.google.android.material.appbar.CollapsingToolbarLayout
                 android:id="@+id/llTop"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_scrollFlags="scroll|exitUntilCollapsed">
+                app:layout_scrollFlags="scroll">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
@@ -57,45 +58,8 @@
                         android:orientation="horizontal"
                         app:layout_constraintBottom_toBottomOf="@id/banner"
                         app:layout_constraintEnd_toEndOf="@id/banner" />
-
-                    <Button
-                        android:id="@+id/btnCreation"
-                        style="@style/Button.Bold"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_marginHorizontal="25dp"
-                        android:layout_marginTop="-12dp"
-                        app:layout_constraintDimensionRatio="325:48"
-                        app:layout_constraintTop_toBottomOf="@id/banner" />
-
-                    <TextView
-                        style="@style/Text18"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:drawableStart="@drawable/icon_ai"
-                        android:drawablePadding="10dp"
-                        android:text="@string/create_now"
-                        android:textColor="@color/sel_common_button_txt"
-                        app:layout_constraintBottom_toBottomOf="@id/btnCreation"
-                        app:layout_constraintEnd_toEndOf="@id/btnCreation"
-                        app:layout_constraintStart_toStartOf="@id/btnCreation"
-                        app:layout_constraintTop_toTopOf="@id/btnCreation" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.appbar.CollapsingToolbarLayout>
-
-            <TextView
-                android:id="@+id/tvTitle"
-                style="@style/Text16"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/spacing_l"
-                android:drawablePadding="8dp"
-                android:gravity="center_vertical"
-                android:paddingVertical="20dp"
-                android:text="@string/viral_comic_drama"
-                android:textColor="?attr/textColor1"
-                app:drawableStartCompat="@drawable/img_hot"
-                app:layout_scrollFlags="enterAlways" />
         </com.google.android.material.appbar.AppBarLayout>
 
         <com.scwang.smart.refresh.layout.SmartRefreshLayout
@@ -110,7 +74,10 @@
             app:srlAccentColor="@color/color_121212"
             app:srlEnableNestedScrolling="true"
             app:srlEnablePreviewInEditMode="true"
-            app:srlPrimaryColor="@color/transparent">
+            app:srlPrimaryColor="@color/transparent"
+            app:srlEnableOverScrollBounce="false"
+            app:srlEnableOverScrollDrag="false"
+            >
 
             <com.kuaigeglobal.epnova.widget.LoadStateViewHolder
                 android:id="@+id/lsv"
@@ -134,8 +101,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="end|bottom"
             android:layout_marginBottom="14dp"
-            android:visibility="gone"
-            android:padding="@dimen/spacing_m">
+            android:padding="@dimen/spacing_m"
+            android:visibility="gone">
 
             <ImageView
                 android:id="@+id/ivFloating"
