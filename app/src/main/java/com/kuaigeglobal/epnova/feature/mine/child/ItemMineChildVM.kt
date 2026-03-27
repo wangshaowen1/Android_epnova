@@ -9,7 +9,8 @@ import kotlinx.coroutines.launch
 
 class ItemMineChildVM(
     private val eventVm: ItemMultipleChoiceEventsViewModel<MyWorksVOEvent, String>,
-    workInfo: WorkVOInfo?
+    workInfo: WorkVOInfo?,
+    val collect: Boolean
 ) : AppItemViewModel<WorkVOInfo>(workInfo) {
 
 

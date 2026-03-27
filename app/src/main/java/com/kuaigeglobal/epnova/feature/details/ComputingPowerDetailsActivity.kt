@@ -50,7 +50,7 @@ class ComputingPowerDetailsActivity :
                 getString(R.string.all),
                 getString(R.string.income_details),
                 getString(R.string.consumption_details)
-            ),
+            ),false,
             binding.viewPager,
             indicatorView = CommonNavigatorUtils.getLinePagerIndicatorGradient(context = this)
                 .also { indicator ->

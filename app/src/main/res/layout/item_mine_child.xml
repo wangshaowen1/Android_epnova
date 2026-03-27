@@ -16,7 +16,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         singleClick="@{(v)->item.onItemClick.invoke(v)}"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/spacing_m">
 
         <!-- 左侧头像区域 -->
         <com.google.android.material.imageview.ShapeableImageView
@@ -57,17 +58,30 @@
 
         <TextView
             style="@style/Text10"
+            setVisible="@{!item.collect}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/spacing_s"
-            android:drawablePadding="2dp"
-            android:text="@{item.data.getFormatPlaycount()}"
+            android:layout_marginHorizontal="@dimen/spacing_s"
+            android:layout_marginBottom="@dimen/spacing_m"
+            android:text="@{item.data.getFormatEp()}"
             android:textColor="?attr/textColor1"
             android:textStyle="bold"
-            app:drawableStartCompat="@drawable/icon_play12"
             app:layout_constraintBottom_toBottomOf="@id/ivCover"
             app:layout_constraintEnd_toEndOf="@id/ivCover"
-            tools:text="7.6k" />
+            tools:text="EP.1 / EP. 6" />
+
+        <ProgressBar
+            setVisible="@{!item.collect}"
+            android:layout_width="0dp"
+            android:layout_height="2dp"
+            android:layout_marginHorizontal="@dimen/spacing_s"
+            android:layout_marginBottom="@dimen/spacing_xs"
+            android:indeterminateOnly="false"
+            android:progress="@{item.data.playProgress}"
+            android:progressDrawable="@drawable/progress_theme_r2"
+            app:layout_constraintBottom_toBottomOf="@id/ivCover"
+            app:layout_constraintEnd_toEndOf="@id/ivCover"
+            app:layout_constraintStart_toStartOf="@id/ivCover" />
 
         <TextView
             android:id="@+id/tv_name"

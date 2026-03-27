@@ -19,6 +19,10 @@ class MineChildViewModel : AppRepositoryViewModel<AppRepository>() {
 
     private val type by lazy { mBundle.getInt(Constants.Extra.TYPE, MineChildFragment.TYPE_HISTORY) }
 
+    fun isCollect(): Boolean {
+        return type== MineChildFragment.TYPE_COLLECTION
+    }
+
     fun getWorkInfo(): Flow<PagingData<WorkVOInfo>> {
         return Pager(
             config = PagingConfig(

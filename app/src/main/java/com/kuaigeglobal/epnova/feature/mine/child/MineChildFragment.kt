@@ -15,8 +15,7 @@ import com.kuaigeglobal.epnova.feature.play.DramasPlayPagerActivity
 import com.kuaigeglobal.epnova.feature.play.data.FeedRepository
 import com.kuaigeglobal.epnova.feature.works.ItemMultipleChoiceEventsViewModel
 import com.kuaigeglobal.epnova.feature.works.MyWorksFragment.Companion.CLICK_INTERVAL
-import com.kuaigeglobal.epnova.widget.decoration.BottomSpaceDecoration
-import com.kuaigeglobal.epnova.widget.decoration.SpaceDecoration
+import com.kuaigeglobal.epnova.widget.decoration.GridSpacingItemDecoration
 import com.kuaigeglobal.epnova.widget.stateful.applyGridSpanSizeLookup
 import com.kuaigeglobal.epnova.widget.stateful.paging.MyMultiStatePagingFooterAdapter
 import com.nhsd.basic.BaseViewModelFragment
@@ -43,7 +42,7 @@ class MineChildFragment :
     }
 
     private val mineAdapter by lazy {
-        MineChildAdapter(eventVm = eventVm)
+        MineChildAdapter(eventVm = eventVm,mRealVM.isCollect())
     }
     private val eventVm by lazy {
         ItemMultipleChoiceEventsViewModel<MyWorksVOEvent, String>()
@@ -79,8 +78,7 @@ class MineChildFragment :
 
     private fun initView() {
         binding.recyclerView.apply {
-            addItemDecoration(SpaceDecoration(12.dp))
-            addItemDecoration(BottomSpaceDecoration(80.dp))
+            addItemDecoration(GridSpacingItemDecoration(3, 8.dp, 0))
             val noMoreThreshold = 2
             itemAnimator = null
             val myMultiStatePagingFooterAdapter = MyMultiStatePagingFooterAdapter(

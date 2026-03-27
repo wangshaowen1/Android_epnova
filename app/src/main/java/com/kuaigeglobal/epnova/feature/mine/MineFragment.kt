@@ -176,6 +176,7 @@ class MineFragment : BaseViewModelFragment<FragmentMineBinding, MineViewModel>()
                 getString(R.string.history),
                 getString(R.string.collection)
             ),
+            isAdjustMode = true,
             binding.viewPager,
             indicatorView = CommonNavigatorUtils.getLinePagerIndicatorGradient(context = mActivity)
                 .also { indicator ->

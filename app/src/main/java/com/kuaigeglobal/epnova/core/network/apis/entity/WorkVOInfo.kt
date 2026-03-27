@@ -29,13 +29,21 @@ data class WorkVOInfo(
     val totalEpisodeCnt: Int? = null,
     val lastPlayTime: Long? = null,
     val collectionTime: Long? = null,
-){
+) {
     fun isMine(): Boolean {
         return User.get().isSameId(userId)
     }
 
     fun getFormatPlaycount(): String? {
         return playCount?.toUnitText()
+    }
+
+    fun getFormatEp(): String {
+        return if (lastSortNo != null && totalEpisodeCnt != null) {
+            "EP.${lastSortNo}/EP.${totalEpisodeCnt}"
+        } else {
+            ""
+        }
     }
 }
 

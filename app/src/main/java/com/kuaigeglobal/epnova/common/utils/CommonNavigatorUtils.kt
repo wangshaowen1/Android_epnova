@@ -2,7 +2,6 @@ package com.kuaigeglobal.epnova.common.utils
 
 import android.content.Context
 import android.graphics.Typeface
-import android.util.Pair
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.animation.AccelerateInterpolator
@@ -99,6 +98,7 @@ object CommonNavigatorUtils {
     fun getCommonNavigatorVp2(
         context: Context?,
         data: List<String>?,
+        isAdjustMode: Boolean? = false,
         vp: ViewPager2,
         indicatorView: IPagerIndicator? = null,
         isBold: Boolean = true,
@@ -111,7 +111,7 @@ object CommonNavigatorUtils {
     ): CommonNavigator? {
         if (context == null) return null
         val navigator = CommonNavigator(context)
-        navigator.isAdjustMode = false
+        navigator.isAdjustMode = isAdjustMode == true
         navigator.isReselectWhenLayout = false
         navigator.adapter = object : CommonNavigatorAdapter() {
             override fun getCount(): Int {

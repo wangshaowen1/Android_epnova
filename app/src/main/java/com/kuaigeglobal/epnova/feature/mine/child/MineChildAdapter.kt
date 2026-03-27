@@ -6,19 +6,15 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.kuaigeglobal.epnova.common.ext.getVm
-import com.kuaigeglobal.epnova.core.db.entity.WorkInformationInfo
-import com.kuaigeglobal.epnova.core.network.apis.entity.WorkInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.WorkVOInfo
 import com.kuaigeglobal.epnova.databinding.ItemMineChildBinding
-import com.kuaigeglobal.epnova.databinding.ItemMyWorkBinding
 import com.kuaigeglobal.epnova.feature.works.ItemMultipleChoiceEventsViewModel
-import com.kuaigeglobal.epnova.feature.works.ItemMyWorkVM
-import com.kuaigeglobal.epnova.feature.works.MyWorksEvent
 import com.nhsd.basic.item.BindingViewHolder
 
 
 class MineChildAdapter(
-    private val eventVm: ItemMultipleChoiceEventsViewModel<MyWorksVOEvent, String>
+    private val eventVm: ItemMultipleChoiceEventsViewModel<MyWorksVOEvent, String>,
+    val collect: Boolean
 ) : PagingDataAdapter<WorkVOInfo, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -47,7 +43,7 @@ class MineChildAdapter(
                     key = item.workId,
                     item = item,
                     viewModelFactory = {
-                        ItemMineChildVM(eventVm, item)
+                        ItemMineChildVM(eventVm, item, collect)
                     },
                     initCallback = {}
                 )
