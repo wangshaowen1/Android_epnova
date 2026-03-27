@@ -1,5 +1,8 @@
 package com.kuaigeglobal.epnova.core.network.apis.response
 
+import com.kuaigeglobal.epnova.common.ext.toUnitText
+import com.kuaigeglobal.epnova.core.network.apis.entity.EpisodeRangeInfo
+
 /**
  * {
  *         "workId": "作品 ID",
@@ -22,13 +25,10 @@ data class EpisodeDirectoryData(
     val workTitle: String? = null,
     val workCoverUrl: String? = null,
     val playCount: Int? = null,
-    val segmentTabs: List<SegmentTab>? = null,
+    val segmentTabs: List<EpisodeRangeInfo>? = null,
     val totalEpisodeCnt: Int? = null,
-)
-
-data class SegmentTab(
-    val segmentIndex: Int? = null,
-    val segmentLabel: String? = null,
-    val startSortNo: Int? = null,
-    val endSortNo: Int? = null,
-)
+) {
+    fun getFormattedPlayCount(): String? {
+        return playCount?.toUnitText()
+    }
+}

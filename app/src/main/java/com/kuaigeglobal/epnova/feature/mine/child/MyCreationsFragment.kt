@@ -102,8 +102,6 @@ class MyCreationsFragment :
 
     private fun initView() {
         binding.recyclerView.apply {
-            addItemDecoration(SpaceDecoration(12.dp))
-            addItemDecoration(BottomSpaceDecoration(80.dp))
             val noMoreThreshold = 2
             itemAnimator = null
             val myMultiStatePagingFooterAdapter = MyMultiStatePagingFooterAdapter(

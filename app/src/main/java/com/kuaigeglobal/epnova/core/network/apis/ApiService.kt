@@ -1150,7 +1150,7 @@ interface ApiService {
     suspend fun episodeDirectoryPage(@Body body: WorkIdPagedBody): ApiResponse<PagedList<EpisodeInfo>?>
 
     /**
-     * 播放器-作品剧集目录分集分页
+     * 播放器-作品剧集目录头信息
      */
     @POST(ApiConstants.EPISODE_DIRECTORY_INFO)
     suspend fun episodeDirectoryInfo(@Body body: WorkIdBody): ApiResponse<EpisodeDirectoryData?>

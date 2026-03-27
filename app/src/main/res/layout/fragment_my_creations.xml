@@ -38,11 +38,11 @@
                     android:id="@+id/recycler_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="16dp"
-                    android:orientation="vertical"
+                    android:layout_marginHorizontal="@dimen/spacing_m"
                     android:overScrollMode="never"
                     android:scrollbars="none"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                    app:spanCount="3"
                     tools:itemCount="10"
                     tools:listitem="@layout/item_my_work" />
             </com.kuaigeglobal.epnova.widget.LoadStateViewHolder>

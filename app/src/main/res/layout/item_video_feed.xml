@@ -116,7 +116,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/spacing_l"
                 android:layout_marginEnd="80dp"
-                android:layout_marginBottom="64dp"
+                android:layout_marginBottom="95dp"
                 android:lineSpacingExtra="@dimen/lineSpacingExtra"
                 android:saveEnabled="false"
                 android:textColor="?attr/textColor3"
@@ -241,13 +241,14 @@
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:contentDescription="选集"
-                    android:src="@drawable/icon_play_menu" />
+                    android:src="@drawable/icon_play_episode" />
 
                 <TextView
                     style="@style/Text12"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/spacing_s"
+                    text="@{`EP.`+item.data.sortNo}"
                     android:textColor="?attr/textColor2"
                     tools:text="EP.1" />
 
@@ -256,6 +257,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    text="@{`/EP.`+item.workInfo.totalEpisodeCnt}"
                     android:textColor="?attr/textColor4"
                     tools:text="/EP.64" />
 

@@ -15,9 +15,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:onClick="@{(v) -> item.onItemClick.invoke(v)}"
-        android:paddingHorizontal="12dp"
-        android:paddingVertical="8dp"
-        android:text="@{item.data.label}"
+        android:paddingEnd="30dp"
+        android:paddingVertical="@dimen/spacing_s"
+        android:text="@{item.data.segmentLabel}"
         android:textColor="@{item.selected ? @color/color_90_ffffff :  @color/color_50_ffffff}"
         tools:text="1 - 30" />
 

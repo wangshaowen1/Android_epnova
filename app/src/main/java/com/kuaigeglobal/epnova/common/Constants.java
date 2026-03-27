@@ -79,7 +79,7 @@ public class Constants {
         String UNLOCK_CHECK = "UNLOCK_CHECK";
         String POSITION = "position";
         String PUSH = "push";
-        String DRAMA_ID = "dramaId";
+        String CURRENT = "CURRENT";
         String DRAMA_NAME = "dramaName";
         String DRAMA_INTRO = "dramaIntro";
         String DRAMA = "drama";

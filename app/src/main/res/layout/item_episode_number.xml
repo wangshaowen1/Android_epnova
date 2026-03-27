@@ -14,20 +14,26 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@{item.checked ? @drawable/fill_color1_r16 : @drawable/bg_ff2e55_r16}"
-        android:onClick="@{(v) -> item.onItemClick.invoke(v)}"
-        android:padding="0dp">
+        android:background="@{item.checked?@drawable/bg_10_ff2e55_r6:@drawable/fill_color1_r4 }"
+        android:onClick="@{(v) -> item.onItemClick.invoke(v)}">
 
         <TextView
             android:id="@+id/tvEpisodeNumber"
             android:layout_width="match_parent"
-            android:layout_height="44dp"
+            android:layout_height="48dp"
             android:gravity="center"
             android:text="@{String.valueOf(item.data.sortNo)}"
-            android:textColor="@{item.checked ? @color/color_90_ffffff : @color/color_ff2e55}"
+            android:textColor="@{item.checked ?@color/color_ff2e55: @color/color_90_ffffff }"
             android:textSize="14sp"
             android:textStyle="bold"
             tools:text="1" />
 
+        <ImageView
+            setVisible="@{item.checked}"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_margin="4dp"
+            android:src="@drawable/icon_episode_playing" />
     </FrameLayout>
 </layout>

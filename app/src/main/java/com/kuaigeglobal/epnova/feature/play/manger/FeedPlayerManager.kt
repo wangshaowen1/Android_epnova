@@ -70,21 +70,26 @@ class FeedPlayerManager(
                     Player.STATE_BUFFERING -> {
                         _playerState.value = FeedPlayerState.Buffering
                     }
-
                     Player.STATE_READY -> {
-                        if (!exoPlayer.playWhenReady) {
+                        // [关键修改]：只要准备好了，且用户没点暂停，就立刻设为 Playing
+                        if (exoPlayer.playWhenReady) {
+                            _playerState.value = FeedPlayerState.Playing
+                        } else {
                             _playerState.value = FeedPlayerState.Pause
                         }
                     }
-
                     Player.STATE_ENDED -> {
-                        scope.launch { _playerEvent.emit(PlayerEvent.OnPlayEnded) }
+                        // 只有当播放进度接近总时长时，才认为是真正的完播
+                        val duration = exoPlayer.duration
+                        val current = exoPlayer.currentPosition
+                        if (duration > 0 && current > duration * 0.9) {
+                            scope.launch { _playerEvent.emit(PlayerEvent.OnPlayEnded) }
+                        }
                         _playerState.value = FeedPlayerState.Pause
                         progressJob?.cancel()
                     }
 
                     Player.STATE_IDLE -> {
-                        // 可能是出错后的空闲，状态由 onError 接管，这里暂不处理
                     }
                 }
             }
@@ -97,6 +102,9 @@ class FeedPlayerManager(
                     startProgressUpdater()
                 } else {
                     progressJob?.cancel()
+                    if (exoPlayer.playbackState == Player.STATE_READY && !exoPlayer.playWhenReady) {
+                        _playerState.value = FeedPlayerState.Pause
+                    }
                     // 注意：这里不要盲目设为 Pause，因为 isPlaying=false 可能是 Buffering
                 }
             }

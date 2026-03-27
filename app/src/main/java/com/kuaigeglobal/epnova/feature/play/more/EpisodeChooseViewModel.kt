@@ -1,26 +1,32 @@
 package com.kuaigeglobal.epnova.feature.play.more
 
+import androidx.databinding.ObservableField
 import androidx.lifecycle.MutableLiveData
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.base.RecyclerViewVM
 import com.kuaigeglobal.epnova.base.viewmodel.AppRepositoryViewModel
 import com.kuaigeglobal.epnova.common.Constants
 import com.kuaigeglobal.epnova.core.AppRepository
+import com.kuaigeglobal.epnova.core.ext.launchWithLoading
 import com.kuaigeglobal.epnova.core.network.apis.entity.EpisodeInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.EpisodeRangeInfo
+import com.kuaigeglobal.epnova.core.network.apis.request.WorkIdBody
+import com.kuaigeglobal.epnova.core.network.apis.response.EpisodeDirectoryData
+import com.kuaigeglobal.epnova.core.response
+import com.nhsd.basic.ext.getParcelableArrayListValue
+import com.nhsd.basic.ext.getParcelableValue
 
 class EpisodeChooseViewModel : AppRepositoryViewModel<AppRepository>() {
 
-    // 从Bundle获取参数
-    val videoTitle: String? by lazy { mBundle.getString(Constants.Extra.TITLE) }
-    val videoCover: String? by lazy { mBundle.getString(Constants.Extra.COVER) }
-    val videoViews: String? by lazy { mBundle.getString(Constants.Extra.BROWSERS) }
-    val totalEpisodes by lazy { mBundle.getInt(Constants.Extra.COUNT, 0) }
-    val currentEpisode by lazy { mBundle.getInt(Constants.Extra.POSITION, 1) }
+    val workId by lazy { mBundle.getString(Constants.Extra.WORK_ID) }
+    val episodeInfos by lazy { mBundle.getParcelableArrayListValue(Constants.Extra.DATA, EpisodeInfo::class.java) }
+    val currentEpisode by lazy { mBundle.getParcelableValue(Constants.Extra.CURRENT, EpisodeInfo::class.java) }
 
     companion object {
         const val RANGE_SIZE = 30  // 每个标签区间的大小
     }
+
+    val headerInfo = ObservableField<EpisodeDirectoryData>()
 
     // 当前选中的集数VM
     var checkedEpisode: ItemEpisodeNumberVm? = null
@@ -46,15 +52,23 @@ class EpisodeChooseViewModel : AppRepositoryViewModel<AppRepository>() {
 
     override fun onCreate() {
         super.onCreate()
+        getHeaderInfo()
         initEpisodes()
-        initRangeTabs()
+    }
+
+    private fun getHeaderInfo() {
+        launchWithLoading {
+            response(mRepo.api.episodeDirectoryInfo(WorkIdBody(workId))) {
+                headerInfo.set(data)
+                initRangeTabs()
+            }
+        }
     }
 
     private fun initEpisodes() {
-        for (i in 1..totalEpisodes) {
-            val info = EpisodeInfo(sortNo = i)
+        episodeInfos?.forEach { info ->
             val vm = ItemEpisodeNumberVm(info).apply {
-                if (i == currentEpisode) {
+                if (info.sortNo == currentEpisode?.sortNo) {
                     checked.set(true)
                     checkedEpisode = this
                 }
@@ -73,20 +87,12 @@ class EpisodeChooseViewModel : AppRepositoryViewModel<AppRepository>() {
     }
 
     private fun initRangeTabs() {
-        val rangeCount = (totalEpisodes + RANGE_SIZE - 1) / RANGE_SIZE
-        for (i in 0 until rangeCount) {
-            val start = i * RANGE_SIZE + 1
-            val end = minOf((i + 1) * RANGE_SIZE, totalEpisodes)
-            val label = "$start - $end"
-            val rangeInfo = EpisodeRangeInfo(
-                label = label,
-                startIndex = i * RANGE_SIZE,
-                startEpisode = start,
-                endEpisode = end
-            )
-            val vm = ItemEpisodeRangeVm(rangeInfo).apply {
+        headerInfo.get()?.segmentTabs?.forEachIndexed { index,tab ->
+            val vm = ItemEpisodeRangeVm(tab).apply {
+                val startSortNo = tab.startSortNo ?: 0
+                val endSortNo = tab.endSortNo ?: 0
                 // 默认选中包含当前集数的标签
-                if (currentEpisode in start..end) {
+                if (currentEpisode?.sortNo in (startSortNo..endSortNo)) {
                     selected.set(true)
                     checkedRange = this
                 }
@@ -97,7 +103,8 @@ class EpisodeChooseViewModel : AppRepositoryViewModel<AppRepository>() {
                         checkedRange = this
                     }
                     // 滚动到对应位置 - 通过LiveData通知Dialog
-                    scrollToPosition.value = rangeInfo.startIndex
+                    val targetScrollPosition = index * RANGE_SIZE
+                    scrollToPosition.value = targetScrollPosition
                 }
             }
             rangeVms.add(vm)
@@ -116,6 +123,7 @@ class EpisodeChooseViewModel : AppRepositoryViewModel<AppRepository>() {
         if (rangeIndex in rangeVms.indices) {
             val targetRange = rangeVms[rangeIndex]
             if (checkedRange != targetRange) {
+                // 这里必须用 UI 线程安全的方式更新
                 checkedRange?.selected?.set(false)
                 targetRange.selected.set(true)
                 checkedRange = targetRange

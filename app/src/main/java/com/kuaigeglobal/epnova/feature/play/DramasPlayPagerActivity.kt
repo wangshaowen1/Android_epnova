@@ -59,6 +59,7 @@ class DramasPlayPagerActivity :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        mRealVM.workId = intent.getStringExtra(Constants.Extra.WORK_ID)
         pendingJumpPosition = intent.getIntExtra(Constants.Extra.POSITION, 0)
         val isSeriesMode = intent.getBooleanExtra(Constants.Extra.PLAY_MODE, true)
         initView()
@@ -71,6 +72,9 @@ class DramasPlayPagerActivity :
 
         lifecycleScope.launch {
             mRealVM.episodeList.collectLatest { list ->
+                if (pendingJumpPosition >= 0) {
+                    listController.reset()
+                }
                 adapter.submitList(list) {
                     // 这是一个回调，代表数据已经完全渲染到 UI 上了
                     // 如果是从选集弹窗过来的，或者初始化指定了位置，可以在这里直接跳集！
@@ -239,13 +243,16 @@ class DramasPlayPagerActivity :
     }
 
     private fun handlePlayEnded() {
+        if (adapter.itemCount == 0) return
+
         if (!listController.smoothScrollToNext()) {
             // 剧集列表已经滑动到底部（当前作品完播）
             if (mRealVM.currentPlayMode == DramasPlayPagerViewModel.PlayMode.RECOMMEND) {
-                // 推荐模式：按照 2.6 规范，随机跳转至未播放的任意作品
-                "当前剧集".showToast() // 需求要求的 Toast 提示
-                pendingJumpPosition = 0
-                mRealVM.loadNextRandomWork() // 触发 ViewModel 去请求新作品并刷新流
+                if (adapter.currentList.isNotEmpty()) {
+                    "正在为您跳转新剧".showToast()
+                    pendingJumpPosition = 0
+                    mRealVM.loadNextRandomWork()
+                }
             } else {
                 // 剧集模式：不自动跳新剧，提示最后一集
                 getString(R.string.already_last_episode).showToast()
@@ -267,7 +274,7 @@ class DramasPlayPagerActivity :
     }
 
     override fun showEpisodeSelectDialog(position: Int) {
-        val dialog = EpisodeChooseDialog.newInstance(null, null, null, 0, 0)
+        val dialog = EpisodeChooseDialog.newInstance(mRealVM.workId, mRealVM.episodeList.value, listController.getCurrentItem())
         dialog.onEpisodeSelected = { episodeInfo ->
             val position = adapter.currentList.indexOf(episodeInfo)
             listController.startInitialPlay(position)

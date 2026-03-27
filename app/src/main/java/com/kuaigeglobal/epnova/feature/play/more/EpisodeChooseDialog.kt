@@ -16,19 +16,15 @@ class EpisodeChooseDialog :
 
     companion object {
         fun newInstance(
-            title: String?,
-            cover: String?,
-            browsers: String?,
-            totalEpisodes: Int?,
-            currentEpisode: Int = 1
+            workId: String?,
+            episodeList: List<EpisodeInfo>?,
+            currentEpisode: EpisodeInfo?
         ): EpisodeChooseDialog {
             val fragment = EpisodeChooseDialog()
             fragment.arguments = bundleOf(
-                Constants.Extra.TITLE to title,
-                Constants.Extra.COVER to cover,
-                Constants.Extra.BROWSERS to browsers,
-                Constants.Extra.COUNT to totalEpisodes,
-                Constants.Extra.POSITION to currentEpisode
+                Constants.Extra.WORK_ID to workId,
+                Constants.Extra.DATA to episodeList,
+                Constants.Extra.CURRENT to currentEpisode
             )
             return fragment
         }
@@ -64,7 +60,7 @@ class EpisodeChooseDialog :
         val gridLayoutManager = GridLayoutManager(mActivity, 6)
         binding.recyclerView.layoutManager = gridLayoutManager
         binding.recyclerView.addItemDecoration(
-            GridSpacingItemDecoration(6, 8.dp, 10.dp)
+            GridSpacingItemDecoration(6, 10.dp, 10.dp)
         )
 
         // 监听滚动，更新标签选中状态
@@ -105,12 +101,17 @@ class EpisodeChooseDialog :
 
     private fun scrollToCurrentEpisode() {
         binding.recyclerView.post {
-            val currentIndex = mRealVM.currentEpisode - 1
+            // 方案：直接在 VM 列表中查找当前选中的 index
+            val currentIndex = mRealVM.episodeVms.indexOfFirst { it.data.get()?.sortNo == mRealVM.currentEpisode?.sortNo }
+
             if (currentIndex >= 0) {
-                // 定位到当前集所在range的起始位置
-                val rangeStartIndex = (currentIndex / EpisodeChooseViewModel.RANGE_SIZE) * EpisodeChooseViewModel.RANGE_SIZE
                 val layoutManager = binding.recyclerView.layoutManager as? GridLayoutManager
-                layoutManager?.scrollToPositionWithOffset(rangeStartIndex, 0)
+                // 滚动到该行，并置顶
+                layoutManager?.scrollToPositionWithOffset(currentIndex, 10.dp)
+
+                // 同步更新顶部的 Tab 状态
+                mRealVM.updateRangeTabByPosition(currentIndex)
+                scrollRangeTabToVisible()
             }
         }
     }

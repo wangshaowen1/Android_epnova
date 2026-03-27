@@ -27,7 +27,6 @@ import com.kuaigeglobal.epnova.feature.creator.CreationRootActivity
 import com.kuaigeglobal.epnova.feature.home.HomeFragment
 import com.kuaigeglobal.epnova.feature.mine.MineFragment
 import com.kuaigeglobal.epnova.feature.splash.newer.FirstRechargeDialog
-import com.kuaigeglobal.epnova.feature.works.MyWorksFragment
 import com.kuaigeglobal.epnova.router.AppNavigator
 import com.kuaigeglobal.epnova.router.AppRouter
 import com.nhsd.basic.BaseViewModelActivity

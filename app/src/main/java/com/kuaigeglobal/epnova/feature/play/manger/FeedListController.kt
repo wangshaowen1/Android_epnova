@@ -18,7 +18,7 @@ import kotlinx.coroutines.launch
  * 列表控制器：负责滑动监听、自动播放、预加载
  */
 class FeedListController(
-    private val viewModel: DramasPlayPagerViewModel, // [新增] 引入 ViewModel 负责发请求
+    private val viewModel: DramasPlayPagerViewModel,
     private val recyclerView: RecyclerView,
     private val adapter: VideoFeedAdapter,
     private val playerManager: FeedPlayerManager
@@ -26,7 +26,10 @@ class FeedListController(
     private val layoutManager = LinearLayoutManager(recyclerView.context)
     private val snapHelper = PagerSnapHelper()
 
-    // 页面切换回调：(当前数据, 当前位置) -> Unit
+    // [关键修复] 记录最后一次播放的位置，防止 IDLE 状态重复触发
+    private var lastPlayedPosition = -1
+
+    // 页面切换回调
     var onPageChanged: ((EpisodeInfo, Int) -> Unit)? = null
     private var fetchUrlJob: Job? = null
 
@@ -37,41 +40,57 @@ class FeedListController(
         // 1. 滑动监听
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                // 仅在完全停止时尝试播放
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    playCurrentItem()
+                    checkAndPlay()
                 }
             }
         })
     }
 
     /**
-     * [新增] 替代原有的首屏自动播放逻辑。
-     * 由 Activity 在 adapter.submitList() 的 commit 回调中主动调用。
+     * 内部校验逻辑：判断是否需要执行播放
+     */
+    private fun checkAndPlay() {
+        val centerView = snapHelper.findSnapView(layoutManager) ?: return
+        val position = layoutManager.getPosition(centerView)
+
+        if (position == RecyclerView.NO_POSITION || position == lastPlayedPosition) {
+            // 位置没变或者无效，直接拦截，解决重复触发问题
+            return
+        }
+
+        playCurrentItem(position)
+    }
+
+    /**
+     * 由 Activity 在初始化数据完成后主动调用
      */
     fun startInitialPlay(targetPosition: Int = 0) {
         if (adapter.itemCount == 0) return
         val safePosition = targetPosition.coerceIn(0, adapter.itemCount - 1)
 
-        // 1. 先让 LayoutManager 滚过去
-        if (safePosition > 0) {
+        // 如果初始位置就是 0，且当前就在 0，需要强制触发一次逻辑
+        if (safePosition == 0) lastPlayedPosition = -1
+
+        if (getCurrentPosition() != safePosition) {
             layoutManager.scrollToPositionWithOffset(safePosition, 0)
         }
 
-        // 2. 监听 RecyclerView 真正完成测绘的那一帧
         recyclerView.doOnPreDraw {
-            playCurrentItem()
+            checkAndPlay()
         }
     }
 
-    fun playCurrentItem() {
-        val centerView = snapHelper.findSnapView(layoutManager) ?: return
-        val position = layoutManager.getPosition(centerView)
-
+    private fun playCurrentItem(position: Int) {
         if (position < 0 || position >= adapter.itemCount) return
 
-        // ListAdapter 取数据直接用 currentList
+        // 立即更新记录位
+        lastPlayedPosition = position
+
         val item = adapter.currentList[position] ?: return
-        val holder = recyclerView.getChildViewHolder(centerView) as? VideoFeedAdapter.VideoViewHolder ?: return
+        // 尽量通过 findViewHolderForAdapterPosition 准确获取
+        val holder = recyclerView.findViewHolderForAdapterPosition(position) as? VideoFeedAdapter.VideoViewHolder ?: return
 
         onPageChanged?.invoke(item, position)
 
@@ -79,23 +98,21 @@ class FeedListController(
         if (item.videoUrl.isNullOrEmpty()) {
             holder.updatePlayerUiState(FeedPlayerManager.FeedPlayerState.Buffering)
 
-            // 取消上一个可能还在请求的 Job
             fetchUrlJob?.cancel()
-
             fetchUrlJob = recyclerView.findViewTreeLifecycleOwner()?.lifecycleScope?.launch {
                 try {
                     val readyItem = viewModel.fetchPlayUrlIfNeeded(item)
+                    // [关键] 异步回来后，必须再次检查当前位置是否还是这一条
                     if (getCurrentPosition() == position) {
                         playerManager.attachAndPlay(readyItem, holder.binding.playerView)
                     }
                 } catch (e: Exception) { e.printStackTrace() }
             }
         } else {
-            fetchUrlJob?.cancel() // 如果当前有缓存，也清理掉之前的废弃请求
+            fetchUrlJob?.cancel()
             playerManager.attachAndPlay(item, holder.binding.playerView)
         }
 
-        // 预加载下一条
         preloadNextItem(position)
     }
 
@@ -103,15 +120,13 @@ class FeedListController(
         if (currentPosition + 1 < adapter.itemCount) {
             val nextItem = adapter.currentList[currentPosition + 1] ?: return
             if (nextItem.videoUrl.isNullOrEmpty()) {
-                // 静默预加载下一集的 URL
                 recyclerView.findViewTreeLifecycleOwner()?.lifecycleScope?.launch(Dispatchers.IO) {
                     try {
                         val readyItem = viewModel.fetchPlayUrlIfNeeded(nextItem)
-                        // URL拿到了，接着触发底层媒体预加载
                         if (!readyItem.videoUrl.isNullOrEmpty()) {
                             playerManager.preload(readyItem.videoUrl)
                         }
-                    } catch (e: Exception) { /* 静默失败，等滑到了再重试 */ }
+                    } catch (e: Exception) { }
                 }
             } else {
                 playerManager.preload(nextItem.videoUrl)
@@ -119,14 +134,21 @@ class FeedListController(
         }
     }
 
+    /**
+     * 重置状态（当切换剧集、刷新整个列表时调用）
+     */
+    fun reset() {
+        lastPlayedPosition = -1
+        fetchUrlJob?.cancel()
+    }
+
+    // FeedListController.kt 修改
     fun smoothScrollToNext(): Boolean {
         val currentPos = getCurrentPosition()
         val totalCount = adapter.itemCount
 
-        Logger.d("FeedListController", "smoothScrollToNext: current=$currentPos, total=$totalCount")
-
-        if (currentPos == -1 || totalCount == 0) {
-            Logger.w("FeedListController", "Cannot determine position, skipping scroll")
+        // 如果列表还没数据，或者位置获取不到，认为“还没结束”，返回 true 拦截掉 handlePlayEnded
+        if (totalCount <= 0 || currentPos == RecyclerView.NO_POSITION) {
             return true
         }
 
@@ -135,27 +157,17 @@ class FeedListController(
             return true
         }
 
-        Logger.i("FeedListController", "Reached end of list")
+        // 只有真正确定 currentPos == totalCount - 1 时才返回 false，触发切剧
         return false
-    }
-
-    fun getCurrentItem(): EpisodeInfo? {
-        val currentPos = getCurrentPosition()
-        return if (currentPos != -1) adapter.currentList[currentPos] else null
     }
 
     fun getCurrentPosition(): Int {
         val centerView = snapHelper.findSnapView(layoutManager)
-        if (centerView != null) {
-            val pos = layoutManager.getPosition(centerView)
-            if (pos != RecyclerView.NO_POSITION) return pos
-        }
+        return centerView?.let { layoutManager.getPosition(it) } ?: -1
+    }
 
-        val firstPos = layoutManager.findFirstVisibleItemPosition()
-        if (firstPos != RecyclerView.NO_POSITION) {
-            return firstPos
-        }
-
-        return -1
+    fun getCurrentItem(): EpisodeInfo? {
+        val pos = getCurrentPosition()
+        return if (pos != -1) adapter.currentList.getOrNull(pos) else null
     }
 }
