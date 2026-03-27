@@ -1,5 +1,8 @@
 package com.kuaigeglobal.epnova.core.network.apis.entity
 
+import com.kuaigeglobal.epnova.common.ext.toUnitText
+import com.kuaigeglobal.epnova.core.User
+
 /**
  * {
  *                 "workId": "作品 ID",
@@ -13,6 +16,7 @@ package com.kuaigeglobal.epnova.core.network.apis.entity
  */
 data class WorkVOInfo(
     val workId: String? = null,
+    val userId: String? = null,//作者userId
     val workTitle: String? = null,
     val workDesc: String? = null,
     val workCoverUrl: String? = null,
@@ -20,9 +24,18 @@ data class WorkVOInfo(
     val workRatio: String? = null,
     val playProgress: Int? = null,
     val playCount: Int? = null,
+    var collected: Boolean? = null,
     val collectCount: Int? = null,
     val totalEpisodeCnt: Int? = null,
     val lastPlayTime: Long? = null,
     val collectionTime: Long? = null,
-)
+){
+    fun isMine(): Boolean {
+        return User.get().isSameId(userId)
+    }
+
+    fun getFormatPlaycount(): String? {
+        return playCount?.toUnitText()
+    }
+}
 

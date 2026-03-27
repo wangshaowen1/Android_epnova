@@ -59,10 +59,10 @@ class HomeViewModel : AppRepositoryViewModel<AppRepository>() {
     fun loadData() {
         viewModelScope.launch {
             // [关键] 调用单例 FeedRepository 获取带缓存的流
-            FeedRepository.getFeedFlow(isSeriesMode = false, null)
-                .collectLatest { pagingData ->
-                    _feedFlow.value = pagingData
-                }
+//            FeedRepository.getFeedFlow(isSeriesMode = false, null)
+//                .collectLatest { pagingData ->
+//                    _feedFlow.value = pagingData
+//                }
         }
     }
 }

@@ -10,7 +10,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.DataSpec
 import androidx.media3.exoplayer.ExoPlayer
 import com.kuaigeglobal.epnova.R
-import com.kuaigeglobal.epnova.core.network.apis.entity.WorkInfo
+import com.kuaigeglobal.epnova.core.network.apis.entity.EpisodeInfo
 import com.kuaigeglobal.epnova.kit.media.PlayerFactory
 import com.kuaigeglobal.epnova.widget.CoverPlayerView
 import com.nhsd.basic.ext.getResString
@@ -130,11 +130,11 @@ class FeedPlayerManager(
         })
     }
 
-    fun attachAndPlay(track: WorkInfo, coverPlayerView: CoverPlayerView) {
+    fun attachAndPlay(track: EpisodeInfo, coverPlayerView: CoverPlayerView) {
         // 乐观更新状态，防止切视频闪烁
         _playerState.value = FeedPlayerState.Idle
         // 防止重复 attach 同一个视频导致画面闪烁
-        if (currentPlayingId == track.workId && currentCoverPlayerView == coverPlayerView) {
+        if (currentPlayingId == track.storyId && currentCoverPlayerView == coverPlayerView) {
             if (!exoPlayer.isPlaying && !isUserPaused) {
                 exoPlayer.play()
             }
@@ -143,7 +143,6 @@ class FeedPlayerManager(
 
         isSeeking = false
         isUserPaused = false // 切视频重置暂停状态
-//        currentPlayingId = track.workId
 
         // 解绑旧 View
         if (currentCoverPlayerView != null && currentCoverPlayerView != coverPlayerView) {
@@ -155,7 +154,7 @@ class FeedPlayerManager(
         coverPlayerView.setTrack(track)
         coverPlayerView.setPlayer(exoPlayer)
 
-        val videoUrl = track.getPlayUrl() ?: return
+        val videoUrl = track.videoUrl ?: return
 
         // [拓展] 构建带字幕的 MediaItem
         val mediaItem = buildMediaItem(track, videoUrl)
@@ -179,15 +178,15 @@ class FeedPlayerManager(
         }
         //在 prepare 之后，play 之前，才更新 ID
         // 这样可以确保之前的任何回调（如 stop 触发的）拿到的都是旧 ID
-        currentPlayingId = track.workId
+        currentPlayingId = track.storyId
         exoPlayer.play()
     }
 
     /**
      * [拓展点] 字幕/多音轨构建逻辑
      */
-    private fun buildMediaItem(track: WorkInfo, url: String): MediaItem {
-        val builder = MediaItem.Builder().setUri(url)
+    private fun buildMediaItem(track: EpisodeInfo, url: String): MediaItem {
+        val builder = MediaItem.Builder().setUri(url).setMediaId(track.storyId?:"")
 
         // 示例：如果未来 TrackInfo 有 subtitleUrl 字段
         // track.subtitleUrl?.let { subUrl ->
@@ -236,19 +235,6 @@ class FeedPlayerManager(
     fun pause() {
         exoPlayer.pause()
     }
-
-    fun resume2() {
-        if (exoPlayer.playbackState == Player.STATE_ENDED) {
-            replay()
-        } else {
-            // [新增] 如果是从错误状态恢复
-            if (_playerState.value is FeedPlayerState.Error) {
-                exoPlayer.prepare() // 重新 prepare 尝试恢复
-            }
-            exoPlayer.play()
-        }
-    }
-// 删除 resume2
 
     fun resume() {
         // 1. 如果是播放结束，从头播

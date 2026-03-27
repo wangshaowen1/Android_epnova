@@ -29,10 +29,10 @@
             <!-- 视频封面 -->
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/ivCover"
+                loadHQThumbnailUri="@{layout.videoCover}"
                 android:layout_width="64dp"
                 android:layout_height="85dp"
                 android:scaleType="centerCrop"
-                app:imageUrl="@{layout.videoCover}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"

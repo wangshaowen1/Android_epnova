@@ -38,11 +38,12 @@ class DramasPlayPagerActivity :
 
     companion object {
         @JvmStatic
-        fun start(workId: String?, position: Int? = 0) {
+        fun start(workId: String?, position: Int? = 0, isSeriesMode: Boolean = true) {
             val context = topActivity ?: return
             val starter = Intent(context, DramasPlayPagerActivity::class.java).apply {
                 putExtra(Constants.Extra.WORK_ID, workId)
                 putExtra(Constants.Extra.POSITION, position)
+                putExtra(Constants.Extra.PLAY_MODE, isSeriesMode)
             }
             context.startActivity(starter)
         }
@@ -53,27 +54,35 @@ class DramasPlayPagerActivity :
     private lateinit var listController: FeedListController
     private var listPopupWindow: ListPopupWindow<PlayMenuInfo>? = null
 
-    private var workId: String? = null
     private var downloadingDialog: DownloadingDialog? = null
+    private var pendingJumpPosition = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        workId = intent.getStringExtra(Constants.Extra.WORK_ID)
-        val initialPos = intent.getIntExtra(Constants.Extra.POSITION, 0)
-
+        pendingJumpPosition = intent.getIntExtra(Constants.Extra.POSITION, 0)
+        val isSeriesMode = intent.getBooleanExtra(Constants.Extra.PLAY_MODE, true)
         initView()
 
         // 1. 初始化核心组件
         playerManager = FeedPlayerManager(this, lifecycleScope)
         binding.recyclerView.adapter = adapter
-        listController = FeedListController(binding.recyclerView, adapter, playerManager)
+        listController = FeedListController(mRealVM, binding.recyclerView, adapter, playerManager)
 
-        // 2. 数据流
+
         lifecycleScope.launch {
-            mRealVM.feedFlow.collectLatest {
-                adapter.submitData(it)
+            mRealVM.episodeList.collectLatest { list ->
+                adapter.submitList(list) {
+                    // 这是一个回调，代表数据已经完全渲染到 UI 上了
+                    // 如果是从选集弹窗过来的，或者初始化指定了位置，可以在这里直接跳集！
+                    if (pendingJumpPosition >= 0 && list.isNotEmpty()) {
+                        listController.startInitialPlay(pendingJumpPosition)
+                        pendingJumpPosition = -1 // [关键] 用完立刻失效，防止列表刷新时乱跳
+                    }
+                }
             }
         }
+
+
         mRealVM.downloading.observe(this) {
             if (it) {
                 if (downloadingDialog == null) {
@@ -85,22 +94,17 @@ class DramasPlayPagerActivity :
             }
         }
 
-        // 告知 Controller 初始位置 (需要在 FeedListController 中加个方法，见下文)
-        listController.setInitialPosition(initialPos)
+        val initMode = if (isSeriesMode) DramasPlayPagerViewModel.PlayMode.SERIES else DramasPlayPagerViewModel.PlayMode.RECOMMEND
+        mRealVM.loadDrama(mRealVM.workId, initMode)
 
-        // 加载数据
-        // 因为 Repository 是单例且缓存了 Flow，如果列表页也用了 FeedRepository，
-        // 这里会立刻拿到数据，不需要网络请求
-        mRealVM.loadFeed(!workId.isNullOrEmpty(), workId)
-
-        listController.onPageChanged = { workInfo, position ->
-            mRealVM.currentWork.set(workInfo)
+        listController.onPageChanged = { episodeInfo, position ->
+            mRealVM.currentEpisode.set(episodeInfo)
             if (mRealVM.currentPlayMode == DramasPlayPagerViewModel.PlayMode.SERIES) {
-                binding.tvTitle.text = getString(R.string.episode_number_format, workInfo.lastEpisodeNo)
+                binding.tvTitle.text = getString(R.string.episode_number_format, episodeInfo.sortNo)
             }
-            val realWorkId =
-                if (mRealVM.currentPlayMode == DramasPlayPagerViewModel.PlayMode.SERIES) workId else workInfo.workId
-            EventManager.onPlayEvent(workInfo.userId, realWorkId, workInfo.getEpisodeId())
+            mRealVM.getUserPlayStatus(episodeInfo)
+            val realWorkId = mRealVM.workId
+            EventManager.onPlayEvent(realWorkId, episodeInfo.storyId)
         }
         // 3. 事件流
         setupPlayerEvents()
@@ -108,10 +112,9 @@ class DramasPlayPagerActivity :
 
     private fun initView() {
         binding.btnEdit.setOnSingleClickListener {
-            val currentWork = mRealVM.currentWork.get() ?: return@setOnSingleClickListener
-            val story = currentWork.workStoryItemList?.firstOrNull() ?: return@setOnSingleClickListener
+            val story = listController.getCurrentItem() ?: return@setOnSingleClickListener
             showCommonDialog(tip = getString(R.string.redraw_cover_confirm), confirmText = getString(R.string.confirm_ok)) {
-                EditStoryboardVideoActivity.start(currentWork.workTitle, story.workId, story.storyId, story.workRatio, story)
+                EditStoryboardVideoActivity.start(mRealVM.currentWorkContext.value?.workTitle, story.workId, story.storyId, story.workRatio, story)
             }
             EventManager.onAppTrack(AppEvent.SF_CLICK_WORK_REPLAY_REDRAW_BUTTON)
         }
@@ -121,16 +124,17 @@ class DramasPlayPagerActivity :
     }
 
     private fun showPopupWindow() {
-        val currentWork = mRealVM.currentWork.get() ?: return
+        val currentEpisode = mRealVM.currentEpisode.get() ?: return
+        val workInfo = mRealVM.currentWorkContext.value ?: return
         listPopupWindow = ListPopupWindow(
             context = this,
             dataList = listOfNotNull(
-                if (!currentWork.isMine()) PlayMenuInfo(
+                if (!workInfo.isMine()) PlayMenuInfo(
                     reportTypeId = PlayMenuInfo.REPORT,
                     reportText = getString(R.string.report),
                     reportIcon = R.drawable.icon_report
                 ) else null,
-                if (currentWork.isMine()) PlayMenuInfo(
+                if (workInfo.isMine()) PlayMenuInfo(
                     reportTypeId = PlayMenuInfo.DOWNLOAD,
                     reportText = getString(R.string.download),
                     reportIcon = R.drawable.icon_menu_download
@@ -157,8 +161,8 @@ class DramasPlayPagerActivity :
                         //举报
                         ReportDialog.newInstance(
                             supportFragmentManager,
-                            currentWork.userId,
-                            if (mRealVM.currentPlayMode == DramasPlayPagerViewModel.PlayMode.SERIES) workId else currentWork.workId//剧集模式下workId是剧集id
+                            workInfo.userId,
+                            if (mRealVM.currentPlayMode == DramasPlayPagerViewModel.PlayMode.SERIES) mRealVM.workId else currentEpisode.workId//剧集模式下workId是剧集id
                         )
                     }
 
@@ -166,7 +170,7 @@ class DramasPlayPagerActivity :
                         //下载
                         requestRead2WritePermissions { granted ->
                             if (granted) {
-                                currentWork.getPlayUrl()?.let { mRealVM.downloadVideo(it) }
+                                currentEpisode.videoUrl?.let { mRealVM.downloadVideo(it) }
                             }
                         }
                     }
@@ -179,6 +183,13 @@ class DramasPlayPagerActivity :
 
 
     private fun setupPlayerEvents() {
+        lifecycleScope.launch {
+            mRealVM.currentWorkContext.collectLatest { workInfo ->
+                workInfo?.let {
+                    adapter.updateWorkInfo(it)
+                }
+            }
+        }
         // 进度同步 (幽灵进度问题)
         lifecycleScope.launch {
             playerManager.progressFlow.collect { (current, total) ->
@@ -218,10 +229,10 @@ class DramasPlayPagerActivity :
         if (pos >= 0) {
             val holder =
                 binding.recyclerView.findViewHolderForAdapterPosition(pos) as? VideoFeedAdapter.VideoViewHolder
-            val item = adapter.peek(pos)
+            val item = adapter.currentList[pos]
 
             // [关键] 只有当 ViewHolder 当前展示的数据 ID 与 播放器正在播的 ID 一致时，才允许更新 UI
-            if (holder != null && item?.workId == playerManager.currentPlayingId) {
+            if (holder != null && item?.storyId == playerManager.currentPlayingId) {
                 action(holder)
             }
         }
@@ -229,24 +240,39 @@ class DramasPlayPagerActivity :
 
     private fun handlePlayEnded() {
         if (!listController.smoothScrollToNext()) {
-            getString(R.string.already_last_episode).showToast()
-            //playerManager.replay()
+            // 剧集列表已经滑动到底部（当前作品完播）
+            if (mRealVM.currentPlayMode == DramasPlayPagerViewModel.PlayMode.RECOMMEND) {
+                // 推荐模式：按照 2.6 规范，随机跳转至未播放的任意作品
+                "当前剧集".showToast() // 需求要求的 Toast 提示
+                pendingJumpPosition = 0
+                mRealVM.loadNextRandomWork() // 触发 ViewModel 去请求新作品并刷新流
+            } else {
+                // 剧集模式：不自动跳新剧，提示最后一集
+                getString(R.string.already_last_episode).showToast()
+                // playerManager.replay() // 根据产品需求决定是否重播
+            }
         }
-//        if (mRealVM.currentPlayMode == DramasPlayPagerViewModel.PlayMode.RECOMMEND) {
-//            if (!listController.smoothScrollToNext()) {
-//                "已经是最后一集了".showToast()
-//                playerManager.replay()
-//            }
-//        } else {
-//            playerManager.replay()
-//        }
     }
 
     // --- 交互回调 ---
     override fun onTogglePlay(position: Int) = playerManager.togglePlay()
     override fun onSeek(position: Int, progress: Long) = playerManager.seekTo(progress)
+    override fun onToggleCollect(position: Int) {
+        mRealVM.collectToggle()
+    }
+
+    override fun onToggleLike(position: Int) {
+        val item = adapter.currentList.getOrNull(position)
+        mRealVM.likeToggle(item)
+    }
+
     override fun showEpisodeSelectDialog(position: Int) {
-        EpisodeChooseDialog.newInstance(null, null, null, 0, 0).show(supportFragmentManager)
+        val dialog = EpisodeChooseDialog.newInstance(null, null, null, 0, 0)
+        dialog.onEpisodeSelected = { episodeInfo ->
+            val position = adapter.currentList.indexOf(episodeInfo)
+            listController.startInitialPlay(position)
+        }
+        dialog.show(supportFragmentManager)
     }
 
     // --- 生命周期 ---

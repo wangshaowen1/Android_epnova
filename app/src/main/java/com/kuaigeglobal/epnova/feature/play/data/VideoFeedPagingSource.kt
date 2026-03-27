@@ -4,21 +4,21 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.kuaigeglobal.epnova.core.network.apis.ApiException
 import com.kuaigeglobal.epnova.core.network.apis.ApiFactory
-import com.kuaigeglobal.epnova.core.network.apis.entity.WorkInfo
-import com.kuaigeglobal.epnova.core.network.apis.request.PagedBody
+import com.kuaigeglobal.epnova.core.network.apis.entity.EpisodeInfo
+import com.kuaigeglobal.epnova.core.network.apis.request.WorkIdPagedBody
 
-class VideoFeedPagingSource : PagingSource<Int, WorkInfo>() {
-    override fun getRefreshKey(state: PagingState<Int, WorkInfo>): Int? {
+class VideoFeedPagingSource(val workId: String?) : PagingSource<Int, EpisodeInfo>() {
+    override fun getRefreshKey(state: PagingState<Int, EpisodeInfo>): Int? {
         return null
     }
 
-    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, WorkInfo> {
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, EpisodeInfo> {
         return try {
             val pageNum = params.key ?: 1
-            val apiResponse = ApiFactory.apiService.recommendWorkList(PagedBody(pageNum, 20))
+            val apiResponse = ApiFactory.apiService.episodeDirectoryPage(WorkIdPagedBody(workId, pageNum, 30))
             if (apiResponse.isSuccess) {
                 val prevKey = if (pageNum > 1) pageNum - 1 else null
-                val items: ArrayList<WorkInfo> = ArrayList()
+                val items: ArrayList<EpisodeInfo> = ArrayList()
                 val data = apiResponse.data?.items
                 // 加载下一页的键（为 null 表示没有下一页）
                 val nextKey =

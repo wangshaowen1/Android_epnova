@@ -62,7 +62,7 @@
 
                 <ImageView
                     android:id="@+id/btnEdit"
-                    setVisible="@{layout.currentWork.isMine()}"
+                    setVisible="@{layout.currentWorkContext.isMine()}"
                     android:layout_width="40dp"
                     android:layout_height="@dimen/action_bar_size"
                     android:layout_gravity="end"

@@ -3,6 +3,7 @@ package com.kuaigeglobal.epnova.core.manager
 import com.kuaigeglobal.epnova.common.ext.ioScope
 import com.kuaigeglobal.epnova.core.network.apis.ApiFactory
 import com.kuaigeglobal.epnova.core.network.apis.request.PlayEventBody
+import com.kuaigeglobal.epnova.core.network.apis.request.WorkBody
 import com.nhsd.basic.ext.launchNoCrash
 import com.nhsd.basic.utils.Logger
 
@@ -16,9 +17,9 @@ object EventManager {
     /**
      * 作品播放量计数
      */
-    fun onPlayEvent(userId: String?, workId: String?, episodeId: String?) {
+    fun onPlayEvent(workId: String?, episodeId: String?) {
         ioScope.launchNoCrash {
-            ApiFactory.apiService.playEventReport(PlayEventBody(userId, workId, episodeId))
+            ApiFactory.apiService.playCountInc(WorkBody(workId, episodeId))
         }
     }
 

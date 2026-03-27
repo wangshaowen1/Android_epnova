@@ -12,7 +12,7 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
 import com.kuaigeglobal.epnova.App
 import com.kuaigeglobal.epnova.R
-import com.kuaigeglobal.epnova.core.network.apis.entity.WorkInfo
+import com.kuaigeglobal.epnova.core.network.apis.entity.EpisodeInfo
 import com.nhsd.basic.utils.Logger
 
 
@@ -58,7 +58,7 @@ class CoverPlayerView : PlayerView, Player.Listener {
 
     private fun startHideCoverAnim() {
         if (isCoverVisible() && player != null) {
-            Logger.i("CoverPlayerView  hide image with amin=" + workInfo?.stripedTrickTitle)
+            Logger.i("CoverPlayerView  hide image with amin=" + episodeInfo?.sortNo)
             if (alphaAnimator?.isRunning == true) {
                 return
             }
@@ -124,10 +124,10 @@ class CoverPlayerView : PlayerView, Player.Listener {
 
     fun getCoverImage() = coverImage
 
-    var workInfo: WorkInfo? = null
+    var episodeInfo: EpisodeInfo? = null
 
-    fun setTrack(track: WorkInfo?) {
-        workInfo = track
+    fun setTrack(track: EpisodeInfo?) {
+        episodeInfo = track
     }
 
 
@@ -135,7 +135,7 @@ class CoverPlayerView : PlayerView, Player.Listener {
         restorePlayer?.removeListener(this)
         this.restorePlayer = player
         player?.addListener(this)
-        Logger.i("CoverPlayerView_____________ player changed to $player, current track:${workInfo?.workTitle}, id: ${workInfo?.workId}")
+        Logger.i("CoverPlayerView_____________ player changed to $player, current track:${episodeInfo?.storyId}, id: ${episodeInfo?.workId}")
         if (isAttached) {
             super.setPlayer(player)
             // 添加监听器到新播放器
@@ -167,7 +167,7 @@ class CoverPlayerView : PlayerView, Player.Listener {
             Player.STATE_BUFFERING, Player.STATE_ENDED, Player.STATE_IDLE -> {
                 Logger.i(
                     App.TAG,
-                    "CoverPlayerView video player  state=${playbackState} " + player?.currentPosition + "," + workInfo?.stripedTrickTitle + ",cover visible=${coverImage?.visibility == VISIBLE}"
+                    "CoverPlayerView video player  state=${playbackState} " + player?.currentPosition + ",cover visible=${coverImage?.visibility == VISIBLE}"
                 )
 
                 if (player?.currentPosition == 0L && coverImage?.visibility != VISIBLE) {
@@ -202,7 +202,7 @@ class CoverPlayerView : PlayerView, Player.Listener {
         isAttached = true
         restorePlayer?.addListener(this)
         super.setPlayer(restorePlayer)
-        Logger.i(App.TAG, "CoverPlayerView onattatch " + workInfo?.stripedTrickTitle)
+        Logger.i(App.TAG, "CoverPlayerView onattatch " + episodeInfo?.sortNo)
 //        globalMvPlayer.addVideoErrorListener(this)
 //        globalMvPlayer.addSurfaceTextureListener(this)
 
@@ -213,7 +213,7 @@ class CoverPlayerView : PlayerView, Player.Listener {
         isAttached = false
         releasePlayer()
 
-        Logger.i(App.TAG, "CoverPlayerView onDetachedFromWindow  " + workInfo?.stripedTrickTitle)
+        Logger.i(App.TAG, "CoverPlayerView onDetachedFromWindow  " + episodeInfo?.sortNo)
 //        globalMvPlayer.removeVideoErrorListener(this)
 //        globalMvPlayer.removeSurfaceTextureListener(this)
 //        Logger.i("CoverPlayerView reset cover visible 4")
@@ -223,7 +223,7 @@ class CoverPlayerView : PlayerView, Player.Listener {
 
     fun releasePlayer() {
         Logger.i(
-            "CoverPlayerView_____________ release player........" + workInfo?.stripedTrickTitle + "isCommandAvailable........" + (this.player?.isCommandAvailable(
+            "CoverPlayerView_____________ release player........" + episodeInfo?.sortNo + "isCommandAvailable........" + (this.player?.isCommandAvailable(
                 Player.COMMAND_SET_VIDEO_SURFACE
             ))
         )

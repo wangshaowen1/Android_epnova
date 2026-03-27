@@ -1,40 +1,49 @@
 package com.kuaigeglobal.epnova.feature.play
 
 import androidx.databinding.ObservableBoolean
-import androidx.databinding.ObservableLong
+import androidx.databinding.ObservableField
 import com.kuaigeglobal.epnova.base.item.AppItemViewModel
-import com.kuaigeglobal.epnova.core.network.apis.entity.WorkInfo
+import com.kuaigeglobal.epnova.core.network.apis.entity.EpisodeInfo
+import com.kuaigeglobal.epnova.core.network.apis.entity.WorkVOInfo // 注意导入正确的作品实体
 
+class ItemVideoFeedVm(info: EpisodeInfo?) : AppItemViewModel<EpisodeInfo>(info) {
 
-class ItemVideoFeedVm(info: WorkInfo?) :
-    AppItemViewModel<WorkInfo>(info) {
+    // --- 作品级全局状态 ---
+    val workInfo = ObservableField<WorkVOInfo>()
 
-    companion object{
-        const val LOG_TAG = "ItemVideoFeedVm"
+    // --- 互动区状态 (单集) ---
+    val isLiked = ObservableBoolean(false)
+    val likeCount = ObservableField("0")
+
+    // --- 互动区状态 (作品) ---
+    val isCollected = ObservableBoolean(false)
+    val collectCount = ObservableField("0")
+
+    // --- 播放器 UI 状态 ---
+    val showBuffering = ObservableBoolean(false)
+    val showPauseBtn = ObservableBoolean(false)
+
+    // --- 交互桥梁 ---
+    var actionListener: VideoFeedAdapter.InteractionListener? = null
+    // 使用高阶函数动态获取准确的 position，防止 RecyclerView 复用导致错位
+    var positionProvider: () -> Int = { -1 }
+
+    /** 同步剧集点赞状态 */
+    fun syncLike(item: EpisodeInfo?) {
+        isLiked.set(item?.liked == true)
+        likeCount.set(item?.likeCount?.toString() ?: "0")
     }
 
-    /**
-     * 是否播放中
-     */
-    val isPlaying by lazy { ObservableBoolean(false) }
+    /** 同步全局作品状态 */
+    fun syncWorkInfo(work: WorkVOInfo?) {
+        workInfo.set(work)
+        isCollected.set(work?.collected == true)
+        collectCount.set(work?.collectCount?.toString() ?: "0")
+    }
 
-    /**
-     * 是否播放中
-     */
-    val isPaused by lazy { ObservableBoolean(false) }
-
-    /**
-     * 当前播放进度ms
-     */
-    val currentPosition by lazy { ObservableLong(0) }
-
-    /**
-     * 总时长ms
-     */
-    val duration by lazy { ObservableLong(0) }
-
-    /**
-     * 拖动进度滑块
-     */
-    val seeking by lazy { ObservableBoolean(false) }
+    // --- 供 XML 直接绑定的点击事件 ---
+    fun onClickPlay() = actionListener?.onTogglePlay(positionProvider())
+    fun onClickCollect() = actionListener?.onToggleCollect(positionProvider())
+    fun onClickLike() = actionListener?.onToggleLike(positionProvider())
+    fun onClickEpisodeSelect() = actionListener?.showEpisodeSelectDialog(positionProvider())
 }

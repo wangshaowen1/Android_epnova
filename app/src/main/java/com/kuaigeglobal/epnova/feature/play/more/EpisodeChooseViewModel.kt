@@ -12,9 +12,9 @@ import com.kuaigeglobal.epnova.core.network.apis.entity.EpisodeRangeInfo
 class EpisodeChooseViewModel : AppRepositoryViewModel<AppRepository>() {
 
     // 从Bundle获取参数
-    val videoTitle by lazy { mBundle.getString(Constants.Extra.TITLE, "") }
-    val videoCover by lazy { mBundle.getString(Constants.Extra.COVER, "") }
-    val videoViews by lazy { mBundle.getString(Constants.Extra.BROWSERS, "") }
+    val videoTitle: String? by lazy { mBundle.getString(Constants.Extra.TITLE) }
+    val videoCover: String? by lazy { mBundle.getString(Constants.Extra.COVER) }
+    val videoViews: String? by lazy { mBundle.getString(Constants.Extra.BROWSERS) }
     val totalEpisodes by lazy { mBundle.getInt(Constants.Extra.COUNT, 0) }
     val currentEpisode by lazy { mBundle.getInt(Constants.Extra.POSITION, 1) }
 
@@ -24,6 +24,8 @@ class EpisodeChooseViewModel : AppRepositoryViewModel<AppRepository>() {
 
     // 当前选中的集数VM
     var checkedEpisode: ItemEpisodeNumberVm? = null
+
+    var onEpisodeSelected: (EpisodeInfo?) -> Unit = {}
 
     // 集数列表
     val episodeVms = arrayListOf<ItemEpisodeNumberVm>()
@@ -61,6 +63,7 @@ class EpisodeChooseViewModel : AppRepositoryViewModel<AppRepository>() {
                         checkedEpisode?.checked?.set(false)
                         this.checked.set(true)
                         checkedEpisode = this
+                        onEpisodeSelected.invoke(data.get())
                     }
                 }
             }

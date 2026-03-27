@@ -13,7 +13,7 @@ object Constant {
 
     object SDKConfiguration {
         //是否显示微信相关的
-        const val IS_SHOW_WE_CHAT = true
+        const val IS_SHOW_WE_CHAT = false
     }
 
     object Paged {

@@ -80,6 +80,7 @@ fun getInstall(delay: Int = 0, callback: ((installData: String?) -> Unit)? = nul
         } else {
             getInstall.invoke()
         }
+        callback?.invoke(Config.get().installData)
     } else {
         callback?.invoke(installData)
     }

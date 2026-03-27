@@ -3,26 +3,28 @@ package com.kuaigeglobal.epnova.feature.play
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableInt
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
-import androidx.paging.PagingData
-import androidx.paging.cachedIn
 import com.blankj.utilcode.util.FileUtils
 import com.blankj.utilcode.util.PathUtils
+import com.kuaige.videoedit.resource.UrlResource
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.base.viewmodel.AppRepositoryViewModel
 import com.kuaigeglobal.epnova.core.ext.launch
+import com.kuaigeglobal.epnova.core.ext.launchWithLoading
 import com.kuaigeglobal.epnova.core.network.RetrofitClient
-import com.kuaigeglobal.epnova.core.network.apis.entity.WorkInfo
+import com.kuaigeglobal.epnova.core.network.apis.entity.EpisodeInfo
+import com.kuaigeglobal.epnova.core.network.apis.entity.WorkVOInfo
+import com.kuaigeglobal.epnova.core.network.apis.request.CurrentWorkIdBody
+import com.kuaigeglobal.epnova.core.network.apis.request.WorkBody
+import com.kuaigeglobal.epnova.core.network.apis.request.WorkIdBody
+import com.kuaigeglobal.epnova.core.network.apis.request.WorkIdPagedBody
+import com.kuaigeglobal.epnova.core.response
 import com.kuaigeglobal.epnova.feature.creator.data.CreationRepository
 import com.kuaigeglobal.epnova.feature.download.DownloadingViewModel
 import com.kuaigeglobal.epnova.feature.play.data.FeedRepository
-import com.kuaige.videoedit.resource.UrlResource
 import com.nhsd.basic.ext.showToast
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.withContext
 import java.io.File
 
@@ -30,48 +32,157 @@ class DramasPlayPagerViewModel : AppRepositoryViewModel<CreationRepository>(), D
 
     enum class PlayMode { RECOMMEND, SERIES }
 
-    val currentWork by lazy { ObservableField<WorkInfo>() }
+    val currentEpisode by lazy { ObservableField<EpisodeInfo>() }
+    var workId: String? = null
     var currentPlayMode = PlayMode.SERIES
 
-    // 对外暴露的数据流
-    private val _feedFlow = MutableStateFlow<PagingData<WorkInfo>>(PagingData.empty())
-    val feedFlow: Flow<PagingData<WorkInfo>> = _feedFlow
+    // 1. 作品全局状态
+    private val _currentWorkContext = MutableStateFlow<WorkVOInfo?>(null)
+    val currentWorkContext = _currentWorkContext.asStateFlow()
 
-    init {
-        // 默认加载一次，方便进入页面直接看效果
-        // loadFeed(true, null)
+    // 2. 剧集列表目录
+    private val _episodeList = MutableStateFlow<List<EpisodeInfo>>(emptyList())
+    val episodeList = _episodeList.asStateFlow()
+
+
+    // 替代原有的 loadFeed 和 loadWorkInfo
+    fun loadDrama(targetWorkId: String?, mode: PlayMode) {
+        if (targetWorkId.isNullOrEmpty()) return
+        this.workId = targetWorkId
+        this.currentPlayMode = mode
+
+        launch {
+            // A. 获取作品详情 (共用)
+            val detailRes = withContext(Dispatchers.IO) { mRepo.api.simpleWorkInfo(WorkIdBody(workId)) }
+            if (detailRes.isSuccess) {
+                _currentWorkContext.value = detailRes.data
+            }
+
+            // B. 获取剧集目录数据
+            if (mode == PlayMode.SERIES) {
+                // 剧集模式：优先尝试吞掉“作品详情”传过来的内存数据
+                val preloaded = FeedRepository.consumePreloadedSeries(targetWorkId)
+                if (!preloaded.isNullOrEmpty()) {
+                    _episodeList.value = preloaded
+                    return@launch // 直接返回，省去一次网络请求！
+                }
+            }
+
+            // 推荐模式，或剧集模式没有拿到预加载数据（兜底）：走网络全量拉取
+            val listRes = withContext(Dispatchers.IO) { mRepo.api.episodeDirectoryPage(WorkIdPagedBody(workId, 1, 200)) }
+            if (listRes.isSuccess) {
+                _episodeList.value = listRes.data?.items ?: emptyList()
+            }
+        }
     }
 
-    fun loadFeed(isSeriesMode: Boolean, id: String?) {
-        // 1. 设置当前模式
-        currentPlayMode = if (isSeriesMode) PlayMode.SERIES else PlayMode.RECOMMEND
-
-        viewModelScope.launch {
-            // Step A: 获取原始 Flow
-            val rawFlow = if (isSeriesMode) {
-                // [Series模式]：获取专用数据流（内存预加载 或 独立网络请求）
-                FeedRepository.getSeriesFlowOrNetwork(id ?: "", true)
+    // --- 自动切剧逻辑 ---
+    fun loadNextRandomWork() {
+        launchWithLoading {
+            // 1. 调接口拿下一个随机作品 ID
+            val res = withContext(Dispatchers.IO) { mRepo.api.nextWorkRecommend(CurrentWorkIdBody(workId)) }
+            if (res.isSuccess) {
+                workId = res.data?.workId
+                // 2. 清理旧状态，使用推荐模式加载新剧
+                _currentWorkContext.value = res.data
+                _episodeList.value = emptyList()
+                loadDrama(workId, PlayMode.RECOMMEND)
             } else {
-                // [Feed模式]：获取全局共享流
-                // Repository 内部已经用 repositoryScope 缓存过了
-                FeedRepository.getFeedFlow(false, id)
+                res.msg?.showToast()
+            }
+        }
+    }
+
+    // 懒加载播放地址的方法保持不变
+    suspend fun fetchPlayUrlIfNeeded(episode: EpisodeInfo): EpisodeInfo {
+        if (!episode.videoUrl.isNullOrEmpty()) return episode
+
+        val apiResponse = withContext(Dispatchers.IO) {
+            mRepo.api.episodePlayInfo(WorkBody(workId, episode.storyId))
+        }
+
+        if (apiResponse.isSuccess) {
+            // 1. 创建一个全新的对象（假设 EpisodeInfo 是 data class）
+            // 如果你的 EpisodeInfo 是普通的 class，请 new 一个新对象并把属性拷贝过去
+            val updatedEpisode = episode.copy(
+                videoUrl = apiResponse.data?.videoUrl,
+                duration = apiResponse.data?.duration?.toLong() ?: 0L,
+            )
+
+            // 2. 获取当前列表的拷贝，找到对应位置并替换
+            val currentList = _episodeList.value.toMutableList()
+            val index = currentList.indexOfFirst { it.storyId == updatedEpisode.storyId }
+
+            if (index != -1) {
+                currentList[index] = updatedEpisode
+                // 3. 发射全新的列表，这会触发 ListAdapter 去后台异步计算 Diff
+                _episodeList.value = currentList
             }
 
-            // Step B: 决定是否需要在当前 ViewModel 缓存
-            val finalFlow = if (isSeriesMode) {
-                // Series 模式下，Flow 可能是新创建的（比如来自 flowOf(PagingData) 或 新的 Pager），
-                // 需要绑定到当前 ViewModel 生命周期，防止配置变更（如旋转）丢失状态
-                rawFlow.cachedIn(viewModelScope)
-            } else {
-                // [关键修改] Feed 模式下，直接使用 Repository 的流。
-                // 因为 Repository 已经 cachedIn(repositoryScope)，它是全局存活的。
-                // 如果这里再 cachedIn(viewModelScope)，会导致 Flow 被包装，可能丢失原有的共享状态。
-                rawFlow
-            }
+            return updatedEpisode
+        }
+        return episode
+    }
 
-            // Step C: 收集并发送给 UI
-            finalFlow.collectLatest { pagingData ->
-                _feedFlow.emit(pagingData)
+    fun getUserPlayStatus(episode: EpisodeInfo?) {
+        launch {
+            response(mRepo.api.userPlayerState(WorkBody(workId, episode?.storyId))) {
+                // 假设 data 里包含最新的点赞状态和数量，或者前端自己取反
+                val isLikedNow = data?.liked
+                val isCollectedNow = data?.collected
+
+                val workContext = _currentWorkContext.value
+                if (workContext != null && isCollectedNow != null) {
+                    _currentWorkContext.value = workContext.copy(collected = isCollectedNow)
+                }
+
+                val currentList = _episodeList.value.toMutableList()
+                val index = currentList.indexOfFirst { it.storyId == episode?.storyId }
+                if (index != -1 && isLikedNow != null) {
+                    currentList[index] = currentList[index].copy(
+                        liked = isLikedNow
+                    )
+                    _episodeList.value = currentList
+                }
+            }
+        }
+    }
+
+    fun likeToggle(episode: EpisodeInfo?) {
+        if (episode == null) return
+        launchWithLoading {
+            response(mRepo.api.likeToggle(WorkBody(workId, episode.storyId))) {
+                // 假设 data 里包含最新的点赞状态和数量，或者前端自己取反
+                val isLikedNow = data?.liked ?: (episode.liked == true) // 替换为真实字段
+                val likeCountNow = data?.likeCount ?: episode.likeCount
+
+                val currentList = _episodeList.value.toMutableList()
+                val index = currentList.indexOfFirst { it.storyId == episode.storyId }
+                if (index != -1) {
+                    // copy 生成新对象，触发 DiffUtil
+                    currentList[index] = currentList[index].copy(
+                        liked = isLikedNow,
+                        likeCount = likeCountNow
+                    )
+                    _episodeList.value = currentList
+                }
+            }
+        }
+    }
+
+    fun collectToggle() {
+        launchWithLoading {
+            response(mRepo.api.collectToggle(WorkIdBody(workId))) {
+                val workContext = _currentWorkContext.value ?: return@response
+                // 假设 data 里包含最新的收藏状态和数量
+                val isCollectedNow = data?.collected ?: (workContext.collected == true)
+                val collectCountNow = data?.collectCount ?: workContext.collectCount
+
+                // 更新整个作品流
+                _currentWorkContext.value = workContext.copy(
+                    collected = isCollectedNow,
+                    collectCount = collectCountNow
+                )
             }
         }
     }

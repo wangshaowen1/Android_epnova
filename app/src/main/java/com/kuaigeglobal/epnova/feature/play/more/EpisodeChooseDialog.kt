@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.kuaigeglobal.epnova.common.Constants
+import com.kuaigeglobal.epnova.core.network.apis.entity.EpisodeInfo
 import com.kuaigeglobal.epnova.databinding.DialogEpisodeChooseBinding
 import com.kuaigeglobal.epnova.widget.decoration.GridSpacingItemDecoration
 import com.nhsd.basic.BaseBottomPushVMDialogFragment
@@ -33,7 +34,7 @@ class EpisodeChooseDialog :
         }
     }
 
-    var onEpisodeSelected: (Int) -> Unit = {}
+    var onEpisodeSelected: (EpisodeInfo?) -> Unit = {}
 
     override fun onPrepareView() {
         super.onPrepareView()
@@ -45,6 +46,11 @@ class EpisodeChooseDialog :
 
         // 初始滚动到当前选中集数的位置
         scrollToCurrentEpisode()
+
+        mRealVM.onEpisodeSelected = {
+            onEpisodeSelected.invoke(it)
+            dismissAllowingStateLoss()
+        }
     }
 
     private fun setupRangeTabRecyclerView() {

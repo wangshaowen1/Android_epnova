@@ -40,7 +40,7 @@ class HomeAdapter() : PagingDataAdapter<WorkInfo, RecyclerView.ViewHolder>(DIFF_
                 val transVM = binding.getVm(position, item, ItemHomeDramaVm::class.java).apply {
                     onItemClick.value = {
                         EventManager.onAppTrack(AppEvent.SF_CLICK_HOME_RECOMMEND_VIDEO)
-                        DramasPlayPagerActivity.start(null, position)
+                        DramasPlayPagerActivity.start(workId = item.workId, 0,false)
                     }
                 }
                 binding.item = transVM

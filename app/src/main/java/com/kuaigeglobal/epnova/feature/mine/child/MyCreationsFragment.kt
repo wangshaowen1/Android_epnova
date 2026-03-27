@@ -219,24 +219,14 @@ class MyCreationsFragment :
             .map { episode ->
                 episode.workId = workInfo?.workId
                 // 复用父作品信息，包装成 WorkInfo
-                WorkInfo(
-                    workId = episode.storyId ?: "", // 必须唯一
-                    userId = User.get().userId,
-                    workTitle = workInfo?.workTitle,
-                    workCoverUrl = workInfo?.workCoverUrl,
-                    workDesc = workInfo?.workDesc,
-                    workStoryItemList = listOf(episode), // 这一集的数据
-                    lastEpisodeNo = episode.sortNo,
-                    totalEpisodeCnt = workInfo?.totalEpisodeCnt,
-                    playCount = episode.playCount,
-                )
+               episode
             }
 
         // 2. 计算修正后的点击位置
         // 因为过滤了数据，原来的 position 可能变了，需要找到点击的那个 episode 在新列表里的位置
         val clickedEpisodeId = episodes[clickPosition].storyId
         val newPosition =
-            validPlayList.indexOfFirst { it.workId == clickedEpisodeId }.coerceAtLeast(0)
+            validPlayList.indexOfFirst { it.storyId == clickedEpisodeId }.coerceAtLeast(0)
         // 3. 存入 Repository
         FeedRepository.setPreloadedSeries(workInfo?.workId ?: "", validPlayList)
 

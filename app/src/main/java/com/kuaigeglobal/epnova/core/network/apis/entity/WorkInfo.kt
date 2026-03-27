@@ -266,9 +266,9 @@ data class EpisodeInfo(
     /**分镜数*/
     val storyboardTotal: Int? = null,
     /**当前视频url*/
-    val videoUrl: String? = null,
+    var videoUrl: String? = null,
     /**视频时长(秒)*/
-    val duration: Long? = null,
+    var duration: Long? = null,
     /**视频比例：16:9、4:3、1:1、3:4、9:16、21:9、adaptive(自动)*/
     val workRatio: String? = null,
     /**播放量(初始化1000-10000)*/
@@ -281,6 +281,9 @@ data class EpisodeInfo(
     val taskGenResultStoryVO: TaskGenResultStoryVO? = null,
     /**是否首次创建（0=否删除过，1=是首次创建）*/
     val firstCreationFlag: Int? = null,
+
+    val liked: Boolean? = null,
+    val likeCount: Int? = null,
 ) : Parcelable {
 
     @Parcelize
