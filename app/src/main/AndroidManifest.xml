@@ -221,7 +221,9 @@
         <activity
             android:name=".feature.creator.continuewriting.ContinueWritingActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".feature.play.DramasPlayPagerActivity" />
+        <activity
+            android:name=".feature.play.DramasPlayPagerActivity"
+            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden|smallestScreenSize" />
         <activity
             android:name=".feature.editor.info.DramaInfoEditActivity"
             android:screenOrientation="portrait" />

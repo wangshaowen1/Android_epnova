@@ -49,6 +49,11 @@ class DramasPlayPagerViewModel : AppRepositoryViewModel<CreationRepository>(), D
     // 替代原有的 loadFeed 和 loadWorkInfo
     fun loadDrama(targetWorkId: String?, mode: PlayMode) {
         if (targetWorkId.isNullOrEmpty()) return
+
+        if (this.workId == targetWorkId && _episodeList.value.isNotEmpty()) {
+            return
+        }
+
         this.workId = targetWorkId
         this.currentPlayMode = mode
 
