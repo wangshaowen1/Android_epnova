@@ -214,6 +214,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".feature.creator.CreationRootActivity"
+            android:theme="@style/DrawerActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".feature.series.SeriesActivity"

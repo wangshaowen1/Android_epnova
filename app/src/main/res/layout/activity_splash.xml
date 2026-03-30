@@ -12,34 +12,40 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/img_splash">
+        android:layout_height="match_parent">
 
 
         <ImageView
-            android:layout_width="0dp"
+            android:id="@+id/ivLogo"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:adjustViewBounds="true"
-            android:importantForAccessibility="no"
-            android:src="@drawable/img_splash_top"
+            android:src="@drawable/ic_logo_round"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.39755"
-            app:layout_constraintWidth_percent="0.61" />
+            app:layout_constraintVertical_bias="0.3738" />
 
         <ImageView
+            android:id="@+id/ivLogoTitle"
             android:layout_width="wrap_content"
-            android:layout_height="37dp"
-            android:layout_gravity="bottom|center"
-            android:layout_marginBottom="40dp"
-            android:adjustViewBounds="true"
-            android:importantForAccessibility="no"
-            android:src="@drawable/img_splash_logo"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_xl"
+            android:src="@drawable/ic_logo_title"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/ivLogo" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_s"
+            android:text="Start your AI comic creation journey"
+            android:textColor="?attr/textColor3"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/ivLogoTitle" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

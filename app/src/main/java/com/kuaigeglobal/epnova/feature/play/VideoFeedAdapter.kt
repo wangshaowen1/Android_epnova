@@ -93,16 +93,7 @@ class VideoFeedAdapter(private val interactionListener: InteractionListener) :
 
         // 3秒播放上报任务 (新需求)
         private val reportPlaybackTask = Runnable {
-            val currentPos = bindingAdapterPosition
-            if (currentPos == androidx.recyclerview.widget.RecyclerView.NO_POSITION) return@Runnable
-
-            val episode = getItem(currentPos) ?: return@Runnable
-            val storyId = episode.storyId ?: return@Runnable
-
-            if (!reportedStoryIds.contains(storyId)) {
-                reportedStoryIds.add(storyId)
-                interactionListener.onReportPlayback(currentPos, episode, binding.seekbar.currentPosition)
-            }
+            performProgressReport(isThreshold = true)
         }
 
         init {
@@ -261,9 +252,44 @@ class VideoFeedAdapter(private val interactionListener: InteractionListener) :
             handler.removeCallbacksAndMessages(null)
         }
 
+        fun performProgressReport(isThreshold: Boolean) {
+            val currentPos = bindingAdapterPosition
+            if (currentPos == androidx.recyclerview.widget.RecyclerView.NO_POSITION) return
+
+            val episode = getItem(currentPos) ?: return
+            val storyId = episode.storyId ?: return
+
+            // 逻辑判断：
+            // 1. 如果是3秒定时任务触发：直接上报并记录 ID
+            // 2. 如果是滑走/退出触发：必须检查 reportedStoryIds 是否已包含该 ID（即是否待够了3秒）
+            if (isThreshold) {
+                if (!reportedStoryIds.contains(storyId)) {
+                    reportedStoryIds.add(storyId)
+                    interactionListener.onReportPlayback(currentPos, episode, binding.seekbar.currentPosition)
+                }
+            } else {
+                // 滑走或退出时，只有在“已满3秒”的情况下才上报最新进度
+                if (reportedStoryIds.contains(storyId)) {
+                    interactionListener.onReportPlayback(currentPos, episode, binding.seekbar.currentPosition)
+                }
+            }
+        }
+
         fun onViewRecycled() {
             resetTimers()
         }
+
+        fun onDetached() {
+            // 尝试上报最终进度（内部会判断是否满3秒）
+            performProgressReport(isThreshold = false)
+            resetTimers() // 清理掉现有的 Handler 任务
+        }
+    }
+
+    override fun onViewDetachedFromWindow(holder: VideoViewHolder) {
+        super.onViewDetachedFromWindow(holder)
+        // 当 Item 划出屏幕，立即保存当前进度
+        holder.onDetached()
     }
 
     override fun onViewRecycled(holder: VideoViewHolder) {

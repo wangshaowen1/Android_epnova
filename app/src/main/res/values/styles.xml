@@ -788,4 +788,16 @@
         <item name="android:textStyle">bold</item>
     </style>
 
+    <style name="DrawerActivity" parent="AppTheme.Base">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowAnimationStyle">@style/BottomDrawerAnimation</item>
+    </style>
+
+    <style name="BottomDrawerAnimation">
+        <item name="android:activityOpenEnterAnimation">@anim/push_bottom_in</item>
+        <item name="android:activityOpenExitAnimation">@anim/stay_still</item>
+        <item name="android:activityCloseEnterAnimation">@anim/stay_still</item>
+        <item name="android:activityCloseExitAnimation">@anim/push_bottom_out</item>
+    </style>
+
 </resources>

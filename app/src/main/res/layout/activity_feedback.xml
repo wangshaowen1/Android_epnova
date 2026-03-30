@@ -165,7 +165,7 @@
                     android:layout_gravity="bottom"
                     android:layout_marginTop="84dp"
                     android:alpha="0.5"
-                    android:background="@drawable/gradient_left_73b0f8_right_7567f0_r100"
+                    android:background="@drawable/bg_theme_color1_r50"
                     android:text="@string/submit_feedback" />
 
                 <LinearLayout

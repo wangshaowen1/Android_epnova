@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Gravity
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.Constants
 import com.kuaigeglobal.epnova.common.ext.showCommonDialog
@@ -296,7 +297,15 @@ class DramasPlayPagerActivity :
 
     // --- 生命周期 ---
     override fun onPause() {
-        super.onPause(); playerManager.pause()
+        super.onPause();
+        // 强制当前正在显示的 ViewHolder 上报进度
+        val layoutManager = binding.recyclerView.layoutManager as? LinearLayoutManager
+        val firstPos = layoutManager?.findFirstVisibleItemPosition() ?: -1
+        if (firstPos != -1) {
+            val holder = binding.recyclerView.findViewHolderForAdapterPosition(firstPos) as? VideoFeedAdapter.VideoViewHolder
+            holder?.onDetached()
+        }
+        playerManager.pause()
     }
 
     override fun onResume() {

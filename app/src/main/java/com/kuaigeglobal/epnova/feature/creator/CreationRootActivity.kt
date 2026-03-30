@@ -8,6 +8,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
+import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.Constants
 import com.kuaigeglobal.epnova.common.ext.applySmartFocusManager
 import com.kuaigeglobal.epnova.common.utils.KeyboardUtils
@@ -73,5 +74,9 @@ class CreationRootActivity :
             EventManager.onAppTrack(AppEvent.SF_VIEW_NOVEL_ADAPTATION_TAB)
             binding.viewPager.currentItem = 1
         }
+    }
+
+    override fun finish() {
+        super.finish()
     }
 }
