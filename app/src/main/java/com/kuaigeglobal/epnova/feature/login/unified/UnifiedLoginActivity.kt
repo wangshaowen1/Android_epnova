@@ -12,9 +12,9 @@ import androidx.core.content.ContextCompat
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.ext.topActivity
 import com.kuaigeglobal.epnova.core.Config
+import com.kuaigeglobal.epnova.core.google.login.GoogleSignInHelper
 import com.kuaigeglobal.epnova.databinding.ActivityUnifiedLoginBinding
 import com.kuaigeglobal.epnova.feature.login.LoginActivity
-import com.kuaigeglobal.epnova.feature.login.phone.PhoneLoginActivity
 import com.kuaigeglobal.epnova.feature.settings.SettingsActivity
 import com.kuaigeglobal.epnova.feature.web.SimpleBrowserActivity
 import com.nhsd.basic.BaseViewModelActivity
@@ -56,6 +56,8 @@ class UnifiedLoginActivity : BaseViewModelActivity<ActivityUnifiedLoginBinding, 
         termsOfService()
     }
 
+    val googleSignInHelper by lazy { GoogleSignInHelper(this) }
+
 
     override fun <Data> onClick(view: View?, data: Data?) {
         super.onClick(view, data)
@@ -78,8 +80,16 @@ class UnifiedLoginActivity : BaseViewModelActivity<ActivityUnifiedLoginBinding, 
 //            }
 
             R.id.btnGoogle -> {
-                //todo google登录
-                finishOnly()
+                googleSignInHelper.signIn(
+                    onSuccess = { body ->
+                        mRealVM.loginByThird(body) {
+                            finishOnly()
+                        }
+                    },
+                    onFailure = { msg ->
+                        msg?.toString()?.showToast()
+                    }
+                )
             }
 
             R.id.bt_settings -> {

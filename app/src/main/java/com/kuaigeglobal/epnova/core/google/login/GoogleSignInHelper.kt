@@ -108,13 +108,12 @@ class GoogleSignInHelper(private val context: Context) {
                         Log.d(tag, "GoogleIdTokenCredential: googleCred.familyName=" + googleCred.familyName)
                         Log.d(tag, "GoogleIdTokenCredential: googleCred.profilePictureUri=" + googleCred.profilePictureUri)
                         Log.d(tag, "GoogleIdTokenCredential: googleCred.profilePictureUri=" + googleCred.profilePictureUri?.toString())
-//                        onSuccess(
-//                            LoginByThirdBody(
-//                                googleCred.idToken,
-//                                googleCred.givenName + " " + googleCred.familyName,
-//                                googleCred.profilePictureUri?.toString()
-//                            )
-//                        )
+                        onSuccess(
+                            LoginByThirdBody(
+                                LoginByThirdBody.LOGIN_TYPE_GOOGLE,
+                                googleCred.idToken
+                            )
+                        )
                     } catch (e: Exception) {
                         onFailure(e.message)
                     }
