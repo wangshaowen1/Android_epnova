@@ -14,7 +14,6 @@ import com.nhsd.basic.item.BindingViewHolder
 class InnerHorizontalAdapter : ListAdapter<WorkVOInfo, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
 
     init {
-        // 优化：防止数据更新期间（短暂的 empty 状态）丢失横向滚动位置
         stateRestorationPolicy = StateRestorationPolicy.PREVENT_WHEN_EMPTY
     }
 
@@ -29,6 +28,10 @@ class InnerHorizontalAdapter : ListAdapter<WorkVOInfo, RecyclerView.ViewHolder>(
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        if (position < 0 || position >= currentList.size) {
+            return
+        }
+
         if (holder is ViewHolder) {
             holder.bind(position)
         }
@@ -37,10 +40,22 @@ class InnerHorizontalAdapter : ListAdapter<WorkVOInfo, RecyclerView.ViewHolder>(
     inner class ViewHolder(binding: ItemBookShelfChildBinding) : BindingViewHolder<ItemBookShelfChildBinding>(binding) {
 
         override fun bind(position: Int) {
-            getItem(position)?.let { item ->
-                val transVM = binding.getVm(position, item, ItemHomeDramaVm::class.java).apply {
+            val item = try {
+                getItem(position)
+            } catch (e: IndexOutOfBoundsException) {
+                null
+            }
+            item?.let { validItem ->
+                val transVM = binding.getVm<ItemHomeDramaVm, WorkVOInfo>(
+                    key = validItem.workId,
+                    item = validItem,
+                    viewModelFactory = {
+                        ItemHomeDramaVm(validItem)
+                    },
+                    initCallback = {}
+                ).apply {
                     onItemClick.value = {
-                        DramasPlayPagerActivity.start(workId = item.workId, 0, false)
+                        DramasPlayPagerActivity.start(workId = validItem.workId, 0, false)
                     }
                 }
                 binding.item = transVM

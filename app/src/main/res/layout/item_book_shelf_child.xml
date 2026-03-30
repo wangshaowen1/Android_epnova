@@ -30,7 +30,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:shapeAppearance="@style/roundStyle_tr12"
+            app:shapeAppearance="@style/roundStyle_r8"
             tools:src="@drawable/img_default_cover_3_4" />
 
         <TextView
@@ -52,7 +52,7 @@
         <View
             android:layout_width="0dp"
             android:layout_height="34dp"
-            android:background="@drawable/gradient_top_00_000000_bottom_60_000000"
+            android:background="@drawable/gradient_top_00_000000_bottom_60_000000_br8"
             app:layout_constraintBottom_toBottomOf="@id/ivCover"
             app:layout_constraintEnd_toEndOf="@id/ivCover"
             app:layout_constraintStart_toStartOf="@id/ivCover" />
@@ -73,14 +73,14 @@
 
         <TextView
             android:id="@+id/tv_name"
-            style="@style/Text12"
+            style="@style/Text13"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_s"
             android:ellipsize="end"
             android:maxLines="2"
             android:text="@{item.data.workTitle}"
-            android:textColor="?attr/textColor1"
+            android:textColor="?attr/textColor2"
             app:layout_constraintEnd_toEndOf="@id/ivCover"
             app:layout_constraintStart_toStartOf="@id/ivCover"
             app:layout_constraintTop_toBottomOf="@id/ivCover"

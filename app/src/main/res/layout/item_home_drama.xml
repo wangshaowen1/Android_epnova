@@ -16,7 +16,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         singleClick="@{(v)->item.onItemClick.invoke(v)}"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/spacing_m">
 
         <!-- 左侧头像区域 -->
         <com.google.android.material.imageview.ShapeableImageView
@@ -71,14 +72,13 @@
 
         <TextView
             android:id="@+id/tv_name"
-            style="@style/Text12"
+            style="@style/Text13"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/spacing_s"
-            android:layout_marginTop="@dimen/spacing_s"
+            android:background="@drawable/bg_fill_color_1_br8"
             android:ellipsize="end"
             android:maxLines="2"
-            android:paddingBottom="10dp"
+            android:padding="@dimen/spacing_m"
             android:text="@{item.data.workTitle}"
             android:textColor="?attr/textColor1"
             app:layout_constraintEnd_toEndOf="@id/ivCover"

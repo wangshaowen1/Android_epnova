@@ -36,16 +36,25 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
+                    <com.kuaigeglobal.epnova.widget.StatusBarView
+                        android:id="@+id/statusBar"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintTop_toTopOf="parent" />
+
                     <com.zhpan.bannerview.BannerViewPager
                         android:id="@+id/banner"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
+                        android:layout_marginHorizontal="@dimen/spacing_l"
+                        android:layout_marginTop="20dp"
                         app:bvp_can_loop="true"
                         app:bvp_indicator_visibility="gone"
-                        app:bvp_interval="4000"
-                        app:bvp_scroll_duration="600"
-                        app:layout_constraintDimensionRatio="375:246"
-                        app:layout_constraintTop_toTopOf="parent"
+                        app:bvp_interval="3000"
+                        app:bvp_round_corner="@dimen/radius_l"
+                        app:bvp_scroll_duration="200"
+                        app:layout_constraintDimensionRatio="345:178"
+                        app:layout_constraintTop_toBottomOf="@id/statusBar"
                         tools:background="@color/color_20_ffffff" />
 
                     <com.zhpan.indicator.IndicatorView
@@ -53,8 +62,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="4dp"
                         android:layout_gravity="bottom|center_horizontal"
-                        android:layout_marginEnd="@dimen/spacing_l"
-                        android:layout_marginBottom="30dp"
+                        android:layout_margin="@dimen/spacing_m"
                         android:orientation="horizontal"
                         app:layout_constraintBottom_toBottomOf="@id/banner"
                         app:layout_constraintEnd_toEndOf="@id/banner" />
@@ -66,18 +74,17 @@
             android:id="@+id/srl"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginHorizontal="@dimen/spacing_m"
+            android:layout_marginHorizontal="@dimen/spacing_l"
             android:focusable="true"
             android:focusableInTouchMode="true"
             android:overScrollMode="never"
             app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
             app:srlAccentColor="@color/color_121212"
             app:srlEnableNestedScrolling="true"
-            app:srlEnablePreviewInEditMode="true"
-            app:srlPrimaryColor="@color/transparent"
             app:srlEnableOverScrollBounce="false"
             app:srlEnableOverScrollDrag="false"
-            >
+            app:srlEnablePreviewInEditMode="true"
+            app:srlPrimaryColor="@color/transparent">
 
             <com.kuaigeglobal.epnova.widget.LoadStateViewHolder
                 android:id="@+id/lsv"
