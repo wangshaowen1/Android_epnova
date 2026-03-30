@@ -8,12 +8,14 @@ import com.kuaigeglobal.epnova.base.viewmodel.AppRepositoryViewModel
 import com.kuaigeglobal.epnova.base.viewmodel.ToolbarViewModel
 import com.kuaigeglobal.epnova.feature.creator.data.CreationRepository
 import com.nhsd.basic.ext.getResColor
+import com.nhsd.basic.ext.getResDrawable
 import com.nhsd.basic.ext.getResString
 
 class CreationRootViewModel : AppRepositoryViewModel<CreationRepository>() {
 
     val mToolbarVM = ToolbarViewModel(
         navigationAction = { back() },
+        navigationDrawable = R.drawable.icon_close.getResDrawable(),
         title = R.string.story_inspiration.getResString(),
         background = Color.TRANSPARENT,
     )

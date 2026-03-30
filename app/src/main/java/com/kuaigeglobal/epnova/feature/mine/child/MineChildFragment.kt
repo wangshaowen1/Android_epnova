@@ -7,12 +7,9 @@ import com.kuaigeglobal.epnova.common.Constants
 import com.kuaigeglobal.epnova.common.ext.startRefreshWithAdapter
 import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.ext.onUserStatusChanged
-import com.kuaigeglobal.epnova.core.network.apis.entity.EpisodeInfo
-import com.kuaigeglobal.epnova.core.network.apis.entity.WorkInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.WorkVOInfo
 import com.kuaigeglobal.epnova.databinding.FragmentMineChildBinding
 import com.kuaigeglobal.epnova.feature.play.DramasPlayPagerActivity
-import com.kuaigeglobal.epnova.feature.play.data.FeedRepository
 import com.kuaigeglobal.epnova.feature.works.ItemMultipleChoiceEventsViewModel
 import com.kuaigeglobal.epnova.feature.works.MyWorksFragment.Companion.CLICK_INTERVAL
 import com.kuaigeglobal.epnova.widget.decoration.GridSpacingItemDecoration
@@ -42,7 +39,7 @@ class MineChildFragment :
     }
 
     private val mineAdapter by lazy {
-        MineChildAdapter(eventVm = eventVm,mRealVM.isCollect())
+        MineChildAdapter(eventVm = eventVm, mRealVM.isCollect())
     }
     private val eventVm by lazy {
         ItemMultipleChoiceEventsViewModel<MyWorksVOEvent, String>()
@@ -124,7 +121,7 @@ class MineChildFragment :
                         val currentTime = System.currentTimeMillis()
                         if (currentTime - lastClickTime < CLICK_INTERVAL) return@collect
                         lastClickTime = currentTime
-
+                        onPlayEpisodeClicked(event.workInfo)
                     }
 
                     else -> {}
@@ -133,28 +130,11 @@ class MineChildFragment :
         }
     }
 
-    fun onPlayEpisodeClicked(workInfo: WorkInfo?, episodes: List<EpisodeInfo>, clickPosition: Int) {
-        // 1. [核心步骤] 过滤未完成的数据 + 转换为 Adapter 需要的 WorkInfo
-        val validPlayList = episodes
-            .filter { !it.videoUrl.isNullOrEmpty() } // 过滤条件
-            .map { episode ->
-                episode.workId = workInfo?.workId
-                episode
-            }
-
-        // 2. 计算修正后的点击位置
-        // 因为过滤了数据，原来的 position 可能变了，需要找到点击的那个 episode 在新列表里的位置
-        val clickedEpisodeId = episodes[clickPosition].storyId
-        val newPosition =
-            validPlayList.indexOfFirst { it.storyId == clickedEpisodeId }.coerceAtLeast(0)
-        // 3. 存入 Repository
-        FeedRepository.setPreloadedSeries(workInfo?.workId ?: "", validPlayList)
-
-        // 4. 跳转播放页
+    fun onPlayEpisodeClicked(workInfo: WorkVOInfo?) {
         DramasPlayPagerActivity.start(
             workId = workInfo?.workId,
-            // 传入修正后的位置
-            position = newPosition
+            position = maxOf(0, (workInfo?.lastSortNo ?: 0) - 1),
+            isSeriesMode = true
         )
     }
 }

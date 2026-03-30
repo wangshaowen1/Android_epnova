@@ -104,9 +104,9 @@ class DramasPlayPagerActivity :
 
         listController.onPageChanged = { episodeInfo, _ ->
             mRealVM.currentEpisode.set(episodeInfo)
-            if (mRealVM.currentPlayMode == DramasPlayPagerViewModel.PlayMode.SERIES) {
-                binding.tvTitle.text = getString(R.string.episode_number_format, episodeInfo.sortNo)
-            }
+//            if (mRealVM.currentPlayMode == DramasPlayPagerViewModel.PlayMode.SERIES) {
+//                binding.tvTitle.text = getString(R.string.episode_number_format, episodeInfo.sortNo)
+//            }
             mRealVM.getUserPlayStatus(episodeInfo)
             val realWorkId = mRealVM.workId
             EventManager.onPlayEvent(realWorkId, episodeInfo.storyId)
