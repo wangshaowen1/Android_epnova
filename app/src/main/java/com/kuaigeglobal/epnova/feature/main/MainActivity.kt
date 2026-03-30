@@ -247,7 +247,8 @@ class MainActivity : BaseViewModelActivity<ActivityMainBinding, MainViewModel>()
                     tabId = R.id.rbWorks,
                     interceptor = { AppNavigator.checkLoginIntercepted(true) } // 传入拦截逻辑
                 ) {
-                    binding.mrg.check(R.id.rbWorks) // 真正执行切换
+                    CreationRootActivity.start(this)
+                    //binding.mrg.check(R.id.rbWorks) // 真正执行切换
                 }
 //                if (AppNavigator.checkLoginIntercepted(true)) {
 //                    return

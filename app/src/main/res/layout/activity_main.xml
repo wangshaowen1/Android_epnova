@@ -49,7 +49,7 @@
                     android:drawableTop="@drawable/cb_main_tab_home"
                     android:drawablePadding="4dp"
                     android:gravity="center"
-                    android:text="@string/creation"
+                    android:text="@string/tab_home"
                     android:textColor="@color/cb_main_tab_txt"
                     android:textSize="10sp"
                     tools:checked="true" />
@@ -67,26 +67,18 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1">
 
-                <com.kuaigeglobal.epnova.widget.FixedAnimatedRadioButton
+                <ImageView
                     android:id="@+id/rbWorks"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:button="@null"
-                    android:drawableTop="@drawable/cb_main_tab_folder"
-                    android:drawablePadding="4dp"
-                    android:gravity="center"
-                    android:text="@string/works"
-                    android:textColor="@color/cb_main_tab_txt"
-                    android:textSize="10sp"
-                    tools:checked="false" />
+                    android:src="@drawable/icon_ai_generate" />
 
                 <View
                     android:id="@+id/tabWorks"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:onClick="@{layout.clickHandler::onClick}" />
-
             </FrameLayout>
 
             <FrameLayout

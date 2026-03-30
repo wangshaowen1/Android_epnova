@@ -267,10 +267,16 @@ class DramasPlayPagerActivity :
     override fun onTogglePlay(position: Int) = playerManager.togglePlay()
     override fun onSeek(position: Int, progress: Long) = playerManager.seekTo(progress)
     override fun onToggleCollect(position: Int) {
+        if (AppNavigator.checkLoginIntercepted(true)) {
+            return
+        }
         mRealVM.collectToggle()
     }
 
     override fun onToggleLike(position: Int) {
+        if (AppNavigator.checkLoginIntercepted(true)) {
+            return
+        }
         val item = adapter.currentList.getOrNull(position)
         mRealVM.likeToggle(item)
     }

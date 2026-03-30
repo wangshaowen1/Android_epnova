@@ -237,8 +237,11 @@ class VideoFeedAdapter(private val interactionListener: InteractionListener) :
             }
 
             if (isBuffering) {
-                binding.animBuffering.clearAnimation()
-                binding.animBuffering.startAnimation(rotateAnim)
+                // 使用 post 确保在下一帧布局完成后再计算中心点启动动画
+                binding.animBuffering.post {
+                    binding.animBuffering.clearAnimation()
+                    binding.animBuffering.startAnimation(rotateAnim)
+                }
             } else {
                 binding.animBuffering.clearAnimation()
             }

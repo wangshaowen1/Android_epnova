@@ -1,5 +1,5 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation,ExtraTranslation">
-    <string name="app_name">快出片</string>
+    <string name="app_name">EpNova</string>
     <string name="request_failed_tips">Slow connection. Please try again in a moment.</string>
     <string name="no_network_tips">Connection failed. Please check your network.</string>
 
@@ -26,7 +26,7 @@
     <string name="tab_home">Home</string>
     <string name="tab_hot">Trending</string>
     <string name="tab_message">Messages</string>
-    <string name="tab_mine">Profile</string>
+    <string name="tab_mine">Me</string>
     <string name="creation">Create</string>
 
     <string name="customize">Custom</string>
@@ -487,4 +487,5 @@
     <string name="history">History</string>
     <string name="collection">Collection</string>
     <string name="full_screen">Full Screen</string>
+    <string name="maybe_you_like">Maybe you like</string>
 </resources>

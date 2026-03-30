@@ -11,12 +11,10 @@
             style="@style/Text16"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:drawablePadding="8dp"
             android:gravity="center_vertical"
             android:paddingVertical="20dp"
-            android:text="@string/viral_comic_drama"
+            android:text="@string/maybe_you_like"
             android:textColor="?attr/textColor1"
-            app:drawableStartCompat="@drawable/img_hot"
             app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
