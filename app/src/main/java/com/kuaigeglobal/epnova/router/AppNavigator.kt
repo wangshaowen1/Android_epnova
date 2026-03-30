@@ -33,7 +33,7 @@ object AppNavigator {
     @JvmStatic
     fun checkLoginIntercepted(
         showToast: Boolean = true,
-        isFullScreen: Boolean = false
+        isFullScreen: Boolean = true
     ): Boolean {
         if (User.get().isVisitor) {
             startLogin(showToast, isFullScreen)

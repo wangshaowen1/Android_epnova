@@ -494,4 +494,6 @@
     <string name="deleted_successfully">Deleted successfully.</string>
     <string name="enter_email">Please leave your email so we can contact you later.</string>
     <string name="enter_email_tip">Please enter a valid email address.</string>
+    <string name="login_with_google">Login with Google</string>
+    <string name="terms_and_privacy_agreement">By continuing, you agree to our Terms of service &amp; Privacy Policy.</string>
 </resources>

@@ -12,16 +12,13 @@ import androidx.core.content.ContextCompat
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.ext.topActivity
 import com.kuaigeglobal.epnova.core.Config
-import com.kuaigeglobal.epnova.core.network.apis.request.LoginByThirdBody
 import com.kuaigeglobal.epnova.databinding.ActivityUnifiedLoginBinding
 import com.kuaigeglobal.epnova.feature.login.LoginActivity
-import com.kuaigeglobal.epnova.feature.login.PrivacyPolicyDialog
 import com.kuaigeglobal.epnova.feature.login.phone.PhoneLoginActivity
 import com.kuaigeglobal.epnova.feature.settings.SettingsActivity
 import com.kuaigeglobal.epnova.feature.web.SimpleBrowserActivity
 import com.nhsd.basic.BaseViewModelActivity
 import com.nhsd.basic.ext.showToast
-import com.nhsd.basic.utils.Logger
 
 /**
  * *****************************************
@@ -32,7 +29,7 @@ import com.nhsd.basic.utils.Logger
  * @Version: 1.0
  * *****************************************
  */
-class UnifiedLoginActivity : BaseViewModelActivity<ActivityUnifiedLoginBinding, UnifiedLoginViewModel>(){
+class UnifiedLoginActivity : BaseViewModelActivity<ActivityUnifiedLoginBinding, UnifiedLoginViewModel>() {
 
     companion object {
         var checkedPolicy = false
@@ -80,46 +77,21 @@ class UnifiedLoginActivity : BaseViewModelActivity<ActivityUnifiedLoginBinding, 
 //                }
 //            }
 
-            R.id.btnPhone -> {
-                checkedPolicy = mRealVM.checkedPolicy.get()
-                PhoneLoginActivity.start(false, checkedPolicy = mRealVM.checkedPolicy.get())
+            R.id.btnGoogle -> {
+                //todo google登录
                 finishOnly()
             }
 
-            R.id.bt_settings->{
+            R.id.bt_settings -> {
                 SettingsActivity.start(this)
             }
-            R.id.ll_describe->{
+
+            R.id.ll_describe -> {
                 //协议
                 mRealVM.checkedPolicy.set(!mRealVM.checkedPolicy.get())
             }
         }
     }
-
-//    override fun onStart(platform: SHARE_MEDIA?) {
-//        Logger.d("onStart platform:$platform")
-//    }
-//
-//    override fun onAuthed(platform: SHARE_MEDIA?, data: MutableMap<String, String>?) {
-//        Logger.d("onAuthed platform:$platform data:$data")
-//        val loginType = when (platform) {
-//            SHARE_MEDIA.WEIXIN -> LoginByThirdBody.LOGIN_TYPE_WECHAT
-//            SHARE_MEDIA.QQ -> LoginByThirdBody.LOGIN_TYPE_QQ
-//            else -> {
-//                finishOnly()
-//                return
-//            }
-//        }
-//        mRealVM.loginByThird(loginType, data) {
-//            finishOnly()
-//        }
-//    }
-//
-//    override fun onError(e: Exception?, platform: SHARE_MEDIA?, onCancel: Boolean) {
-//        Logger.d("onError e:$e platform:$platform onCancel:$onCancel")
-//        finishOnly()
-//    }
-
 
     /**
      * finish动画处理
@@ -136,8 +108,8 @@ class UnifiedLoginActivity : BaseViewModelActivity<ActivityUnifiedLoginBinding, 
      */
     private fun termsOfService() {
         val spannableString =
-            SpannableString( "登录即代表同意和《用户协议》和《隐私政策》")
-        val userAgreement = "《用户协议》"
+            SpannableString(getString(R.string.terms_and_privacy_agreement))
+        val userAgreement = getString(R.string.app_user_agreement)
         val userAgreementStartIndex = spannableString.indexOf(userAgreement)
         if (userAgreementStartIndex != -1) {
             spannableString.setSpan(
@@ -146,7 +118,7 @@ class UnifiedLoginActivity : BaseViewModelActivity<ActivityUnifiedLoginBinding, 
                         SimpleBrowserActivity.launch(
                             this@UnifiedLoginActivity,
                             Config.get().serviceUrl,
-                            "用户协议"
+                            userAgreement
                         )
                     }
 
@@ -167,7 +139,7 @@ class UnifiedLoginActivity : BaseViewModelActivity<ActivityUnifiedLoginBinding, 
             )
         }
 
-        val privacyPolicy = "《隐私政策》"
+        val privacyPolicy = getString(R.string.app_privacy_policy)
         val privacyPolicyStartIndex = spannableString.indexOf(privacyPolicy)
         if (privacyPolicyStartIndex != -1) {
             spannableString.setSpan(
@@ -176,7 +148,7 @@ class UnifiedLoginActivity : BaseViewModelActivity<ActivityUnifiedLoginBinding, 
                         SimpleBrowserActivity.launch(
                             this@UnifiedLoginActivity,
                             Config.get().privacyUrl,
-                            "隐私政策"
+                            privacyPolicy
                         )
                     }
 
@@ -196,7 +168,6 @@ class UnifiedLoginActivity : BaseViewModelActivity<ActivityUnifiedLoginBinding, 
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
             )
         }
-
 
         binding.tvAgreement.movementMethod = LinkMovementMethod.getInstance()
         binding.tvAgreement.highlightColor = Color.TRANSPARENT

@@ -13,7 +13,6 @@ import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.ext.topActivity
 import com.kuaigeglobal.epnova.core.Config
 import com.kuaigeglobal.epnova.core.Events
-import com.kuaigeglobal.epnova.core.network.apis.request.LoginByThirdBody
 import com.kuaigeglobal.epnova.databinding.ActivityPhoneLoginBinding
 import com.kuaigeglobal.epnova.feature.login.PrivacyPolicyDialog
 import com.kuaigeglobal.epnova.feature.settings.SettingsActivity
@@ -22,7 +21,6 @@ import com.kuaigeglobal.epnova.widget.GeneratingDialog
 import com.nhsd.basic.BaseViewModelActivity
 import com.nhsd.basic.bus.FlowEventBus
 import com.nhsd.basic.ext.showToast
-import com.nhsd.basic.utils.Logger
 
 /**
  * *****************************************
@@ -329,9 +327,6 @@ class PhoneLoginActivity :
                 )
             }
         }
-        binding.tvAgreement.movementMethod = LinkMovementMethod.getInstance()
-        binding.tvAgreement.highlightColor = Color.TRANSPARENT
-        binding.tvAgreement.text = spannableString
 
         binding.tvAgreementCaptcha.movementMethod = LinkMovementMethod.getInstance()
         binding.tvAgreementCaptcha.highlightColor = Color.TRANSPARENT
