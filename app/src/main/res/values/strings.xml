@@ -266,7 +266,7 @@
     <string name="reference">With Reference</string>
     <string name="report_desc">Report Description</string>
     <string name="please_describe_the_reason">Please describe the issue in detail. We\'ll look into it as soon as possible.</string>
-    <string name="wechat_qq_phone_email">WeChat / QQ / Phone / Email</string>
+    <string name="wechat_qq_phone_email">Email</string>
     <string name="text_parsing">Text Analysis</string>
     <string name="ai_structural_analysis">AI will analyze the entire work and extract its structure.</string>
     <string name="estimated_compute_usage">Estimated Credits</string>

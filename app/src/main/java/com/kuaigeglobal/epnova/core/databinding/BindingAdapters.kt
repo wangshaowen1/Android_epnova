@@ -1795,3 +1795,14 @@ fun setScrollable(view: NestedScrollView, isScrollable: Boolean) {
         !isScrollable
     }
 }
+
+@BindingAdapter("isVisibleWithAnimation")
+fun isVisibleWithAnimation(view: LottieAnimationView, isVisible: Boolean) {
+    if (isVisible) {
+        view.visibility = View.VISIBLE
+        view.playAnimation()
+    } else {
+        view.visibility = View.GONE
+        view.cancelAnimation() // 彻底停止，不占 CPU
+    }
+}
