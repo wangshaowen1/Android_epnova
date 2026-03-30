@@ -447,7 +447,7 @@
     <string name="please_enter_prop_name">请先填写道具名称</string>
     <string name="role_description">角色描述词</string>
     <string name="role_name">角色名</string>
-    <string name="generate_role">生成角色</string>
+    <string name="generate">生成角色</string>
     <string name="please_enter_role_description">请先填写角色描述</string>
     <string name="please_enter_role_name">请先填写角色名称</string>
     <string name="scene_description">场景描述词</string>

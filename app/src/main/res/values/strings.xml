@@ -446,7 +446,7 @@
     <string name="please_enter_prop_name">Please fill in the prop name first</string>
     <string name="role_description">Character Prompt</string>
     <string name="role_name">Character Name</string>
-    <string name="generate_role">Generate Character</string>
+    <string name="generate">Generate</string>
     <string name="please_enter_role_description">Please fill in the character description first</string>
     <string name="please_enter_role_name">Please fill in the character name first</string>
     <string name="scene_description">Scene Prompt</string>

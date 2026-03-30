@@ -184,7 +184,7 @@
                 android:textColor="@android:color/white"
                 app:endColor="#8F83FF"
                 app:startColor="#68BFF9"
-                tools:text="@string/generate_role" />
+                tools:text="@string/generate" />
         </FrameLayout>
 
         <ImageView
