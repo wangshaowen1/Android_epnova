@@ -4,8 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
-    android:orientation="horizontal"
-    android:paddingHorizontal="16dp">
+    android:paddingStart="@dimen/spacing_l"
+    android:orientation="horizontal">
 
     <ImageView
         android:id="@+id/image_view"
@@ -22,5 +22,5 @@
         android:layout_marginStart="8dp"
         android:paddingVertical="7dp"
         android:textColor="?attr/textColor3"
-        tools:text="0-12岁" />
+        tools:text="@string/report" />
 </LinearLayout>

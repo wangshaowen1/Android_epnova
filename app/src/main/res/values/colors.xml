@@ -421,10 +421,10 @@
     <color name="theme_color_1_dark">#FF2E55</color>
     <color name="theme_color_2_dark">#78A2FF</color>
     <color name="theme_color_3_dark">#337B9FFC</color>
-    <color name="func_success_dark">#27C346</color>
+    <color name="func_success_dark">#10b981</color>
     <color name="func_warning_dark">#FF9626</color>
-    <color name="func_failure_dark">#FF544F</color>
-    <color name="func_link_dark">#3C7EFF</color>
+    <color name="func_failure_dark">#ef4444</color>
+    <color name="func_link_dark">#3b82f6</color>
     <color name="func_special_dark">#FFD930</color>
 
     <color name="fill_color_1_dark">#0FFFFFFF</color>

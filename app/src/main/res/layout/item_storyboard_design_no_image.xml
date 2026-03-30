@@ -21,7 +21,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="15dp"
-            android:text="@{`分镜`+item.no}"
+            android:text="@{@string/storyboard_s(item.no)}"
             android:textAppearance="@style/Text14"
             android:textColor="?attr/textColor4"
             app:layout_constraintBottom_toBottomOf="@+id/btnDelete"

@@ -321,10 +321,10 @@
     <string name="loading">Loading</string>
     <string name="generated_by_ai">AI Generated</string>
     <string name="action_like">Like</string>
-    <string name="story_synopsis">Story Outline</string>
-    <string name="story_script">Story Script</string>
-    <string name="asset_management">Asset Management</string>
-    <string name="storyboard_preview">Storyboard Preview</string>
+    <string name="story_synopsis">Synopsis</string>
+    <string name="story_script">Script</string>
+    <string name="asset_management">Asset</string>
+    <string name="storyboard_preview">Preview</string>
     <string name="refresh">Refresh</string>
     <string name="edit">Edit</string>
     <string name="manage">Manage</string>
@@ -498,5 +498,6 @@
     <string name="terms_and_privacy_agreement">By continuing, you agree to our Terms of service &amp; Privacy Policy.</string>
     <string name="compute_power_validity_period">Computing power value validity period: 1 year</string>
     <string name="contact_customer_service"><![CDATA[If you have any other questions, please contact online customer service via Profile -> Settings -> FeedBack & Suggestions.]]></string>
-    <string name="deselect_all">取消全选</string>
+    <string name="deselect_all">Deselect All</string>
+    <string name="storyboard">Storyboard</string>
 </resources>

@@ -127,6 +127,7 @@
             <Button
                 android:id="@+id/cancel"
                 style="@style/Text16"
+                android:textAllCaps="false"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_marginEnd="@dimen/spacing_m"
@@ -139,6 +140,7 @@
             <Button
                 android:id="@+id/confirm"
                 style="@style/Text16"
+                android:textAllCaps="false"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"

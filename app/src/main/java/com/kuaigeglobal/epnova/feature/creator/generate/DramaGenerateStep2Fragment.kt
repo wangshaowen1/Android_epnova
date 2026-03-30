@@ -186,7 +186,8 @@ class DramaGenerateStep2Fragment :
         hostVm?.title?.observe(this) {
             if (it != mRealVM.mWorkName.value) {
                 mRealVM.mWorkName.value = it
-                mRealVM.episodeTitle.set("《$it》第${mRealVM.chapterIndex}集")
+
+                mRealVM.episodeTitle.set("$it ${getString(R.string.episode_number_format, mRealVM.chapterIndex)}")
             }
         }
     }

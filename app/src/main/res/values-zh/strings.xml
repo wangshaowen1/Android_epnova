@@ -500,5 +500,6 @@
     <string name="compute_power_validity_period">Computing power value validity period: 1 year</string>
     <string name="contact_customer_service"><![CDATA[If you have any other questions, please contact online customer service via Profile -> Settings -> FeedBack & Suggestions.]]></string>
     <string name="deselect_all">取消全选</string>
+    <string name="storyboard">分镜设计</string>
 </resources>
 

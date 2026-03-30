@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+
         <variable
             name="step"
             type="Integer" />
@@ -170,7 +171,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:selected='@{step != null ? step == 4 : false}'
-            android:text="@string/storyboard_design"
+            android:text="@string/storyboard"
             android:textColor="@color/sel_text1_text4"
             app:layout_constraintEnd_toStartOf="@+id/step5_text"
             app:layout_constraintStart_toEndOf="@id/step3_text"
