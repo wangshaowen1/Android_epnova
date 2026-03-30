@@ -397,7 +397,7 @@ class MainActivity : BaseViewModelActivity<ActivityMainBinding, MainViewModel>()
                     }
 
                     Events.MainTabEvent.TAB_MY_CREATIONS -> {
-                        binding.mrg.check(R.id.rbWorks)
+                        binding.mrg.check(R.id.rbMine)
                     }
 
                     Events.MainTabEvent.TAB_MINE -> {

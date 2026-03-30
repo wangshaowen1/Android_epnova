@@ -19,8 +19,8 @@ import com.kuaigeglobal.epnova.core.network.apis.entity.EpisodeInfo
 import com.kuaigeglobal.epnova.databinding.ActivityEditStoryboardVideoBinding
 import com.kuaigeglobal.epnova.feature.creator.data.DramaGenerateConstants
 import com.kuaigeglobal.epnova.feature.creator.generate.StoryEditorActivity
+import com.kuaigeglobal.epnova.feature.mine.child.MyCreationsFragment
 import com.kuaigeglobal.epnova.feature.series.SeriesActivity
-import com.kuaigeglobal.epnova.feature.works.MyWorksFragment
 import com.nhsd.basic.BaseViewModelActivity
 import com.nhsd.basic.bus.observeEvents
 import com.nhsd.basic.ext.isActive
@@ -83,7 +83,7 @@ class EditStoryboardVideoActivity : BaseViewModelActivity<ActivityEditStoryboard
 
                 if (mRealVM.model == DramaGenerateConstants.MODEL_STORY_SINGLE) {
                     if (from != StoryEditorActivity.FROM_MY_WORKS) {
-                        MyWorksFragment.start()
+                        MyCreationsFragment.start()
                     } else {
                         finish()
                     }

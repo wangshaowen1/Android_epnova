@@ -18,8 +18,8 @@ import com.kuaigeglobal.epnova.core.manager.AppEvent
 import com.kuaigeglobal.epnova.core.manager.EventManager
 import com.kuaigeglobal.epnova.databinding.FragmentDramaGenerateStep2Binding
 import com.kuaigeglobal.epnova.feature.creator.data.DramaGenerateConstants
+import com.kuaigeglobal.epnova.feature.mine.child.MyCreationsFragment
 import com.kuaigeglobal.epnova.feature.series.SeriesActivity
-import com.kuaigeglobal.epnova.feature.works.MyWorksFragment
 import com.nhsd.basic.BaseViewModelFragment
 import com.nhsd.basic.ext.getViewModelOfActivity
 import com.nhsd.basic.ext.setOnSingleClickListener
@@ -239,7 +239,7 @@ class DramaGenerateStep2Fragment :
         }
         if (mRealVM.model == DramaGenerateConstants.MODEL_STORY_SINGLE) {
             if (from != StoryEditorActivity.FROM_MY_WORKS) {
-                MyWorksFragment.start()
+                MyCreationsFragment.start()
             } else {
                 mActivity.finish()
             }

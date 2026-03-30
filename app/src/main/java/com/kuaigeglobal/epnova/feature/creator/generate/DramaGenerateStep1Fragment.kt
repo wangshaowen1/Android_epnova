@@ -11,7 +11,7 @@ import com.kuaigeglobal.epnova.databinding.FragmentDramaGenerateStep1Binding
 import com.kuaigeglobal.epnova.feature.creator.CreationRootActivity
 import com.kuaigeglobal.epnova.feature.creator.StoryReuploadDialog
 import com.kuaigeglobal.epnova.feature.creator.data.DramaGenerateConstants
-import com.kuaigeglobal.epnova.feature.works.MyWorksFragment
+import com.kuaigeglobal.epnova.feature.mine.child.MyCreationsFragment
 import com.nhsd.basic.BaseViewModelFragment
 import com.nhsd.basic.ext.getViewModelOfActivity
 import com.nhsd.basic.ext.setOnSingleClickListener
@@ -117,7 +117,7 @@ class DramaGenerateStep1Fragment :
             getString(R.string.auto_saved_as_draft).showToast()
         }
         if (from != StoryEditorActivity.FROM_MY_WORKS) {
-            MyWorksFragment.start()
+            MyCreationsFragment.start()
         } else {
             mActivity.finish()
         }

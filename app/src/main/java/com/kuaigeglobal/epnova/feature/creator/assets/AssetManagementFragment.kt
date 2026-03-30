@@ -15,8 +15,8 @@ import com.kuaigeglobal.epnova.feature.creator.data.DramaGenerateConstants
 import com.kuaigeglobal.epnova.feature.creator.generate.OnBackPressedHandler
 import com.kuaigeglobal.epnova.feature.creator.generate.StoryEditorActivity
 import com.kuaigeglobal.epnova.feature.creator.generate.StoryEditorViewModel
+import com.kuaigeglobal.epnova.feature.mine.child.MyCreationsFragment
 import com.kuaigeglobal.epnova.feature.series.SeriesActivity
-import com.kuaigeglobal.epnova.feature.works.MyWorksFragment
 import com.nhsd.basic.BaseViewModelFragment
 import com.nhsd.basic.bus.observeEvents
 import com.nhsd.basic.ext.getParentViewModel
@@ -125,7 +125,7 @@ class AssetManagementFragment : BaseViewModelFragment<FragmentAssetManagementBin
         }
         if (hostVm?.model == DramaGenerateConstants.MODEL_STORY_SINGLE) {
             if (from != StoryEditorActivity.FROM_MY_WORKS) {
-                MyWorksFragment.start()
+                MyCreationsFragment.start()
             } else {
                 mActivity.finish()
             }

@@ -41,6 +41,7 @@
                     android:drawableStart="@drawable/icon_self_publish"
                     android:gravity="center_vertical"
                     android:text="@string/self_publishing"
+                    android:visibility="gone"
                     android:textAppearance="@style/Text14"
                     android:textColor="?attr/textColor2"
                     app:layout_constraintEnd_toStartOf="@+id/btnMore"

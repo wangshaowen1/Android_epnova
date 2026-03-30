@@ -80,6 +80,13 @@ class MineFragment : BaseViewModelFragment<FragmentMineBinding, MineViewModel>()
         }
 
         observeEvents {
+            on<Events.MainTabEvent> { event ->
+                when (event.type) {
+                    Events.MainTabEvent.TAB_MY_CREATIONS -> {
+                        binding.viewPager.setCurrentItem(0, false)
+                    }
+                }
+            }
             /**
              * 登录状态变化
              */
