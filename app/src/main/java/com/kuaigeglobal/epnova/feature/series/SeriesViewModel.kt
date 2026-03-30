@@ -19,9 +19,11 @@ import com.kuaigeglobal.epnova.core.ext.launch
 import com.kuaigeglobal.epnova.core.ext.launchWithLoading
 import com.kuaigeglobal.epnova.core.network.apis.entity.EpisodeInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.WorkInfo
+import com.kuaigeglobal.epnova.core.network.apis.request.DeleteWorkBody
 import com.kuaigeglobal.epnova.core.network.apis.request.LatestEpisodeBody
 import com.kuaigeglobal.epnova.core.response
 import com.kuaigeglobal.epnova.widget.LoadStateViewHolder
+import com.nhsd.basic.ext.showToast
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -95,6 +97,25 @@ class SeriesViewModel : AppRepositoryViewModel<SeriesRepository>() {
             ) {
                 episodeInfo.value = data
             }
+        }
+    }
+
+    /**
+     * 删除作品
+     */
+    fun delete() {
+        if (workId.isNullOrEmpty()) return
+        val workIds = listOf(workId ?: "")
+        launchWithLoading {
+            response(
+                bean = mRepo.api.batchDeleteWork(DeleteWorkBody(ids = workIds)),
+                result = {
+                    launch {
+                        showToast(R.string.deleted_successfully)
+                        mRepo.appDatabase.workInformationDao().deleteByWorkIds(workIds)
+                        finish()
+                    }
+                })
         }
     }
 

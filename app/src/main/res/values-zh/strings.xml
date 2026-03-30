@@ -489,5 +489,11 @@
     <string name="collection">Collection</string>
     <string name="full_screen">Full Screen</string>
     <string name="maybe_you_like">Maybe you like</string>
+    <string name="collection_successful">Collection successful</string>
+    <string name="drama_has_ended">当前剧集已播放完毕</string>
+    <string name="delete_work_warning">Are you sure you want to delete this work?</string>
+    <string name="deleted_successfully">Deleted successfully.</string>
+    <string name="enter_email">Please leave your email so we can contact you later.</string>
+    <string name="enter_email_tip">Please enter a valid email address.</string>
 </resources>
 

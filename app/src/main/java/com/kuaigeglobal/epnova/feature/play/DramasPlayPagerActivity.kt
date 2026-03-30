@@ -252,7 +252,7 @@ class DramasPlayPagerActivity :
             // 剧集列表已经滑动到底部（当前作品完播）
             if (mRealVM.currentPlayMode == DramasPlayPagerViewModel.PlayMode.RECOMMEND) {
                 if (adapter.currentList.isNotEmpty()) {
-                    "正在为您跳转新剧".showToast()
+                    showToast(R.string.drama_has_ended)
                     pendingJumpPosition = 0
                     mRealVM.loadNextRandomWork()
                 }

@@ -11,6 +11,7 @@ import androidx.core.graphics.drawable.toDrawable
 import androidx.lifecycle.lifecycleScope
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.Constants
+import com.kuaigeglobal.epnova.common.ext.showCommonDialog
 import com.kuaigeglobal.epnova.common.ext.startRefreshWithAdapter
 import com.kuaigeglobal.epnova.common.ext.topActivity
 import com.kuaigeglobal.epnova.core.Events
@@ -288,6 +289,12 @@ class SeriesActivity : BaseViewModelActivity<ActivitySeriesBinding, SeriesViewMo
                 popupView.binding.btnManage.setOnSingleClickListener {
                     popup.dismiss()
                     WorksManagementActivity.start(this, workId = mRealVM.workId)
+                }
+                popupView.binding.btnDel.setOnSingleClickListener {
+                    popup.dismiss()
+                    showCommonDialog(title = getString(R.string.delete_work_warning)) {
+                        mRealVM.delete()
+                    }
                 }
                 popup.showUnder(view)
             }

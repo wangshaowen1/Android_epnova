@@ -36,7 +36,7 @@ class FeedbackViewModel : AppRepositoryViewModel<AppRepository>() {
         title = R.string.app_suggestion_and_feedback.getResString()
     )
 
-    val phoneNumber = MutableLiveData<String>()
+    val email = MutableLiveData<String>()
     val photoSize = MutableLiveData<Int>(0)
     val type = ObservableField<KeyValueInfo?>()
     val typeNames by lazy { Config.get().appConfig.userFeedBackTypeList }
@@ -87,7 +87,7 @@ class FeedbackViewModel : AppRepositoryViewModel<AppRepository>() {
                     return@apiBlock
                 }
             }
-            val body = FeedbackBody(type.get()?.key, content, images?.joinToString(separator = ","), phoneNumber.value)
+            val body = FeedbackBody(type.get()?.key, content, images?.joinToString(separator = ","), email.value)
             val response = withContext(Dispatchers.IO) { mRepo.api.feedback(body) }
             setLoading(false)
             if (response.isSuccess) {

@@ -38,23 +38,34 @@
                 android:id="@+id/btnEdit"
                 android:layout_width="match_parent"
                 android:layout_height="42dp"
-                android:drawableStart="@drawable/icon_edit"
+                android:drawableStart="@drawable/icon_edit20"
                 android:drawablePadding="8dp"
                 android:gravity="center_vertical"
                 android:paddingHorizontal="16dp"
                 android:text="@string/edit"
-                android:textColor="@color/text_color_3_dark" />
+                android:textColor="?attr/textColor3" />
 
             <TextView
                 android:id="@+id/btnManage"
                 android:layout_width="match_parent"
                 android:layout_height="42dp"
-                android:drawableStart="@drawable/icon_setting"
+                android:drawableStart="@drawable/ic_mine_settings"
                 android:drawablePadding="8dp"
                 android:gravity="center_vertical"
                 android:paddingHorizontal="16dp"
                 android:text="@string/manage"
-                android:textColor="@color/text_color_3_dark" />
+                android:textColor="?attr/textColor3" />
+
+            <TextView
+                android:id="@+id/btnDel"
+                android:layout_width="match_parent"
+                android:layout_height="42dp"
+                android:drawableStart="@drawable/icon_delete20"
+                android:drawablePadding="8dp"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="16dp"
+                android:text="@string/del"
+                android:textColor="?attr/textColor3" />
 
         </LinearLayout>
     </LinearLayout>

@@ -74,6 +74,13 @@ class FeedbackActivity :
         }
     }
 
+    // 只要包含 @ 且 @ 前后都有字符，且有点号即可
+    private fun isEmailValid(email: String?): Boolean {
+        email ?: return false
+        val pattern = """^.+@.+\..+$""".toRegex()
+        return email.isNotBlank() && pattern.matches(email)
+    }
+
     override fun <Data> onClick(view: View?, data: Data?) {
         super.onClick(view, data)
         when (view?.id) {
@@ -86,10 +93,10 @@ class FeedbackActivity :
                     getString(R.string.input_min_length, 10).showToast()
                     return
                 }
-                //if (mRealVM.phoneNumber.value.isNullOrEmpty()) {
-                //    "请输入联系方式".showToast()
-                //    return
-                //}
+                if (mRealVM.email.value.isNullOrEmpty() || !isEmailValid(mRealVM.email.value)) {
+                    getString(R.string.enter_email_tip).showToast()
+                    return
+                }
                 mRealVM.feedback(
                     binding.feedbackInput.text.toString(),
                     Utils.toPathList(binding.photoGrid.originalPhotos)
@@ -159,11 +166,11 @@ class FeedbackActivity :
     }
 
     private fun updateButtonEnable() {
-        binding.commit.alpha = if ( mRealVM.type.get() != null && (binding.feedbackInput.text?.length ?: 0) >= 10) {
-                1f
-            } else {
-                0.5f
-            }
+        binding.commit.alpha = if (mRealVM.type.get() != null && (binding.feedbackInput.text?.length ?: 0) >= 10) {
+            1f
+        } else {
+            0.5f
+        }
     }
 }
 
