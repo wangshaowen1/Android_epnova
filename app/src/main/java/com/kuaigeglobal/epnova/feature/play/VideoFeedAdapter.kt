@@ -1,5 +1,7 @@
 package com.kuaigeglobal.epnova.feature.play
 
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,22 +19,24 @@ import com.nhsd.basic.item.BindingViewHolder
 
 class VideoFeedAdapter(private val interactionListener: InteractionListener) :
     ListAdapter<EpisodeInfo, VideoFeedAdapter.VideoViewHolder>(DIFF_CALLBACK) {
-
+    
     // 定义交互回调
     interface InteractionListener {
         fun onTogglePlay(position: Int)
         fun onSeek(position: Int, progress: Long)
         fun onToggleCollect(position: Int)
         fun onToggleLike(position: Int)
+        fun onReportPlayback(position: Int, episodeInfo: EpisodeInfo?, progress: Long)
         fun showEpisodeSelectDialog(position: Int)
     }
 
+    private val reportedStoryIds = mutableSetOf<String>()
     private var globalWorkInfo: WorkVOInfo? = null
 
     fun updateWorkInfo(workInfo: WorkVOInfo?) {
         this.globalWorkInfo = workInfo
         // Payload 局部刷新
-        notifyItemRangeChanged(0, itemCount, "WORK_INFO_UPDATED")
+        notifyItemRangeChanged(0, itemCount, PAYLOAD_WORK_INFO)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VideoViewHolder {
@@ -53,14 +57,17 @@ class VideoFeedAdapter(private val interactionListener: InteractionListener) :
     override fun onBindViewHolder(holder: VideoViewHolder, position: Int, payloads: MutableList<Any>) {
         if (payloads.isNotEmpty()) {
             val activePayloads = payloads.filterIsInstance<List<Any>>().flatten().ifEmpty { payloads }
+            val currentItem = getItem(position) // 获取最新数据
 
-            if (activePayloads.contains("URL_UPDATED")) {
+            if (activePayloads.contains(PAYLOAD_URL)) {
                 holder.binding.seekbar.duration = (getItem(position).duration ?: 0) * 1000L
             }
-            if (activePayloads.contains("LIKE_UPDATED")) {
+            if (activePayloads.contains(PAYLOAD_LIKE)) {
                 holder.binding.item?.syncLike(getItem(position))
+                holder.binding.item?.updateData(currentItem)
+                holder.binding.executePendingBindings()
             }
-            if (activePayloads.contains("WORK_INFO_UPDATED")) {
+            if (activePayloads.contains(PAYLOAD_WORK_INFO)) {
                 holder.binding.item?.syncWorkInfo(globalWorkInfo)
             }
             return
@@ -75,12 +82,36 @@ class VideoFeedAdapter(private val interactionListener: InteractionListener) :
             AnimationUtils.loadAnimation(binding.root.context, R.anim.loading_2)
         }
 
+
+        private val handler = Handler(Looper.getMainLooper())
+
+        // 自动隐藏控制栏的任务 (规则2)
+        private val autoHideControlsTask = Runnable {
+            binding.item?.isHideViews?.set(true)
+            binding.item?.showCenterPlayBtn?.set(false)
+        }
+
+        // 3秒播放上报任务 (新需求)
+        private val reportPlaybackTask = Runnable {
+            val currentPos = bindingAdapterPosition
+            if (currentPos == androidx.recyclerview.widget.RecyclerView.NO_POSITION) return@Runnable
+
+            val episode = getItem(currentPos) ?: return@Runnable
+            val storyId = episode.storyId ?: return@Runnable
+
+            if (!reportedStoryIds.contains(storyId)) {
+                reportedStoryIds.add(storyId)
+                interactionListener.onReportPlayback(currentPos, episode, binding.seekbar.currentPosition)
+            }
+        }
+
         init {
             binding.seekbar.onSeekListener = object : PlayerSeekbar.OnSeekListener {
                 override fun onDrag() {
                     binding.tvTitle.visibility = View.INVISIBLE
                     binding.tvContent.visibility = View.INVISIBLE
                 }
+
                 override fun onDragEnd(position: Long) {
                     interactionListener.onSeek(bindingAdapterPosition, position)
                     binding.tvTitle.visibility = View.VISIBLE
@@ -95,12 +126,45 @@ class VideoFeedAdapter(private val interactionListener: InteractionListener) :
 
         override fun bind(position: Int) {
             getItem(position)?.let { item ->
-                val transVM = binding.getVm(position, item, ItemVideoFeedVm::class.java)
+                val transVM = binding.getVm<ItemVideoFeedVm, EpisodeInfo>(
+                    key = item.storyId,
+                    item = item
+                )
+
+                //强制重置复用带来的脏状态
+                transVM.showCenterPlayBtn.set(false)
+                transVM.isHideViews.set(false)
+                transVM.isPlaying.set(true)
+                transVM.showBuffering.set(false)
+
+                transVM.updateData(item)
+                if (item.liked != null || item.likeCount != null) {
+                    transVM.syncLike(item)
+                }
                 transVM.actionListener = interactionListener
                 transVM.positionProvider = { bindingAdapterPosition } // 动态获取位置，防串位神器
+                resetTimers()
+                // 【核心逻辑：点击空白区】
+                transVM.onBlankAreaClicked = {
+                    val isCurrentlyHidden = transVM.isHideViews.get()
+                    if (isCurrentlyHidden) {
+                        // 规则3：点击空白区，呼出控制栏，展示播放暂停icon
+                        transVM.isHideViews.set(false)
+                        transVM.showCenterPlayBtn.set(true)
 
+                        // 呼出后，如果正在播放，重新开始3秒倒计时 (PRD说等待3秒自动消失)
+                        if (transVM.isPlaying.get()) {
+                            startAutoHideTimer()
+                        }
+                    } else {
+                        // 如果已经显示了，再次点击空白区（通常是隐藏，或者根据你的PRD也可以不做操作）
+                        // 按照PRD第2条“点击播放器空白区...控制栏自动消失”
+                        transVM.isHideViews.set(true)
+                        transVM.showCenterPlayBtn.set(false)
+                        cancelAutoHideTimer()
+                    }
+                }
                 // 塞数据
-                transVM.syncLike(item)
                 transVM.syncWorkInfo(globalWorkInfo)
                 binding.item = transVM
                 binding.executePendingBindings()
@@ -123,10 +187,54 @@ class VideoFeedAdapter(private val interactionListener: InteractionListener) :
 
         fun updatePlayerUiState(state: FeedPlayerManager.FeedPlayerState) {
             binding.lsv.showContent()
+            val vm = binding.item ?: return
 
             val isBuffering = state is FeedPlayerManager.FeedPlayerState.Buffering
-            binding.item?.showBuffering?.set(isBuffering)
-            binding.item?.showPauseBtn?.set(state is FeedPlayerManager.FeedPlayerState.Pause)
+            vm.showBuffering.set(isBuffering)
+//            vm.showPauseBtn.set(state is FeedPlayerManager.FeedPlayerState.Pause)
+
+            when (state) {
+                is FeedPlayerManager.FeedPlayerState.Playing -> {
+                    vm.isPlaying.set(true)
+
+                    // 规则 5 & 6：正在播放时
+                    // 1. 如果之前是显示状态，现在要开始 3s 倒计时自动隐藏
+                    if (!vm.isHideViews.get()) {
+                        startAutoHideTimer()
+                    }
+
+                    // 播放时隐藏中心播放按钮（根据 PRD，只有暂停才显现按钮）
+                    vm.showCenterPlayBtn.set(false)
+
+                    // --- 3秒上报逻辑 ---
+                    val storyId = getItem(bindingAdapterPosition)?.storyId
+                    if (storyId != null && !reportedStoryIds.contains(storyId)) {
+                        handler.removeCallbacks(reportPlaybackTask)
+                        handler.postDelayed(reportPlaybackTask, 3000L)
+                    }
+                }
+
+                is FeedPlayerManager.FeedPlayerState.Pause -> {
+                    vm.isPlaying.set(false)
+
+                    // 【你的新需求】：点击暂停后，立即显示所有 UI
+                    cancelAutoHideTimer() // 停止隐藏倒计时
+                    vm.isHideViews.set(false) // 显示进度条、标题等
+                    vm.showCenterPlayBtn.set(true) // 显示中间的播放按钮
+
+                    // 暂停期间取消上报任务
+                    handler.removeCallbacks(reportPlaybackTask)
+                }
+
+                is FeedPlayerManager.FeedPlayerState.Error -> {
+                    if (state.isNoCache) {
+                        binding.lsv.showRetry(RuntimeException(state.msg))
+                    }
+                    resetTimers()
+                }
+
+                else -> {}
+            }
 
             if (isBuffering) {
                 binding.animBuffering.clearAnimation()
@@ -134,15 +242,36 @@ class VideoFeedAdapter(private val interactionListener: InteractionListener) :
             } else {
                 binding.animBuffering.clearAnimation()
             }
+        }
 
-            // 3. 错误状态处理
-            if (state is FeedPlayerManager.FeedPlayerState.Error && state.isNoCache) {
-                binding.lsv.showRetry(RuntimeException(state.msg))
-            }
+        // --- 定时器辅助方法 ---
+        private fun startAutoHideTimer() {
+            handler.removeCallbacks(autoHideControlsTask)
+            handler.postDelayed(autoHideControlsTask, 3000L)
+        }
+
+        private fun cancelAutoHideTimer() {
+            handler.removeCallbacks(autoHideControlsTask)
+        }
+
+        private fun resetTimers() {
+            handler.removeCallbacksAndMessages(null)
+        }
+
+        fun onViewRecycled() {
+            resetTimers()
         }
     }
 
+    override fun onViewRecycled(holder: VideoViewHolder) {
+        super.onViewRecycled(holder)
+        holder.onViewRecycled()
+    }
+
     companion object {
+        const val PAYLOAD_URL = "PAYLOAD_URL"
+        const val PAYLOAD_LIKE = "PAYLOAD_LIKE"
+        const val PAYLOAD_WORK_INFO = "PAYLOAD_WORK_INFO"
         val DIFF_CALLBACK = object : DiffUtil.ItemCallback<EpisodeInfo>() {
             override fun areItemsTheSame(oldItem: EpisodeInfo, newItem: EpisodeInfo) = oldItem.storyId == newItem.storyId
             override fun areContentsTheSame(oldItem: EpisodeInfo, newItem: EpisodeInfo) = oldItem == newItem
@@ -151,11 +280,11 @@ class VideoFeedAdapter(private val interactionListener: InteractionListener) :
                 val payloads = mutableListOf<String>()
 
                 if (oldItem.videoUrl != newItem.videoUrl || oldItem.duration != newItem.duration) {
-                    payloads.add("URL_UPDATED")
+                    payloads.add(PAYLOAD_URL)
                 }
                 // [新增] 判断点赞状态是否有变更
                 if (oldItem.liked != newItem.liked || oldItem.likeCount != newItem.likeCount) {
-                    payloads.add("LIKE_UPDATED")
+                    payloads.add(PAYLOAD_LIKE)
                 }
 
                 return payloads.ifEmpty { null }

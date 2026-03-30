@@ -1,0 +1,14 @@
+<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="icon_play_full">
+<mask id="mask0_20_476" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="16" height="16">
+<rect id="Rectangle 691" width="16" height="16" fill="#D9D9D9"/>
+</mask>
+<g mask="url(#mask0_20_476)">
+<g id="Group 1940698874">
+<rect id="Rectangle 686" x="1.5" y="3.5" width="7" height="11" rx="1.5" stroke="white" stroke-opacity="0.96"/>
+<path id="Rectangle 688" d="M8 1C9.65685 1 11 2.34315 11 4L13 3" stroke="white" stroke-opacity="0.96" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="Subtract" d="M13 8C14.1046 8 15 8.89543 15 10V13C15 14.1046 14.1046 15 13 15H11V14H13C13.5523 14 14 13.5523 14 13V10C14 9.44772 13.5523 9 13 9H11V8H13Z" fill="white" fill-opacity="0.5"/>
+<path id="Rectangle 690" d="M3.59912 3H6.59912V4.5C6.59912 4.77614 6.37526 5 6.09912 5H4.09912C3.82298 5 3.59912 4.77614 3.59912 4.5V3Z" fill="white"/>
+</g>
+</g>
+</svg>

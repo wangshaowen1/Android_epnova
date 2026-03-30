@@ -29,7 +29,7 @@ fun Int.formatW(): String {
 }
 
 fun Int.toUnitText(): String {
-    return if (this < 1000) toString() else {
+    return if (this < 10000) toString() else {
         formatDouble(toDouble() / 1000f, 1) + "k"
     }
 }

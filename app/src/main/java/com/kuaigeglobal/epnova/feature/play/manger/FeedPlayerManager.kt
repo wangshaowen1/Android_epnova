@@ -139,10 +139,11 @@ class FeedPlayerManager(
     }
 
     fun attachAndPlay(track: EpisodeInfo, coverPlayerView: CoverPlayerView) {
+        currentPlayingId = track.storyId
         // 乐观更新状态，防止切视频闪烁
         _playerState.value = FeedPlayerState.Idle
         // 防止重复 attach 同一个视频导致画面闪烁
-        if (currentPlayingId == track.storyId && currentCoverPlayerView == coverPlayerView) {
+        if (exoPlayer.currentMediaItem?.mediaId == track.storyId && currentCoverPlayerView == coverPlayerView) {
             if (!exoPlayer.isPlaying && !isUserPaused) {
                 exoPlayer.play()
             }
@@ -168,7 +169,8 @@ class FeedPlayerManager(
         val mediaItem = buildMediaItem(track, videoUrl)
 
         val currentUri = exoPlayer.currentMediaItem?.localConfiguration?.uri.toString()
-        if (currentUri != videoUrl) {
+        val currentMediaId = exoPlayer.currentMediaItem?.mediaId
+        if (currentUri != videoUrl || currentMediaId != track.storyId) {
             // 1. 如果是不同的视频，正常加载
             exoPlayer.setMediaItem(mediaItem)
             exoPlayer.prepare()

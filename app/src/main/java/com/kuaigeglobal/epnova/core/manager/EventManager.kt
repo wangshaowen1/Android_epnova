@@ -2,7 +2,8 @@ package com.kuaigeglobal.epnova.core.manager
 
 import com.kuaigeglobal.epnova.common.ext.ioScope
 import com.kuaigeglobal.epnova.core.network.apis.ApiFactory
-import com.kuaigeglobal.epnova.core.network.apis.request.PlayEventBody
+import com.kuaigeglobal.epnova.core.network.apis.entity.EpisodeInfo
+import com.kuaigeglobal.epnova.core.network.apis.request.UserPlayBody
 import com.kuaigeglobal.epnova.core.network.apis.request.WorkBody
 import com.nhsd.basic.ext.launchNoCrash
 import com.nhsd.basic.utils.Logger
@@ -20,6 +21,12 @@ object EventManager {
     fun onPlayEvent(workId: String?, episodeId: String?) {
         ioScope.launchNoCrash {
             ApiFactory.apiService.playCountInc(WorkBody(workId, episodeId))
+        }
+    }
+
+    fun onPlayEvent(workId: String?, episode: EpisodeInfo?, progress: Long) {
+        ioScope.launchNoCrash {
+            ApiFactory.apiService.userPlayReport(UserPlayBody((progress / 1000).toInt(), episode?.sortNo, 3, episode?.storyId, workId))
         }
     }
 

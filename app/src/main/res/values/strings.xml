@@ -486,4 +486,5 @@
     <string name="my_creations">My Creations</string>
     <string name="history">History</string>
     <string name="collection">Collection</string>
+    <string name="full_screen">Full Screen</string>
 </resources>

@@ -84,38 +84,37 @@ class FeedListController(
 
     private fun playCurrentItem(position: Int) {
         if (position < 0 || position >= adapter.itemCount) return
-
-        // 立即更新记录位
         lastPlayedPosition = position
-
         val item = adapter.currentList[position] ?: return
-        // 尽量通过 findViewHolderForAdapterPosition 准确获取
-        val holder = recyclerView.findViewHolderForAdapterPosition(position) as? VideoFeedAdapter.VideoViewHolder ?: return
 
+        // 发送 UI 状态等可以继续用当前的 holder
+        val initialHolder = recyclerView.findViewHolderForAdapterPosition(position) as? VideoFeedAdapter.VideoViewHolder ?: return
         onPageChanged?.invoke(item, position)
 
-        // --- 详情懒加载逻辑 ---
         if (item.videoUrl.isNullOrEmpty()) {
-            holder.updatePlayerUiState(FeedPlayerManager.FeedPlayerState.Buffering)
+            initialHolder.updatePlayerUiState(FeedPlayerManager.FeedPlayerState.Buffering)
 
             fetchUrlJob?.cancel()
             fetchUrlJob = recyclerView.findViewTreeLifecycleOwner()?.lifecycleScope?.launch {
                 try {
+                    // 挂起等待网络请求
                     val readyItem = viewModel.fetchPlayUrlIfNeeded(item)
-                    // [关键] 异步回来后，必须再次检查当前位置是否还是这一条
+
+                    // 恢复后校验
                     if (getCurrentPosition() == position) {
-                        playerManager.attachAndPlay(readyItem, holder.binding.playerView)
+                        val currentHolder = recyclerView.findViewHolderForAdapterPosition(position) as? VideoFeedAdapter.VideoViewHolder
+                        if (currentHolder != null) {
+                            playerManager.attachAndPlay(readyItem, currentHolder.binding.playerView)
+                        }
                     }
                 } catch (e: Exception) { e.printStackTrace() }
             }
         } else {
             fetchUrlJob?.cancel()
-            playerManager.attachAndPlay(item, holder.binding.playerView)
+            playerManager.attachAndPlay(item, initialHolder.binding.playerView)
         }
-
         preloadNextItem(position)
     }
-
     private fun preloadNextItem(currentPosition: Int) {
         if (currentPosition + 1 < adapter.itemCount) {
             val nextItem = adapter.currentList[currentPosition + 1] ?: return

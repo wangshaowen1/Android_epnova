@@ -25,6 +25,7 @@ import com.nhsd.basic.ext.showToast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.withContext
 import java.io.File
 
@@ -106,27 +107,24 @@ class DramasPlayPagerViewModel : AppRepositoryViewModel<CreationRepository>(), D
             // 如果你的 EpisodeInfo 是普通的 class，请 new 一个新对象并把属性拷贝过去
             val updatedEpisode = episode.copy(
                 videoUrl = apiResponse.data?.videoUrl,
+                likeCount = apiResponse.data?.likeCount,
                 duration = apiResponse.data?.duration?.toLong() ?: 0L,
             )
-
-            // 2. 获取当前列表的拷贝，找到对应位置并替换
-            val currentList = _episodeList.value.toMutableList()
-            val index = currentList.indexOfFirst { it.storyId == updatedEpisode.storyId }
-
-            if (index != -1) {
-                currentList[index] = updatedEpisode
-                // 3. 发射全新的列表，这会触发 ListAdapter 去后台异步计算 Diff
-                _episodeList.value = currentList
+            _episodeList.update { currentList ->
+                currentList.map {
+                    if (it.storyId == updatedEpisode.storyId) updatedEpisode else it
+                }
             }
-
             return updatedEpisode
         }
         return episode
     }
 
     fun getUserPlayStatus(episode: EpisodeInfo?) {
+        if (episode?.storyId == null) return
+        val targetStoryId = episode.storyId
         launch {
-            response(mRepo.api.userPlayerState(WorkBody(workId, episode?.storyId))) {
+            response(mRepo.api.userPlayerState(WorkBody(workId, targetStoryId))) {
                 // 假设 data 里包含最新的点赞状态和数量，或者前端自己取反
                 val isLikedNow = data?.liked
                 val isCollectedNow = data?.collected
@@ -136,13 +134,12 @@ class DramasPlayPagerViewModel : AppRepositoryViewModel<CreationRepository>(), D
                     _currentWorkContext.value = workContext.copy(collected = isCollectedNow)
                 }
 
-                val currentList = _episodeList.value.toMutableList()
-                val index = currentList.indexOfFirst { it.storyId == episode?.storyId }
-                if (index != -1 && isLikedNow != null) {
-                    currentList[index] = currentList[index].copy(
-                        liked = isLikedNow
-                    )
-                    _episodeList.value = currentList
+                isLikedNow?.let {
+                    _episodeList.update { currentList ->
+                        currentList.map {
+                            if (it.storyId == episode.storyId) it.copy(liked = isLikedNow) else it
+                        }
+                    }
                 }
             }
         }
@@ -155,16 +152,10 @@ class DramasPlayPagerViewModel : AppRepositoryViewModel<CreationRepository>(), D
                 // 假设 data 里包含最新的点赞状态和数量，或者前端自己取反
                 val isLikedNow = data?.liked ?: (episode.liked == true) // 替换为真实字段
                 val likeCountNow = data?.likeCount ?: episode.likeCount
-
-                val currentList = _episodeList.value.toMutableList()
-                val index = currentList.indexOfFirst { it.storyId == episode.storyId }
-                if (index != -1) {
-                    // copy 生成新对象，触发 DiffUtil
-                    currentList[index] = currentList[index].copy(
-                        liked = isLikedNow,
-                        likeCount = likeCountNow
-                    )
-                    _episodeList.value = currentList
+                _episodeList.update { currentList ->
+                    currentList.map {
+                        if (it.storyId == episode.storyId) it.copy(liked = isLikedNow, likeCount = likeCountNow) else it
+                    }
                 }
             }
         }

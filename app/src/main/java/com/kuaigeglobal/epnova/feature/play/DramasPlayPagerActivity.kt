@@ -11,6 +11,7 @@ import com.kuaigeglobal.epnova.common.ext.topActivity
 import com.kuaigeglobal.epnova.common.permissions.requestRead2WritePermissions
 import com.kuaigeglobal.epnova.core.manager.AppEvent
 import com.kuaigeglobal.epnova.core.manager.EventManager
+import com.kuaigeglobal.epnova.core.network.apis.entity.EpisodeInfo
 import com.kuaigeglobal.epnova.core.network.apis.response.PlayMenuInfo
 import com.kuaigeglobal.epnova.databinding.ActivityDramasPlayPagerBinding
 import com.kuaigeglobal.epnova.feature.download.DownloadingDialog
@@ -101,7 +102,7 @@ class DramasPlayPagerActivity :
         val initMode = if (isSeriesMode) DramasPlayPagerViewModel.PlayMode.SERIES else DramasPlayPagerViewModel.PlayMode.RECOMMEND
         mRealVM.loadDrama(mRealVM.workId, initMode)
 
-        listController.onPageChanged = { episodeInfo, position ->
+        listController.onPageChanged = { episodeInfo, _ ->
             mRealVM.currentEpisode.set(episodeInfo)
             if (mRealVM.currentPlayMode == DramasPlayPagerViewModel.PlayMode.SERIES) {
                 binding.tvTitle.text = getString(R.string.episode_number_format, episodeInfo.sortNo)
@@ -198,7 +199,7 @@ class DramasPlayPagerActivity :
         lifecycleScope.launch {
             playerManager.progressFlow.collect { (current, total) ->
                 updateViewHolderSafely { holder ->
-                    holder.updateProgress(current, total)
+                    holder?.updateProgress(current, total)
                 }
             }
         }
@@ -207,7 +208,7 @@ class DramasPlayPagerActivity :
             playerManager.playerState.collect { state ->
                 // [优化] 直接把状态甩给 ViewHolder 处理，逻辑更聚拢
                 updateViewHolderSafely { holder ->
-                    holder.updatePlayerUiState(state)
+                    holder?.updatePlayerUiState(state)
                 }
                 // [补充] 针对 Activity 级别的特殊处理（如 Toast）
                 if (state is FeedPlayerManager.FeedPlayerState.Error) {
@@ -228,16 +229,17 @@ class DramasPlayPagerActivity :
     }
 
     // [封装] 安全更新 ViewHolder 的辅助方法
-    private fun updateViewHolderSafely(action: (VideoFeedAdapter.VideoViewHolder) -> Unit) {
-        val pos = listController.getCurrentPosition()
-        if (pos >= 0) {
-            val holder =
-                binding.recyclerView.findViewHolderForAdapterPosition(pos) as? VideoFeedAdapter.VideoViewHolder
-            val item = adapter.currentList[pos]
+    private fun updateViewHolderSafely(action: (VideoFeedAdapter.VideoViewHolder?) -> Unit) {
+        val playingId = playerManager.currentPlayingId ?: return
+        // 遍历当前 RecyclerView 所有可见的子 View
+        for (i in 0 until binding.recyclerView.childCount) {
+            val child = binding.recyclerView.getChildAt(i)
+            val holder = binding.recyclerView.getChildViewHolder(child) as? VideoFeedAdapter.VideoViewHolder
+            val item = adapter.currentList.getOrNull(holder?.bindingAdapterPosition ?: -1)
 
-            // [关键] 只有当 ViewHolder 当前展示的数据 ID 与 播放器正在播的 ID 一致时，才允许更新 UI
-            if (holder != null && item?.storyId == playerManager.currentPlayingId) {
+            if (item?.storyId == playingId) {
                 action(holder)
+                break
             }
         }
     }
@@ -271,6 +273,10 @@ class DramasPlayPagerActivity :
     override fun onToggleLike(position: Int) {
         val item = adapter.currentList.getOrNull(position)
         mRealVM.likeToggle(item)
+    }
+
+    override fun onReportPlayback(position: Int, episodeInfo: EpisodeInfo?, progress: Long) {
+        EventManager.onPlayEvent(mRealVM.workId, episodeInfo, progress)
     }
 
     override fun showEpisodeSelectDialog(position: Int) {
