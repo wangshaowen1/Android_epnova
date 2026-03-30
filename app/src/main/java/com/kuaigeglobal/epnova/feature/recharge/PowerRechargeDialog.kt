@@ -7,6 +7,7 @@ import com.kuaigeglobal.epnova.common.ext.topActivity
 import com.kuaigeglobal.epnova.core.Events
 import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.ext.showRechargeDialog
+import com.kuaigeglobal.epnova.core.google.billing.BillingManager
 import com.kuaigeglobal.epnova.core.manager.AppEvent
 import com.kuaigeglobal.epnova.core.manager.EventManager
 import com.kuaigeglobal.epnova.databinding.DialogRechargePowerBinding
@@ -45,6 +46,8 @@ class PowerRechargeDialog : BaseBottomPushVMDialogFragment<DialogRechargePowerBi
 
     override fun onPrepareView() {
         super.onPrepareView()
+        BillingManager.markActivePage(true)
+        BillingManager.queryPendingPurchases()
         mRealVM.isDialog = true
         observeEvents {
             on<Events.UserDataEvent> {
@@ -56,5 +59,10 @@ class PowerRechargeDialog : BaseBottomPushVMDialogFragment<DialogRechargePowerBi
 
     override fun createViewModel(): MyBalanceViewModel {
         return MyBalanceViewModel(R.layout.item_recharge_payment_dialog)
+    }
+
+    override fun onDestroy() {
+        BillingManager.markActivePage(false)
+        super.onDestroy()
     }
 }

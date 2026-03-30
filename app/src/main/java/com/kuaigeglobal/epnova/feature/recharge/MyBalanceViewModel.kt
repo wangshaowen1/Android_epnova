@@ -13,14 +13,20 @@ import com.kuaigeglobal.epnova.core.Config
 import com.kuaigeglobal.epnova.core.Global
 import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.ext.launch
+import com.kuaigeglobal.epnova.core.ext.launchWithLoading
+import com.kuaigeglobal.epnova.core.google.billing.BillingManager
 import com.kuaigeglobal.epnova.core.manager.AppEvent
 import com.kuaigeglobal.epnova.core.manager.EventManager
+import com.kuaigeglobal.epnova.core.network.apis.entity.PointConfigInfo
+import com.kuaigeglobal.epnova.core.network.apis.request.CreateOrderBody
 import com.kuaigeglobal.epnova.core.network.apis.response.SimpleBannerInfo
+import com.kuaigeglobal.epnova.core.response
 import com.kuaigeglobal.epnova.feature.details.ComputingPowerDetailsActivity
 import com.kuaigeglobal.epnova.feature.web.SimpleBrowserActivity
 import com.kuaigeglobal.epnova.widget.LoadStateViewHolder
 import com.nhsd.basic.ext.getResString
 import com.nhsd.basic.ext.showToast
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.NonCancellable.isActive
 import kotlinx.coroutines.async
@@ -71,6 +77,7 @@ class MyBalanceViewModel(@LayoutRes private val paymentItemLayout: Int) : AppRep
                 pointConfigList?.pointBalanceNum?.let { User.get().storeComputingPower(it) }
                 pointConfigList?.items?.map { ItemRechargePowerVM(it).apply { onItemClick.value = { select() } } }.let { vms ->
                     powerAdapter.submitList(vms)
+                    loadGoogleProducts(vms)
                     (vms?.firstOrNull { it.data.get()?.isDefault == 1 } ?: vms?.firstOrNull())?.select()
                     vms?.find { it.data.get()?.isDiscountValid() == true }?.let {
                         startGlobalCountDown()
@@ -81,6 +88,24 @@ class MyBalanceViewModel(@LayoutRes private val paymentItemLayout: Int) : AppRep
             onError = {
                 updateLoadState()
             })
+    }
+
+    fun loadGoogleProducts(vms: List<ItemRechargePowerVM>?) {
+        BillingManager.loadPowerPrices(vms) { map ->
+            viewModelScope.launch(Dispatchers.Main) {
+                if (map.isEmpty()) {
+                    "无法获取产品。请检查您的网络连接，稍后重试.".showToast()
+                    return@launch
+                }
+                vms?.forEach { item ->
+                    val productCode = item.data.get()?.googleProductId
+                    if (map.containsKey(productCode)) {
+                        item.data.get()?.pointPrice = map[productCode]?.first
+                    }
+                }
+                powerAdapter.submitList(vms)
+            }
+        }
     }
 
     private fun updateLoadState() {
@@ -118,27 +143,42 @@ class MyBalanceViewModel(@LayoutRes private val paymentItemLayout: Int) : AppRep
         if (isDialog) {
             EventManager.onAppTrack(AppEvent.SF_CLICK_COMPUTE_RECHARGE_PAYMENT_BUTTON)
         }
-//        pay(
-//            paymentMethod,
-//            { paymentMethod, requestBody, responseSender ->
-//                launchWithLoading {
-//                    response(mRepo.createPowerOrder(paymentMethod, item.pointConfigCode, payment.payMerchantConfigId)) {
-//                        responseSender?.sendData(this.data?.toPaymentParams(paymentMethod))
-//                    }
-//                }
-//            },
-//            item,
-//            { paymentData ->
-//                if (isDialog) {
-//                    EventManager.onAppTrack(AppEvent.SF_CLICK_COMPUTE_RECHARGE_PAYMENT_POPUP_PAYSUCCESS)
-//                } else {
-//                    EventManager.onAppTrack(AppEvent.SF_CLICK_RECHARGE_PAGE_PAYSUCCESS)
-//                }
-//                loadConfig()
-//                refreshBalance()
-//                PaySuccessDialog.checkAndShow()
-//            },
-//            { error, paymentData -> })
+
+        createOrder(item) {
+            BillingManager.launchPurchase(
+                topActivity,
+                item.googleProductId ?: "",
+                it ?: "",
+                onSuccess = {
+                    loadConfig()
+                    refreshBalance()
+                },
+                onFail = { errorCode ->
+                    if (errorCode != 3) {
+
+                    }
+                }
+            )
+        }
+    }
+
+    fun createOrder(
+        info: PointConfigInfo,
+        onSuccess: ((String?) -> Unit)? = null
+    ) {
+        launchWithLoading {
+            response(
+                mRepo.api.createOrder(
+                    CreateOrderBody(
+                        goodsCode = info.pointConfigId,
+                        goodsType = 1,
+                        mobileType = 1
+                    )
+                )
+            ) {
+                onSuccess?.invoke(data?.orderNo)
+            }
+        }
     }
 
     fun viewPaymentAgreement() {

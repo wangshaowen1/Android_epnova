@@ -851,4 +851,14 @@ object ApiConstants {
      * 播放-播放行为上报
      */
     const val USER_PLAY_REPORT = "user/work/play/report"
+
+    /**
+     * google预下单
+     */
+    const val CREATE_ORDER = "trade/pay/google/createPreOrder"
+
+    /**
+     * 验证票据
+     */
+    const val VERIFY_PURCHASED = "trade/pay/google/payCallBack"
 }

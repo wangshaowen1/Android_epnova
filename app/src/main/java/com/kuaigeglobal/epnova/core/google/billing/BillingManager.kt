@@ -15,6 +15,9 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.kuaigeglobal.epnova.App
 import com.kuaigeglobal.epnova.common.ext.ioScope
 import com.kuaigeglobal.epnova.core.User
+import com.kuaigeglobal.epnova.core.network.apis.ApiFactory
+import com.kuaigeglobal.epnova.core.network.apis.request.VerifyPurchasedBody
+import com.kuaigeglobal.epnova.feature.recharge.ItemRechargePowerVM
 import com.nhsd.basic.ext.launchNoCrash
 import com.nhsd.basic.utils.Logger
 import kotlinx.coroutines.Dispatchers
@@ -182,35 +185,31 @@ object BillingManager {
     }
 
     /**
-     * 获取google上vip订阅的价格
+     * 获取google上价格
      */
-//    fun loadVipSubPrices(
-//        products: List<ItemMembershipBenefitsVm>?,
-//        onSuccess: ((HashMap<String, Triple<String, Long, String>>) -> Unit)? = null
-//    ) {
-//        val pairs = products?.map {
-//            Pair(
-//                it.data.get()?.productCode, if (it.data.get()?.productType == 2) {
-//                    BillingClient.ProductType.SUBS
-//                } else {
-//                    BillingClient.ProductType.INAPP
-//                }
-//            )
-//        }
-//        preloadProductDetails(pairs) { list ->
-//            val map = HashMap<String, Triple<String, Long, String>>()
-//            list?.forEach { details ->
-//                productCache[details.productId] = details
-//                val vm = products?.find { it.data.get()?.productCode == details.productId }
-//                if (vm != null) {
-//                    getPriceParameters(details)?.apply {
-//                        map[details.productId] = this
-//                    }
-//                }
-//            }
-//            onSuccess?.invoke(map)
-//        }
-//    }
+    fun loadPowerPrices(
+        products: List<ItemRechargePowerVM>?,
+        onSuccess: ((HashMap<String, Triple<String, Long, String>>) -> Unit)? = null
+    ) {
+        val pairs = products?.map {
+            Pair(
+                it.data.get()?.googleProductId, BillingClient.ProductType.INAPP
+            )
+        }
+        preloadProductDetails(pairs) { list ->
+            val map = HashMap<String, Triple<String, Long, String>>()
+            list?.forEach { details ->
+                productCache[details.productId] = details
+                val vm = products?.find { it.data.get()?.googleProductId == details.productId }
+                if (vm != null) {
+                    getPriceParameters(details)?.apply {
+                        map[details.productId] = this
+                    }
+                }
+            }
+            onSuccess?.invoke(map)
+        }
+    }
 
     /**
      * 预加载商品价格
@@ -298,13 +297,17 @@ object BillingManager {
      * @param onSuccess 购买成功回调
      */
     fun launchPurchase(
-        activity: Activity,
+        activity: Activity?,
         productId: String,
         orderId: String,
-        productType: Int,
+        productType: Int = 1,
         onSuccess: ((Purchase?) -> Unit)? = null,
         onFail: ((Int?) -> Unit)? = null
     ) {
+        if (activity == null) {
+            Logger.d(TAG, "activity is null")
+            return
+        }
         connectIfNeeded { state ->
             // [新增] 1. 检查是否正在购买中，如果是则直接返回，防止重复点击
             //state -1 连接失败  1 连接ing  2 连接成功
@@ -467,14 +470,13 @@ object BillingManager {
                 if (it.purchaseState == Purchase.PurchaseState.PURCHASED) {
                     if (!it.isAcknowledged) {
                         Logger.d(TAG, "验券调用：${it.purchaseState}======>${it}")
-//                        ApiFactory.apiService.verifyPurchased(
-//                            VerifyPurchasedBody(
-//                                it.orderId,
-//                                it.purchaseToken,
-//                                it.accountIdentifiers?.obfuscatedAccountId,
-//                                it.products.firstOrNull()
-//                            )
-//                        )
+                        ApiFactory.apiService.verifyPurchased(
+                            VerifyPurchasedBody(
+                                it.purchaseToken,
+                                it.accountIdentifiers?.obfuscatedAccountId,
+                                it.products.firstOrNull()
+                            )
+                        )
                     } else {
                         Logger.d(TAG, "已经验过券了：${it.purchaseState}======>${it}")
                     }

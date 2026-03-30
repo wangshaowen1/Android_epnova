@@ -106,10 +106,7 @@ class PhoneLoginViewModel : AppRepositoryViewModel<FlashLoginRepository>() {
             launchWithLoading(false, block = {
                 val body = LoginByThirdBody(
                     loginType = loginType,
-                    thirdPartyUnionId = map?.get("unionid"),
-                    thirdPartyOpenId = map?.get("openid"),
-                    thirdPartyNickName = map?.get("name"),
-                    thirdPartyAvatar = map?.get("iconurl"),
+                    identityToken = "",
                     inviteData = Config.get().installData
                 )
                 response(mRepo.loginByThird(body), result = {

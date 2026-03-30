@@ -43,6 +43,7 @@ import com.kuaigeglobal.epnova.core.network.apis.request.BookShelfIdPagedBody
 import com.kuaigeglobal.epnova.core.network.apis.request.CompleteUserDataInfoBody
 import com.kuaigeglobal.epnova.core.network.apis.request.ContentBody
 import com.kuaigeglobal.epnova.core.network.apis.request.ContinueTaskBody
+import com.kuaigeglobal.epnova.core.network.apis.request.CreateOrderBody
 import com.kuaigeglobal.epnova.core.network.apis.request.CreatePointOrderBody
 import com.kuaigeglobal.epnova.core.network.apis.request.CreateStoryWorkBody
 import com.kuaigeglobal.epnova.core.network.apis.request.CreateTaskBody
@@ -115,6 +116,7 @@ import com.kuaigeglobal.epnova.core.network.apis.request.UploadStoryBody
 import com.kuaigeglobal.epnova.core.network.apis.request.UserPlayBody
 import com.kuaigeglobal.epnova.core.network.apis.request.UserShareUrlBody
 import com.kuaigeglobal.epnova.core.network.apis.request.UserTokenBody
+import com.kuaigeglobal.epnova.core.network.apis.request.VerifyPurchasedBody
 import com.kuaigeglobal.epnova.core.network.apis.request.VideoSynthesisBody
 import com.kuaigeglobal.epnova.core.network.apis.request.WorkBody
 import com.kuaigeglobal.epnova.core.network.apis.request.WorkIdBody
@@ -135,6 +137,7 @@ import com.kuaigeglobal.epnova.core.network.apis.response.FirstRechargeDialogDat
 import com.kuaigeglobal.epnova.core.network.apis.response.FollowingData
 import com.kuaigeglobal.epnova.core.network.apis.response.HomeBookShelfData
 import com.kuaigeglobal.epnova.core.network.apis.response.LikeData
+import com.kuaigeglobal.epnova.core.network.apis.response.OrderNoData
 import com.kuaigeglobal.epnova.core.network.apis.response.PictureBook
 import com.kuaigeglobal.epnova.core.network.apis.response.PointAmountData
 import com.kuaigeglobal.epnova.core.network.apis.response.PointConfigData
@@ -1202,4 +1205,16 @@ interface ApiService {
      */
     @POST(ApiConstants.USER_PLAY_REPORT)
     suspend fun userPlayReport(@Body body: UserPlayBody): ApiResponse<Any?>
+
+    /**
+     * google预下单
+     */
+    @POST(ApiConstants.CREATE_ORDER)
+    suspend fun createOrder(@Body body: CreateOrderBody): ApiResponse<OrderNoData>
+
+    /**
+     * 验证票据
+     */
+    @POST(ApiConstants.VERIFY_PURCHASED)
+    suspend fun verifyPurchased(@Body body: VerifyPurchasedBody): ApiResponse<Any?>
 }

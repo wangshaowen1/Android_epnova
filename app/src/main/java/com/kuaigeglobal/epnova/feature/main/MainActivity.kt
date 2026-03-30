@@ -18,6 +18,7 @@ import com.kuaigeglobal.epnova.common.permissions.requestRxPermissions
 import com.kuaigeglobal.epnova.core.Config
 import com.kuaigeglobal.epnova.core.Events
 import com.kuaigeglobal.epnova.core.User
+import com.kuaigeglobal.epnova.core.google.billing.BillingManager
 import com.kuaigeglobal.epnova.core.manager.AppEvent
 import com.kuaigeglobal.epnova.core.manager.EventManager
 import com.kuaigeglobal.epnova.core.manager.UpgradeManager
@@ -144,6 +145,14 @@ class MainActivity : BaseViewModelActivity<ActivityMainBinding, MainViewModel>()
         //App检测更新
         checkUpgrade()
         handleIntent(intent)
+
+        lifecycleScope.launchNoCrash {
+            delay(1000)
+            BillingManager.markActivePage(true)
+            BillingManager.queryPendingPurchases {
+                BillingManager.markActivePage(false)
+            }
+        }
     }
 
     private fun initView() {

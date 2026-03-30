@@ -16,9 +16,10 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class PointConfigInfo(
     val pointConfigId: String?,
+    val googleProductId: String?,//Google商品ID
     val pointConfigCode: String?,
     val pointName: String?,
-    val pointPrice: String?,
+    var pointPrice: String?,
     val pointNum: String?,
     /**
      * 是否默认选中（0-非默认、1-默认）
