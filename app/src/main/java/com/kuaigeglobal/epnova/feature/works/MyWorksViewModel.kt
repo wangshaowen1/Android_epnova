@@ -7,11 +7,11 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import com.kuaigeglobal.epnova.core.db.entity.WorkInformationInfo
 import com.kuaigeglobal.epnova.base.viewmodel.AppRepositoryViewModel
 import com.kuaigeglobal.epnova.common.Constant
 import com.kuaigeglobal.epnova.core.AppRepository
 import com.kuaigeglobal.epnova.core.User
-import com.kuaigeglobal.epnova.core.db.entity.WorkInformationInfo
 import com.kuaigeglobal.epnova.core.ext.launch
 import com.kuaigeglobal.epnova.core.ext.launchWithLoading
 import com.kuaigeglobal.epnova.core.network.apis.entity.EpisodeInfo
@@ -190,16 +190,39 @@ class MyWorksViewModel : AppRepositoryViewModel<AppRepository>() {
         return@withContext true // 还有正在生成的，继续轮询
     }
 
-    suspend fun upsertByPictureBookIdAndType(pictureBook: List<WorkInfo>?) {
-        if (pictureBook == null) return
-        val pictureBooks = pictureBook.map {
-            WorkInformationInfo(
-                work = it
-            )
-        }
-        mRepo.appDatabase.workInformationDao().upsertWorkInformationDao(pictureBooks)
-    }
+    fun upsertByPictureBookIdAndType(pictureBooks: List<WorkInfo>?) {
+        if (pictureBooks.isNullOrEmpty()) return
 
+        viewModelScope.launch {
+            // 1. 提取所有需要更新的 workId 集合
+            val workIds = pictureBooks.mapNotNull { it.workId }
+            if (workIds.isEmpty()) return@launch
+
+            // 2. ⚡️ 一次数据库交互：批量拿到这批数据的旧 sortIndex
+            val oldSortIndexes = mRepo.appDatabase.workInformationDao().getSortIndexesByIds(workIds)
+
+            // 3. 转换为内存 Map，方便极速查找
+            // 最终格式大概是：{ "id_A" -> 5, "id_B" -> 6 }
+            val sortIndexMap = oldSortIndexes.associateBy({ it.workId }, { it.sortIndex })
+
+            // 4. 带着原来的排队号，重新组装全量数据
+            val updatedEntities = pictureBooks.mapNotNull { workInfo ->
+                val workId = workInfo.workId ?: return@mapNotNull null
+
+                // 从 Map 中极速取出旧的排队号。如果是个新来的(极少见)，兜底给个 0
+                val oldSortIndex = sortIndexMap[workId] ?: 0
+
+                WorkInformationInfo(
+                    workId = workId,
+                    sortIndex = oldSortIndex, // 完美继承旧的顺序！
+                    work = workInfo
+                )
+            }
+
+            // 5. ⚡️ 第二次数据库交互：全量覆盖更新
+            mRepo.appDatabase.workInformationDao().upsertWorkInformationDao(updatedEntities)
+        }
+    }
     /**
      * 作品详情
      */

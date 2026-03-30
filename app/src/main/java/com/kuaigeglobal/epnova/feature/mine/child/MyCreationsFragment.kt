@@ -3,16 +3,18 @@ package com.kuaigeglobal.epnova.feature.mine.child
 import android.os.Bundle
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.PagingData
+import com.blankj.utilcode.util.ActivityUtils
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.ext.startRefreshWithAdapter
 import com.kuaigeglobal.epnova.common.ext.topActivity
+import com.kuaigeglobal.epnova.core.Events
 import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.ext.onUserStatusChanged
 import com.kuaigeglobal.epnova.core.network.apis.entity.EpisodeInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.WorkInfo
-import com.kuaigeglobal.epnova.databinding.FragmentMineChildBinding
 import com.kuaigeglobal.epnova.databinding.FragmentMyCreationsBinding
 import com.kuaigeglobal.epnova.feature.creator.generate.StoryEditorActivity
+import com.kuaigeglobal.epnova.feature.main.MainActivity
 import com.kuaigeglobal.epnova.feature.play.DramasPlayPagerActivity
 import com.kuaigeglobal.epnova.feature.play.data.FeedRepository
 import com.kuaigeglobal.epnova.feature.series.SeriesActivity
@@ -22,13 +24,11 @@ import com.kuaigeglobal.epnova.feature.works.MyWorksEvent
 import com.kuaigeglobal.epnova.feature.works.MyWorksFragment.Companion.CLICK_INTERVAL
 import com.kuaigeglobal.epnova.feature.works.MyWorksViewModel
 import com.kuaigeglobal.epnova.router.AppRouter
-import com.kuaigeglobal.epnova.widget.decoration.BottomSpaceDecoration
-import com.kuaigeglobal.epnova.widget.decoration.SpaceDecoration
 import com.kuaigeglobal.epnova.widget.stateful.applyGridSpanSizeLookup
 import com.kuaigeglobal.epnova.widget.stateful.paging.MyMultiStatePagingFooterAdapter
 import com.nhsd.basic.BaseViewModelFragment
+import com.nhsd.basic.bus.FlowEventBus
 import com.nhsd.basic.bus.observeEvents
-import com.nhsd.basic.ext.dp
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -41,6 +41,12 @@ class MyCreationsFragment :
             val bundle = Bundle()
             fragment.arguments = bundle
             return fragment
+        }
+
+        @JvmStatic
+        fun start() {
+            FlowEventBus.postSync(Events.MainTabEvent(Events.MainTabEvent.TAB_MY_CREATIONS))
+            ActivityUtils.finishToActivity(MainActivity::class.java, false)
         }
     }
 

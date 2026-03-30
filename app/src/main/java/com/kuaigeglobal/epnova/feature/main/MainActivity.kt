@@ -396,7 +396,7 @@ class MainActivity : BaseViewModelActivity<ActivityMainBinding, MainViewModel>()
                         toHome()
                     }
 
-                    Events.MainTabEvent.TAB_MY_WORKS -> {
+                    Events.MainTabEvent.TAB_MY_CREATIONS -> {
                         binding.mrg.check(R.id.rbWorks)
                     }
 

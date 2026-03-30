@@ -8,6 +8,7 @@ import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
 import com.kuaigeglobal.epnova.core.db.entity.WorkInformationInfo
+import com.kuaigeglobal.epnova.core.db.entity.WorkSortIndex
 
 /**
  * *****************************************
@@ -21,8 +22,12 @@ import com.kuaigeglobal.epnova.core.db.entity.WorkInformationInfo
 @Dao
 interface WorkInformationDao {
     // 用于Paging3从数据库分页查询
-    @Query("SELECT * FROM WorkInformationInfo  ORDER BY workInformationID ASC")
+    @Query("SELECT * FROM WorkInformationInfo  ORDER BY sortIndex ASC")
     fun getPosts(): PagingSource<Int, WorkInformationInfo>
+
+    // 2. 批量查询：一次性查出所有命中 workIds 的原有排序号
+    @Query("SELECT workId, sortIndex FROM WorkInformationInfo WHERE workId IN (:workIds)")
+    suspend fun getSortIndexesByIds(workIds: List<String>): List<WorkSortIndex>
 
     // 清空表（用于刷新）
     @Query("DELETE FROM WorkInformationInfo")
@@ -65,7 +70,7 @@ interface WorkInformationDao {
                 // 注意：这里假设 update 方法是通过主键来更新的。
                 // 如果你的 PictureBookRoomInfo 有使用 @PrimaryKey 标注的主键（例如一个自增id），并且希望更新所有字段，可以直接使用 @Update 方法。
                 // 如果更新逻辑更复杂，可以使用 @Query 进行指定字段的更新。
-                item.workInformationID = existingItem.workInformationID
+                item.workId = existingItem.workId
                 update(item)
             }
         }

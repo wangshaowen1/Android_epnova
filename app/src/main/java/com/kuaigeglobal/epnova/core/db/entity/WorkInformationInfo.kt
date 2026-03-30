@@ -1,6 +1,7 @@
 package com.kuaigeglobal.epnova.core.db.entity
 
 import android.os.Parcelable
+import androidx.room.ColumnInfo
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -19,8 +20,10 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 @Entity(tableName = "WorkInformationInfo")
 data class WorkInformationInfo(
-    @PrimaryKey(autoGenerate = true)
-    var workInformationID: Long = 0,
+    @PrimaryKey
+    @ColumnInfo(name = "primary_work_id")
+    var workId: String = "",
+    var sortIndex: Int = 0,
     //作品本身的信息
     @Embedded
     val work: WorkInfo,

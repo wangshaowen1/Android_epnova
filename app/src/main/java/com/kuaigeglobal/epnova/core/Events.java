@@ -16,7 +16,7 @@ public class Events {
 
     public static class MainTabEvent implements AppEvent {
         public static int TAB_HOME = 1;
-        public static int TAB_MY_WORKS = 2;
+        public static int TAB_MY_CREATIONS = 2;
         public static int TAB_MINE = 3;
 
         private int type;

@@ -59,7 +59,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
                 android:fontFamily="@font/d_din_pro_600_semibold"
-                android:text="@{item.data.pointNum}"
+                android:text="@{item.data.pointName}"
                 android:textAppearance="@style/Text18"
                 android:textColor="?attr/textColor2"
                 app:layout_constraintBottom_toBottomOf="@+id/ivPower"
