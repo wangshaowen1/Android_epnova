@@ -54,6 +54,7 @@ class MyWorksAdapter(
                     },
                     initCallback = {}
                 )
+                viewModel.updateData(item.work)
                 binding.item = viewModel
                 binding.executePendingBindings()
             }

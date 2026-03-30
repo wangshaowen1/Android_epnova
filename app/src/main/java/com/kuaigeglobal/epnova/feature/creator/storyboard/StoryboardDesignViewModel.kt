@@ -36,6 +36,9 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlin.collections.remove
+import kotlin.text.get
+import kotlin.text.set
 
 /**
  * 分镜设计
@@ -125,6 +128,7 @@ class StoryboardDesignViewModel : AppRepositoryViewModel<AppRepository>() {
     }
 
     fun retry() {
+        loadState.set(LoadStateViewHolder.CONTENT)
         when (step.get()) {
             STEP_INIT, STEP_DESCRIPTION_GENERATE_FAILED -> generateAllStoryboardDescription()
             STEP_DESCRIPTION_GENERATING -> loopAllStoryboardDescriptionStatus()
@@ -225,9 +229,10 @@ class StoryboardDesignViewModel : AppRepositoryViewModel<AppRepository>() {
     }
 
     private fun ItemStoryboardVM.applyConfig(): ItemStoryboardVM {
-        onItemClick.value = { view ->
+        onItemClick.value = click@{ view ->
             when (view?.id) {
                 R.id.etStoryboardDesc -> {
+                    if (editingStoryboardDescVM == this) return@click
                     inputJob?.cancel()
                     val edit: (delay: Long) -> Unit = { delay ->
                         editingStoryboardDescVM?.exitEditStoryboardDesc()
@@ -284,8 +289,14 @@ class StoryboardDesignViewModel : AppRepositoryViewModel<AppRepository>() {
                 }
             }
             if (genVideoPrice > 0) {
-                val duration = adapter.items.sumOf { (it as? ItemStoryboardVM)?.data?.get()?.duration ?: 15 }
-                cost.set(genVideoPrice * duration)
+                val totalDuration = adapter.items.sumOf { item ->
+                    if (item is ItemStoryboardVM) {
+                        item.data.get()?.duration ?: 15
+                    } else {
+                        0
+                    }
+                }
+                cost.set(genVideoPrice * totalDuration)
             }
         }
     }

@@ -497,5 +497,8 @@
     <string name="enter_email_tip">Please enter a valid email address.</string>
     <string name="login_with_google">Login with Google</string>
     <string name="terms_and_privacy_agreement">By continuing, you agree to our Terms of Use &amp; Privacy Policy.</string>
+    <string name="compute_power_validity_period">Computing power value validity period: 1 year</string>
+    <string name="contact_customer_service"><![CDATA[If you have any other questions, please contact online customer service via Profile -> Settings -> FeedBack & Suggestions.]]></string>
+    <string name="deselect_all">取消全选</string>
 </resources>
 

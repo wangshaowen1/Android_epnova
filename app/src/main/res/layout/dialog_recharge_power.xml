@@ -58,6 +58,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="15dp"
+                    android:visibility="gone"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <LinearLayout
@@ -77,8 +78,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/credit_remaining"
-                        android:textAppearance="@style/Text14"
-                        android:textColor="?attr/textColor2" />
+                        android:textAppearance="@style/Text12"
+                        android:textColor="?attr/textColor3" />
 
                     <ImageView
                         android:layout_width="16dp"
@@ -91,16 +92,15 @@
                         android:layout_height="wrap_content"
                         android:text="@{layout.balance}"
                         android:textAppearance="@style/Text14"
-                        android:textColor="?attr/textColor2"
+                        android:textColor="?attr/textColor3"
                         tools:text="0" />
-
                 </LinearLayout>
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rvRechargeAmount"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp"
+                    android:layout_marginTop="@dimen/spacing_m"
                     android:adapter="@{layout.powerAdapter}"
                     android:overScrollMode="never"
                     android:paddingHorizontal="9dp"
@@ -108,96 +108,38 @@
                     android:scrollbars="none"
                     app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
                     app:layout_constraintTop_toBottomOf="@+id/tvPower"
-                    app:spanCount="3"
+                    app:spanCount="2"
                     tools:itemCount="6"
                     tools:listitem="@layout/item_recharge_power" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="15dp"
-                    android:layout_marginTop="18dp"
-                    android:text="@string/payment_method"
-                    android:textAppearance="@style/Text14"
-                    android:textColor="?attr/textColor2"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/rvRechargeAmount" />
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rvPayment"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="33dp"
-                    android:adapter="@{layout.paymentAdapter}"
-                    android:overScrollMode="never"
-                    android:paddingHorizontal="9dp"
-                    android:paddingVertical="6dp"
-                    android:scrollbars="none"
-                    app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-                    app:layout_constraintTop_toBottomOf="@+id/rvRechargeAmount"
-                    app:spanCount="2"
-                    tools:itemCount="2"
-                    tools:listitem="@layout/item_recharge_payment_dialog" />
-
-                <TextView
-                    android:id="@+id/btnRecharge"
-                    singleClick="@{(v)->layout.recharge()}"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_marginTop="22dp"
-                    android:background="@drawable/selector_common_button"
-                    android:gravity="center"
-                    android:text="@string/top_up_now"
-                    android:textAppearance="@style/Text16"
-                    android:textColor="@color/fixed_white_1"
-                    app:layout_constraintDimensionRatio="345:44"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/rvPayment"
-                    app:layout_constraintWidth_percent="0.92" />
-
                 <LinearLayout
                     android:id="@+id/llPolicy"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
+                    android:layout_marginHorizontal="@dimen/spacing_l"
+                    android:orientation="vertical"
+                    android:paddingBottom="34dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/btnRecharge">
+                    app:layout_constraintTop_toBottomOf="@+id/rvRechargeAmount">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/agree_to_purchase"
+                        android:drawableStart="@drawable/icon_prompt_16"
+                        android:drawablePadding="@dimen/spacing_xs"
+                        android:gravity="center"
+                        android:text="@string/compute_power_validity_period"
                         android:textAppearance="@style/Text12"
-                        android:textColor="?attr/textColor3" />
-
-                    <TextView
-                        singleClick="@{(v)->layout.viewPaymentAgreement()}"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingVertical="12dp"
-                        android:text="@string/payment_agreement_show"
-                        android:textAppearance="@style/Text12"
-                        android:textColor="?attr/textColor1" />
+                        android:textColor="?attr/textColor4" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/and"
+                        android:layout_marginTop="@dimen/spacing_s"
+                        android:text="@string/contact_customer_service"
                         android:textAppearance="@style/Text12"
-                        android:textColor="?attr/textColor1" />
-
-                    <TextView
-                        singleClick="@{(v)->layout.viewServicePurchaseInstructions()}"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingVertical="12dp"
-                        android:text="@string/purchase_agreement_show"
-                        android:textAppearance="@style/Text12"
-                        android:textColor="?attr/textColor1" />
-
+                        android:textColor="?attr/textColor4" />
                 </LinearLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
         </com.kuaigeglobal.epnova.widget.LoadStateViewHolder>

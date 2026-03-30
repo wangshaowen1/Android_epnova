@@ -80,10 +80,10 @@
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:onClick="@{(v)->layout.play()}"
-                    app:layout_constraintBottom_toBottomOf="@+id/playerArea"
-                    app:layout_constraintEnd_toEndOf="@+id/playerArea"
-                    app:layout_constraintStart_toStartOf="@+id/playerArea"
-                    app:layout_constraintTop_toTopOf="@+id/playerArea"
+                    app:layout_constraintBottom_toBottomOf="@+id/previewArea"
+                    app:layout_constraintEnd_toEndOf="@+id/previewArea"
+                    app:layout_constraintStart_toStartOf="@+id/previewArea"
+                    app:layout_constraintTop_toTopOf="@+id/previewArea"
                     app:use_controller="false"
                     tools:visibility="invisible" />
 

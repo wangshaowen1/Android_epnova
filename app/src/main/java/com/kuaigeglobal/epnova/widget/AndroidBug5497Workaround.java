@@ -15,11 +15,7 @@ import androidx.annotation.NonNull;
 
 import com.nhsd.crop.util.ViewUtils;
 
-
 public class AndroidBug5497Workaround {
-
-    // For more information, see https://code.google.com/p/android/issues/detail?id=5497
-    // To use this class, simply invoke assistActivity() on an Activity that already has its content view set.
 
     public static void assistActivity(Activity activity) {
         new AndroidBug5497Workaround(activity);
@@ -27,6 +23,7 @@ public class AndroidBug5497Workaround {
 
     private View mChildOfContent;
     private int usableHeightPrevious;
+    private int usableWidthPrevious; // 新增：用于记录上一次的宽度
     private FrameLayout.LayoutParams frameLayoutParams;
 
     private AndroidBug5497Workaround(Activity activity) {
@@ -34,14 +31,45 @@ public class AndroidBug5497Workaround {
         mChildOfContent = content.getChildAt(0);
         mChildOfContent.getViewTreeObserver().addOnGlobalLayoutListener(this::possiblyResizeChildOfContent);
         frameLayoutParams = (FrameLayout.LayoutParams) mChildOfContent.getLayoutParams();
+        // 初始化时记录当前宽度
+        usableWidthPrevious = mChildOfContent.getRootView().getWidth();
     }
 
     private void possiblyResizeChildOfContent() {
         int usableHeightNow = computeUsableHeight();
+        int usableWidthNow = mChildOfContent.getRootView().getWidth();
+
+        // 【核心改造 1】：判断是否发生了屏幕旋转（宽度发生剧变）
+        // 如果宽度变了，说明是横竖屏切换，绝不是键盘弹出。此时必须重置为 MATCH_PARENT。
+        if (usableWidthNow != usableWidthPrevious) {
+            usableWidthPrevious = usableWidthNow;
+            usableHeightPrevious = usableHeightNow;
+            if (frameLayoutParams.height != FrameLayout.LayoutParams.MATCH_PARENT) {
+                frameLayoutParams.height = FrameLayout.LayoutParams.MATCH_PARENT;
+                mChildOfContent.requestLayout();
+            }
+            return;
+        }
+
+        // 【核心改造 2】：横屏下（通常是全屏看视频），不需要处理键盘遮挡，强制重置高度
+        int orientation = mChildOfContent.getContext().getResources().getConfiguration().orientation;
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            if (frameLayoutParams.height != FrameLayout.LayoutParams.MATCH_PARENT) {
+                frameLayoutParams.height = FrameLayout.LayoutParams.MATCH_PARENT;
+                mChildOfContent.requestLayout();
+            }
+            usableHeightPrevious = usableHeightNow;
+            return;
+        }
+
+        // 原有的键盘高度计算逻辑
         if (usableHeightNow != usableHeightPrevious) {
             int usableHeightSansKeyboard = mChildOfContent.getRootView().getHeight();
             int heightDifference = usableHeightSansKeyboard - usableHeightNow;
+
+            // 键盘高度通常大于屏幕高度的1/4
             boolean showKeyBoard = heightDifference > (usableHeightSansKeyboard / 4);
+
             if (showKeyBoard) {
                 // keyboard probably just became visible
                 frameLayoutParams.height = usableHeightSansKeyboard - heightDifference + ViewUtils.getStatusBarHeight(mChildOfContent.getContext());
@@ -49,6 +77,7 @@ public class AndroidBug5497Workaround {
                 // keyboard probably just became hidden
                 frameLayoutParams.height = usableHeightSansKeyboard - getNavigationBarHeight(mChildOfContent.getContext());
             }
+
             if (showKeyBoard) {
                 mChildOfContent.postDelayed(() -> mChildOfContent.requestLayout(), 150);
             } else {
@@ -90,7 +119,7 @@ public class AndroidBug5497Workaround {
             Configuration conf = context.getResources().getConfiguration();
             if (Configuration.ORIENTATION_LANDSCAPE == conf.orientation) {
                 View contentView = decorView.findViewById(android.R.id.content);
-                if (contentView!=null) {
+                if (contentView != null) {
                     show = (point.x != contentView.getWidth());
                 }
             } else {
@@ -101,5 +130,4 @@ public class AndroidBug5497Workaround {
         }
         return show;
     }
-
 }

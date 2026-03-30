@@ -73,6 +73,7 @@ class DramaGenerateStep1Fragment :
         hostVm?.title?.observe(this) {
             if (it != mRealVM.mWorkName.value) {
                 mRealVM.mWorkName.value = it
+                mRealVM.saveTitle()
             }
         }
         binding.btnRegenerate.setOnSingleClickListener {

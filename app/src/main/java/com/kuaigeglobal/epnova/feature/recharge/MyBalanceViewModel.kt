@@ -67,9 +67,7 @@ class MyBalanceViewModel(@LayoutRes private val paymentItemLayout: Int) : AppRep
         launch(
             block = {
                 val pointConfigListDeferred = async { mRepo.pointConfigList().data }
-                val paymentConfigListDeferred = async { mRepo.paymentConfigList().data }
                 val pointConfigList = pointConfigListDeferred.await()
-                val paymentConfigList = paymentConfigListDeferred.await()
                 pointConfigList?.pointBalanceNum?.let { User.get().storeComputingPower(it) }
                 pointConfigList?.items?.map { ItemRechargePowerVM(it).apply { onItemClick.value = { select() } } }.let { vms ->
                     powerAdapter.submitList(vms)
@@ -77,10 +75,6 @@ class MyBalanceViewModel(@LayoutRes private val paymentItemLayout: Int) : AppRep
                     vms?.find { it.data.get()?.isDiscountValid() == true }?.let {
                         startGlobalCountDown()
                     }
-                }
-                paymentConfigList?.items?.map { ItemRechargePaymentVM(it).apply { onItemClick.value = { select() } } }.let { vms ->
-                    paymentAdapter.submitList(vms)
-                    (vms?.firstOrNull { it.data.get()?.isDefault == 1 } ?: vms?.firstOrNull())?.select()
                 }
                 updateLoadState()
             },

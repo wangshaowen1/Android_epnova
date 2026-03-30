@@ -37,6 +37,9 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
+import kotlin.collections.remove
+import kotlin.text.get
+import kotlin.text.set
 
 /**
  * 资产管理
@@ -147,6 +150,7 @@ class AssetManagementViewModel : AppRepositoryViewModel<AssetManagementRepositor
     }
 
     fun retry() {
+        loadState.set(LoadStateViewHolder.CONTENT)
         when (step.get()) {
             STEP_INIT -> generateAllAssetDescription()
             STEP_DESCRIPTION_GENERATING -> loopAllAssetDescriptionStatus()
@@ -325,19 +329,20 @@ class AssetManagementViewModel : AppRepositoryViewModel<AssetManagementRepositor
     }
 
     private fun ItemAssetVM<*>.applyConfig(): ItemAssetVM<*> {
-        onItemClick.value = { view ->
+        onItemClick.value = click@{ view ->
             when (view?.id) {
                 R.id.ivCover -> {
                     assetImage.get()?.let { PhotoPagerActivity.launch(topActivity, it) }
                 }
 
                 R.id.etAssetDesc -> {
+                    editingAssetNameVM?.exitEditAssetName()
+                    editingAssetNameVM = null
+                    if (editingAssetDescVM == this) return@click
                     inputJob?.cancel()
                     val edit: (delay: Long) -> Unit = { delay ->
                         editingAssetDescVM?.exitEditAssetDesc()
-                        editingAssetNameVM?.exitEditAssetName()
                         editingAssetDescVM = this
-                        editingAssetNameVM = null
                         if (delay > 0) {
                             inputJob = launch {
                                 delay(delay)
