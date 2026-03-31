@@ -200,9 +200,9 @@ suspend fun sensitiveWordCheck(content: String?, needHighlight: Boolean? = true)
 }
 
 suspend fun showRechargeDialog(showToast: Boolean = false) {
-    if (!showFirstRecharge(showToast)) {
         PowerRechargeDialog.show(showToast)
-    }
+//    if (!showFirstRecharge(showToast)) {
+//    }
 }
 
 /**
