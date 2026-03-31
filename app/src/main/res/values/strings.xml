@@ -500,4 +500,9 @@
     <string name="contact_customer_service"><![CDATA[If you have any other questions, please contact online customer service via Profile -> Settings -> FeedBack & Suggestions.]]></string>
     <string name="deselect_all">Deselect All</string>
     <string name="storyboard">Storyboard</string>
+    <string name="policy_content">Welcome to EpNova!\nBefore using this product or service, please carefully read and fully understand all terms of this application\'s Terms of Service and Privacy Policy, so as to learn about our service content and the rules governing how we collect and use your relevant personal information.\nWe provide services and protect your personal information in strict accordance with the Terms of Service and Privacy Policy.\nIf you select \"Disagree\", you will not be able to use our products and services.</string>
+    <string name="please_set_total_episodes">Set the total number of episodes</string>
+    <string name="please_enter_custom_episodes">Please enter a custom number of episodes</string>
+    <string name="please_select_video_aspect_ratio">Please select video size</string>
+    <string name="please_select_video_style">Please select video style</string>
 </resources>

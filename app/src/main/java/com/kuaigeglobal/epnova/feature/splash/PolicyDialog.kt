@@ -6,6 +6,7 @@ import android.text.method.LinkMovementMethod
 import android.view.Gravity
 import com.blankj.utilcode.util.ScreenUtils
 import com.drake.spannable.addSpan
+import com.drake.spannable.replaceSpan
 import com.drake.spannable.span.HighlightSpan
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.core.Config
@@ -88,13 +89,36 @@ class PolicyDialog : BaseDialogFragment<DialogPolicyBinding>() {
 
     override fun onPrepareView() {
         super.onPrepareView()
+        "欢迎使用快出片！\n在使用本产品或服务前，请您认证阅读并理解本应用的用户协议和隐私政策的全部条款，以了解我们的服务内容和我们在收集和使用您相关个人信息时的处理规则。我们严格按照用户协议和隐私政策为您提供服务，保护您的个人信息。“不同意”，您将无法使用我们的产品和服务。"
         binding.tvContent.movementMethod = LinkMovementMethod.getInstance()
-        binding.tvContent.text =
-            "欢迎使用快出片！\n在使用本产品或服务前，请您认证阅读并理解本应用的"
-                .addUserPolicy()
-                .addSpan("和")
-                .addPrivacyPolicy()
-                .addSpan("的全部条款，以了解我们的服务内容和我们在收集和使用您相关个人信息时的处理规则。我们严格按照用户协议和隐私政策为您提供服务，保护您的个人信息。“不同意”，您将无法使用我们的产品和服务。")
+        val fullText = getString(R.string.policy_content)
+
+        // 3. 使用 replaceSpan 进行匹配替换
+        binding.tvContent.text = fullText
+            // 匹配《用户协议》关键词并替换为高亮 Span
+            .replaceSpan(R.string.tvUserService.getResString()) {
+                HighlightSpan(highlightColor) {
+                    activity?.let {
+                        SimpleBrowserActivity.launch(
+                            it,
+                            Config.get().serviceUrl,
+                            R.string.tvSYUserService.getResString()
+                        )
+                    }
+                }
+            }
+            // 匹配《隐私政策》关键词并替换为高亮 Span
+            .replaceSpan(R.string.tvPrivateService.getResString()) {
+                HighlightSpan(highlightColor) {
+                    activity?.let {
+                        SimpleBrowserActivity.launch(
+                            it,
+                            Config.get().privacyUrl,
+                            R.string.tvSYPrivateService.getResString()
+                        )
+                    }
+                }
+            }
         singleClick(binding.tvAgree) { (activity as? PolicyCallback)?.onAgreePolicy(this) }
         singleClick(binding.tvReject) { (activity as? PolicyCallback)?.onRejectPolicy(this) }
     }

@@ -3,9 +3,8 @@ package com.kuaigeglobal.epnova.feature.creator.set
 import android.text.Editable
 import android.text.TextWatcher
 import androidx.core.os.bundleOf
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
+import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.Constants
 import com.kuaigeglobal.epnova.common.ext.applySmartFocusManager
 import com.kuaigeglobal.epnova.core.ext.sensitiveWordCheck
@@ -56,25 +55,25 @@ class VideoSetDialog : BaseBottomPushVMDialogFragment<DialogVideoSetBinding, Vid
         })
         binding.btnConfirm.setOnClickListener {
             if (binding.nameInputer.text.isNullOrEmpty()) {
-                "请输入作品名称".showToast()
+                showToast(R.string.please_enter_work_name)
                 return@setOnClickListener
             }
             if (mRealVM.checkedEpisodeSet == null) {
-                "请设置故事总集数".showToast()
+                getString(R.string.please_set_total_episodes).showToast()
                 return@setOnClickListener
             }
             if (mRealVM.checkedEpisodeSet?.data?.get()?.isCustomInput() == true) {
                 if (mRealVM.checkedEpisodeSet?.input?.get().isNullOrEmpty()) {
-                    "请输入自定义集数".showToast()
+                    getString(R.string.please_enter_custom_episodes).showToast()
                     return@setOnClickListener
                 }
             }
             if (mRealVM.checkedRatio == null) {
-                "请选择视频尺寸".showToast()
+                getString(R.string.please_select_video_aspect_ratio).showToast()
                 return@setOnClickListener
             }
             if (mRealVM.checkedStyle == null) {
-                "请选择视频风格".showToast()
+                getString(R.string.please_select_video_style).showToast()
                 return@setOnClickListener
             }
             lifecycleScope.launch {

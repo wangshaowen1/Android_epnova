@@ -501,5 +501,11 @@
     <string name="contact_customer_service"><![CDATA[If you have any other questions, please contact online customer service via Profile -> Settings -> FeedBack & Suggestions.]]></string>
     <string name="deselect_all">取消全选</string>
     <string name="storyboard">分镜设计</string>
+    <string name="policy_content">欢迎使用快出片！
+在使用本产品或服务前，请您认证阅读并理解本应用的《用户协议》和《隐私政策》的全部条款，以了解我们的服务内容和我们在收集和使用您相关个人信息时的处理规则。我们严格按照用户协议和隐私政策为您提供服务，保护您的个人信息。“不同意”，您将无法使用我们的产品和服务。</string>
+    <string name="please_set_total_episodes">请设置故事总集数</string>
+    <string name="please_enter_custom_episodes">请输入自定义集数</string>
+    <string name="please_select_video_aspect_ratio">请选择视频尺寸</string>
+    <string name="please_select_video_style">请选择视频风格</string>
 </resources>
 
