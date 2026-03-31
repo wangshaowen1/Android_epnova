@@ -8,6 +8,6 @@ data class FeedbackBody(
     val problemDesc: String?,
     //图片url(最多4张，用英文逗号分割图片Url)
     var imagesUrl: String?,
-    //联系方式(手机号)
-    val contactMobile: String?
+    //联系方式(邮箱)
+    val contactEmail: String?
 ) : UserTokenBody()
