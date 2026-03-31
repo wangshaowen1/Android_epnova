@@ -6,8 +6,8 @@ ext {
             baselibrary: [
                     groupId   : 'com.kuaige',
                     artifactId: 'baselibrary',
-                    version   : '1.0.5',
-                    gav       : 'com.kuaige:baselibrary:1.0.5'
+                    version   : '1.0.7',
+                    gav       : 'com.kuaige:baselibrary:1.0.7'
             ],
             imageloader: [
                     groupId   : 'com.kuaige',
@@ -30,8 +30,8 @@ ext {
             videoedit  : [
                     groupId   : 'com.kuaige',
                     artifactId: 'videoedit',
-                    version   : '1.0.0',
-                    gav       : 'com.kuaige:videoedit:1.0.0'
+                    version   : '1.0.1',
+                    gav       : 'com.kuaige:videoedit:1.0.1'
             ],
             luban      : [
                     groupId   : 'com.kuaige.thirdparty',
