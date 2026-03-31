@@ -9,6 +9,8 @@
 .cxx
 local.properties
 /app/proguard-dict.txt
-/app/developArch64/
 /app/mapping.txt
 /app/seeds.txt
+/app/developArch64/
+/app/productionArch64/
+/design_svg/
