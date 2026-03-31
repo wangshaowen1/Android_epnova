@@ -89,7 +89,6 @@ class PolicyDialog : BaseDialogFragment<DialogPolicyBinding>() {
 
     override fun onPrepareView() {
         super.onPrepareView()
-        "欢迎使用快出片！\n在使用本产品或服务前，请您认证阅读并理解本应用的用户协议和隐私政策的全部条款，以了解我们的服务内容和我们在收集和使用您相关个人信息时的处理规则。我们严格按照用户协议和隐私政策为您提供服务，保护您的个人信息。“不同意”，您将无法使用我们的产品和服务。"
         binding.tvContent.movementMethod = LinkMovementMethod.getInstance()
         val fullText = getString(R.string.policy_content)
 

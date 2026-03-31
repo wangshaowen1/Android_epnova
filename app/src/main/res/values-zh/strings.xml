@@ -253,7 +253,7 @@
     <string name="me">我</string>
     <string name="i_have_read_and_agree_to">我已阅读并同意</string>
     <string name="and">和</string>
-    <string name="sign_in_kuaichupian">登录快出片</string>
+    <string name="sign_in_kuaichupian">登录EpNova</string>
     <string name="terms_and_privacy">用户协议及隐私说明</string>
     <string name="estimated_compute_cost">预计消耗算力</string>
     <string name="dont_remind_me_again">下次不再提醒我</string>
@@ -332,7 +332,7 @@
     <string name="report_details_required_10_plus">请输入10个字以上的举报描述（必填）</string>
     <string name="collapse">收起</string>
     <string name="expand">展开</string>
-    <string name="input_original_story_content">请输入您的原著内容，「快出片」将严格基于你提供的章节内容生成漫剧，不会新增剧情</string>
+    <string name="input_original_story_content">请输入您的原著内容，「EpNova」将严格基于你提供的章节内容生成漫剧，不会新增剧情</string>
     <string name="login_for_more_highlights">登录后更精彩</string>
     <string name="bind_phone_number">绑定手机号</string>
     <string name="login_as_registration">新账号登录即注册</string>
@@ -501,7 +501,7 @@
     <string name="contact_customer_service"><![CDATA[If you have any other questions, please contact online customer service via Profile -> Settings -> FeedBack & Suggestions.]]></string>
     <string name="deselect_all">取消全选</string>
     <string name="storyboard">分镜设计</string>
-    <string name="policy_content">欢迎使用快出片！
+    <string name="policy_content">欢迎使用EpNova！
 在使用本产品或服务前，请您认证阅读并理解本应用的《用户协议》和《隐私政策》的全部条款，以了解我们的服务内容和我们在收集和使用您相关个人信息时的处理规则。我们严格按照用户协议和隐私政策为您提供服务，保护您的个人信息。“不同意”，您将无法使用我们的产品和服务。</string>
     <string name="please_set_total_episodes">请设置故事总集数</string>
     <string name="please_enter_custom_episodes">请输入自定义集数</string>
