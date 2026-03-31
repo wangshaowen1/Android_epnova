@@ -156,15 +156,16 @@ fun toPhotoItem(list: MutableList<String?>?): ArrayList<PhotoItem?>? {
 
 
 suspend fun sensitiveWordCheck(content: String?, passBlock: () -> Unit, notPassBlock: (CharSequence?) -> Unit, needHighlight: Boolean? = true) {
-    val pair = sensitiveWordCheck(content, needHighlight)
-    withContext(Dispatchers.Main) {
-        if (pair.first) {
-            notPassBlock(content)
-            passBlock()
-        } else {
-            notPassBlock(pair.second)
-        }
-    }
+    passBlock()
+//    val pair = sensitiveWordCheck(content, needHighlight)
+//    withContext(Dispatchers.Main) {
+//        if (pair.first) {
+//            notPassBlock(content)
+//            passBlock()
+//        } else {
+//            notPassBlock(pair.second)
+//        }
+//    }
 }
 
 /**
@@ -198,8 +199,8 @@ suspend fun sensitiveWordCheck(content: String?, needHighlight: Boolean? = true)
     return true to null
 }
 
-suspend fun showRechargeDialog(showToast: Boolean = false){
-    if(!showFirstRecharge(showToast)){
+suspend fun showRechargeDialog(showToast: Boolean = false) {
+    if (!showFirstRecharge(showToast)) {
         PowerRechargeDialog.show(showToast)
     }
 }
