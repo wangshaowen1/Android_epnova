@@ -34,7 +34,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            android:text="@{item.data.tradeDate}"
+            android:text="@{item.data.formattedTradeDate}"
             android:textColor="?attr/textColor4"
             app:layout_constraintEnd_toStartOf="@id/tv_amount_money"
             app:layout_constraintStart_toStartOf="parent"

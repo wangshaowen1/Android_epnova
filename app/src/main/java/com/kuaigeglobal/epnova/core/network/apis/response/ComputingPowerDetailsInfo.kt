@@ -1,5 +1,7 @@
 package com.kuaigeglobal.epnova.core.network.apis.response
 
+import com.kuaigeglobal.epnova.common.utils.DateUtil
+
 /**
  * *****************************************
  * 项目名称: KidsTales
@@ -30,7 +32,7 @@ data class ComputingPowerDetailsInfo(
     /**交易子标题*/
     val tradeSubTitle: String?,
     /**交易日期*/
-    val tradeDate: String?,
+    val tradeDate: Long?,
     /**变动的算力数，单位：个*/
     val tradeNum: String?
 ) {
@@ -40,5 +42,11 @@ data class ComputingPowerDetailsInfo(
 
         //积分消耗
         const val SCORE_TYPE_CONSUME = 2
+    }
+
+    fun getFormattedTradeDate(): String {
+        return tradeDate?.let {
+            DateUtil.getFormatDateTime(it, DateUtil.FORMAT_DATETIME)
+        } ?: ""
     }
 }
