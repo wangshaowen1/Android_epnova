@@ -28,9 +28,9 @@ import kotlinx.coroutines.launch
 class GoogleSignInHelper(private val context: Context) {
 
     companion object {
-        //客户端 ID 707414526754-2f9285e8rsekh8t38n4e7r32qvliks0e.apps.googleusercontent.com707414526754-2f9285e8rsekh8t38n4e7r32qvliks0e.apps.googleusercontent.com
-        const val CLIENT_ID = "707414526754-o32uj00k6kh4v540ncerse069nf112c0.apps.googleusercontent.com"
-        const val key = "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"
+        //客户端 ID 1034433079236-rc3fo1di5ofmt31k6gbuk2009ho673n0.apps.googleusercontent.com
+        const val CLIENT_ID = "1034433079236-a2lup2th9rc5940iom9i05geg0rg1fno.apps.googleusercontent.com"
+//        const val key = "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"
     }
 
     private val credentialManager by lazy { CredentialManager.create(context) }
