@@ -197,7 +197,7 @@ android {
         //开发测试环境
         develop {
             dimension 'env'
-            buildConfigField 'String', 'SERVER_URL', '"http://192.168.10.44:8088"'
+            buildConfigField 'String', 'SERVER_URL', '"https://epnova-test.kwaige.cn"'
         }
         //预发布
         preview {

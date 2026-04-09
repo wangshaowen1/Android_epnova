@@ -8,7 +8,7 @@ object DebugUtils {
             "廖嘉宁：192.168.12.177",
             "郭义明：192.168.10.44",
             "刘子帆：192.168.13.167",
-            "测试外网：kcp-test.kwaige.cn",
+            "测试外网：epnova-test.kwaige.cn",
             "预发布：120.24.240.28:9010",
             "正式环境：kuaichupianjk.kuaigeai.cn"
         )
@@ -18,7 +18,7 @@ object DebugUtils {
             "http://192.168.12.177:8088",
             "http://192.168.10.44:8088",
             "http://192.168.13.167:8088",
-            "https://kcp-test.kwaige.cn",
+            "https://epnova-test.kwaige.cn",
             "http://120.24.240.28:7010",
             "https://kuaichupianjk.kuaigeai.cn"
         )
