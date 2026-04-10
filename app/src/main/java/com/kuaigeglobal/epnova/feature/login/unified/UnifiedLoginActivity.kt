@@ -38,7 +38,7 @@ class UnifiedLoginActivity : BaseViewModelActivity<ActivityUnifiedLoginBinding, 
                 showToast(R.string.toast_login_please)
             }
             val activity = topActivity ?: return
-            activity.startActivity(Intent(activity, LoginActivity::class.java))
+            activity.startActivity(Intent(activity, UnifiedLoginActivity::class.java))
             activity.overridePendingTransition(
                 R.anim.push_bottom_in,
                 R.anim.push_bottom_out

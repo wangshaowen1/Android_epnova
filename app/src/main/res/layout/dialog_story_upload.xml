@@ -113,6 +113,7 @@
             android:layout_height="wrap_content"
             android:layout_marginVertical="@dimen/spacing_m"
             android:layout_marginTop="@dimen/spacing_m"
+            android:maxWidth="260dp"
             android:text="@string/text_sensitive_warning"
             android:textColor="?attr/textColor4"
             android:textSize="11sp" />
@@ -127,7 +128,6 @@
             <Button
                 android:id="@+id/cancel"
                 style="@style/Text16"
-                android:textAllCaps="false"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_marginEnd="@dimen/spacing_m"
@@ -135,12 +135,12 @@
                 android:background="@drawable/btn_common_cancel"
                 android:gravity="center"
                 android:text="@string/cancellation"
+                android:textAllCaps="false"
                 android:textColor="?attr/textColor2" />
 
             <Button
                 android:id="@+id/confirm"
                 style="@style/Text16"
-                android:textAllCaps="false"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -149,6 +149,7 @@
                 android:enabled="@{layout.uploadStatus==2}"
                 android:gravity="center"
                 android:text="@string/upload"
+                android:textAllCaps="false"
                 android:textColor="?attr/textColor1" />
         </LinearLayout>
     </LinearLayout>

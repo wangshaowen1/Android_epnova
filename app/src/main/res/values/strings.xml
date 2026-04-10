@@ -173,7 +173,7 @@
     <string name="terms_of_service">Terms of Service</string>
     <string name="generation_failed">Failed to Load</string>
     <string name="text_guide_step1">AI-generated content, publish it all in one place to</string>
-    <string name="text_sensitive_warning">Please ensure the text does not contain</string>
+    <string name="text_sensitive_warning">Please ensure the content does not contain <font color="#E6ffffff">pornography, violence, political-related</font> content or other prohibited information.</string>
     <string name="unregister_reason">Reason for deletion:</string>
     <string name="hint_unregister_request_reason">Enter your reason for deleting this account…</string>
     <string name="unregister_confirm">Confirm Deletion</string>
