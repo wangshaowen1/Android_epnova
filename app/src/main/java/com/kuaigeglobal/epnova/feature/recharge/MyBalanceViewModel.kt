@@ -77,7 +77,7 @@ class MyBalanceViewModel(@LayoutRes private val paymentItemLayout: Int) : AppRep
                 pointConfigList?.pointBalanceNum?.let { User.get().storeComputingPower(it) }
                 pointConfigList?.items?.map { ItemRechargePowerVM(it).apply { onItemClick.value = { select() } } }.let { vms ->
                     powerAdapter.submitList(vms)
-                    loadGoogleProducts(vms)
+//                    loadGoogleProducts(vms)
                     (vms?.firstOrNull { it.data.get()?.isDefault == 1 } ?: vms?.firstOrNull())?.select()
                     vms?.find { it.data.get()?.isDiscountValid() == true }?.let {
                         startGlobalCountDown()
@@ -109,7 +109,7 @@ class MyBalanceViewModel(@LayoutRes private val paymentItemLayout: Int) : AppRep
     }
 
     private fun updateLoadState() {
-        if (powerAdapter.items.isEmpty() || paymentAdapter.items.isEmpty()) {
+        if (powerAdapter.items.isEmpty()) {
             loadState.set(LoadStateViewHolder.RETRY)
         } else {
             loadState.set(LoadStateViewHolder.CONTENT)
