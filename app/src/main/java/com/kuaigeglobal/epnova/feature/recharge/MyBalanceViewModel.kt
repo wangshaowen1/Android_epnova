@@ -51,7 +51,6 @@ class MyBalanceViewModel(@LayoutRes private val paymentItemLayout: Int) : AppRep
     val balance by lazy { ObservableField<String>() }
     val loadState by lazy { ObservableInt() }
     val powerAdapter by lazy { QuickAdapter<ItemRechargePowerVM>(R.layout.item_recharge_power, emptyList()) }
-    val paymentAdapter by lazy { QuickAdapter<ItemRechargePaymentVM>(paymentItemLayout, emptyList()) }
     private var currentPower: ItemRechargePowerVM? = null
     private var currentPayment: ItemRechargePaymentVM? = null
     val workCourseBanner by lazy { ObservableField<SimpleBannerInfo>() }
@@ -69,7 +68,7 @@ class MyBalanceViewModel(@LayoutRes private val paymentItemLayout: Int) : AppRep
     }
 
     fun loadConfig() {
-        if (powerAdapter.items.isEmpty() || paymentAdapter.items.isEmpty()) loadState.set(LoadStateViewHolder.LOADING)
+        if (powerAdapter.items.isEmpty()) loadState.set(LoadStateViewHolder.LOADING)
         launch(
             block = {
                 val pointConfigListDeferred = async { mRepo.pointConfigList().data }
@@ -134,12 +133,7 @@ class MyBalanceViewModel(@LayoutRes private val paymentItemLayout: Int) : AppRep
             showToast(R.string.please_select_recharge_amount)
             return
         }
-        val payment = currentPayment?.data?.get()
-        val paymentMethod = payment?.paymentMethod
-        if (paymentMethod == null) {
-            showToast(R.string.select_the_payment_method)
-            return
-        }
+
         if (isDialog) {
             EventManager.onAppTrack(AppEvent.SF_CLICK_COMPUTE_RECHARGE_PAYMENT_BUTTON)
         }
