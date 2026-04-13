@@ -78,7 +78,7 @@ class MyBalanceViewModel(@LayoutRes private val paymentItemLayout: Int) : AppRep
                 pointConfigList?.pointBalanceNum?.let { User.get().storeComputingPower(it) }
                 pointConfigList?.items?.map { ItemRechargePowerVM(it).apply { onItemClick.value = { select() } } }.let { vms ->
                     powerAdapter.submitList(vms)
-//                    loadGoogleProducts(vms)
+                    loadGoogleProducts(vms)
                     (vms?.firstOrNull { it.data.get()?.isDefault == 1 } ?: vms?.firstOrNull())?.select()
                     vms?.find { it.data.get()?.isDiscountValid() == true }?.let {
                         startGlobalCountDown()
@@ -101,10 +101,10 @@ class MyBalanceViewModel(@LayoutRes private val paymentItemLayout: Int) : AppRep
                 vms?.forEach { item ->
                     val productCode = item.data.get()?.googleProductId
                     if (map.containsKey(productCode)) {
-                        item.data.get()?.pointPrice = map[productCode]?.first
+                        item.priceText.set(map[productCode]?.first)
                     }
                 }
-                powerAdapter.submitList(vms)
+                powerAdapter.notifyDataSetChanged()
             }
         }
     }
@@ -166,7 +166,7 @@ class MyBalanceViewModel(@LayoutRes private val paymentItemLayout: Int) : AppRep
             response(
                 mRepo.api.createOrder(
                     CreateOrderBody(
-                        goodsCode = info.pointConfigId,
+                        goodsCode = info.pointConfigCode,
                         goodsType = 1,
                         mobileType = 1
                     )
