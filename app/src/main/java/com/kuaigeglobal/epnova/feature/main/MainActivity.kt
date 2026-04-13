@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.util.SparseArray
 import android.view.KeyEvent
 import android.view.View
@@ -29,6 +30,7 @@ import com.kuaigeglobal.epnova.feature.creator.CreationRootActivity
 import com.kuaigeglobal.epnova.feature.home.HomeFragment
 import com.kuaigeglobal.epnova.feature.mine.MineFragment
 import com.kuaigeglobal.epnova.feature.splash.newer.FirstRechargeDialog
+import com.kuaigeglobal.epnova.kit.SignUtils
 import com.kuaigeglobal.epnova.router.AppNavigator
 import com.kuaigeglobal.epnova.router.AppRouter
 import com.nhsd.basic.BaseViewModelActivity
@@ -93,14 +95,8 @@ class MainActivity : BaseViewModelActivity<ActivityMainBinding, MainViewModel>()
         super.onCreate(savedInstanceState)
 
 
-        Global.guestLogin({
 
-        },{
-            lifecycleScope.launch {
-                getString(R.string.please_check_network).showToast()
-            }
-        })
-
+        handleGuestLogin()
 
         registerTime = System.currentTimeMillis()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
@@ -134,6 +130,24 @@ class MainActivity : BaseViewModelActivity<ActivityMainBinding, MainViewModel>()
         }
     }
 
+    private fun handleGuestLogin()
+    {
+
+        if(AppNavigator.checkIsNeedToGuestLogin())
+        {
+            Global.guestLogin({
+
+                //Log.i("Hello","come in")
+                User.get().updateFrom(it)
+                SignUtils.signIn()
+
+            },{
+                lifecycleScope.launch {
+                    getString(R.string.please_check_network).showToast()
+                }
+            })
+        }
+    }
 
     /**
      * 遍历查询是否初始化完成

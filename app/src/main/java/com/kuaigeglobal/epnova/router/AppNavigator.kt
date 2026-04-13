@@ -1,5 +1,6 @@
 package com.kuaigeglobal.epnova.router
 
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.blankj.utilcode.util.AppUtils
 import com.kuaigeglobal.epnova.common.Constant
@@ -27,14 +28,16 @@ object AppNavigator {
     }
 
     /**
-     * 检查是否需要登录
+     * 检查是否需要Guest登录
      * 只会返回true(未登录) 返回false(登录)  未登录时 不会强制跳转到登录界面
      */
     @JvmStatic
-    fun checkLogin(): Boolean
+    fun checkIsNeedToGuestLogin(): Boolean
     {
-        if (User.get().isVisitor)
+
+        if (User.get().isVisitor|| User.get().userSource==6)
         {
+
             return true
         }
 

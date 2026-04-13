@@ -36,6 +36,7 @@ import com.kuaigeglobal.epnova.R;
 import com.kuaigeglobal.epnova.common.OssHelp;
 import com.kuaigeglobal.epnova.common.utils.GlideHelper;
 import com.kuaigeglobal.epnova.common.utils.Utils;
+import com.kuaigeglobal.epnova.core.Global;
 import com.kuaigeglobal.epnova.core.ext.DataUtils;
 import com.kuaigeglobal.epnova.core.model.PhotoItem;
 import com.kuaigeglobal.epnova.widget.HackyViewPager;

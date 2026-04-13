@@ -30,7 +30,9 @@ import com.nhsd.basic.BaseViewModelActivity
 import com.nhsd.basic.ext.getResString
 import com.nhsd.basic.ext.setOnSingleClickListener
 import com.nhsd.basic.ext.showToast
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /**
  * *****************************************
@@ -81,6 +83,7 @@ class SettingsActivity : BaseViewModelActivity<ActivitySettingsBinding, Settings
 
     override fun <Data> onClick(view: View?, data: Data?) {
         super.onClick(view, data)
+
         when (view?.id) {
             R.id.sll_personal_information -> {
                 if (AppNavigator.checkLoginIntercepted(true)) {
@@ -118,19 +121,25 @@ class SettingsActivity : BaseViewModelActivity<ActivitySettingsBinding, Settings
                 }
                 showConfirmPrompt(tip = R.string.tip_sign_out_confirm.getResString()) {
 
-                    mRealVM.logoutApp()
-                    SignUtils.signOut()
-
                     Global.guestLogin({
 
                         lifecycleScope.launch {
+
+                            withContext(Dispatchers.IO)
+                            {
+                                mRealVM.logoutApp()
+                                SignUtils.signOut()
+                                User.get().updateFrom(it)
+                                SignUtils.signIn()
+                            }
                             getString(R.string.app_log_out).showToast()
                             finish()
                         }
                     },{
+
                         lifecycleScope.launch {
                             getString(R.string.please_check_network).showToast()
-                            finish()
+                            //finish()
                         }
                     })
                 }

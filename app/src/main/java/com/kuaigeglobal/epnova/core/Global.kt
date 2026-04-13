@@ -6,6 +6,7 @@ import com.kuaigeglobal.epnova.core.network.apis.ApiFactory
 import com.kuaigeglobal.epnova.core.network.apis.request.UserTokenBody
 import com.kuaigeglobal.epnova.core.network.apis.response.UserHomeData
 import com.kuaigeglobal.epnova.kit.SignUtils
+import com.kuaigeglobal.epnova.router.AppNavigator
 import com.nhsd.basic.ext.launchNoCrash
 import com.nhsd.basic.ext.showToast
 import kotlinx.coroutines.launch
@@ -71,16 +72,12 @@ object Global {
     fun guestLogin(onSuccess: ((UserHomeData?) -> Unit)? = null,onError:((UserHomeData?)-> Unit)?)
     {
 
+
         ioScope.launch{
 
             try {
-
-                Log.i("Hello","result001")
                 val resp = ApiFactory.apiService.loginBygGuest()
-                Log.i("Hello","result"+resp)
                 response(resp,{
-                    User.get().updateFrom(data)
-                    SignUtils.signIn()
                     onSuccess?.invoke(data)
                 },{
                     onError?.invoke(this?.data)
