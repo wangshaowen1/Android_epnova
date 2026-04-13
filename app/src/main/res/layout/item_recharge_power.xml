@@ -89,7 +89,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="6dp"
-                android:text="@{item.data.pointPrice}"
+                android:text="@{item.priceText}"
                 android:textColor="?attr/textColor3"
                 android:textSize="12sp"
                 app:layout_constraintBottom_toBottomOf="@+id/scope"

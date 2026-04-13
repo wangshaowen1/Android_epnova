@@ -13,6 +13,7 @@ class ItemRechargePowerVM(info: PointConfigInfo) : AppItemViewModel<PointConfigI
     val discountText by lazy {
         ObservableField<String>()
     }
+    val priceText  = ObservableField<String>(info.pointPrice)
     fun updateTime() {
         val info = data.get() ?: return
         val discountValid = info.isDiscountValid()
