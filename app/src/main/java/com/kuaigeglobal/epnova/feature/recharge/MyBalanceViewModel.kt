@@ -102,7 +102,7 @@ class MyBalanceViewModel(@LayoutRes private val paymentItemLayout: Int) : AppRep
                         item.priceText.set(map[productCode]?.first)
                     }
                 }
-                powerAdapter.submitList(vms)
+                powerAdapter.notifyDataSetChanged()
             }
         }
     }
