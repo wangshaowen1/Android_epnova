@@ -9,6 +9,7 @@ import com.kuaigeglobal.epnova.core.manager.EventManager
 import com.kuaigeglobal.epnova.databinding.ActivityMyBalanceBinding
 import com.nhsd.basic.BaseViewModelActivity
 import com.nhsd.basic.bus.observeEvents
+import com.nhsd.basic.ext.showToast
 import com.nhsd.basic.ext.startActivity
 
 class MyBalanceActivity : BaseViewModelActivity<ActivityMyBalanceBinding, MyBalanceViewModel>() {
@@ -20,6 +21,8 @@ class MyBalanceActivity : BaseViewModelActivity<ActivityMyBalanceBinding, MyBala
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        //"Hello".showToast()
         EventManager.onAppTrack(AppEvent.SF_VIEW_RECHARGE_PAGE)
         observeEvents {
             on<Events.UserDataEvent> {
@@ -28,7 +31,8 @@ class MyBalanceActivity : BaseViewModelActivity<ActivityMyBalanceBinding, MyBala
         }
     }
 
-    override fun createViewModel(): MyBalanceViewModel {
+    override fun createViewModel(): MyBalanceViewModel
+    {
         return MyBalanceViewModel(R.layout.item_recharge_payment)
     }
 }

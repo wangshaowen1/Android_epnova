@@ -10,7 +10,6 @@
             type="com.kuaigeglobal.epnova.feature.recharge.ItemRechargePowerVM" />
 
         <import type="com.kuaigeglobal.epnova.R" />
-
         <import type="android.view.View" />
     </data>
 

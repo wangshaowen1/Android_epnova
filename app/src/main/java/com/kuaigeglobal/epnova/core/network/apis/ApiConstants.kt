@@ -35,6 +35,11 @@ object ApiConstants {
     const val GET_APP_UPGRADE_INFO = "app/getAppUpgradeInfo"
 
     /**
+     *游客登陆
+     */
+    const val LOGIN_BY_GUEST = "auth/guest/login"
+
+    /**
      * 第三方登录
      */
     const val LOGIN_BY_THIRD = "auth/loginByThirdParty"

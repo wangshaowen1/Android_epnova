@@ -21,4 +21,13 @@ open class ThirdLoginRepository : AppRepository() {
 //            }
         }
     }
+
+    /**
+     * 游客登录
+     */
+    suspend fun loginByGuest() = withContext(Dispatchers.IO) {
+        api.loginBygGuest().apply {
+            val isNewRegister = data?.isNewRegistration() == true
+        }
+    }
 }

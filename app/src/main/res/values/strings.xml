@@ -505,4 +505,24 @@
     <string name="please_enter_custom_episodes">Please enter a custom number of episodes</string>
     <string name="please_select_video_aspect_ratio">Please select video size</string>
     <string name="please_select_video_style">Please select video style</string>
+
+
+
+    <string name="mybalace_compute_evaluate">Computing power value validity period: 1 year</string>
+    <string name="mybalace_rules_tips">Tips :</string>
+    <string name="mybalace_tips_rules_01">1.Credits can be used to unlock episodes in order and create your own short dramas.</string>
+    <string name="mybalace_tips_rules_02">2.The platform provides both free and paid content for all users.</string>
+    <string name="mybalace_tips_rules_03">3.Paid content can be unlocked using Credits.</string>
+    <string name="mybalace_tips_rules_04">4.For the validity period of Credits, please refer to Profile → Credits Purchase Page.</string>
+    <string name="mybalace_tips_rules_05">5.Once an episode is unlocked with Credits, it can be viewed an unlimited number of times.</string>
+    <string name="mybalace_tips_rules_06">6.If you have any other questions, please contact online customer service via Profile → Settings → FeedBack &amp; Suggestions.</string>
+
+
+
+
+
+
+
+
+
 </resources>

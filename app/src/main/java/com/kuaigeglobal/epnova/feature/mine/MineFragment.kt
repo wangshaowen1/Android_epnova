@@ -1,6 +1,7 @@
 package com.kuaigeglobal.epnova.feature.mine
 
 import android.view.View
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.blankj.utilcode.util.ClipboardUtils
@@ -149,6 +150,9 @@ class MineFragment : BaseViewModelFragment<FragmentMineBinding, MineViewModel>()
                     return
                 }
                 MyBalanceActivity.start()
+                //Toast.makeText(view.context,"hello", Toast.LENGTH_SHORT).show()
+
+
             }
         }
     }

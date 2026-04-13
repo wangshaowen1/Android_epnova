@@ -34,6 +34,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class MyBalanceViewModel(@LayoutRes private val paymentItemLayout: Int) : AppRepositoryViewModel<PowerRepository>() {
+
+   //toolbar 配置
     val toolbar by lazy {
         ToolbarViewModel(
             title = R.string.recharge_credits.getResString(),

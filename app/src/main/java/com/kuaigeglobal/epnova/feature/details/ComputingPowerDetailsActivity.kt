@@ -27,8 +27,6 @@ class ComputingPowerDetailsActivity :
     BaseViewModelActivity<ActivityComputingPowerDetailsBinding, ComputingPowerDetailsViewModel>() {
 
     companion object {
-
-
         fun start(activity: Activity?) {
             val activity = activity ?: topActivity
             val intent = Intent(activity, ComputingPowerDetailsActivity::class.java)

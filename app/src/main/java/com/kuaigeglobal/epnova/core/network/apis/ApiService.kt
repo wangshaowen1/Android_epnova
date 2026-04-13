@@ -173,6 +173,13 @@ interface ApiService {
     @POST(ApiConstants.GET_APP_SHELF_STATUS)
     suspend fun getAppShelfStatus(): ApiResponse<ShelfStatusData?>
 
+
+    /**
+     * 游客登录
+     */
+    @POST(ApiConstants.LOGIN_BY_GUEST)
+    suspend fun loginBygGuest(): ApiResponse<UserHomeData?>
+
     /**
      * 第三方登录
      */
