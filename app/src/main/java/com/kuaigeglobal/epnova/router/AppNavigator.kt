@@ -35,7 +35,7 @@ object AppNavigator {
     fun checkIsNeedToGuestLogin(): Boolean
     {
 
-        if (User.get().isVisitor|| User.get().userSource==6)
+        if (User.get().isVisitor)
         {
 
             return true
