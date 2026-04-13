@@ -11,13 +11,17 @@ import com.kuaigeglobal.epnova.core.Config
 import com.kuaigeglobal.epnova.core.Global
 import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.ext.launch
+import com.kuaigeglobal.epnova.core.ext.launchWithLoading
 import com.kuaigeglobal.epnova.core.network.apis.request.UserTokenBody
 import com.kuaigeglobal.epnova.core.network.apis.response.ActivityConfigData
 import com.kuaigeglobal.epnova.core.network.apis.response.DramasInfoData
 import com.kuaigeglobal.epnova.core.network.apis.response.FirstRechargeDialogData
+import com.kuaigeglobal.epnova.core.network.apis.response.UserHomeData
 import com.kuaigeglobal.epnova.core.response
 import com.kuaigeglobal.epnova.feature.play.more.ShareShortDramaViewModel
 import com.kuaigeglobal.epnova.feature.splash.newer.FirstRechargeDialog
+import com.kuaigeglobal.epnova.kit.SignUtils
+import com.nhsd.basic.ext.showToast
 
 /**
  * *****************************************
@@ -60,6 +64,8 @@ class MainViewModel : ShareShortDramaViewModel<AppRepository>() {
         fetchUserInfo()
         initHomeConfig()
     }
+
+
 
     override fun onResume() {
         super.onResume()
@@ -143,4 +149,5 @@ class MainViewModel : ShareShortDramaViewModel<AppRepository>() {
             }
         }
     }
+
 }

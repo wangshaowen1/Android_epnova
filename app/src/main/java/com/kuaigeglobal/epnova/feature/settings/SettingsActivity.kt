@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import androidx.media3.common.util.Log
 import com.kuaigeglobal.epnova.BuildConfig
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.ext.showConfirmPrompt
@@ -112,10 +113,11 @@ class SettingsActivity : BaseViewModelActivity<ActivitySettingsBinding, Settings
                     return
                 }
                 showConfirmPrompt(tip = R.string.tip_sign_out_confirm.getResString()) {
-                    mRealVM.logoutApp()
-                    getString(R.string.toast_sign_out_success).showToast()
-                    SignUtils.signOut()
-                    finish()
+
+                    mRealVM.logoutWithGuestLogin {
+                        getString(R.string.toast_sign_out_success).showToast()
+                        finish()
+                    }
                 }
             }
 

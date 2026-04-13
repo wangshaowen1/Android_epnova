@@ -61,6 +61,8 @@
     <string name="toast_commit_success">Submitted Successfully</string>
     <string name="tip_sign_out_confirm">Are you sure you want to log out?</string>
     <string name="toast_sign_out_success">Logged Out</string>
+    <string name="toast_sign_out_fail">Logged Out Fail</string>
+
     <string name="app_id">ID</string>
 
     <string name="toast_save_success">Saved</string>
@@ -520,7 +522,7 @@
 
 
 
-
+    <string name="please_check_network">Please check if the network is connected!</string>
 
 
 

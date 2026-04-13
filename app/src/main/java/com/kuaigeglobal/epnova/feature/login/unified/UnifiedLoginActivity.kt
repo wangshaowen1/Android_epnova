@@ -7,6 +7,7 @@ import android.text.SpannableString
 import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
+import android.util.Log
 import android.view.View
 import androidx.core.content.ContextCompat
 import com.kuaigeglobal.epnova.R
@@ -81,20 +82,11 @@ class UnifiedLoginActivity : BaseViewModelActivity<ActivityUnifiedLoginBinding, 
 
             R.id.btnGoogle -> {
 
-                /**
-                 * 进行游客登录
-                 */
-                mRealVM.loginByGuest {
-                        guestData->
-
-                    guestData?.let {
-
-                        /**
-                         * 成功获取游客数据 进行google第三方账户映射
-                         */
                         googleSignInHelper.signIn(
                             onSuccess = { body ->
                                 mRealVM.loginByThird(body) {
+
+                                    Log.i("Hello","data "+it)
                                     finishOnly()
                                 }
                             },
@@ -102,19 +94,9 @@ class UnifiedLoginActivity : BaseViewModelActivity<ActivityUnifiedLoginBinding, 
                                 msg?.toString()?.showToast()
                             }
                         )
-                    }?: run {
-                        /**
-                         * 1.获取游客登录数据为空 判断游客登录失
-                         * 2.暂时给个错误提示 告知游客登录失败
-                         */
-                        "游客登录失败!".showToast()
-                    }
-
-
-
                 }
 
-            }
+
 
             R.id.bt_settings -> {
                 SettingsActivity.start(this)

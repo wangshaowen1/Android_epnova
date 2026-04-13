@@ -43,18 +43,6 @@ class UnifiedLoginViewModel : AppRepositoryViewModel<ThirdLoginRepository>() {
         }, onError = { showToast(R.string.toast_sign_in_fail) })
     }
 
-    /**
-     * 游客登录
-     */
-    fun loginByGuest(onLogin: ((UserHomeData?) -> Unit)? = null) {
-        launchWithLoading (true, block = {
-            response(mRepo.loginByGuest(), result = {
-                User.get().updateFrom(data)
-                SignUtils.signIn()
 
-                onLogin?.invoke(data)
-            }, error = { this?.msg?.showToast() })
-        }, onError = { showToast(R.string.toast_sign_in_fail) })
-    }
 
 }
