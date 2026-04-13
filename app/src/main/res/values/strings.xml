@@ -522,7 +522,7 @@
 
 
 
-    <string name="please_check_network">Please check if the network is connected!</string>
+    <string name="please_check_network">Connection failed. Please check your network.</string>
 
 
 

@@ -1,9 +1,12 @@
 package com.kuaigeglobal.epnova.feature.main
 
+import android.util.Log
 import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableInt
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
+import com.kuaigeglobal.epnova.App
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.Constants
 import com.kuaigeglobal.epnova.core.AppRepository
@@ -21,7 +24,9 @@ import com.kuaigeglobal.epnova.core.response
 import com.kuaigeglobal.epnova.feature.play.more.ShareShortDramaViewModel
 import com.kuaigeglobal.epnova.feature.splash.newer.FirstRechargeDialog
 import com.kuaigeglobal.epnova.kit.SignUtils
+import com.kuaigeglobal.epnova.router.AppNavigator
 import com.nhsd.basic.ext.showToast
+import kotlinx.coroutines.launch
 
 /**
  * *****************************************
@@ -149,5 +154,9 @@ class MainViewModel : ShareShortDramaViewModel<AppRepository>() {
             }
         }
     }
+
+
+
+
 
 }

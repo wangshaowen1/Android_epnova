@@ -4,13 +4,16 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import androidx.lifecycle.lifecycleScope
 import androidx.media3.common.util.Log
+import com.kuaigeglobal.epnova.App
 import com.kuaigeglobal.epnova.BuildConfig
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.ext.showConfirmPrompt
 import com.kuaigeglobal.epnova.common.ext.topActivity
 import com.kuaigeglobal.epnova.common.utils.DebugUtils
 import com.kuaigeglobal.epnova.core.Config
+import com.kuaigeglobal.epnova.core.Global
 import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.ext.openTheCustomerServiceChat
 import com.kuaigeglobal.epnova.databinding.ActivitySettingsBinding
@@ -27,6 +30,7 @@ import com.nhsd.basic.BaseViewModelActivity
 import com.nhsd.basic.ext.getResString
 import com.nhsd.basic.ext.setOnSingleClickListener
 import com.nhsd.basic.ext.showToast
+import kotlinx.coroutines.launch
 
 /**
  * *****************************************
@@ -114,10 +118,21 @@ class SettingsActivity : BaseViewModelActivity<ActivitySettingsBinding, Settings
                 }
                 showConfirmPrompt(tip = R.string.tip_sign_out_confirm.getResString()) {
 
-                    mRealVM.logoutWithGuestLogin {
-                        getString(R.string.toast_sign_out_success).showToast()
-                        finish()
-                    }
+                    mRealVM.logoutApp()
+                    SignUtils.signOut()
+
+                    Global.guestLogin({
+
+                        lifecycleScope.launch {
+                            getString(R.string.app_log_out).showToast()
+                            finish()
+                        }
+                    },{
+                        lifecycleScope.launch {
+                            getString(R.string.please_check_network).showToast()
+                            finish()
+                        }
+                    })
                 }
             }
 

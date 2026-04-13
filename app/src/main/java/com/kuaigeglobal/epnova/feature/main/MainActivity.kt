@@ -17,6 +17,7 @@ import com.kuaigeglobal.epnova.common.Constants
 import com.kuaigeglobal.epnova.common.permissions.requestRxPermissions
 import com.kuaigeglobal.epnova.core.Config
 import com.kuaigeglobal.epnova.core.Events
+import com.kuaigeglobal.epnova.core.Global
 import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.google.billing.BillingManager
 import com.kuaigeglobal.epnova.core.manager.AppEvent
@@ -90,6 +91,16 @@ class MainActivity : BaseViewModelActivity<ActivityMainBinding, MainViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+
+        Global.guestLogin({
+
+        },{
+            lifecycleScope.launch {
+                getString(R.string.please_check_network).showToast()
+            }
+        })
+
 
         registerTime = System.currentTimeMillis()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {

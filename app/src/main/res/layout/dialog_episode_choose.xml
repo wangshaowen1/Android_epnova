@@ -29,7 +29,7 @@
             <!-- 视频封面 -->
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/ivCover"
-                loadHQThumbnailUri="@{layout.headerInfo.workCoverUrl}"
+                loadHQThumbnailUri="@layout.headerInfo.workCoverUrl}"
                 android:layout_width="64dp"
                 android:layout_height="85dp"
                 android:scaleType="centerCrop"

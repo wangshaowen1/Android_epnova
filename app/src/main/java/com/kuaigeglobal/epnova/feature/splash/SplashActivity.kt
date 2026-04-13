@@ -39,13 +39,8 @@ class SplashActivity : BaseViewModelActivity<ActivitySplashBinding, SplashViewMo
                 intent.data?.takeIf { !TextUtils.isEmpty(it.host) }?.toString()?.also {
                     if (ActivityUtils.getActivityList().find { activity -> activity.javaClass == MainActivity::class.java } != null) {
 
-                        mRealVM.checkToGuestLogin({
-                                data ->
-                            AppRouter.jump(it)
-                            finish()
-                        }, onFail = {
-                            handleGuestLoginWithNetworkError()
-                        })
+                        AppRouter.jump(it)
+                        finish()
                     } else {
                         jumpToTheHomepage()
                     }
@@ -76,17 +71,10 @@ class SplashActivity : BaseViewModelActivity<ActivitySplashBinding, SplashViewMo
     }
 
     private fun jumpToTheHomepage() {
+        val it = intent.data?.takeIf { !TextUtils.isEmpty(it.host) } ?: ""
+        MainActivity.start(this@SplashActivity, it.toString())
+        finish()
 
-
-
-        mRealVM.checkToGuestLogin({
-                data ->
-            val it = intent.data?.takeIf { !TextUtils.isEmpty(it.host) } ?: ""
-            MainActivity.start(this@SplashActivity, it.toString())
-            finish()
-        }, onFail = {
-            handleGuestLoginWithNetworkError()
-        })
     }
 
 

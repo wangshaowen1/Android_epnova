@@ -18,11 +18,27 @@ object AppNavigator {
      * 强制退出并重启
      */
     @JvmStatic
-    fun forceLogoutAndRestart() {
+    fun forceLogoutAndRestart()
+    {
         if (!User.get().isVisitor) {
             SignUtils.signOut()
             AppUtils.relaunchApp()
         }
+    }
+
+    /**
+     * 检查是否需要登录
+     * 只会返回true(未登录) 返回false(登录)  未登录时 不会强制跳转到登录界面
+     */
+    @JvmStatic
+    fun checkLogin(): Boolean
+    {
+        if (User.get().isVisitor)
+        {
+            return true
+        }
+
+        return false
     }
 
     /**

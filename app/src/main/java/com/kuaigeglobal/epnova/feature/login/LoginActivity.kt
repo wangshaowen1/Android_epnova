@@ -8,6 +8,7 @@ import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.ext.topActivity
 import com.kuaigeglobal.epnova.core.network.apis.request.LoginByThirdBody
 import com.kuaigeglobal.epnova.databinding.DialogLoginBinding
+import com.kuaigeglobal.epnova.router.AppNavigator
 import com.nhsd.basic.BaseViewModelActivity
 import com.nhsd.basic.ext.showToast
 import com.nhsd.basic.utils.Logger
@@ -32,6 +33,8 @@ class LoginActivity : BaseViewModelActivity<DialogLoginBinding, LoginViewModel>(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        
     }
 
     override fun <Data> onClick(view: View?, data: Data?) {
