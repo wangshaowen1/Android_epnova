@@ -77,7 +77,7 @@ class MyBalanceViewModel(@LayoutRes private val paymentItemLayout: Int) : AppRep
                 pointConfigList?.items?.map { ItemRechargePowerVM(it).apply { onItemClick.value = { select() } } }.let { vms ->
                     powerAdapter.submitList(vms)
                     loadGoogleProducts(vms)
-                    (vms?.firstOrNull { it.data.get()?.isDefault == 1 } ?: vms?.firstOrNull())?.select()
+//                    (vms?.firstOrNull { it.data.get()?.isDefault == 1 } ?: vms?.firstOrNull())?.select()
                     vms?.find { it.data.get()?.isDiscountValid() == true }?.let {
                         startGlobalCountDown()
                     }
@@ -119,6 +119,7 @@ class MyBalanceViewModel(@LayoutRes private val paymentItemLayout: Int) : AppRep
         currentPower?.isChecked?.set(false)
         isChecked.set(true)
         currentPower = this
+        recharge()
     }
 
     private fun ItemRechargePaymentVM.select() {
