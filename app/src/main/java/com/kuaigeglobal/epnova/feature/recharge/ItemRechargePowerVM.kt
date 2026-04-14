@@ -9,6 +9,7 @@ import com.kuaigeglobal.epnova.core.network.apis.entity.PointConfigInfo
  * 充值算力选项
  */
 class ItemRechargePowerVM(info: PointConfigInfo) : AppItemViewModel<PointConfigInfo>(info) {
+
     val isChecked by lazy { ObservableBoolean(false) }
     val discountText by lazy {
         ObservableField<String>()

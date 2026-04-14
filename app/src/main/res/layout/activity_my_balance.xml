@@ -4,11 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <variable
             name="layout"
             type="com.kuaigeglobal.epnova.feature.recharge.MyBalanceViewModel" />
-
         <import type="android.view.View" />
     </data>
 
@@ -120,9 +118,6 @@
                             tools:itemCount="6"
                             tools:listitem="@layout/item_recharge_power" />
 
-
-
-
                         <include
                             android:id="@+id/my_balance_bottom_view"
                             layout="@layout/my_balance_bottom"
@@ -130,7 +125,8 @@
                             android:layout_height="wrap_content"
                             app:layout_constraintTop_toBottomOf="@id/rvRechargeAmount"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent" />
+                            app:layout_constraintEnd_toEndOf="parent"
+                            android:layout_marginTop="-10dp"/>
 
 
                     </androidx.constraintlayout.widget.ConstraintLayout>

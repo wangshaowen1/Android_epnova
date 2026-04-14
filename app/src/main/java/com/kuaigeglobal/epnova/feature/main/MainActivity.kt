@@ -136,7 +136,6 @@ class MainActivity : BaseViewModelActivity<ActivityMainBinding, MainViewModel>()
         if(AppNavigator.checkIsNeedToGuestLogin())
         {
             Global.guestLogin({
-
                 //Log.i("Hello","come in")
                 User.get().updateFrom(it)
                 SignUtils.signIn()
