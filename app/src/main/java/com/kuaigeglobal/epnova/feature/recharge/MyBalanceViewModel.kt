@@ -4,6 +4,7 @@ import androidx.annotation.LayoutRes
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableInt
 import androidx.lifecycle.viewModelScope
+import com.blankj.utilcode.util.StringUtils.getString
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.base.viewmodel.AppRepositoryViewModel
 import com.kuaigeglobal.epnova.base.viewmodel.ToolbarViewModel
@@ -54,7 +55,6 @@ class MyBalanceViewModel(@LayoutRes private val paymentItemLayout: Int) : AppRep
     val loadState by lazy { ObservableInt() }
     val powerAdapter by lazy { QuickAdapter<ItemRechargePowerVM>(R.layout.item_recharge_power, emptyList()) }
     private var currentPower: ItemRechargePowerVM? = null
-    private var currentPayment: ItemRechargePaymentVM? = null
     val workCourseBanner by lazy { ObservableField<SimpleBannerInfo>() }
 
     override fun onCreate() {
@@ -95,7 +95,7 @@ class MyBalanceViewModel(@LayoutRes private val paymentItemLayout: Int) : AppRep
         BillingManager.loadPowerPrices(vms) { map ->
             viewModelScope.launch(Dispatchers.Main) {
                 if (map.isEmpty()) {
-                    "无法获取产品。请检查您的网络连接，稍后重试.".showToast()
+                    getString(R.string.network_error_fetch_products).showToast()
                     return@launch
                 }
                 vms?.forEach { item ->
@@ -122,12 +122,6 @@ class MyBalanceViewModel(@LayoutRes private val paymentItemLayout: Int) : AppRep
         isChecked.set(true)
         currentPower = this
         recharge()
-    }
-
-    private fun ItemRechargePaymentVM.select() {
-        currentPayment?.isChecked?.set(false)
-        isChecked.set(true)
-        currentPayment = this
     }
 
     fun recharge() {
