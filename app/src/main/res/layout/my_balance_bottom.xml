@@ -3,108 +3,34 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="20dp">
+    android:paddingHorizontal="@dimen/spacing_l"
+    android:paddingVertical="@dimen/spacing_m">
 
-    <!-- 顶部标题区域：图标 + 文字 -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:layout_marginBottom="24dp">
-
-        <!-- 这里模拟图中的 (i) 图标，实际开发请替换为 ImageView -->
-        <TextView
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:background="@drawable/balance_bottom_circle_bg"
-            android:gravity="center"
-            android:text="i"
-            android:textColor="#A0A0A0"
-            android:textSize="16sp"
-            android:textStyle="italic"
-            android:layout_marginEnd="8dp"/>
-
-        <!-- 如果不想用 TextView 模拟图标，可以使用下面的 ImageView (需自行准备图标) -->
-        <!--
-        <ImageView
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:src="@drawable/ic_info_outline"
-            android:layout_marginEnd="8dp"/>
-        -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/mybalace_compute_evaluate"
-            android:textColor="#A0A0A0"
-            android:textSize="16sp" />
-    </LinearLayout>
-
-    <!-- Tips 标题 -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:drawableStart="@drawable/icon_prompt_16"
+        android:drawablePadding="@dimen/spacing_xs"
+        android:gravity="center"
+        android:text="@string/compute_power_validity_period"
+        android:textColor="?attr/textColor4"
+        android:textSize="12sp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/spacing_s"
         android:text="@string/mybalace_rules_tips"
-        android:textColor="#A0A0A0"
-        android:textSize="16sp"
-        android:layout_marginBottom="16dp"/>
-
-    <!-- 列表内容区域 -->
-    <!-- 注意：为了完全还原换行效果，这里使用单个 TextView 或者拆分多个 TextView 均可。
-         为了代码清晰，我将 1-6 拆分为独立的 TextView，并设置间距。 -->
+        android:textColor="?attr/textColor3"
+        android:textSize="12sp" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_s"
+        android:lineSpacingExtra="8dp"
         android:text="@string/mybalace_tips_rules_01"
-        android:textColor="#808080"
-        android:textSize="15sp"
-        android:lineSpacingExtra="4dp"
-        android:layout_marginBottom="12dp"/>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/mybalace_tips_rules_02"
-        android:textColor="#808080"
-        android:textSize="15sp"
-        android:lineSpacingExtra="4dp"
-        android:layout_marginBottom="12dp"/>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/mybalace_tips_rules_03"
-        android:textColor="#808080"
-        android:textSize="15sp"
-        android:lineSpacingExtra="4dp"
-        android:layout_marginBottom="12dp"/>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/mybalace_tips_rules_04"
-        android:textColor="#808080"
-        android:textSize="15sp"
-        android:lineSpacingExtra="4dp"
-        android:layout_marginBottom="12dp"/>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/mybalace_tips_rules_05"
-        android:textColor="#808080"
-        android:textSize="15sp"
-        android:lineSpacingExtra="4dp"
-        android:layout_marginBottom="12dp"/>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/mybalace_tips_rules_06"
-        android:textColor="#808080"
-        android:textSize="15sp"
-        android:lineSpacingExtra="4dp"/>
-
+        android:textColor="?attr/textColor4"
+        android:textSize="12sp" />
 </LinearLayout>
