@@ -13,7 +13,7 @@ ext {
                     groupId   : 'com.kuaige',
                     artifactId: 'imageloader',
                     version   : '1.0.3',
-                    gav       : 'com.kuaige:imageloader:1.0.3'
+                    gav       : 'com.kuaige:imageloader:1.0.4'
             ],
             oss        : [
                     groupId   : 'com.kuaige',
