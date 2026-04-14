@@ -508,9 +508,6 @@
     <string name="please_select_video_aspect_ratio">Please select video size</string>
     <string name="please_select_video_style">Please select video style</string>
 
-
-
-    <string name="mybalace_compute_evaluate">Computing power value validity period: 1 year</string>
     <string name="mybalace_rules_tips">Tips :</string>
     <string name="mybalace_tips_rules_01">1.Credits can be used to unlock episodes in order and create your own short dramas.</string>
     <string name="mybalace_tips_rules_02">2.The platform provides both free and paid content for all users.</string>
