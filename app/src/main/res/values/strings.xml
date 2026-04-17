@@ -499,9 +499,6 @@
     <string name="please_select_video_aspect_ratio">Please select video size</string>
     <string name="please_select_video_style">Please select video style</string>
 
-    <string name="mybalace_compute_evaluate">Computing power value validity period: 1 year</string>
-    <string name="mybalace_rules_tips">Tips :</string>
-    <string name="mybalace_tips_rules_01">1.Coins can be used to unlock episodes in order and create your own short dramas. \n2.The platform provides both free and paid content for all users.\n3.Paid content can be unlocked using Coins.\n4.For the validity period of Coins, please refer to Profile → Coins Purchase Page.\n5.Once an episode is unlocked with Coins, it can be viewed an unlimited number of times.\n6.If you have any other questions, please contact online customer service via Profile → Settings → FeedBack &amp; Suggestions.</string>
     <string name="network_error_fetch_products">Failed to get products. Please check your network and retry.</string>
 
     <string name="credits_validity_period">Credits valid for 1 year from purchase.</string>

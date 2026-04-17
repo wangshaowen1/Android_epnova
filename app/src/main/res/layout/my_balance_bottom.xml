@@ -3,8 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingHorizontal="@dimen/spacing_l"
-    android:paddingVertical="@dimen/spacing_m">
+    android:paddingHorizontal="@dimen/spacing_l">
 
     <TextView
         android:layout_width="wrap_content"
@@ -12,25 +11,18 @@
         android:layout_marginBottom="20dp"
         android:drawableStart="@drawable/icon_prompt_16"
         android:drawablePadding="@dimen/spacing_xs"
+        android:fontFamily="@font/outfit_regular"
         android:gravity="center"
         android:text="@string/compute_power_validity_period"
-        android:textColor="?attr/textColor4"
-        android:textSize="12sp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/spacing_s"
-        android:text="@string/mybalace_rules_tips"
         android:textColor="?attr/textColor3"
         android:textSize="12sp" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_s"
+        android:fontFamily="@font/outfit_regular"
         android:lineSpacingExtra="8dp"
-        android:text="@string/mybalace_tips_rules_01"
+        android:text="@string/store_coins_tips"
         android:textColor="?attr/textColor4"
         android:textSize="12sp" />
 </LinearLayout>

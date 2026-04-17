@@ -37,15 +37,6 @@ import com.nhsd.basic.ext.showToast
 import com.nhsd.magicindicator.ViewPagerHelper
 import com.nhsd.magicindicator.buildins.commonnavigator.indicators.LinePagerIndicator
 
-/**
- * *****************************************
- * 项目名称: KidsTales
- * @Author: SZYMN
- * @Introduce:我的
- * @Data: 2025/4/18  14:08
- * @Version: 1.0
- * *****************************************
- */
 class MineFragment : BaseViewModelFragment<FragmentMineBinding, MineViewModel>() {
 
     private var userId: String? = null
@@ -80,13 +71,13 @@ class MineFragment : BaseViewModelFragment<FragmentMineBinding, MineViewModel>()
         }
 
         observeEvents {
-            on<Events.MainTabEvent> { event ->
-                when (event.type) {
-                    Events.MainTabEvent.TAB_MY_CREATIONS -> {
-                        binding.viewPager.setCurrentItem(0, false)
-                    }
-                }
-            }
+//            on<Events.MainTabEvent> { event ->
+//                when (event.type) {
+//                    Events.MainTabEvent.TAB_MY_CREATIONS -> {
+//                        binding.viewPager.setCurrentItem(0, false)
+//                    }
+//                }
+//            }
             /**
              * 登录状态变化
              */
@@ -179,7 +170,6 @@ class MineFragment : BaseViewModelFragment<FragmentMineBinding, MineViewModel>()
         binding.magicIndicator.navigator = CommonNavigatorUtils.getCommonNavigatorVp2(
             mActivity,
             listOf(
-                getString(R.string.profile_my_creations),
                 getString(R.string.profile_history),
                 getString(R.string.profile_collection)
             ),
@@ -193,7 +183,7 @@ class MineFragment : BaseViewModelFragment<FragmentMineBinding, MineViewModel>()
                 }
         )
         val fragmentList = arrayListOf<Fragment>()
-        fragmentList.add(MyCreationsFragment.newInstance())
+//        fragmentList.add(MyCreationsFragment.newInstance())
         fragmentList.add(MineChildFragment.newInstance(type = MineChildFragment.TYPE_HISTORY))
         fragmentList.add(MineChildFragment.newInstance(type = MineChildFragment.TYPE_COLLECTION))
 

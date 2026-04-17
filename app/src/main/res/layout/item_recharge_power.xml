@@ -18,14 +18,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="6dp"
-        android:layout_marginBottom="2dp">
+        android:layout_marginBottom="@dimen/spacing_m">
 
         <com.kuaigeglobal.epnova.widget.BorderConstraintLayout
             backgroundColorAttr="@{item.isChecked ? R.attr.bgColor2 : R.attr.fillColor1}"
             showBorder="@{item.isChecked}"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
             android:onClick="@{(it)->item.onItemClick.invoke(it)}"
             app:borderCenterColor="?attr/themeColor1"
             app:borderStartColor="?attr/themeColor1"
@@ -37,20 +36,18 @@
                 android:id="@+id/scope"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                app:layout_constraintDimensionRatio="166:76"
+                app:layout_constraintDimensionRatio="168:86"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
                 android:id="@+id/ivPower"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                android:layout_marginTop="6dp"
+                android:layout_marginStart="@dimen/spacing_m"
+                android:layout_marginTop="2dp"
                 android:src="@drawable/icon_power"
-                app:layout_constraintBottom_toTopOf="@id/tvPrice"
-                app:layout_constraintEnd_toStartOf="@+id/tvPower"
-                app:layout_constraintHorizontal_chainStyle="packed"
                 app:layout_constraintStart_toStartOf="@+id/scope"
-                app:layout_constraintTop_toTopOf="@+id/scope"
+                app:layout_constraintTop_toBottomOf="@id/llDiscount"
                 app:layout_constraintVertical_chainStyle="spread" />
 
             <TextView
@@ -58,12 +55,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
-                android:fontFamily="@font/d_din_pro_600_semibold"
+                android:fontFamily="@font/outfit_medium"
                 android:text="@{item.data.pointName}"
                 android:textAppearance="@style/Text18"
-                android:textColor="?attr/textColor2"
+                android:textColor="?attr/textColor1"
                 app:layout_constraintBottom_toBottomOf="@+id/ivPower"
-                app:layout_constraintEnd_toStartOf="@id/tvGivePower"
                 app:layout_constraintStart_toEndOf="@+id/ivPower"
                 app:layout_constraintTop_toTopOf="@+id/ivPower"
                 tools:text="500" />
@@ -73,43 +69,77 @@
                 setVisible="@{item.data.discountValid}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:fontFamily="@font/outfit_regular"
+                android:includeFontPadding="false"
                 android:text="@{item.data.pointMarketingText}"
-                android:textColor="?attr/themeColor1"
-                android:layout_marginStart="2dp"
-                android:textSize="12sp"
-                app:layout_constraintEnd_toEndOf="@+id/scope"
-                app:layout_constraintTop_toTopOf="@id/tvPower"
+                android:textColor="?attr/textColor3"
+                android:textSize="14sp"
                 app:layout_constraintBottom_toBottomOf="@id/tvPower"
                 app:layout_constraintStart_toEndOf="@id/tvPower"
-                tools:text="+送200算力"
+                app:layout_constraintTop_toTopOf="@id/tvPower"
+                tools:text="+200"
                 tools:visibility="visible" />
 
             <TextView
                 android:id="@+id/tvPrice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="6dp"
+                android:fontFamily="@font/outfit_regular"
                 android:text="@{item.priceText}"
                 android:textColor="?attr/textColor3"
                 android:textSize="12sp"
-                app:layout_constraintBottom_toBottomOf="@+id/scope"
-                app:layout_constraintEnd_toEndOf="@+id/scope"
-                app:layout_constraintStart_toStartOf="@+id/scope"
-                app:layout_constraintTop_toBottomOf="@id/tvPower"
+                app:layout_constraintStart_toStartOf="@+id/ivPower"
+                app:layout_constraintTop_toBottomOf="@id/ivPower"
+                app:layout_constraintBottom_toBottomOf="@id/scope"
                 tools:text="¥49.99" />
-        </com.kuaigeglobal.epnova.widget.BorderConstraintLayout>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/bg_gradient_discount"
-            android:fontFamily="monospace"
-            android:paddingHorizontal="6dp"
-            android:paddingVertical="3dp"
-            android:text="@{item.discountText}"
-            android:textColor="@color/white"
-            android:textSize="9dp"
-            android:visibility="@{item.data.discountValid?View.VISIBLE:View.INVISIBLE}"
-            tools:text="赠30% 23:59:59" />
+            <LinearLayout
+                android:id="@+id/llDiscount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_gradient_discount"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingHorizontal="6dp"
+                android:paddingVertical="3dp"
+                android:visibility="@{item.data.discountValid?View.VISIBLE:View.INVISIBLE}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/icon_countdown" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="2dp"
+                    android:fontFamily="monospace"
+                    android:text="@{item.discountText}"
+                    android:textColor="@color/white"
+                    android:textSize="11dp"
+                    android:textStyle="bold"
+                    tools:text="23:59:59" />
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="10dp"
+                    android:layout_marginHorizontal="@dimen/spacing_xs"
+                    android:background="@color/color_40_ffffff" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="2dp"
+                    android:fontFamily="monospace"
+                    android:text="@{item.discountText}"
+                    android:textColor="@color/white"
+                    android:textSize="11dp"
+                    android:textStyle="bold"
+                    tools:text="+50%" />
+            </LinearLayout>
+        </com.kuaigeglobal.epnova.widget.BorderConstraintLayout>
     </FrameLayout>
 </layout>

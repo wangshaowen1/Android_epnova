@@ -44,25 +44,27 @@
 
                         <TextView
                             android:id="@+id/tvBalance"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="16dp"
-                            android:text="@string/my_balance"
+                            android:layout_width="69dp"
+                            android:layout_height="28dp"
+                            android:layout_marginTop="@dimen/spacing_l"
+                            android:fontFamily="@font/outfit_regular"
+                            android:gravity="center"
+                            android:text="@string/store_coins"
                             android:textAppearance="@style/Text12"
                             android:textColor="?attr/textColor3"
-                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintEnd_toStartOf="@id/tvRewardsCoins"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <ImageView
                             android:id="@+id/ivPower"
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
                             android:src="@drawable/icon_power"
                             app:layout_constraintBottom_toBottomOf="@+id/tvPower"
                             app:layout_constraintEnd_toStartOf="@+id/tvPower"
                             app:layout_constraintHorizontal_chainStyle="packed"
-                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintStart_toStartOf="@id/tvBalance"
                             app:layout_constraintTop_toTopOf="@+id/tvPower" />
 
                         <TextView
@@ -71,13 +73,53 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="4dp"
                             android:layout_marginTop="10dp"
-                            android:fontFamily="@font/d_din_pro_600_semibold"
+                            android:fontFamily="@font/outfit_medium"
                             android:text="@{layout.balance}"
                             android:textColor="?attr/textColor1"
-                            android:textSize="24sp"
-                            app:layout_constraintEnd_toEndOf="parent"
+                            android:textSize="20sp"
+                            app:layout_constraintEnd_toEndOf="@id/tvBalance"
                             app:layout_constraintStart_toEndOf="@+id/ivPower"
                             app:layout_constraintTop_toBottomOf="@+id/tvBalance"
+                            tools:text="1000" />
+
+                        <TextView
+                            android:id="@+id/tvRewardsCoins"
+                            android:layout_width="98dp"
+                            android:layout_height="28dp"
+                            android:layout_marginTop="@dimen/spacing_l"
+                            android:fontFamily="@font/outfit_regular"
+                            android:gravity="center"
+                            android:text="@string/store_reward_coins"
+                            android:textAppearance="@style/Text12"
+                            android:textColor="?attr/textColor3"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toEndOf="@id/tvBalance"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <ImageView
+                            android:id="@+id/ivRewardsCoins"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/icon_power"
+                            app:layout_constraintBottom_toBottomOf="@+id/tvRewardsCoinsBalance"
+                            app:layout_constraintEnd_toStartOf="@+id/tvRewardsCoinsBalance"
+                            app:layout_constraintHorizontal_chainStyle="packed"
+                            app:layout_constraintStart_toStartOf="@id/tvRewardsCoins"
+                            app:layout_constraintTop_toTopOf="@+id/tvRewardsCoinsBalance" />
+
+                        <TextView
+                            android:id="@+id/tvRewardsCoinsBalance"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="4dp"
+                            android:layout_marginTop="10dp"
+                            android:fontFamily="@font/outfit_medium"
+                            android:text="@{layout.balance}"
+                            android:textColor="?attr/textColor1"
+                            android:textSize="20sp"
+                            app:layout_constraintEnd_toEndOf="@id/tvRewardsCoins"
+                            app:layout_constraintStart_toEndOf="@+id/ivRewardsCoins"
+                            app:layout_constraintTop_toBottomOf="@+id/tvRewardsCoins"
                             tools:text="1000" />
 
                         <include
@@ -95,8 +137,8 @@
                             android:id="@+id/tvRechargeAmount"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="15dp"
-                            android:layout_marginTop="24dp"
+                            android:layout_marginStart="@dimen/spacing_l"
+                            android:layout_marginTop="20dp"
                             android:text="@string/select_recharge_amount"
                             android:textAppearance="@style/Text16"
                             android:textColor="?attr/textColor2"
@@ -120,25 +162,20 @@
                             tools:itemCount="6"
                             tools:listitem="@layout/item_recharge_power" />
 
-
-
-
                         <include
                             android:id="@+id/my_balance_bottom_view"
                             layout="@layout/my_balance_bottom"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            app:layout_constraintTop_toBottomOf="@id/rvRechargeAmount"
+                            app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent" />
-
+                            app:layout_constraintTop_toBottomOf="@id/rvRechargeAmount" />
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                 </androidx.core.widget.NestedScrollView>
 
                 <TextView
-                    android:visibility="gone"
                     singleClick="@{(v)->layout.recharge()}"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
@@ -147,6 +184,7 @@
                     android:text="@string/top_up_now"
                     android:textAppearance="@style/Text16"
                     android:textColor="@color/fixed_white_1"
+                    android:visibility="gone"
                     app:layout_constraintBottom_toTopOf="@+id/llPolicy"
                     app:layout_constraintDimensionRatio="345:44"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -154,12 +192,12 @@
                     app:layout_constraintWidth_percent="0.92" />
 
                 <LinearLayout
-                   android:visibility="gone"
                     android:id="@+id/llPolicy"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
+                    android:visibility="gone"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent">
