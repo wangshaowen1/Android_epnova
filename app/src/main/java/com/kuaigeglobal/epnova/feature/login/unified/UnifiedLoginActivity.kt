@@ -118,7 +118,7 @@ class UnifiedLoginActivity : BaseViewModelActivity<ActivityUnifiedLoginBinding, 
      */
     private fun termsOfService() {
         val spannableString =
-            SpannableString(getString(R.string.terms_and_privacy_agreement))
+            SpannableString(getString(R.string.agree_terms_privacy))
         val userAgreement = getString(R.string.app_user_agreement)
         val userAgreementStartIndex = spannableString.indexOf(userAgreement)
         if (userAgreementStartIndex != -1) {

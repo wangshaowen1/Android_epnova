@@ -35,6 +35,7 @@ import com.scwang.smart.refresh.footer.ClassicsFooter
 import com.scwang.smart.refresh.layout.SmartRefreshLayout
 import java.lang.ref.WeakReference
 import java.util.LinkedList
+import java.util.Locale
 import java.util.Random
 
 class App : BaseApp() {
@@ -195,6 +196,7 @@ class App : BaseApp() {
         private val activityStacks = LinkedList<String>()
 
         override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
+            instance.updateActivityLanguage(activity)
             topActivityRef?.clear()
             activityStacks.addLast(activity.javaClass.name)
             topActivityRef = WeakReference(activity)
@@ -238,6 +240,19 @@ class App : BaseApp() {
 
         val topActivity: Activity?
             get() = topActivityRef?.get()
+    }
+
+    private fun updateActivityLanguage(activity: Activity) {
+        val lang = config.getSavedLanguage() // 从 SP 读取 "th", "id" 等
+        val locale = Locale(lang)
+        Locale.setDefault(locale)
+
+        val resources = activity.resources
+        val config = resources.configuration
+        config.setLocale(locale)
+
+        // 兼容旧版本和新版本的更新方式
+        resources.updateConfiguration(config, resources.displayMetrics)
     }
 
     private fun isLocalServer(): Boolean {

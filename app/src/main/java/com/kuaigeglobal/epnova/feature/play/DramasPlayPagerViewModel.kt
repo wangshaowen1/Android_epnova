@@ -179,7 +179,7 @@ class DramasPlayPagerViewModel : AppRepositoryViewModel<CreationRepository>(), D
                     collectCount = collectCountNow
                 )
                 if (isCollectedNow) {
-                    showToast(R.string.collection_successful)
+                    showToast(R.string.collection_success)
                 }
             }
         }

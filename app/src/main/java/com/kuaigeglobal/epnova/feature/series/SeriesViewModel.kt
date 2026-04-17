@@ -111,7 +111,7 @@ class SeriesViewModel : AppRepositoryViewModel<SeriesRepository>() {
                 bean = mRepo.api.batchDeleteWork(DeleteWorkBody(ids = workIds)),
                 result = {
                     launch {
-                        showToast(R.string.deleted_successfully)
+                        showToast(R.string.delete_success)
                         mRepo.appDatabase.workInformationDao().deleteByWorkIds(workIds)
                         finish()
                     }

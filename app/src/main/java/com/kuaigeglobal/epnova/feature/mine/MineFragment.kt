@@ -179,9 +179,9 @@ class MineFragment : BaseViewModelFragment<FragmentMineBinding, MineViewModel>()
         binding.magicIndicator.navigator = CommonNavigatorUtils.getCommonNavigatorVp2(
             mActivity,
             listOf(
-                getString(R.string.my_creations),
-                getString(R.string.history),
-                getString(R.string.collection)
+                getString(R.string.profile_my_creations),
+                getString(R.string.profile_history),
+                getString(R.string.profile_collection)
             ),
             isAdjustMode = true,
             binding.viewPager,

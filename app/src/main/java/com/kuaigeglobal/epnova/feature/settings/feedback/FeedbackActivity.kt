@@ -94,7 +94,7 @@ class FeedbackActivity :
                     return
                 }
                 if (mRealVM.email.value.isNullOrEmpty() || !isEmailValid(mRealVM.email.value)) {
-                    getString(R.string.enter_email_tip).showToast()
+                    getString(R.string.error_invalid_email).showToast()
                     return
                 }
                 mRealVM.feedback(

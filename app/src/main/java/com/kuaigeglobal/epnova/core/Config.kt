@@ -407,6 +407,15 @@ class Config : NetworkChangedListener {
         sp.putBoolean("firstRechargeShown${User.get().userId}_$scene", true)
     }
 
+    // 建议存储的值： "en", "th", "id"
+    fun saveLanguage(langCode: String) {
+        sp.putString("app_lang", langCode)
+    }
+
+    fun getSavedLanguage(): String {
+        return sp.getString("app_lang", "en") ?: "en"
+    }
+
 
     companion object {
         const val FIRST_OPEN_APP: String = "firstOpenApp"
