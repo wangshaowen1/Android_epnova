@@ -1806,3 +1806,22 @@ fun isVisibleWithAnimation(view: LottieAnimationView, isVisible: Boolean) {
         view.cancelAnimation() // 彻底停止，不占 CPU
     }
 }
+
+@BindingAdapter("titleText", "highlightKeyword", requireAll = false)
+fun TextView.setTitleWithHighlight(text: String?, keyword: String?) {
+    if (!keyword.isNullOrEmpty() && !text.isNullOrEmpty()) {
+        val spanText = SpannableString(text)
+        val startIndex = text.indexOf(keyword, ignoreCase = true)
+        if (startIndex != -1) {
+            spanText.setSpan(
+                ForegroundColorSpan(Color.parseColor("#FF2E55")),
+                startIndex,
+                startIndex + keyword.length,
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+        }
+        this.text = spanText
+    } else {
+        this.text = text
+    }
+}

@@ -17,6 +17,7 @@ import com.kuaigeglobal.epnova.feature.login.flash.PhoneLoginDialogActivity
 import com.kuaigeglobal.epnova.feature.mine.PhoneShowActivity
 import com.kuaigeglobal.epnova.feature.settings.about.AboutUsActivity
 import com.kuaigeglobal.epnova.feature.settings.feedback.FeedbackActivity
+import com.kuaigeglobal.epnova.feature.settings.lang.LanguagesActivity
 import com.kuaigeglobal.epnova.feature.settings.logoff.LogoffActivity
 import com.kuaigeglobal.epnova.feature.web.SimpleBrowserActivity
 import com.kuaigeglobal.epnova.kit.SignUtils
@@ -96,7 +97,8 @@ class SettingsActivity : BaseViewModelActivity<ActivitySettingsBinding, Settings
 
             R.id.sll_suggestion_and_feedback -> {
                 //建议反馈
-                FeedbackActivity.start(this)
+//                FeedbackActivity.start(this)
+                LanguagesActivity.start(this)
             }
 
             R.id.sll_cancel_the_account -> {
@@ -175,7 +177,8 @@ class SettingsActivity : BaseViewModelActivity<ActivitySettingsBinding, Settings
                     return
                 }
                 //建议与反馈
-                FeedbackActivity.start(this)
+//                FeedbackActivity.start(this)
+                LanguagesActivity.start(this)
             }
         }
     }
