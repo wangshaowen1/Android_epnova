@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
@@ -14,26 +15,48 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@{item.checked?@drawable/bg_10_ff2e55_r6:@drawable/fill_color1_r4 }"
+        android:background="@{item.checked ? @drawable/bg_10_ff2e55_r6 : (item.locked?@drawable/bg_fill_color_3_r6:@drawable/bg_fill_color_1_r6)}"
         android:onClick="@{(v) -> item.onItemClick.invoke(v)}">
 
         <TextView
             android:id="@+id/tvEpisodeNumber"
             android:layout_width="match_parent"
             android:layout_height="48dp"
+            android:fontFamily="@font/outfit_regular"
             android:gravity="center"
             android:text="@{String.valueOf(item.data.sortNo)}"
-            android:textColor="@{item.checked ?@color/color_ff2e55: @color/color_90_ffffff }"
+            android:textColor="@{item.checked ? @color/color_ff2e55 : (item.locked ? @color/color_999999 : @color/color_90_ffffff)}"
             android:textSize="14sp"
             android:textStyle="bold"
             tools:text="1" />
 
-        <ImageView
-            setVisible="@{item.checked}"
+        <!-- 播放中动画：选中时显示在左下角 -->
+        <com.airbnb.lottie.LottieAnimationView
+            isVisibleWithAnimation="@{item.checked}"
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:layout_gravity="bottom|start"
+            android:layout_margin="4dp"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"
+            app:lottie_rawRes="@raw/episode_playing" />
+
+        <FrameLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:layout_margin="4dp"
-            android:src="@drawable/icon_episode_playing" />
+            android:layout_gravity="top|end"
+            android:background="@{item.locked ? @drawable/bg_fill_color_3_tag_right_r6 : @drawable/bg_fill_color_1_tag_right_r6}"
+            android:visibility="@{(item.locked || item.unlockedPaid) ? View.VISIBLE : View.GONE}"
+            tools:visibility="visible">
+
+            <ImageView
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:layout_gravity="center"
+                android:layout_marginHorizontal="4dp"
+                android:layout_marginVertical="2dp"
+                android:src="@{item.locked ? @drawable/icon_lock : @drawable/icon_unlock}"
+                tools:src="@drawable/icon_lock" />
+        </FrameLayout>
     </FrameLayout>
 </layout>

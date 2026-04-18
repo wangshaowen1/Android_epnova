@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.databinding.FragmentRewardsBinding
 import com.nhsd.basic.BaseViewModelFragment
-import com.nhsd.basic.ext.setOnSingleClickListener
 
 class RewardsFragment : BaseViewModelFragment<FragmentRewardsBinding, RewardsViewModel>() {
 
@@ -33,18 +32,14 @@ class RewardsFragment : BaseViewModelFragment<FragmentRewardsBinding, RewardsVie
         // 任务列表：垂直 Linear
         binding.rvEarnRewards.layoutManager = LinearLayoutManager(requireContext())
         binding.rvEarnRewards.adapter = mRealVM.earnAdapter
-
-        binding.btnRules.setOnSingleClickListener {
-            RewardRulesDialog.newInstance().show(childFragmentManager)
-        }
     }
 
     override fun <Data> onClick(view: View, data: Data?) {
         super.onClick(view, data)
         when (view.id) {
             R.id.btnCheckIn -> mRealVM.doCheckIn()
-            R.id.btnRules -> { /* TODO: 跳转规则页 */
-            }
+            R.id.btnRules ->
+                RewardRulesDialog.newInstance().show(childFragmentManager)
         }
     }
 }
