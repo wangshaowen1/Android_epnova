@@ -138,11 +138,7 @@ class SettingsActivity : BaseViewModelActivity<ActivitySettingsBinding, Settings
                             finish()
                         }
                     },{
-
-                        lifecycleScope.launch {
-                            getString(R.string.please_check_network).showToast()
-                            //finish()
-                        }
+                        //todo 游客登录失败
                     })
                 }
             }

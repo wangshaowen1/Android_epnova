@@ -871,4 +871,24 @@ object ApiConstants {
      * 首页-搜索作品
      */
     const val HOME_SEARCH = "app/bookshelf/work/search"
+
+    /**
+     * 签到任务列表
+     */
+    const val REWARD_CHECKIN_LIST = "reward/task/checkin/list"
+
+    /**
+     * 签到上报
+     */
+    const val REWARD_CHECKIN_REPORT = "reward/task/checkin/report"
+
+    /**
+     * 观看广告任务列表
+     */
+    const val REWARD_AD_TASK_LIST = "reward/task/adTask/list"
+
+    /**
+     * 广告观看前置上报
+     */
+    const val REWARD_AD_PRE_REPORT = "reward/task/ad/preReport"
 }

@@ -573,8 +573,8 @@ Syarat Penggunaan dan Kebijakan Privasi
     <string name="rewards_title">Hadiah</string>
     <string name="rewards_rules">Peraturan</string>
     <string name="rewards_balance">Saldo</string>
-    <string name="rewards_checked_days">Sudah check-in selama x hari</string>
-    <string name="rewards_day_1">Hari 1</string>
+    <string name="rewards_checked_days">Sudah check-in selama %1$d hari</string>
+    <string name="rewards_day_1">Hari %1$d</string>
     <string name="rewards_check_in">Check-in</string>
     <string name="rewards_earn_rewards">Dapatkan Hadiah</string>
     <string name="rewards_reset_time">Diatur ulang pada 00:00</string>

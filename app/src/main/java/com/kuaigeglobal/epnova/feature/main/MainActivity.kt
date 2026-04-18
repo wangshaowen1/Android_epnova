@@ -26,9 +26,9 @@ import com.kuaigeglobal.epnova.core.manager.EventManager
 import com.kuaigeglobal.epnova.core.manager.UpgradeManager
 import com.kuaigeglobal.epnova.databinding.ActivityMainBinding
 import com.kuaigeglobal.epnova.feature.aicompose.generating.GeneratingViewModel
-import com.kuaigeglobal.epnova.feature.creator.CreationRootActivity
 import com.kuaigeglobal.epnova.feature.home.HomeFragment
 import com.kuaigeglobal.epnova.feature.mine.MineFragment
+import com.kuaigeglobal.epnova.feature.rewards.RewardsFragment
 import com.kuaigeglobal.epnova.feature.splash.newer.FirstRechargeDialog
 import com.kuaigeglobal.epnova.kit.SignUtils
 import com.kuaigeglobal.epnova.router.AppNavigator
@@ -141,9 +141,7 @@ class MainActivity : BaseViewModelActivity<ActivityMainBinding, MainViewModel>()
                 SignUtils.signIn()
 
             },{
-                lifecycleScope.launch {
-                    getString(R.string.please_check_network).showToast()
-                }
+               //todo 游客登录失败
             })
         }
     }
@@ -203,7 +201,11 @@ class MainActivity : BaseViewModelActivity<ActivityMainBinding, MainViewModel>()
                     EventManager.onAppTrack(AppEvent.SF_VIEW_WORKS_TAB_PAGE)
                     setKeepScreenOn(false)
                     mRealVM.showTab.set(1)
-                    CreationRootActivity.start(this)
+//                    CreationRootActivity.start(this)
+                    supportFragmentManager.switchFragment(
+                        R.id.fragment,
+                        RewardsFragment::class.java
+                    )
                 }
 
 
@@ -281,8 +283,8 @@ class MainActivity : BaseViewModelActivity<ActivityMainBinding, MainViewModel>()
                     tabId = R.id.rbWorks,
                     interceptor = { AppNavigator.checkLoginIntercepted(true) } // 传入拦截逻辑
                 ) {
-                    CreationRootActivity.start(this)
-                    //binding.mrg.check(R.id.rbWorks) // 真正执行切换
+//                    CreationRootActivity.start(this)
+                    binding.mrg.check(R.id.rbWorks) // 真正执行切换
                 }
 //                if (AppNavigator.checkLoginIntercepted(true)) {
 //                    return

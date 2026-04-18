@@ -574,8 +574,8 @@
     <string name="rewards_title">รางวัล</string>
     <string name="rewards_rules">กฎกติกา</string>
     <string name="rewards_balance">ยอดคงเหลือ</string>
-    <string name="rewards_checked_days">เช็คอินมาแล้ว x วัน</string>
-    <string name="rewards_day_1">วันที่ 1</string>
+    <string name="rewards_checked_days">เช็คอินมาแล้ว %1$d วัน</string>
+    <string name="rewards_day_1">วันที่ %1$d</string>
     <string name="rewards_check_in">เช็คอิน</string>
     <string name="rewards_earn_rewards">รับรางวัล</string>
     <string name="rewards_reset_time">รีเซ็ตเวลา 00:00</string>

@@ -49,7 +49,7 @@
                     android:drawableTop="@drawable/cb_main_tab_home"
                     android:drawablePadding="4dp"
                     android:gravity="center"
-                    android:text="@string/tab_home"
+                    android:text="@string/tab_explore"
                     android:textColor="@color/cb_main_tab_txt"
                     android:textSize="10sp"
                     tools:checked="true" />
@@ -67,12 +67,19 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1">
 
-                <ImageView
+                <com.kuaigeglobal.epnova.widget.FixedAnimatedRadioButton
                     android:id="@+id/rbWorks"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:src="@drawable/icon_ai_generate" />
+                    android:button="@null"
+                    android:drawableTop="@drawable/icon_rewards"
+                    android:drawablePadding="4dp"
+                    android:gravity="center"
+                    android:text="@string/tab_rewards"
+                    android:textColor="@color/cb_main_tab_txt"
+                    android:textSize="10sp"
+                    tools:checked="false" />
 
                 <View
                     android:id="@+id/tabWorks"
@@ -95,7 +102,7 @@
                     android:drawableTop="@drawable/cb_main_tab_mine"
                     android:drawablePadding="4dp"
                     android:gravity="center"
-                    android:text="@string/tab_mine"
+                    android:text="@string/tab_profile"
                     android:textColor="@color/cb_main_tab_txt"
                     android:textSize="10sp"
                     tools:checked="false" />

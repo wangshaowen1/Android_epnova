@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="layout"
+            type="com.kuaigeglobal.epnova.feature.rewards.RewardsViewModel" />
+
+        <import type="android.view.View" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="?android:windowBackground"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:importantForAccessibility="no"
+            android:scaleType="fitXY"
+            android:src="@drawable/bg_rewards_top"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- 状态栏占位 -->
+        <com.kuaigeglobal.epnova.widget.StatusBarView
+            android:id="@+id/statusBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- 标题栏 -->
+        <FrameLayout
+            android:id="@+id/tool_bar"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/action_bar_size"
+            app:layout_constraintTop_toBottomOf="@id/statusBar">
+
+            <TextView
+                style="@style/Text18"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="@font/outfit_semibold"
+                android:text="@string/rewards_title"
+                android:textColor="?attr/textColor1" />
+
+            <TextView
+                android:id="@+id/btnRules"
+                singleClick="@{layout.clickHandler::onClick}"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|center_vertical"
+                android:background="@drawable/btn_rewards_rules"
+                android:fontFamily="@font/outfit_medium"
+                android:paddingHorizontal="@dimen/spacing_l"
+                android:paddingVertical="5dp"
+                android:text="@string/rewards_rules"
+                android:textColor="?attr/textColor4"
+                android:textSize="14sp" />
+        </FrameLayout>
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:overScrollMode="never"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tool_bar">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <!-- 余额 -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="22dp"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:importantForAccessibility="no"
+                        android:src="@drawable/icon_power" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        android:fontFamily="@font/outfit_medium"
+                        android:text="@{String.valueOf(layout.balance)}"
+                        android:textColor="?attr/textColor1"
+                        android:textSize="28sp"
+                        android:textStyle="bold"
+                        tools:text="60" />
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="22dp"
+                    android:layout_marginTop="@dimen/spacing_xs"
+                    android:fontFamily="@font/outfit_regular"
+                    android:text="@string/rewards_balance"
+                    android:textColor="?attr/textColor4"
+                    android:textSize="14sp" />
+
+                <!-- ── 签到卡片 ──────────────────────────────── -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/spacing_l"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/bg_rewards_check_in"
+                    android:orientation="vertical"
+                    android:paddingHorizontal="@dimen/spacing_m"
+                    android:paddingVertical="@dimen/spacing_l">
+
+                    <!-- "Checked in for X day" -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/outfit_medium"
+                        android:text="@{@string/rewards_checked_days(layout.checkInDays)}"
+                        android:textColor="?attr/textColor1"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        tools:text="Checked in for 1 day" />
+
+                    <!-- 7 天格子 -->
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rvCheckIn"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_m"
+                        android:nestedScrollingEnabled="false"
+                        android:overScrollMode="never"
+                        tools:itemCount="1"
+                        tools:listitem="@layout/item_check_in_day" />
+
+                    <!-- Check In 按钮 -->
+                    <Button
+                        android:id="@+id/btnCheckIn"
+                        style="@style/Button.Bold"
+                        singleClick="@{layout.clickHandler::onClick}"
+                        android:layout_width="match_parent"
+                        android:layout_marginTop="20dp"
+                        android:gravity="center"
+                        android:text="@string/rewards_check_in" />
+                </LinearLayout>
+
+                <!-- ── Earn Rewards 区域 ─────────────────────── -->
+                <TextView
+                    style="@style/Text18"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/spacing_l"
+                    android:layout_marginTop="@dimen/spacing_xl"
+                    android:fontFamily="@font/outfit_medium"
+                    android:text="@string/rewards_earn_rewards"
+                    android:textColor="?attr/textColor1" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/spacing_l"
+                    android:layout_marginTop="@dimen/spacing_s"
+                    android:fontFamily="@font/outfit_regular"
+                    android:text="@string/rewards_reset_time"
+                    android:textColor="?attr/textColor4"
+                    android:textSize="12sp" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvEarnRewards"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginBottom="24dp"
+                    android:nestedScrollingEnabled="false"
+                    android:overScrollMode="never"
+                    tools:listitem="@layout/item_earn_reward" />
+
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

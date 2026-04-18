@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="item"
+            type="com.kuaigeglobal.epnova.feature.rewards.ItemEarnRewardVM" />
+
+        <import type="android.view.View" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/bg_1b191f_r16"
+        android:padding="@dimen/spacing_m">
+
+        <!-- 左侧图标 -->
+        <ImageView
+            android:id="@+id/ivIcon"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- 标题 + 描述 -->
+        <LinearLayout
+            android:id="@+id/llText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="12dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/flAction"
+            app:layout_constraintStart_toEndOf="@id/ivIcon"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.5">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:fontFamily="@font/outfit_medium"
+                android:maxLines="1"
+                android:text="@{item.title}"
+                android:textColor="?attr/textColor1"
+                android:textSize="14sp"
+                tools:text="Login with any account" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:ellipsize="end"
+                android:fontFamily="@font/outfit_regular"
+                android:maxLines="1"
+                android:text="@{item.desc}"
+                android:textColor="@color/color_50_fffafb"
+                android:textSize="14sp"
+                tools:text="Watch a video to earn +50 coins" />
+        </LinearLayout>
+
+        <!-- 右侧按钮区域（3 个 view 叠在一起，通过 visibility 切换） -->
+        <FrameLayout
+            android:id="@+id/flAction"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <!-- 已完成 -->
+            <TextView
+                android:id="@+id/tvDone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="14dp"
+                android:paddingVertical="7dp"
+                android:text="@string/rewards_claimed"
+                android:textColor="@color/color_60_ffffff"
+                android:textSize="13sp"
+                android:visibility="@{item.isDone ? View.VISIBLE : View.GONE}"
+                tools:visibility="gone" />
+
+            <!-- Claim -->
+            <Button
+                android:id="@+id/btnClaim"
+                style="@style/Button.Bold"
+                singleClick="@{(v) -> item.onWatch()}"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="@dimen/spacing_m"
+                android:paddingVertical="@dimen/spacing_xs"
+                android:text="@string/home_login_reward_claim"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                android:visibility="@{(!item.isDone &amp;&amp; !item.isWatch) ? View.VISIBLE : View.GONE}"
+                tools:visibility="visible" />
+
+            <!-- Watch / Watch(locked) -->
+            <Button
+                android:id="@+id/btnWatch"
+                style="@style/Button.Bold"
+                singleClick="@{(v) -> item.onWatch()}"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:alpha="@{item.isLocked ? 0.4f : 1.0f}"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="7dp"
+                android:text="@string/rewards_watch"
+                android:textColor="@color/white"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:visibility="@{(!item.isDone &amp;&amp; (item.isWatch || item.isLocked)) ? View.VISIBLE : View.GONE}"
+                tools:visibility="gone" />
+        </FrameLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

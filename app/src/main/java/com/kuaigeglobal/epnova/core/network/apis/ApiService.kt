@@ -3,6 +3,7 @@ package com.kuaigeglobal.epnova.core.network.apis
 import com.kuaigeglobal.epnova.core.model.H5PayInfo
 import com.kuaigeglobal.epnova.core.network.SSEvent
 import com.kuaigeglobal.epnova.core.network.apis.entity.AIPriceInfo
+import com.kuaigeglobal.epnova.core.network.apis.entity.AdPreReportData
 import com.kuaigeglobal.epnova.core.network.apis.entity.BannerInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.CharacterInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.ContentInfo
@@ -17,6 +18,9 @@ import com.kuaigeglobal.epnova.core.network.apis.entity.OrderStatusInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.PaymentData
 import com.kuaigeglobal.epnova.core.network.apis.entity.PaymentInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.ReferenceImageInfo
+import com.kuaigeglobal.epnova.core.network.apis.entity.RewardAdTaskListData
+import com.kuaigeglobal.epnova.core.network.apis.entity.RewardCheckInListData
+import com.kuaigeglobal.epnova.core.network.apis.entity.RewardCheckInReportData
 import com.kuaigeglobal.epnova.core.network.apis.entity.RoleTagInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.SaveSequelNovelStoryInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.SegmentImageHistoryInfo
@@ -37,6 +41,7 @@ import com.kuaigeglobal.epnova.core.network.apis.entity.WorkInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.WorkVOInfo
 import com.kuaigeglobal.epnova.core.network.apis.request.AIExpandBody
 import com.kuaigeglobal.epnova.core.network.apis.request.AISynopsisBody
+import com.kuaigeglobal.epnova.core.network.apis.request.AdPreReportBody
 import com.kuaigeglobal.epnova.core.network.apis.request.BannerBody
 import com.kuaigeglobal.epnova.core.network.apis.request.BindPhoneBody
 import com.kuaigeglobal.epnova.core.network.apis.request.BookShelfIdPagedBody
@@ -1231,4 +1236,28 @@ interface ApiService {
      */
     @POST(ApiConstants.HOME_SEARCH)
     suspend fun homeSearch(@Body body: KeyworkBody): ApiResponse<List<WorkVOInfo>?>
+
+    /**
+     * 签到任务列表
+     */
+    @POST(ApiConstants.REWARD_CHECKIN_LIST)
+    suspend fun rewardCheckInList(@Body body: UserTokenBody): ApiResponse<RewardCheckInListData>
+
+    /**
+     * 签到上报
+     */
+    @POST(ApiConstants.REWARD_CHECKIN_REPORT)
+    suspend fun rewardCheckInReport(@Body body: UserTokenBody): ApiResponse<RewardCheckInReportData>
+
+    /**
+     * 观看广告任务列表
+     */
+    @POST(ApiConstants.REWARD_AD_TASK_LIST)
+    suspend fun rewardAdTaskList(@Body body: UserTokenBody): ApiResponse<RewardAdTaskListData>
+
+    /**
+     * 广告观看前置上报
+     */
+    @POST(ApiConstants.REWARD_AD_PRE_REPORT)
+    suspend fun rewardAdPreReport(@Body body: AdPreReportBody): ApiResponse<AdPreReportData>
 }

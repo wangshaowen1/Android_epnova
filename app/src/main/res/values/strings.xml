@@ -567,8 +567,8 @@
     <string name="rewards_title">Rewards</string>
     <string name="rewards_rules">Rules</string>
     <string name="rewards_balance">Balance</string>
-    <string name="rewards_checked_days">Checked in for x day(s)</string>
-    <string name="rewards_day_1">Day 1</string>
+    <string name="rewards_checked_days">Checked in for %1$d day(s)</string>
+    <string name="rewards_day_1">Day %1$d</string>
     <string name="rewards_check_in">Check In</string>
     <string name="rewards_earn_rewards">Earn Rewards</string>
     <string name="rewards_reset_time">Resets at 00:00</string>
@@ -585,6 +585,9 @@
     <string name="rewards_next_refresh">Next refresh in 09:00:00</string>
     <string name="rewards_rules_title">Rewards Rules</string>
     <string name="rewards_rules_detail">1. EpNova reserves all rights to interpret the reward coins. 2. You can only check in once per day. 3. If you missed a day, your check-in streak will be reset and restart from day one. 4. Just like purchased coins, reward coins can only be used to unlock episodes that require coins. 5. Reward coins are valid for 30 days from the date of claim. Please use them before expiration. 6. When unlocking episodes, purchased coins will be consumed first; if purchased coins are insufficient, reward coins will be used automatically. 7. All free coins are classified as reward coins.</string>
+    <!-- Rewards 页动态字符串 -->
+    <string name="rewards_finish_previous_task">Please finish the previous task first.</string>
+
     <string name="home_search_placeholder">Search series, genres…</string>
     <string name="home_search_tab_new_release">New Release</string>
     <string name="home_search_tab_most_popular">Most Popular</string>

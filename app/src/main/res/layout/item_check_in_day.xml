@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="item"
+            type="com.kuaigeglobal.epnova.feature.rewards.ItemCheckInDayVM" />
+
+        <import type="android.view.View" />
+    </data>
+
+    <!--
+        每格宽度由外部 RecyclerView 的 GridLayoutManager(7) 均分
+        isToday  → 金色高亮背景 + 白色文字
+        isChecked→ 已签到（dim 背景 + 勾选效果，可按需扩展）
+        默认      → 半透明暗色背景
+    -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <!-- 硬币图标 + 数量 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="65dp"
+            android:background="@{item.isToday ? @drawable/shape_check_in_day_today : (item.isChecked ? @drawable/shape_check_in_day_done : @drawable/shape_check_in_day_normal)}"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center"
+                android:importantForAccessibility="no"
+                android:src="@drawable/icon_power"
+                tools:ignore="ContentDescription" />
+
+            <!-- +10 / +20 … -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="11dp"
+                android:fontFamily="@font/outfit_medium"
+                android:text="@{`+` + item.coins}"
+                android:textColor="@{item.isToday ? @color/text_color_1_dark : @color/color_50_ffffff}"
+                android:textSize="12sp"
+                tools:text="+10" />
+        </LinearLayout>
+
+        <!-- Day 1 -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/outfit_regular"
+            android:text="@{@string/rewards_day_1(item.day)}"
+            android:textColor="?attr/textColor4"
+            android:textSize="12sp"
+            tools:text="Day1" />
+    </LinearLayout>
+</layout>

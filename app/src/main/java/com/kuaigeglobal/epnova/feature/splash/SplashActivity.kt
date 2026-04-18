@@ -2,20 +2,16 @@ package com.kuaigeglobal.epnova.feature.splash
 
 import android.os.Bundle
 import android.text.TextUtils
-import android.util.Log
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
 import com.blankj.utilcode.util.ActivityUtils
 import com.gyf.immersionbar.ImmersionBar
 import com.kuaigeglobal.epnova.App
-import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.core.Config
 import com.kuaigeglobal.epnova.databinding.ActivitySplashBinding
 import com.kuaigeglobal.epnova.feature.main.MainActivity
 import com.kuaigeglobal.epnova.router.AppRouter
 import com.nhsd.basic.BaseViewModelActivity
-import com.nhsd.basic.ext.showToast
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -105,18 +101,5 @@ class SplashActivity : BaseViewModelActivity<ActivitySplashBinding, SplashViewMo
 
     override fun onRejectPolicy(dialog: PolicyDialog) {
         finish()
-    }
-
-    /**
-     *游客登录且无userid时 强制无网络检测 确保用户运行app时 有userid
-     */
-    fun handleGuestLoginWithNetworkError()
-    {
-
-        getString( R.string.please_check_network).showToast()
-        lifecycleScope.launch {
-            delay(2500)
-            finish()
-        }
     }
 }

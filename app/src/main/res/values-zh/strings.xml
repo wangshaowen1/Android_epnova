@@ -564,8 +564,8 @@
     <string name="rewards_title">福利中心</string>
     <string name="rewards_rules">规则</string>
     <string name="rewards_balance">余额</string>
-    <string name="rewards_checked_days">已签到 x 天</string>
-    <string name="rewards_day_1">第 1 天</string>
+    <string name="rewards_checked_days">已签到 %1$d 天</string>
+    <string name="rewards_day_1">第 %1$d 天</string>
     <string name="rewards_check_in">签到</string>
     <string name="rewards_earn_rewards">领取奖励</string>
     <string name="rewards_reset_time">每日 00:00 重置</string>
