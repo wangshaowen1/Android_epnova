@@ -872,6 +872,33 @@ object ApiConstants {
      */
     const val HOME_SEARCH = "app/bookshelf/work/search"
 
+    // ─── 解锁 ────────────────────────────────────────────────────────────────
+
+    /**
+     * 播放器-剧集自动解锁（预加载时调用，余额充足则静默扣费）
+     */
+    const val STORY_UNLOCK_PRELOAD = "app/story/unlock/preload"
+
+    /**
+     * 解锁弹窗-章节解锁信息
+     */
+    const val STORY_UNLOCK_INFO = "app/story/unlock/info"
+
+    /**
+     * 解锁弹窗-金币解锁
+     */
+    const val STORY_UNLOCK_COINS = "app/story/unlock/coins"
+
+    /**
+     * 解锁弹窗-广告前置准备（返回 customData / nonce）
+     */
+    const val STORY_UNLOCK_AD_PREPARE = "app/story/unlock/ad/prepare"
+
+    /**
+     * 解锁弹窗-广告解锁结果轮询
+     */
+    const val STORY_UNLOCK_AD_RESULT = "app/story/unlock/ad/result"
+
     /**
      * 签到任务列表
      */

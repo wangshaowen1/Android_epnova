@@ -14,7 +14,7 @@ data class AdTaskItem(
     /** 任务序号（1~5），按此顺序依次解锁 */
     val seq: Int?,
     /** 任务记录ID（广告前置上报时作为 bizId 传入） */
-    val taskRecordId: Long?,
+    val taskRecordId: String?,
     /** 奖励金币数量 */
     val rewardNum: Int?,
     /** 任务图标 URL */

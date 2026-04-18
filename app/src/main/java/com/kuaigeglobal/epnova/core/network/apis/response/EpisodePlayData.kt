@@ -24,5 +24,9 @@ data class EpisodePlayData(
     val storyTitle: String? = null,
     val videoUrl: String? = null,
     val workRatio: String? = null,
-    val workTitle: String? = null
+    val workTitle: String? = null,
+    /** 锁定状态：0=免费集，1=已解锁，2=未解锁付费集 */
+    val lockStatus: Int?,
+    /** 解锁费用（金币），免费或已解锁时为 0 */
+    val costNums: Int?,
 )

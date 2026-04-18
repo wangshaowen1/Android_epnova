@@ -7,5 +7,5 @@ package com.kuaigeglobal.epnova.core.network.apis.request
  */
 data class AdPreReportBody(
     val adScene: Int,
-    val bizId: Long? = null
+    val bizId: String? = null
 ) : UserTokenBody()

@@ -21,6 +21,10 @@ import com.kuaigeglobal.epnova.core.network.apis.entity.ReferenceImageInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.RewardAdTaskListData
 import com.kuaigeglobal.epnova.core.network.apis.entity.RewardCheckInListData
 import com.kuaigeglobal.epnova.core.network.apis.entity.RewardCheckInReportData
+import com.kuaigeglobal.epnova.core.network.apis.entity.StoryUnlockAdPrepareData
+import com.kuaigeglobal.epnova.core.network.apis.entity.StoryUnlockInfoData
+import com.kuaigeglobal.epnova.core.network.apis.entity.StoryUnlockPreloadData
+import com.kuaigeglobal.epnova.core.network.apis.entity.StoryUnlockResultData
 import com.kuaigeglobal.epnova.core.network.apis.entity.RoleTagInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.SaveSequelNovelStoryInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.SegmentImageHistoryInfo
@@ -113,6 +117,8 @@ import com.kuaigeglobal.epnova.core.network.apis.request.SeriesSetPriceBody
 import com.kuaigeglobal.epnova.core.network.apis.request.ShareReportBody
 import com.kuaigeglobal.epnova.core.network.apis.request.ShortLikeBody
 import com.kuaigeglobal.epnova.core.network.apis.request.ShotSegmentIdBody
+import com.kuaigeglobal.epnova.core.network.apis.request.StoryUnlockAdResultBody
+import com.kuaigeglobal.epnova.core.network.apis.request.StoryUnlockCoinsBody
 import com.kuaigeglobal.epnova.core.network.apis.request.StoryboardIdBody
 import com.kuaigeglobal.epnova.core.network.apis.request.StrategyTypeBody
 import com.kuaigeglobal.epnova.core.network.apis.request.SynthesisUploadBody
@@ -1260,4 +1266,34 @@ interface ApiService {
      */
     @POST(ApiConstants.REWARD_AD_PRE_REPORT)
     suspend fun rewardAdPreReport(@Body body: AdPreReportBody): ApiResponse<AdPreReportData>
+
+    /**
+     * 播放器-剧集自动解锁（每集预加载时调用，余额充足则静默扣费解锁）
+     */
+    @POST(ApiConstants.STORY_UNLOCK_PRELOAD)
+    suspend fun storyUnlockPreload(@Body body: WorkBody): ApiResponse<StoryUnlockPreloadData?>
+
+    /**
+     * 解锁弹窗-章节解锁信息
+     */
+    @POST(ApiConstants.STORY_UNLOCK_INFO)
+    suspend fun storyUnlockInfo(@Body body: WorkBody): ApiResponse<StoryUnlockInfoData?>
+
+    /**
+     * 解锁弹窗-金币解锁
+     */
+    @POST(ApiConstants.STORY_UNLOCK_COINS)
+    suspend fun storyUnlockCoins(@Body body: StoryUnlockCoinsBody): ApiResponse<StoryUnlockResultData?>
+
+    /**
+     * 解锁弹窗-广告前置准备（返回 customData/nonce 传给 AdMob）
+     */
+    @POST(ApiConstants.STORY_UNLOCK_AD_PREPARE)
+    suspend fun storyUnlockAdPrepare(@Body body: WorkBody): ApiResponse<StoryUnlockAdPrepareData?>
+
+    /**
+     * 解锁弹窗-广告解锁结果轮询
+     */
+    @POST(ApiConstants.STORY_UNLOCK_AD_RESULT)
+    suspend fun storyUnlockAdResult(@Body body: StoryUnlockAdResultBody): ApiResponse<StoryUnlockResultData?>
 }
