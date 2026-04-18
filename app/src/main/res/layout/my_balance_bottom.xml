@@ -3,50 +3,26 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="@dimen/spacing_l"
-    android:paddingTop="0dp">
+    android:paddingHorizontal="@dimen/spacing_l">
 
-    <LinearLayout
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:drawableStart="@drawable/icon_prompt_16"
+        android:drawablePadding="@dimen/spacing_xs"
+        android:fontFamily="@font/outfit_regular"
+        android:gravity="center"
+        android:text="@string/compute_power_validity_period"
+        android:textColor="?attr/textColor3"
+        android:textSize="12sp" />
+
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
-        <ImageView
-            android:layout_width="16dp"
-            android:layout_height="16dp"
-            android:background="@drawable/ic_prompt"
-            android:gravity="center"
-            android:layout_marginEnd="@dimen/spacing_s"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/mybalace_compute_evaluate"
-            android:textColor="@color/text_color_3_dark"
-            android:textSize="12sp"
-            android:lineHeight="@dimen/sp_16"/>
-    </LinearLayout>
-
-    <!-- Tips 标题 -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/mybalace_rules_tips"
-        android:textColor="@color/text_color_3_dark"
-        android:textSize="12sp"
-        android:lineHeight="@dimen/sp_16"
-        android:layout_marginTop="@dimen/spacing_xl" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/mybalace_tips_rules"
-        android:textColor="@color/text_color_4_dark"
-        android:textSize="12sp"
-        android:lineHeight="21sp"
-        android:layout_marginTop="@dimen/spacing_l"/>
-
-
-
-
+        android:fontFamily="@font/outfit_regular"
+        android:lineSpacingExtra="8dp"
+        android:text="@string/store_coins_tips"
+        android:textColor="?attr/textColor4"
+        android:textSize="12sp" />
 </LinearLayout>

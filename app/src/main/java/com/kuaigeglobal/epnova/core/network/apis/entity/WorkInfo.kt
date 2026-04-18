@@ -6,7 +6,6 @@ import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.ext.toUnitText
 import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.db.convert.Converters
-import com.kuaigeglobal.epnova.core.network.apis.entity.EpisodeInfo.Companion.PROGRESS_STORY_GENERATING
 import com.nhsd.basic.ext.getResString
 import kotlinx.parcelize.Parcelize
 
@@ -284,6 +283,10 @@ data class EpisodeInfo(
 
     val liked: Boolean? = null,
     val likeCount: Int? = null,
+    /**锁定状态（0=免费集 1=已解锁 2=未解锁付费集）未登录用户，付费集统一返回 2*/
+    val lockStatus: Int? = null,
+    /**解锁费用（金币数），免费集为 0*/
+    val costNums: Int? = null,
 ) : Parcelable {
 
     @Parcelize

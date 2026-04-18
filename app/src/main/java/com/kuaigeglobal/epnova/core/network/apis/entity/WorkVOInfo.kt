@@ -18,6 +18,7 @@ data class WorkVOInfo(
     val workId: String? = null,
     val userId: String? = null,//作者userId
     val workTitle: String? = null,
+    val nickName: String? = null,
     val workDesc: String? = null,
     val workCoverUrl: String? = null,
     val lastSortNo: Int? = null,

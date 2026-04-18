@@ -20,7 +20,7 @@ import com.kuaigeglobal.epnova.core.network.apis.response.ActivityConfigData
 import com.kuaigeglobal.epnova.core.network.apis.response.FloatWindowInfo
 import com.kuaigeglobal.epnova.core.network.apis.response.PopupInfo
 import com.kuaigeglobal.epnova.databinding.FragmentHomeBinding
-import com.kuaigeglobal.epnova.feature.creator.CreationRootActivity
+import com.kuaigeglobal.epnova.feature.home.search.SearchActivity
 import com.kuaigeglobal.epnova.feature.main.ActivityDialog
 import com.kuaigeglobal.epnova.feature.main.MainViewModel
 import com.kuaigeglobal.epnova.router.AppRouter
@@ -65,6 +65,13 @@ class HomeFragment :
         initView()
         //数据更新
         dataUpdate()
+        initListener()
+    }
+
+    private fun initListener() {
+        binding.btnSearch.setOnSingleClickListener {
+            SearchActivity.start(mActivity)
+        }
     }
 
     private fun initView() {
@@ -122,7 +129,7 @@ class HomeFragment :
                     requestButtonTextAndImg = false,
                 )
             )
-            val concatAdapter = ConcatAdapter(shelfContainerAdapter,titleAdapter, waterfallWithFooter)
+            val concatAdapter = ConcatAdapter(shelfContainerAdapter, titleAdapter, waterfallWithFooter)
             adapter = concatAdapter
             doOnLayout {
                 scrollToPosition(0)

@@ -42,6 +42,22 @@
                         android:layout_height="wrap_content"
                         app:layout_constraintTop_toTopOf="parent" />
 
+                    <TextView
+                        android:id="@+id/btnSearch"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="@dimen/spacing_l"
+                        android:layout_marginTop="@dimen/spacing_s"
+                        android:background="@drawable/bg_fill_color_2_r50"
+                        android:drawableStart="@drawable/icon_search"
+                        android:drawablePadding="@dimen/spacing_s"
+                        android:paddingHorizontal="@dimen/spacing_l"
+                        android:paddingVertical="10dp"
+                        android:text="@string/home_search_placeholder"
+                        android:textColor="@color/color_30_ffffff"
+                        android:textSize="14sp"
+                        app:layout_constraintTop_toBottomOf="@id/statusBar" />
+
                     <com.zhpan.bannerview.BannerViewPager
                         android:id="@+id/banner"
                         android:layout_width="match_parent"
@@ -54,7 +70,7 @@
                         app:bvp_round_corner="@dimen/radius_l"
                         app:bvp_scroll_duration="200"
                         app:layout_constraintDimensionRatio="345:178"
-                        app:layout_constraintTop_toBottomOf="@id/statusBar"
+                        app:layout_constraintTop_toBottomOf="@id/btnSearch"
                         tools:background="@color/color_20_ffffff" />
 
                     <com.zhpan.indicator.IndicatorView

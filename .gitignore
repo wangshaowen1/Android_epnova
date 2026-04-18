@@ -14,3 +14,4 @@ local.properties
 /app/developArch64/
 /app/productionArch64/
 /design_svg/
+/.claude/

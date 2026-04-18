@@ -64,6 +64,7 @@ import com.kuaigeglobal.epnova.core.network.apis.request.GenerateStoryboardBody
 import com.kuaigeglobal.epnova.core.network.apis.request.GenerateSubtitleBody
 import com.kuaigeglobal.epnova.core.network.apis.request.IdsBody
 import com.kuaigeglobal.epnova.core.network.apis.request.ImgUrlBody
+import com.kuaigeglobal.epnova.core.network.apis.request.KeyworkBody
 import com.kuaigeglobal.epnova.core.network.apis.request.LatestEpisodeBody
 import com.kuaigeglobal.epnova.core.network.apis.request.LoginByFlashMobileBody
 import com.kuaigeglobal.epnova.core.network.apis.request.LoginByPhoneBody
@@ -1224,4 +1225,10 @@ interface ApiService {
      */
     @POST(ApiConstants.VERIFY_PURCHASED)
     suspend fun verifyPurchased(@Body body: VerifyPurchasedBody): ApiResponse<Any?>
+
+    /**
+     * 首页-搜索作品
+     */
+    @POST(ApiConstants.HOME_SEARCH)
+    suspend fun homeSearch(@Body body: KeyworkBody): ApiResponse<List<WorkVOInfo>?>
 }

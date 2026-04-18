@@ -147,7 +147,7 @@
                     android:layout_height="45dp"
                     android:layout_marginTop="@dimen/spacing_m"
                     android:background="@drawable/bg_06_ffffff_r8"
-                    android:hint="@string/enter_email"
+                    android:hint="@string/prompt_leave_email"
                     android:inputType="textEmailAddress"
                     android:maxLength="20"
                     android:paddingHorizontal="@dimen/spacing_m"
@@ -170,6 +170,7 @@
 
                 <LinearLayout
                     android:id="@+id/ll_contact_customer"
+                    android:visibility="gone"
                     singleClick="@{layout.clickHandler::onClick}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

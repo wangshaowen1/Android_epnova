@@ -866,4 +866,9 @@ object ApiConstants {
      * 验证票据
      */
     const val VERIFY_PURCHASED = "trade/pay/google/payCallBack"
+
+    /**
+     * 首页-搜索作品
+     */
+    const val HOME_SEARCH = "app/bookshelf/work/search"
 }

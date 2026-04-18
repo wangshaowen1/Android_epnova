@@ -241,6 +241,7 @@
 
                     <LinearLayout
                         android:id="@+id/ll_qa"
+                        android:visibility="gone"
                         singleClick="@{layout.clickHandler::onClick}"
                         android:layout_width="match_parent"
                         android:layout_height="52dp"

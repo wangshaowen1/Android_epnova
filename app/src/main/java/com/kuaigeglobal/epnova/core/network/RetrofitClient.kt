@@ -14,6 +14,7 @@ import com.google.gson.stream.JsonToken
 import com.google.gson.stream.JsonWriter
 import com.kuaigeglobal.epnova.App
 import com.kuaigeglobal.epnova.common.utils.EncryptUtils
+import com.kuaigeglobal.epnova.core.Config
 import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.network.apis.ApiConstants
 import com.kuaigeglobal.epnova.core.network.apis.AppHeader
@@ -39,6 +40,7 @@ import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 import java.security.SecureRandom
 import java.security.cert.X509Certificate
+import java.util.TimeZone
 import java.util.concurrent.TimeUnit
 import javax.net.ssl.HttpsURLConnection
 import javax.net.ssl.SSLContext
@@ -104,6 +106,9 @@ object RetrofitClient {
                     .header("Content-Type", "application/json")
                     .header("Accept", "application/json")
                     .header("userToken", userToken)
+                    .header("userToken", userToken)
+                    .header("X-Timezone", TimeZone.getDefault().id)
+                    .header("language", Config.get().getSavedLanguage())
                     .header("appHeader", gson.toJson(AppHeader()))
 
                 try {

@@ -99,7 +99,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginStart="@dimen/spacing_m"
-                android:text="@string/login_with_google"
+                android:text="@string/login_google"
                 android:textColor="@color/white" />
         </LinearLayout>
 
@@ -121,7 +121,7 @@
                 android:textColor="?attr/textColor4"
                 android:textColorHighlight="@android:color/transparent"
                 android:textSize="12sp"
-                tools:text="@string/terms_and_privacy_agreement" />
+                tools:text="@string/agree_terms_privacy" />
         </LinearLayout>
 
         <ImageView
