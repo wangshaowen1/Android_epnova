@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+    奖励规则弹窗
+    高度策略（代码控制）：
+    - 文案 ≤15 行时：wrap_content，自适应高度
+    - 文案 >15 行时：固定最大高度，ScrollView 可滚动
+-->
+
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/btnClose"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_marginEnd="10dp"
+        android:src="@drawable/icon_close" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="294dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/bg_1b191f_r16">
+
+        <!-- 标题 -->
+        <TextView
+            android:id="@+id/tvRulesTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:fontFamily="@font/outfit_medium"
+            android:gravity="center"
+            android:includeFontPadding="false"
+            android:paddingHorizontal="20dp"
+            android:text="@string/rewards_rules_title"
+            android:textColor="?attr/textColor1"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- 规则内容（可滚动） -->
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/scrollRules"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:padding="20dp"
+            android:scrollbars="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvRulesTitle">
+
+            <TextView
+                android:id="@+id/tvRulesDetail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/outfit_regular"
+                android:includeFontPadding="false"
+                android:lineSpacingExtra="@dimen/lineSpacingExtra"
+                android:text="@string/rewards_rules_detail"
+                android:textColor="?attr/textColor3"
+                android:textSize="14sp" />
+
+        </androidx.core.widget.NestedScrollView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>
+
+

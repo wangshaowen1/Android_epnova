@@ -590,13 +590,7 @@ Syarat Penggunaan dan Kebijakan Privasi
     <string name="rewards_come_back_tomorrow">Kembali besok</string>
     <string name="rewards_next_refresh">Penyegaran berikutnya dalam 09:00:00</string>
     <string name="rewards_rules_title">Peraturan Hadiah</string>
-    <string name="rewards_rules_detail">1.EpNova berhak sepenuhnya untuk menafsirkan koin hadiah. 
-2. Anda hanya dapat check-in satu kali per hari. 
-3. Jika Anda melewatkan satu hari, masa check-in beruntun akan diatur ulang dan dimulai dari hari pertama.
- 4. Sama seperti koin pembelian, koin hadiah hanya dapat digunakan untuk membuka episode berbayar. 
-5. Koin hadiah berlaku selama 30 hari sejak tanggal pengambilan. Silakan gunakan sebelum kedaluwarsa. 
-6. Saat membuka kunci episode, koin pembelian akan digunakan terlebih dahulu; jika koin pembelian tidak mencukupi, koin hadiah akan digunakan secara otomatis. 
-7. Semua koin gratis diklasifikasikan sebagai koin hadiah.</string>
+    <string name="rewards_rules_detail">1.EpNova berhak sepenuhnya untuk menafsirkan koin hadiah.\n2. Anda hanya dapat check-in satu kali per hari.\n3. Jika Anda melewatkan satu hari, masa check-in beruntun akan diatur ulang dan dimulai dari hari pertama.\n 4. Sama seperti koin pembelian, koin hadiah hanya dapat digunakan untuk membuka episode berbayar.\n5. Koin hadiah berlaku selama 30 hari sejak tanggal pengambilan. Silakan gunakan sebelum kedaluwarsa.\n6. Saat membuka kunci episode, koin pembelian akan digunakan terlebih dahulu; jika koin pembelian tidak mencukupi, koin hadiah akan digunakan secara otomatis.\n7. Semua koin gratis diklasifikasikan sebagai koin hadiah.</string>
     <string name="home_search_placeholder">Cari serial, genre…</string>
     <string name="home_search_tab_new_release">Rilis Baru</string>
     <string name="home_search_tab_most_popular">Terpopuler</string>
