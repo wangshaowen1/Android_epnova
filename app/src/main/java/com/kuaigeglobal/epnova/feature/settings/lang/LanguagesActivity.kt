@@ -20,7 +20,7 @@ class LanguagesActivity : BaseViewModelActivity<ActivityLanguagesBinding, Langua
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        adapter = LanguagesAdapter(mRealVM.languages, mRealVM.selectedCode) { item ->
+        adapter = LanguagesAdapter(languagesConfigs, mRealVM.selectedCode) { item ->
             mRealVM.selectedCode = item.code
             adapter.updateSelected(item.code)
         }

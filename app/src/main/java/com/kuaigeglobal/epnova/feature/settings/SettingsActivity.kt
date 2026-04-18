@@ -5,12 +5,9 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.lifecycleScope
-import androidx.media3.common.util.Log
-import com.kuaigeglobal.epnova.App
 import com.kuaigeglobal.epnova.BuildConfig
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.ext.showConfirmPrompt
-import com.kuaigeglobal.epnova.common.ext.topActivity
 import com.kuaigeglobal.epnova.common.utils.DebugUtils
 import com.kuaigeglobal.epnova.core.Config
 import com.kuaigeglobal.epnova.core.Global
@@ -103,10 +100,20 @@ class SettingsActivity : BaseViewModelActivity<ActivitySettingsBinding, Settings
                 openTheCustomerServiceChat()
             }
 
+            R.id.ll_auto_unlock -> {
+                val not = mRealVM.episodeAutoUnlock.get()?.not()
+                mRealVM.episodeAutoUnlock.set(not)
+                Config.get().saveEpisodeAutoUnlock(not == true)
+            }
+
+            R.id.ll_languages -> {
+                //语言
+                LanguagesActivity.start(this)
+            }
+
             R.id.sll_suggestion_and_feedback -> {
                 //建议反馈
-//                FeedbackActivity.start(this)
-                LanguagesActivity.start(this)
+                FeedbackActivity.start(this)
             }
 
             R.id.sll_cancel_the_account -> {

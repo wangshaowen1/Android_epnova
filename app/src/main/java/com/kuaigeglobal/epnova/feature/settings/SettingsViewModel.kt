@@ -1,28 +1,18 @@
 package com.kuaigeglobal.epnova.feature.settings
 
 import android.graphics.Color
-import android.util.Log
 import androidx.databinding.ObservableField
-import androidx.lifecycle.viewModelScope
-import com.kuaigeglobal.epnova.App
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.base.viewmodel.AppRepositoryViewModel
 import com.kuaigeglobal.epnova.base.viewmodel.ToolbarViewModel
 import com.kuaigeglobal.epnova.core.AppRepository
 import com.kuaigeglobal.epnova.core.Config
-import com.kuaigeglobal.epnova.core.Global
 import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.ext.launch
-import com.kuaigeglobal.epnova.core.ext.launchWithLoading
 import com.kuaigeglobal.epnova.core.network.apis.request.UserTokenBody
-import com.kuaigeglobal.epnova.core.network.apis.response.UserHomeData
 import com.kuaigeglobal.epnova.core.response
-import com.kuaigeglobal.epnova.kit.SignUtils
-import com.kuaigeglobal.epnova.router.AppNavigator
-import com.nhsd.basic.ext.getResColor
+import com.kuaigeglobal.epnova.feature.settings.lang.languagesConfigs
 import com.nhsd.basic.ext.getResString
-import com.nhsd.basic.ext.showToast
-import kotlinx.coroutines.launch
 
 /**
  * *****************************************
@@ -46,7 +36,8 @@ class SettingsViewModel : AppRepositoryViewModel<AppRepository>() {
 
     val beiAn by lazy { Config.get().appConfig.beianNo }
 
-
+    val language by lazy { languagesConfigs.find { it.code == Config.get().getSavedLanguage() } }
+    val episodeAutoUnlock = ObservableField(Config.get().isEpisodeAutoUnlock())
 
 
     /**

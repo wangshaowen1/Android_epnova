@@ -11,13 +11,13 @@ import com.nhsd.basic.ext.getResString
 
 data class LanguageItem(val code: String, val name: String)
 
-class LanguagesViewModel : AppRepositoryViewModel<AppRepository>() {
+val languagesConfigs = listOf(
+    LanguageItem("en", "English"),
+    LanguageItem("th", "ภาษาไทย"),
+    LanguageItem("id", "Bahasa Indonesia")
+)
 
-    val languages = listOf(
-        LanguageItem("en", "English"),
-        LanguageItem("th", "ภาษาไทย"),
-        LanguageItem("id", "Bahasa Indonesia")
-    )
+class LanguagesViewModel : AppRepositoryViewModel<AppRepository>() {
 
     var selectedCode = Config.get().getSavedLanguage()
 

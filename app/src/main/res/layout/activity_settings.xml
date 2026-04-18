@@ -192,6 +192,63 @@
                     </LinearLayout>
 
                     <LinearLayout
+                        android:id="@+id/ll_auto_unlock"
+                        singleClick="@{layout.clickHandler::onClick}"
+                        android:layout_width="match_parent"
+                        android:layout_height="52dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingHorizontal="@dimen/spacing_l">
+
+                        <TextView
+                            style="@style/Text14"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/settings_auto_unlock_episode"
+                            android:textColor="?attr/textColor3" />
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:importantForAccessibility="no"
+                            android:src="@drawable/icon_choose_checked" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/ll_languages"
+                        singleClick="@{layout.clickHandler::onClick}"
+                        android:layout_width="match_parent"
+                        android:layout_height="52dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingHorizontal="@dimen/spacing_l">
+
+                        <TextView
+                            style="@style/Text14"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/settings_language"
+                            android:textColor="?attr/textColor3" />
+
+                        <TextView
+                            style="@style/Text14"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="8dp"
+                            android:text="@{layout.language.name}"
+                            android:textColor="?attr/textColor3"
+                            tools:text="English" />
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:importantForAccessibility="no"
+                            android:src="@drawable/arrow_right_gray36" />
+                    </LinearLayout>
+
+                    <LinearLayout
                         android:id="@+id/ll_privacy_policy"
                         singleClick="@{layout.clickHandler::onClick}"
                         android:layout_width="match_parent"
@@ -241,13 +298,13 @@
 
                     <LinearLayout
                         android:id="@+id/ll_qa"
-                        android:visibility="gone"
                         singleClick="@{layout.clickHandler::onClick}"
                         android:layout_width="match_parent"
                         android:layout_height="52dp"
                         android:gravity="center_vertical"
                         android:orientation="horizontal"
-                        android:paddingHorizontal="@dimen/spacing_l">
+                        android:paddingHorizontal="@dimen/spacing_l"
+                        android:visibility="gone">
 
                         <TextView
                             style="@style/Text14"
@@ -269,10 +326,10 @@
                         singleClick="@{layout.clickHandler::onClick}"
                         android:layout_width="match_parent"
                         android:layout_height="52dp"
-                        android:visibility="gone"
                         android:gravity="center_vertical"
                         android:orientation="horizontal"
-                        android:paddingHorizontal="@dimen/spacing_l">
+                        android:paddingHorizontal="@dimen/spacing_l"
+                        android:visibility="gone">
 
                         <TextView
                             style="@style/Text14"
@@ -320,23 +377,23 @@
                         android:layout_height="52dp"
                         android:gravity="center_vertical"
                         android:orientation="horizontal"
-                        android:visibility="gone"
-                        android:paddingHorizontal="@dimen/spacing_l">
+                        android:paddingHorizontal="@dimen/spacing_l"
+                        android:visibility="gone">
 
                         <TextView
+                            style="@style/Text14"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="@string/app_filing_number"
-                            android:textColor="?attr/textColor3"
-                            style="@style/Text14" />
+                            android:textColor="?attr/textColor3" />
 
                         <TextView
+                            style="@style/Text14"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@{layout.beiAn}"
                             android:textColor="?attr/textColor4"
-                            style="@style/Text14"
                             tools:text="粤ICP备2020100243号-19A" />
                     </LinearLayout>
 

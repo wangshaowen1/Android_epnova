@@ -44,6 +44,12 @@ class Config : NetworkChangedListener {
     var isDevelopmentMode: Boolean = false
         private set
 
+    var lang: String = "en"
+        private set
+
+    var episodeAutoUnlock: Boolean = true
+        private set
+
 
     private var isRequesting = false
     private val gson: Gson
@@ -108,6 +114,8 @@ class Config : NetworkChangedListener {
         opid = sp.getString(OPID, null)
         eyeProtectionEnabled = sp.getBoolean(EYE_PROTECTION_ENABLE, false)
         referrer = sp.getString(GOOGLE_INSTALL_REFERRER, null)
+        lang = sp.getString(APP_LANG, "en")
+        episodeAutoUnlock = sp.getBoolean(EPISODE_AUTO_UNLOCK, true)
         gson = Gson()
     }
 
@@ -409,11 +417,21 @@ class Config : NetworkChangedListener {
 
     // 建议存储的值： "en", "th", "id"
     fun saveLanguage(langCode: String) {
+        this.lang = langCode
         sp.putString("app_lang", langCode)
     }
 
     fun getSavedLanguage(): String {
-        return sp.getString("app_lang", "en") ?: "en"
+        return this.lang
+    }
+
+    fun saveEpisodeAutoUnlock(isAutoUnlock: Boolean) {
+        this.episodeAutoUnlock = isAutoUnlock
+        sp.putBoolean("episodeAutoUnlock", isAutoUnlock)
+    }
+
+    fun isEpisodeAutoUnlock(): Boolean {
+        return this.episodeAutoUnlock
     }
 
 
@@ -434,6 +452,8 @@ class Config : NetworkChangedListener {
         private const val NOTIFICATION_ENABLE = "NOTIFICATION_ENABLE"
         private const val SHOW_JUMP_POP = "showJumpPop"
         private const val GOOGLE_INSTALL_REFERRER = "google_install_referrer"
+        private const val APP_LANG = "app_lang"
+        private const val EPISODE_AUTO_UNLOCK = "episodeAutoUnlock"
 
         private const val EYE_PROTECTION_ENABLE: String = "eyeProtectionEnable"
         const val DAILY: Int = 1
