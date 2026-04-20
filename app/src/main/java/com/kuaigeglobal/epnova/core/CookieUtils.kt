@@ -25,7 +25,7 @@ object CookieUtils {
      * @param cookieList 需要添加的Cookie值,以键值对的方式:key=value
      */
     @JvmStatic
-    private fun syncCookie(urlStr: String?, cookieList: java.util.HashMap<String?, String?>?) {
+    fun syncCookie(urlStr: String?, cookieList: java.util.HashMap<String?, String?>?) {
         var url: URL? = null
         try {
             url = URL(urlStr)
