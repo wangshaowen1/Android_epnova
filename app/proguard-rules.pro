@@ -733,3 +733,22 @@
 -keep class com.android.billingclient.** { *; }
 -keep interface com.android.billingclient.** { *; }
 -keepattributes Signature,RuntimeVisibleAnnotations,RuntimeVisibleParameterAnnotations
+
+# 1. 保留 Google Play Services / AppSet ID 相关
+-keep class com.google.android.gms.appset.** { *; }
+-keep interface com.google.android.gms.appset.** { *; }
+-keep class com.google.android.gms.tasks.** { *; }
+
+# 2. 保留系统底层 MediaDrm 及其回调逻辑
+# 虽然是系统 API，但为了防止某些混淆优化破坏底层调用链路，建议保留
+-keep class android.media.MediaDrm { *; }
+-keep class android.media.NotProvisionedException { *; }
+-keep class android.media.UnsupportedSchemeException { *; }
+
+# 3. 针对 Settings.Secure 访问
+-keep class android.provider.Settings$Secure { *; }
+
+# 4. 保留我们自己定义的设备指纹数据类（避免服务端解析 JSON 失败）
+-keepclassmembers class com.kuaigeglobal.epnova.core.manager.OverseasDeviceFingerprint {
+    <fields>;
+}
