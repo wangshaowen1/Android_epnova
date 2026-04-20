@@ -518,10 +518,12 @@
     <string name="episode_unlock_paid_content">本集为付费内容，请先解锁</string>
     <string name="episode_unlock_now">立即解锁</string>
     <string name="episode_unlock_free">观看广告免费解锁</string>
-    <string name="episode_unlock_watched_today">今日已观看 (0/10)</string>
+    <string name="episode_unlock_watched_today">今日已观看 (%1$d/%2$d)</string>
     <string name="episode_unlock_auto_next">自动解锁下一集</string>
     <string name="episode_unlock_success">你已成功解锁一集！</string>
     <string name="episode_unlock_ad_not_ready">广告还未准备好，请稍后重试</string>
+    <string name="episode_unlock_ad_free">免费解锁</string>
+    <string name="episode_unlock_come_back">剩余时间%s</string>
     <string name="episode_unlock_popup_current">本集</string>
     <string name="episode_unlock_popup_balance">余额</string>
     <string name="episode_unlock_popup_coin_insufficient">金币不足，请充值。</string>

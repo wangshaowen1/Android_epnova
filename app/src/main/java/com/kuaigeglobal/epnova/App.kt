@@ -31,6 +31,7 @@ import com.nhsd.basic.utils.Logger
 import com.nhsd.mvc.MVCHelper
 import com.nhsd.permisson.DefaultRationaleFactory
 import com.nhsd.permisson.PermissionX
+import com.google.android.gms.ads.MobileAds
 import com.scwang.smart.refresh.footer.ClassicsFooter
 import com.scwang.smart.refresh.layout.SmartRefreshLayout
 import java.lang.ref.WeakReference
@@ -289,6 +290,10 @@ class App : BaseApp() {
         if (hasAgree()) {
             Utils.init(this)
             DeviceID.register(this)
+            // 初始化 AdMob SDK（在主进程中执行，异步不阻塞启动）
+            if (ProcessUtils.isMainProcess()) {
+                MobileAds.initialize(this)
+            }
         }
     }
 

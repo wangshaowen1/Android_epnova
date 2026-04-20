@@ -13,6 +13,7 @@ import com.kuaigeglobal.epnova.core.ext.launchWithLoading
 import com.kuaigeglobal.epnova.core.network.RetrofitClient
 import com.kuaigeglobal.epnova.core.network.apis.entity.EpisodeInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.WorkVOInfo
+import com.kuaigeglobal.epnova.core.network.apis.entity.StoryUnlockInfoData
 import com.kuaigeglobal.epnova.core.network.apis.request.CurrentWorkIdBody
 import com.kuaigeglobal.epnova.core.network.apis.request.WorkBody
 import com.kuaigeglobal.epnova.core.network.apis.request.WorkIdBody
@@ -98,30 +99,56 @@ class DramasPlayPagerViewModel : AppRepositoryViewModel<CreationRepository>(), D
         }
     }
 
-    // 懒加载播放地址的方法保持不变
+    // 懒加载播放地址（已替换为 storyUnlockPreload，兼顾自动解锁）
     suspend fun fetchPlayUrlIfNeeded(episode: EpisodeInfo): EpisodeInfo {
-        if (!episode.videoUrl.isNullOrEmpty()) return episode
+        // URL 已有且集不处于锁定态，直接返回
+        if (!episode.videoUrl.isNullOrEmpty() && episode.lockStatus != 2) return episode
 
         val apiResponse = withContext(Dispatchers.IO) {
-            mRepo.api.episodePlayInfo(WorkBody(workId, episode.storyId))
+            mRepo.api.storyUnlockPreload(WorkBody(workId, episode.storyId))
         }
 
         if (apiResponse.isSuccess) {
-            // 1. 创建一个全新的对象（假设 EpisodeInfo 是 data class）
-            // 如果你的 EpisodeInfo 是普通的 class，请 new 一个新对象并把属性拷贝过去
+            val storyData = apiResponse.data?.currentStory
+            val finalLockStatus = storyData?.lockStatus ?: episode.lockStatus
+
+            // 服务端处理后仍为锁定 → 需要手动解锁
+            if (finalLockStatus == 2) {
+                throw EpisodeLockedEx(episode, isAutoUnlockFailed = true)
+            }
+
             val updatedEpisode = episode.copy(
-                videoUrl = apiResponse.data?.videoUrl,
-                likeCount = apiResponse.data?.likeCount,
-                duration = apiResponse.data?.duration?.toLong() ?: 0L,
+                videoUrl = storyData?.videoUrl,
+                likeCount = storyData?.likeCount,
+                duration = storyData?.duration?.toLong() ?: 0L,
+                lockStatus = finalLockStatus,
             )
             _episodeList.update { currentList ->
-                currentList.map {
-                    if (it.storyId == updatedEpisode.storyId) updatedEpisode else it
-                }
+                currentList.map { if (it.storyId == updatedEpisode.storyId) updatedEpisode else it }
             }
             return updatedEpisode
         }
         return episode
+    }
+
+    /** 手动解锁成功后从外部更新列表状态，清空 videoUrl 触发重新拉取 */
+    fun onEpisodeManuallyUnlocked(episode: EpisodeInfo) {
+        _episodeList.update { list ->
+            list.map {
+                if (it.storyId == episode.storyId) it.copy(lockStatus = 1, videoUrl = null) else it
+            }
+        }
+    }
+
+    /**
+     * 查询解锁弹窗所需信息（广告次数、金币余额等）
+     * 供自动解锁失败后、PowerRechargeDialog 关闭前使用
+     */
+    suspend fun fetchUnlockInfo(episode: EpisodeInfo): StoryUnlockInfoData? {
+        val res = withContext(Dispatchers.IO) {
+            mRepo.api.storyUnlockInfo(WorkBody(workId, episode.storyId))
+        }
+        return if (res.isSuccess) res.data else null
     }
 
     fun getUserPlayStatus(episode: EpisodeInfo?) {

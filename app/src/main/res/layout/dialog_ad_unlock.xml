@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="layout"
+            type="com.kuaigeglobal.epnova.feature.play.more.AdUnlockViewModel" />
+
+        <variable
+            name="adCountText"
+            type="String" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="32dp"
+        android:background="@drawable/bg_color3_r16">
+
+        <!-- "Watch this episode free?" -->
+        <TextView
+            android:id="@+id/tvTitle"
+            style="@style/Text.Bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/spacing_xl"
+            android:layout_marginTop="32dp"
+            android:gravity="center"
+            android:text="@string/episode_unlock_ad_title"
+            android:textColor="?attr/textColor1"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- 封面图（3:4 比例） -->
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/ivCover"
+            loadHQThumbnailUri="@{layout.episode.workCoverUrl}"
+            placeHolder="@{@drawable/img_default_cover_3_4}"
+            android:layout_width="136dp"
+            android:layout_height="180dp"
+            android:layout_marginTop="32dp"
+            android:scaleType="centerCrop"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvTitle"
+            app:shapeAppearance="@style/roundStyle_r10"
+            tools:src="@drawable/img_default_cover_3_4" />
+
+        <!-- 关闭按钮（右上角） -->
+        <ImageView
+            android:id="@+id/btnClose"
+            singleClick="@{(v)->layout.dismiss()}"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_margin="12dp"
+            android:importantForAccessibility="no"
+            android:padding="8dp"
+            android:src="@drawable/icon_close"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <LinearLayout
+            android:layout_width="262dp"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="30dp"
+            android:background="@drawable/bg_theme_color1_r12"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:paddingVertical="6dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/ivCover">
+            <!-- "Unlock for free" 按钮 -->
+            <TextView
+                android:id="@+id/btnUnlockForFree"
+                style="@style/Text.Medium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/episode_unlock_ad_free"
+                android:textColor="?attr/textColor1"
+                android:textSize="16sp" />
+
+            <!-- 今日广告次数 -->
+            <TextView
+                android:id="@+id/tvAdCount"
+                style="@style/Text.Regular"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text="@{adCountText}"
+                android:textColor="?attr/textColor3"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:text="Watched today(0/10)" />
+        </LinearLayout>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

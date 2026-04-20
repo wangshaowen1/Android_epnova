@@ -522,10 +522,12 @@
     <string name="episode_unlock_paid_content">ตอนนี้เป็นเนื้อหาชำระเงิน กรุณาปลดล็อกก่อน</string>
     <string name="episode_unlock_now">ปลดล็อกทันที</string>
     <string name="episode_unlock_free">ปลดล็อกฟรีชมโฆษณาเพื่อปลดล็อกฟรี</string>
-    <string name="episode_unlock_watched_today">รับชมวันนี้ (0/10)</string>
+    <string name="episode_unlock_watched_today">รับชมวันนี้ (%1$d/%2$d)</string>
     <string name="episode_unlock_auto_next">ปลดล็อกตอนถัดไปอัตโนมัติ</string>
     <string name="episode_unlock_success">คุณได้ปลดล็อกตอนเรียบร้อยแล้ว!</string>
     <string name="episode_unlock_ad_not_ready">โฆษณายังไม่พร้อม โปรดลองอีกครั้งในภายหลัง</string>
+    <string name="episode_unlock_ad_free">ปลดล็อคฟรี</string>
+    <string name="episode_unlock_come_back">เหลือเวลา %s</string>
     <string name="episode_unlock_popup_current">ตอนนี้</string>
     <string name="episode_unlock_popup_balance">ยอดคงเหลือ</string>
     <string name="episode_unlock_popup_coin_insufficient">เหรียญไม่เพียงพอ กรุณาเติมเงิน</string>

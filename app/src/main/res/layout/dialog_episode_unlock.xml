@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="layout"
+            type="com.kuaigeglobal.epnova.feature.play.more.EpisodeUnlockViewModel" />
+
+        <import type="android.view.View" />
+    </data>
+
+    <!--
+        透明背景底部区域，直接叠在播放器上方。
+        底部有渐变遮罩由播放器布局负责，这里只承载 4 个 UI 元素。
+    -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:paddingHorizontal="42dp">
+
+        <!-- 1. 标题 -->
+        <TextView
+            style="@style/Text.Medium"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp"
+            android:gravity="center"
+            android:text="@string/episode_unlock_paid_content"
+            android:textColor="?attr/textColor1"
+            android:textSize="18sp" />
+
+        <Button
+            android:id="@+id/btnUnlockNow"
+            style="@style/Button.Bold"
+            android:layout_width="match_parent"
+            android:layout_height="58dp"
+            android:alpha="@{layout.contentVisible ?1f:0.6f}"
+            android:background="@drawable/bg_theme_color1_r12"
+            android:text="@string/episode_unlock_now"
+            tools:visibility="visible" />
+
+        <!-- 3a. 看广告解锁（有广告次数时） -->
+        <LinearLayout
+            android:id="@+id/llAdUnlock"
+            android:layout_width="match_parent"
+            android:layout_height="58dp"
+            android:layout_marginTop="@dimen/spacing_l"
+            android:background="@drawable/bg_60_000000_stroke_r12"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="@{layout.contentVisible &amp;&amp; layout.hasAdRemaining ? View.VISIBLE : View.GONE}"
+            tools:visibility="visible">
+
+            <TextView
+                style="@style/Text.Medium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/outfit_medium"
+                android:text="@string/episode_unlock_free"
+                android:textColor="?attr/textColor1"
+                android:textSize="16sp" />
+
+            <TextView
+                style="@style/Text.Regular"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:fontFamily="@font/outfit_regular"
+                android:text="@{layout.adCountText}"
+                android:textColor="?attr/textColor2"
+                android:textSize="12sp"
+                tools:text="Watched today(0/10)" />
+        </LinearLayout>
+
+        <!-- 3b. 倒计时（无广告次数时） -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="58dp"
+            android:layout_marginTop="@dimen/spacing_l"
+            android:background="@drawable/bg_80_666666_r12"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="@{layout.contentVisible &amp;&amp; !layout.hasAdRemaining ? View.VISIBLE : View.GONE}"
+            tools:visibility="gone">
+
+            <TextView
+                style="@style/Text.Medium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{layout.countdownText}"
+                android:textColor="?attr/textColor3"
+                android:textSize="16sp"
+                tools:text="Come back in 09:31:29" />
+
+            <TextView
+                style="@style/Text.Regular"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="@{layout.adCountText}"
+                android:textColor="?attr/textColor3"
+                android:textSize="12sp"
+                tools:text="Watched today(10/10)" />
+        </LinearLayout>
+
+        <!-- 4. 自动解锁开关 -->
+        <LinearLayout
+            android:id="@+id/llAutoUnlock"
+            android:layout_width="wrap_content"
+            android:layout_height="44dp"
+            android:layout_gravity="center_horizontal|bottom"
+            android:layout_marginTop="200dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:id="@+id/cbAutoUnlock"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:background="@{layout.autoUnlock?@drawable/icon_selected_box_sel:@drawable/icon_choose_normal_dark}"
+                android:checked="@{layout.autoUnlock}"
+                android:clickable="false"
+                android:focusable="false" />
+
+            <TextView
+                style="@style/Text.Regular"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="@string/episode_unlock_auto_next"
+                android:textColor="?attr/textColor3"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+    </LinearLayout>
+</layout>

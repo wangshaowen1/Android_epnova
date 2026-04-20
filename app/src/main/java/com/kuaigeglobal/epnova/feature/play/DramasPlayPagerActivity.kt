@@ -22,7 +22,10 @@ import com.kuaigeglobal.epnova.feature.play.manger.FeedListController
 import com.kuaigeglobal.epnova.feature.play.manger.FeedPlayerManager
 import com.kuaigeglobal.epnova.feature.play.menu.ListPopupWindow
 import com.kuaigeglobal.epnova.feature.play.menu.OnItemSelectedListener
+import com.kuaigeglobal.epnova.feature.play.more.AdUnlockDialog
 import com.kuaigeglobal.epnova.feature.play.more.EpisodeChooseDialog
+import com.kuaigeglobal.epnova.feature.play.more.EpisodeUnlockDialog
+import com.kuaigeglobal.epnova.feature.recharge.PowerRechargeDialog
 import com.kuaigeglobal.epnova.feature.settings.report.ReportDialog
 import com.kuaigeglobal.epnova.router.AppNavigator
 import com.nhsd.basic.BaseViewModelActivity
@@ -58,6 +61,12 @@ class DramasPlayPagerActivity :
 
     private var downloadingDialog: DownloadingDialog? = null
     private var pendingJumpPosition = 0
+
+    /**
+     * 余额不足关闭充值弹窗后，等待 window focus 恢复时判断是否弹广告弹窗。
+     * Pair: (episode, adRemainCount)
+     */
+    private var pendingAdEpisode: Pair<EpisodeInfo, Int>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -105,12 +114,24 @@ class DramasPlayPagerActivity :
 
         listController.onPageChanged = { episodeInfo, _ ->
             mRealVM.currentEpisode.set(episodeInfo)
-//            if (mRealVM.currentPlayMode == DramasPlayPagerViewModel.PlayMode.SERIES) {
-//                binding.tvTitle.text = getString(R.string.episode_number_format, episodeInfo.sortNo)
-//            }
             mRealVM.getUserPlayStatus(episodeInfo)
             val realWorkId = mRealVM.workId
             EventManager.onPlayEvent(realWorkId, episodeInfo.storyId)
+        }
+
+        listController.onEpisodeLocked = { episode, isAutoUnlockFailed ->
+            if (isAutoUnlockFailed) {
+                // 自动解锁因余额不足失败：先查广告次数，再弹充值弹窗
+                // 充值弹窗关闭后由 onWindowFocusChanged 决定下一步（广告 or 手动解锁）
+                lifecycleScope.launch {
+                    val adRemain = mRealVM.fetchUnlockInfo(episode)?.adUnlockRemainCount ?: 0
+                    PowerRechargeDialog.show()
+                    pendingAdEpisode = episode to adRemain
+                }
+            } else {
+                // 自动解锁未开启：直接展示手动解锁弹窗
+                showUnlockDialog(episode)
+            }
         }
         // 3. 事件流
         setupPlayerEvents()
@@ -187,6 +208,49 @@ class DramasPlayPagerActivity :
         listPopupWindow?.showAtLocation(binding.btnMenu, gravity, 32, 80.dp)
     }
 
+
+    private fun showUnlockDialog(episode: EpisodeInfo) {
+        val dialog = EpisodeUnlockDialog.newInstance(mRealVM.workId, episode)
+        dialog.onUnlockSuccess = { unlockedEpisode ->
+            mRealVM.onEpisodeManuallyUnlocked(unlockedEpisode)
+            listController.reset()
+            val position = adapter.currentList.indexOfFirst { it.storyId == unlockedEpisode.storyId }
+            if (position >= 0) listController.startInitialPlay(position)
+        }
+        dialog.onInsufficientCoins = { adRemainCount ->
+            // PowerRechargeDialog 已在 EpisodeUnlockDialog 内展示，
+            // 记录 pending，等窗口焦点恢复后决定下一步（广告 or 手动解锁）
+            pendingAdEpisode = episode to adRemainCount
+        }
+        dialog.show(supportFragmentManager)
+    }
+
+    private fun showAdUnlockDialog(episode: EpisodeInfo, adRemainCount: Int) {
+        val adDialog = AdUnlockDialog.newInstance(mRealVM.workId, episode, adRemainCount)
+        adDialog.onUnlockSuccess = {
+            // 广告解锁成功，更新主 ViewModel 状态并重播
+            mRealVM.onEpisodeManuallyUnlocked(episode)
+            listController.reset()
+            val position = adapter.currentList.indexOfFirst { it.storyId == episode.storyId }
+            if (position >= 0) listController.startInitialPlay(position)
+        }
+        adDialog.onDismissWithoutWatch = {
+            showUnlockDialog(episode)
+        }
+        adDialog.show(supportFragmentManager, "ad_unlock")
+    }
+
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+        if (!hasFocus) return
+        val (episode, adRemainCount) = pendingAdEpisode ?: return
+        pendingAdEpisode = null
+        if (adRemainCount > 0) {
+            showAdUnlockDialog(episode, adRemainCount)
+        } else {
+            showUnlockDialog(episode)
+        }
+    }
 
     private fun setupPlayerEvents() {
         lifecycleScope.launch {

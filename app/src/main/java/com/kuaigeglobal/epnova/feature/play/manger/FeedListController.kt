@@ -6,8 +6,10 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.kuaigeglobal.epnova.core.Config
 import com.kuaigeglobal.epnova.core.network.apis.entity.EpisodeInfo
 import com.kuaigeglobal.epnova.feature.play.DramasPlayPagerViewModel
+import com.kuaigeglobal.epnova.feature.play.EpisodeLockedEx
 import com.kuaigeglobal.epnova.feature.play.VideoFeedAdapter
 import com.nhsd.basic.utils.Logger
 import kotlinx.coroutines.Dispatchers
@@ -31,6 +33,12 @@ class FeedListController(
 
     // 页面切换回调
     var onPageChanged: ((EpisodeInfo, Int) -> Unit)? = null
+    /**
+     * 集数锁定回调
+     * @param isAutoUnlockFailed true=自动解锁开启但余额不足（流程：充值→广告→手动解锁）
+     *                           false=自动解锁未开启（直接展示手动解锁弹窗）
+     */
+    var onEpisodeLocked: ((episode: EpisodeInfo, isAutoUnlockFailed: Boolean) -> Unit)? = null
     private var fetchUrlJob: Job? = null
 
     init {
@@ -70,6 +78,8 @@ class FeedListController(
         if (adapter.itemCount == 0) return
         val safePosition = targetPosition.coerceIn(0, adapter.itemCount - 1)
 
+        // 始终重置，确保跳集/解锁后重新进入同一位置时能正常触发播放
+//        lastPlayedPosition = -1
         // 如果初始位置就是 0，且当前就在 0，需要强制触发一次逻辑
         if (safePosition == 0) lastPlayedPosition = -1
 
@@ -91,13 +101,19 @@ class FeedListController(
         val initialHolder = recyclerView.findViewHolderForAdapterPosition(position) as? VideoFeedAdapter.VideoViewHolder ?: return
         onPageChanged?.invoke(item, position)
 
-        if (item.videoUrl.isNullOrEmpty()) {
+        // 锁定 + 自动解锁关闭 → 直接回调弹窗，不发起网络请求（isAutoUnlockFailed=false）
+        if (item.lockStatus == 2 && !Config.get().isEpisodeAutoUnlock()) {
+            onEpisodeLocked?.invoke(item, false)
+            return
+        }
+
+        if (item.videoUrl.isNullOrEmpty() || item.lockStatus == 2) {
             initialHolder.updatePlayerUiState(FeedPlayerManager.FeedPlayerState.Buffering)
 
             fetchUrlJob?.cancel()
             fetchUrlJob = recyclerView.findViewTreeLifecycleOwner()?.lifecycleScope?.launch {
                 try {
-                    // 挂起等待网络请求
+                    // 挂起等待网络请求（内含自动解锁逻辑）
                     val readyItem = viewModel.fetchPlayUrlIfNeeded(item)
 
                     // 恢复后校验
@@ -107,6 +123,10 @@ class FeedListController(
                             playerManager.attachAndPlay(readyItem, currentHolder.binding.playerView)
                         }
                     }
+                } catch (e: EpisodeLockedEx) {
+                    // 自动解锁开启且余额不足 → recharge 流程；关闭 → 直接手动解锁弹窗
+                    initialHolder.updatePlayerUiState(FeedPlayerManager.FeedPlayerState.Idle)
+                    onEpisodeLocked?.invoke(e.episode, Config.get().isEpisodeAutoUnlock())
                 } catch (e: Exception) { e.printStackTrace() }
             }
         } else {
@@ -118,6 +138,8 @@ class FeedListController(
     private fun preloadNextItem(currentPosition: Int) {
         if (currentPosition + 1 < adapter.itemCount) {
             val nextItem = adapter.currentList[currentPosition + 1] ?: return
+            // 锁定集不预加载
+            if (nextItem.lockStatus == 2) return
             if (nextItem.videoUrl.isNullOrEmpty()) {
                 recyclerView.findViewTreeLifecycleOwner()?.lifecycleScope?.launch(Dispatchers.IO) {
                     try {

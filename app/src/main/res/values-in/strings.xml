@@ -521,10 +521,12 @@ Jika Anda memilih \"Tidak Setuju\", Anda tidak akan dapat menggunakan produk dan
     <string name="episode_unlock_paid_content">Episode ini adalah konten berbayar. Silakan buka kunci terlebih dahulu.</string>
     <string name="episode_unlock_now">Buka Kunci Sekarang</string>
     <string name="episode_unlock_free">Tonton iklan untuk membuka kunci secara gratis</string>
-    <string name="episode_unlock_watched_today">Ditonton hari ini (0/10)</string>
+    <string name="episode_unlock_watched_today">Ditonton hari ini (%1$d/%2$d)</string>
     <string name="episode_unlock_auto_next">Buka kunci episode berikutnya secara otomatis</string>
     <string name="episode_unlock_success">Anda telah membuka kunci sebuah episode!</string>
     <string name="episode_unlock_ad_not_ready">Iklan belum siap, silakan coba lagi nanti.</string>
+    <string name="episode_unlock_ad_free">Buka kunci secara gratis</string>
+    <string name="episode_unlock_come_back">Sisa waktu %s</string>
     <string name="episode_unlock_popup_current">Episode ini</string>
     <string name="episode_unlock_popup_balance">Saldo</string>
     <string name="episode_unlock_popup_coin_insufficient">Koin tidak mencukupi. Silakan isi ulang.</string>

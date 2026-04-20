@@ -521,10 +521,15 @@
     <string name="episode_unlock_paid_content">This Episode is premium content. Please unlock first.</string>
     <string name="episode_unlock_now">Unlock Now</string>
     <string name="episode_unlock_free">Watch Ads to unlock for free</string>
-    <string name="episode_unlock_watched_today">Watched today(0/10)</string>
+    <string name="episode_unlock_watched_today">Watched today(%1$d/%2$d)</string>
     <string name="episode_unlock_auto_next">Auto unlock next episode</string>
     <string name="episode_unlock_success">You\'ve unlocked an episode!</string>
     <string name="episode_unlock_ad_not_ready">Ad is not ready yet, please try again later.</string>
+    <string name="episode_unlock_ad_free">Unlock for free</string>
+    <string name="episode_unlock_come_back">Come back in %s</string>
+    <string name="episode_unlock_ad_title">Watch this episode free?</string>
+    <string name="episode_unlock_ad_loading">Loading ad…</string>
+    <string name="episode_unlock_ad_verifying">Verifying…</string>
     <string name="episode_unlock_popup_current">This Episode</string>
     <string name="episode_unlock_popup_balance">Balance</string>
     <string name="episode_unlock_popup_coin_insufficient">Insufficient coins. Please top up.</string>
