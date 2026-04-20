@@ -212,7 +212,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:importantForAccessibility="no"
-                            android:src="@drawable/icon_choose_checked" />
+                            android:src="@{layout.episodeAutoUnlock?@drawable/ic_toggle_on:@drawable/ic_toggle_off}"
+                            tools:src="@drawable/ic_toggle_on" />
                     </LinearLayout>
 
                     <LinearLayout
