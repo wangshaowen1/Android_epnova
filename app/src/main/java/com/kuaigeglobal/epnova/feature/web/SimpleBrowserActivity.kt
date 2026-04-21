@@ -40,7 +40,6 @@ import com.kuaigeglobal.epnova.common.permissions.requestRxPermissions
 import com.kuaigeglobal.epnova.common.utils.ImageSaveHelper
 import com.kuaigeglobal.epnova.common.utils.IntentUtils
 import com.kuaigeglobal.epnova.common.utils.WXUtils
-import com.kuaigeglobal.epnova.core.Config
 import com.kuaigeglobal.epnova.core.CookieUtils
 import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.ext.onUserStatusChanged
@@ -349,7 +348,7 @@ class SimpleBrowserActivity : BaseViewModelActivity<ActivityBrowserBinding, Brow
             mRealVM.url?.let {
                 CookieUtils.syncCookie(
                     it,
-                    hashMapOf("userInfo" to User.get().userInfoStr, "language" to Config.get().getSavedLanguage())
+                    "userInfo", User.get().userInfoStr
                 )
             }
         }

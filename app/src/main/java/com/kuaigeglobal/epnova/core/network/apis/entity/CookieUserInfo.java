@@ -9,7 +9,7 @@ public class CookieUserInfo {
     /**
      * 语言编码 zh_CN(简体中文-中国)、en_US(英语-美国)
      */
-    private String lang;
+    private String language;
     public CookieUserInfo(String userToken, String version) {
         this.userToken = userToken;
         this.version = version;
@@ -18,7 +18,7 @@ public class CookieUserInfo {
     public CookieUserInfo(String userToken, String version, String lang) {
         this.userToken = userToken;
         this.version = version;
-        this.lang = lang;
+        this.language = lang;
     }
 
     public CookieUserInfo() {
@@ -41,11 +41,11 @@ public class CookieUserInfo {
         this.version = version;
     }
 
-    public String getLang() {
-        return lang;
+    public String getLanguage() {
+        return language;
     }
 
-    public void setLang(String lang) {
-        this.lang = lang;
+    public void setLanguage(String language) {
+        this.language = language;
     }
 }

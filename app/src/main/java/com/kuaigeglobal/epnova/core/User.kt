@@ -72,7 +72,7 @@ class User : IUser {
 
     val userInfoStr: String?
         get() {
-            val userBasicInfo = CookieUserInfo(id, Session.getInstance().versionName)
+            val userBasicInfo = CookieUserInfo(id, Session.getInstance().versionName, Config.get().getSavedLanguage())
             return Gson().toJson(userBasicInfo)
         }
 
