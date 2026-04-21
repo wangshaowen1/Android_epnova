@@ -91,7 +91,7 @@ class MineViewModel : AppRepositoryViewModel<AppRepository>() {
         userInfo.set(
             mapOf(
                 "id" to (user.userUid ?: ""),
-                "nickname" to R.string.login_or_register.getResString(),
+                "nickname" to R.string.profile_log_in.getResString(),
                 "avatar" to (user.avatarUrl ?: ""),
             )
         )

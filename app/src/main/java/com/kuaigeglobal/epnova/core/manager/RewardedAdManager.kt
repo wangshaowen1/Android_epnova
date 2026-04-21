@@ -55,7 +55,7 @@ class RewardedAdManager(
          * 激励广告位 ID
          */
         val REWARDED_AD_UNIT_ID: String
-            get() = "ca-app-pub-9071858947673651~9374017668"
+            get() = "ca-app-pub-9071858947673651/4907921363"
 
         private const val POLL_MAX_RETRY = 6
         private const val POLL_INTERVAL_MS = 2_000L

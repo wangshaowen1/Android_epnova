@@ -112,6 +112,7 @@
         <!-- 4. 自动解锁开关 -->
         <LinearLayout
             android:id="@+id/llAutoUnlock"
+            setVisible="@{!layout.autoUnlock}"
             android:layout_width="wrap_content"
             android:layout_height="44dp"
             android:layout_gravity="center_horizontal|bottom"
@@ -126,6 +127,7 @@
                 android:layout_width="16dp"
                 android:layout_height="16dp"
                 android:background="@{layout.autoUnlock?@drawable/icon_selected_box_sel:@drawable/icon_choose_normal_dark}"
+                android:button="@null"
                 android:checked="@{layout.autoUnlock}"
                 android:clickable="false"
                 android:focusable="false" />

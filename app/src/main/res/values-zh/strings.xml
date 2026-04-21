@@ -505,6 +505,7 @@
     <string name="prompt_leave_email">请留下您的邮箱，以便我们后续与您联系。</string>
     <string name="collection_success">收藏成功</string>
     <string name="profile_title">个人资料</string>
+    <string name="profile_log_in">登录</string>
     <string name="profile_my_creations">我的创作</string>
     <string name="profile_history">历史</string>
     <string name="profile_collection">收藏</string>

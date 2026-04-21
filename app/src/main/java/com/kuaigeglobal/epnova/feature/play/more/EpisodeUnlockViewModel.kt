@@ -88,7 +88,7 @@ class EpisodeUnlockViewModel : AppRepositoryViewModel<AppRepository>() {
                 val adRemain = data?.adUnlockRemainCount ?: 0
                 hasAdRemaining.set(adRemain > 0)
                 val adWatched = AD_DAILY_MAX - adRemain
-                adCountText.set(R.string.episode_unlock_watched_today.getResString("$adWatched", "$AD_DAILY_MAX"))
+                adCountText.set(R.string.episode_unlock_watched_today.getResString(adWatched, AD_DAILY_MAX))
 
                 if (adRemain <= 0) {
                     val nextDaySec = data?.nextDayRemainSeconds ?: 0L

@@ -3,17 +3,18 @@ package com.kuaigeglobal.epnova.feature.play.more
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import androidx.core.os.bundleOf
+import com.blankj.utilcode.util.ScreenUtils
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.Constants
 import com.kuaigeglobal.epnova.core.network.apis.entity.EpisodeInfo
 import com.kuaigeglobal.epnova.databinding.DialogEpisodeUnlockBinding
 import com.kuaigeglobal.epnova.feature.recharge.PowerRechargeDialog
-import com.nhsd.basic.BaseBottomPushVMDialogFragment
+import com.nhsd.basic.BaseVMDialogFragment
 import com.nhsd.basic.ext.setOnSingleClickListener
 import com.nhsd.basic.ext.showToast
 
 class EpisodeUnlockDialog :
-    BaseBottomPushVMDialogFragment<DialogEpisodeUnlockBinding, EpisodeUnlockViewModel>() {
+    BaseVMDialogFragment<DialogEpisodeUnlockBinding, EpisodeUnlockViewModel>() {
 
     companion object {
         fun newInstance(workId: String?, episode: EpisodeInfo?): EpisodeUnlockDialog {
@@ -38,8 +39,13 @@ class EpisodeUnlockDialog :
     override fun onStart() {
         super.onStart()
         dialog?.window?.apply {
+            attributes?.let { attr ->
+                attr.width = ScreenUtils.getScreenWidth()
+                attr.height = ScreenUtils.getScreenHeight()
+                attributes = attr
+            }
             setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-            setDimAmount(0f)
+            setDimAmount(0.6f)
         }
     }
 
