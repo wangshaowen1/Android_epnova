@@ -8,8 +8,10 @@ import com.blankj.utilcode.util.ActivityUtils
 import com.gyf.immersionbar.ImmersionBar
 import com.kuaigeglobal.epnova.App
 import com.kuaigeglobal.epnova.core.Config
+import com.kuaigeglobal.epnova.core.Global
 import com.kuaigeglobal.epnova.databinding.ActivitySplashBinding
 import com.kuaigeglobal.epnova.feature.main.MainActivity
+import com.kuaigeglobal.epnova.router.AppNavigator
 import com.kuaigeglobal.epnova.router.AppRouter
 import com.nhsd.basic.BaseViewModelActivity
 import kotlinx.coroutines.delay

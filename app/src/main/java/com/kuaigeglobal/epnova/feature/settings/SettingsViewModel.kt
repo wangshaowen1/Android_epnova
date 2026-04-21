@@ -7,12 +7,19 @@ import com.kuaigeglobal.epnova.base.viewmodel.AppRepositoryViewModel
 import com.kuaigeglobal.epnova.base.viewmodel.ToolbarViewModel
 import com.kuaigeglobal.epnova.core.AppRepository
 import com.kuaigeglobal.epnova.core.Config
+import com.kuaigeglobal.epnova.core.Global
 import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.ext.launch
+import com.kuaigeglobal.epnova.core.ext.parseMessage
 import com.kuaigeglobal.epnova.core.network.apis.request.UserTokenBody
 import com.kuaigeglobal.epnova.core.response
 import com.kuaigeglobal.epnova.feature.settings.lang.languagesConfigs
+import com.kuaigeglobal.epnova.kit.SignUtils
 import com.nhsd.basic.ext.getResString
+import com.nhsd.basic.ext.showToast
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 
 /**
  * *****************************************
@@ -47,12 +54,31 @@ class SettingsViewModel : AppRepositoryViewModel<AppRepository>() {
         launch { response(mRepo.api.logoutApp(UserTokenBody())) {} }
     }
 
+    fun guestLogin() {
+        setLoading(true)
+        Global.guestLogin({
+            setLoading(false)
+            logoutApp()
+            launch {
+                withContext(Dispatchers.IO) {
+                    SignUtils.signOut()
+                    delay(200)
+                    User.get().updateFrom(it)
+                    SignUtils.signIn()
+                }
+                showToast(R.string.app_log_out)
+                finish()
+            }
+        }, {
+            setLoading(false)
+            parseMessage(it)?.showToast()
+        })
+    }
+
     override fun onResume() {
         super.onResume()
         phone.set(User.get().phoneNum)
     }
-
-
 
 
 }

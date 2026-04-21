@@ -23,7 +23,7 @@ data class UserHomeData(
     val gender: Int? = null,
     //用户头像URL
     val avatarUrl: String? = null,
-    //用户来源 1-用户自己注册 2-平台直接生成 3-平台通过app注册的假用户 4-平台测试用户 5-小程序注册
+    //用户来源 1-用户自己注册 6=游客
     val userSource: Int? = null,
     //注册方式 1-短信验证码 2-闪验 3-微信登录 4-qq登录 5-苹果登录 6-微信小程序 7-账号密码
     val registerWay: Int? = null,

@@ -11,16 +11,18 @@ import com.alibaba.android.alpha.Task
 import com.blankj.utilcode.util.ProcessUtils
 import com.blankj.utilcode.util.Utils
 import com.github.gzuliyujiang.oaid.DeviceID
+import com.google.android.gms.ads.MobileAds
 import com.kuaige.oss.OssType
 import com.kuaigeglobal.epnova.common.Cache
 import com.kuaigeglobal.epnova.common.SP
 import com.kuaigeglobal.epnova.core.Config
+import com.kuaigeglobal.epnova.core.Global
 import com.kuaigeglobal.epnova.core.User
-import com.kuaigeglobal.epnova.core.ext.getInstall
 import com.kuaigeglobal.epnova.core.manager.AdStrategyManager
 import com.kuaigeglobal.epnova.core.manager.OssManager
 import com.kuaigeglobal.epnova.core.manager.PlaceManager
 import com.kuaigeglobal.epnova.feature.splash.SplashActivity
+import com.kuaigeglobal.epnova.kit.SignUtils
 import com.kuaigeglobal.epnova.widget.CommonDialog
 import com.kuaigeglobal.epnova.widget.CustomizedRefreshHeader
 import com.kuaigeglobal.epnova.widget.LoadingDialog2
@@ -31,7 +33,6 @@ import com.nhsd.basic.utils.Logger
 import com.nhsd.mvc.MVCHelper
 import com.nhsd.permisson.DefaultRationaleFactory
 import com.nhsd.permisson.PermissionX
-import com.google.android.gms.ads.MobileAds
 import com.scwang.smart.refresh.footer.ClassicsFooter
 import com.scwang.smart.refresh.layout.SmartRefreshLayout
 import java.lang.ref.WeakReference
@@ -288,6 +289,10 @@ class App : BaseApp() {
 
     fun initSdkAfterAgreeLicense() {
         if (hasAgree()) {
+            Global.guestLogin({
+                User.get().updateFrom(it)
+                SignUtils.signIn()
+            })
             Utils.init(this)
             DeviceID.register(this)
             // 初始化 AdMob SDK（在主进程中执行，异步不阻塞启动）

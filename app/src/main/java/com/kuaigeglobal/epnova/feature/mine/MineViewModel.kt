@@ -2,7 +2,7 @@ package com.kuaigeglobal.epnova.feature.mine
 
 import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
-import androidx.lifecycle.MutableLiveData
+import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.base.viewmodel.AppRepositoryViewModel
 import com.kuaigeglobal.epnova.core.AppRepository
 import com.kuaigeglobal.epnova.core.Config
@@ -12,6 +12,7 @@ import com.kuaigeglobal.epnova.core.ext.launch
 import com.kuaigeglobal.epnova.core.network.apis.request.UserTokenBody
 import com.kuaigeglobal.epnova.core.network.apis.response.SimpleBannerInfo
 import com.kuaigeglobal.epnova.core.response
+import com.nhsd.basic.ext.getResString
 
 /**
  * *****************************************
@@ -30,9 +31,6 @@ class MineViewModel : AppRepositoryViewModel<AppRepository>() {
     //用户资料Map
     val userInfo by lazy { ObservableField<Map<String, String?>>() }
 
-    //没有登录不让进
-    val noLogIn = MutableLiveData(false)
-
     /**
      * 账户余额
      */
@@ -41,7 +39,6 @@ class MineViewModel : AppRepositoryViewModel<AppRepository>() {
 
     override fun onCreate() {
         super.onCreate()
-        refreshUserInfo()
         //更新必要信息
         updateInformation()
     }
@@ -51,8 +48,8 @@ class MineViewModel : AppRepositoryViewModel<AppRepository>() {
      */
     fun refreshUserInfo() {
         User.get().let { user ->
-            isLogin.set(!user.isVisitor)
-            if (user.isVisitor) {
+            isLogin.set(user.isLogin)
+            if (!isLogin.get()) {
                 notLoggedIn()
                 return
             }
@@ -74,12 +71,7 @@ class MineViewModel : AppRepositoryViewModel<AppRepository>() {
      */
     private fun getUserHomeInfo() {
         User.get().let { user ->
-            isLogin.set(!user.isVisitor)
-            if (user.isVisitor) {
-                notLoggedIn()
-                return
-            }
-            noLogIn.value = false
+            refreshUserInfo()
             Global.refreshBalance()
             launch {
                 response(
@@ -87,7 +79,7 @@ class MineViewModel : AppRepositoryViewModel<AppRepository>() {
                     result = {
                         if (data == null) return@response
                         User.get().updateFrom(data)
-                        logOn()
+                        refreshUserInfo()
                     })
             }
         }
@@ -95,16 +87,16 @@ class MineViewModel : AppRepositoryViewModel<AppRepository>() {
 
 
     private fun notLoggedIn() {
+        val user = User.get()
         userInfo.set(
             mapOf(
-                "id" to "",
-                "nickname" to "登录注册》",
-                "avatar" to "",
+                "id" to (user.userUid ?: ""),
+                "nickname" to R.string.login_or_register.getResString(),
+                "avatar" to (user.avatarUrl ?: ""),
             )
         )
-        noLogIn.value = true
-        balance.set("0")
-        workCourseBanner.set(Config.get().appConfig.workCourseBanner)
+        balance.set(user.computingPower.toString())
+        workCourseBanner.set(if (user.isPurchasedCourse()) null else Config.get().appConfig.workCourseBanner)
     }
 
     private fun logOn() {

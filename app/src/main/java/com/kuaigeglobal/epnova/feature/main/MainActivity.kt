@@ -5,7 +5,6 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.util.SparseArray
 import android.view.KeyEvent
 import android.view.View
@@ -18,7 +17,6 @@ import com.kuaigeglobal.epnova.common.Constants
 import com.kuaigeglobal.epnova.common.permissions.requestRxPermissions
 import com.kuaigeglobal.epnova.core.Config
 import com.kuaigeglobal.epnova.core.Events
-import com.kuaigeglobal.epnova.core.Global
 import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.google.billing.BillingManager
 import com.kuaigeglobal.epnova.core.manager.AppEvent
@@ -30,7 +28,6 @@ import com.kuaigeglobal.epnova.feature.home.HomeFragment
 import com.kuaigeglobal.epnova.feature.mine.MineFragment
 import com.kuaigeglobal.epnova.feature.rewards.RewardsFragment
 import com.kuaigeglobal.epnova.feature.splash.newer.FirstRechargeDialog
-import com.kuaigeglobal.epnova.kit.SignUtils
 import com.kuaigeglobal.epnova.router.AppNavigator
 import com.kuaigeglobal.epnova.router.AppRouter
 import com.nhsd.basic.BaseViewModelActivity
@@ -94,10 +91,6 @@ class MainActivity : BaseViewModelActivity<ActivityMainBinding, MainViewModel>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-
-
-        handleGuestLogin()
-
         registerTime = System.currentTimeMillis()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
             try {
@@ -130,21 +123,7 @@ class MainActivity : BaseViewModelActivity<ActivityMainBinding, MainViewModel>()
         }
     }
 
-    private fun handleGuestLogin()
-    {
 
-        if(AppNavigator.checkIsNeedToGuestLogin())
-        {
-            Global.guestLogin({
-                //Log.i("Hello","come in")
-                User.get().updateFrom(it)
-                SignUtils.signIn()
-
-            },{
-               //todo 游客登录失败
-            })
-        }
-    }
 
     /**
      * 遍历查询是否初始化完成

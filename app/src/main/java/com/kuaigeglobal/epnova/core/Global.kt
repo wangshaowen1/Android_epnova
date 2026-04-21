@@ -1,15 +1,13 @@
 package com.kuaigeglobal.epnova.core
 
-import android.util.Log
+import com.kuaigeglobal.epnova.App
 import com.kuaigeglobal.epnova.common.ext.ioScope
+import com.kuaigeglobal.epnova.core.manager.OverseasFingerprintManager
+import com.kuaigeglobal.epnova.core.network.apis.ApiException
 import com.kuaigeglobal.epnova.core.network.apis.ApiFactory
 import com.kuaigeglobal.epnova.core.network.apis.request.UserTokenBody
 import com.kuaigeglobal.epnova.core.network.apis.response.UserHomeData
-import com.kuaigeglobal.epnova.kit.SignUtils
-import com.kuaigeglobal.epnova.router.AppNavigator
 import com.nhsd.basic.ext.launchNoCrash
-import com.nhsd.basic.ext.showToast
-import kotlinx.coroutines.launch
 
 /**
  * 全部变量
@@ -25,7 +23,7 @@ object Global {
     /**
      * 续写的内容，生命周期内保持，退出登录，退出app或者使用后清除
      */
-    val continueWritingContent: MutableMap<String?, String?> by lazy{
+    val continueWritingContent: MutableMap<String?, String?> by lazy {
         mutableMapOf()
     }
 
@@ -69,26 +67,16 @@ object Global {
      * 检测是否登录
      * 如果未登录 进行强制游客登录
      */
-    fun guestLogin(onSuccess: ((UserHomeData?) -> Unit)? = null,onError:((UserHomeData?)-> Unit)?)
-    {
-
-
-        ioScope.launch{
-
-            try {
-                val resp = ApiFactory.apiService.loginBygGuest()
-                response(resp,{
-                    onSuccess?.invoke(data)
-                },{
-                    onError?.invoke(this?.data)
-                })
-
-            }catch (e: Exception)
-            {
-                onError?.invoke(null)
-            }
-
-        }
+    fun guestLogin(onSuccess: ((UserHomeData?) -> Unit)? = null, onError: ((Throwable?) -> Unit)? = null) {
+        ioScope.launchNoCrash({
+            val fingerprint = OverseasFingerprintManager.getFingerprint(App.instance)
+            response(ApiFactory.apiService.loginBygGuest(fingerprint), {
+                onSuccess?.invoke(data)
+            }, {
+                onError?.invoke(ApiException(this?.code ?: -1, this?.msg))
+            })
+        }, onError = {
+            onError?.invoke(it)
+        })
     }
-
 }

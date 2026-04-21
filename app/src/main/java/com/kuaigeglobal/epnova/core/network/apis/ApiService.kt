@@ -15,6 +15,7 @@ import com.kuaigeglobal.epnova.core.network.apis.entity.InspirationInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.LogOffStatusInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.MyTvSeriesListInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.OrderStatusInfo
+import com.kuaigeglobal.epnova.core.network.apis.entity.OverseasDeviceFingerprint
 import com.kuaigeglobal.epnova.core.network.apis.entity.PaymentData
 import com.kuaigeglobal.epnova.core.network.apis.entity.PaymentInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.ReferenceImageInfo
@@ -190,7 +191,7 @@ interface ApiService {
      * 游客登录
      */
     @POST(ApiConstants.LOGIN_BY_GUEST)
-    suspend fun loginBygGuest(): ApiResponse<UserHomeData?>
+    suspend fun loginBygGuest(@Body body: OverseasDeviceFingerprint): ApiResponse<UserHomeData?>
 
     /**
      * 第三方登录

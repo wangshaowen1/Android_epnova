@@ -97,27 +97,6 @@
                     app:shapeAppearanceOverlay="@style/roundStyle_circle" />
 
                 <TextView
-                    android:id="@+id/tv_login"
-                    style="@style/Text18"
-                    singleClick="@{layout.clickHandler::onClick}"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/spacing_m"
-                    android:text="@string/login_or_register"
-                    android:textColor="?attr/textColor1"
-                    android:visibility="@{layout.isLogin()?View.GONE:View.VISIBLE}"
-                    app:layout_constraintBottom_toBottomOf="@id/siv_avatar"
-                    app:layout_constraintStart_toEndOf="@id/siv_avatar"
-                    app:layout_constraintTop_toTopOf="@id/siv_avatar"
-                    tools:visibility="gone" />
-
-                <androidx.constraintlayout.widget.Group
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:visibility="@{layout.isLogin()?View.VISIBLE:View.GONE}"
-                    app:constraint_referenced_ids="tv_name,tv_id,iv_copy" />
-
-                <TextView
                     android:id="@+id/tv_name"
                     style="@style/Text18"
                     singleClick="@{layout.clickHandler::onClick}"
@@ -125,12 +104,27 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/spacing_m"
                     android:layout_marginTop="@dimen/spacing_s"
+                    android:ellipsize="end"
+                    android:maxWidth="240dp"
+                    android:maxLines="1"
                     android:text="@{layout.userInfo[`nickname`]}"
                     android:textColor="?attr/textColor1"
                     app:layout_constraintBottom_toTopOf="@id/tv_id"
                     app:layout_constraintStart_toEndOf="@id/siv_avatar"
                     app:layout_constraintTop_toTopOf="@id/siv_avatar"
                     tools:text="Duebass" />
+
+                <ImageView
+                    android:id="@+id/iv_arrow"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="2dp"
+                    setVisible="@{!layout.isLogin()}"
+                    android:src="@drawable/icon_arrow_right"
+                    app:layout_constraintBottom_toBottomOf="@id/tv_name"
+                    app:layout_constraintStart_toEndOf="@id/tv_name"
+                    app:layout_constraintTop_toTopOf="@id/tv_name" />
+
 
                 <TextView
                     android:id="@+id/tv_id"

@@ -34,7 +34,7 @@ class User : IUser {
     //用户头像URL
     var avatarUrl: String?
 
-    //用户来源 1-用户自己注册 2-平台直接生成 3-平台通过app注册的假用户 4-平台测试用户 5-小程序注册
+    //用户来源 1-用户自己注册 6=游客
     var userSource: Int?
         private set
 
@@ -194,6 +194,12 @@ class User : IUser {
          */
         get() = TextUtils.isEmpty(id)
 
+    val isGuest: Boolean
+        get() = !TextUtils.isEmpty(id) && userSource == 6
+
+    val isLogin: Boolean
+        get() = !TextUtils.isEmpty(id) && userSource == 1
+
     override fun getId(): String? {
         return token//?:"ZXlKMGVYQWlPaUpLVjFRaUxDSmhiR2NpT2lKSVV6STFOaUo5LmV5SnNZWE4wVEc5bmFXNVVhVzFsSWpveE56Y3dOakl5T1RjNU1qQXdMQ0p3YUc5dVpVNTFiU0k2SWpFMU56WTNOVFF3TmpVNElpd2lkWE5sY2s1aGJXVWlPaUl4TkRNMU1Ua3hOamN4TWpBMU9DSXNJblZ6WlhKSlpDSTZNVFF6TlRFNU1UWTNNVEl3TlRrc0ltVjRjQ0k2TVRnd05qRXhPRFV3TTMwLmkzbHNGM1R5Rkh3emVPWWV1REJILWZjS3ZUbUNIeW8tS2dBS2RKbUh2OVE="
     }
@@ -261,7 +267,7 @@ class User : IUser {
 
     /**
      * 用户来源
-     * @param userSource 1-用户自己注册 2-平台直接生成 3-平台通过app注册的假用户 4-平台测试用户 5-小程序注册
+     * @param userSource 用户来源 1-用户自己注册 6=游客
      */
     fun storeUserSource(userSource: Int?) {
         this.userSource = userSource ?: 0

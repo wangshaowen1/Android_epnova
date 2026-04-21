@@ -1,4 +1,5 @@
 package com.kuaigeglobal.epnova.core.manager
+
 import android.annotation.SuppressLint
 import android.content.Context
 import android.media.MediaDrm
@@ -7,6 +8,8 @@ import android.media.UnsupportedSchemeException
 import android.provider.Settings
 import android.util.Log
 import com.google.android.gms.appset.AppSet
+import com.kuaigeglobal.epnova.core.network.apis.entity.OverseasDeviceFingerprint
+import com.nhsd.basic.utils.Logger
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -15,19 +18,10 @@ import kotlinx.coroutines.withContext
 import java.security.MessageDigest
 import java.util.UUID
 
-/**
- * 出海（海外）专用的设备指纹向量数据模型
- */
-data class OverseasDeviceFingerprint(
-    val drmId: String?,      // 硬件级：防重装、防刷机 (核心锚点)
-    val androidId: String?,  // 系统级：同签名防重装 (辅助锚点)
-    val appSetId: String?,   // 生态级：Google 官方合规 ID，同开发者账号下共享不变 (出海主力)
-    val cloudUuid: String?   // 应用级：依赖 Google Drive 的 Auto Backup 机制 (兜底锚点)
-)
-
 object OverseasFingerprintManager {
 
     private const val TAG = "OverseasFingerprint"
+
     // Widevine DRM 的标准 UUID
     private val WIDEVINE_UUID = UUID(-0x121074568629b532L, -0x5c37d8232ae2de13L)
 
@@ -45,7 +39,7 @@ object OverseasFingerprintManager {
     suspend fun getFingerprint(context: Context): OverseasDeviceFingerprint = withContext(Dispatchers.IO) {
         // [第 1 层拦截]：如果缓存已存在，直接返回（无锁读取，性能最高）
         cachedFingerprint?.let {
-            Log.d(TAG, "命中内存缓存，直接返回指纹向量")
+            Logger.d(TAG, "命中内存缓存，直接返回指纹向量")
             return@withContext it
         }
 
@@ -54,7 +48,7 @@ object OverseasFingerprintManager {
             // [第 2 层拦截]：获取到锁后再次检查（双重检查锁模式 DCL），防止排队等待的协程重复执行
             cachedFingerprint?.let { return@withContext it }
 
-            Log.i(TAG, "首次采集指纹，开始读取各项底层硬件与系统标识...")
+            Logger.i(TAG, "首次采集指纹，开始读取各项底层硬件与系统标识...")
 
             // 强制使用 ApplicationContext，彻底阻断传入 Activity 导致的上下文内存泄漏
             val appContext = context.applicationContext
@@ -75,7 +69,7 @@ object OverseasFingerprintManager {
 
             // 写入内存缓存
             cachedFingerprint = fingerprint
-            Log.i(TAG, "海外合规指纹采集完成: $fingerprint")
+            Logger.i(TAG, "海外合规指纹采集完成: $fingerprint")
 
             return@withContext fingerprint
         }
@@ -87,11 +81,11 @@ object OverseasFingerprintManager {
      */
     private suspend fun getGoogleAppSetId(context: Context): String? {
         return try {
-            Log.d(TAG, "--> 正在通过 GMS 获取 AppSetID...")
+            Logger.d(TAG, "--> 正在通过 GMS 获取 AppSetID...")
             val client = AppSet.getClient(context)
             // 使用协程 .await() 优雅处理异步回调，代替老式的 OnCompleteListener
             val appSetIdInfo = client.appSetIdInfo.await()
-            Log.d(TAG, "AppSetID 获取成功: ${appSetIdInfo.id}")
+            Logger.d(TAG, "AppSetID 获取成功: ${appSetIdInfo.id}")
             appSetIdInfo.id
         } catch (e: Exception) {
             // 典型场景：海外用户的手机刷了没有 GMS 框架的第三方 ROM，或被强行剥夺了相关权限
@@ -107,15 +101,15 @@ object OverseasFingerprintManager {
     private fun getMediaDrmId(): String? {
         var mediaDrm: MediaDrm? = null
         return try {
-            Log.d(TAG, "--> 尝试初始化硬件 MediaDrm 模块...")
+            Logger.d(TAG, "--> 尝试初始化硬件 MediaDrm 模块...")
             mediaDrm = MediaDrm(WIDEVINE_UUID)
             val deviceIdBytes = mediaDrm.getPropertyByteArray(MediaDrm.PROPERTY_DEVICE_UNIQUE_ID)
 
             if (deviceIdBytes.isEmpty()) {
-                Log.w(TAG, "MediaDrm 初始化成功，但硬件返回了空数据 (可能为黑产的改机 ROM)")
+                Logger.w(TAG, "MediaDrm 初始化成功，但硬件返回了空数据 (可能为黑产的改机 ROM)")
                 null
             } else {
-                Log.d(TAG, "MediaDrm ID 读取成功")
+                Logger.d(TAG, "MediaDrm ID 读取成功")
                 deviceIdBytes.joinToString("") { "%02x".format(it) }
             }
         } catch (e: UnsupportedSchemeException) {
@@ -149,14 +143,14 @@ object OverseasFingerprintManager {
     @SuppressLint("HardwareIds")
     private fun getAndroidId(context: Context): String? {
         return try {
-            Log.d(TAG, "--> 正在读取系统 Android ID...")
+            Logger.d(TAG, "--> 正在读取系统 Android ID...")
             val androidId = Settings.Secure.getString(context.contentResolver, Settings.Secure.ANDROID_ID)
             // 过滤掉所有厂商都可能出现的已知 "脏数据" (Bug 固件残留)
             if (androidId == "9774d56d682e549c" || androidId.isNullOrBlank()) {
-                Log.w(TAG, "读取到无效的脏数据 Android ID ($androidId)，已主动废弃")
+                Logger.w(TAG, "读取到无效的脏数据 Android ID ($androidId)，已主动废弃")
                 null
             } else {
-                Log.d(TAG, "Android ID 读取成功")
+                Logger.d(TAG, "Android ID 读取成功")
                 androidId
             }
         } catch (e: Exception) {
@@ -171,16 +165,16 @@ object OverseasFingerprintManager {
      */
     private fun getFallbackUUID(context: Context): String? {
         return try {
-            Log.d(TAG, "--> 正在检查 SharedPreferences 兜底 UUID...")
+            Logger.d(TAG, "--> 正在检查 SharedPreferences 兜底 UUID...")
             val prefs = context.getSharedPreferences("overseas_device_id_prefs", Context.MODE_PRIVATE)
             var uuid = prefs.getString("fallback_uuid", null)
 
             if (uuid == null) {
                 uuid = UUID.randomUUID().toString()
                 prefs.edit().putString("fallback_uuid", uuid).apply()
-                Log.d(TAG, "本地无记录，已生成全新兜底 UUID: $uuid")
+                Logger.d(TAG, "本地无记录，已生成全新兜底 UUID: $uuid")
             } else {
-                Log.d(TAG, "从本地存储 (或云端 Auto Backup 恢复) 读取到兜底 UUID: $uuid")
+                Logger.d(TAG, "从本地存储 (或云端 Auto Backup 恢复) 读取到兜底 UUID: $uuid")
             }
             uuid
         } catch (e: Exception) {

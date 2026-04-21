@@ -4,13 +4,11 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import androidx.lifecycle.lifecycleScope
 import com.kuaigeglobal.epnova.BuildConfig
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.ext.showConfirmPrompt
 import com.kuaigeglobal.epnova.common.utils.DebugUtils
 import com.kuaigeglobal.epnova.core.Config
-import com.kuaigeglobal.epnova.core.Global
 import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.ext.openTheCustomerServiceChat
 import com.kuaigeglobal.epnova.databinding.ActivitySettingsBinding
@@ -21,16 +19,12 @@ import com.kuaigeglobal.epnova.feature.settings.feedback.FeedbackActivity
 import com.kuaigeglobal.epnova.feature.settings.lang.LanguagesActivity
 import com.kuaigeglobal.epnova.feature.settings.logoff.LogoffActivity
 import com.kuaigeglobal.epnova.feature.web.SimpleBrowserActivity
-import com.kuaigeglobal.epnova.kit.SignUtils
 import com.kuaigeglobal.epnova.router.AppNavigator
 import com.kuaigeglobal.epnova.widget.actionsheet.ActionSheetHelper
 import com.nhsd.basic.BaseViewModelActivity
 import com.nhsd.basic.ext.getResString
 import com.nhsd.basic.ext.setOnSingleClickListener
 import com.nhsd.basic.ext.showToast
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 /**
  * *****************************************
@@ -129,24 +123,7 @@ class SettingsActivity : BaseViewModelActivity<ActivitySettingsBinding, Settings
                     return
                 }
                 showConfirmPrompt(tip = R.string.tip_sign_out_confirm.getResString()) {
-
-                    Global.guestLogin({
-
-                        lifecycleScope.launch {
-
-                            withContext(Dispatchers.IO)
-                            {
-                                mRealVM.logoutApp()
-                                SignUtils.signOut()
-                                User.get().updateFrom(it)
-                                SignUtils.signIn()
-                            }
-                            getString(R.string.app_log_out).showToast()
-                            finish()
-                        }
-                    },{
-                        //todo 游客登录失败
-                    })
+                    mRealVM.guestLogin()
                 }
             }
 

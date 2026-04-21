@@ -1,7 +1,6 @@
 package com.kuaigeglobal.epnova.feature.mine
 
 import android.view.View
-import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.blankj.utilcode.util.ClipboardUtils
@@ -22,7 +21,6 @@ import com.kuaigeglobal.epnova.databinding.FragmentMineBinding
 import com.kuaigeglobal.epnova.feature.main.ActivityDialog
 import com.kuaigeglobal.epnova.feature.main.MainViewModel
 import com.kuaigeglobal.epnova.feature.mine.child.MineChildFragment
-import com.kuaigeglobal.epnova.feature.mine.child.MyCreationsFragment
 import com.kuaigeglobal.epnova.feature.recharge.MyBalanceActivity
 import com.kuaigeglobal.epnova.feature.settings.SettingsActivity
 import com.kuaigeglobal.epnova.feature.settings.feedback.FeedbackActivity
@@ -102,10 +100,9 @@ class MineFragment : BaseViewModelFragment<FragmentMineBinding, MineViewModel>()
         super.onClick(view, data)
         when (view.id) {
             R.id.siv_avatar,
-            R.id.tv_login,
+            R.id.iv_arrow,
             R.id.tv_name -> {
-                //个人资料
-                AppNavigator.checkLoginIntercepted(false)
+                AppNavigator.checkRealLogin(false)
             }
 
             R.id.ll_qa -> {
