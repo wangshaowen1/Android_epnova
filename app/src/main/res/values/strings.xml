@@ -594,7 +594,7 @@
     <!-- Rewards 页动态字符串 -->
     <string name="rewards_finish_previous_task">Please finish the previous task first.</string>
 
-    <string name="home_search_placeholder">Search series, genres…</string>
+    <string name="home_search_placeholder">Search drama title…</string>
     <string name="home_search_tab_new_release">New Release</string>
     <string name="home_search_tab_most_popular">Most Popular</string>
     <string name="home_search_no_results">No results found</string>

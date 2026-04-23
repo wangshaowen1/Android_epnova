@@ -595,7 +595,7 @@
     <string name="rewards_next_refresh">รีเฟรชครั้งต่อไปใน 09:00:00</string>
     <string name="rewards_rules_title">กฎของรางวัล</string>
     <string name="rewards_rules_detail">1. บริษัท EpNova สงวนสิทธิ์ในการตีความเหรียญรางวัลทั้งหมด\n2. คุณสามารถเช็คอินได้ครั้งเดียวต่อวัน\n3. หากคุณขาดวันการเช็คอิน ความต่อเนื่องจะถูกรีเซ็ตและเริ่มใหม่จากวันที่ 1\n4. เช่นเดียวกับเหรียญที่ซื้อ เหรียญรางวัลสามารถใช้ปลดล็อกเฉพาะตอนที่ต้องใช้เหรียญได้เท่านั้น\n5. เหรียญรางวัลมีอายุ 30 วันนับจากวันที่รับ กรุณาใช้ก่อนหมดอายุ\n6. เมื่อปลดล็อกตอน จะใช้เหรียญที่ซื้อก่อน หากเหรียญที่ซื้อไม่พอ จะใช้เหรียญรางวัลอัตโนมัติ\n7. เหรียญฟรีทั้งหมดจะถูกจัดประเภทเป็นเหรียญรางวัล</string>
-    <string name="home_search_placeholder">ค้นหาซีรีส์, ประเภทเนื้อหา…</string>
+    <string name="home_search_placeholder">ค้นหาชื่อละคร…</string>
     <string name="home_search_tab_new_release">ฉายใหม่</string>
     <string name="home_search_tab_most_popular">นิยมมากที่สุด</string>
     <string name="home_search_no_results">ไม่พบผลลัพธ์</string>

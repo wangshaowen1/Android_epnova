@@ -585,7 +585,7 @@
     <string name="rewards_next_refresh">下次刷新：09:00:00</string>
     <string name="rewards_rules_title">福利规则</string>
     <string name="rewards_rules_detail">1. EpNova 对奖励金币拥有最终解释权。\n2. 每日仅可签到 1 次。\n3. 若中断签到，连续天数将重置并从第 1 天重新开始。\n4. 奖励金币与购买金币相同，仅可用于解锁付费剧集。\n5. 奖励金币自领取之日起 30 天内有效，请在过期前使用。\n6. 解锁剧集时优先使用购买金币；购买金币不足时，自动使用奖励金币。\n7. 所有免费金币均归类为奖励金币。</string>
-    <string name="home_search_placeholder">搜索系列、题材…</string>
+    <string name="home_search_placeholder">搜索剧名…</string>
     <string name="home_search_tab_new_release">最新</string>
     <string name="home_search_tab_most_popular">最热</string>
     <string name="home_search_no_results">未找到结果</string>
