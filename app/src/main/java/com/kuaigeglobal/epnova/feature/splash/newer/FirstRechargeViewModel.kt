@@ -31,7 +31,7 @@ class FirstRechargeViewModel : AppRepositoryViewModel<PowerRepository>() {
     override fun onCreate() {
         super.onCreate()
         // 获取到期时间戳
-        val invalidTime = data?.popupInvalidTime ?: 0L
+        val invalidTime = data?.coionsMarketingTime ?: 0L
         if (invalidTime > 0) {
             startCountDown(invalidTime)
         }
@@ -41,8 +41,9 @@ class FirstRechargeViewModel : AppRepositoryViewModel<PowerRepository>() {
         countDownJob?.cancel()
         countDownJob = viewModelScope.launch {
             while (true) {
-                val currentTime = System.currentTimeMillis()
-                val diffMs = expireTime - currentTime
+//                val currentTime = System.currentTimeMillis()
+//                val diffMs = expireTime - currentTime
+                val diffMs = expireTime
 
                 if (diffMs <= 0) {
                     // 倒计时结束

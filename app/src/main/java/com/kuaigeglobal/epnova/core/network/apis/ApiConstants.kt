@@ -786,7 +786,7 @@ object ApiConstants {
     /**
      * 获取新人专享礼
      */
-    const val GET_FIRST_RECHARGE_DIALOG_INFO = "app/window/newUserGift"
+    const val GET_FIRST_RECHARGE_DIALOG_INFO = "gift/newUser/popup/info"
 
     /**
      * 播放-分页查询播放历史列表

@@ -13,90 +13,302 @@
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
+        android:layout_width="293dp"
         android:layout_height="wrap_content">
 
         <ImageView
-            android:id="@+id/bg"
-            loadUri="@{layout.data.imageUrl}"
-            placeHolder="@{@drawable/img_default_cover_3_4}"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintDimensionRatio="1:1"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:src="@drawable/first_recharge_bg" />
-
-        <LinearLayout
+            android:id="@+id/ivHeader"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="15dp"
-            android:gravity="center"
-            android:orientation="horizontal"
-            app:layout_constraintBottom_toBottomOf="@id/bg"
-            app:layout_constraintEnd_toEndOf="@id/bg"
-            app:layout_constraintStart_toStartOf="@id/bg"
-            app:layout_constraintTop_toTopOf="@id/bg"
-            app:layout_constraintVertical_bias="0.358">
+            android:src="@drawable/img_newpage_head"
+            app:layout_constraintEnd_toEndOf="@id/cardMain"
+            app:layout_constraintStart_toStartOf="@id/cardMain"
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/tv_title"
+        <!-- ===== 主卡片（白色，圆角20dp，裁剪子视图） ===== -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cardMain"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="-4dp"
+            android:background="@drawable/bg_super_bonus_dialog"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/ivHeader">
+
+            <!-- 橙→粉渐变头部背景（Z最低，撑满顶部到金币卡片底部） -->
+            <ImageView
+                android:id="@+id/viewGradientHeader"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:adjustViewBounds="true"
+                android:src="@drawable/first_recharge_bg"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <!-- 标题：Super Bonus Pack（渐变色通过代码设置） -->
+            <ImageView
+                android:id="@+id/tvTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:text="@string/limited_time_discount"
-                android:textColor="#420A11"
-                android:textSize="14sp"
-                android:textStyle="bold" />
+                android:layout_marginTop="24dp"
+                android:src="@drawable/img_first_charge_text"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <!-- ===== 金币展示卡片（白色，圆角12dp） ===== -->
+            <FrameLayout
+                android:id="@+id/cardCoin"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="10dp"
+                android:layout_marginVertical="@dimen/spacing_l"
+                android:background="@drawable/bg_first_charge_rewards"
+                android:padding="10dp"
+                app:layout_constraintBottom_toTopOf="@id/btnBuy"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvTitle">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <!-- 左列：Coins -->
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1">
+
+                        <ImageView
+                            android:id="@+id/bgPower"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:adjustViewBounds="true"
+                            android:src="@drawable/bg_first_charge_power"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/tvCoinAmount"
+                            style="@style/Text.Bold"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@{layout.data.coionsNum+``}"
+                            android:textColor="@color/color_ff1f4b"
+                            android:textSize="24sp"
+                            app:layout_constraintBottom_toBottomOf="@id/bgPower"
+                            app:layout_constraintEnd_toEndOf="@id/bgPower"
+                            app:layout_constraintStart_toStartOf="@id/bgPower"
+                            app:layout_constraintTop_toTopOf="@id/bgPower"
+                            app:layout_constraintVertical_bias="0.25"
+                            tools:text="500" />
+
+                        <TextView
+                            style="@style/Text.Medium"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/newbie_coins"
+                            android:textColor="@color/color_ff1f4b"
+                            android:textSize="14sp"
+                            app:layout_constraintBottom_toBottomOf="@id/bgPower"
+                            app:layout_constraintEnd_toEndOf="@id/bgPower"
+                            app:layout_constraintStart_toStartOf="@id/bgPower"
+                            app:layout_constraintTop_toTopOf="@id/bgPower"
+                            app:layout_constraintVertical_bias="0.94" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <!-- 右列：Bonus -->
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/spacing_s"
+                        android:layout_weight="1">
+
+                        <ImageView
+                            android:id="@+id/bgPowerRight"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:adjustViewBounds="true"
+                            android:src="@drawable/bg_first_charge_power"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/tvRewardsAmount"
+                            style="@style/Text.Bold"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:includeFontPadding="false"
+                            android:text="@{`+`+layout.data.coionsNum}"
+                            android:textColor="@color/color_ff1f4b"
+                            android:textSize="24sp"
+                            app:layout_constraintBottom_toBottomOf="@id/bgPowerRight"
+                            app:layout_constraintEnd_toEndOf="@id/bgPowerRight"
+                            app:layout_constraintStart_toStartOf="@id/bgPowerRight"
+                            app:layout_constraintTop_toTopOf="@id/bgPowerRight"
+                            app:layout_constraintVertical_bias="0.25"
+                            tools:text="+200" />
+
+                        <TextView
+                            style="@style/Text.Medium"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/newbie_bonus"
+                            android:textColor="@color/color_ff1f4b"
+                            android:textSize="14sp"
+                            app:layout_constraintBottom_toBottomOf="@id/bgPowerRight"
+                            app:layout_constraintEnd_toEndOf="@id/bgPowerRight"
+                            app:layout_constraintStart_toStartOf="@id/bgPowerRight"
+                            app:layout_constraintTop_toTopOf="@id/bgPowerRight"
+                            app:layout_constraintVertical_bias="0.94" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </LinearLayout>
+
+                <!-- 中间 + 号 -->
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="16dp"
+                    android:src="@drawable/ic_add_circle" />
+            </FrameLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/bg_first_recharge_discount"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="8dp"
+                android:rotation="11"
+                android:translationY="-22dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/cardCoin">
+
+                <TextView
+                    style="@style/Text.Bold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{layout.data.coionsMarketingTag}"
+                    android:textColor="@color/white"
+                    android:textSize="12sp"
+                    tools:text="+50%" />
+
+                <TextView
+                    style="@style/Text.Medium"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/newbie_bonus"
+                    android:textColor="@color/white"
+                    android:textSize="11sp" />
+            </LinearLayout>
 
             <TextView
-                android:id="@+id/tv_hour"
+                android:id="@+id/btnBuy"
+                style="@style/Text.Bold"
+                singleClick="@{()->layout.wxPay()}"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/spacing_l"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/bg_first_charge_btn"
+                android:gravity="center"
+                android:includeFontPadding="false"
+                android:text="@{layout.data.coionsPrice}"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/cardCoin"
+                tools:text="US$4.99" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- 倒计时底栏（浅粉色） -->
+        <LinearLayout
+            android:id="@+id/viewCountdown"
+            android:layout_width="0dp"
+            android:layout_height="42dp"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/cardMain">
+
+            <View
+                android:layout_width="28dp"
+                android:layout_height="1dp"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/gradient_00_ffffff_left_right" />
+
+            <TextView
+                style="@style/Text.Bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/spacing_s"
+                android:text="@string/newbie_limited_time"
+                android:textColor="#FFF4D6"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/tvHour"
                 style="@style/CountDownTextStyle"
                 android:text="@{layout.hourStr}"
-                tools:text="23" />
+                tools:text="00" />
 
             <TextView
                 style="@style/CountDownColonStyle"
                 android:text=":" />
 
             <TextView
-                android:id="@+id/tv_minute"
+                android:id="@+id/tvMinute"
                 style="@style/CountDownTextStyle"
                 android:text="@{layout.minuteStr}"
-                tools:text="59" />
+                tools:text="00" />
 
             <TextView
                 style="@style/CountDownColonStyle"
                 android:text=":" />
 
             <TextView
-                android:id="@+id/tv_second"
+                android:id="@+id/tvSecond"
                 style="@style/CountDownTextStyle"
                 android:text="@{layout.secondStr}"
                 tools:text="00" />
+
+            <View
+                android:layout_width="28dp"
+                android:layout_height="1dp"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/gradient_00_ffffff_right_left" />
+
         </LinearLayout>
 
-        <ImageView
-            android:id="@+id/btnPay"
-            singleClick="@{()->layout.wxPay()}"
-            android:layout_width="300dp"
-            android:layout_height="60dp"
-            app:layout_constraintBottom_toBottomOf="@id/bg"
-            app:layout_constraintEnd_toEndOf="@id/bg"
-            app:layout_constraintStart_toStartOf="@id/bg"
-            app:layout_constraintTop_toTopOf="@id/bg"
-            app:layout_constraintVertical_bias="0.945" />
 
+        <!-- 关闭按钮（主卡片外部，底部居中） -->
         <ImageView
-            android:id="@+id/btnClose"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="25dp"
+            android:id="@+id/ivClose"
+            singleClick="@{(v)->layout.dismiss()}"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginTop="20dp"
+            android:contentDescription="@null"
             android:src="@drawable/icon_dialog_bottom_close"
-            app:layout_constraintEnd_toEndOf="@id/bg"
-            app:layout_constraintStart_toStartOf="@id/bg"
-            app:layout_constraintTop_toBottomOf="@id/bg" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/viewCountdown" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -15,6 +15,7 @@ import com.google.android.gms.ads.MobileAds
 import com.kuaige.oss.OssType
 import com.kuaigeglobal.epnova.common.Cache
 import com.kuaigeglobal.epnova.common.SP
+import com.kuaigeglobal.epnova.common.ext.ioScope
 import com.kuaigeglobal.epnova.core.Config
 import com.kuaigeglobal.epnova.core.Global
 import com.kuaigeglobal.epnova.core.User
@@ -35,6 +36,7 @@ import com.nhsd.permisson.DefaultRationaleFactory
 import com.nhsd.permisson.PermissionX
 import com.scwang.smart.refresh.footer.ClassicsFooter
 import com.scwang.smart.refresh.layout.SmartRefreshLayout
+import kotlinx.coroutines.launch
 import java.lang.ref.WeakReference
 import java.util.LinkedList
 import java.util.Locale
@@ -297,7 +299,10 @@ class App : BaseApp() {
             DeviceID.register(this)
             // 初始化 AdMob SDK（在主进程中执行，异步不阻塞启动）
             if (ProcessUtils.isMainProcess()) {
-                MobileAds.initialize(this)
+                ioScope.launch {
+                    MobileAds.initialize(instance){
+                    }
+                }
             }
         }
     }

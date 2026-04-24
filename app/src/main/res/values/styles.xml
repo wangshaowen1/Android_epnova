@@ -782,12 +782,12 @@
     </style>
 
     <style name="CountDownTextStyle">
-        <item name="android:layout_width">24dp</item>
-        <item name="android:layout_height">24dp</item>
-        <item name="android:background">@drawable/bg_ff4535_r4</item>
-        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:layout_width">22dp</item>
+        <item name="android:layout_height">20dp</item>
+        <item name="android:background">@drawable/bg_first_recharge_count_down</item>
+        <item name="android:textColor">@color/color_0d0d0d</item>
         <item name="android:textSize">12sp</item>
-        <item name="android:textStyle">bold</item>
+        <item name="android:fontFamily">@font/outfit_extrabold</item>
         <item name="android:gravity">center</item>
     </style>
 
@@ -795,8 +795,9 @@
         <item name="android:gravity">center</item>
         <item name="android:layout_width">12dp</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textColor">#FF4535</item>
-        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:textSize">16sp</item>
         <item name="android:textStyle">bold</item>
     </style>
 

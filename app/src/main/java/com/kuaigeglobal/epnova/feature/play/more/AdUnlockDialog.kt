@@ -62,7 +62,7 @@ class AdUnlockDialog : BaseVMDialogFragment<DialogAdUnlockBinding, AdUnlockViewM
 
         // ViewModel 通过 mBundle 自动读取 workId 和 episode（无需手动 setup）
         val adRemain = arguments?.getInt(Constants.Extra.COUNT, 0) ?: 0
-        binding.adCountText = "Watched today(${AD_DAILY_MAX - adRemain}/$AD_DAILY_MAX)"
+        binding.adCountText = getString(R.string.episode_unlock_watched_today, AD_DAILY_MAX - adRemain, AD_DAILY_MAX)
         binding.executePendingBindings()
 
         setupVmCallbacks()

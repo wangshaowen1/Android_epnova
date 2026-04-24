@@ -4,15 +4,14 @@ import android.view.Gravity
 import androidx.core.os.bundleOf
 import androidx.fragment.app.FragmentActivity
 import com.blankj.utilcode.util.ActivityUtils
-import com.blankj.utilcode.util.ScreenUtils
 import com.kuaigeglobal.epnova.common.Constants
-import com.kuaigeglobal.epnova.common.ext.getScreenWidth
 import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.ext.onUserSignIn
 import com.kuaigeglobal.epnova.core.network.apis.response.FirstRechargeDialogData
 import com.kuaigeglobal.epnova.databinding.DialogFirstRechargeBinding
 import com.nhsd.basic.BaseVMDialogFragment
 import com.nhsd.basic.bus.observeEvents
+import com.nhsd.basic.ext.dp
 
 
 class FirstRechargeDialog : BaseVMDialogFragment<DialogFirstRechargeBinding, FirstRechargeViewModel>() {
@@ -40,7 +39,7 @@ class FirstRechargeDialog : BaseVMDialogFragment<DialogFirstRechargeBinding, Fir
         super.onStart()
         dialog?.window?.let { dialogWindow ->
             dialogWindow.attributes?.let { attr ->
-                attr.width = ScreenUtils.getScreenWidth()
+                attr.width = 293f.dp
                 attr.gravity = Gravity.CENTER
                 dialogWindow.attributes = attr
             }
@@ -49,8 +48,7 @@ class FirstRechargeDialog : BaseVMDialogFragment<DialogFirstRechargeBinding, Fir
 
     override fun onPrepareView() {
         super.onPrepareView()
-        binding.bg.minimumHeight = getScreenWidth()
-        binding.btnClose.setOnClickListener {
+        binding.ivClose.setOnClickListener {
             onClose?.invoke()
             dismissAllowingStateLoss()
         }
