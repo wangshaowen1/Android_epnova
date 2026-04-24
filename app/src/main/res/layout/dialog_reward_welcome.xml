@@ -37,7 +37,7 @@
         android:fontFamily="@font/outfit_medium"
         android:includeFontPadding="false"
         android:text="@string/home_login_reward_welcome"
-        android:textColor="#FFFFFF"
+        android:textColor="?attr/textColor1"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

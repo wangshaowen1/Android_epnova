@@ -4,8 +4,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.kuaigeglobal.epnova.base.viewmodel.AppRepositoryViewModel
 import com.kuaigeglobal.epnova.common.Constants
+import com.kuaigeglobal.epnova.common.ext.topActivity
 import com.kuaigeglobal.epnova.core.Global
+import com.kuaigeglobal.epnova.core.ext.launchWithLoading
+import com.kuaigeglobal.epnova.core.google.billing.BillingManager
+import com.kuaigeglobal.epnova.core.network.apis.request.CreateOrderBody
 import com.kuaigeglobal.epnova.core.network.apis.response.FirstRechargeDialogData
+import com.kuaigeglobal.epnova.core.response
 import com.kuaigeglobal.epnova.feature.recharge.PowerRepository
 import com.kuaigeglobal.epnova.router.AppNavigator
 import com.nhsd.basic.ext.getParcelableValue
@@ -76,34 +81,42 @@ class FirstRechargeViewModel : AppRepositoryViewModel<PowerRepository>() {
         super.onCleared()
     }
 
-    fun wxPay() {
+    fun googlePay() {
         if (AppNavigator.checkLoginIntercepted()) return
-//        val item = data?.pointConfigVO ?: return
-//        if (isFromHome()) {
-//            EventManager.onAppTrack(AppEvent.SF_CLICK_HOME_NEWCOMER_GIFTPACK_PAGE)
-//        } else {
-//            EventManager.onAppTrack(AppEvent.SF_CLICK_CREATE_NEWCOMER_GIFTPACK_PAGE)
-//        }
-//        pay(
-//            PaymentClient.PaymentMethod.WxPay,
-//            { paymentMethod, requestBody, responseSender ->
-//                launchWithLoading {
-//                    response(mRepo.createPowerOrder(paymentMethod, item.pointConfigCode, null)) {
-//                        responseSender?.sendData(this.data?.toPaymentParams(paymentMethod))
-//                    }
-//                }
-//            },
-//            item,
-//            { paymentData ->
-//                if (isFromHome()) {
-//                    EventManager.onAppTrack(AppEvent.SF_CLICK_HOME_NEWCOMER_GIFTPACK_PAYSUCCESS)
-//                } else {
-//                    EventManager.onAppTrack(AppEvent.SF_CLICK_CREATE_NEWCOMER_GIFTPACK_PAYSUCCESS)
-//                }
-//                refreshBalance()
-//                dismiss()
-//            },
-//            { error, paymentData -> })
+        createOrder(data?.coionsConfigCode) {
+            BillingManager.launchPurchase(
+                topActivity,
+                data?.googleProductId ?: "",
+                it ?: "",
+                onSuccess = {
+                    refreshBalance()
+                },
+                onFail = { errorCode ->
+                    if (errorCode != 3) {
+
+                    }
+                }
+            )
+        }
+    }
+
+    fun createOrder(
+        code: String?,
+        onSuccess: ((String?) -> Unit)? = null
+    ) {
+        launchWithLoading {
+            response(
+                mRepo.api.createOrder(
+                    CreateOrderBody(
+                        goodsCode = code,
+                        goodsType = 1,
+                        mobileType = 1
+                    )
+                )
+            ) {
+                onSuccess?.invoke(data?.orderNo)
+            }
+        }
     }
 
     private fun refreshBalance() {

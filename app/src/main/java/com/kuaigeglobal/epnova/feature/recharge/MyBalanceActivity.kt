@@ -4,12 +4,12 @@ import android.os.Bundle
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.ext.topActivity
 import com.kuaigeglobal.epnova.core.Events
+import com.kuaigeglobal.epnova.core.google.billing.BillingManager
 import com.kuaigeglobal.epnova.core.manager.AppEvent
 import com.kuaigeglobal.epnova.core.manager.EventManager
 import com.kuaigeglobal.epnova.databinding.ActivityMyBalanceBinding
 import com.nhsd.basic.BaseViewModelActivity
 import com.nhsd.basic.bus.observeEvents
-import com.nhsd.basic.ext.showToast
 import com.nhsd.basic.ext.startActivity
 
 class MyBalanceActivity : BaseViewModelActivity<ActivityMyBalanceBinding, MyBalanceViewModel>() {
@@ -21,9 +21,8 @@ class MyBalanceActivity : BaseViewModelActivity<ActivityMyBalanceBinding, MyBala
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        //"Hello".showToast()
         EventManager.onAppTrack(AppEvent.SF_VIEW_RECHARGE_PAGE)
+        BillingManager.markActivePage(true)
         observeEvents {
             on<Events.UserDataEvent> {
                 mRealVM.updateBalance()
@@ -34,5 +33,10 @@ class MyBalanceActivity : BaseViewModelActivity<ActivityMyBalanceBinding, MyBala
     override fun createViewModel(): MyBalanceViewModel
     {
         return MyBalanceViewModel(R.layout.item_recharge_payment)
+    }
+
+    override fun onDestroy() {
+        BillingManager.markActivePage(false)
+        super.onDestroy()
     }
 }

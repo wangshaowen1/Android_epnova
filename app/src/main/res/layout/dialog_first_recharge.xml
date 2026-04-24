@@ -217,7 +217,7 @@
             <TextView
                 android:id="@+id/btnBuy"
                 style="@style/Text.Bold"
-                singleClick="@{()->layout.wxPay()}"
+                singleClick="@{()->layout.googlePay()}"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/spacing_l"
@@ -300,7 +300,6 @@
         <!-- 关闭按钮（主卡片外部，底部居中） -->
         <ImageView
             android:id="@+id/ivClose"
-            singleClick="@{(v)->layout.dismiss()}"
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:layout_marginTop="20dp"

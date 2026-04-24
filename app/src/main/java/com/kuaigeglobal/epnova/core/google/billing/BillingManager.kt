@@ -212,6 +212,25 @@ object BillingManager {
     }
 
     /**
+     * 获取google上价格
+     */
+    fun loadNewerGiftPrice(
+        productId: String?,
+        onSuccess: ((HashMap<String, Triple<String, Long, String>>) -> Unit)? = null
+    ) {
+        val pair = Pair(productId, BillingClient.ProductType.INAPP)
+        preloadProductDetails(listOf(pair)) { list ->
+            val map = HashMap<String, Triple<String, Long, String>>()
+            list?.find { productId == it.productId }?.let { details ->
+                getPriceParameters(details)?.apply {
+                    map[details.productId] = this
+                }
+            }
+            onSuccess?.invoke(map)
+        }
+    }
+
+    /**
      * 预加载商品价格
      */
     fun preloadProductDetails(

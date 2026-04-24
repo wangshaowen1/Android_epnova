@@ -7,6 +7,7 @@ import com.blankj.utilcode.util.ActivityUtils
 import com.kuaigeglobal.epnova.common.Constants
 import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.ext.onUserSignIn
+import com.kuaigeglobal.epnova.core.google.billing.BillingManager
 import com.kuaigeglobal.epnova.core.network.apis.response.FirstRechargeDialogData
 import com.kuaigeglobal.epnova.databinding.DialogFirstRechargeBinding
 import com.nhsd.basic.BaseVMDialogFragment
@@ -48,6 +49,11 @@ class FirstRechargeDialog : BaseVMDialogFragment<DialogFirstRechargeBinding, Fir
 
     override fun onPrepareView() {
         super.onPrepareView()
+        BillingManager.markActivePage(true)
+        val googleProductId = mRealVM.data?.googleProductId
+        BillingManager.loadNewerGiftPrice(googleProductId) { map ->
+            binding.btnBuy.text = map[googleProductId]?.first
+        }
         binding.ivClose.setOnClickListener {
             onClose?.invoke()
             dismissAllowingStateLoss()
@@ -59,5 +65,10 @@ class FirstRechargeDialog : BaseVMDialogFragment<DialogFirstRechargeBinding, Fir
                 }
             }
         }
+    }
+
+    override fun onDestroy() {
+        BillingManager.markActivePage(false)
+        super.onDestroy()
     }
 }
