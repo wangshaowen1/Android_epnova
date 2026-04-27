@@ -597,8 +597,10 @@ Syarat Penggunaan dan Kebijakan Privasi
     <string name="home_search_placeholder">Cari judul drama…</string>
     <string name="home_search_tab_new_release">Rilis Baru</string>
     <string name="home_search_tab_most_popular">Terpopuler</string>
+    <string name="home_search_tab_recommended_for_u">Direkomendasikan untukmu</string>
     <string name="home_search_no_results">Tidak ada hasil yang ditemukan</string>
     <string name="tab_explore">Jelajahi</string>
     <string name="tab_rewards">Hadiah</string>
     <string name="tab_profile">Profil</string>
+    <string name="login_claim_coins">Klaim 50 Koin</string>
 </resources>

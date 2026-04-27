@@ -13,7 +13,7 @@
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:paddingVertical="20dp"
-            android:text="@string/maybe_you_like"
+            android:text="@string/home_search_tab_recommended_for_u"
             android:textColor="?attr/textColor1"
             app:layout_constraintTop_toTopOf="parent" />
 

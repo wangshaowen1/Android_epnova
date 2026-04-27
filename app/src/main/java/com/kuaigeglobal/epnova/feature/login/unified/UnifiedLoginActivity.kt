@@ -13,6 +13,7 @@ import androidx.core.content.ContextCompat
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.ext.topActivity
 import com.kuaigeglobal.epnova.core.Config
+import com.kuaigeglobal.epnova.core.facebook.login.FacebookSignInHelper
 import com.kuaigeglobal.epnova.core.google.login.GoogleSignInHelper
 import com.kuaigeglobal.epnova.databinding.ActivityUnifiedLoginBinding
 import com.kuaigeglobal.epnova.feature.login.LoginActivity
@@ -58,6 +59,7 @@ class UnifiedLoginActivity : BaseViewModelActivity<ActivityUnifiedLoginBinding, 
     }
 
     val googleSignInHelper by lazy { GoogleSignInHelper(this) }
+    val facebookSignInHelper by lazy { FacebookSignInHelper(this) }
 
 
     override fun <Data> onClick(view: View?, data: Data?) {
@@ -80,13 +82,25 @@ class UnifiedLoginActivity : BaseViewModelActivity<ActivityUnifiedLoginBinding, 
 //                }
 //            }
 
+            R.id.btnFaceBook -> {
+                facebookSignInHelper.signIn(
+                    onSuccess = { body ->
+                        mRealVM.loginByThird(body) {
+                            finishOnly()
+                        }
+                    },
+                    onFailure = { msg ->
+                        msg?.showToast()
+                    }
+                )
+            }
+
             R.id.btnGoogle -> {
 
                         googleSignInHelper.signIn(
                             onSuccess = { body ->
                                 mRealVM.loginByThird(body) {
-
-                                    Log.i("Hello","data "+it)
+//                                    Log.i("Hello","data "+it)
                                     finishOnly()
                                 }
                             },

@@ -63,10 +63,11 @@
             app:layout_constraintTop_toBottomOf="@id/iv_logo" />
 
         <TextView
+            style="@style/Text.Regular"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_s"
-            android:text="Start your AI comic creation journey"
+            android:text="@string/login_ai_comic_journey"
             android:textColor="?attr/textColor3"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -74,13 +75,56 @@
             app:layout_constraintTop_toBottomOf="@id/iv_title" />
 
         <LinearLayout
+            android:id="@+id/btnFaceBook"
+            singleClick="@{layout.clickHandler::onClick}"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginHorizontal="@dimen/spacing_xl"
+            android:layout_marginBottom="@dimen/spacing_l"
+            android:background="@drawable/bg_3a74e7_r50"
+            app:layout_constraintBottom_toTopOf="@id/btnGoogle">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="53dp"
+                android:importantForAccessibility="no"
+                android:scaleType="fitCenter"
+                android:src="@drawable/img_facebook" />
+
+            <TextView
+                style="@style/Text.Medium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="32dp"
+                android:text="@string/login_facebook"
+                android:textColor="@color/white"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_theme_color1_leaf_right"
+            android:drawableStart="@drawable/ic_coins"
+            android:drawablePadding="@dimen/spacing_xs"
+            android:paddingHorizontal="6dp"
+            android:paddingVertical="4dp"
+            android:text="@string/login_claim_coins"
+            android:textColor="?attr/textColor1"
+            android:translationY="-20dp"
+            app:layout_constraintEnd_toEndOf="@id/btnFaceBook"
+            app:layout_constraintTop_toTopOf="@id/btnFaceBook" />
+
+        <LinearLayout
             android:id="@+id/btnGoogle"
             singleClick="@{layout.clickHandler::onClick}"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_marginHorizontal="@dimen/spacing_xl"
-            android:background="@drawable/bg_fill_color_1_r50"
-            android:gravity="center"
+            android:background="@drawable/bg_white_rectangle_corner_r50"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.7556">
@@ -89,18 +133,20 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
+                android:layout_marginStart="53dp"
                 android:importantForAccessibility="no"
                 android:scaleType="fitCenter"
                 android:src="@drawable/img_google" />
 
             <TextView
-                style="@style/Text16"
+                style="@style/Text.Medium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginStart="@dimen/spacing_m"
+                android:layout_marginStart="32dp"
                 android:text="@string/login_google"
-                android:textColor="@color/white" />
+                android:textColor="@color/color_0d0d0d"
+                android:textSize="16sp" />
         </LinearLayout>
 
         <LinearLayout
@@ -115,6 +161,7 @@
 
             <TextView
                 android:id="@+id/tv_agreement"
+                style="@style/Text.Regular"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:lineSpacingExtra="@dimen/lineSpacingExtra"

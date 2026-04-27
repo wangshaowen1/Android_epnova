@@ -52,10 +52,11 @@ class RewardedAdManager(
 
     companion object {
         /**
+         * 正式的激励视频id是这个 "ca-app-pub-9071858947673651/4907921363"
          * 激励广告位 ID
          */
         val REWARDED_AD_UNIT_ID: String
-            get() = "ca-app-pub-9071858947673651/4907921363"
+            get() = if (BuildConfig.DEBUG) "ca-app-pub-3940256099942544/5224354917" else "ca-app-pub-9071858947673651/4907921363"
 
         private const val POLL_MAX_RETRY = 6
         private const val POLL_INTERVAL_MS = 2_000L

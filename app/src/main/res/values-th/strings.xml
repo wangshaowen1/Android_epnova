@@ -599,7 +599,9 @@
     <string name="home_search_tab_new_release">ฉายใหม่</string>
     <string name="home_search_tab_most_popular">นิยมมากที่สุด</string>
     <string name="home_search_no_results">ไม่พบผลลัพธ์</string>
+    <string name="home_search_tab_recommended_for_u">แนะนำสำหรับคุณ</string>
     <string name="tab_explore">สำรวจ</string>
     <string name="tab_rewards">รางวัล</string>
     <string name="tab_profile">โปรไฟล์</string>
+    <string name="login_claim_coins">รับ 50 เหรียญ</string>
 </resources>

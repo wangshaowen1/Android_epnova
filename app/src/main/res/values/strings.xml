@@ -1,5 +1,8 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation,ExtraTranslation">
     <string name="app_name">EpNova</string>
+    <string name="facebook_app_id">1234</string>
+    <string name="fb_login_protocol_scheme">fb1234</string>
+    <string name="facebook_client_token">56789</string>
     <string name="request_failed_tips">Slow connection. Please try again in a moment.</string>
     <string name="no_network_tips">Connection failed. Please check your network.</string>
 
@@ -111,6 +114,7 @@
 
 
     <string name="app_google_login">Sign in with Google</string>
+    <string name="home_search_tab_recommended_for_u">Recommended for you</string>
 
     <string name="toast_service_updating">System is updating. Please try again later.</string>
 
@@ -487,7 +491,6 @@
     <string name="delete_episode">Delete Episode</string>
     <string name="delete_episode_warning">Deleting this episode will permanently erase its script, asset images, and storyboard videos. Coins used cannot be refunded.</string>
     <string name="full_screen">Full Screen</string>
-    <string name="maybe_you_like">Maybe you like</string>
     <string name="drama_has_ended">This drama has ended.</string>
     <string name="delete_work_warning">Are you sure you want to delete this work?</string>
     <string name="compute_power_validity_period">Computing power value validity period: 1 year</string>
@@ -601,4 +604,5 @@
     <string name="tab_explore">Explore</string>
     <string name="tab_rewards">Rewards</string>
     <string name="tab_profile">Profile</string>
+    <string name="login_claim_coins">Claim 50 Coins</string>
 </resources>
