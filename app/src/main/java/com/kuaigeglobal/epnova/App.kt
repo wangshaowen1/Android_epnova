@@ -153,6 +153,7 @@ class App : BaseApp() {
         SP.init(this)
         MMKV.initialize(this@App)
         config = Config()
+        config.init(this@App)
         user = User()
         user.init(this@App)
         appStatusTracker = AppStatusTracker()
