@@ -36,6 +36,7 @@ import com.nhsd.permisson.DefaultRationaleFactory
 import com.nhsd.permisson.PermissionX
 import com.scwang.smart.refresh.footer.ClassicsFooter
 import com.scwang.smart.refresh.layout.SmartRefreshLayout
+import com.tencent.mmkv.MMKV
 import kotlinx.coroutines.launch
 import java.lang.ref.WeakReference
 import java.util.LinkedList
@@ -150,8 +151,10 @@ class App : BaseApp() {
         Logger.setDebug(isDebug)
 
         SP.init(this)
+        MMKV.initialize(this@App)
         config = Config()
         user = User()
+        user.init(this@App)
         appStatusTracker = AppStatusTracker()
         registerActivityLifecycleCallbacks(appStatusTracker)
 

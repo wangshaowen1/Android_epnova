@@ -2,7 +2,7 @@ package com.kuaigeglobal.epnova.core.network.apis.request
 
 /**
  * 第三方登录
- * @param loginType 登录类型  5, "苹果登录"， 8, "谷歌登录"，9, "Facebook登录"
+ * @param loginType 登录类型  5, "苹果登录"， 8, "谷歌登录"，10, "Facebook登录"
  * @param inviteData 扩展数据
  */
 data class LoginByThirdBody(
@@ -12,6 +12,6 @@ data class LoginByThirdBody(
 ) {
     companion object {
         const val LOGIN_TYPE_GOOGLE = 8
-        const val LOGIN_TYPE_FACEBOOK = 9 // TODO: 确认服务端 Facebook 登录类型值
+        const val LOGIN_TYPE_FACEBOOK = 10 // TODO: 确认服务端 Facebook 登录类型值
     }
 }

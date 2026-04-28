@@ -17,7 +17,7 @@ import com.nhsd.basic.ext.showToast
  */
 class EpisodeShareViewModel : AppRepositoryViewModel<AppRepository>() {
     private val drama by lazy { mBundle.getParcelableValue(Constants.Extra.DRAMA, ShortDramaInfo::class.java) }
-    val isMine by lazy { User.get().token==drama?.artist?.userToken }
+    val isMine by lazy { User.get().id == drama?.artist?.userToken }
     val loading by lazy { ObservableBoolean(false) }
 
     //分享链接

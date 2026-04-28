@@ -6,6 +6,5 @@ package com.kuaigeglobal.epnova.core;
 
 public interface IUser {
 
-    String getId();
 
 }

@@ -1,74 +1,56 @@
 package com.kuaigeglobal.epnova.core
 
+import android.content.Context
 import android.text.TextUtils
 import com.google.gson.Gson
 import com.kuaigeglobal.epnova.App
-import com.kuaigeglobal.epnova.common.SP
+import com.kuaigeglobal.epnova.common.utils.MmkvDelegate
 import com.kuaigeglobal.epnova.core.network.apis.entity.CookieUserInfo
 import com.kuaigeglobal.epnova.core.network.apis.request.CompleteUserDataInfoBody
 import com.kuaigeglobal.epnova.core.network.apis.response.UserHomeData
 import com.nhsd.basic.Session
 import com.nhsd.basic.bus.FlowEventBus
+import com.tencent.mmkv.MMKV
 
 /**
- * 当前登录角色信息
+ * 当前登录角色信息 (委托属性极简版)
  */
 class User : IUser {
-    val sp: SP
 
-    //用户ID
-    var userId: String?
+    // 初始化 MMKV
+    private val mmkv: MMKV by lazy { MMKV.mmkvWithID(PREF_ID, MMKV.MULTI_PROCESS_MODE) }
 
-    //手机号
-    var phoneNum: String?
+    // --- 使用 MmkvDelegate 代理所有属性 ---
 
-    //uid
-    var userUid: String?
+    var id: String? by MmkvDelegate(ID, null) { mmkv }
+    var loginRewardsValid: Int? by MmkvDelegate(LOGIN_REWARDS_VALID, 0) { mmkv }
+    var firstRechargeDialog: Boolean? by MmkvDelegate("firstRechargeDialog", false) { mmkv }
 
-    //用户昵称
-    var nickName: String?
+    var userId: String? by MmkvDelegate(USER_ID, null) { mmkv }
+    var phoneNum: String? by MmkvDelegate(PHONE_NUM, null) { mmkv }
+    var userUid: String? by MmkvDelegate(U_ID, null) { mmkv }
+    var nickName: String? by MmkvDelegate(NICK_NAME, null) { mmkv }
+    var gender: Int? by MmkvDelegate(GENDER, 0) { mmkv }
+    var avatarUrl: String? by MmkvDelegate(AVATAR_URL, null) { mmkv }
 
-    //性别 0-未知 1-男 2-女
-    var gender: Int?
-
-    //用户头像URL
-    var avatarUrl: String?
-
-    //用户来源 1-用户自己注册 6=游客
-    var userSource: Int?
+    var userSource: Int? by MmkvDelegate(USER_SOURCE, 0) { mmkv }
         private set
-
-    //注册方式 1-短信验证码 2-闪验 3-微信登录 4-qq登录 5-苹果登录 6-微信小程序 7-账号密码
-    var registerWay: Int?
+    var registerWay: Int? by MmkvDelegate(REGISTER_WAY, 0) { mmkv }
         private set
-
-    //最后登录时间
-    var lastLoginTime: String?
+    var lastLoginTime: String? by MmkvDelegate(LAST_LOGIN_TIME, null) { mmkv }
         private set
-
-    //是否是注册，0-登录，1-是注册
-    var registerStatus: Int?
+    var registerStatus: Int? by MmkvDelegate(REGISTER_STATUS, 0) { mmkv }
         private set
-
-    //访问令牌
-    var token: String?
+    var computingPower: Int by MmkvDelegate(COMPUTING_POWER, 0) { mmkv }
         private set
-
-    /**算力余额*/
-    var computingPower: Int
+    var purchaseCourseStatus: Int? by MmkvDelegate(PURCHASE_COURSE_STATUS, 0) { mmkv }
         private set
-
-    /**课程购买状态*/
-    var purchaseCourseStatus: Int?
+    var isPaid: Int? by MmkvDelegate(IS_PAID, 0) { mmkv }
         private set
-
-    /**
-     * 1-新客（未购买过用户）2-老客（已购买过用户）
-     */
-    var isPaid: Int?
+    var fcmToken: String? by MmkvDelegate(FCM_TOKEN, "") { mmkv }
         private set
+    var requestNotificationsPermissionEnable: Boolean by MmkvDelegate(REQUEST_NOTIFICATIONS_PERMISSION, true) { mmkv }
 
-    var requestNotificationsPermissionEnable = true
 
     val userInfoStr: String?
         get() {
@@ -77,121 +59,9 @@ class User : IUser {
         }
 
     val isLogged: Boolean
-        /**
-         * 检查登录状态
-         *
-         * @return true:已登录 false:未登录
-         */
         get() = !TextUtils.isEmpty(id)
 
-    /**
-     * google推送的token
-     */
-    var fcmToken: String?
-        private set
-
-
-    init {
-        sp = SP("USER_DATA")
-        userId = sp.getString(USER_ID, null)
-        phoneNum = sp.getString(PHONE_NUM, null)
-        userUid = sp.getString(U_ID, null)
-        nickName = sp.getString(NICK_NAME, null)
-        gender = sp.getInt(GENDER, 0)
-        avatarUrl = sp.getString(AVATAR_URL, null)
-        userSource = sp.getInt(USER_SOURCE, 0)
-        registerWay = sp.getInt(REGISTER_WAY, 0)
-        lastLoginTime = sp.getString(LAST_LOGIN_TIME, null)
-        registerStatus = sp.getInt(REGISTER_STATUS, 0)
-        token = sp.getString(TOKEN, null)
-        computingPower = sp.getInt(COMPUTING_POWER, 0)
-        purchaseCourseStatus = sp.getInt(PURCHASE_COURSE_STATUS, 0)
-        isPaid = sp.getInt(IS_PAID, 0)
-        fcmToken = sp.getString(FCM_TOKEN, "")
-        requestNotificationsPermissionEnable = sp.getBoolean(REQUEST_NOTIFICATIONS_PERMISSION, true)
-    }
-
-    fun updateFrom(userData: UserHomeData?) {
-        if (userData == null) return
-        userData.userId?.apply {
-            storeUserId(this)
-        }
-        storePhoneNum(userData.phoneNum)
-        storeUid(userData.userUid)
-        storeNickname(userData.nickName)
-        storeNickname(userData.gender)
-        storeAvatar(userData.avatarUrl)
-        storeUserSource(userData.userSource)
-        storeRegisterWay(userData.registerWay)
-        storeLastLoginTime(userData.lastLoginTime)
-        storePurchaseCourseStatus(userData.purchaseCourseStatus)
-        storePaid(userData.userTag)
-        userData.registerStatus?.apply {
-            storeRegisterStatus(this)
-        }
-        userData.token?.apply {
-            storeToken(this)
-        }
-        notifyChange()
-    }
-
-
-    fun updateFromCompleteUserBody(body: CompleteUserDataInfoBody) {
-        body.avatarUrl?.let { storeAvatar(it) }
-        body.nickName?.let {
-            storeNickname(it)
-        }
-        body.gender?.let { storeNickname(it) }
-        notifyChange()
-    }
-
-
-    private fun clear() {
-        userId = null
-        sp.remove(USER_ID)
-        phoneNum = null
-        sp.remove(PHONE_NUM)
-        nickName = null
-        sp.remove(NICK_NAME)
-        gender = null
-        sp.remove(GENDER)
-        avatarUrl = null
-        sp.remove(AVATAR_URL)
-        userSource = null
-        sp.remove(USER_SOURCE)
-        registerWay = null
-        sp.remove(REGISTER_WAY)
-        lastLoginTime = null
-        sp.remove(LAST_LOGIN_TIME)
-        registerStatus = null
-        sp.remove(REGISTER_STATUS)
-        purchaseCourseStatus = 0
-        sp.remove(PURCHASE_COURSE_STATUS)
-        isPaid = null
-        sp.remove(IS_PAID)
-        token = null
-        sp.remove(TOKEN)
-        computingPower = 0
-        sp.remove(COMPUTING_POWER)
-    }
-
-
-    fun notifyChange(vararg keys: String?) {
-        FlowEventBus.postSync(Events.UserDataEvent(*keys))
-    }
-
-
-    fun loginOut() {
-        clear()
-        notifyChange()
-    }
-
     val isVisitor: Boolean
-        /**
-         * 检查登录状态
-         *
-         * @return true:未登录 false:已登录
-         */
         get() = TextUtils.isEmpty(id)
 
     val isGuest: Boolean
@@ -200,137 +70,137 @@ class User : IUser {
     val isLogin: Boolean
         get() = !TextUtils.isEmpty(id) && userSource == 1
 
-    override fun getId(): String? {
-        return token//?:"ZXlKMGVYQWlPaUpLVjFRaUxDSmhiR2NpT2lKSVV6STFOaUo5LmV5SnNZWE4wVEc5bmFXNVVhVzFsSWpveE56Y3dOakl5T1RjNU1qQXdMQ0p3YUc5dVpVNTFiU0k2SWpFMU56WTNOVFF3TmpVNElpd2lkWE5sY2s1aGJXVWlPaUl4TkRNMU1Ua3hOamN4TWpBMU9DSXNJblZ6WlhKSlpDSTZNVFF6TlRFNU1UWTNNVEl3TlRrc0ltVjRjQ0k2TVRnd05qRXhPRFV3TTMwLmkzbHNGM1R5Rkh3emVPWWV1REJILWZjS3ZUbUNIeW8tS2dBS2RKbUh2OVE="
+    /**
+     * 初始化方法：负责将旧的 SP 数据迁移到 MMKV
+     */
+    fun init(context: Context) {
+        val oldSp = context.getSharedPreferences(PREF_ID, Context.MODE_PRIVATE)
+
+        // 如果 MMKV 中没有 ID，且旧 SP 中仍有数据，执行迁移
+        if (!mmkv.containsKey(ID) && oldSp.all.isNotEmpty()) {
+            val allMap = oldSp.all
+            val editor = oldSp.edit()
+
+            for ((key, value) in allMap) {
+                when (value) {
+                    is String -> mmkv.encode(key, value)
+                    is Int -> mmkv.encode(key, value)
+                    is Long -> mmkv.encode(key, value)
+                    is Float -> mmkv.encode(key, value)
+                    is Boolean -> mmkv.encode(key, value)
+                }
+            }
+            // 迁移完成后清空旧 SP，节约空间并防止二次误操作
+            editor.clear().apply()
+        }
     }
 
-    /**
-     * 用户ID
-     * @param userId 用户ID
-     */
+    fun updateFrom(userData: UserHomeData?) {
+        if (userData == null) return
+        userData.userId?.apply { storeUserId(this) }
+        storePhoneNum(userData.phoneNum)
+        storeUid(userData.userUid)
+        storeNickname(userData.nickName)
+        storeGender(userData.gender)
+        storeAvatar(userData.avatarUrl)
+        storeUserSource(userData.userSource)
+        storeRegisterWay(userData.registerWay)
+        storeLastLoginTime(userData.lastLoginTime)
+        storePurchaseCourseStatus(userData.purchaseCourseStatus)
+        storePaid(userData.userTag)
+        userData.registerStatus?.apply { storeRegisterStatus(this) }
+        userData.token?.apply { id = this }
+        loginRewardsValid = userData.rewardLoginStatus
+        firstRechargeDialog = userData.giftNewUserTriggerFlag == 1
+        notifyChange()
+    }
+
+    fun updateFromCompleteUserBody(body: CompleteUserDataInfoBody) {
+        body.avatarUrl?.let { storeAvatar(it) }
+        body.nickName?.let { storeNickname(it) }
+        body.gender?.let { storeGender(it) }
+        notifyChange()
+    }
+
+    private fun clear() {
+        val keysToRemove = arrayOf(
+            USER_ID, PHONE_NUM, NICK_NAME, GENDER, AVATAR_URL,
+            USER_SOURCE, REGISTER_WAY, LAST_LOGIN_TIME, REGISTER_STATUS,
+            PURCHASE_COURSE_STATUS, IS_PAID, TOKEN, COMPUTING_POWER
+        )
+        mmkv.removeValuesForKeys(keysToRemove)
+    }
+
+    fun notifyChange(vararg keys: String?) {
+        FlowEventBus.postSync(Events.UserDataEvent(*keys))
+    }
+
+    fun loginOut() {
+        clear()
+        notifyChange()
+    }
+
+    // --- 保留这些 store 方法，防止外部调用报错 ---
+
     fun storeUserId(userId: String?) {
         this.userId = userId
-        sp.putString(USER_ID, userId)
     }
 
-    /**
-     * 手机号
-     * @param phoneNum 手机号
-     */
     fun storePhoneNum(phoneNum: String?) {
         this.phoneNum = phoneNum
-        sp.putString(PHONE_NUM, phoneNum)
     }
 
-    /**
-     * 用户名
-     * @param userName 用户名
-     */
     fun storeUid(uid: String?) {
         this.userUid = uid
-        sp.putString(U_ID, uid)
     }
 
     fun storeFcmToken(fcmToken: String?) {
-        sp.putString(FCM_TOKEN, fcmToken)
         this.fcmToken = fcmToken
     }
 
-
-    /**
-     * 用户昵称
-     * @param nickName 用户昵称
-     */
     fun storeNickname(nickName: String?) {
         this.nickName = nickName
-        sp.putString(NICK_NAME, nickName)
     }
 
-    /**
-     * 性别
-     * @param gender  0-未知 1-男 2-女
-     */
-    fun storeNickname(gender: Int?) {
+    fun storeGender(gender: Int?) {
         this.gender = gender ?: 0
-        sp.putInt(GENDER, gender ?: 0)
     }
 
-
-    /**
-     * 存储头像
-     * @param avatar 头像地址
-     */
     fun storeAvatar(avatar: String?) {
         this.avatarUrl = avatar
-        sp.putString(AVATAR_URL, avatar)
     }
 
-    /**
-     * 用户来源
-     * @param userSource 用户来源 1-用户自己注册 6=游客
-     */
     fun storeUserSource(userSource: Int?) {
         this.userSource = userSource ?: 0
-        sp.putInt(USER_SOURCE, userSource ?: 0)
     }
 
-    /**
-     * 注册方式
-     * @param registerWay 1-短信验证码 2-闪验 3-微信登录 4-qq登录 5-苹果登录 6-微信小程序 7-账号密码
-     */
     fun storeRegisterWay(registerWay: Int?) {
         this.registerWay = registerWay ?: 0
-        sp.putInt(REGISTER_WAY, registerWay ?: 0)
     }
 
-    /**
-     * 最后登录时间
-     * @param lastLoginTime 最后登录时间
-     */
     fun storeLastLoginTime(lastLoginTime: String?) {
         this.lastLoginTime = lastLoginTime
-        sp.putString(LAST_LOGIN_TIME, lastLoginTime)
     }
 
-    /**
-     * 是否是注册，0-登录，1-是注册
-     * @param registerStatus 0-登录，1-是注册
-     */
     fun storeRegisterStatus(registerStatus: Int?) {
         this.registerStatus = registerStatus ?: 0
-        sp.putInt(REGISTER_STATUS, registerStatus ?: 0)
     }
 
-    /**
-     * 访问令牌
-     * @param token 访问令牌
-     */
-    fun storeToken(token: String?) {
-        this.token = token
-        sp.putString(TOKEN, token)
-    }
-
-    /**
-     * 算力余额
-     */
     fun storeComputingPower(computingPower: Int) {
         this.computingPower = computingPower
-        sp.putInt(COMPUTING_POWER, this.computingPower)
         notifyChange(COMPUTING_POWER)
     }
 
     fun storePurchaseCourseStatus(purchaseCourseStatus: Int?) {
-        this.purchaseCourseStatus = purchaseCourseStatus
-        sp.putInt(PURCHASE_COURSE_STATUS, this.purchaseCourseStatus ?: 0)
+        this.purchaseCourseStatus = purchaseCourseStatus ?: 0
+    }
+
+    fun storePaid(isPaid: Int?) {
+        this.isPaid = isPaid ?: 0
     }
 
     fun hasPaid(): Boolean {
         return isPaid == 2
-    }
-
-    fun storePaid(isPaid: Int?) {
-        this.isPaid = isPaid
-        sp.putInt(IS_PAID, this.isPaid ?: 0)
     }
 
     fun isFemale(): Boolean {
@@ -350,54 +220,30 @@ class User : IUser {
 
     fun setRequestNotificationsPermissionDisable() {
         requestNotificationsPermissionEnable = false
-        sp.putBoolean(REQUEST_NOTIFICATIONS_PERMISSION, false)
     }
 
     companion object {
+        private const val PREF_ID = "USER_DATA"
         private const val FCM_TOKEN = "FCM_TOKEN"
-        //用户ID
-        val USER_ID = "userId"
+        const val ID = "id"
+        const val LOGIN_REWARDS_VALID = "login_rewards_valid"
 
-        //手机号
+        const val USER_ID = "userId"
         const val PHONE_NUM = "phoneNum"
-
-        //用户名
         const val U_ID = "uid"
-
-        //用户昵称
         const val NICK_NAME = "nickName"
-
-        //性别 0-未知 1-男 2-女
         const val GENDER = "gender"
-
-        //用户头像URL
         const val AVATAR_URL = "avatarUrl"
-
-        //用户来源 1-用户自己注册 2-平台直接生成 3-平台通过app注册的假用户 4-平台测试用户 5-小程序注册
         const val USER_SOURCE = "userSource"
-
-        //注册方式 1-短信验证码 2-闪验 3-微信登录 4-qq登录 5-苹果登录 6-微信小程序 7-账号密码
         const val REGISTER_WAY = "registerWay"
-
-        //最后登录时间
         const val LAST_LOGIN_TIME = "lastLoginTime"
-
-        //是否是注册，0-登录，1-是注册
         const val REGISTER_STATUS = "registerStatus"
-
-        //访问令牌
         const val TOKEN = "token"
-
         const val COMPUTING_POWER = "computingPower"
-
         const val PURCHASE_COURSE_STATUS = "purchaseCourseStatus"
-
         const val IS_PAID = "IS_PAID"
 
-        //性别-男
         const val MALE = 1
-
-        //性别-女
         const val FEMALE = 2
 
         private const val REQUEST_NOTIFICATIONS_PERMISSION: String =
