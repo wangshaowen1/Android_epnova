@@ -5,22 +5,26 @@
     <data>
 
         <variable
-            name="layout"
-            type="com.kuaigeglobal.epnova.feature.play.more.EpisodeUnlockViewModel" />
+            name="ctrl"
+            type="com.kuaigeglobal.epnova.feature.play.more.EpisodeUnlockController" />
 
         <import type="android.view.View" />
     </data>
 
     <!--
         透明背景底部区域，直接叠在播放器上方。
+        默认 GONE，由 VideoViewHolder.showUnlockOverlay() 控制显隐。
         底部有渐变遮罩由播放器布局负责，这里只承载 4 个 UI 元素。
     -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/color_60_000000"
         android:gravity="center"
         android:orientation="vertical"
-        android:paddingHorizontal="42dp">
+        android:paddingHorizontal="42dp"
+        android:visibility="gone"
+        tools:visibility="visible">
 
         <!-- 1. 标题 -->
         <TextView
@@ -33,12 +37,13 @@
             android:textColor="?attr/textColor1"
             android:textSize="18sp" />
 
+        <!-- 2. 金币解锁 / 充值 按钮 -->
         <Button
             android:id="@+id/btnUnlockNow"
             style="@style/Button.Bold"
             android:layout_width="match_parent"
             android:layout_height="58dp"
-            android:alpha="@{layout.contentVisible ?1f:0.6f}"
+            android:alpha="@{ctrl.contentVisible ? 1f : 0.6f}"
             android:background="@drawable/bg_theme_color1_r12"
             android:text="@string/episode_unlock_now"
             tools:visibility="visible" />
@@ -54,7 +59,7 @@
             android:focusable="true"
             android:gravity="center"
             android:orientation="vertical"
-            android:visibility="@{layout.contentVisible &amp;&amp; layout.hasAdRemaining ? View.VISIBLE : View.GONE}"
+            android:visibility="@{ctrl.contentVisible &amp;&amp; ctrl.hasAdRemaining ? View.VISIBLE : View.GONE}"
             tools:visibility="visible">
 
             <TextView
@@ -72,7 +77,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:fontFamily="@font/outfit_regular"
-                android:text="@{layout.adCountText}"
+                android:text="@{ctrl.adCountText}"
                 android:textColor="?attr/textColor2"
                 android:textSize="12sp"
                 tools:text="Watched today(0/10)" />
@@ -86,14 +91,14 @@
             android:background="@drawable/bg_80_666666_r12"
             android:gravity="center"
             android:orientation="vertical"
-            android:visibility="@{layout.contentVisible &amp;&amp; !layout.hasAdRemaining ? View.VISIBLE : View.GONE}"
+            android:visibility="@{ctrl.contentVisible &amp;&amp; !ctrl.hasAdRemaining ? View.VISIBLE : View.GONE}"
             tools:visibility="gone">
 
             <TextView
                 style="@style/Text.Medium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@{layout.countdownText}"
+                android:text="@{ctrl.countdownText}"
                 android:textColor="?attr/textColor3"
                 android:textSize="16sp"
                 tools:text="Come back in 09:31:29" />
@@ -103,7 +108,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="@{layout.adCountText}"
+                android:text="@{ctrl.adCountText}"
                 android:textColor="?attr/textColor3"
                 android:textSize="12sp"
                 tools:text="Watched today(10/10)" />
@@ -112,7 +117,7 @@
         <!-- 4. 自动解锁开关 -->
         <LinearLayout
             android:id="@+id/llAutoUnlock"
-            setVisible="@{!layout.autoUnlock}"
+            setVisible="@{!ctrl.autoUnlock}"
             android:layout_width="wrap_content"
             android:layout_height="44dp"
             android:layout_gravity="center_horizontal|bottom"
@@ -126,9 +131,9 @@
                 android:id="@+id/cbAutoUnlock"
                 android:layout_width="16dp"
                 android:layout_height="16dp"
-                android:background="@{layout.autoUnlock?@drawable/icon_selected_box_sel:@drawable/icon_choose_normal_dark}"
+                android:background="@{ctrl.autoUnlock ? @drawable/icon_selected_box_sel : @drawable/icon_choose_normal_dark}"
                 android:button="@null"
-                android:checked="@{layout.autoUnlock}"
+                android:checked="@{ctrl.autoUnlock}"
                 android:clickable="false"
                 android:focusable="false" />
 

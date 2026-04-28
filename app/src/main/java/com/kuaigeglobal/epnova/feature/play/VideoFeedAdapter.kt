@@ -1,5 +1,6 @@
 package com.kuaigeglobal.epnova.feature.play
 
+import android.app.Activity
 import android.os.Handler
 import android.os.Looper
 import android.view.LayoutInflater
@@ -14,7 +15,10 @@ import com.kuaigeglobal.epnova.core.network.apis.entity.EpisodeInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.WorkVOInfo
 import com.kuaigeglobal.epnova.databinding.ItemVideoFeedBinding
 import com.kuaigeglobal.epnova.feature.play.manger.FeedPlayerManager
+import com.kuaigeglobal.epnova.feature.play.more.EpisodeUnlockController
+import com.kuaigeglobal.epnova.feature.recharge.PowerRechargeDialog
 import com.kuaigeglobal.epnova.widget.PlayerSeekbar
+import com.nhsd.basic.ext.setOnSingleClickListener
 import com.nhsd.basic.item.BindingViewHolder
 
 class VideoFeedAdapter(private val interactionListener: InteractionListener) :
@@ -82,8 +86,10 @@ class VideoFeedAdapter(private val interactionListener: InteractionListener) :
             AnimationUtils.loadAnimation(binding.root.context, R.anim.loading_2)
         }
 
-
         private val handler = Handler(Looper.getMainLooper())
+
+        // 当前激活的解锁控制器，随 ViewHolder 回收自动释放
+        private var activeUnlockController: EpisodeUnlockController? = null
 
         // 自动隐藏控制栏的任务 (规则2)
         private val autoHideControlsTask = Runnable {
@@ -116,6 +122,8 @@ class VideoFeedAdapter(private val interactionListener: InteractionListener) :
         }
 
         override fun bind(position: Int) {
+            // 复用时重置解锁覆盖层，防止旧集锁定态残留
+            hideUnlockOverlay()
             getItem(position)?.let { item ->
                 val transVM = binding.getVm<ItemVideoFeedVm, EpisodeInfo>(
                     key = item.storyId,
@@ -276,7 +284,42 @@ class VideoFeedAdapter(private val interactionListener: InteractionListener) :
         }
 
         fun onViewRecycled() {
+            hideUnlockOverlay()
             resetTimers()
+        }
+
+        /**
+         * 显示解锁覆盖层并绑定控制器。
+         * 若已有旧控制器，先释放再绑新的。
+         */
+        fun showUnlockOverlay(controller: EpisodeUnlockController) {
+            activeUnlockController?.release()
+            activeUnlockController = controller
+
+            val overlay = binding.episodeUnlockOverlay
+            overlay.ctrl = controller
+            overlay.executePendingBindings()
+            overlay.root.visibility = View.VISIBLE
+
+            val activity = binding.root.context as? Activity
+            overlay.btnUnlockNow.setOnSingleClickListener {
+                controller.onClickUnlockNow { PowerRechargeDialog.show() }
+            }
+            overlay.llAdUnlock.setOnSingleClickListener {
+                if (activity != null) {
+                    controller.onClickAdUnlock(binding.root.context, activity)
+                }
+            }
+            overlay.llAutoUnlock.setOnSingleClickListener {
+                controller.toggleAutoUnlock()
+            }
+        }
+
+        /** 隐藏解锁覆盖层，释放控制器资源 */
+        fun hideUnlockOverlay() {
+            activeUnlockController?.release()
+            activeUnlockController = null
+            binding.episodeUnlockOverlay.root.visibility = View.GONE
         }
 
         fun onDetached() {

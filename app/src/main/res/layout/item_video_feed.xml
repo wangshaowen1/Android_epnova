@@ -272,6 +272,10 @@
                     android:contentDescription="全屏"
                     android:src="@drawable/icon_up" />
             </LinearLayout>
+
+            <include
+                android:id="@+id/episodeUnlockOverlay"
+                layout="@layout/include_episode_unlock" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.kuaigeglobal.epnova.widget.LoadStateViewHolder>
 </layout>

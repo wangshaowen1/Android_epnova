@@ -333,6 +333,10 @@ data class EpisodeInfo(
         const val EPISODE_REPAINT_COMPLETED = 50
     }
 
+    fun isLocked(): Boolean {
+        return lockStatus == 2
+    }
+
 
     /**
      * 是否是正在生成中

@@ -9,12 +9,12 @@ import com.kuaigeglobal.epnova.common.Constants
 import com.kuaigeglobal.epnova.core.AppRepository
 import com.kuaigeglobal.epnova.core.ext.launchWithLoading
 import com.kuaigeglobal.epnova.core.network.apis.entity.EpisodeInfo
-import com.kuaigeglobal.epnova.core.network.apis.entity.EpisodeRangeInfo
 import com.kuaigeglobal.epnova.core.network.apis.request.WorkIdBody
 import com.kuaigeglobal.epnova.core.network.apis.response.EpisodeDirectoryData
 import com.kuaigeglobal.epnova.core.response
 import com.nhsd.basic.ext.getParcelableArrayListValue
 import com.nhsd.basic.ext.getParcelableValue
+import com.nhsd.basic.ext.showToast
 
 class EpisodeChooseViewModel : AppRepositoryViewModel<AppRepository>() {
 
@@ -66,6 +66,12 @@ class EpisodeChooseViewModel : AppRepositoryViewModel<AppRepository>() {
     }
 
     private fun initEpisodes() {
+        // 找到第一个未解锁的付费集（sortNo 最小的 locked 集），不允许越集解锁
+        val firstLockedSortNo = episodeInfos
+            ?.filter { it.isLocked() }
+            ?.minByOrNull { it.sortNo ?: Int.MAX_VALUE }
+            ?.sortNo
+
         episodeInfos?.forEach { info ->
             val vm = ItemEpisodeNumberVm(info).apply {
                 if (info.sortNo == currentEpisode?.sortNo) {
@@ -73,11 +79,17 @@ class EpisodeChooseViewModel : AppRepositoryViewModel<AppRepository>() {
                     checkedEpisode = this
                 }
                 onItemClick.value = {
-                    if (checkedEpisode != this) {
-                        checkedEpisode?.checked?.set(false)
-                        this.checked.set(true)
-                        checkedEpisode = this
-                        onEpisodeSelected.invoke(data.get())
+                    val episode = data.get()
+                    // 有锁的情况下只能点击最前面那一个带锁的剧集，否则不让点并弹 toast
+                    if (episode?.isLocked() == true && episode.sortNo != firstLockedSortNo) {
+                        showToast(R.string.episode_unlock_previous_required)
+                    } else {
+                        if (checkedEpisode != this) {
+                            checkedEpisode?.checked?.set(false)
+                            this.checked.set(true)
+                            checkedEpisode = this
+                            onEpisodeSelected.invoke(data.get())
+                        }
                     }
                 }
             }

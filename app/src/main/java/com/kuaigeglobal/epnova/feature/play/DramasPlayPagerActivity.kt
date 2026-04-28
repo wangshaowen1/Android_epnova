@@ -24,7 +24,6 @@ import com.kuaigeglobal.epnova.feature.play.menu.ListPopupWindow
 import com.kuaigeglobal.epnova.feature.play.menu.OnItemSelectedListener
 import com.kuaigeglobal.epnova.feature.play.more.AdUnlockDialog
 import com.kuaigeglobal.epnova.feature.play.more.EpisodeChooseDialog
-import com.kuaigeglobal.epnova.feature.play.more.EpisodeUnlockDialog
 import com.kuaigeglobal.epnova.feature.recharge.PowerRechargeDialog
 import com.kuaigeglobal.epnova.feature.settings.report.ReportDialog
 import com.kuaigeglobal.epnova.router.AppNavigator
@@ -130,7 +129,7 @@ class DramasPlayPagerActivity :
                 }
             } else {
                 // 自动解锁未开启：直接展示手动解锁弹窗
-                showUnlockDialog(episode)
+                showUnlockOverlay(episode)
             }
         }
         // 3. 事件流
@@ -209,20 +208,25 @@ class DramasPlayPagerActivity :
     }
 
 
-    private fun showUnlockDialog(episode: EpisodeInfo) {
-        val dialog = EpisodeUnlockDialog.newInstance(mRealVM.workId, episode)
-        dialog.onUnlockSuccess = { unlockedEpisode ->
+    private fun showUnlockOverlay(episode: EpisodeInfo) {
+        val position = listController.getCurrentPosition()
+        val holder = binding.recyclerView.findViewHolderForAdapterPosition(position)
+            as? VideoFeedAdapter.VideoViewHolder ?: return
+
+        val controller = mRealVM.createUnlockController(episode, lifecycleScope)
+        controller.onUnlockSuccess = { unlockedEpisode ->
             mRealVM.onEpisodeManuallyUnlocked(unlockedEpisode)
             listController.reset()
-            val position = adapter.currentList.indexOfFirst { it.storyId == unlockedEpisode.storyId }
-            if (position >= 0) listController.startInitialPlay(position)
+            holder.hideUnlockOverlay()
+            val pos = adapter.currentList.indexOfFirst { it.storyId == unlockedEpisode.storyId }
+            if (pos >= 0) listController.startInitialPlay(pos)
         }
-        dialog.onInsufficientCoins = { adRemainCount ->
-            // PowerRechargeDialog 已在 EpisodeUnlockDialog 内展示，
+        controller.onInsufficientCoins = { adRemainCount ->
+            // 余额不足时充值弹窗已由 controller 内部触发，
             // 记录 pending，等窗口焦点恢复后决定下一步（广告 or 手动解锁）
             pendingAdEpisode = episode to adRemainCount
         }
-        dialog.show(supportFragmentManager)
+        holder.showUnlockOverlay(controller)
     }
 
     private fun showAdUnlockDialog(episode: EpisodeInfo, adRemainCount: Int) {
@@ -235,7 +239,7 @@ class DramasPlayPagerActivity :
             if (position >= 0) listController.startInitialPlay(position)
         }
         adDialog.onDismissWithoutWatch = {
-            showUnlockDialog(episode)
+            showUnlockOverlay(episode)
         }
         adDialog.show(supportFragmentManager, "ad_unlock")
     }
@@ -248,7 +252,7 @@ class DramasPlayPagerActivity :
         if (adRemainCount > 0) {
             showAdUnlockDialog(episode, adRemainCount)
         } else {
-            showUnlockDialog(episode)
+            showUnlockOverlay(episode)
         }
     }
 

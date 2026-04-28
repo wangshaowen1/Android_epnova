@@ -35,7 +35,7 @@ class FeedListController(
     var onPageChanged: ((EpisodeInfo, Int) -> Unit)? = null
     /**
      * 集数锁定回调
-     * @param isAutoUnlockFailed true=自动解锁开启但余额不足（流程：充值→广告→手动解锁）
+     * isAutoUnlockFailed true=自动解锁开启但余额不足（流程：充值→广告→手动解锁）
      *                           false=自动解锁未开启（直接展示手动解锁弹窗）
      */
     var onEpisodeLocked: ((episode: EpisodeInfo, isAutoUnlockFailed: Boolean) -> Unit)? = null
@@ -138,11 +138,10 @@ class FeedListController(
     private fun preloadNextItem(currentPosition: Int) {
         if (currentPosition + 1 < adapter.itemCount) {
             val nextItem = adapter.currentList[currentPosition + 1] ?: return
-            // 锁定集不预加载
-            if (nextItem.lockStatus == 2) return
             if (nextItem.videoUrl.isNullOrEmpty()) {
                 recyclerView.findViewTreeLifecycleOwner()?.lifecycleScope?.launch(Dispatchers.IO) {
                     try {
+                        // 锁定集不预加载
                         val readyItem = viewModel.fetchPlayUrlIfNeeded(nextItem)
                         if (!readyItem.videoUrl.isNullOrEmpty()) {
                             playerManager.preload(readyItem.videoUrl)

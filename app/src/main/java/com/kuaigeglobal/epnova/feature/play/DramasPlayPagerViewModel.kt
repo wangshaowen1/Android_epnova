@@ -8,12 +8,13 @@ import com.blankj.utilcode.util.PathUtils
 import com.kuaige.videoedit.resource.UrlResource
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.base.viewmodel.AppRepositoryViewModel
+import com.kuaigeglobal.epnova.core.Config
 import com.kuaigeglobal.epnova.core.ext.launch
 import com.kuaigeglobal.epnova.core.ext.launchWithLoading
 import com.kuaigeglobal.epnova.core.network.RetrofitClient
 import com.kuaigeglobal.epnova.core.network.apis.entity.EpisodeInfo
-import com.kuaigeglobal.epnova.core.network.apis.entity.WorkVOInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.StoryUnlockInfoData
+import com.kuaigeglobal.epnova.core.network.apis.entity.WorkVOInfo
 import com.kuaigeglobal.epnova.core.network.apis.request.CurrentWorkIdBody
 import com.kuaigeglobal.epnova.core.network.apis.request.WorkBody
 import com.kuaigeglobal.epnova.core.network.apis.request.WorkIdBody
@@ -22,6 +23,8 @@ import com.kuaigeglobal.epnova.core.response
 import com.kuaigeglobal.epnova.feature.creator.data.CreationRepository
 import com.kuaigeglobal.epnova.feature.download.DownloadingViewModel
 import com.kuaigeglobal.epnova.feature.play.data.FeedRepository
+import com.kuaigeglobal.epnova.feature.play.more.EpisodeUnlockController
+import kotlinx.coroutines.CoroutineScope
 import com.nhsd.basic.ext.showToast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -104,31 +107,57 @@ class DramasPlayPagerViewModel : AppRepositoryViewModel<CreationRepository>(), D
         // URL 已有且集不处于锁定态，直接返回
         if (!episode.videoUrl.isNullOrEmpty() && episode.lockStatus != 2) return episode
 
-        val apiResponse = withContext(Dispatchers.IO) {
-            mRepo.api.storyUnlockPreload(WorkBody(workId, episode.storyId))
-        }
-
-        if (apiResponse.isSuccess) {
-            val storyData = apiResponse.data?.currentStory
-            val finalLockStatus = storyData?.lockStatus ?: episode.lockStatus
-
-            // 服务端处理后仍为锁定 → 需要手动解锁
-            if (finalLockStatus == 2) {
-                throw EpisodeLockedEx(episode, isAutoUnlockFailed = true)
+        val autoUnlock = Config.get().episodeAutoUnlock
+        if (autoUnlock) {
+            val apiResponse = withContext(Dispatchers.IO) {
+                mRepo.api.storyUnlockPreload(WorkBody(workId, episode.storyId))
             }
-
-            val updatedEpisode = episode.copy(
-                videoUrl = storyData?.videoUrl,
-                likeCount = storyData?.likeCount,
-                duration = storyData?.duration?.toLong() ?: 0L,
-                lockStatus = finalLockStatus,
-            )
-            _episodeList.update { currentList ->
-                currentList.map { if (it.storyId == updatedEpisode.storyId) updatedEpisode else it }
+            if (apiResponse.isSuccess) {
+                val storyData = apiResponse.data?.currentStory
+                val finalLockStatus = storyData?.lockStatus ?: episode.lockStatus
+                val updatedEpisode = episode.copy(
+                    videoUrl = storyData?.videoUrl,
+                    likeCount = storyData?.likeCount,
+                    duration = storyData?.duration?.toLong() ?: 0L,
+                    lockStatus = finalLockStatus,
+                )
+                // 服务端处理后仍为锁定 → 需要手动解锁
+                if (finalLockStatus == 2) {
+                    throw EpisodeLockedEx(updatedEpisode, isAutoUnlockFailed = true)
+                }
+                _episodeList.update { currentList ->
+                    currentList.map { if (it.storyId == updatedEpisode.storyId) updatedEpisode else it }
+                }
+                return updatedEpisode
             }
-            return updatedEpisode
+        } else {
+            val apiResponse = withContext(Dispatchers.IO) {
+                mRepo.api.episodePlayInfo(WorkBody(workId, episode.storyId))
+            }
+            if (apiResponse.isSuccess) {
+                val episodePlayData = apiResponse.data
+                val updatedEpisode = episode.copy(
+                    videoUrl = episodePlayData?.videoUrl,
+                    likeCount = episodePlayData?.likeCount,
+                    duration = episodePlayData?.duration?.toLong() ?: 0L,
+                    lockStatus = episode.lockStatus,
+                    costNums = episode.costNums,
+                )
+                _episodeList.update { currentList ->
+                    currentList.map { if (it.storyId == updatedEpisode.storyId) updatedEpisode else it }
+                }
+                return updatedEpisode
+            }
         }
         return episode
+    }
+
+    /**
+     * 创建解锁覆盖层控制器。
+     * 由 Activity 传入自身的 lifecycleScope，使协程与页面生命周期对齐。
+     */
+    fun createUnlockController(episode: EpisodeInfo, scope: CoroutineScope): EpisodeUnlockController {
+        return EpisodeUnlockController(mRepo.api, scope, workId, episode)
     }
 
     /** 手动解锁成功后从外部更新列表状态，清空 videoUrl 触发重新拉取 */

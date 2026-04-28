@@ -4,40 +4,42 @@ import android.app.Activity
 import android.content.Context
 import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
-import androidx.lifecycle.viewModelScope
 import com.kuaigeglobal.epnova.R
-import com.kuaigeglobal.epnova.base.viewmodel.AppRepositoryViewModel
-import com.kuaigeglobal.epnova.common.Constants
-import com.kuaigeglobal.epnova.core.AppRepository
 import com.kuaigeglobal.epnova.core.Config
-import com.kuaigeglobal.epnova.core.ext.launch
-import com.kuaigeglobal.epnova.core.ext.launchWithLoading
 import com.kuaigeglobal.epnova.core.manager.RewardedAdManager
+import com.kuaigeglobal.epnova.core.network.apis.ApiService
 import com.kuaigeglobal.epnova.core.network.apis.entity.EpisodeInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.StoryUnlockInfoData
 import com.kuaigeglobal.epnova.core.network.apis.request.StoryUnlockCoinsBody
 import com.kuaigeglobal.epnova.core.network.apis.request.WorkBody
 import com.kuaigeglobal.epnova.core.response
-import com.nhsd.basic.ext.getParcelableValue
 import com.nhsd.basic.ext.getResString
 import com.nhsd.basic.ext.showToast
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
-class EpisodeUnlockViewModel : AppRepositoryViewModel<AppRepository>() {
+/**
+ * 剧集解锁逻辑控制器，作为嵌入 item_video_feed 中解锁覆盖层的数据绑定对象。
+ * 不依赖 Fragment/ViewModel 生命周期，由外部传入 scope 管理协程。
+ */
+class EpisodeUnlockController(
+    private val api: ApiService,
+    private val scope: CoroutineScope,
+    val workId: String?,
+    val episode: EpisodeInfo?
+) {
 
-    val workId by lazy { mBundle.getString(Constants.Extra.WORK_ID) }
-    val episode by lazy { mBundle.getParcelableValue(Constants.Extra.DATA, EpisodeInfo::class.java) }
+    // --- DataBinding 字段（与 include_episode_unlock.xml 绑定）---
 
-    val unlockInfo = ObservableField<StoryUnlockInfoData>()
-
-    /** 数据加载完成，动态内容区域可见 */
+    /** 数据加载完成后才显示动态内容区域 */
     val contentVisible = ObservableBoolean(false)
 
-    /** 余额不足 */
+    /** 余额不足标志 */
     val coinsInsufficient = ObservableBoolean(false)
 
-    /** 今天还有广告次数可用 */
+    /** 今日还有广告次数可用 */
     val hasAdRemaining = ObservableBoolean(false)
 
     /** "Watched today(X/10)" 文本 */
@@ -46,41 +48,48 @@ class EpisodeUnlockViewModel : AppRepositoryViewModel<AppRepository>() {
     /** 无广告次数时的倒计时文本 */
     val countdownText = ObservableField<String>()
 
-    /** 自动解锁开关 */
+    /** 自动解锁开关状态 */
     val autoUnlock = ObservableBoolean(Config.get().isEpisodeAutoUnlock())
 
-    /** 广告加载中（绑定到 Manager，供 Dialog 显示 loading 态） */
+    /** 广告加载中标志（透传自 RewardedAdManager） */
     val isAdLoading get() = adManager.isAdLoading
 
-    private val AD_DAILY_MAX = 10
-
-    /** 解锁成功回调（金币解锁和广告解锁共用） */
+    /** 解锁成功回调（金币/广告共用） */
     var onUnlockSuccess: ((EpisodeInfo) -> Unit)? = null
 
+    /**
+     * 余额不足时回调：外部负责展示充值弹窗，并根据 adRemainCount 决定后续流程。
+     */
+    var onInsufficientCoins: ((adRemainCount: Int) -> Unit)? = null
+
+    private val AD_DAILY_MAX = 10
+    private var unlockInfo: StoryUnlockInfoData? = null
     private var countdownJob: Job? = null
 
-    /** 复用 RewardedAdManager 处理广告逻辑 */
     private val adManager: RewardedAdManager by lazy {
-        RewardedAdManager(mRepo.api, viewModelScope).also { mgr ->
+        RewardedAdManager(api, scope).also { mgr ->
             mgr.onUnlockSuccess = {
-                episode?.let { onUnlockSuccess?.invoke(it) }
+                episode?.let { ep ->
+                    showToast(R.string.episode_unlock_success)
+                    onUnlockSuccess?.invoke(ep)
+                }
             }
             mgr.onUnlockFailed = {
-                R.string.episode_unlock_ad_not_ready
-                    .let { showToast(it) }
+                showToast(R.string.episode_unlock_ad_not_ready)
             }
         }
     }
 
-    override fun onCreate() {
-        super.onCreate()
+    init {
         loadUnlockInfo()
     }
 
+    // --- 内部逻辑 ---
+
     private fun loadUnlockInfo() {
-        launchWithLoading {
-            response(mRepo.api.storyUnlockInfo(WorkBody(workId, episode?.storyId))) {
-                unlockInfo.set(data)
+        scope.launch {
+            response(api.storyUnlockInfo(WorkBody(workId, episode?.storyId))) {
+                unlockInfo = data
                 val balance = data?.userCoinsBalance ?: 0L
                 val cost = data?.costNums ?: 0
                 coinsInsufficient.set(balance < cost)
@@ -91,8 +100,7 @@ class EpisodeUnlockViewModel : AppRepositoryViewModel<AppRepository>() {
                 adCountText.set(R.string.episode_unlock_watched_today.getResString(adWatched, AD_DAILY_MAX))
 
                 if (adRemain <= 0) {
-                    val nextDaySec = data?.nextDayRemainSeconds ?: 0L
-                    startCountdown(nextDaySec)
+                    startCountdown(data?.nextDayRemainSeconds ?: 0L)
                 }
                 contentVisible.set(true)
             }
@@ -101,7 +109,7 @@ class EpisodeUnlockViewModel : AppRepositoryViewModel<AppRepository>() {
 
     private fun startCountdown(remainSeconds: Long) {
         countdownJob?.cancel()
-        countdownJob = launch {
+        countdownJob = scope.launch {
             var remaining = remainSeconds
             while (remaining > 0) {
                 val h = remaining / 3600
@@ -115,39 +123,59 @@ class EpisodeUnlockViewModel : AppRepositoryViewModel<AppRepository>() {
         }
     }
 
+    // --- 供 View 层调用的公开方法 ---
+
+    /** 点击"解锁/充值"按钮 */
+    fun onClickUnlockNow(onShowRecharge: () -> Unit) {
+        if (coinsInsufficient.get()) {
+            val adRemain = unlockInfo?.adUnlockRemainCount ?: 0
+            onShowRecharge()
+            onInsufficientCoins?.invoke(adRemain)
+        } else {
+            unlockWithCoins()
+        }
+    }
+
+    /** 点击"看广告解锁"按钮 */
+    fun onClickAdUnlock(context: Context, activity: Activity) {
+        if (isAdLoading.get()) {
+            showToast(R.string.episode_unlock_ad_loading)
+        } else {
+            adManager.prepareLoadAndShow(context, activity, workId, episode?.storyId)
+        }
+    }
+
+    /** 切换自动解锁开关 */
     fun toggleAutoUnlock() {
         val newVal = !autoUnlock.get()
         autoUnlock.set(newVal)
         Config.get().saveEpisodeAutoUnlock(newVal)
     }
 
-    /** 金币手动解锁（unlockType=2） */
-    fun unlockWithCoins() {
+    fun getAdRemainCount(): Int = unlockInfo?.adUnlockRemainCount ?: 0
+
+    // --- 金币解锁（内部） ---
+
+    private fun unlockWithCoins() {
         val wId = workId?.toLongOrNull() ?: return
         val sId = episode?.storyId?.toLongOrNull() ?: return
-        launchWithLoading {
-            response(mRepo.api.storyUnlockCoins(
-                StoryUnlockCoinsBody(workId = wId, storyIds = listOf(sId), unlockType = 2)
-            )) {
-                episode?.let { onUnlockSuccess?.invoke(it) }
+        scope.launch {
+            response(
+                api.storyUnlockCoins(StoryUnlockCoinsBody(workId = wId, storyIds = listOf(sId), unlockType = 2))
+            ) {
+                episode.let { ep ->
+                    showToast(R.string.episode_unlock_success)
+                    onUnlockSuccess?.invoke(ep)
+                }
             }
         }
     }
 
-    /**
-     * 点击"Watch Ads"时调用：prepare + load + 广告加载完立即展示
-     * 无需跳转到 AdUnlockDialog，直接在当前 Dialog 中完成全流程
-     */
-    fun startAdUnlock(context: Context, activity: Activity) {
-        adManager.prepareLoadAndShow(context, activity, workId, episode?.storyId)
-    }
-
-    /** 获取当前广告剩余次数 */
-    fun getAdRemainCount(): Int = unlockInfo.get()?.adUnlockRemainCount ?: 0
-
-    override fun onCleared() {
-        super.onCleared()
+    /** 释放资源，在 ViewHolder 回收或覆盖层隐藏时调用 */
+    fun release() {
         countdownJob?.cancel()
         adManager.release()
+        onUnlockSuccess = null
+        onInsufficientCoins = null
     }
 }
