@@ -23,6 +23,10 @@ class User : IUser {
     // --- 使用 MmkvDelegate 代理所有属性 ---
 
     var id: String? by MmkvDelegate(ID, null) { mmkv }
+
+    /**
+     * 0-无需弹窗 1=可以弹窗 2=登录成功未领取奖励 3=登录已领取奖励
+     */
     var loginRewardsValid: Int? by MmkvDelegate(LOGIN_REWARDS_VALID, 0) { mmkv }
     var firstRechargeDialog: Boolean? by MmkvDelegate("firstRechargeDialog", false) { mmkv }
 

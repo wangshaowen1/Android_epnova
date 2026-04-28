@@ -5,7 +5,6 @@ import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.ForegroundColorSpan
 import android.view.View
-import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
 import androidx.paging.PagingData
@@ -14,20 +13,14 @@ import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.ext.showConfirmPrompt
 import com.kuaigeglobal.epnova.common.ext.startRefreshWithAdapter
 import com.kuaigeglobal.epnova.common.ext.topActivity
-import com.kuaigeglobal.epnova.core.Config
 import com.kuaigeglobal.epnova.core.Events
 import com.kuaigeglobal.epnova.core.User
-import com.kuaigeglobal.epnova.core.databinding.loadGifUrl
 import com.kuaigeglobal.epnova.core.db.entity.WorkInformationInfo
 import com.kuaigeglobal.epnova.core.ext.onUserStatusChanged
 import com.kuaigeglobal.epnova.core.network.apis.entity.EpisodeInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.WorkInfo
-import com.kuaigeglobal.epnova.core.network.apis.response.ActivityConfigData
-import com.kuaigeglobal.epnova.core.network.apis.response.FloatWindowInfo
-import com.kuaigeglobal.epnova.core.network.apis.response.PopupInfo
 import com.kuaigeglobal.epnova.databinding.FragmentMyWorksBinding
 import com.kuaigeglobal.epnova.feature.creator.generate.StoryEditorActivity
-import com.kuaigeglobal.epnova.feature.main.ActivityDialog
 import com.kuaigeglobal.epnova.feature.main.MainActivity
 import com.kuaigeglobal.epnova.feature.main.MainViewModel
 import com.kuaigeglobal.epnova.feature.play.DramasPlayPagerActivity
@@ -42,7 +35,6 @@ import com.nhsd.basic.BaseViewModelFragment
 import com.nhsd.basic.bus.FlowEventBus
 import com.nhsd.basic.bus.observeEvents
 import com.nhsd.basic.ext.dp
-import com.nhsd.basic.ext.getResDrawable
 import com.nhsd.basic.ext.getViewModelOfActivity
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChangedBy
@@ -160,10 +152,6 @@ class MyWorksFragment : BaseViewModelFragment<FragmentMyWorksBinding, MyWorksVie
     }
 
     private fun dataUpdate() {
-        parentVm?.activityConfigCache?.observe(this) {
-            handlePopup(it.getPopupInfo(ActivityConfigData.TAB_MY_WORKS))
-            handleFloatWindow(it.getFloatWindowInfo(ActivityConfigData.TAB_MY_WORKS))
-        }
         observeEvents {
             //登录状态变化
             onUserStatusChanged {
@@ -351,32 +339,6 @@ class MyWorksFragment : BaseViewModelFragment<FragmentMyWorksBinding, MyWorksVie
                 //完成
                 mRealVM.isView.value = true
             }
-        }
-    }
-
-    private fun handlePopup(popup: PopupInfo?) {
-        popup?.let {
-            if (popup.isShow()) {
-                ActivityDialog.show(popup)
-                Config.get().activityPopupShowMark(popup.id)
-            }
-        }
-    }
-
-    private fun handleFloatWindow(float: FloatWindowInfo?) {
-        if (float != null && float.isShow()) {
-            binding.floatingBall.isVisible = true
-            loadGifUrl(
-                binding.ivFloating,
-                float.imageUrl,
-                R.drawable.img_default_cover_1_1.getResDrawable()
-            )
-            Config.get().activityFloatShowMark(float.id)
-            binding.floatingBall.setOnMfClickListener {
-                AppRouter.jump(float.jumpUrl)
-            }
-        } else {
-            binding.floatingBall.visibility = View.GONE
         }
     }
 }

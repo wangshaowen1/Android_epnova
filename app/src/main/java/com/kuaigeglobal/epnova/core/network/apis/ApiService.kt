@@ -137,6 +137,7 @@ import com.kuaigeglobal.epnova.core.network.apis.request.WorkIdPagedBody
 import com.kuaigeglobal.epnova.core.network.apis.request.WorkInfoUpdateBody
 import com.kuaigeglobal.epnova.core.network.apis.request.WorkTaskData
 import com.kuaigeglobal.epnova.core.network.apis.response.ActivityConfigData
+import com.kuaigeglobal.epnova.core.network.apis.response.LoginTaskData
 import com.kuaigeglobal.epnova.core.network.apis.response.AppConfigData
 import com.kuaigeglobal.epnova.core.network.apis.response.BalanceData
 import com.kuaigeglobal.epnova.core.network.apis.response.CharacterListData
@@ -998,6 +999,12 @@ interface ApiService {
      */
     @POST(ApiConstants.ACTIVITY_CONFIG)
     suspend fun activityConfig(): ApiResponse<ActivityConfigData?>
+
+    /**
+     * 查询一次性任务弹窗信息-首页登录
+     */
+    @POST(ApiConstants.LOGIN_TASK_POPUP)
+    suspend fun loginTaskPopup(): ApiResponse<LoginTaskData?>
 
     /**
      * 敏感词校验

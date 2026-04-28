@@ -674,6 +674,11 @@ object ApiConstants {
     const val ACTIVITY_CONFIG = "app/window/config"
 
     /**
+     * 查询一次性任务弹窗信息-首页登录
+     */
+    const val LOGIN_TASK_POPUP = "reward/onceTask/popup/info"
+
+    /**
      * 敏感词校验
      */
     const val SENSITIVE_WORD_CHECK = "ai/content-security/text/check"

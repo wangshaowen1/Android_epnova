@@ -28,6 +28,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:clipChildren="false"
             android:orientation="vertical">
 
             <com.kuaigeglobal.epnova.widget.StatusBarView
@@ -80,7 +81,8 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="22dp">
+                android:layout_marginTop="22dp"
+                android:clipChildren="false">
 
                 <com.google.android.material.imageview.ShapeableImageView
                     android:id="@+id/siv_avatar"
@@ -114,12 +116,40 @@
                     app:layout_constraintTop_toTopOf="@id/siv_avatar"
                     tools:text="Duebass" />
 
+                <LinearLayout
+                    setVisible="@{layout.loginRewardsValid}"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintBottom_toTopOf="@id/tv_name"
+                    app:layout_constraintStart_toStartOf="@id/tv_name">
+
+                    <TextView
+                        android:id="@+id/tv_floating_tip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_theme_color1_r50"
+                        android:drawableStart="@drawable/ic_coins"
+                        android:drawablePadding="@dimen/spacing_xs"
+                        android:paddingHorizontal="6dp"
+                        android:paddingVertical="4dp"
+                        android:text="@{@string/login_claim_coins(layout.loginRewards)}"
+                        android:textColor="?attr/textColor1"
+                        tools:text="@string/login_claim_coins" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="20dp"
+                        android:src="@drawable/ic_theme_arrow_down" />
+                </LinearLayout>
+
                 <ImageView
                     android:id="@+id/iv_arrow"
+                    setVisible="@{!layout.isLogin()}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="2dp"
-                    setVisible="@{!layout.isLogin()}"
                     android:src="@drawable/icon_arrow_right"
                     app:layout_constraintBottom_toBottomOf="@id/tv_name"
                     app:layout_constraintStart_toEndOf="@id/tv_name"

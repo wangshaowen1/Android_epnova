@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="280dp"
     android:layout_height="308dp"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="@drawable/bg_121418_r20">
 
     <!-- 顶部渐变头图 -->
@@ -63,7 +64,7 @@
         android:layout_marginTop="20dp"
         android:fontFamily="@font/outfit_medium"
         android:includeFontPadding="false"
-        android:text="@string/home_login_reward_coins"
+        tools:text="@string/home_login_reward_coins"
         android:textColor="#FFCD2C"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"

@@ -566,7 +566,7 @@
     <string name="transaction_history_login_reward">รางวัลการเข้าสู่ระบบ</string>
     <string name="transaction_history_ad_reward">รางวัลโฆษณา</string>
     <string name="home_login_reward_welcome">ยินดีต้อนรับสู่ EpNova</string>
-    <string name="home_login_reward_coins">+50 เหรียญ</string>
+    <string name="home_login_reward_coins">+%s เหรียญ</string>
     <string name="home_login_reward_claim">รับ</string>
     <string name="login_epnova">EpNova</string>
     <string name="login_facebook">เข้าสู่ระบบด้วย Facebook</string>
@@ -603,5 +603,5 @@
     <string name="tab_explore">สำรวจ</string>
     <string name="tab_rewards">รางวัล</string>
     <string name="tab_profile">โปรไฟล์</string>
-    <string name="login_claim_coins">รับ 50 เหรียญ</string>
+    <string name="login_claim_coins">รับ %s เหรียญ</string>
 </resources>

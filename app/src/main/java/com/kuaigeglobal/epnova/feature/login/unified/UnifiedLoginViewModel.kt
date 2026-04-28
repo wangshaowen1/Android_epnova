@@ -5,7 +5,6 @@ import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.base.viewmodel.AppRepositoryViewModel
 import com.kuaigeglobal.epnova.core.Config
 import com.kuaigeglobal.epnova.core.User
-import com.kuaigeglobal.epnova.core.ext.getInstall
 import com.kuaigeglobal.epnova.core.ext.launchWithLoading
 import com.kuaigeglobal.epnova.core.ext.loginToast
 import com.kuaigeglobal.epnova.core.network.apis.request.LoginByThirdBody
@@ -14,7 +13,6 @@ import com.kuaigeglobal.epnova.core.response
 import com.kuaigeglobal.epnova.feature.login.data.ThirdLoginRepository
 import com.kuaigeglobal.epnova.kit.SignUtils
 import com.nhsd.basic.ext.showToast
-import kotlin.text.get
 
 /**
  * *****************************************
@@ -31,6 +29,8 @@ class UnifiedLoginViewModel : AppRepositoryViewModel<ThirdLoginRepository>() {
      * 协议是否勾选
      */
     val checkedPolicy = ObservableBoolean(false)
+    val loginRewardsValid = User.get().loginRewardsValid == 1
+    val loginRewards = Config.get().loginRewards
 
     fun loginByThird(body: LoginByThirdBody, onLogin: ((UserHomeData?) -> Unit)? = null) {
         launchWithLoading (true, block = {

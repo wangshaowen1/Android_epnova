@@ -15,6 +15,7 @@ import com.kuaigeglobal.epnova.App
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.Constants
 import com.kuaigeglobal.epnova.common.permissions.requestRxPermissions
+import com.kuaigeglobal.epnova.common.utils.DateUtil
 import com.kuaigeglobal.epnova.core.Config
 import com.kuaigeglobal.epnova.core.Events
 import com.kuaigeglobal.epnova.core.User
@@ -26,8 +27,8 @@ import com.kuaigeglobal.epnova.databinding.ActivityMainBinding
 import com.kuaigeglobal.epnova.feature.aicompose.generating.GeneratingViewModel
 import com.kuaigeglobal.epnova.feature.home.HomeFragment
 import com.kuaigeglobal.epnova.feature.mine.MineFragment
+import com.kuaigeglobal.epnova.feature.rewards.RewardWelcomeDialog
 import com.kuaigeglobal.epnova.feature.rewards.RewardsFragment
-import com.kuaigeglobal.epnova.feature.splash.newer.FirstRechargeDialog
 import com.kuaigeglobal.epnova.router.AppNavigator
 import com.kuaigeglobal.epnova.router.AppRouter
 import com.nhsd.basic.BaseViewModelActivity
@@ -115,14 +116,7 @@ class MainActivity : BaseViewModelActivity<ActivityMainBinding, MainViewModel>()
                 }, 1200)
             }
         }
-        mRealVM.startCreating.observe(this) {
-            if (it) {
-                toHome()
-                mRealVM.startCreating.value = false
-            }
-        }
     }
-
 
 
     /**
@@ -326,9 +320,11 @@ class MainActivity : BaseViewModelActivity<ActivityMainBinding, MainViewModel>()
                 R.id.tabMine -> {
                     FlowEventBus.postSync(Events.MainTabDoubleClickEvent(Events.MainTabDoubleClickEvent.TAB_MINE))
                 }
+
                 R.id.tabHome -> {
                     FlowEventBus.postSync(Events.MainTabDoubleClickEvent(Events.MainTabDoubleClickEvent.TAB_HOME))
                 }
+
                 else -> {
                     FlowEventBus.postSync(Events.MainTabDoubleClickEvent(Events.MainTabDoubleClickEvent.TAB_WORKS))
                 }
@@ -385,15 +381,11 @@ class MainActivity : BaseViewModelActivity<ActivityMainBinding, MainViewModel>()
     }
 
     private fun observeEvents() {
-        mRealVM.firstRechargeCache.observe(this) { data ->
-            data?.let {
-                EventManager.onAppTrack(AppEvent.SF_VIEW_HOME_NEWCOMER_GIFTPACK_PAGE)
-                FirstRechargeDialog.show(FirstRechargeDialog.SCENE_HOME, it)?.apply {
-                    setOnDismissListener {
-                        this@MainActivity.mRealVM.isFirstRechargeLogicActive = false
-                    }
-                }
-                Config.get().markFirstRechargeShown(FirstRechargeDialog.SCENE_HOME)
+        mRealVM.loginTaskData.observe(this) {
+            val todayDate = DateUtil.getDateTime()
+            if (Config.get().loginRewardsDialog != todayDate) {
+                RewardWelcomeDialog.newInstance(it)
+                Config.get().loginRewardsDialog = todayDate
             }
         }
         observeEvents {

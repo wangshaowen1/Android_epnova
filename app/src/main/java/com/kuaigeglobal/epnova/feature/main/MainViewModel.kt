@@ -1,12 +1,8 @@
 package com.kuaigeglobal.epnova.feature.main
 
-import android.util.Log
 import androidx.databinding.ObservableBoolean
-import androidx.databinding.ObservableField
 import androidx.databinding.ObservableInt
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
-import com.kuaigeglobal.epnova.App
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.Constants
 import com.kuaigeglobal.epnova.core.AppRepository
@@ -14,29 +10,11 @@ import com.kuaigeglobal.epnova.core.Config
 import com.kuaigeglobal.epnova.core.Global
 import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.ext.launch
-import com.kuaigeglobal.epnova.core.ext.launchWithLoading
 import com.kuaigeglobal.epnova.core.network.apis.request.UserTokenBody
-import com.kuaigeglobal.epnova.core.network.apis.response.ActivityConfigData
-import com.kuaigeglobal.epnova.core.network.apis.response.DramasInfoData
-import com.kuaigeglobal.epnova.core.network.apis.response.FirstRechargeDialogData
-import com.kuaigeglobal.epnova.core.network.apis.response.UserHomeData
+import com.kuaigeglobal.epnova.core.network.apis.response.LoginTaskData
 import com.kuaigeglobal.epnova.core.response
 import com.kuaigeglobal.epnova.feature.play.more.ShareShortDramaViewModel
-import com.kuaigeglobal.epnova.feature.splash.newer.FirstRechargeDialog
-import com.kuaigeglobal.epnova.kit.SignUtils
-import com.kuaigeglobal.epnova.router.AppNavigator
-import com.nhsd.basic.ext.showToast
-import kotlinx.coroutines.launch
 
-/**
- * *****************************************
- * 项目名称: KidsTales
- * @Author: SZYMN
- * @Introduce:
- * @Data: 2025/4/17  9:38
- * @Version: 1.0
- * *****************************************
- */
 class MainViewModel : ShareShortDramaViewModel<AppRepository>() {
 
     //显示隐藏底部
@@ -57,19 +35,12 @@ class MainViewModel : ShareShortDramaViewModel<AppRepository>() {
     //设置编辑的回调
     var setIsEditing: ((Boolean) -> Unit)? = null
 
-    //去创作
-    val startCreating = MutableLiveData<Boolean>()
-
-    val generating = ObservableField<DramasInfoData>()
-    val activityConfigCache = MutableLiveData<ActivityConfigData>()
-    val firstRechargeCache = MutableLiveData<FirstRechargeDialogData>()
+    val loginTaskData = MutableLiveData<LoginTaskData>()
 
     fun initialization() {
         //获取用户主页信息接口
         fetchUserInfo()
-        initHomeConfig()
     }
-
 
 
     override fun onResume() {
@@ -96,6 +67,11 @@ class MainViewModel : ShareShortDramaViewModel<AppRepository>() {
                     result = {
                         fetchingUserInfo = false
                         User.get().updateFrom(this.data)
+
+                        if (User.get().isGuest && loginTaskData.value == null) {
+                            getLoginTaskData()
+                        }
+
                     },
                     error = { fetchingUserInfo = false }
                 )
@@ -122,41 +98,16 @@ class MainViewModel : ShareShortDramaViewModel<AppRepository>() {
         return if (showTab == 0) R.color.main_tab_txt_color_dark else R.color.main_tab_txt_color
     }
 
-    // 是否本次显示的充值弹窗 优先级最高
-    var isFirstRechargeLogicActive = false
-    //true 表示有活动弹窗需要显示 但因为优先级原因本次没显示 下一次显示
-    var hasActivityConfig = false
-
-    fun initHomeConfig() {
+    fun getLoginTaskData() {
         launch {
-            if (fromPage == MainActivity.FROM_NEWER) {
-                // 1. 检查本地和登录状态，提前拦截
-                val canShowFirstRecharge = !User.get().hasPaid() && !Config.get().isFirstRechargeShown(FirstRechargeDialog.SCENE_HOME)
-                if (canShowFirstRecharge) {
-                    // 2. 请求首充接口 (这里必须先于活动配置完成)
-                    val firstRechargeResponse = mRepo.api.getFirstRechargeDialogInfo()
-                    if (firstRechargeResponse.data != null && firstRechargeResponse.data?.isNeedShow() == true) {
-                        isFirstRechargeLogicActive = true
-                        firstRechargeCache.value = firstRechargeResponse.data
-                    } else {
-                        isFirstRechargeLogicActive = false
-                    }
-                } else {
-                    isFirstRechargeLogicActive = false
+            response(mRepo.api.loginTaskPopup()) {
+                if (data == null || data?.rewardLabel == "0") return@response
+                if (data?.needShow == 1) {
+                    loginTaskData.value = data
+                    Config.get().loginRewards = data?.rewardLabel
                 }
-            }
-            // 3. 首充判断结束后，再请求/分发活动配置
-            val activityResponse = mRepo.api.activityConfig()
-            // 这里赋值后，HomeFragment 会收到通知，此时 isFirstRechargeLogicActive 状态已经确定了
-            activityConfigCache.value = activityResponse.data
-            if (isFirstRechargeLogicActive && activityResponse.data != null) {
-                hasActivityConfig = true
+
             }
         }
     }
-
-
-
-
-
 }

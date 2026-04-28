@@ -565,7 +565,7 @@ Syarat Penggunaan dan Kebijakan Privasi
     <string name="transaction_history_login_reward">Hadiah Login</string>
     <string name="transaction_history_ad_reward">Hadiah Iklan</string>
     <string name="home_login_reward_welcome">Selamat Datang di EpNova</string>
-    <string name="home_login_reward_coins">+50 Koin</string>
+    <string name="home_login_reward_coins">+%s Koin</string>
     <string name="home_login_reward_claim">Ambil</string>
     <string name="login_epnova">EpNova</string>
     <string name="login_facebook">Masuk dengan Facebook</string>
@@ -602,5 +602,5 @@ Syarat Penggunaan dan Kebijakan Privasi
     <string name="tab_explore">Jelajahi</string>
     <string name="tab_rewards">Hadiah</string>
     <string name="tab_profile">Profil</string>
-    <string name="login_claim_coins">Klaim 50 Koin</string>
+    <string name="login_claim_coins">Klaim %s Koin</string>
 </resources>

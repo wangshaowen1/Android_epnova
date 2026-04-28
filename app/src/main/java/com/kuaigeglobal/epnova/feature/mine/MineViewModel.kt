@@ -37,6 +37,11 @@ class MineViewModel : AppRepositoryViewModel<AppRepository>() {
     val balance by lazy { ObservableField<String>() }
     val workCourseBanner by lazy { ObservableField<SimpleBannerInfo>() }
 
+    val loginRewardsValid: Boolean
+        get() = User.get().loginRewardsValid == 1
+    val loginRewards: String?
+        get() = Config.get().loginRewards
+
     override fun onCreate() {
         super.onCreate()
         //更新必要信息

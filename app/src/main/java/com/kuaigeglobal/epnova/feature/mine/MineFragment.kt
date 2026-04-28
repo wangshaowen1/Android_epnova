@@ -14,7 +14,6 @@ import com.kuaigeglobal.epnova.core.Events
 import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.databinding.loadGifUrl
 import com.kuaigeglobal.epnova.core.ext.onUserStatusChanged
-import com.kuaigeglobal.epnova.core.network.apis.response.ActivityConfigData
 import com.kuaigeglobal.epnova.core.network.apis.response.FloatWindowInfo
 import com.kuaigeglobal.epnova.core.network.apis.response.PopupInfo
 import com.kuaigeglobal.epnova.databinding.FragmentMineBinding
@@ -64,11 +63,6 @@ class MineFragment : BaseViewModelFragment<FragmentMineBinding, MineViewModel>()
     }
 
     private fun dataUpdate() {
-        parentVm?.activityConfigCache?.observe(this) {
-            handlePopup(it.getPopupInfo(ActivityConfigData.TAB_MINE))
-            handleFloatWindow(it.getFloatWindowInfo(ActivityConfigData.TAB_MINE))
-        }
-
         observeEvents {
 //            on<Events.MainTabEvent> { event ->
 //                when (event.type) {
@@ -142,28 +136,6 @@ class MineFragment : BaseViewModelFragment<FragmentMineBinding, MineViewModel>()
 
 
             }
-        }
-    }
-
-    private fun handlePopup(popup: PopupInfo?) {
-        popup?.let {
-            if (popup.isShow()) {
-                ActivityDialog.show(popup)
-                Config.get().activityPopupShowMark(popup.id)
-            }
-        }
-    }
-
-    private fun handleFloatWindow(float: FloatWindowInfo?) {
-        if (float != null && float.isShow()) {
-            binding.floatingBall.isVisible = true
-            loadGifUrl(binding.ivFloating, float.imageUrl, R.drawable.img_default_cover_1_1.getResDrawable())
-            Config.get().activityFloatShowMark(float.id)
-            binding.floatingBall.setOnMfClickListener {
-                AppRouter.jump(float.jumpUrl)
-            }
-        } else {
-            binding.floatingBall.visibility = View.GONE
         }
     }
 

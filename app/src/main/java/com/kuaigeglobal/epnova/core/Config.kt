@@ -77,6 +77,10 @@ class Config : NetworkChangedListener {
     var referrer: String? by MmkvDelegate(GOOGLE_INSTALL_REFERRER, null) { mmkv }
         private set
 
+
+    var loginRewardsDialog: String? by MmkvDelegate("today_login_rewards_dialog", null) { mmkv }
+    var loginRewards: String? by MmkvDelegate("login_rewards", null) { mmkv }
+
     /**
      * 数据迁移初始化，建议在 App.onCreate() 中调用: Config.get().init(this)
      */
