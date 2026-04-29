@@ -87,10 +87,8 @@ class FeedListController(
         if (adapter.itemCount == 0) return
         val safePosition = targetPosition.coerceIn(0, adapter.itemCount - 1)
 
-        // 始终重置，确保跳集/解锁后重新进入同一位置时能正常触发播放
-//        lastPlayedPosition = -1
-        // 如果初始位置就是 0，且当前就在 0，需要强制触发一次逻辑
-        if (safePosition == 0) lastPlayedPosition = -1
+        // 始终重置，确保跳集/解锁/选集后重新进入同一位置时能正常触发播放
+        lastPlayedPosition = -1
 
         if (getCurrentPosition() != safePosition) {
             layoutManager.scrollToPositionWithOffset(safePosition, 0)

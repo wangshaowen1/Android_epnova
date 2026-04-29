@@ -134,12 +134,13 @@ class DramasPlayPagerActivity :
                         PowerRechargeDialog.show(
                             costNums,
                             onRechargeSuccess = {
-                                // 充值成功，余额已到账，重新触发自动解锁
+                                // 充值成功：先设好跳转位置，等 collectLatest→submitList 回调后再 startInitialPlay
+                                // 避免 adapter.currentList 还是旧 lockStatus=2 时再次触发解锁弹窗
                                 isEpisodeLocked = false
+                                val pos = adapter.currentList.indexOfFirst { it.storyId == episode.storyId }
+                                if (pos >= 0) pendingJumpPosition = pos
                                 mRealVM.onEpisodeManuallyUnlocked(episode)
                                 listController.reset()
-                                val pos = adapter.currentList.indexOfFirst { it.storyId == episode.storyId }
-                                if (pos >= 0) listController.startInitialPlay(pos)
                             },
                             onDismiss = {
                                 if (adRemain > 0) showAdUnlockDialog(episode, adRemain)
@@ -242,18 +243,18 @@ class DramasPlayPagerActivity :
         val data = mRealVM.fetchFirstRechargeInfo() ?: return false
         if (!data.isNeedShow()) return false
 
-        Config.get().markFirstRechargeShown(FirstRechargeDialog.SCENE_OTHER)
-        EventManager.onAppTrack(AppEvent.SF_VIEW_CREATE_NEWCOMER_GIFTPACK_PAGE)
-
         val onRetryUnlock: () -> Unit = {
             isEpisodeLocked = false
+            val pos = adapter.currentList.indexOfFirst { it.storyId == episode.storyId }
+            if (pos >= 0) pendingJumpPosition = pos
             mRealVM.onEpisodeManuallyUnlocked(episode)
             listController.reset()
-            val pos = adapter.currentList.indexOfFirst { it.storyId == episode.storyId }
-            if (pos >= 0) listController.startInitialPlay(pos)
         }
 
+        // 确认弹窗成功展示后再标记，避免 show() 失败时 flag 被永久占用
         val dialog = FirstRechargeDialog.show(FirstRechargeDialog.SCENE_OTHER, data) ?: return false
+        Config.get().markFirstRechargeShown(FirstRechargeDialog.SCENE_OTHER)
+        EventManager.onAppTrack(AppEvent.SF_VIEW_CREATE_NEWCOMER_GIFTPACK_PAGE)
         dialog.onPaySuccess = onRetryUnlock
         dialog.onClose = {
             // 关闭礼包弹窗 → 弹普通充值面板，接续原有充值/解锁流程
@@ -279,23 +280,27 @@ class DramasPlayPagerActivity :
         val controller = mRealVM.createUnlockController(episode, lifecycleScope)
         controller.onUnlockSuccess = { unlockedEpisode ->
             isEpisodeLocked = false
+            val pos = adapter.currentList.indexOfFirst { it.storyId == unlockedEpisode.storyId }
+            if (pos >= 0) {
+                pendingJumpPosition = pos
+                // 立即隐藏覆盖层；submitList 回调完成后 startInitialPlay 再触发播放
+                val freshHolder = binding.recyclerView.findViewHolderForAdapterPosition(pos)
+                        as? VideoFeedAdapter.VideoViewHolder
+                freshHolder?.hideUnlockOverlay()
+            }
             mRealVM.onEpisodeManuallyUnlocked(unlockedEpisode)
             listController.reset()
-            holder.hideUnlockOverlay()
-            val pos = adapter.currentList.indexOfFirst { it.storyId == unlockedEpisode.storyId }
-            if (pos >= 0) listController.startInitialPlay(pos)
         }
         controller.onInsufficientCoins = { adRemainCount ->
             // 弹充值弹窗，关闭后决定下一步（广告 or 继续停在手动解锁覆盖层）
             PowerRechargeDialog.show(
                 episode.costNums,
                 onRechargeSuccess = {
-                    // 充值成功，余额已到账，重新触发自动解锁
                     isEpisodeLocked = false
+                    val pos = adapter.currentList.indexOfFirst { it.storyId == episode.storyId }
+                    if (pos >= 0) pendingJumpPosition = pos
                     mRealVM.onEpisodeManuallyUnlocked(episode)
                     listController.reset()
-                    val pos = adapter.currentList.indexOfFirst { it.storyId == episode.storyId }
-                    if (pos >= 0) listController.startInitialPlay(pos)
                 },
                 onDismiss = {
                     if (adRemainCount > 0) showAdUnlockDialog(episode, adRemainCount)
@@ -309,12 +314,11 @@ class DramasPlayPagerActivity :
     private fun showAdUnlockDialog(episode: EpisodeInfo, adRemainCount: Int) {
         val adDialog = AdUnlockDialog.newInstance(mRealVM.workId, mRealVM.currentWorkContext.value?.workCoverUrl, episode, adRemainCount)
         adDialog.onUnlockSuccess = {
-            // 广告解锁成功，更新主 ViewModel 状态并重播
             isEpisodeLocked = false
+            val position = adapter.currentList.indexOfFirst { it.storyId == episode.storyId }
+            if (position >= 0) pendingJumpPosition = position
             mRealVM.onEpisodeManuallyUnlocked(episode)
             listController.reset()
-            val position = adapter.currentList.indexOfFirst { it.storyId == episode.storyId }
-            if (position >= 0) listController.startInitialPlay(position)
         }
         adDialog.onDismissWithoutWatch = {
             showUnlockOverlay(episode)

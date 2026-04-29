@@ -6,6 +6,7 @@ import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.core.Config
+import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.manager.RewardedAdManager
 import com.kuaigeglobal.epnova.core.network.apis.ApiService
 import com.kuaigeglobal.epnova.core.network.apis.entity.EpisodeInfo
@@ -164,6 +165,7 @@ class EpisodeUnlockController(
             ) {
                 episode.let { ep ->
                     showToast(R.string.episode_unlock_success)
+                    User.get().storeCoins(data?.remainCoinsBalance)
                     onUnlockSuccess?.invoke(ep)
                 }
             }
