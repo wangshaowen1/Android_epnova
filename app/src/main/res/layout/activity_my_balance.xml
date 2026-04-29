@@ -74,7 +74,7 @@
                             android:layout_marginStart="4dp"
                             android:layout_marginTop="10dp"
                             android:fontFamily="@font/outfit_medium"
-                            android:text="@{layout.balance}"
+                            android:text="@{layout.userPurchasedCoins}"
                             android:textColor="?attr/textColor1"
                             android:textSize="20sp"
                             app:layout_constraintEnd_toEndOf="@id/tvBalance"
@@ -114,7 +114,7 @@
                             android:layout_marginStart="4dp"
                             android:layout_marginTop="10dp"
                             android:fontFamily="@font/outfit_medium"
-                            android:text="@{layout.balance}"
+                            android:text="@{layout.userGiveCoins}"
                             android:textColor="?attr/textColor1"
                             android:textSize="20sp"
                             app:layout_constraintEnd_toEndOf="@id/tvRewardsCoins"
@@ -139,7 +139,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="@dimen/spacing_l"
                             android:layout_marginTop="20dp"
-                            android:text="@string/select_recharge_amount"
+                            android:text="@string/store_select_recharge_amount"
                             android:textAppearance="@style/Text16"
                             android:textColor="?attr/textColor2"
                             android:textStyle="normal"
@@ -162,15 +162,19 @@
                             tools:itemCount="6"
                             tools:listitem="@layout/item_recharge_power" />
 
-                        <include
-                            android:id="@+id/my_balance_bottom_view"
-                            layout="@layout/my_balance_bottom"
+                        <TextView
+                            android:id="@+id/tvTip"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="@dimen/spacing_l"
+                            android:fontFamily="@font/outfit_regular"
+                            android:lineSpacingExtra="@dimen/lineSpacingExtra"
+                            android:text="@string/store_coins_tips"
+                            android:textColor="?attr/textColor4"
+                            android:textSize="12sp"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@id/rvRechargeAmount" />
-
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                 </androidx.core.widget.NestedScrollView>

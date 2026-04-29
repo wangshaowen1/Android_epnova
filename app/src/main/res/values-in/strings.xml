@@ -227,7 +227,7 @@ Untuk mengkonfirmasi, ketuk [Minta Penghapusan].</string>
     <string name="start_creation_monetization">Mulai Hasilkan Uang dari Karya Saya</string>
     <string name="works">Karya</string>
     <string name="my_balance">Saldo Saya</string>
-    <string name="select_recharge_amount">Pilih Jumlah Isi Ulang</string>
+    <string name="store_select_recharge_amount">Pilih nominal isi ulang</string>
     <string name="power_validity_period">Kredit berlaku selama 1 tahun</string>
     <string name="agree_to_purchase">Dengan membeli, Anda menyetujui</string>
     <string name="payment_agreement_show">Perjanjian Pembayaran</string>

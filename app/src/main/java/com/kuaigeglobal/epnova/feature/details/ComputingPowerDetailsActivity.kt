@@ -45,9 +45,9 @@ class ComputingPowerDetailsActivity :
         binding.magicIndicator.navigator = CommonNavigatorUtils.getCommonNavigatorVp2(
             this,
             listOf(
-                getString(R.string.all),
-                getString(R.string.income_details),
-                getString(R.string.consumption_details)
+                getString(R.string.transaction_history_all),
+                getString(R.string.transaction_history_earned),
+                getString(R.string.transaction_history_spent)
             ),false,
             binding.viewPager,
             indicatorView = CommonNavigatorUtils.getLinePagerIndicatorGradient(context = this)

@@ -225,7 +225,7 @@
     <string name="start_creation_monetization">Start Monetizing My Creations</string>
     <string name="works">Works</string>
     <string name="my_balance">My Balance</string>
-    <string name="select_recharge_amount">Select Top-Up Amount</string>
+    <string name="store_select_recharge_amount">Select recharge amount</string>
     <string name="power_validity_period">Coins valid for 1 year</string>
     <string name="agree_to_purchase">By purchasing, you agree to</string>
     <string name="payment_agreement_show">Payment Agreement</string>

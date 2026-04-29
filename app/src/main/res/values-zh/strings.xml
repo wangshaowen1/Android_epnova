@@ -219,7 +219,7 @@
     <string name="start_creation_monetization">开启我的创作变现</string>
     <string name="works">作品</string>
     <string name="my_balance">我的余额</string>
-    <string name="select_recharge_amount">选择充值金额</string>
+    <string name="store_select_recharge_amount">选择充值金额</string>
     <string name="power_validity_period">算力值有效期：1年</string>
     <string name="agree_to_purchase">购买即表示同意</string>
     <string name="payment_agreement_show">《支付协议》</string>

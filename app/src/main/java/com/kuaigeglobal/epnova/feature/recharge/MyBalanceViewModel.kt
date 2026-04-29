@@ -37,12 +37,12 @@ import kotlinx.coroutines.launch
 
 class MyBalanceViewModel(@LayoutRes private val paymentItemLayout: Int) : AppRepositoryViewModel<CoinRepository>() {
 
-   //toolbar 配置
+    //toolbar 配置
     val toolbar by lazy {
         ToolbarViewModel(
-            title = R.string.recharge_credits.getResString(),
+            title = R.string.store_store.getResString(),
             navigationAction = { back() },
-            menuText = R.string.compute_details.getResString(),
+            menuText = R.string.store_history.getResString(),
             menuAction = { ComputingPowerDetailsActivity.start(topActivity) }
         )
     }
@@ -52,10 +52,13 @@ class MyBalanceViewModel(@LayoutRes private val paymentItemLayout: Int) : AppRep
 
     /** 充值（Google 支付）成功后的回调，由外部（Dialog）注入 */
     var onPurchaseSuccess: (() -> Unit)? = null
+
     /**
      * 账户余额
      */
     val balance by lazy { ObservableField<String>() }
+    val userGiveCoins by lazy { ObservableField<String>() }
+    val userPurchasedCoins by lazy { ObservableField<String>() }
     val loadState by lazy { ObservableInt() }
     val powerAdapter by lazy { QuickAdapter<ItemRechargePowerVM>(R.layout.item_recharge_power, emptyList()) }
     private var currentPower: ItemRechargePowerVM? = null
@@ -191,7 +194,11 @@ class MyBalanceViewModel(@LayoutRes private val paymentItemLayout: Int) : AppRep
     }
 
     fun updateBalance() {
-        balance.set(User.get().coins.toString())
+        User.get().apply {
+            userPurchasedCoins.set((coins - giveCoins).coerceAtLeast(0).toString())
+            balance.set(coins.toString())
+            userGiveCoins.set(User.get().giveCoins.toString())
+        }
     }
 
     private fun refreshBalance() {

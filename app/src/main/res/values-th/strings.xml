@@ -227,7 +227,7 @@
     <string name="start_creation_monetization">เริ่มสร้างรายได้จากงานสร้างของฉัน</string>
     <string name="works">งานสร้าง</string>
     <string name="my_balance">ยอดเงินของฉัน</string>
-    <string name="select_recharge_amount">เลือกจำนวนการเติมเงิน</string>
+    <string name="store_select_recharge_amount">เลือกจำนวนเงินเติม</string>
     <string name="power_validity_period">เครดิตมีอายุ 1 ปี</string>
     <string name="agree_to_purchase">การซื้อแสดงว่าคุณยอมรับ</string>
     <string name="payment_agreement_show">ข้อตกลงการชำระเงิน</string>

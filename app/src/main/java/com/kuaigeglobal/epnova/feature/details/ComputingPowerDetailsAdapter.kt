@@ -1,6 +1,7 @@
 package com.kuaigeglobal.epnova.feature.details
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
@@ -46,6 +47,7 @@ class ComputingPowerDetailsAdapter  : PagingDataAdapter<ComputingPowerDetailsInf
                 val transVM = binding.getVm(position, item, ItemComputingPowerDetailsVm::class.java)
                 binding.item = transVM
                 binding.executePendingBindings()
+                binding.line.visibility = if (position == itemCount - 1) View.GONE else View.VISIBLE
             }
         }
     }

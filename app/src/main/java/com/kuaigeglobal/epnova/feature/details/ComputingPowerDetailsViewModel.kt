@@ -19,7 +19,7 @@ import com.nhsd.basic.ext.getResString
 class ComputingPowerDetailsViewModel : AppRepositoryViewModel<AppRepository>() {
     var mToolbarVM = ToolbarViewModel(
         navigationAction = { back() },
-        title = R.string.compute_details.getResString(),
+        title = R.string.transaction_history_title.getResString(),
         background = Color.TRANSPARENT
     )
 }
