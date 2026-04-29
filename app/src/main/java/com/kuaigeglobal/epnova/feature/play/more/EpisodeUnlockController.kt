@@ -126,10 +126,9 @@ class EpisodeUnlockController(
     // --- 供 View 层调用的公开方法 ---
 
     /** 点击"解锁/充值"按钮 */
-    fun onClickUnlockNow(onShowRecharge: () -> Unit) {
+    fun onClickUnlockNow() {
         if (coinsInsufficient.get()) {
             val adRemain = unlockInfo?.adUnlockRemainCount ?: 0
-            onShowRecharge()
             onInsufficientCoins?.invoke(adRemain)
         } else {
             unlockWithCoins()

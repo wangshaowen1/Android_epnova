@@ -36,20 +36,29 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <!-- 封面图（3:4 比例） -->
-        <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/ivCover"
-            loadHQThumbnailUri="@{layout.episode.workCoverUrl}"
-            placeHolder="@{@drawable/img_default_cover_3_4}"
-            android:layout_width="136dp"
-            android:layout_height="180dp"
-            android:layout_marginTop="32dp"
-            android:scaleType="centerCrop"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/llCover"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="26dp"
+            app:cardBackgroundColor="@color/color_40_000000"
+            app:cardCornerRadius="10dp"
+            app:cardElevation="6dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvTitle"
-            app:shapeAppearance="@style/roundStyle_r10"
-            tools:src="@drawable/img_default_cover_3_4" />
+            app:layout_constraintTop_toBottomOf="@id/tvTitle">
+            <!-- 封面图（3:4 比例） -->
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/ivCover"
+                loadHQThumbnailUri="@{layout.workCover}"
+                placeHolder="@{@drawable/img_default_cover_3_4}"
+                android:layout_width="136dp"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:scaleType="centerCrop"
+                app:shapeAppearance="@style/roundStyle_r10"
+                tools:src="@drawable/img_default_cover_3_4" />
+        </androidx.cardview.widget.CardView>
 
         <!-- 关闭按钮（右上角） -->
         <ImageView
@@ -75,7 +84,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/ivCover">
+            app:layout_constraintTop_toBottomOf="@id/llCover">
             <!-- "Unlock for free" 按钮 -->
             <TextView
                 android:id="@+id/btnUnlockForFree"

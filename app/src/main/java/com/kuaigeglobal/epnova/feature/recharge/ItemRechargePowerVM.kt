@@ -3,18 +3,18 @@ package com.kuaigeglobal.epnova.feature.recharge
 import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import com.kuaigeglobal.epnova.base.item.AppItemViewModel
-import com.kuaigeglobal.epnova.core.network.apis.entity.PointConfigInfo
+import com.kuaigeglobal.epnova.core.network.apis.entity.CoinConfigInfo
 
 /**
  * 充值算力选项
  */
-class ItemRechargePowerVM(info: PointConfigInfo) : AppItemViewModel<PointConfigInfo>(info) {
+class ItemRechargePowerVM(info: CoinConfigInfo) : AppItemViewModel<CoinConfigInfo>(info) {
 
     val isChecked by lazy { ObservableBoolean(false) }
     val discountText by lazy {
         ObservableField<String>()
     }
-    val priceText  = ObservableField<String>(info.pointPrice)
+    val priceText  = ObservableField<String>(info.coionsPrice)
     fun updateTime() {
         val info = data.get() ?: return
         val discountValid = info.isDiscountValid()

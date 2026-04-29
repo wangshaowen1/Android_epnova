@@ -90,7 +90,7 @@
                         android:layout_width="28dp"
                         android:layout_height="28dp"
                         android:importantForAccessibility="no"
-                        android:src="@drawable/icon_power" />
+                        android:src="@drawable/ic_coins" />
 
                     <TextView
                         android:layout_width="wrap_content"

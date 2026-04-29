@@ -2,6 +2,7 @@ package com.kuaigeglobal.epnova.feature.splash.newer
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.base.viewmodel.AppRepositoryViewModel
 import com.kuaigeglobal.epnova.common.Constants
 import com.kuaigeglobal.epnova.common.ext.topActivity
@@ -11,14 +12,15 @@ import com.kuaigeglobal.epnova.core.google.billing.BillingManager
 import com.kuaigeglobal.epnova.core.network.apis.request.CreateOrderBody
 import com.kuaigeglobal.epnova.core.network.apis.response.FirstRechargeDialogData
 import com.kuaigeglobal.epnova.core.response
-import com.kuaigeglobal.epnova.feature.recharge.PowerRepository
+import com.kuaigeglobal.epnova.feature.recharge.CoinRepository
 import com.kuaigeglobal.epnova.router.AppNavigator
 import com.nhsd.basic.ext.getParcelableValue
+import com.nhsd.basic.ext.showToast
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class FirstRechargeViewModel : AppRepositoryViewModel<PowerRepository>() {
+class FirstRechargeViewModel : AppRepositoryViewModel<CoinRepository>() {
 
     val data by lazy { mBundle.getParcelableValue(Constants.Extra.DATA, FirstRechargeDialogData::class.java) }
     val scene by lazy { mBundle.getInt(Constants.Extra.FROM_PAGE, FirstRechargeDialog.SCENE_OTHER) }
@@ -26,6 +28,12 @@ class FirstRechargeViewModel : AppRepositoryViewModel<PowerRepository>() {
     val hourStr = MutableLiveData("00")
     val minuteStr = MutableLiveData("00")
     val secondStr = MutableLiveData("00")
+
+    /** 倒计时归零信号，由 Dialog 观察后自动关闭 */
+    val countdownFinished = MutableLiveData(false)
+
+    /** 支付成功回调，由外部（Dialog）注入 */
+    var onPaySuccess: (() -> Unit)? = null
 
     private var countDownJob: Job? = null
 
@@ -42,37 +50,26 @@ class FirstRechargeViewModel : AppRepositoryViewModel<PowerRepository>() {
         }
     }
 
-    private fun startCountDown(expireTime: Long) {
+    private fun startCountDown(remainMs: Long) {
         countDownJob?.cancel()
         countDownJob = viewModelScope.launch {
-            while (true) {
-//                val currentTime = System.currentTimeMillis()
-//                val diffMs = expireTime - currentTime
-                val diffMs = expireTime
-
-                if (diffMs <= 0) {
-                    // 倒计时结束
-                    hourStr.value = "00"
-                    minuteStr.value = "00"
-                    secondStr.value = "00"
-
-                    countDownJob?.cancel()
-                    break
-                }
-
-                // 计算时、分、秒
-                val totalSeconds = diffMs / 1000
+            var remaining = remainMs
+            while (remaining > 0) {
+                val totalSeconds = remaining / 1000
                 val hours = totalSeconds / 3600
                 val minutes = (totalSeconds % 3600) / 60
                 val seconds = totalSeconds % 60
-
-                // 格式化为两位数 (例如 9 -> "09")
                 hourStr.value = String.format("%02d", hours)
                 minuteStr.value = String.format("%02d", minutes)
                 secondStr.value = String.format("%02d", seconds)
-
                 delay(1000)
+                remaining -= 1000
             }
+            // 归零：UI 保持显示 00:00:00，通知 Dialog 关闭
+            hourStr.value = "00"
+            minuteStr.value = "00"
+            secondStr.value = "00"
+            countdownFinished.value = true
         }
     }
 
@@ -90,10 +87,14 @@ class FirstRechargeViewModel : AppRepositoryViewModel<PowerRepository>() {
                 it ?: "",
                 onSuccess = {
                     refreshBalance()
+//                    showToast(R.string.payment_successful)
+                    onPaySuccess?.invoke()
                 },
                 onFail = { errorCode ->
-                    if (errorCode != 3) {
-
+                    if (errorCode == 3) {
+//                        showToast(R.string.payment_cancelled)
+                    } else {
+//                        showToast(R.string.payment_failed_retry)
                     }
                 }
             )

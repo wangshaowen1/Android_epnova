@@ -7,7 +7,7 @@ package com.kuaigeglobal.epnova.core.network.apis.request
  * @param nonce 本次广告唯一标识，由 /ad/prepare 接口返回
  */
 data class StoryUnlockAdResultBody(
-    val workId: Long,
-    val storyId: Long,
-    val nonce: String
+    val workId: String?,
+    val storyId: String?,
+    val nonce: String?
 ) : UserTokenBody()

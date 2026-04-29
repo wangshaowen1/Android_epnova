@@ -200,7 +200,7 @@ suspend fun sensitiveWordCheck(content: String?, needHighlight: Boolean? = true)
 }
 
 suspend fun showRechargeDialog(showToast: Boolean = false) {
-        PowerRechargeDialog.show(showToast)
+        PowerRechargeDialog.show(0,showToast)
 //    if (!showFirstRecharge(showToast)) {
 //    }
 }
@@ -219,7 +219,7 @@ suspend fun showFirstRecharge(showToast: Boolean): Boolean {
     EventManager.onAppTrack(AppEvent.SF_VIEW_CREATE_NEWCOMER_GIFTPACK_PAGE)
     val dialog = FirstRechargeDialog.show(FirstRechargeDialog.SCENE_OTHER, firstRechargeDialogData)?.apply {
         onClose = {
-            PowerRechargeDialog.show(showToast)
+            PowerRechargeDialog.show(0,showToast)
         }
     }
     Config.get().markFirstRechargeShown(FirstRechargeDialog.SCENE_OTHER)

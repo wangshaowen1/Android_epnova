@@ -89,6 +89,9 @@
 
     <string name="privacy_policy">Privacy Policy</string>
     <string name="payment_agreement">Payment Agreement</string>
+    <string name="payment_successful">Payment successful</string>
+    <string name="payment_cancelled">Payment Cancelled</string>
+    <string name="payment_failed_retry">Payment failed, please try again</string>
     <string name="yesterday">Yesterday</string>
     <string name="day_before_yesterday">2 Days Ago</string>
     <string name="day">Day</string>

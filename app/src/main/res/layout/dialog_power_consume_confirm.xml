@@ -57,7 +57,7 @@
             android:layout_width="16dp"
             android:layout_height="16dp"
             android:layout_marginEnd="40dp"
-            android:src="@drawable/icon_power"
+            android:src="@drawable/ic_coins"
             app:layout_constraintBottom_toBottomOf="@+id/tvCost"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/tvCost" />

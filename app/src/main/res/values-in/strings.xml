@@ -74,6 +74,9 @@
     <string name="describe_your_report">Jelaskan masalahnya</string>
     <string name="privacy_policy">Kebijakan Privasi</string>
     <string name="payment_agreement">Perjanjian Pembayaran</string>
+    <string name="payment_successful">Pembayaran berhasil</string>
+    <string name="payment_cancelled">Pembayaran dibatalkan</string>
+    <string name="payment_failed_retry">Pembayaran gagal, silakan coba lagi</string>
     <string name="yesterday">Kemarin</string>
     <string name="day_before_yesterday">Dua Hari Lalu</string>
     <string name="day">Hari</string>

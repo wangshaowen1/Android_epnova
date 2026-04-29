@@ -49,7 +49,7 @@ object Global {
         ioScope.launchNoCrash {
             val resp = ApiFactory.apiService.queryWalletInfo(UserTokenBody())
             if (resp.isSuccess) {
-                resp.data?.pointNum?.let { User.get().storeComputingPower(it) }
+                resp.data?.let { User.get().storeWallet(it) }
             }
         }
     }

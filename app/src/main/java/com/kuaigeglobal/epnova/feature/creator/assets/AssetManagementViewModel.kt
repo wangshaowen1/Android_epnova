@@ -115,7 +115,7 @@ class AssetManagementViewModel : AppRepositoryViewModel<AssetManagementRepositor
         }
     private val progressHelper by lazy { AutoProgressSimulator(viewModelScope) { show, title, progress -> promptGenerating.set(show) } }
     val promptGenerating by lazy { ObservableBoolean() }
-    private val powerSpan by lazy { CenterImageSpan(App.instance, R.drawable.icon_power).apply { setDrawableSize(16.dp, 16.dp) } }
+    private val powerSpan by lazy { CenterImageSpan(App.instance, R.drawable.ic_coins).apply { setDrawableSize(16.dp, 16.dp) } }
     private var editConfirm = false
     val hasRole by lazy { ObservableBoolean(false) }
     val hasScene by lazy { ObservableBoolean(false) }

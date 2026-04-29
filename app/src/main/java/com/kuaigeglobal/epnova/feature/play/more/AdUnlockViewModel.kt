@@ -18,6 +18,7 @@ class AdUnlockViewModel : AppRepositoryViewModel<AppRepository>() {
     // 从 mBundle 读取参数（与 arguments 自动对应）
     val workId by lazy { mBundle.getString(Constants.Extra.WORK_ID) }
     val episode by lazy { mBundle.getParcelableValue(Constants.Extra.DATA, EpisodeInfo::class.java) }
+    val workCover by lazy { mBundle.getString(Constants.Extra.COVER) }
 
     /** 委托给 RewardedAdManager，暴露状态给 Dialog 绑定 */
     val adManager: RewardedAdManager by lazy {

@@ -51,7 +51,7 @@
         android:layout_height="64dp"
         android:layout_marginTop="30dp"
         android:contentDescription="@null"
-        android:src="@drawable/icon_power"
+        android:src="@drawable/ic_coins"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvTitle" />

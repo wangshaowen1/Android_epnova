@@ -14,6 +14,7 @@ import com.kuaigeglobal.epnova.core.ext.launchWithLoading
 import com.kuaigeglobal.epnova.core.network.RetrofitClient
 import com.kuaigeglobal.epnova.core.network.apis.entity.EpisodeInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.StoryUnlockInfoData
+import com.kuaigeglobal.epnova.core.network.apis.response.FirstRechargeDialogData
 import com.kuaigeglobal.epnova.core.network.apis.entity.WorkVOInfo
 import com.kuaigeglobal.epnova.core.network.apis.request.CurrentWorkIdBody
 import com.kuaigeglobal.epnova.core.network.apis.request.WorkBody
@@ -167,6 +168,12 @@ class DramasPlayPagerViewModel : AppRepositoryViewModel<CreationRepository>(), D
                 if (it.storyId == episode.storyId) it.copy(lockStatus = 1, videoUrl = null) else it
             }
         }
+    }
+
+    /** 查询首充礼包弹窗数据 */
+    suspend fun fetchFirstRechargeInfo(): FirstRechargeDialogData? {
+        val res = withContext(Dispatchers.IO) { mRepo.api.getFirstRechargeDialogInfo() }
+        return if (res.isSuccess) res.data else null
     }
 
     /**

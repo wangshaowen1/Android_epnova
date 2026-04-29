@@ -1,7 +1,7 @@
 package com.kuaigeglobal.epnova.core.network.apis.response
 
 import com.kuaigeglobal.epnova.core.network.apis.ListData
-import com.kuaigeglobal.epnova.core.network.apis.entity.PointConfigInfo
+import com.kuaigeglobal.epnova.core.network.apis.entity.CoinConfigInfo
 
 /**
  * {
@@ -16,9 +16,9 @@ import com.kuaigeglobal.epnova.core.network.apis.entity.PointConfigInfo
  *     ]
  * }
  */
-data class PointConfigData(
+data class CoinConfigData(
     /**
      * 可用算力数量
      */
-    val pointBalanceNum: Int?,
-): ListData<PointConfigInfo>()
+    val coionsBalanceNum: Long?,
+): ListData<CoinConfigInfo>()

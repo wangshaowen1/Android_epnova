@@ -15,6 +15,12 @@
         android:layout_height="wrap_content"
         android:background="@drawable/bg_color2_tr20">
 
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_credit_recharge_top"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <TextView
             android:id="@+id/tvTitle"
             android:layout_width="wrap_content"
@@ -72,12 +78,19 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/banner"
                     app:layout_goneMarginTop="0dp"
-                    tools:text="算力余额 0">
+                    tools:text="余额 0">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/credit_remaining"
+                        android:text="@string/episode_unlock_popup_current"
+                        android:textAppearance="@style/Text12"
+                        android:textColor="?attr/textColor3" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="："
                         android:textAppearance="@style/Text12"
                         android:textColor="?attr/textColor3" />
 
@@ -85,7 +98,36 @@
                         android:layout_width="16dp"
                         android:layout_height="16dp"
                         android:layout_marginHorizontal="4dp"
-                        android:src="@drawable/icon_power" />
+                        android:src="@drawable/ic_coins" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@{layout.cost+``}"
+                        android:textAppearance="@style/Text14"
+                        android:textColor="?attr/textColor3"
+                        tools:text="0" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/spacing_l"
+                        android:text="@string/episode_unlock_popup_balance"
+                        android:textAppearance="@style/Text12"
+                        android:textColor="?attr/textColor3" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="："
+                        android:textAppearance="@style/Text12"
+                        android:textColor="?attr/textColor3" />
+
+                    <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:layout_marginHorizontal="4dp"
+                        android:src="@drawable/ic_coins" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -104,7 +146,7 @@
                     android:adapter="@{layout.powerAdapter}"
                     android:overScrollMode="never"
                     android:paddingHorizontal="9dp"
-                    android:paddingVertical="6dp"
+                    android:paddingTop="6dp"
                     android:scrollbars="none"
                     app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
                     app:layout_constraintTop_toBottomOf="@+id/tvPower"
@@ -126,18 +168,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:drawableStart="@drawable/icon_prompt_16"
-                        android:drawablePadding="@dimen/spacing_xs"
-                        android:gravity="center"
-                        android:text="@string/compute_power_validity_period"
-                        android:textAppearance="@style/Text12"
-                        android:textColor="?attr/textColor4" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/spacing_s"
-                        android:text="@string/help_contact_via_feedback"
+                        android:text="@string/episode_unlock_popup_coin_rule"
                         android:textAppearance="@style/Text12"
                         android:textColor="?attr/textColor4" />
                 </LinearLayout>

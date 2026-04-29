@@ -626,7 +626,7 @@ object ApiConstants {
     /**
      * 查询用户钱包信息
      */
-    const val QUERY_WALLET_INFO = "trade/user/wallet/current"
+    const val QUERY_WALLET_INFO = "trade/user/coin/wallet"
 
     /**
      * 查询算力明细列表（分页）
@@ -636,7 +636,7 @@ object ApiConstants {
     /**
      * 算力信息配置列表
      */
-    const val POINT_CONFIG_LIST = "trade/point/config/list"
+    const val COINS_CONFIG_LIST = "trade/coions/config/list"
 
     /**
      * 交易支付方式配置列表
@@ -865,12 +865,12 @@ object ApiConstants {
     /**
      * google预下单
      */
-    const val CREATE_ORDER = "trade/pay/google/createPreOrder"
+    const val CREATE_ORDER = "trade/pay/google/coin/preOrder"
 
     /**
      * 验证票据
      */
-    const val VERIFY_PURCHASED = "trade/pay/google/payCallBack"
+    const val VERIFY_PURCHASED = "trade/pay/google/coin/verifyReceipt"
 
     /**
      * 首页-搜索作品

@@ -100,7 +100,7 @@ class MineViewModel : AppRepositoryViewModel<AppRepository>() {
                 "avatar" to (user.avatarUrl ?: ""),
             )
         )
-        balance.set(user.computingPower.toString())
+        balance.set(user.coins.toString())
         workCourseBanner.set(if (user.isPurchasedCourse()) null else Config.get().appConfig.workCourseBanner)
     }
 
@@ -113,7 +113,7 @@ class MineViewModel : AppRepositoryViewModel<AppRepository>() {
                 "avatar" to user.avatarUrl,
             )
         )
-        balance.set(user.computingPower.toString())
+        balance.set(user.coins.toString())
         workCourseBanner.set(if (user.isPurchasedCourse()) null else Config.get().appConfig.workCourseBanner)
     }
 }

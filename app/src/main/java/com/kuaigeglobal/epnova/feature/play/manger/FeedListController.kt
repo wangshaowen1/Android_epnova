@@ -25,7 +25,16 @@ class FeedListController(
     private val adapter: VideoFeedAdapter,
     private val playerManager: FeedPlayerManager
 ) {
-    private val layoutManager = LinearLayoutManager(recyclerView.context)
+    /** 允许滑到的最大 position（第一个锁定集的 index），超过则拦截下滑 */
+    private var maxScrollPosition = Int.MAX_VALUE
+
+    private val layoutManager = object : LinearLayoutManager(recyclerView.context) {
+        override fun scrollVerticallyBy(dy: Int, recycler: RecyclerView.Recycler, state: RecyclerView.State): Int {
+            // dy > 0 = 向下滑（看后面的集）；当前已在 maxScrollPosition 时拦截
+            if (dy > 0 && findFirstVisibleItemPosition() >= maxScrollPosition) return 0
+            return super.scrollVerticallyBy(dy, recycler, state)
+        }
+    }
     private val snapHelper = PagerSnapHelper()
 
     // [关键修复] 记录最后一次播放的位置，防止 IDLE 状态重复触发
@@ -124,9 +133,14 @@ class FeedListController(
                         }
                     }
                 } catch (e: EpisodeLockedEx) {
-                    // 自动解锁开启且余额不足 → recharge 流程；关闭 → 直接手动解锁弹窗
-                    initialHolder.updatePlayerUiState(FeedPlayerManager.FeedPlayerState.Idle)
+                    // 用户已滑走则放弃，避免 onEpisodeLocked 打到错误位置
+                    if (getCurrentPosition() != position) return@launch
+                    val freshHolder = recyclerView.findViewHolderForAdapterPosition(position)
+                        as? VideoFeedAdapter.VideoViewHolder
+                    freshHolder?.updatePlayerUiState(FeedPlayerManager.FeedPlayerState.Idle)
                     onEpisodeLocked?.invoke(e.episode, Config.get().isEpisodeAutoUnlock())
+                } catch (e: kotlinx.coroutines.CancellationException) {
+                    throw e  // 必须重新抛出，让协程框架正确处理 Job 取消
                 } catch (e: Exception) { e.printStackTrace() }
             }
         } else {
@@ -152,6 +166,15 @@ class FeedListController(
                 playerManager.preload(nextItem.videoUrl)
             }
         }
+    }
+
+    /**
+     * 根据当前列表重新计算滑动上限。
+     * 在 adapter.submitList 回调或解锁成功后调用。
+     */
+    fun updateScrollLimit(episodes: List<EpisodeInfo>) {
+        val idx = episodes.indexOfFirst { it.lockStatus == 2 }
+        maxScrollPosition = if (idx >= 0) idx else Int.MAX_VALUE
     }
 
     /**

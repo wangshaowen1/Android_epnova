@@ -56,7 +56,7 @@
                     <ImageView
                         android:layout_width="18dp"
                         android:layout_height="18dp"
-                        android:src="@drawable/icon_power" />
+                        android:src="@drawable/ic_coins" />
 
                     <TextView
                         android:layout_width="wrap_content"

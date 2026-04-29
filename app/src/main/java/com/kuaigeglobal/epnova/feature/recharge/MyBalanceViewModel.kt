@@ -8,6 +8,7 @@ import com.blankj.utilcode.util.StringUtils.getString
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.base.viewmodel.AppRepositoryViewModel
 import com.kuaigeglobal.epnova.base.viewmodel.ToolbarViewModel
+import com.kuaigeglobal.epnova.common.Constants
 import com.kuaigeglobal.epnova.common.adapter.QuickAdapter
 import com.kuaigeglobal.epnova.common.ext.topActivity
 import com.kuaigeglobal.epnova.core.Config
@@ -18,7 +19,7 @@ import com.kuaigeglobal.epnova.core.ext.launchWithLoading
 import com.kuaigeglobal.epnova.core.google.billing.BillingManager
 import com.kuaigeglobal.epnova.core.manager.AppEvent
 import com.kuaigeglobal.epnova.core.manager.EventManager
-import com.kuaigeglobal.epnova.core.network.apis.entity.PointConfigInfo
+import com.kuaigeglobal.epnova.core.network.apis.entity.CoinConfigInfo
 import com.kuaigeglobal.epnova.core.network.apis.request.CreateOrderBody
 import com.kuaigeglobal.epnova.core.network.apis.response.SimpleBannerInfo
 import com.kuaigeglobal.epnova.core.response
@@ -34,7 +35,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class MyBalanceViewModel(@LayoutRes private val paymentItemLayout: Int) : AppRepositoryViewModel<PowerRepository>() {
+class MyBalanceViewModel(@LayoutRes private val paymentItemLayout: Int) : AppRepositoryViewModel<CoinRepository>() {
 
    //toolbar 配置
     val toolbar by lazy {
@@ -47,7 +48,10 @@ class MyBalanceViewModel(@LayoutRes private val paymentItemLayout: Int) : AppRep
     }
 
     var isDialog = false
+    val cost by lazy { mBundle.getInt(Constants.Extra.COST, 0) }
 
+    /** 充值（Google 支付）成功后的回调，由外部（Dialog）注入 */
+    var onPurchaseSuccess: (() -> Unit)? = null
     /**
      * 账户余额
      */
@@ -73,9 +77,10 @@ class MyBalanceViewModel(@LayoutRes private val paymentItemLayout: Int) : AppRep
         if (powerAdapter.items.isEmpty()) loadState.set(LoadStateViewHolder.LOADING)
         launch(
             block = {
-                val pointConfigListDeferred = async { mRepo.pointConfigList().data }
+                val pointConfigListDeferred = async { mRepo.coinConfigList().data }
                 val pointConfigList = pointConfigListDeferred.await()
-                pointConfigList?.pointBalanceNum?.let { User.get().storeComputingPower(it) }
+                pointConfigList?.coionsBalanceNum?.let { User.get().storeCoins(it) }
+                updateBalance()
                 pointConfigList?.items?.map { ItemRechargePowerVM(it).apply { onItemClick.value = { select() } } }.let { vms ->
                     powerAdapter.submitList(vms)
                     loadGoogleProducts(vms)
@@ -143,6 +148,7 @@ class MyBalanceViewModel(@LayoutRes private val paymentItemLayout: Int) : AppRep
                 onSuccess = {
                     loadConfig()
                     refreshBalance()
+                    onPurchaseSuccess?.invoke()
                 },
                 onFail = { errorCode ->
                     if (errorCode != 3) {
@@ -154,14 +160,14 @@ class MyBalanceViewModel(@LayoutRes private val paymentItemLayout: Int) : AppRep
     }
 
     fun createOrder(
-        info: PointConfigInfo,
+        info: CoinConfigInfo,
         onSuccess: ((String?) -> Unit)? = null
     ) {
         launchWithLoading {
             response(
                 mRepo.api.createOrder(
                     CreateOrderBody(
-                        goodsCode = info.pointConfigCode,
+                        goodsCode = info.coionsConfigCode,
                         goodsType = 1,
                         mobileType = 1
                     )
@@ -185,7 +191,7 @@ class MyBalanceViewModel(@LayoutRes private val paymentItemLayout: Int) : AppRep
     }
 
     fun updateBalance() {
-        balance.set(User.get().computingPower.toString())
+        balance.set(User.get().coins.toString())
     }
 
     private fun refreshBalance() {

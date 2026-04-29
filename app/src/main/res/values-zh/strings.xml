@@ -83,6 +83,9 @@
 
     <string name="privacy_policy">隐私政策</string>
     <string name="payment_agreement">支付协议</string>
+    <string name="payment_successful">支付成功</string>
+    <string name="payment_cancelled">支付已取消</string>
+    <string name="payment_failed_retry">支付失败，请重试</string>
     <string name="yesterday">昨天</string>
     <string name="day_before_yesterday">前天</string>
     <string name="day">日</string>

@@ -27,10 +27,11 @@ class AdUnlockDialog : BaseVMDialogFragment<DialogAdUnlockBinding, AdUnlockViewM
     companion object {
         private const val AD_DAILY_MAX = 10
 
-        fun newInstance(workId: String?, episode: EpisodeInfo?, adRemainCount: Int): AdUnlockDialog {
+        fun newInstance(workId: String?,workCover:String?, episode: EpisodeInfo?, adRemainCount: Int): AdUnlockDialog {
             return AdUnlockDialog().apply {
                 arguments = bundleOf(
                     Constants.Extra.WORK_ID to workId,
+                    Constants.Extra.COVER to workCover,
                     Constants.Extra.DATA to episode,
                     Constants.Extra.COUNT to adRemainCount
                 )

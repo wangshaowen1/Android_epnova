@@ -35,6 +35,7 @@ class FirstRechargeDialog : BaseVMDialogFragment<DialogFirstRechargeBinding, Fir
     }
 
     var onClose: (() -> Unit)? = null
+    var onPaySuccess: (() -> Unit)? = null
 
     override fun onStart() {
         super.onStart()
@@ -57,6 +58,15 @@ class FirstRechargeDialog : BaseVMDialogFragment<DialogFirstRechargeBinding, Fir
         binding.ivClose.setOnClickListener {
             onClose?.invoke()
             dismissAllowingStateLoss()
+        }
+        // 支付成功：关闭弹窗并通知外部
+        mRealVM.onPaySuccess = {
+            dismissAllowingStateLoss()
+            onPaySuccess?.invoke()
+        }
+        // 倒计时归零：自动关闭弹窗（用户此时若在看仍可完成支付，但 VM 已停止计时）
+        mRealVM.countdownFinished.observe(viewLifecycleOwner) { finished ->
+            if (finished) dismissAllowingStateLoss()
         }
         observeEvents {
             onUserSignIn {

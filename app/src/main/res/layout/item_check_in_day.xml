@@ -36,7 +36,7 @@
                 android:layout_height="20dp"
                 android:layout_gravity="center"
                 android:importantForAccessibility="no"
-                android:src="@drawable/icon_power"
+                android:src="@drawable/ic_coins"
                 tools:ignore="ContentDescription" />
 
             <!-- +10 / +20 … -->

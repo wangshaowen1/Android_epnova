@@ -6,12 +6,12 @@ import com.kuaigeglobal.epnova.core.network.apis.request.UserTokenBody
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class PowerRepository : AppRepository() {
+class CoinRepository : AppRepository() {
 
     /**
-     * 算力信息配置列表
+     * 金币商品配置列表
      */
-    suspend fun pointConfigList() = withContext(Dispatchers.IO) { api.pointConfigList(UserTokenBody()) }
+    suspend fun coinConfigList() = withContext(Dispatchers.IO) { api.coinsConfigList(UserTokenBody()) }
 
     /**
      * 交易支付方式配置列表

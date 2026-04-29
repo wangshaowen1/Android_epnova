@@ -16,7 +16,6 @@ import com.kuaigeglobal.epnova.core.network.apis.entity.WorkVOInfo
 import com.kuaigeglobal.epnova.databinding.ItemVideoFeedBinding
 import com.kuaigeglobal.epnova.feature.play.manger.FeedPlayerManager
 import com.kuaigeglobal.epnova.feature.play.more.EpisodeUnlockController
-import com.kuaigeglobal.epnova.feature.recharge.PowerRechargeDialog
 import com.kuaigeglobal.epnova.widget.PlayerSeekbar
 import com.nhsd.basic.ext.setOnSingleClickListener
 import com.nhsd.basic.item.BindingViewHolder
@@ -301,9 +300,12 @@ class VideoFeedAdapter(private val interactionListener: InteractionListener) :
             overlay.executePendingBindings()
             overlay.root.visibility = View.VISIBLE
 
+            // 解锁层出现时隐藏收藏/点赞按钮
+            binding.llInteractionSide.visibility = View.GONE
+
             val activity = binding.root.context as? Activity
             overlay.btnUnlockNow.setOnSingleClickListener {
-                controller.onClickUnlockNow { PowerRechargeDialog.show() }
+                controller.onClickUnlockNow()
             }
             overlay.llAdUnlock.setOnSingleClickListener {
                 if (activity != null) {
@@ -320,6 +322,10 @@ class VideoFeedAdapter(private val interactionListener: InteractionListener) :
             activeUnlockController?.release()
             activeUnlockController = null
             binding.episodeUnlockOverlay.root.visibility = View.GONE
+            // 解锁层消失后，根据当前播放 UI 状态恢复收藏/点赞按钮
+            if (binding.item?.isHideViews?.get() != true) {
+                binding.llInteractionSide.visibility = View.VISIBLE
+            }
         }
 
         fun onDetached() {

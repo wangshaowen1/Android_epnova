@@ -187,8 +187,8 @@ class RewardedAdManager(
     }
 
     private fun pollAdResult() {
-        val wId = currentWorkId?.toLongOrNull() ?: return
-        val sId = currentStoryId?.toLongOrNull() ?: return
+        val wId = currentWorkId ?: return
+        val sId = currentStoryId ?: return
         val n = nonce ?: return
 
         isPolling.set(true)

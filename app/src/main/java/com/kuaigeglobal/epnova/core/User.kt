@@ -6,6 +6,7 @@ import com.google.gson.Gson
 import com.kuaigeglobal.epnova.App
 import com.kuaigeglobal.epnova.common.utils.MmkvDelegate
 import com.kuaigeglobal.epnova.core.network.apis.entity.CookieUserInfo
+import com.kuaigeglobal.epnova.core.network.apis.entity.WalletInfo
 import com.kuaigeglobal.epnova.core.network.apis.request.CompleteUserDataInfoBody
 import com.kuaigeglobal.epnova.core.network.apis.response.UserHomeData
 import com.nhsd.basic.Session
@@ -45,7 +46,9 @@ class User : IUser {
         private set
     var registerStatus: Int? by MmkvDelegate(REGISTER_STATUS, 0) { mmkv }
         private set
-    var computingPower: Int by MmkvDelegate(COMPUTING_POWER, 0) { mmkv }
+    var coins: Long by MmkvDelegate(COINS, 0) { mmkv }
+        private set
+    var giveCoins: Long by MmkvDelegate(GIVE_COINS, 0) { mmkv }
         private set
     var purchaseCourseStatus: Int? by MmkvDelegate(PURCHASE_COURSE_STATUS, 0) { mmkv }
         private set
@@ -130,7 +133,7 @@ class User : IUser {
         val keysToRemove = arrayOf(
             USER_ID, PHONE_NUM, NICK_NAME, GENDER, AVATAR_URL,
             USER_SOURCE, REGISTER_WAY, LAST_LOGIN_TIME, REGISTER_STATUS,
-            PURCHASE_COURSE_STATUS, IS_PAID, TOKEN, COMPUTING_POWER
+            PURCHASE_COURSE_STATUS, IS_PAID, TOKEN, COINS
         )
         mmkv.removeValuesForKeys(keysToRemove)
     }
@@ -190,9 +193,14 @@ class User : IUser {
         this.registerStatus = registerStatus ?: 0
     }
 
-    fun storeComputingPower(computingPower: Int) {
-        this.computingPower = computingPower
-        notifyChange(COMPUTING_POWER)
+    fun storeCoins(coins: Long?) {
+        this.coins = coins?:0L
+        notifyChange(COINS)
+    }
+
+    fun storeWallet(info: WalletInfo?) {
+        this.coins = info?.coinsTotalNum ?: 0
+        this.giveCoins = info?.giveCoionsNum ?: 0
     }
 
     fun storePurchaseCourseStatus(purchaseCourseStatus: Int?) {
@@ -243,7 +251,8 @@ class User : IUser {
         const val LAST_LOGIN_TIME = "lastLoginTime"
         const val REGISTER_STATUS = "registerStatus"
         const val TOKEN = "token"
-        const val COMPUTING_POWER = "computingPower"
+        const val COINS = "computingPower"
+        const val GIVE_COINS = "giveCoins"
         const val PURCHASE_COURSE_STATUS = "purchaseCourseStatus"
         const val IS_PAID = "IS_PAID"
 

@@ -74,6 +74,9 @@
     <string name="describe_your_report">อธิบายปัญหา</string>
     <string name="privacy_policy">นโยบายความเป็นส่วนตัว</string>
     <string name="payment_agreement">ข้อตกลงการชำระเงิน</string>
+    <string name="payment_successful">ชำระเงินสำเร็จ</string>
+    <string name="payment_cancelled">ยกเลิกการชำระเงิน</string>
+    <string name="payment_failed_retry">ชำระเงินล้มเหลว โปรดลองอีกครั้ง</string>
     <string name="yesterday">เมื่อวานนี้</string>
     <string name="day_before_yesterday">เมื่อวานซืน</string>
     <string name="day">วัน</string>
