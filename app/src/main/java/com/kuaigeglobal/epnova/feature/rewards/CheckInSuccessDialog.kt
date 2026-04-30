@@ -1,89 +1,37 @@
 package com.kuaigeglobal.epnova.feature.rewards
 
 import android.os.Bundle
-import android.view.Gravity
-import android.view.LayoutInflater
-import android.view.ViewGroup
-import android.widget.FrameLayout
-import android.widget.TextView
-import com.kuaigeglobal.epnova.R
-import com.kuaigeglobal.epnova.common.Constants
-import com.kuaigeglobal.epnova.core.ext.onUserSignIn
-import com.kuaigeglobal.epnova.core.network.apis.response.LoginTaskData
-import com.kuaigeglobal.epnova.databinding.DialogRewardWelcomeBinding
-import com.kuaigeglobal.epnova.router.AppNavigator
+import com.kuaigeglobal.epnova.databinding.DialogCheckInSuccessBinding
 import com.nhsd.basic.BaseDialogFragment
-import com.nhsd.basic.bus.observeEvents
-import com.nhsd.basic.ext.getParcelableValue
 import com.nhsd.basic.ext.setOnSingleClickListener
 
-
-class CheckInSuccessDialog : BaseDialogFragment<DialogRewardWelcomeBinding>() {
+class CheckInSuccessDialog : BaseDialogFragment<DialogCheckInSuccessBinding>() {
 
     companion object {
-        fun newInstance(data: LoginTaskData?): CheckInSuccessDialog {
-            val fragment = CheckInSuccessDialog()
-            fragment.arguments = Bundle().apply {
-                putParcelable(Constants.Extra.DATA, data)
+        private const val ARG_REWARD_NUM = "rewardNum"
+
+        fun newInstance(rewardNum: Int): CheckInSuccessDialog {
+            return CheckInSuccessDialog().apply {
+                arguments = Bundle().apply { putInt(ARG_REWARD_NUM, rewardNum) }
             }
-            return fragment
         }
     }
 
-    val data by lazy {
-        arguments?.getParcelableValue(Constants.Extra.DATA, LoginTaskData::class.java)
-    }
+    /** 用户点击"看广告领额外奖励"按钮时回调；关闭弹窗时不会触发 */
+    var onWatchAdClicked: (() -> Unit)? = null
 
     override fun onPrepareView() {
         super.onPrepareView()
-        binding.tvCoinsAmount.text = "+" + data?.rewardLabel
+        val rewardNum = arguments?.getInt(ARG_REWARD_NUM, 0) ?: 0
+        binding.tvCoinsAmount.text = "+$rewardNum"
+
         binding.btnClaim.setOnSingleClickListener {
-            AppNavigator.checkRealLogin(false)
+            dismissAllowingStateLoss()
+            onWatchAdClicked?.invoke()
         }
 
         binding.ivClose.setOnClickListener {
             dismissAllowingStateLoss()
         }
-
-        observeEvents {
-            onUserSignIn {
-                showRewardToast()
-                dismissAllowingStateLoss()
-            }
-        }
-    }
-
-    private fun showRewardToast() {
-        val activity = activity ?: return
-        val decorView = activity.window.decorView as ViewGroup
-
-        val toastView = LayoutInflater.from(activity)
-            .inflate(R.layout.toast_reward_coins, decorView, false)
-        toastView.findViewById<TextView>(R.id.tvCoinsAmount).text =
-            getString(R.string.home_login_reward_coins, data?.rewardLabel)
-
-        val params = FrameLayout.LayoutParams(
-            FrameLayout.LayoutParams.WRAP_CONTENT,
-            FrameLayout.LayoutParams.WRAP_CONTENT,
-            Gravity.CENTER
-        )
-        // 进场：缩放 + 淡入
-        toastView.scaleX = 0.5f
-        toastView.scaleY = 0.5f
-        toastView.alpha = 0f
-        decorView.addView(toastView, params)
-        toastView.animate()
-            .scaleX(1f).scaleY(1f).alpha(1f)
-            .setDuration(250)
-            .start()
-
-        // 2s 后淡出并移除
-        toastView.postDelayed({
-            toastView.animate()
-                .alpha(0f)
-                .setDuration(300)
-                .withEndAction { decorView.removeView(toastView) }
-                .start()
-        }, 2000)
     }
 }

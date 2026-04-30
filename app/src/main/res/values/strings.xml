@@ -594,7 +594,7 @@
     <string name="rewards_checkin_7days_bonus">Check-in for 7 consecutive days to get big bonus!</string>
     <string name="rewards_extra_30_coins">Earn extra 30 coins</string>
     <string name="rewards_come_back_tomorrow">Come back tomorrow</string>
-    <string name="rewards_next_refresh">Next refresh in 09:00:00</string>
+    <string name="rewards_next_refresh">Next refresh in %s</string>
     <string name="rewards_rules_title">Rewards Rules</string>
     <string name="rewards_rules_detail">1. EpNova reserves all rights to interpret the reward coins.\n2.You can only check in once per day.\n3. If you missed a day, your check-in streak will be reset and restart from day one.\n4. Just like purchased coins, reward coins can only be used to unlock episodes that require coins.\n5. Reward coins are valid for 30 days from the date of claim. Please use them before expiration.\n6. When unlocking episodes, purchased coins will be consumed first; if purchased coins are insufficient, reward coins will be used automatically.\n7. All free coins are classified as reward coins.</string>
     <!-- Rewards 页动态字符串 -->

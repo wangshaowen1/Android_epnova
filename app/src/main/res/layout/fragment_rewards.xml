@@ -147,7 +147,9 @@
                         tools:itemCount="1"
                         tools:listitem="@layout/item_check_in_day" />
 
-                    <!-- Check In 按钮 -->
+                    <!-- 签到按钮区：三态互斥 -->
+
+                    <!-- 状态1：未签到 → Check In -->
                     <Button
                         android:id="@+id/btnCheckIn"
                         style="@style/Button.Bold"
@@ -155,7 +157,65 @@
                         android:layout_width="match_parent"
                         android:layout_marginTop="20dp"
                         android:gravity="center"
-                        android:text="@string/rewards_check_in" />
+                        android:text="@string/rewards_check_in"
+                        android:visibility="@{layout.hasCheckedIn == true ? View.GONE : View.VISIBLE}" />
+
+                    <!-- 状态2：已签到且今日广告未看 → Watch Ad -->
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:visibility="@{layout.hasCheckedIn == true &amp;&amp; layout.todayAdWatched != true ? View.VISIBLE : View.GONE}">
+
+                        <Button
+                            android:id="@+id/btnCheckInAd"
+                            style="@style/Button.Bold"
+                            singleClick="@{layout.clickHandler::onClick}"
+                            android:layout_width="match_parent" />
+
+                        <TextView
+                            style="@style/Text.Medium"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:drawableStart="@drawable/icon_video"
+                            android:drawablePadding="4dp"
+                            android:gravity="center"
+                            android:includeFontPadding="false"
+                            android:text="@string/rewards_extra_30_coins"
+                            android:textColor="?attr/textColor1"
+                            android:textSize="16sp" />
+                    </FrameLayout>
+
+                    <!-- 状态3：今日广告已看 → Come back tomorrow + 刷新时间 -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="44dp"
+                        android:layout_marginTop="20dp"
+                        android:background="@drawable/bg_50_ff2e55_r50"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:visibility="@{layout.todayAdWatched == true ? View.VISIBLE : View.GONE}">
+
+                        <TextView
+                            style="@style/Text.Medium"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/rewards_come_back_tomorrow"
+                            android:textColor="?attr/textColor1"
+                            android:textSize="16sp" />
+
+                        <TextView
+                            style="@style/Text.Medium"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@{layout.nextRefreshText}"
+                            android:textColor="?attr/textColor3"
+                            android:textSize="12sp"
+                            android:visibility="@{layout.nextRefreshText.isEmpty() ? View.GONE : View.VISIBLE}"
+                            tools:text="Next refresh in 09:00:03"
+                            tools:visibility="visible" />
+                    </LinearLayout>
                 </LinearLayout>
 
                 <!-- ── Earn Rewards 区域 ─────────────────────── -->
