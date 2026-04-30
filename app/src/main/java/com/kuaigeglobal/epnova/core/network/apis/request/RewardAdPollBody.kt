@@ -11,3 +11,8 @@ data class StoryUnlockAdResultBody(
     val storyId: String?,
     val nonce: String?
 ) : UserTokenBody()
+
+
+data class RewardAdPollBody(
+    val adFlowId: String?//广告流水ID（由 /reward/task/ad/preReport 返回的 nonce）
+)

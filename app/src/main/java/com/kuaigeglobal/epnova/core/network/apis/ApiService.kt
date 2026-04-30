@@ -22,6 +22,7 @@ import com.kuaigeglobal.epnova.core.network.apis.entity.RewardAdTaskListData
 import com.kuaigeglobal.epnova.core.network.apis.entity.RewardCheckInListData
 import com.kuaigeglobal.epnova.core.network.apis.entity.RewardCheckInReportData
 import com.kuaigeglobal.epnova.core.network.apis.entity.AdMobPreportData
+import com.kuaigeglobal.epnova.core.network.apis.entity.ResultAdPollData
 import com.kuaigeglobal.epnova.core.network.apis.entity.StoryUnlockInfoData
 import com.kuaigeglobal.epnova.core.network.apis.entity.StoryUnlockPreloadData
 import com.kuaigeglobal.epnova.core.network.apis.entity.StoryUnlockResultData
@@ -117,6 +118,7 @@ import com.kuaigeglobal.epnova.core.network.apis.request.SeriesSetPriceBody
 import com.kuaigeglobal.epnova.core.network.apis.request.ShareReportBody
 import com.kuaigeglobal.epnova.core.network.apis.request.ShortLikeBody
 import com.kuaigeglobal.epnova.core.network.apis.request.ShotSegmentIdBody
+import com.kuaigeglobal.epnova.core.network.apis.request.RewardAdPollBody
 import com.kuaigeglobal.epnova.core.network.apis.request.StoryUnlockAdResultBody
 import com.kuaigeglobal.epnova.core.network.apis.request.StoryUnlockCoinsBody
 import com.kuaigeglobal.epnova.core.network.apis.request.StoryboardIdBody
@@ -1303,4 +1305,10 @@ interface ApiService {
      */
     @POST(ApiConstants.STORY_UNLOCK_AD_RESULT)
     suspend fun storyUnlockAdResult(@Body body: StoryUnlockAdResultBody): ApiResponse<StoryUnlockResultData?>
+
+    /**
+     * 广告奖励轮询结果
+     */
+    @POST(ApiConstants.REWARD_AD_POLL)
+    suspend fun rewardAdPoll(@Body body: RewardAdPollBody): ApiResponse<ResultAdPollData?>
 }

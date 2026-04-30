@@ -16,3 +16,8 @@ data class StoryUnlockResultData(
     /** 今日广告解锁剩余次数；金币解锁时为 null */
     val adUnlockRemainCount: Int?
 )
+
+data class ResultAdPollData(
+    /** 奖励发放状态0=还在处理  1=下发成功  2=下发失败 */
+    val rewardStatus: Int?,
+)

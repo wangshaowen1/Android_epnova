@@ -923,4 +923,9 @@ object ApiConstants {
      * 广告观看前置上报
      */
     const val REWARD_AD_PRE_REPORT = "reward/task/ad/preReport"
+
+    /**
+     * 广告奖励轮询结果
+     */
+    const val REWARD_AD_POLL = "reward/task/ad/pollResult"
 }

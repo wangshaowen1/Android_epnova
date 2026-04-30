@@ -13,7 +13,7 @@ class ItemEarnRewardVM(
     val isLoginTask: Boolean = false
 ) : AppItemViewModel<AdTaskItem>(data) {
 
-    private val rewardNum: Int = if (isLoginTask) 50 else (data?.rewardNum ?: 0)
+    private val rewardNum: Long = if (isLoginTask) 50L else (data?.rewardNum ?: 0L)
 
     /**
      * 任务状态：
@@ -34,7 +34,7 @@ class ItemEarnRewardVM(
         R.string.rewards_watch_ad.getResString()
 
     val coinsTxt: String = "+$rewardNum"
-    val coins: Int = rewardNum
+    val coins: Long = rewardNum
 
     /** 副标题全文，用于 data binding 的 titleText 属性 */
     val subtitleText: String = if (isLoginTask)
