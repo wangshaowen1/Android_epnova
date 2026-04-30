@@ -588,8 +588,8 @@
     <string name="rewards_go">Go</string>
     <string name="rewards_watch">Watch</string>
     <string name="rewards_claimed">Claimed</string>
-    <string name="rewards_50_reward_coins">+ 50 Reward coins</string>
-    <string name="rewards_watch_video_earn_50">Watch a video to earn 50 coins</string>
+    <string name="rewards_50_reward_coins">+%s Reward coins</string>
+    <string name="rewards_watch_video_earn_50">Watch a video to earn +%s coins</string>
     <string name="rewards_watch_ad">Watch Ad</string>
     <string name="rewards_checkin_7days_bonus">Check-in for 7 consecutive days to get big bonus!</string>
     <string name="rewards_extra_30_coins">Earn extra 30 coins</string>

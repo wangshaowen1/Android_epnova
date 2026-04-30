@@ -64,7 +64,7 @@ class ComputingPowerDetailsFragment :
                 computingPowerDetailsAdapter.withLoadStateFooter(
                     MyMultiStatePagingFooterAdapter(
                         hostAdapter = computingPowerDetailsAdapter,
-                        noMoreThreshold = 5
+                        noMoreThreshold = 12
                     ) { computingPowerDetailsAdapter.retry() })
         }
         binding.srl.startRefreshWithAdapter(

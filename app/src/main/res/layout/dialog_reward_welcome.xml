@@ -51,7 +51,7 @@
         android:layout_height="64dp"
         android:layout_marginTop="30dp"
         android:contentDescription="@null"
-        android:src="@drawable/ic_coins"
+        android:src="@drawable/icon_coins40"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvTitle" />
@@ -65,7 +65,7 @@
         android:fontFamily="@font/outfit_medium"
         android:includeFontPadding="false"
         tools:text="@string/home_login_reward_coins"
-        android:textColor="#FFCD2C"
+        android:textColor="@color/color_ffcd2c"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <!-- 关闭按钮 -->
+    <ImageView
+        android:id="@+id/ivClose"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_gravity="end"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="12dp"
+        android:alpha="0.7"
+        android:contentDescription="@null"
+        android:src="@drawable/icon_close" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="293dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/bg_color4_r20">
+
+        <!-- 金币图标 -->
+        <ImageView
+            android:id="@+id/ivCoin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:contentDescription="@null"
+            android:src="@drawable/img_check_in_success"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- +50 Coins -->
+        <TextView
+            android:id="@+id/tvCoinsAmount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="-12dp"
+            android:fontFamily="@font/outfit_medium"
+            android:includeFontPadding="false"
+            android:textColor="@color/color_ffcd2c"
+            android:textSize="28sp"
+            app:layout_constraintEnd_toStartOf="@id/unit"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/ivCoin"
+            tools:text="+50" />
+
+        <TextView
+            android:id="@+id/unit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="20dp"
+            android:fontFamily="@font/outfit_medium"
+            android:includeFontPadding="false"
+            android:text="@string/newbie_coins"
+            android:textColor="@color/color_ffcd2c"
+            android:textSize="16sp"
+            app:layout_constraintBaseline_toBaselineOf="@id/tvCoinsAmount"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/tvCoinsAmount" />
+
+        <!-- 标题 -->
+        <TextView
+            android:id="@+id/tvTitle"
+            style="@style/Text.Regular"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="33dp"
+            android:layout_marginTop="@dimen/spacing_m"
+            android:text="@string/rewards_checkin_7days_bonus"
+            android:textColor="?attr/textColor3"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvCoinsAmount" />
+
+
+        <!-- Claim 按钮 -->
+        <Button
+            android:id="@+id/btnClaim"
+            style="@style/Button.Bold"
+            android:layout_width="253dp"
+            android:layout_height="40dp"
+            android:layout_marginVertical="20dp"
+            android:gravity="center"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvTitle" />
+
+        <TextView
+            style="@style/Text.Medium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/icon_video"
+            android:drawablePadding="4dp"
+            android:gravity="center"
+            android:includeFontPadding="false"
+            android:text="@string/rewards_extra_30_coins"
+            android:textColor="?attr/textColor1"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="@id/btnClaim"
+            app:layout_constraintEnd_toEndOf="@id/btnClaim"
+            app:layout_constraintStart_toStartOf="@id/btnClaim"
+            app:layout_constraintTop_toTopOf="@id/btnClaim" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

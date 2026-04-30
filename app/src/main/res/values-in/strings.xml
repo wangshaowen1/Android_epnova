@@ -588,8 +588,8 @@ Syarat Penggunaan dan Kebijakan Privasi
     <string name="rewards_go">Lanjut</string>
     <string name="rewards_watch">Tonton</string>
     <string name="rewards_claimed">Sudah Diambil</string>
-    <string name="rewards_50_reward_coins">+50 Koin Hadiah</string>
-    <string name="rewards_watch_video_earn_50">Tonton video untuk mendapatkan 50 koin</string>
+    <string name="rewards_50_reward_coins">+%s Koin Hadiah</string>
+    <string name="rewards_watch_video_earn_50">Tonton video untuk mendapatkan +%s koin</string>
     <string name="rewards_watch_ad">Tonton Iklan</string>
     <string name="rewards_checkin_7days_bonus">Check-in selama 7 hari berturut-turut untuk dapatkan hadiah besar!</string>
     <string name="rewards_extra_30_coins">Dapatkan 30 koin ekstra</string>

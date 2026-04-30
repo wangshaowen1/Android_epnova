@@ -71,6 +71,10 @@ import com.bumptech.glide.request.target.Target
 import com.drake.spannable.replaceSpan
 import com.drake.spannable.span.CenterImageSpan
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.kuaige.imageloader.GlideApp
+import com.kuaige.imageloader.GlideImageLoader
+import com.kuaige.imageloader.transform.BlurTransformation
+import com.kuaige.videoedit.resource.UrlResource
 import com.kuaigeglobal.epnova.App
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.LoadState
@@ -102,10 +106,6 @@ import com.kuaigeglobal.epnova.widget.ViewFlipperWithListener
 import com.kuaigeglobal.epnova.widget.expandtextview.ExpandableTextView
 import com.kuaigeglobal.epnova.widget.htmlview.HtmlStyleParser
 import com.kuaigeglobal.epnova.widget.htmlview.HtmlStyleParser.ImgAlignmentEnum
-import com.kuaige.imageloader.GlideApp
-import com.kuaige.imageloader.GlideImageLoader
-import com.kuaige.imageloader.transform.BlurTransformation
-import com.kuaige.videoedit.resource.UrlResource
 import com.nhsd.basic.Session
 import com.nhsd.basic.ext.dp
 import com.nhsd.basic.ext.getActivity
@@ -135,6 +135,7 @@ import okhttp3.OkHttpClient
 import java.io.File
 import kotlin.math.absoluteValue
 import kotlin.math.min
+import androidx.core.graphics.toColorInt
 
 
 @BindingAdapter("textColorRes", requireAll = false)
@@ -1807,14 +1808,14 @@ fun isVisibleWithAnimation(view: LottieAnimationView, isVisible: Boolean) {
     }
 }
 
-@BindingAdapter("titleText", "highlightKeyword", requireAll = false)
-fun TextView.setTitleWithHighlight(text: String?, keyword: String?) {
+@BindingAdapter("titleText", "highlightKeyword", "highlightColor", requireAll = false)
+fun TextView.setTitleWithHighlight(text: String?, keyword: String?, color: String?) {
     if (!keyword.isNullOrEmpty() && !text.isNullOrEmpty()) {
         val spanText = SpannableString(text)
         val startIndex = text.indexOf(keyword, ignoreCase = true)
         if (startIndex != -1) {
             spanText.setSpan(
-                ForegroundColorSpan(Color.parseColor("#FF2E55")),
+                ForegroundColorSpan((color ?: "#FF2E55").toColorInt()),
                 startIndex,
                 startIndex + keyword.length,
                 Spanned.SPAN_EXCLUSIVE_EXCLUSIVE

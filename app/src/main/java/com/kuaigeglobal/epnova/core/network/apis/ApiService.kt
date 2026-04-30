@@ -3,7 +3,6 @@ package com.kuaigeglobal.epnova.core.network.apis
 import com.kuaigeglobal.epnova.core.model.H5PayInfo
 import com.kuaigeglobal.epnova.core.network.SSEvent
 import com.kuaigeglobal.epnova.core.network.apis.entity.AIPriceInfo
-import com.kuaigeglobal.epnova.core.network.apis.entity.AdPreReportData
 import com.kuaigeglobal.epnova.core.network.apis.entity.BannerInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.CharacterInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.ContentInfo
@@ -22,7 +21,7 @@ import com.kuaigeglobal.epnova.core.network.apis.entity.ReferenceImageInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.RewardAdTaskListData
 import com.kuaigeglobal.epnova.core.network.apis.entity.RewardCheckInListData
 import com.kuaigeglobal.epnova.core.network.apis.entity.RewardCheckInReportData
-import com.kuaigeglobal.epnova.core.network.apis.entity.StoryUnlockAdPrepareData
+import com.kuaigeglobal.epnova.core.network.apis.entity.AdMobPreportData
 import com.kuaigeglobal.epnova.core.network.apis.entity.StoryUnlockInfoData
 import com.kuaigeglobal.epnova.core.network.apis.entity.StoryUnlockPreloadData
 import com.kuaigeglobal.epnova.core.network.apis.entity.StoryUnlockResultData
@@ -1273,7 +1272,7 @@ interface ApiService {
      * 广告观看前置上报
      */
     @POST(ApiConstants.REWARD_AD_PRE_REPORT)
-    suspend fun rewardAdPreReport(@Body body: AdPreReportBody): ApiResponse<AdPreReportData>
+    suspend fun rewardAdPreReport(@Body body: AdPreReportBody): ApiResponse<AdMobPreportData>
 
     /**
      * 播放器-剧集自动解锁（每集预加载时调用，余额充足则静默扣费解锁）
@@ -1297,7 +1296,7 @@ interface ApiService {
      * 解锁弹窗-广告前置准备（返回 customData/nonce 传给 AdMob）
      */
     @POST(ApiConstants.STORY_UNLOCK_AD_PREPARE)
-    suspend fun storyUnlockAdPrepare(@Body body: WorkBody): ApiResponse<StoryUnlockAdPrepareData?>
+    suspend fun storyUnlockAdPrepare(@Body body: WorkBody): ApiResponse<AdMobPreportData?>
 
     /**
      * 解锁弹窗-广告解锁结果轮询

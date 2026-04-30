@@ -23,33 +23,47 @@
         android:gravity="center_horizontal"
         android:orientation="vertical">
 
-        <!-- 硬币图标 + 数量 -->
-        <LinearLayout
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="65dp"
-            android:background="@{item.isToday ? @drawable/shape_check_in_day_today : (item.isChecked ? @drawable/shape_check_in_day_done : @drawable/shape_check_in_day_normal)}"
-            android:gravity="center"
-            android:orientation="vertical">
+            android:layout_height="wrap_content">
+            <!-- 硬币图标 + 数量 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="65dp"
+                android:background="@{item.isToday ? @drawable/shape_check_in_day_today : (item.isChecked ? @drawable/shape_check_in_day_done : @drawable/shape_check_in_day_normal)}"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/ic_coins"
+                    tools:ignore="ContentDescription" />
+
+                <!-- +10 / +20 … -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="11dp"
+                    android:fontFamily="@font/outfit_medium"
+                    android:text="@{`+` + item.coins}"
+                    android:textColor="@{item.isToday ? @color/text_color_1_dark : @color/color_50_ffffff}"
+                    android:textSize="12sp"
+                    tools:text="+10" />
+            </LinearLayout>
 
             <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_gravity="center"
-                android:importantForAccessibility="no"
-                android:src="@drawable/ic_coins"
-                tools:ignore="ContentDescription" />
-
-            <!-- +10 / +20 … -->
-            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="11dp"
-                android:fontFamily="@font/outfit_medium"
-                android:text="@{`+` + item.coins}"
-                android:textColor="@{item.isToday ? @color/text_color_1_dark : @color/color_50_ffffff}"
-                android:textSize="12sp"
-                tools:text="+10" />
-        </LinearLayout>
+                android:layout_gravity="end|bottom"
+                setVisible="@{item.isChecked()}"
+                android:importantForAccessibility="no"
+                android:src="@drawable/ic_check_in"
+                tools:ignore="ContentDescription" />
+        </FrameLayout>
+
 
         <!-- Day 1 -->
         <TextView

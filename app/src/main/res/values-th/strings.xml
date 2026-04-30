@@ -589,8 +589,8 @@
     <string name="rewards_go">ไป</string>
     <string name="rewards_watch">รับชม</string>
     <string name="rewards_claimed">รับแล้ว</string>
-    <string name="rewards_50_reward_coins">+50 เหรียญรางวัล</string>
-    <string name="rewards_watch_video_earn_50">รับชมวิดีโอเพื่อรับเหรียญ 50 ชิ้น</string>
+    <string name="rewards_50_reward_coins">+%s เหรียญรางวัล</string>
+    <string name="rewards_watch_video_earn_50">รับชมวิดีโอเพื่อรับเหรียญ +%s ชิ้น</string>
     <string name="rewards_watch_ad">รับชมโฆษณา</string>
     <string name="rewards_checkin_7days_bonus">เช็คอินติดต่อกัน 7 วัน รับรางวัลใหญ่!</string>
     <string name="rewards_extra_30_coins">รับเหรียญพิเศษ 30 ชิ้น</string>

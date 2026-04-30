@@ -578,8 +578,8 @@
     <string name="rewards_go">前往</string>
     <string name="rewards_watch">观看</string>
     <string name="rewards_claimed">已领取</string>
-    <string name="rewards_50_reward_coins">+50 奖励金币</string>
-    <string name="rewards_watch_video_earn_50">观看视频即可赚取 50 金币</string>
+    <string name="rewards_50_reward_coins">+%s 奖励金币</string>
+    <string name="rewards_watch_video_earn_50">观看视频即可赚取 +%s 金币</string>
     <string name="rewards_watch_ad">观看广告</string>
     <string name="rewards_checkin_7days_bonus">连续签到 7 天可领取大额奖励！</string>
     <string name="rewards_extra_30_coins">额外赚取 30 金币</string>

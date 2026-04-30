@@ -5,7 +5,9 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.databinding.FragmentRewardsBinding
+import com.kuaigeglobal.epnova.widget.decoration.GridSpacingItemDecoration
 import com.nhsd.basic.BaseViewModelFragment
+import com.nhsd.basic.ext.dp
 
 class RewardsFragment : BaseViewModelFragment<FragmentRewardsBinding, RewardsViewModel>() {
 
@@ -27,6 +29,7 @@ class RewardsFragment : BaseViewModelFragment<FragmentRewardsBinding, RewardsVie
     private fun initView() {
         // 签到格子：7列 Grid
         binding.rvCheckIn.layoutManager = GridLayoutManager(requireContext(), 7)
+        binding.rvCheckIn.addItemDecoration(GridSpacingItemDecoration(7, 2.dp, 0))
         binding.rvCheckIn.adapter = mRealVM.checkInAdapter
 
         // 任务列表：垂直 Linear

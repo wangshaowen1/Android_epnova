@@ -9,5 +9,7 @@ data class RewardCheckInReportData(
     /** 本次签到获得的金币数量 */
     val rewardNum: Int?,
     /** 当前连续签到天数（用于刷新标题 "Checked in for N day(s)"） */
-    val checkinDays: Int?
+    val checkinDays: Int?,
+    /** 签到流水ID */
+    val checkId:String?,
 )

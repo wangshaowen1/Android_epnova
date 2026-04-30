@@ -19,11 +19,13 @@
         android:background="@drawable/bg_1b191f_r16"
         android:padding="@dimen/spacing_m">
 
-        <!-- 左侧图标 -->
+        <!-- 左侧图标：登录任务用 ic_link_circle，广告任务用 ic_video_circle -->
         <ImageView
             android:id="@+id/ivIcon"
+            imageResource="@{item.iconRes}"
             android:layout_width="42dp"
             android:layout_height="42dp"
+            android:src="@drawable/ic_video_circle"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -33,7 +35,7 @@
             android:id="@+id/llText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="12dp"
+            android:layout_marginHorizontal="@dimen/spacing_m"
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/flAction"
@@ -42,27 +44,29 @@
             app:layout_constraintVertical_bias="0.5">
 
             <TextView
+                style="@style/Text.Medium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
-                android:fontFamily="@font/outfit_medium"
                 android:maxLines="1"
                 android:text="@{item.title}"
                 android:textColor="?attr/textColor1"
                 android:textSize="14sp"
-                tools:text="Login with any account" />
+                tools:text="@string/rewards_watch_ad" />
 
             <TextView
+                style="@style/Text.Regular"
+                highlightColor="@{`#FFCE2C`}"
+                highlightKeyword="@{item.coinsTxt}"
+                titleText="@{item.subtitleText}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:ellipsize="end"
-                android:fontFamily="@font/outfit_regular"
                 android:maxLines="1"
-                android:text="@{item.desc}"
                 android:textColor="@color/color_50_fffafb"
                 android:textSize="14sp"
-                tools:text="Watch a video to earn +50 coins" />
+                tools:text="@string/rewards_watch_video_earn_50" />
         </LinearLayout>
 
         <!-- 右侧按钮区域（3 个 view 叠在一起，通过 visibility 切换） -->
@@ -74,50 +78,47 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <!-- 已完成 -->
+            <!-- 广告任务已完成（Claimed） -->
             <TextView
                 android:id="@+id/tvDone"
+                style="@style/Text.Medium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingHorizontal="14dp"
-                android:paddingVertical="7dp"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="4dp"
                 android:text="@string/rewards_claimed"
-                android:textColor="@color/color_60_ffffff"
-                android:textSize="13sp"
-                android:visibility="@{item.isDone ? View.VISIBLE : View.GONE}"
+                android:textColor="?attr/textColor5"
+                android:visibility="@{!item.isLoginTask &amp;&amp; item.isDone ? View.VISIBLE : View.GONE}"
                 tools:visibility="gone" />
 
-            <!-- Claim -->
+            <!-- 登录任务：Claim 按钮（未完成时显示） -->
             <Button
                 android:id="@+id/btnClaim"
                 style="@style/Button.Bold"
-                singleClick="@{(v) -> item.onWatch()}"
+                singleClick="@{(v) -> item.onCheckIn()}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingHorizontal="@dimen/spacing_m"
-                android:paddingVertical="@dimen/spacing_xs"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="4dp"
                 android:text="@string/home_login_reward_claim"
-                android:textColor="@color/white"
                 android:textSize="14sp"
-                android:visibility="@{(!item.isDone &amp;&amp; !item.isWatch) ? View.VISIBLE : View.GONE}"
-                tools:visibility="visible" />
+                android:visibility="@{item.isLoginTask? View.VISIBLE : View.GONE}"
+                tools:visibility="gone" />
 
-            <!-- Watch / Watch(locked) -->
+            <!-- 广告任务：Watch / Watch(locked) -->
             <Button
                 android:id="@+id/btnWatch"
                 style="@style/Button.Bold"
                 singleClick="@{(v) -> item.onWatch()}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:alpha="@{item.isLocked ? 0.4f : 1.0f}"
-                android:paddingHorizontal="16dp"
-                android:paddingVertical="7dp"
+                android:alpha="@{item.isLocked ? 0.6f : 1.0f}"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="4dp"
                 android:text="@string/rewards_watch"
-                android:textColor="@color/white"
-                android:textSize="13sp"
-                android:textStyle="bold"
-                android:visibility="@{(!item.isDone &amp;&amp; (item.isWatch || item.isLocked)) ? View.VISIBLE : View.GONE}"
-                tools:visibility="gone" />
+                android:textSize="14sp"
+                android:visibility="@{!item.isLoginTask &amp;&amp; (item.isWatch || item.isLocked) ? View.VISIBLE : View.GONE}"
+                tools:visibility="visible" />
         </FrameLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

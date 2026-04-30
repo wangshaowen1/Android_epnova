@@ -12,6 +12,7 @@ import com.kuaigeglobal.epnova.core.network.apis.entity.AdTaskItem
 import com.kuaigeglobal.epnova.core.network.apis.entity.CheckInTaskItem
 import com.kuaigeglobal.epnova.core.network.apis.request.AdPreReportBody
 import com.kuaigeglobal.epnova.core.network.apis.request.UserTokenBody
+import com.kuaigeglobal.epnova.router.AppNavigator
 import com.nhsd.basic.ext.showToast
 
 class RewardsViewModel : AppRepositoryViewModel<AppRepository>() {
@@ -68,7 +69,9 @@ class RewardsViewModel : AppRepositoryViewModel<AppRepository>() {
             apiBlock = { mRepo.api.rewardAdTaskList(UserTokenBody()) },
             onSuccess = {
                 val d = data ?: return@request
-                earnAdapter.submitList(d.taskList?.map { buildEarnItemVM(it) } ?: emptyList())
+                val adItems = d.taskList?.map { buildEarnItemVM(it) } ?: emptyList()
+                // 登录任务固定排在首位，接口只返回广告任务
+                earnAdapter.submitList(listOf(buildLoginTaskVM()) + adItems)
             }
         )
     }
@@ -80,12 +83,12 @@ class RewardsViewModel : AppRepositoryViewModel<AppRepository>() {
      * 拿到 adFlowId 后由调用方将其设置为 AdMob 的 customRewardString，
      * 广告播放完毕后回调 [onAdWatched]。
      */
-    fun preReportAd(vm: ItemEarnRewardVM, onFlowId: (adFlowId: Long) -> Unit) {
+    fun preReportAd(vm: ItemEarnRewardVM, onFlowId: (adFlowId: String) -> Unit) {
         val recordId = vm.data.get()?.taskRecordId ?: return
         request(
             apiBlock = { mRepo.api.rewardAdPreReport(AdPreReportBody(adScene = 2, bizId = recordId)) },
             onSuccess = {
-                val flowId = data?.adFlowId ?: return@request
+                val flowId = data?.nonce ?: return@request
                 onFlowId(flowId)
             }
         )
@@ -100,6 +103,13 @@ class RewardsViewModel : AppRepositoryViewModel<AppRepository>() {
     }
 
     // ─── 内部辅助 ────────────────────────────────────────────────────────────
+
+    /** 构建登录任务 VM，点击 Claim 打开登录界面 */
+    private fun buildLoginTaskVM(): ItemEarnRewardVM {
+        return ItemEarnRewardVM(data = null, isLoginTask = true).apply {
+            onCheckInAction = { AppNavigator.checkRealLogin(showToast = false) }
+        }
+    }
 
     private fun buildEarnItemVM(item: AdTaskItem): ItemEarnRewardVM {
         return ItemEarnRewardVM(item).apply {
