@@ -25,7 +25,7 @@ class FacebookSignInHelper(private val activity: ComponentActivity) {
                     val token = result.accessToken.token
                     Log.d(tag, "onSuccess: token=$token")
                     pendingOnSuccess?.invoke(
-                        LoginByThirdBody(LoginByThirdBody.LOGIN_TYPE_FACEBOOK, token)
+                        LoginByThirdBody(LoginByThirdBody.LOGIN_TYPE_FACEBOOK, accessToken = token)
                     )
                     clearPending()
                 }

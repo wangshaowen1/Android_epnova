@@ -111,7 +111,7 @@ class GoogleSignInHelper(private val context: Context) {
                         onSuccess(
                             LoginByThirdBody(
                                 LoginByThirdBody.LOGIN_TYPE_GOOGLE,
-                                googleCred.idToken
+                                identityToken = googleCred.idToken
                             )
                         )
                     } catch (e: Exception) {
