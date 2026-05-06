@@ -20,6 +20,7 @@ import com.kuaigeglobal.epnova.core.Config
 import com.kuaigeglobal.epnova.core.Global
 import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.manager.AdStrategyManager
+import com.kuaigeglobal.epnova.core.manager.AppsFlyerManager
 import com.kuaigeglobal.epnova.core.manager.OssManager
 import com.kuaigeglobal.epnova.core.manager.PlaceManager
 import com.kuaigeglobal.epnova.feature.splash.SplashActivity
@@ -152,6 +153,8 @@ class App : BaseApp() {
 
         SP.init(this)
         MMKV.initialize(this@App)
+        // AppsFlyer 初始化（subscribeForDeepLink 必须在 start 前注册）
+        AppsFlyerManager.init(this)
         config = Config()
         config.init(this@App)
         user = User()
@@ -301,6 +304,8 @@ class App : BaseApp() {
             })
             Utils.init(this)
             DeviceID.register(this)
+            // AppsFlyer 开始数据采集（用户已同意隐私协议）
+            AppsFlyerManager.start(this)
             // 初始化 AdMob SDK（在主进程中执行，异步不阻塞启动）
             if (ProcessUtils.isMainProcess()) {
                 ioScope.launch {

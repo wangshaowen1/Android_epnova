@@ -16,6 +16,7 @@ import com.kuaigeglobal.epnova.common.ext.topActivity
 import com.kuaigeglobal.epnova.common.permissions.requestRead2WritePermissions
 import com.kuaigeglobal.epnova.common.utils.IntentUtils
 import com.kuaigeglobal.epnova.common.utils.Utils
+import com.kuaigeglobal.epnova.core.Events
 import com.kuaigeglobal.epnova.core.manager.IRouter
 import com.kuaigeglobal.epnova.core.network.apis.ApiFactory
 import com.kuaigeglobal.epnova.core.network.apis.entity.EpisodeInfo
@@ -26,6 +27,7 @@ import com.kuaigeglobal.epnova.feature.creator.generate.StoryEditorActivity
 import com.kuaigeglobal.epnova.feature.editor.EditStoryboardVideoActivity
 import com.kuaigeglobal.epnova.feature.web.SimpleBrowserActivity.Companion.launch
 import com.kuaigeglobal.epnova.widget.LoadingDialog2
+import com.nhsd.basic.bus.FlowEventBus
 import com.nhsd.basic.ext.launchNoCrash
 import com.nhsd.basic.ext.showToast
 import com.nhsd.basic.utils.Logger
@@ -106,7 +108,7 @@ object AppRouter : IRouter {
         }
 
         when (host) {
-            "retoreCreator" -> {//fastfilm://retoreCreator?workId=%s&storyId=%s&workTitle=%s&workType=%s&totalEpisodeCnt=%s&workRatio=%s
+            "restoreCreator" -> {//epnovascheme://toHome
                 val workId = uri.getQueryParameter("workId")
                 val storyId = uri.getQueryParameter("storyId")
                 val workTitle = uri.getQueryParameter("workTitle")
@@ -117,7 +119,11 @@ object AppRouter : IRouter {
                 startStory(workId, storyId, workTitle, workType?.toIntOrNull(), totalEpisodeCnt?.toIntOrNull(), workRatio)
             }
 
-            "bookGenerated" -> {
+            "toHome" -> {
+                FlowEventBus.postSync(Events.MainTabEvent(Events.MainTabEvent.TAB_HOME))
+            }
+
+            "toTargetEpisode" -> {//epnovascheme://toTargetEpisode?workId=%s&storyId=%s
                 if (AppNavigator.checkLoginIntercepted(true)) {
                     return
                 }

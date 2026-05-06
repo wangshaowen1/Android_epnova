@@ -752,3 +752,29 @@
 -keepclassmembers class com.kuaigeglobal.epnova.core.manager.OverseasDeviceFingerprint {
     <fields>;
 }
+
+# 保护 AppsFlyer 核心类
+-keep class com.appsflyer.** { *; }
+# 保护所有 DeepLink 相关的接口和实现类
+-keep interface com.appsflyer.deeplink.** { *; }
+-keep class com.appsflyer.deeplink.** { *; }
+# 避免移除某些用于归因的属性
+-keepattributes Signature
+-keepattributes *Annotation*
+
+
+# Facebook SDK 基础规则
+-keep class com.facebook.** { *; }
+-keepattributes Signature
+
+# 保持特定的接口和方法不被混淆，确保反射调用正常
+-keepclassmembers class * extends javax.inject.Provider {
+    @javax.inject.Inject <init>(...);
+}
+
+# 如果你使用了 Facebook 登录或分享
+-keep class com.facebook.login.Login { *; }
+-keep class com.facebook.common.Common { *; }
+
+# 保持 Custom Tab 相关的类（Facebook 网页登录依赖此项）
+-keep class com.facebook.CustomTabActivity { *; }

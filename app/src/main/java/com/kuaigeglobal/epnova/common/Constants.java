@@ -20,7 +20,7 @@ public class Constants {
     @NotNull
     public static final String DEFAULT_BIRTHDAY = "2001-01-01";
 
-    public static final String APP_SCHEME = "fastfilm";
+    public static final String APP_SCHEME = "epnovascheme";
 
     public static final String DEFAULT_CHANNEL_ID = "1";
 

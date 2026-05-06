@@ -357,4 +357,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.3")
 
     implementation 'com.facebook.android:facebook-login:latest.release'
+
+    // AppsFlyer SDK（deeplink 归因）
+    implementation 'com.appsflyer:af-android-sdk:6.18.0'
 }

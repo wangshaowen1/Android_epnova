@@ -58,7 +58,10 @@ object OverseasFingerprintManager {
             val androidId = getAndroidId(appContext)
             val cloudUuid = getFallbackUUID(appContext)
             val appSetId = getGoogleAppSetId(appContext)
-
+            Logger.d(TAG, "--> 硬件 ID: $drmId")
+            Logger.d(TAG, "--> 系统 ID: $androidId")
+            Logger.d(TAG, "--> 兜底 ID: $cloudUuid")
+            Logger.d(TAG, "--> 生态 ID: $appSetId")
             // 组装最终的指纹向量，对暴露真实硬件/系统的 ID 进行 SHA-256 脱敏处理
             val fingerprint = OverseasDeviceFingerprint(
                 drmId = hashSha256(drmId),

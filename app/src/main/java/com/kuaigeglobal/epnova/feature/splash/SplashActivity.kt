@@ -34,10 +34,15 @@ class SplashActivity : BaseViewModelActivity<ActivitySplashBinding, SplashViewMo
             super.onCreate(savedInstanceState)
 
             if (!isTaskRoot) {
-                intent.data?.takeIf { !TextUtils.isEmpty(it.host) }?.toString()?.also {
+                intent.data?.takeIf { !TextUtils.isEmpty(it.host) }?.let { uri ->
+                    // HTTPS 链接（AppsFlyer OneLink / Universal Link）不在此手动路由，
+                    // 由 AppsFlyerManager.subscribeForDeepLink 回调统一处理
+                    if (uri.scheme == "https" || uri.scheme == "http") {
+                        finish()
+                        return
+                    }
                     if (ActivityUtils.getActivityList().find { activity -> activity.javaClass == MainActivity::class.java } != null) {
-
-                        AppRouter.jump(it)
+                        AppRouter.jump(uri.toString())
                         finish()
                     } else {
                         jumpToTheHomepage()
@@ -69,10 +74,12 @@ class SplashActivity : BaseViewModelActivity<ActivitySplashBinding, SplashViewMo
     }
 
     private fun jumpToTheHomepage() {
-        val it = intent.data?.takeIf { !TextUtils.isEmpty(it.host) } ?: ""
-        MainActivity.start(this@SplashActivity, it.toString())
+        // 只将自定义 scheme URI 传给 MainActivity，HTTPS 链接（AppsFlyer OneLink）由 AF SDK 自行处理
+        val schemeUri = intent.data
+            ?.takeIf { !TextUtils.isEmpty(it.host) && it.scheme != "https" && it.scheme != "http" }
+            ?.toString()
+        MainActivity.start(this@SplashActivity, schemeUri)
         finish()
-
     }
 
 
