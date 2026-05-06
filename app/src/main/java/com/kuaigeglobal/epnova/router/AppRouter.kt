@@ -12,6 +12,7 @@ import androidx.fragment.app.FragmentActivity
 import com.blankj.utilcode.util.ActivityUtils
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.Constants
+import com.kuaigeglobal.epnova.common.ext.ioScope
 import com.kuaigeglobal.epnova.common.ext.topActivity
 import com.kuaigeglobal.epnova.common.permissions.requestRead2WritePermissions
 import com.kuaigeglobal.epnova.common.utils.IntentUtils
@@ -25,6 +26,8 @@ import com.kuaigeglobal.epnova.core.network.apis.request.WorkBody
 import com.kuaigeglobal.epnova.feature.creator.data.DramaGenerateConstants
 import com.kuaigeglobal.epnova.feature.creator.generate.StoryEditorActivity
 import com.kuaigeglobal.epnova.feature.editor.EditStoryboardVideoActivity
+import com.kuaigeglobal.epnova.feature.main.MainActivity
+import com.kuaigeglobal.epnova.feature.play.DramasPlayPagerActivity
 import com.kuaigeglobal.epnova.feature.web.SimpleBrowserActivity.Companion.launch
 import com.kuaigeglobal.epnova.widget.LoadingDialog2
 import com.nhsd.basic.bus.FlowEventBus
@@ -121,13 +124,18 @@ object AppRouter : IRouter {
 
             "toHome" -> {
                 FlowEventBus.postSync(Events.MainTabEvent(Events.MainTabEvent.TAB_HOME))
+                ActivityUtils.finishToActivity(MainActivity::class.java, false)
             }
 
             "toTargetEpisode" -> {//epnovascheme://toTargetEpisode?workId=%s&storyId=%s
-                if (AppNavigator.checkLoginIntercepted(true)) {
-                    return
+                val workId = uri.getQueryParameter("workId")
+                val storyId = uri.getQueryParameter("storyId")
+                ioScope.launchNoCrash {
+                    val unlockInfoData = ApiFactory.apiService.episodeUnlockLockStatus(WorkBody(workId, storyId))
+                    withContext(Dispatchers.Main){
+                        DramasPlayPagerActivity.start(workId, if (unlockInfoData.data?.lockStatus == 2) unlockInfoData.data?.episodeNo else 0, false)
+                    }
                 }
-                AppLaunchJump.launchJump(uri)
             }
 
             else -> {}

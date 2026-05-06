@@ -679,6 +679,13 @@ object ApiConstants {
     const val LOGIN_TASK_POPUP = "reward/onceTask/popup/info"
 
     /**
+     * 保存一次性任务记录-保存登录奖励任务完成
+     * 保存一次性任务完成记录（当前支持 taskCode=bind_account）
+     * 根据用户信息参数loginRewardStatus（2=登录成功未领取奖励）触发领取奖励
+     */
+    const val REPORT_LOGIN_TASK = "reward/onceTask/record/save"
+
+    /**
      * 敏感词校验
      */
     const val SENSITIVE_WORD_CHECK = "ai/content-security/text/check"
@@ -928,4 +935,9 @@ object ApiConstants {
      * 广告奖励轮询结果
      */
     const val REWARD_AD_POLL = "reward/task/ad/pollResult"
+
+    /**
+     * 查询剧集锁定状态
+     */
+    const val EPISODE_UNLOCK_LOCK_STATUS = "app/story/unlock/lock-status"
 }

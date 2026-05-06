@@ -36,6 +36,7 @@ import com.kuaigeglobal.epnova.core.network.apis.entity.SimplePropInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.SimpleRoleInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.SimpleSceneInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.SimpleStoryboardInfo
+import com.kuaigeglobal.epnova.core.network.apis.entity.StoryUnlockStatusData
 import com.kuaigeglobal.epnova.core.network.apis.entity.SubtitleTaskStatusInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.TaskStatusInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.UserShareUrlInfo
@@ -1008,6 +1009,12 @@ interface ApiService {
     suspend fun loginTaskPopup(): ApiResponse<LoginTaskData?>
 
     /**
+     * 保存一次性任务记录-保存登录奖励任务完成
+     */
+    @POST(ApiConstants.REPORT_LOGIN_TASK)
+    suspend fun reportLoginTask(): ApiResponse<LoginTaskData?>
+
+    /**
      * 敏感词校验
      */
     @POST(ApiConstants.SENSITIVE_WORD_CHECK)
@@ -1311,4 +1318,11 @@ interface ApiService {
      */
     @POST(ApiConstants.REWARD_AD_POLL)
     suspend fun rewardAdPoll(@Body body: RewardAdPollBody): ApiResponse<ResultAdPollData?>
+
+    /**
+     * 查询剧集锁定状态
+     * 纯读接口，无副作用。返回 lockStatus：0=免费集 / 1=已解锁 / 2=未解锁付费集
+     */
+    @POST(ApiConstants.EPISODE_UNLOCK_LOCK_STATUS)
+    suspend fun episodeUnlockLockStatus(@Body body: WorkBody): ApiResponse<StoryUnlockStatusData?>
 }

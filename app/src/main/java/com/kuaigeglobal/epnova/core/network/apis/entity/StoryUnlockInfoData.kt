@@ -23,3 +23,10 @@ data class StoryUnlockInfoData(
     /** 距下一天（用户时区零点）的剩余秒数，用于展示「明天重置」倒计时 */
     val nextDayRemainSeconds: Long?
 )
+
+data class StoryUnlockStatusData(
+    /** 解锁弹窗-章节解锁信息 */
+    val episodeNo: Int?,
+    /** 锁定状态：0=免费集 1=已解锁 2=未解锁付费集*/
+    val lockStatus: Int?
+)
