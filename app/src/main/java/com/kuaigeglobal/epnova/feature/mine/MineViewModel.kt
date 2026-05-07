@@ -32,8 +32,7 @@ class MineViewModel : AppRepositoryViewModel<AppRepository>() {
     val workCourseBanner by lazy { ObservableField<SimpleBannerInfo>() }
 
     val loginRewardsValid = ObservableBoolean(User.get().isGuest)
-    val loginRewards: String?
-        get() = Config.get().loginRewards
+    val loginRewards = ObservableField<String>(Config.get().loginRewards)
 
     override fun onCreate() {
         super.onCreate()
@@ -47,6 +46,7 @@ class MineViewModel : AppRepositoryViewModel<AppRepository>() {
     fun refreshUserInfo() {
         User.get().let { user ->
             loginRewardsValid.set(user.isGuest)
+            loginRewards.set(Config.get().loginRewards)
             isLogin.set(user.isLogin)
             if (!isLogin.get()) {
                 notLoggedIn()

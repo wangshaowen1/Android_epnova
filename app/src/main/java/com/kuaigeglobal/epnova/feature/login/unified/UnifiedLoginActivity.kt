@@ -15,15 +15,18 @@ import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.kuaigeglobal.epnova.R
+import com.kuaigeglobal.epnova.common.ext.ioScope
 import com.kuaigeglobal.epnova.common.ext.topActivity
 import com.kuaigeglobal.epnova.core.Config
 import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.facebook.login.FacebookSignInHelper
 import com.kuaigeglobal.epnova.core.google.login.GoogleSignInHelper
+import com.kuaigeglobal.epnova.core.network.apis.ApiFactory
 import com.kuaigeglobal.epnova.databinding.ActivityUnifiedLoginBinding
 import com.kuaigeglobal.epnova.feature.settings.SettingsActivity
 import com.kuaigeglobal.epnova.feature.web.SimpleBrowserActivity
 import com.nhsd.basic.BaseViewModelActivity
+import com.nhsd.basic.ext.launchNoCrash
 import com.nhsd.basic.ext.showToast
 
 /**
@@ -209,20 +212,27 @@ class UnifiedLoginActivity : BaseViewModelActivity<ActivityUnifiedLoginBinding, 
 
 
     override fun onDestroy() {
-        if (User.get().isLogin) {
-            showRewardToast()
+        if (User.get().isLogin && User.get().loginRewardsValid == 2) {
+            ioScope.launchNoCrash {
+                val response = ApiFactory.apiService.reportLoginTask()
+                if (response.isSuccess) {
+                    showRewardToast(response.data?.rewardLabel)
+                } else {
+                    response.msg?.showToast()
+                }
+            }
         }
         super.onDestroy()
     }
 
-    private fun showRewardToast() {
+    private fun showRewardToast(rewardText: String?) {
         val activity = topActivity ?: return
         val decorView = activity.window.decorView as ViewGroup
 
         val toastView = LayoutInflater.from(activity)
             .inflate(R.layout.toast_reward_coins, decorView, false)
         toastView.findViewById<TextView>(R.id.tvCoinsAmount).text =
-            getString(R.string.home_login_reward_coins, mRealVM.loginRewards)
+            activity.getString(R.string.home_login_reward_coins, rewardText)
 
         val params = FrameLayout.LayoutParams(
             FrameLayout.LayoutParams.WRAP_CONTENT,
