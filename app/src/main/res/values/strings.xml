@@ -518,7 +518,7 @@
     <string name="profile_collection">collection</string>
     <string name="delete_success">Deleted successfully.</string>
     <string name="error_invalid_email">Please enter a valid email address.</string>
-    <string name="agree_terms_privacy">By continuing, you agree to our Terms of Use &amp; Privacy Policy.</string>
+    <string name="agree_terms_privacy">By continuing, you agree to our Terms of Service &amp; Privacy Policy.</string>
     <string name="welcome_epnova_title">Welcome to EpNova! Before using this product or service, please carefully read and fully understand all terms of this application\'s Terms of Service and Privacy Policy, to learn about our service content and the rules governing how we collect and use your relevant personal information. We provide services and protect your personal information in strict accordance with the Terms of Service and Privacy Policy. If you select \"Disagree\", you will not be able to use our products and services.</string>
 
     <string name="enable_camera">Take Photos</string>
