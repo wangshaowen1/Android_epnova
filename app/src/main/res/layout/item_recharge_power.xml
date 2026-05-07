@@ -133,7 +133,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="2dp"
                     android:fontFamily="monospace"
-                    android:text="@{item.discountText}"
+                    android:text="@{item.data.coionsMarketingTag}"
                     android:textColor="@color/white"
                     android:textSize="11dp"
                     android:textStyle="bold"

@@ -50,6 +50,6 @@ data class CoinConfigInfo(
         val second = time / 1000 % 60
 
         // 将 tag 作为第一个参数传入，这样它包含什么特殊字符都不会报错
-        return String.format("%s %02d:%02d:%02d", coionsMarketingTag ?: "", hour, minute, second)
+        return String.format("%02d:%02d:%02d", hour, minute, second)
     }
 }
