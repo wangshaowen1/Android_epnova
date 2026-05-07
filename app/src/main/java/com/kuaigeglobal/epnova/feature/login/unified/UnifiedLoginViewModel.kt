@@ -29,7 +29,7 @@ class UnifiedLoginViewModel : AppRepositoryViewModel<ThirdLoginRepository>() {
      * 协议是否勾选
      */
     val checkedPolicy = ObservableBoolean(false)
-    val loginRewardsValid = User.get().loginRewardsValid == 1
+    val loginRewardsValid = User.get().isGuest
     val loginRewards = Config.get().loginRewards
 
     fun loginByThird(body: LoginByThirdBody, onLogin: ((UserHomeData?) -> Unit)? = null) {

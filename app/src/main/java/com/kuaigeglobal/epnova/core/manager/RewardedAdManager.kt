@@ -19,6 +19,7 @@ import com.kuaigeglobal.epnova.core.network.apis.request.StoryUnlockAdResultBody
 import com.kuaigeglobal.epnova.core.network.apis.request.WorkBody
 import com.nhsd.basic.ext.getResString
 import com.nhsd.basic.ext.showToast
+import com.nhsd.basic.utils.Logger
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -51,6 +52,7 @@ class RewardedAdManager(
 ) {
 
     companion object {
+        const val TAG = "Admob"
         /**
          * 正式的激励视频id是这个 "ca-app-pub-9071858947673651/4907921363"
          * 激励广告位 ID
@@ -112,6 +114,56 @@ class RewardedAdManager(
         rewardedAd = null
     }
 
+    /**
+     * 加载并立即展示广告，customData 由外部提供（调用方已完成 preReport 步骤，无需内部 prepare API）。
+     * 广告看完后回调 [onRewarded]，不触发内部轮询——后续上报逻辑由调用方自行处理。
+     *
+     * @param onLoaded   广告加载成功、即将展示时回调（可用于隐藏 loading）
+     * @param onRewarded 用户看完广告获得奖励时回调
+     * @param onFailed   加载或展示失败时回调（可用于隐藏 loading）
+     */
+    fun loadAndShow(
+        context: Context,
+        activity: Activity,
+        customData: String,
+        onLoaded: (() -> Unit)? = null,
+        onRewarded: () -> Unit,
+        onFailed: (() -> Unit)? = null
+    ) {
+        if (isAdLoading.get()) return
+        isAdLoading.set(true)
+        RewardedAd.load(
+            context,
+            REWARDED_AD_UNIT_ID,
+            AdRequest.Builder().build(),
+            object : RewardedAdLoadCallback() {
+                override fun onAdLoaded(ad: RewardedAd) {
+                    Logger.d(TAG, "loadAndShow onAdLoaded")
+                    rewardedAd = ad
+                    isAdLoading.set(false)
+                    isAdReady.set(true)
+                    onLoaded?.invoke()
+
+                    ad.setServerSideVerificationOptions(
+                        ServerSideVerificationOptions.Builder()
+                            .setCustomData(customData)
+                            .build()
+                    )
+                    ad.fullScreenContentCallback = buildFullScreenCallback(onFailed)
+                    ad.show(activity, OnUserEarnedRewardListener { onRewarded() })
+                }
+
+                override fun onAdFailedToLoad(error: LoadAdError) {
+                    Logger.d(TAG, "loadAndShow onAdFailedToLoad: $error")
+                    isAdLoading.set(false)
+                    isAdReady.set(false)
+                    showAdNotReadyToast()
+                    onFailed?.invoke()
+                }
+            }
+        )
+    }
+
     // ── 内部流程 ──────────────────────────────────────────────────────────────
 
     private fun startPrepare(context: Context, autoShowActivity: Activity?) {
@@ -126,7 +178,7 @@ class RewardedAdManager(
             if (!prepareRes.isSuccess || prepareRes.data == null) {
                 isAdLoading.set(false)
                 statusText.set(null)
-                R.string.episode_unlock_ad_not_ready.getResString().showToast()
+                showAdNotReadyToast()
                 return@launch
             }
 
@@ -146,6 +198,7 @@ class RewardedAdManager(
             AdRequest.Builder().build(),
             object : RewardedAdLoadCallback() {
                 override fun onAdLoaded(ad: RewardedAd) {
+                    Logger.d(TAG, "onAdLoaded: $ad")
                     rewardedAd = ad
                     isAdLoading.set(false)
                     isAdReady.set(true)
@@ -159,28 +212,18 @@ class RewardedAdManager(
                         )
                     }
 
-                    ad.fullScreenContentCallback = object : FullScreenContentCallback() {
-                        override fun onAdDismissedFullScreenContent() {
-                            rewardedAd = null
-                            isAdReady.set(false)
-                        }
-
-                        override fun onAdFailedToShowFullScreenContent(error: AdError) {
-                            rewardedAd = null
-                            isAdReady.set(false)
-                            R.string.episode_unlock_ad_not_ready.getResString().showToast()
-                        }
-                    }
+                    ad.fullScreenContentCallback = buildFullScreenCallback()
 
                     // 如果调用方希望自动展示，广告加载完立即 show
                     autoShowActivity?.let { showAd(it) }
                 }
 
                 override fun onAdFailedToLoad(error: LoadAdError) {
+                    Logger.d(TAG, "onAdFailedToLoad: $error")
                     isAdLoading.set(false)
                     isAdReady.set(false)
                     statusText.set(null)
-                    R.string.episode_unlock_ad_not_ready.getResString().showToast()
+                    showAdNotReadyToast()
                 }
             }
         )
@@ -205,10 +248,12 @@ class RewardedAdManager(
                 if (res.isSuccess) {
                     when (res.data?.status) {
                         1 -> {
+                            Logger.d(TAG, "pollAdResult success")
                             isPolling.set(false); statusText.set(null)
                             onUnlockSuccess?.invoke(); return@launch
                         }
                         2 -> {
+                            Logger.d(TAG, "pollAdResult fail")
                             isPolling.set(false); statusText.set(null)
                             onUnlockFailed?.invoke(); return@launch
                         }
@@ -222,5 +267,25 @@ class RewardedAdManager(
             statusText.set(null)
             onUnlockFailed?.invoke()
         }
+    }
+
+    private fun buildFullScreenCallback(onFailed: (() -> Unit)? = null) = object : FullScreenContentCallback() {
+        override fun onAdDismissedFullScreenContent() {
+            Logger.d(TAG, "onAdDismissedFullScreenContent")
+            rewardedAd = null
+            isAdReady.set(false)
+        }
+
+        override fun onAdFailedToShowFullScreenContent(error: AdError) {
+            Logger.d(TAG, "onAdFailedToShowFullScreenContent: $error")
+            rewardedAd = null
+            isAdReady.set(false)
+            showAdNotReadyToast()
+            onFailed?.invoke()
+        }
+    }
+
+    private fun showAdNotReadyToast() {
+        R.string.episode_unlock_ad_not_ready.getResString().showToast()
     }
 }

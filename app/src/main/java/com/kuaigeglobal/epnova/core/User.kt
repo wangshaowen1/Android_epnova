@@ -38,6 +38,9 @@ class User : IUser {
     var gender: Int? by MmkvDelegate(GENDER, 0) { mmkv }
     var avatarUrl: String? by MmkvDelegate(AVATAR_URL, null) { mmkv }
 
+    /**
+     * 用户来源 1-用户自己注册 6=游客
+     */
     var userSource: Int? by MmkvDelegate(USER_SOURCE, 0) { mmkv }
         private set
     var registerWay: Int? by MmkvDelegate(REGISTER_WAY, 0) { mmkv }

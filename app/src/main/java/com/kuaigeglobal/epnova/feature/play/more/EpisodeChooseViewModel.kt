@@ -26,7 +26,7 @@ class EpisodeChooseViewModel : AppRepositoryViewModel<AppRepository>() {
         const val RANGE_SIZE = 30  // 每个标签区间的大小
     }
 
-    val headerInfo = ObservableField<EpisodeDirectoryData>()
+    val episodeInfo = ObservableField<EpisodeDirectoryData>()
 
     // 当前选中的集数VM
     var checkedEpisode: ItemEpisodeNumberVm? = null
@@ -59,7 +59,7 @@ class EpisodeChooseViewModel : AppRepositoryViewModel<AppRepository>() {
     private fun getHeaderInfo() {
         launchWithLoading {
             response(mRepo.api.episodeDirectoryInfo(WorkIdBody(workId))) {
-                headerInfo.set(data)
+                episodeInfo.set(data)
                 initRangeTabs()
             }
         }
@@ -99,7 +99,7 @@ class EpisodeChooseViewModel : AppRepositoryViewModel<AppRepository>() {
     }
 
     private fun initRangeTabs() {
-        headerInfo.get()?.segmentTabs?.forEachIndexed { index,tab ->
+        episodeInfo.get()?.segmentTabs?.forEachIndexed { index, tab ->
             val vm = ItemEpisodeRangeVm(tab).apply {
                 val startSortNo = tab.startSortNo ?: 0
                 val endSortNo = tab.endSortNo ?: 0

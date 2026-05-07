@@ -7,11 +7,12 @@ package com.kuaigeglobal.epnova.core.network.apis.request
  */
 data class LoginByThirdBody(
     val loginType: Int,
-    val identityToken: String?,//第三方令牌
+    val identityToken: String? = null,//第三方令牌
+    val accessToken: String? = null,//2026043新增Facebook 访问令牌（Facebook登录时前端传入）
     val inviteData: String? = null,
 ) {
     companion object {
         const val LOGIN_TYPE_GOOGLE = 8
-        const val LOGIN_TYPE_FACEBOOK = 10 // TODO: 确认服务端 Facebook 登录类型值
+        const val LOGIN_TYPE_FACEBOOK = 10
     }
 }

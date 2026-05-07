@@ -30,6 +30,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="65dp"
+                android:alpha="@{item.isChecked()?0.6f:1f}"
                 android:background="@{item.isToday ? @drawable/shape_check_in_day_today : (item.isChecked ? @drawable/shape_check_in_day_done : @drawable/shape_check_in_day_normal)}"
                 android:gravity="center"
                 android:orientation="vertical">
@@ -55,10 +56,10 @@
             </LinearLayout>
 
             <ImageView
+                setVisible="@{item.isChecked()}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end|bottom"
-                setVisible="@{item.isChecked()}"
                 android:importantForAccessibility="no"
                 android:src="@drawable/ic_check_in"
                 tools:ignore="ContentDescription" />

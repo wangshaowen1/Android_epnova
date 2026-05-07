@@ -34,7 +34,6 @@ class EpisodeChooseDialog :
 
     override fun onPrepareView() {
         super.onPrepareView()
-
         setupRangeTabRecyclerView()
         setupEpisodeRecyclerView()
         setupListeners()

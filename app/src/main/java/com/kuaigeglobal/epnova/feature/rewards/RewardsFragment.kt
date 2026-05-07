@@ -9,21 +9,13 @@ import android.widget.TextView
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.gms.ads.AdError
-import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.FullScreenContentCallback
-import com.google.android.gms.ads.LoadAdError
-import com.google.android.gms.ads.OnUserEarnedRewardListener
-import com.google.android.gms.ads.rewarded.RewardedAd
-import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
-import com.google.android.gms.ads.rewarded.ServerSideVerificationOptions
 import com.kuaigeglobal.epnova.R
-import com.kuaigeglobal.epnova.core.manager.RewardedAdManager
+import com.kuaigeglobal.epnova.core.ext.onUserStatusChanged
 import com.kuaigeglobal.epnova.databinding.FragmentRewardsBinding
 import com.kuaigeglobal.epnova.widget.decoration.GridSpacingItemDecoration
 import com.nhsd.basic.BaseViewModelFragment
+import com.nhsd.basic.bus.observeEvents
 import com.nhsd.basic.ext.dp
-import com.nhsd.basic.ext.showToast
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -56,7 +48,21 @@ class RewardsFragment : BaseViewModelFragment<FragmentRewardsBinding, RewardsVie
 
     private fun observeEvents() {
         lifecycleScope.launch {
-            mRealVM.showAdEvent.collectLatest { ctx -> loadAndShowRewardAd(ctx) }
+            mRealVM.showAdEvent.collectLatest { ctx ->
+                val activity = activity ?: return@collectLatest
+                showLoadingDialog()
+                mRealVM.adManager.loadAndShow(
+                    context = requireContext(),
+                    activity = activity,
+                    customData = ctx.customData,
+                    onLoaded = { hideLoadingDialog() },
+                    onRewarded = {
+                        if (ctx.vm != null) mRealVM.onAdWatched(ctx.vm, ctx.nonce)
+                        else mRealVM.onCheckInAdWatched(ctx.nonce)
+                    },
+                    onFailed = { hideLoadingDialog() }
+                )
+            }
         }
         lifecycleScope.launch {
             mRealVM.showCheckInSuccessEvent.collectLatest { rewardNum ->
@@ -68,6 +74,9 @@ class RewardsFragment : BaseViewModelFragment<FragmentRewardsBinding, RewardsVie
                 showRewardToast(getString(R.string.rewards_50_reward_coins, "30"))
             }
         }
+        observeEvents {
+            onUserStatusChanged { mRealVM.loadData() }
+        }
     }
 
     // ─── 签到成功弹窗 ─────────────────────────────────────────────────────────
@@ -76,39 +85,6 @@ class RewardsFragment : BaseViewModelFragment<FragmentRewardsBinding, RewardsVie
         val dialog = CheckInSuccessDialog.newInstance(rewardNum)
         dialog.onWatchAdClicked = { mRealVM.preReportCheckInAd() }
         dialog.show(childFragmentManager)
-    }
-
-    // ─── AdMob 广告加载与展示 ─────────────────────────────────────────────────
-
-    private fun loadAndShowRewardAd(ctx: RewardsViewModel.AdWatchContext) {
-        val activity = activity ?: return
-        RewardedAd.load(
-            requireContext(),
-            RewardedAdManager.REWARDED_AD_UNIT_ID,
-            AdRequest.Builder().build(),
-            object : RewardedAdLoadCallback() {
-                override fun onAdLoaded(ad: RewardedAd) {
-                    ad.setServerSideVerificationOptions(
-                        ServerSideVerificationOptions.Builder()
-                            .setCustomData(ctx.customData)
-                            .build()
-                    )
-                    ad.fullScreenContentCallback = object : FullScreenContentCallback() {
-                        override fun onAdFailedToShowFullScreenContent(error: AdError) {
-                            showToast(R.string.episode_unlock_ad_not_ready)
-                        }
-                    }
-                    ad.show(activity, OnUserEarnedRewardListener {
-                        if (ctx.vm != null) mRealVM.onAdWatched(ctx.vm, ctx.nonce)
-                        else mRealVM.onCheckInAdWatched(ctx.nonce)
-                    })
-                }
-
-                override fun onAdFailedToLoad(error: LoadAdError) {
-                    showToast(R.string.episode_unlock_ad_not_ready)
-                }
-            }
-        )
     }
 
     // ─── 获得金币 Toast ───────────────────────────────────────────────────────

@@ -1,11 +1,12 @@
 package com.kuaigeglobal.epnova.core
 
-import com.nhsd.basic.ext.showToast
+import com.kuaigeglobal.epnova.common.ext.ioScope
 import com.kuaigeglobal.epnova.core.network.apis.ApiException
 import com.kuaigeglobal.epnova.core.network.apis.ApiResponse
-import com.kuaigeglobal.epnova.router.AppNavigator
 import com.nhsd.basic.bus.FlowEventBus
+import com.nhsd.basic.ext.showToast
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 fun <T> responseTest(bean: ApiResponse<T>, result: ApiResponse<T>.() -> Unit) {
@@ -31,7 +32,9 @@ fun <T> response(
         result.invoke(bean)
     } else {
         if (arrayOf(ApiException.AUTHORIZATION_ERROR, ApiException.LOGGED_OUT_USER, ApiException.USER_ADD_TO_BLACK_LIST).contains(bean?.code)) {
-            FlowEventBus.postSync(Events.UserChangedEvent(Events.UserChangedEvent.TOKEN_EXPIRED))
+            ioScope.launch(Dispatchers.Main) {
+                FlowEventBus.post(Events.UserChangedEvent(Events.UserChangedEvent.TOKEN_EXPIRED))
+            }
         }
         error.invoke(bean)
     }

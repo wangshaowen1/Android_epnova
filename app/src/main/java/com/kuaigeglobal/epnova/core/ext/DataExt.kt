@@ -42,7 +42,7 @@ fun UserHomeData?.loginToast() {
     Global.needCompleteProfile = newRegister
     if (!newRegister) {
     }
-    R.string.login_success_start_creating.getResString().showToastDelay(100)
+    //R.string.login_success_start_creating.getResString().showToastDelay(100)
 }
 
 /**

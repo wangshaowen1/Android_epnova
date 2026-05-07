@@ -4,7 +4,7 @@ package com.kuaigeglobal.epnova.core.network.apis;
 public class ApiException extends RuntimeException {
 
     //token失效
-    public static final int AUTHORIZATION_ERROR = 1001;
+    public static final int AUTHORIZATION_ERROR = 401;
     //已注销用户
     public static final int LOGGED_OUT_USER = 112;
 

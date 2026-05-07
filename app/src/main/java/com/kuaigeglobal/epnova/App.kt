@@ -298,10 +298,12 @@ class App : BaseApp() {
 
     fun initSdkAfterAgreeLicense() {
         if (hasAgree()) {
-            Global.guestLogin({
-                User.get().updateFrom(it)
-                SignUtils.signIn()
-            })
+            if (User.get().isVisitor) {
+                Global.guestLogin({
+                    User.get().updateFrom(it)
+                    SignUtils.signIn()
+                })
+            }
             Utils.init(this)
             DeviceID.register(this)
             // AppsFlyer 开始数据采集（用户已同意隐私协议）
@@ -335,7 +337,7 @@ class App : BaseApp() {
     companion object {
         @JvmStatic
         lateinit var instance: App
-        const val TAG = "_goldenfruit_app"
+        const val TAG = "Epnova_APP"
 
         // 相当于 Java 的 static boolean
         var isColdStart = true

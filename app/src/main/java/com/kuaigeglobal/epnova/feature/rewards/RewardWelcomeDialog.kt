@@ -47,43 +47,10 @@ class RewardWelcomeDialog : BaseDialogFragment<DialogRewardWelcomeBinding>() {
 
         observeEvents {
             onUserSignIn {
-                showRewardToast()
                 dismissAllowingStateLoss()
             }
         }
     }
 
-    private fun showRewardToast() {
-        val activity = activity ?: return
-        val decorView = activity.window.decorView as ViewGroup
 
-        val toastView = LayoutInflater.from(activity)
-            .inflate(R.layout.toast_reward_coins, decorView, false)
-        toastView.findViewById<TextView>(R.id.tvCoinsAmount).text =
-            getString(R.string.home_login_reward_coins, data?.rewardLabel)
-
-        val params = FrameLayout.LayoutParams(
-            FrameLayout.LayoutParams.WRAP_CONTENT,
-            FrameLayout.LayoutParams.WRAP_CONTENT,
-            Gravity.CENTER
-        )
-        // 进场：缩放 + 淡入
-        toastView.scaleX = 0.5f
-        toastView.scaleY = 0.5f
-        toastView.alpha = 0f
-        decorView.addView(toastView, params)
-        toastView.animate()
-            .scaleX(1f).scaleY(1f).alpha(1f)
-            .setDuration(250)
-            .start()
-
-        // 2s 后淡出并移除
-        toastView.postDelayed({
-            toastView.animate()
-                .alpha(0f)
-                .setDuration(300)
-                .withEndAction { decorView.removeView(toastView) }
-                .start()
-        }, 2000)
-    }
 }

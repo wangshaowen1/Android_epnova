@@ -7,16 +7,20 @@ import android.text.SpannableString
 import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
-import android.util.Log
+import android.view.Gravity
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import android.widget.FrameLayout
+import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.ext.topActivity
 import com.kuaigeglobal.epnova.core.Config
+import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.facebook.login.FacebookSignInHelper
 import com.kuaigeglobal.epnova.core.google.login.GoogleSignInHelper
 import com.kuaigeglobal.epnova.databinding.ActivityUnifiedLoginBinding
-import com.kuaigeglobal.epnova.feature.login.LoginActivity
 import com.kuaigeglobal.epnova.feature.settings.SettingsActivity
 import com.kuaigeglobal.epnova.feature.web.SimpleBrowserActivity
 import com.nhsd.basic.BaseViewModelActivity
@@ -97,19 +101,18 @@ class UnifiedLoginActivity : BaseViewModelActivity<ActivityUnifiedLoginBinding, 
 
             R.id.btnGoogle -> {
 
-                        googleSignInHelper.signIn(
-                            onSuccess = { body ->
-                                mRealVM.loginByThird(body) {
+                googleSignInHelper.signIn(
+                    onSuccess = { body ->
+                        mRealVM.loginByThird(body) {
 //                                    Log.i("Hello","data "+it)
-                                    finishOnly()
-                                }
-                            },
-                            onFailure = { msg ->
-                                msg?.toString()?.showToast()
-                            }
-                        )
-                }
-
+                            finishOnly()
+                        }
+                    },
+                    onFailure = { msg ->
+                        msg?.toString()?.showToast()
+                    }
+                )
+            }
 
 
             R.id.bt_settings -> {
@@ -202,6 +205,48 @@ class UnifiedLoginActivity : BaseViewModelActivity<ActivityUnifiedLoginBinding, 
         binding.tvAgreement.movementMethod = LinkMovementMethod.getInstance()
         binding.tvAgreement.highlightColor = Color.TRANSPARENT
         binding.tvAgreement.text = spannableString
+    }
+
+
+    override fun onDestroy() {
+        if (User.get().isLogin) {
+            showRewardToast()
+        }
+        super.onDestroy()
+    }
+
+    private fun showRewardToast() {
+        val activity = topActivity ?: return
+        val decorView = activity.window.decorView as ViewGroup
+
+        val toastView = LayoutInflater.from(activity)
+            .inflate(R.layout.toast_reward_coins, decorView, false)
+        toastView.findViewById<TextView>(R.id.tvCoinsAmount).text =
+            getString(R.string.home_login_reward_coins, mRealVM.loginRewards)
+
+        val params = FrameLayout.LayoutParams(
+            FrameLayout.LayoutParams.WRAP_CONTENT,
+            FrameLayout.LayoutParams.WRAP_CONTENT,
+            Gravity.CENTER
+        )
+        // 进场：缩放 + 淡入
+        toastView.scaleX = 0.5f
+        toastView.scaleY = 0.5f
+        toastView.alpha = 0f
+        decorView.addView(toastView, params)
+        toastView.animate()
+            .scaleX(1f).scaleY(1f).alpha(1f)
+            .setDuration(250)
+            .start()
+
+        // 2s 后淡出并移除
+        toastView.postDelayed({
+            toastView.animate()
+                .alpha(0f)
+                .setDuration(300)
+                .withEndAction { decorView.removeView(toastView) }
+                .start()
+        }, 2000)
     }
 
 

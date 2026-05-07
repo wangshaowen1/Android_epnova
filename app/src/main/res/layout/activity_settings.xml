@@ -469,6 +469,7 @@
 
                 <Button
                     android:id="@+id/stv_log_out"
+                    setVisible="@{layout.isRealLogin}"
                     style="@style/Text14"
                     singleClick="@{layout.clickHandler::onClick}"
                     android:layout_width="match_parent"

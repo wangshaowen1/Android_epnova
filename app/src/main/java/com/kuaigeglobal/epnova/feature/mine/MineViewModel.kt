@@ -15,13 +15,7 @@ import com.kuaigeglobal.epnova.core.response
 import com.nhsd.basic.ext.getResString
 
 /**
- * *****************************************
- * 项目名称: KidsTales
- * @Author: SZYMN
  * @Introduce:我的
- * @Data: 2025/4/18  14:10
- * @Version: 1.0
- * *****************************************
  */
 class MineViewModel : AppRepositoryViewModel<AppRepository>() {
 
@@ -37,8 +31,7 @@ class MineViewModel : AppRepositoryViewModel<AppRepository>() {
     val balance by lazy { ObservableField<String>() }
     val workCourseBanner by lazy { ObservableField<SimpleBannerInfo>() }
 
-    val loginRewardsValid: Boolean
-        get() = User.get().loginRewardsValid == 1
+    val loginRewardsValid = ObservableBoolean(User.get().isGuest)
     val loginRewards: String?
         get() = Config.get().loginRewards
 
@@ -53,6 +46,7 @@ class MineViewModel : AppRepositoryViewModel<AppRepository>() {
      */
     fun refreshUserInfo() {
         User.get().let { user ->
+            loginRewardsValid.set(user.isGuest)
             isLogin.set(user.isLogin)
             if (!isLogin.get()) {
                 notLoggedIn()

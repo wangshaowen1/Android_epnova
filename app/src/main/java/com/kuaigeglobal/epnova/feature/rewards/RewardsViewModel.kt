@@ -11,6 +11,7 @@ import com.kuaigeglobal.epnova.common.adapter.QuickAdapter
 import com.kuaigeglobal.epnova.core.AppRepository
 import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.ext.request
+import com.kuaigeglobal.epnova.core.manager.RewardedAdManager
 import com.kuaigeglobal.epnova.core.network.apis.entity.AdTaskItem
 import com.kuaigeglobal.epnova.core.network.apis.request.AdPreReportBody
 import com.kuaigeglobal.epnova.core.network.apis.request.RewardAdPollBody
@@ -42,6 +43,8 @@ class RewardsViewModel : AppRepositoryViewModel<AppRepository>() {
     val checkInAdapter = QuickAdapter<ItemCheckInDayVM>(R.layout.item_check_in_day, emptyList())
     val earnAdapter    = QuickAdapter<ItemEarnRewardVM>(R.layout.item_earn_reward,   emptyList())
 
+    val adManager: RewardedAdManager by lazy { RewardedAdManager(mRepo.api, viewModelScope) }
+
     /**
      * Fragment 收到后负责加载并展示 AdMob 激励广告。
      * vm == null 表示签到广告（adScene=1）；否则为任务广告（adScene=2）。
@@ -58,9 +61,14 @@ class RewardsViewModel : AppRepositoryViewModel<AppRepository>() {
     private val _showCheckInAdRewardEvent = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
     val showCheckInAdRewardEvent: SharedFlow<Unit> = _showCheckInAdRewardEvent
 
-    override fun onCreate() {
-        super.onCreate()
+    override fun onResume() {
+        super.onResume()
         balance.set(User.get().coins)
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        adManager.release()
     }
 
     fun loadData() {
@@ -112,6 +120,10 @@ class RewardsViewModel : AppRepositoryViewModel<AppRepository>() {
             onSuccess = {
                 val d = data ?: return@request
                 val adItems = d.taskList?.map { buildEarnItemVM(it) } ?: emptyList()
+                if (User.get().isLogin) {
+                    earnAdapter.submitList(adItems)
+                    return@request
+                }
                 // 登录任务固定排在首位，接口只返回广告任务
                 earnAdapter.submitList(listOf(buildLoginTaskVM()) + adItems)
             }
