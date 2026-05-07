@@ -65,13 +65,13 @@ class RewardsFragment : BaseViewModelFragment<FragmentRewardsBinding, RewardsVie
             }
         }
         lifecycleScope.launch {
-            mRealVM.showCheckInSuccessEvent.collectLatest { rewardNum ->
-                showCheckInSuccessDialog(rewardNum)
+            mRealVM.showCheckInSuccessEvent.collectLatest { (rewardNum, adRewardCoins) ->
+                showCheckInSuccessDialog(rewardNum, adRewardCoins)
             }
         }
         lifecycleScope.launch {
-            mRealVM.showCheckInAdRewardEvent.collectLatest {
-                showRewardToast(getString(R.string.rewards_50_reward_coins, "30"))
+            mRealVM.showCheckInAdRewardEvent.collectLatest { coins ->
+                showRewardToast(getString(R.string.rewards_50_reward_coins, coins.toString()))
             }
         }
         observeEvents {
@@ -81,8 +81,8 @@ class RewardsFragment : BaseViewModelFragment<FragmentRewardsBinding, RewardsVie
 
     // ─── 签到成功弹窗 ─────────────────────────────────────────────────────────
 
-    private fun showCheckInSuccessDialog(rewardNum: Int) {
-        val dialog = CheckInSuccessDialog.newInstance(rewardNum)
+    private fun showCheckInSuccessDialog(rewardNum: Int, adRewardCoins: Int) {
+        val dialog = CheckInSuccessDialog.newInstance(rewardNum, adRewardCoins)
         dialog.onWatchAdClicked = { mRealVM.preReportCheckInAd() }
         dialog.show(childFragmentManager)
     }

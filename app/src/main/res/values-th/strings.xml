@@ -594,7 +594,7 @@
     <string name="rewards_watch_video_earn_50">รับชมวิดีโอเพื่อรับเหรียญ +%s ชิ้น</string>
     <string name="rewards_watch_ad">รับชมโฆษณา</string>
     <string name="rewards_checkin_7days_bonus">เช็คอินติดต่อกัน 7 วัน รับรางวัลใหญ่!</string>
-    <string name="rewards_extra_30_coins">รับเหรียญพิเศษ 30 ชิ้น</string>
+    <string name="rewards_extra_30_coins">รับเหรียญพิเศษ %s ชิ้น</string>
     <string name="rewards_come_back_tomorrow">มาอีกครั้งในวันพรุ่งนี้</string>
     <string name="rewards_next_refresh">รีเฟรชครั้งต่อไปใน %s</string>
     <string name="rewards_rules_title">กฎของรางวัล</string>

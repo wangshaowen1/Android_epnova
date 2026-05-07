@@ -583,7 +583,7 @@
     <string name="rewards_watch_video_earn_50">观看视频即可赚取 +%s 金币</string>
     <string name="rewards_watch_ad">观看广告</string>
     <string name="rewards_checkin_7days_bonus">连续签到 7 天可领取大额奖励！</string>
-    <string name="rewards_extra_30_coins">额外赚取 30 金币</string>
+    <string name="rewards_extra_30_coins">额外赚取 %s 金币</string>
     <string name="rewards_come_back_tomorrow">明天再来</string>
     <string name="rewards_next_refresh">下次刷新：%s</string>
     <string name="rewards_rules_title">福利规则</string>

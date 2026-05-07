@@ -33,13 +33,14 @@ class RewardsViewModel : AppRepositoryViewModel<AppRepository>() {
         private const val POLL_INTERVAL_MS = 2_000L
     }
 
-    val loadState       = ObservableField<LoadState>(LoadState.NotLoading(false))
-    val balance         = ObservableLong(0)
-    val checkInDays     = ObservableInt(0)
-    val hasCheckedIn    = ObservableField(false)
-    val todayAdWatched  = ObservableField(false)
-    val nextRefreshText = ObservableField("")
+    val loadState        = ObservableField<LoadState>(LoadState.NotLoading(false))
+    val balance          = ObservableLong(0)
+    val checkInDays      = ObservableInt(0)
+    val hasCheckedIn     = ObservableField(false)
+    val todayAdWatched   = ObservableField(false)
+    val nextRefreshText  = ObservableField("")
     val rewardsResetTime = ObservableField("")
+    val adRewardCoins    = ObservableInt(0)
 
     val checkInAdapter = QuickAdapter<ItemCheckInDayVM>(R.layout.item_check_in_day, emptyList())
     val earnAdapter    = QuickAdapter<ItemEarnRewardVM>(R.layout.item_earn_reward,   emptyList())
@@ -54,13 +55,13 @@ class RewardsViewModel : AppRepositoryViewModel<AppRepository>() {
     private val _showAdEvent = MutableSharedFlow<AdWatchContext>(extraBufferCapacity = 1)
     val showAdEvent: SharedFlow<AdWatchContext> = _showAdEvent
 
-    /** 签到成功事件，携带本次签到获得的金币数量 */
-    private val _showCheckInSuccessEvent = MutableSharedFlow<Int>(extraBufferCapacity = 1)
-    val showCheckInSuccessEvent: SharedFlow<Int> = _showCheckInSuccessEvent
+    /** 签到成功事件，携带本次签到获得的金币数量和广告额外奖励金币数量 */
+    private val _showCheckInSuccessEvent = MutableSharedFlow<Pair<Int, Int>>(extraBufferCapacity = 1)
+    val showCheckInSuccessEvent: SharedFlow<Pair<Int, Int>> = _showCheckInSuccessEvent
 
-    /** 签到广告播完、服务端确认奖励后通知 Fragment 展示获得金币的 Toast */
-    private val _showCheckInAdRewardEvent = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
-    val showCheckInAdRewardEvent: SharedFlow<Unit> = _showCheckInAdRewardEvent
+    /** 签到广告播完、服务端确认奖励后通知 Fragment 展示获得金币的 Toast，携带实际奖励金币数量 */
+    private val _showCheckInAdRewardEvent = MutableSharedFlow<Int>(extraBufferCapacity = 1)
+    val showCheckInAdRewardEvent: SharedFlow<Int> = _showCheckInAdRewardEvent
 
     override fun onResume() {
         super.onResume()
@@ -88,6 +89,7 @@ class RewardsViewModel : AppRepositoryViewModel<AppRepository>() {
                 checkInDays.set(d.checkinDays ?: 0)
                 hasCheckedIn.set((d.todayCheckedIn ?: 0) == 1)
                 todayAdWatched.set((d.todayAdWatched ?: 0) == 1)
+                adRewardCoins.set(d.adRewardCoins ?: 0)
                 nextRefreshText.set(formatNextRefreshText(d.nextRefreshTime))
                 checkInAdapter.submitList(d.taskList?.map { ItemCheckInDayVM(it) } ?: emptyList())
                 if (updateLoadState) loadState.set(LoadState.NotLoading(true))
@@ -108,7 +110,7 @@ class RewardsViewModel : AppRepositoryViewModel<AppRepository>() {
                 balance.set(balance.get() + (d.rewardNum ?: 0))
                 User.get().storeCoins(balance.get())
                 loadCheckInList(updateLoadState = false)
-                _showCheckInSuccessEvent.tryEmit(d.rewardNum ?: 0)
+                _showCheckInSuccessEvent.tryEmit(Pair(d.rewardNum ?: 0, adRewardCoins.get()))
             }
         )
     }
@@ -214,10 +216,10 @@ class RewardsViewModel : AppRepositoryViewModel<AppRepository>() {
                 when (res?.data?.rewardStatus) {
                     1 -> {
                         todayAdWatched.set(true)
-                        // 额外奖励金币数固定为 30（与 dialog 上展示的 rewards_extra_30_coins 一致）
-                        balance.set(balance.get() + 30)
+                        val coins = adRewardCoins.get()
+                        balance.set(balance.get() + coins)
                         User.get().storeCoins(balance.get())
-                        _showCheckInAdRewardEvent.tryEmit(Unit)
+                        _showCheckInAdRewardEvent.tryEmit(coins)
                         return@launch
                     }
                     2 -> {

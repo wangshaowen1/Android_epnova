@@ -593,7 +593,7 @@ Syarat Penggunaan dan Kebijakan Privasi
     <string name="rewards_watch_video_earn_50">Tonton video untuk mendapatkan +%s koin</string>
     <string name="rewards_watch_ad">Tonton Iklan</string>
     <string name="rewards_checkin_7days_bonus">Check-in selama 7 hari berturut-turut untuk dapatkan hadiah besar!</string>
-    <string name="rewards_extra_30_coins">Dapatkan 30 koin ekstra</string>
+    <string name="rewards_extra_30_coins">Dapatkan %s koin ekstra</string>
     <string name="rewards_come_back_tomorrow">Kembali besok</string>
     <string name="rewards_next_refresh">Penyegaran berikutnya dalam %s</string>
     <string name="rewards_rules_title">Peraturan Hadiah</string>

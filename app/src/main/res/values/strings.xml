@@ -593,7 +593,7 @@
     <string name="rewards_watch_video_earn_50">Watch a video to earn +%s coins</string>
     <string name="rewards_watch_ad">Watch Ad</string>
     <string name="rewards_checkin_7days_bonus">Check-in for 7 consecutive days to get big bonus!</string>
-    <string name="rewards_extra_30_coins">Earn extra 30 coins</string>
+    <string name="rewards_extra_30_coins">Earn extra %s coins</string>
     <string name="rewards_come_back_tomorrow">Come back tomorrow</string>
     <string name="rewards_next_refresh">Next refresh in %s</string>
     <string name="rewards_rules_title">Rewards Rules</string>

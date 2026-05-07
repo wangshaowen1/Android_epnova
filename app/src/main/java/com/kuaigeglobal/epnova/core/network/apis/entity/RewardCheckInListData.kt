@@ -12,6 +12,7 @@ data class RewardCheckInListData(
     val todayAdWatched: Int?,
     /** 下次刷新时间戳（毫秒） */
     val nextRefreshTime: Long?,
+    val adRewardCoins: Int?,//签到广告奖励金币数
     /** 7天签到任务列表（按 day 升序） */
     val taskList: List<CheckInTaskItem>?
 )
