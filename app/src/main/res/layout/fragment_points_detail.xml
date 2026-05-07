@@ -43,6 +43,7 @@
             <com.kuaigeglobal.epnova.widget.LoadStateViewHolder
                 android:id="@+id/lsv"
                 android:layout_width="match_parent"
+                app:noData="@string/transaction_history_no_records"
                 android:layout_height="match_parent">
 
                 <androidx.recyclerview.widget.RecyclerView

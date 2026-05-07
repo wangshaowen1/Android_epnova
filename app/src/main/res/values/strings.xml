@@ -567,6 +567,7 @@
     <string name="transaction_history_checkin_reward">Check-in Reward</string>
     <string name="transaction_history_login_reward">Login Reward</string>
     <string name="transaction_history_ad_reward">Ad Reward</string>
+    <string name="transaction_history_no_records">No records yet</string>
     <string name="home_login_reward_welcome">Welcome to EpNova</string>
     <string name="home_login_reward_coins">+%s Coins</string>
     <string name="home_login_reward_claim">Claim</string>

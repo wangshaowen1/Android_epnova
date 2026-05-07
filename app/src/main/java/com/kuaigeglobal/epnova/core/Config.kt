@@ -3,6 +3,7 @@ package com.kuaigeglobal.epnova.core
 import android.content.Context
 import android.text.TextUtils
 import com.blankj.utilcode.util.NetworkUtils
+import java.util.Locale
 import com.google.gson.Gson
 import com.kuaigeglobal.epnova.App
 import com.kuaigeglobal.epnova.BuildConfig
@@ -56,7 +57,7 @@ class Config : NetworkChangedListener {
         private set
     var isDevelopmentMode: Boolean by MmkvDelegate(DEVELOPMENT_MODE, false) { mmkv }
         private set
-    var lang: String by MmkvDelegate(APP_LANG, "en") { mmkv }
+    var lang: String by MmkvDelegate(APP_LANG, resolveDefaultLang()) { mmkv }
         private set
     var episodeAutoUnlock: Boolean by MmkvDelegate(EPISODE_AUTO_UNLOCK, true) { mmkv }
         private set
@@ -359,6 +360,18 @@ class Config : NetworkChangedListener {
         const val UAT: Int = 2
         const val ONLINE: Int = 3
         const val DEVICE_TOKEN = "DEVICE_TOKEN"
+
+        /** 支持的语言列表，与 LanguagesViewModel.languagesConfigs 保持一致 */
+        private val SUPPORTED_LANGS = setOf("en", "th", "id")
+
+        /**
+         * 解析默认语言：取系统语言，"in" 映射为 "id"，不在支持列表内则回退 "en"
+         */
+        private fun resolveDefaultLang(): String {
+            // Android Java 层对印尼语返回 "in"，而 app 内部使用 "id"
+            val systemLang = Locale.getDefault().language.let { if (it == "in") "id" else it }
+            return if (systemLang in SUPPORTED_LANGS) systemLang else "en"
+        }
 
         @JvmStatic
         fun get(): Config {

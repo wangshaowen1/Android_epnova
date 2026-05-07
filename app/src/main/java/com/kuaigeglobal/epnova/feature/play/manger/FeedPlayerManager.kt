@@ -3,6 +3,7 @@ package com.kuaigeglobal.epnova.feature.play.manger
 import android.content.Context
 import androidx.annotation.OptIn
 import androidx.core.net.toUri
+import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
@@ -286,12 +287,22 @@ class FeedPlayerManager(
     fun preload(url: String?) {
         if (url.isNullOrEmpty()) return
         scope.launch(Dispatchers.IO) {
+            val dataSource = PlayerFactory.cacheDataSourceFactory.createDataSource()
             try {
-                val dataSpec = DataSpec(url.toUri(), 0, 1024 * 1024, null)
-                val dataSource = PlayerFactory.cacheDataSourceFactory.createDataSource()
+                // 预加载前 5MB：按 2.5Mbps 码率估算，约覆盖 15s 的起始内容
+                val dataSpec = DataSpec(url.toUri(), 0, 5 * 1024 * 1024, null)
                 dataSource.open(dataSpec)
-                dataSource.close()
+                // 必须循环 read() 才能真正触发网络下载并写入缓存
+                // 只 open/close 不读取任何数据，缓存始终为空
+                val buffer = ByteArray(64 * 1024)
+                while (true) {
+                    val bytesRead = dataSource.read(buffer, 0, buffer.size)
+                    if (bytesRead == C.RESULT_END_OF_INPUT) break
+                }
             } catch (e: Exception) {
+                // 预加载失败不影响正常播放，忽略异常
+            } finally {
+                dataSource.close()
             }
         }
     }

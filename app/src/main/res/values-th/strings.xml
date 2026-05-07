@@ -568,6 +568,7 @@
     <string name="transaction_history_checkin_reward">รางวัลการเช็คอิน</string>
     <string name="transaction_history_login_reward">รางวัลการเข้าสู่ระบบ</string>
     <string name="transaction_history_ad_reward">รางวัลโฆษณา</string>
+    <string name="transaction_history_no_records">ยังไม่มีข้อมูล</string>
     <string name="home_login_reward_welcome">ยินดีต้อนรับสู่ EpNova</string>
     <string name="home_login_reward_coins">+%s เหรียญ</string>
     <string name="home_login_reward_claim">รับ</string>

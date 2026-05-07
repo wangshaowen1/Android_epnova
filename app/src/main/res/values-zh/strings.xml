@@ -557,6 +557,7 @@
     <string name="transaction_history_checkin_reward">签到奖励</string>
     <string name="transaction_history_login_reward">登录奖励</string>
     <string name="transaction_history_ad_reward">广告奖励</string>
+    <string name="transaction_history_no_records">暂无记录</string>
     <string name="home_login_reward_welcome">欢迎使用 EpNova</string>
     <string name="home_login_reward_coins">+%s 金币</string>
     <string name="home_login_reward_claim">领取</string>
