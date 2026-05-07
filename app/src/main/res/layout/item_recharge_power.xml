@@ -71,7 +71,7 @@
                 android:layout_marginStart="4dp"
                 android:fontFamily="@font/outfit_regular"
                 android:includeFontPadding="false"
-                android:text="@{item.data.coionsMarketingText}"
+                android:text="@{`+`+item.data.giveCoionsNum}"
                 android:textColor="?attr/textColor3"
                 android:textSize="14sp"
                 app:layout_constraintBottom_toBottomOf="@id/tvPower"
