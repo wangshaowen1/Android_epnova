@@ -7,14 +7,20 @@ import androidx.databinding.ObservableInt
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.base.viewmodel.AppRepositoryViewModel
 import com.kuaigeglobal.epnova.base.viewmodel.ToolbarViewModel
+import com.blankj.utilcode.util.AppUtils
 import com.kuaigeglobal.epnova.core.AppRepository
+import com.kuaigeglobal.epnova.core.Global
+import com.kuaigeglobal.epnova.core.User
+import com.kuaigeglobal.epnova.core.ext.launch
 import com.kuaigeglobal.epnova.core.ext.launchWithLoading
-import com.kuaigeglobal.epnova.core.network.apis.entity.LogOffStatusInfo
+import com.kuaigeglobal.epnova.core.ext.parseMessage
 import com.kuaigeglobal.epnova.core.network.apis.request.UserTokenBody
 import com.kuaigeglobal.epnova.core.response
 import com.kuaigeglobal.epnova.kit.SignUtils
 import com.nhsd.basic.ext.getResString
 import com.nhsd.basic.ext.showToast
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 /**
  * *****************************************
@@ -101,8 +107,20 @@ class LogoffViewModel : AppRepositoryViewModel<AppRepository>() {
     fun commitLogoff() {
         launchWithLoading {
             response(mRepo.api.logOff(UserTokenBody())) {
-                SignUtils.signOut()
-                finish()
+                // 注销成功后执行游客登录，与退出登录保持一致
+                Global.guestLogin({ userData ->
+                    launch {
+                        withContext(Dispatchers.IO) {
+                            User.get().updateFrom(userData)
+                            SignUtils.signIn()
+                        }
+                        AppUtils.relaunchApp()
+                    }
+                }, {
+                    setLoading(false)
+                    SignUtils.signOut()
+                    parseMessage(it)?.showToast()
+                })
             }
         }
     }

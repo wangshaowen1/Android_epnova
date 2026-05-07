@@ -28,6 +28,8 @@ import com.kuaigeglobal.epnova.feature.web.SimpleBrowserActivity
 import com.nhsd.basic.BaseViewModelActivity
 import com.nhsd.basic.ext.launchNoCrash
 import com.nhsd.basic.ext.showToast
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 /**
  * *****************************************
@@ -215,10 +217,12 @@ class UnifiedLoginActivity : BaseViewModelActivity<ActivityUnifiedLoginBinding, 
         if (User.get().isLogin && User.get().loginRewardsValid == 2) {
             ioScope.launchNoCrash {
                 val response = ApiFactory.apiService.reportLoginTask()
-                if (response.isSuccess) {
-                    showRewardToast(response.data?.rewardLabel)
-                } else {
-                    response.msg?.showToast()
+                withContext(Dispatchers.Main) {
+                    if (response.isSuccess) {
+                        showRewardToast(response.data?.rewardLabel)
+                    } else {
+                        response.msg?.showToast()
+                    }
                 }
             }
         }
