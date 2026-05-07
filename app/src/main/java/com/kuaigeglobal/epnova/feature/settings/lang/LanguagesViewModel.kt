@@ -25,7 +25,7 @@ class LanguagesViewModel : AppRepositoryViewModel<AppRepository>() {
 
     val mToolbarVM = ToolbarViewModel(
         navigationAction = { finish() },
-        title = R.string.title_language.getResString(),
+        title = R.string.settings_language.getResString(),
         background = Color.TRANSPARENT,
         menuText = R.string.complete.getResString(),
         menuTextColorRes = R.color.color_ff2e55,

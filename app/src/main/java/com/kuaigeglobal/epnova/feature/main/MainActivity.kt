@@ -83,9 +83,6 @@ class MainActivity : BaseViewModelActivity<ActivityMainBinding, MainViewModel>()
     private var needRefreshUserInfo: Boolean = false
     private val upgradeManager by lazy { UpgradeManager(this) }
 
-    //当前用户id
-    private var userId: String? = null
-
     //当前打开的时间，用与跟注册时间对比来判断这一次登录的是否是刚注册的账号
     private var registerTime: Long = 0
 
@@ -99,7 +96,6 @@ class MainActivity : BaseViewModelActivity<ActivityMainBinding, MainViewModel>()
             } catch (e: Exception) {
             }
         }
-        userId = User.get().id
         //初始化
         onAgreePolicy()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {

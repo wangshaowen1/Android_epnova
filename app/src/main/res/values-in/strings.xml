@@ -550,13 +550,7 @@ Jika Anda memilih \"Tidak Setuju\", Anda tidak akan dapat menggunakan produk dan
     <string name="store_history">Riwayat</string>
     <string name="store_coins">Koin</string>
     <string name="store_reward_coins">Koin Hadiah</string>
-    <string name="store_coins_tips">Tips
-Syarat Penggunaan dan Kebijakan Privasi
-1. Koin berlaku selama 1 tahun sejak pembelian.
-2. Koin dapat digunakan untuk membuka kunci episode secara berurutan.
-3. Koin akan digunakan terlebih dahulu saat membuka kunci episode. Jika jumlah tidak mencukupi, koin hadiah akan digunakan secara otomatis.
-4. Setelah episode dibuka kunci dengan Kredit, dapat ditonton tanpa batas waktu.
-5. Jika Anda memiliki pertanyaan lain, silakan hubungi layanan pelanggan melalui Profil -&gt; Pengaturan -&gt; Umpan Balik &amp; Saran.</string>
+    <string name="store_coins_tips">Tips\nSyarat Penggunaan dan Kebijakan Privasi\n1. Koin berlaku selama 1 tahun sejak pembelian.\n2. Koin dapat digunakan untuk membuka kunci episode secara berurutan.\n3. Koin akan digunakan terlebih dahulu saat membuka kunci episode. Jika jumlah tidak mencukupi, koin hadiah akan digunakan secara otomatis.\n4. Setelah episode dibuka kunci dengan Kredit, dapat ditonton tanpa batas waktu.\n5. Jika Anda memiliki pertanyaan lain, silakan hubungi layanan pelanggan melalui Profil -&gt; Pengaturan -&gt; Umpan Balik &amp; Saran.</string>
     <string name="transaction_history_title">Riwayat Transaksi</string>
     <string name="transaction_history_all">Semua</string>
     <string name="transaction_history_earned">Diperoleh</string>
