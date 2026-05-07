@@ -584,7 +584,7 @@ Syarat Penggunaan dan Kebijakan Privasi
     <string name="rewards_day_1">Hari %1$d</string>
     <string name="rewards_check_in">Check-in</string>
     <string name="rewards_earn_rewards">Dapatkan Hadiah</string>
-    <string name="rewards_reset_time">Diatur ulang pada 00:00</string>
+    <string name="rewards_reset_time">Diatur ulang pada %s</string>
     <string name="rewards_login_any_account">Masuk dengan akun apa saja</string>
     <string name="rewards_go">Lanjut</string>
     <string name="rewards_watch">Tonton</string>

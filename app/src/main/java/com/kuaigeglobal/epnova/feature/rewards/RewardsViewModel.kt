@@ -39,6 +39,7 @@ class RewardsViewModel : AppRepositoryViewModel<AppRepository>() {
     val hasCheckedIn    = ObservableField(false)
     val todayAdWatched  = ObservableField(false)
     val nextRefreshText = ObservableField("")
+    val rewardsResetTime = ObservableField("")
 
     val checkInAdapter = QuickAdapter<ItemCheckInDayVM>(R.layout.item_check_in_day, emptyList())
     val earnAdapter    = QuickAdapter<ItemEarnRewardVM>(R.layout.item_earn_reward,   emptyList())
@@ -119,6 +120,7 @@ class RewardsViewModel : AppRepositoryViewModel<AppRepository>() {
             apiBlock = { mRepo.api.rewardAdTaskList(UserTokenBody()) },
             onSuccess = {
                 val d = data ?: return@request
+                rewardsResetTime.set(formatNextRefreshText(data?.nextRefreshTime))
                 val adItems = d.taskList?.map { buildEarnItemVM(it) } ?: emptyList()
                 if (User.get().isLogin) {
                     earnAdapter.submitList(adItems)
@@ -236,7 +238,7 @@ class RewardsViewModel : AppRepositoryViewModel<AppRepository>() {
         if (timestampMs == null || timestampMs <= 0) return ""
         val timeStr = java.text.SimpleDateFormat("HH:mm", java.util.Locale.getDefault())
             .format(java.util.Date(timestampMs))
-        return R.string.rewards_next_refresh.getResString().format(timeStr)
+        return timeStr
     }
 
     private fun buildLoginTaskVM(): ItemEarnRewardVM {

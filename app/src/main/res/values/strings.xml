@@ -584,7 +584,7 @@
     <string name="rewards_day_1">Day %1$d</string>
     <string name="rewards_check_in">Check In</string>
     <string name="rewards_earn_rewards">Earn Rewards</string>
-    <string name="rewards_reset_time">Resets at 00:00</string>
+    <string name="rewards_reset_time">Resets at %s</string>
     <string name="rewards_login_any_account">Login with any account</string>
     <string name="rewards_go">Go</string>
     <string name="rewards_watch">Watch</string>

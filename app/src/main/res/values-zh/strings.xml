@@ -574,7 +574,7 @@
     <string name="rewards_day_1">第 %1$d 天</string>
     <string name="rewards_check_in">签到</string>
     <string name="rewards_earn_rewards">领取奖励</string>
-    <string name="rewards_reset_time">每日 00:00 重置</string>
+    <string name="rewards_reset_time">每日 %s 重置</string>
     <string name="rewards_login_any_account">任意账号登录</string>
     <string name="rewards_go">前往</string>
     <string name="rewards_watch">观看</string>

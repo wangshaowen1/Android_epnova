@@ -134,7 +134,7 @@
                         android:textColor="?attr/textColor1"
                         android:textSize="18sp"
                         android:textStyle="bold"
-                        tools:text="Checked in for 1 day" />
+                        tools:text="@string/rewards_checked_days" />
 
                     <!-- 7 天格子 -->
                     <androidx.recyclerview.widget.RecyclerView
@@ -209,7 +209,7 @@
                             style="@style/Text.Medium"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@{layout.nextRefreshText}"
+                            android:text="@{@string/rewards_next_refresh(layout.nextRefreshText)}"
                             android:textColor="?attr/textColor3"
                             android:textSize="12sp"
                             android:visibility="@{layout.nextRefreshText.isEmpty() ? View.GONE : View.VISIBLE}"
@@ -235,9 +235,10 @@
                     android:layout_marginStart="@dimen/spacing_l"
                     android:layout_marginTop="@dimen/spacing_s"
                     android:fontFamily="@font/outfit_regular"
-                    android:text="@string/rewards_reset_time"
+                    android:text="@{@string/rewards_reset_time(layout.rewardsResetTime)}"
                     android:textColor="?attr/textColor4"
-                    android:textSize="12sp" />
+                    android:textSize="12sp"
+                    tools:text="@string/rewards_reset_time" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rvEarnRewards"
