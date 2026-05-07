@@ -154,7 +154,7 @@
                 <LinearLayout
                     android:id="@+id/btn_favorite"
                     singleClick="@{() -> item.onClickCollect()}"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center_horizontal"
                     android:orientation="vertical">
@@ -169,11 +169,10 @@
                     <TextView
                         android:id="@+id/tv_collect_count"
                         style="@style/Text12"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:ellipsize="end"
-                        android:maxWidth="40dp"
+                        android:gravity="center"
                         android:maxLines="1"
                         android:shadowColor="@color/color_05_000000"
                         android:shadowRadius="2"
@@ -185,7 +184,7 @@
                 <LinearLayout
                     android:id="@+id/btn_like"
                     singleClick="@{() -> item.onClickLike()}"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="24dp"
                     android:gravity="center_horizontal"
@@ -201,11 +200,10 @@
                     <TextView
                         android:id="@+id/tv_like_count"
                         style="@style/Text12"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:ellipsize="end"
-                        android:maxWidth="40dp"
+                        android:gravity="center"
                         android:maxLines="1"
                         android:shadowColor="@color/color_05_000000"
                         android:shadowRadius="2"
