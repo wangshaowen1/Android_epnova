@@ -6,7 +6,7 @@ public class ApiException extends RuntimeException {
     //token失效
     public static final int AUTHORIZATION_ERROR = 401;
     //已注销用户
-    public static final int LOGGED_OUT_USER = 112;
+    public static final int LOGGED_OUT_USER = 400112;
 
     //已拉黑
     public static final int USER_ADD_TO_BLACK_LIST = 113;

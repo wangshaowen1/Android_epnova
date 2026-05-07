@@ -70,7 +70,9 @@ class MineChildFragment :
     }
 
     private fun refresh() {
-        mineAdapter.refresh()
+        if(!User.get().isVisitor){
+            mineAdapter.refresh()
+        }
     }
 
     private fun initView() {

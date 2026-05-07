@@ -134,7 +134,7 @@ class User : IUser {
 
     private fun clear() {
         val keysToRemove = arrayOf(
-            USER_ID, PHONE_NUM, NICK_NAME, GENDER, AVATAR_URL,
+            ID, LOGIN_REWARDS_VALID, USER_ID, PHONE_NUM, NICK_NAME, GENDER, AVATAR_URL,
             USER_SOURCE, REGISTER_WAY, LAST_LOGIN_TIME, REGISTER_STATUS,
             PURCHASE_COURSE_STATUS, IS_PAID, TOKEN, COINS
         )

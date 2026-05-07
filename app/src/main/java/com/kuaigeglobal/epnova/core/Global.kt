@@ -46,6 +46,7 @@ object Global {
     }
 
     fun refreshBalance() {
+        if (User.get().isVisitor) return
         ioScope.launchNoCrash {
             val resp = ApiFactory.apiService.queryWalletInfo(UserTokenBody())
             if (resp.isSuccess) {

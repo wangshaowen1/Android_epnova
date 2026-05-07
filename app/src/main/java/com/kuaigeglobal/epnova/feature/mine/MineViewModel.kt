@@ -69,6 +69,9 @@ class MineViewModel : AppRepositoryViewModel<AppRepository>() {
      * 获取用户主页信息接口
      */
     private fun getUserHomeInfo() {
+        if (User.get().isVisitor) {
+            return
+        }
         User.get().let { user ->
             refreshUserInfo()
             Global.refreshBalance()
