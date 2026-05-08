@@ -3,7 +3,6 @@ package com.kuaigeglobal.epnova.core
 import android.content.Context
 import android.text.TextUtils
 import com.blankj.utilcode.util.NetworkUtils
-import java.util.Locale
 import com.google.gson.Gson
 import com.kuaigeglobal.epnova.App
 import com.kuaigeglobal.epnova.BuildConfig
@@ -14,7 +13,6 @@ import com.kuaigeglobal.epnova.common.utils.MmkvDelegate
 import com.kuaigeglobal.epnova.core.network.apis.ApiFactory.apiService
 import com.kuaigeglobal.epnova.core.network.apis.request.UserTokenBody
 import com.kuaigeglobal.epnova.core.network.apis.response.AppConfigData
-import com.kuaigeglobal.epnova.core.network.apis.response.TotalComposeConfigData
 import com.nhsd.basic.Session
 import com.nhsd.basic.Session.NetworkChangedListener
 import com.nhsd.basic.bus.FlowEventBus
@@ -23,6 +21,7 @@ import com.tencent.mmkv.MMKV
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
+import java.util.Locale
 
 /**
  * App配置信息与角色是否登录或切换无关 (已重构为 MMKV 委托实现)
@@ -45,10 +44,6 @@ class Config : NetworkChangedListener {
 
     var isFirstOpenApp: Boolean by MmkvDelegate(FIRST_OPEN_APP, true) { mmkv }
         private set
-    var isFirstSetBookVoice: Boolean by MmkvDelegate(FIRST_SET_BOOK_VOICE, true) { mmkv }
-        private set
-    var isFirstEyeProtectionSetting: Boolean by MmkvDelegate(FIRST_EYE_PROTECTION_SETTING, true) { mmkv }
-        private set
     var objectId: String? by MmkvDelegate(OBJECT_ID, "1") { mmkv }
         private set
     var isInReview: Boolean by MmkvDelegate(IN_REVIEW, ifInitialStatusInReview()) { mmkv }
@@ -63,8 +58,6 @@ class Config : NetworkChangedListener {
         private set
     var isNotificationEnable: Boolean by MmkvDelegate(NOTIFICATION_ENABLE, true) { mmkv }
         private set
-    var isShowJumpPop: Boolean by MmkvDelegate(SHOW_JUMP_POP, true) { mmkv }
-        private set
     var baseUrlCustom: String? by MmkvDelegate(Constants.BASE_URL_CUSTOM, BuildConfig.SERVER_URL) { mmkv }
         private set
     var deviceToken: String? by MmkvDelegate(DEVICE_TOKEN, null) { mmkv }
@@ -73,14 +66,12 @@ class Config : NetworkChangedListener {
         private set
     var opid: String? by MmkvDelegate(OPID, null) { mmkv }
         private set
-    var eyeProtectionEnabled: Boolean by MmkvDelegate(EYE_PROTECTION_ENABLE, false) { mmkv }
-        private set
     var referrer: String? by MmkvDelegate(GOOGLE_INSTALL_REFERRER, null) { mmkv }
         private set
 
 
-    var loginRewardsDialog: String? by MmkvDelegate("today_login_rewards_dialog", null) { mmkv }
-    var loginRewards: String? by MmkvDelegate("login_rewards", null) { mmkv }
+    var loginRewardsDialog: String? by MmkvDelegate(TODAY_LOGIN_REWARDS_DIALOG, null) { mmkv }
+    var loginRewards: String? by MmkvDelegate(LOGIN_REWARDS, null) { mmkv }
 
     /**
      * 数据迁移初始化，建议在 App.onCreate() 中调用: Config.get().init(this)
@@ -153,17 +144,6 @@ class Config : NetworkChangedListener {
         mmkv.encode(APP_CONFIG, gson.toJson(data))
     }
 
-    fun storeComposeConfig(data: TotalComposeConfigData?) {
-        mmkv.encode(COMPOSE_CONFIG, gson.toJson(data))
-    }
-
-    val totalComposeConfig: TotalComposeConfigData?
-        get() {
-            val json = mmkv.decodeString(COMPOSE_CONFIG, "")
-            if (json.isNullOrEmpty()) return null
-            return gson.fromJson(json, TotalComposeConfigData::class.java)
-        }
-
     val serviceUrl: String?
         get() {
             if (appConfigData != null && !TextUtils.isEmpty(appConfigData!!.userProtocolUrl)) {
@@ -204,46 +184,64 @@ class Config : NetworkChangedListener {
         notifyChange(FIRST_OPEN_APP)
     }
 
-    fun markFirstSetBookVoiceWithNotify() {
-        this.isFirstSetBookVoice = false
-        notifyChange(FIRST_SET_BOOK_VOICE)
-    }
-
-    fun markFirstProtectionSettingWithNotify() {
-        this.isFirstEyeProtectionSetting = false
-        notifyChange(FIRST_EYE_PROTECTION_SETTING)
-    }
-
     fun clear() {
         val keysToRemove = arrayOf(
-            FIRST_OPEN_APP, IN_REVIEW, ENVIRONMENT, DEVELOPMENT_MODE,
-            INSTALL_DATA, OPID, SHOW_JUMP_POP, EYE_PROTECTION_ENABLE
+            FIRST_OPEN_APP,
+            IN_REVIEW, ENVIRONMENT, DEVELOPMENT_MODE,
+            INSTALL_DATA, OPID, SHOW_JUMP_POP,
+            EPISODE_AUTO_UNLOCK, TODAY_LOGIN_REWARDS_DIALOG, LOGIN_REWARDS
         )
         mmkv.removeValuesForKeys(keysToRemove)
 
         // 重置内存变量以匹配逻辑
         this.isFirstOpenApp = true
-        this.isInReview = true
         this.environment = this.initialState
         this.isDevelopmentMode = false
-        this.isShowJumpPop = true
-        this.eyeProtectionEnabled = false
+        this.episodeAutoUnlock = true
     }
 
     // --- 保留对外的方法名，由于用了委托，大部分直接赋值即可自动写入 MMKV ---
 
-    fun storeReferrer(referrer: String?) { this.referrer = referrer }
-    fun storeObjectId(objectId: String?) { this.objectId = objectId }
-    fun storeInReview(inReview: Boolean) { this.isInReview = inReview }
-    fun storeDeviceToken(deviceToken: String?) { this.deviceToken = deviceToken }
-    fun storeOpid(opid: String?) { this.opid = opid }
-    fun storeDevelopmentMode(developMode: Boolean) { this.isDevelopmentMode = developMode }
-    fun storeNotificationEnable(notificationEnable: Boolean) { this.isNotificationEnable = notificationEnable }
-    fun markJumpPopShown() { this.isShowJumpPop = false }
-    fun storeBaseUrlCustom(baseUrlCustom: String?) { this.baseUrlCustom = baseUrlCustom }
-    fun storeEyeProtectionEnabled(eyeProtectionEnabled: Boolean) { this.eyeProtectionEnabled = eyeProtectionEnabled }
-    fun saveLanguage(langCode: String) { this.lang = langCode }
-    fun saveEpisodeAutoUnlock(isAutoUnlock: Boolean) { this.episodeAutoUnlock = isAutoUnlock }
+    fun storeReferrer(referrer: String?) {
+        this.referrer = referrer
+    }
+
+    fun storeObjectId(objectId: String?) {
+        this.objectId = objectId
+    }
+
+    fun storeInReview(inReview: Boolean) {
+        this.isInReview = inReview
+    }
+
+    fun storeDeviceToken(deviceToken: String?) {
+        this.deviceToken = deviceToken
+    }
+
+    fun storeOpid(opid: String?) {
+        this.opid = opid
+    }
+
+    fun storeDevelopmentMode(developMode: Boolean) {
+        this.isDevelopmentMode = developMode
+    }
+
+    fun storeNotificationEnable(notificationEnable: Boolean) {
+        this.isNotificationEnable = notificationEnable
+    }
+
+    fun storeBaseUrlCustom(baseUrlCustom: String?) {
+        this.baseUrlCustom = baseUrlCustom
+    }
+
+    fun saveLanguage(langCode: String) {
+        this.lang = langCode
+    }
+
+    fun saveEpisodeAutoUnlock(isAutoUnlock: Boolean) {
+        this.episodeAutoUnlock = isAutoUnlock
+    }
+
     fun getSavedLanguage(): String = this.lang
     fun isEpisodeAutoUnlock(): Boolean = this.episodeAutoUnlock
 
@@ -339,14 +337,11 @@ class Config : NetworkChangedListener {
     companion object {
         private const val PREF_ID = "CONFIG_DATA" // 修正：原来 SP 传入的名称就是这个
         const val FIRST_OPEN_APP: String = "firstOpenApp"
-        const val FIRST_SET_BOOK_VOICE: String = "firstSetBookVoice"
-        const val FIRST_EYE_PROTECTION_SETTING: String = "firstEyeProtectionSetting"
         private const val OBJECT_ID = "objectId"
         const val IN_REVIEW: String = "inReview"
         private const val DEVELOPMENT_MODE = "developmentMode"
         private const val ENVIRONMENT: String = "environment"
         private const val APP_CONFIG = "app_config"
-        private const val COMPOSE_CONFIG: String = "COMPOSE_CONFIG"
         private const val INSTALL_DATA = "install_data"
         private const val OPID = "opid"
         private val DEFAULT_APP_CONFIG: AppConfigData = AppConfigData()
@@ -355,7 +350,8 @@ class Config : NetworkChangedListener {
         private const val GOOGLE_INSTALL_REFERRER = "google_install_referrer"
         private const val APP_LANG = "app_lang"
         private const val EPISODE_AUTO_UNLOCK = "episodeAutoUnlock"
-        private const val EYE_PROTECTION_ENABLE: String = "eyeProtectionEnable"
+        private const val TODAY_LOGIN_REWARDS_DIALOG = "today_login_rewards_dialog"
+        private const val LOGIN_REWARDS = "login_rewards"
         const val DAILY: Int = 1
         const val UAT: Int = 2
         const val ONLINE: Int = 3

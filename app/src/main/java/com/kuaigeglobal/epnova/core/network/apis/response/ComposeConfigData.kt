@@ -71,11 +71,6 @@ data class ComposeConfigData(
 }
 
 @Parcelize
-data class TotalComposeConfigData(
-    val items: List<ComposeConfigData>?//音乐生成配置
-) : Parcelable
-
-@Parcelize
 data class ComposeConfigItem(
     val aiApiPlatform: Int,
     val openApiModelName: String,//open-ai API的模型名称

@@ -29,7 +29,7 @@ class User : IUser {
      * 0-无需弹窗 1=可以弹窗 2=登录成功未领取奖励 3=登录已领取奖励
      */
     var loginRewardsValid: Int? by MmkvDelegate(LOGIN_REWARDS_VALID, 0) { mmkv }
-    var firstRechargeDialog: Boolean? by MmkvDelegate("firstRechargeDialog", false) { mmkv }
+    var firstRechargeDialog: Boolean? by MmkvDelegate(FIRST_RECHARGE_DIALOG, false) { mmkv }
 
     var userId: String? by MmkvDelegate(USER_ID, null) { mmkv }
     var phoneNum: String? by MmkvDelegate(PHONE_NUM, null) { mmkv }
@@ -134,9 +134,9 @@ class User : IUser {
 
     private fun clear() {
         val keysToRemove = arrayOf(
-            ID, LOGIN_REWARDS_VALID, USER_ID, PHONE_NUM, NICK_NAME, GENDER, AVATAR_URL,
+            ID, LOGIN_REWARDS_VALID, USER_ID, PHONE_NUM, U_ID, NICK_NAME, GENDER, AVATAR_URL,
             USER_SOURCE, REGISTER_WAY, LAST_LOGIN_TIME, REGISTER_STATUS,
-            PURCHASE_COURSE_STATUS, IS_PAID, TOKEN, COINS
+            PURCHASE_COURSE_STATUS, IS_PAID, COINS, GIVE_COINS, FIRST_RECHARGE_DIALOG
         )
         mmkv.removeValuesForKeys(keysToRemove)
     }
@@ -253,10 +253,10 @@ class User : IUser {
         const val REGISTER_WAY = "registerWay"
         const val LAST_LOGIN_TIME = "lastLoginTime"
         const val REGISTER_STATUS = "registerStatus"
-        const val TOKEN = "token"
         const val COINS = "computingPower"
         const val GIVE_COINS = "giveCoins"
         const val PURCHASE_COURSE_STATUS = "purchaseCourseStatus"
+        const val FIRST_RECHARGE_DIALOG = "firstRechargeDialog"
         const val IS_PAID = "IS_PAID"
 
         const val MALE = 1
