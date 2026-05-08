@@ -105,11 +105,6 @@ class SettingsActivity : BaseViewModelActivity<ActivitySettingsBinding, Settings
                 LanguagesActivity.start(this)
             }
 
-            R.id.sll_suggestion_and_feedback -> {
-                //建议反馈
-                FeedbackActivity.start(this)
-            }
-
             R.id.sll_cancel_the_account -> {
                 //注销账号
                 if (AppNavigator.checkLoginIntercepted(true)) {
@@ -183,8 +178,7 @@ class SettingsActivity : BaseViewModelActivity<ActivitySettingsBinding, Settings
                     return
                 }
                 //建议与反馈
-//                FeedbackActivity.start(this)
-                LanguagesActivity.start(this)
+                FeedbackActivity.start(this)
             }
         }
     }
