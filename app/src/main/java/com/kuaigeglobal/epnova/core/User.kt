@@ -132,15 +132,6 @@ class User : IUser {
         notifyChange()
     }
 
-    private fun clear() {
-        val keysToRemove = arrayOf(
-            ID, LOGIN_REWARDS_VALID, USER_ID, PHONE_NUM, U_ID, NICK_NAME, GENDER, AVATAR_URL,
-            USER_SOURCE, REGISTER_WAY, LAST_LOGIN_TIME, REGISTER_STATUS,
-            PURCHASE_COURSE_STATUS, IS_PAID, COINS, GIVE_COINS, FIRST_RECHARGE_DIALOG
-        )
-        mmkv.removeValuesForKeys(keysToRemove)
-    }
-
     fun notifyChange(vararg keys: String?) {
         FlowEventBus.postSync(Events.UserDataEvent(*keys))
     }
@@ -235,6 +226,15 @@ class User : IUser {
 
     fun setRequestNotificationsPermissionDisable() {
         requestNotificationsPermissionEnable = false
+    }
+
+    private fun clear() {
+        val keysToRemove = arrayOf(
+            ID, LOGIN_REWARDS_VALID, USER_ID, PHONE_NUM, U_ID, NICK_NAME, GENDER, AVATAR_URL,
+            USER_SOURCE, REGISTER_WAY, LAST_LOGIN_TIME, REGISTER_STATUS,
+            PURCHASE_COURSE_STATUS, IS_PAID, COINS, GIVE_COINS, FIRST_RECHARGE_DIALOG
+        )
+        mmkv.removeValuesForKeys(keysToRemove)
     }
 
     companion object {

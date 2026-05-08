@@ -184,22 +184,6 @@ class Config : NetworkChangedListener {
         notifyChange(FIRST_OPEN_APP)
     }
 
-    fun clear() {
-        val keysToRemove = arrayOf(
-            FIRST_OPEN_APP,
-            IN_REVIEW, ENVIRONMENT, DEVELOPMENT_MODE,
-            INSTALL_DATA, OPID, SHOW_JUMP_POP,
-            EPISODE_AUTO_UNLOCK, TODAY_LOGIN_REWARDS_DIALOG, LOGIN_REWARDS
-        )
-        mmkv.removeValuesForKeys(keysToRemove)
-
-        // 重置内存变量以匹配逻辑
-        this.isFirstOpenApp = true
-        this.environment = this.initialState
-        this.isDevelopmentMode = false
-        this.episodeAutoUnlock = true
-    }
-
     // --- 保留对外的方法名，由于用了委托，大部分直接赋值即可自动写入 MMKV ---
 
     fun storeReferrer(referrer: String?) {
@@ -332,6 +316,16 @@ class Config : NetworkChangedListener {
 
     fun markFirstRechargeShown(scene: Int) {
         mmkv.encode("firstRechargeShown${User.get().userId}_$scene", true)
+    }
+
+    fun clear() {
+        val keysToRemove = arrayOf(
+            FIRST_OPEN_APP,
+            IN_REVIEW, ENVIRONMENT, DEVELOPMENT_MODE,
+            INSTALL_DATA, OPID, SHOW_JUMP_POP,
+            EPISODE_AUTO_UNLOCK, TODAY_LOGIN_REWARDS_DIALOG, LOGIN_REWARDS
+        )
+        mmkv.removeValuesForKeys(keysToRemove)
     }
 
     companion object {
