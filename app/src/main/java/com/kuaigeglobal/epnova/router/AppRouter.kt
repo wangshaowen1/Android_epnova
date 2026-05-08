@@ -133,7 +133,7 @@ object AppRouter : IRouter {
                 ioScope.launchNoCrash {
                     val unlockInfoData = ApiFactory.apiService.episodeUnlockLockStatus(WorkBody(workId, storyId))
                     withContext(Dispatchers.Main){
-                        DramasPlayPagerActivity.start(workId, if (unlockInfoData.data?.lockStatus == 2) unlockInfoData.data?.episodeNo else 0, false)
+                        DramasPlayPagerActivity.start(workId, if (unlockInfoData.data?.lockStatus == 2) 0 else unlockInfoData.data?.episodeNo, false)
                     }
                 }
             }

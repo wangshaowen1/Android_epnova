@@ -40,7 +40,10 @@ object AppsFlyerManager {
         "af_adset", "af_ad", "af_ad_type", "af_ad_id", "clickid",
         "install_time", "af_status", "af_message", "match_type",
         "orig_cost", "af_cost_model", "af_cost_value", "af_cost_currency",
-        "redirect", "is_mobile", "af_dp", "af_web_dp"
+        "redirect", "is_mobile", "af_dp", "af_web_dp",
+        // AF 运行时注入的内部字段
+        "scheme", "host", "link", "af_xp", "shortlink", "source_caller", "is_deferred",
+        "af_deeplink"
     )
 
     private val mainHandler = Handler(Looper.getMainLooper())
@@ -115,35 +118,24 @@ object AppsFlyerManager {
      *   http/https URL   → 内置浏览器
      */
     private fun handleDeepLink(deepLinkValue: String?, clickEvent: JSONObject?) {
-        if (deepLinkValue.isNullOrEmpty()) {
-            Logger.i(TAG, "deepLinkValue is empty, skip routing")
+        // 统一以 clickEvent 中的 action 作为路由 host，忽略 deepLinkValue
+        val host = clickEvent?.optString("action", "")
+        if (host.isNullOrEmpty()) {
+            Logger.i(TAG, "action is empty, skip routing")
             return
         }
-
-        // deepLinkValue 已是完整 URI（含 scheme），直接路由
-        if (deepLinkValue.contains("://")) {
-            Logger.i(TAG, "routing full URI: $deepLinkValue")
-            AppRouter.jump(deepLinkValue)
-            return
-        }
-
-        // 将 host + clickEvent 业务参数拼接为 fastfilm:// URI，交给 AppRouter 统一处理
-        val schemeUri = buildSchemeUri(deepLinkValue, clickEvent)
+        val schemeUri = buildSchemeUri(host, clickEvent)
         Logger.i(TAG, "routing schemeUri: $schemeUri")
         AppRouter.jump(schemeUri)
     }
 
-    /**
-     * 将 deepLinkValue 作为 host，从 clickEvent 中提取业务参数构建完整 scheme URI。
-     * 过滤 AF 内部保留字段，只保留业务参数（如 workId、storyId 等）。
-     */
     private fun buildSchemeUri(host: String, clickEvent: JSONObject?): String {
         val builder = StringBuilder("${Constants.APP_SCHEME}://$host")
         if (clickEvent == null) return builder.toString()
 
         val params = mutableListOf<String>()
         clickEvent.keys().forEach { key ->
-            if (key in AF_RESERVED_KEYS) return@forEach
+            if (key in AF_RESERVED_KEYS || key == "action") return@forEach
             val value = clickEvent.optString(key, "")
             if (value.isNotEmpty()) {
                 params.add("${Uri.encode(key)}=${Uri.encode(value)}")
