@@ -519,6 +519,7 @@
     <string name="please_enter_custom_episodes">โปรดป้อนจำนวนตอนที่กำหนดเอง</string>
     <string name="please_select_video_aspect_ratio">โปรดเลือกขนาดวิดีโอ</string>
     <string name="please_select_video_style">โปรดเลือกรูปแบบวิดีโอ</string>
+    <string name="network_error_fetch_products">ไม่สามารถดึงข้อมูลสินค้าได้ กรุณาตรวจสอบการเชื่อมต่อเครือข่ายแล้วลองอีกครั้งภายหลัง</string>
     <string name="enable_camera">ถ่ายภาพ</string>
     <string name="settings_enable_photo_album">อนุญาตการเข้าถึงรูปภาพเพิ่มเติม</string>
 

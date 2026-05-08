@@ -519,6 +519,7 @@ Jika Anda memilih \"Tidak Setuju\", Anda tidak akan dapat menggunakan produk dan
     <string name="please_enter_custom_episodes">Silakan masukkan jumlah episode khusus</string>
     <string name="please_select_video_aspect_ratio">Silakan pilih ukuran video</string>
     <string name="please_select_video_style">Silakan pilih gaya video</string>
+    <string name="network_error_fetch_products">Gagal mendapatkan produk. Silakan periksa koneksi jaringan Anda dan coba lagi nanti.</string>
     <string name="enable_camera">Ambil Foto</string>
     <string name="settings_enable_photo_album">Izinkan akses ke lebih banyak foto</string>
     <string name="episode_unlock_previous_required">Silakan buka kunci episode sebelumnya terlebih dahulu.</string>
