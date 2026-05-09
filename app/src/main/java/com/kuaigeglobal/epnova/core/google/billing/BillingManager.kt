@@ -13,12 +13,14 @@ import com.android.billingclient.api.QueryPurchasesParams
 import com.android.billingclient.api.queryPurchasesAsync
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.kuaigeglobal.epnova.App
+import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.ext.ioScope
 import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.network.apis.ApiFactory
 import com.kuaigeglobal.epnova.core.network.apis.request.VerifyPurchasedBody
 import com.kuaigeglobal.epnova.feature.recharge.ItemRechargePowerVM
 import com.nhsd.basic.ext.launchNoCrash
+import com.nhsd.basic.ext.showToast
 import com.nhsd.basic.utils.Logger
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -41,11 +43,12 @@ object BillingManager {
     var isConnecting = AtomicBoolean(false)
     private val isPurchasing = AtomicBoolean(false)
     private var activePageCount = 0 // 有多少个页面在使用支付功能
+    private var pendingDisconnect = false // 购买进行中时触发了 endConnection，购买结束后补偿断开
 
     var onPurchaseSuccess: ((Purchase?) -> Unit)? = null
 
     /**
-     * 购买失败回调：-1：购买流程启动失败；2：支付失败；3支付取消；
+     * 购买失败回调：-1：购买流程启动失败；2：支付失败；3：支付取消；4：支付成功但权益发放失败
      */
     var onPurchaseFail: ((Int?) -> Unit)? = null
 
@@ -84,16 +87,34 @@ object BillingManager {
             .setListener { billingResult, purchases ->
                 isPurchasing.set(false)
                 if (orderId == null) {
-                    queryPendingPurchases()
+                    // 进程被杀重启场景：orderId 已丢失，但 Google 仍会推送 pending purchases
+                    // 若 responseCode == OK 且有 purchases，直接验签并 Toast 提示；UI 回调依赖后续 queryPendingPurchases 补偿
+                    if (billingResult.responseCode == BillingClient.BillingResponseCode.OK && !purchases.isNullOrEmpty()) {
+                        handlePurchases(purchases) { _, _, allVerified ->
+                            if (allVerified) {
+                                App.instance.getString(R.string.payment_successful).showToast()
+                            }
+                            // onPurchaseSuccess 已丢失，无法回调 UI，下次进入商品页 queryPendingPurchases 会刷新权益
+                        }
+                    } else {
+                        queryPendingPurchases()
+                    }
                     return@setListener
                 }
                 val currentOrderId = orderId
                 when (billingResult.responseCode) {
                     BillingClient.BillingResponseCode.OK -> {//购买成功
                         Logger.d(TAG, "Purchases updated: $purchases")
-                        handlePurchases(purchases) {
+                        handlePurchases(purchases) { _, _, allVerified ->
                             orderId = null
-                            onPurchaseSuccess?.invoke(purchases?.firstOrNull())
+                            if (allVerified) {
+                                showToast(R.string.payment_successful)
+                                onPurchaseSuccess?.invoke(purchases?.firstOrNull())
+                            } else {
+                                showToast(R.string.payment_failed_retry)
+                                onPurchaseFail?.invoke(4)
+                            }
+                            tryDisconnectAfterPurchase()
                         }
                     }
 
@@ -102,15 +123,18 @@ object BillingManager {
                             "Google购买异常===>PurchasesUpdatedListener: $billingResult , purchase:${purchases?.getOrNull(0)} order=$currentOrderId userId=${User.get().id}"
                         FirebaseCrashlytics.getInstance().recordException(Exception(reason))
                         // 第一次立即查
-                        queryPendingPurchases { list ->
+                        queryPendingPurchases { list, _ ->
                             val purchase = list?.find { it.accountIdentifiers?.obfuscatedAccountId == currentOrderId }
                             if (purchase != null) {
                                 orderId = null
+                                showToast(R.string.payment_successful)
                                 onPurchaseSuccess?.invoke(purchase)
                             } else {
+                                showToast(R.string.payment_failed_retry)
                                 onPurchaseFail?.invoke(2)
                                 reportOrderStatus(currentOrderId, 2, reason)
                             }
+                            tryDisconnectAfterPurchase()
                         }
                     }
 
@@ -121,6 +145,7 @@ object BillingManager {
                         )
                         reportOrderStatus(currentOrderId, 3)
                         onPurchaseFail?.invoke(3)
+                        tryDisconnectAfterPurchase()
                     }
 
                     else -> {
@@ -130,7 +155,9 @@ object BillingManager {
                             Exception(reason)
                         )
                         reportOrderStatus(currentOrderId, 2, reason)
+                        showToast(R.string.payment_failed_retry)
                         onPurchaseFail?.invoke(2)
+                        tryDisconnectAfterPurchase()
                     }
                 }
             }
@@ -177,6 +204,7 @@ object BillingManager {
 
                 override fun onBillingServiceDisconnected() {
                     isConnecting.set(false)
+                    isPurchasing.set(false) // 断线时购买流程已中断，允许重新发起
                     // 网络不稳定会走这里，可重连
                     Logger.d(TAG, "Billing service disconnected")
                 }
@@ -243,7 +271,12 @@ object BillingManager {
             return
         }
         Logger.d(TAG, "获取价格 入参  products=${products}")
-        connectIfNeeded {
+        connectIfNeeded { state ->
+            if (state != 2) {
+                Logger.d(TAG, "获取价格失败，连接状态: $state")
+                onSuccess?.invoke(null)
+                return@connectIfNeeded
+            }
             val queryParams = QueryProductDetailsParams.newBuilder()
                 .setProductList(
                     products.map {
@@ -385,6 +418,7 @@ object BillingManager {
                 } else {
                     isPurchasing.set(false)
                     onPurchaseFail?.invoke(-1)
+                    tryDisconnectAfterPurchase()
                     Logger.d(TAG, "查询商品信息失败")
                 }
             }
@@ -429,31 +463,37 @@ object BillingManager {
             val result = billingClient?.launchBillingFlow(activity, billingFlowParams)
             if (result?.responseCode != BillingClient.BillingResponseCode.OK) {
                 isPurchasing.set(false)
-                val reason = "Google购买失败：launchBillingFlow: $result ,details:${details}"
+                val reason = "Google购买失败：launchBillingFlow: $result ,productId:${details.productId}"
                 FirebaseCrashlytics.getInstance().recordException(
                     Exception(reason)
                 )
                 // 购买流程启动失败，立即上报失败
                 reportOrderStatus(orderId, 2, reason)
                 onPurchaseFail?.invoke(-1)
+                tryDisconnectAfterPurchase()
             }
         } catch (e: Exception) {
             isPurchasing.set(false)
             Logger.e(TAG, "launchBillingFlow:${e.message}")
-            val reason = "Google购买失败：launchBillingFlow 异常: cause:${e.cause},message:${e.message},details:${details}"
+            val reason = "Google购买失败：launchBillingFlow 异常: cause:${e.cause},message:${e.message},productId:${details.productId}"
             FirebaseCrashlytics.getInstance().recordException(
                 Exception(reason)
             )
             // 购买流程启动失败，立即上报失败
             reportOrderStatus(orderId, 2, reason)
             onPurchaseFail?.invoke(-1)
-            FirebaseCrashlytics.getInstance().recordException(e)
+            tryDisconnectAfterPurchase()
         }
     }
 
-    // 查询历史购买记录
-    fun queryPendingPurchases(onConsumeOver: ((List<Purchase>?) -> Unit)? = null) {
-        connectIfNeeded {
+    // 查询历史购买记录，newlyVerified 为本次新验签成功的购买列表，可用于后台补偿场景的提示
+    fun queryPendingPurchases(onConsumeOver: ((List<Purchase>?, newlyVerified: List<Purchase>) -> Unit)? = null) {
+        connectIfNeeded { state ->
+            if (state != 2) {
+                Logger.d(TAG, "查询历史购买失败，连接状态: $state")
+                onConsumeOver?.invoke(null, emptyList())
+                return@connectIfNeeded
+            }
             ioScope.launchNoCrash {
                 val purchases = withContext(Dispatchers.IO) {
                     val inAppPurchases = billingClient?.queryPurchasesAsync(
@@ -469,7 +509,9 @@ object BillingManager {
                     inAppPurchases + subsPurchases
                 }
                 withContext(Dispatchers.Main) {
-                    handlePurchases(purchases, onConsumeOver)
+                    handlePurchases(purchases) { list, newlyVerified, _ ->
+                        onConsumeOver?.invoke(list, newlyVerified)
+                    }
                 }
             }
         }
@@ -477,25 +519,38 @@ object BillingManager {
 
     /**
      * 处理未消耗的订单
+     * @param onConsumeOver 回调参数：all purchases、新验签成功的列表（空表示无新验签或全部失败）、是否全部验签成功
      */
-    private fun handlePurchases(purchases: List<Purchase>?, onConsumeOver: ((List<Purchase>?) -> Unit)? = null) {
+    private fun handlePurchases(
+        purchases: List<Purchase>?,
+        onConsumeOver: ((all: List<Purchase>?, newlyVerified: List<Purchase>, allVerified: Boolean) -> Unit)? = null
+    ) {
         if (purchases.isNullOrEmpty()) {
             Logger.d(TAG, "No purchases found")
-            onConsumeOver?.invoke(null)
+            onConsumeOver?.invoke(null, emptyList(), true)
             return
         }
         ioScope.launchNoCrash {
+            var allVerified = true
+            val newlyVerified = mutableListOf<Purchase>()
             purchases.forEach {
                 if (it.purchaseState == Purchase.PurchaseState.PURCHASED) {
                     if (!it.isAcknowledged) {
                         Logger.d(TAG, "验券调用：${it.purchaseState}======>${it}")
-                        ApiFactory.apiService.verifyPurchased(
-                            VerifyPurchasedBody(
-                                it.purchaseToken,
-                                it.accountIdentifiers?.obfuscatedAccountId,
-                                it.products.firstOrNull()
+                        try {
+                            ApiFactory.apiService.verifyPurchased(
+                                VerifyPurchasedBody(
+                                    it.purchaseToken,
+                                    it.accountIdentifiers?.obfuscatedAccountId,
+                                    it.products.firstOrNull()
+                                )
                             )
-                        )
+                            newlyVerified.add(it)
+                        } catch (e: Exception) {
+                            allVerified = false
+                            Logger.e(TAG, "验券失败: ${e.message}")
+                            FirebaseCrashlytics.getInstance().recordException(e)
+                        }
                     } else {
                         Logger.d(TAG, "已经验过券了：${it.purchaseState}======>${it}")
                     }
@@ -504,7 +559,7 @@ object BillingManager {
                 }
             }
             withContext(Dispatchers.Main) {
-                onConsumeOver?.invoke(purchases)
+                onConsumeOver?.invoke(purchases, newlyVerified, allVerified)
             }
         }
     }
@@ -526,10 +581,28 @@ object BillingManager {
 
     fun endConnection() {
         if (!isActive()) {
-            billingClient?.endConnection()
-            billingClient = null
-            onPurchaseSuccess = null
-            onPurchaseFail = null
+            if (isPurchasing.get()) {
+                pendingDisconnect = true // 购买进行中，等购买结束后补偿断开
+            } else {
+                doDisconnect()
+            }
+        }
+    }
+
+    private fun doDisconnect() {
+        pendingDisconnect = false
+        billingClient?.endConnection()
+        billingClient = null
+        onPurchaseSuccess = null
+        onPurchaseFail = null
+    }
+
+    /**
+     * 购买结束后检查是否需要补偿断开连接（用户在购买中途离开了所有页面时触发）
+     */
+    private fun tryDisconnectAfterPurchase() {
+        if (pendingDisconnect && !isActive()) {
+            doDisconnect()
         }
     }
 }

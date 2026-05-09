@@ -122,7 +122,7 @@ object AppRouter : IRouter {
                 startStory(workId, storyId, workTitle, workType?.toIntOrNull(), totalEpisodeCnt?.toIntOrNull(), workRatio)
             }
 
-            "toHome" -> {
+            "toHome" -> {//epnovascheme://toHome
                 FlowEventBus.postSync(Events.MainTabEvent(Events.MainTabEvent.TAB_HOME))
                 ActivityUtils.finishToActivity(MainActivity::class.java, false)
             }
