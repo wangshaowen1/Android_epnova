@@ -48,9 +48,12 @@ class FirstRechargeViewModel : AppRepositoryViewModel<CoinRepository>() {
         return scene == FirstRechargeDialog.SCENE_HOME
     }
 
+    init {
+        BillingManager.markActivePage(true)
+    }
+
     override fun onCreate() {
         super.onCreate()
-        BillingManager.markActivePage(true)
         // 获取到期时间戳
         val invalidTime = data?.coionsMarketingTime ?: 0L
         if (invalidTime > 0) {

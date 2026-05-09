@@ -72,10 +72,13 @@ class MyBalanceViewModel(@LayoutRes private val paymentItemLayout: Int) : AppRep
     private var currentPower: ItemRechargePowerVM? = null
     val workCourseBanner by lazy { ObservableField<SimpleBannerInfo>() }
 
-    override fun onCreate() {
-        super.onCreate()
+    init {
         BillingManager.markActivePage(true)
         BillingManager.queryPendingPurchases()
+    }
+
+    override fun onCreate() {
+        super.onCreate()
         loadConfig()
     }
 
