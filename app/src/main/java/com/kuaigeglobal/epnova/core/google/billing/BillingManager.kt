@@ -61,9 +61,6 @@ object BillingManager {
     // 商品缓存
     private val productCache = mutableMapOf<String, ProductDetails>()
 
-    // 正在处理中的 purchaseToken，防止 listener 和 queryPendingPurchases 并发重复验单
-    private val processingTokens = java.util.concurrent.ConcurrentHashMap.newKeySet<String>()
-
     init {
         billingClient = createBillingClient()
     }
@@ -445,6 +442,7 @@ object BillingManager {
                     )
                 )
                 .setObfuscatedAccountId(orderId)
+                .setObfuscatedProfileId(User.get().userId ?: "")
                 .setIsOfferPersonalized(true) // 面向欧美市场的GDPR设置
                 .build()
         } else {
@@ -457,6 +455,7 @@ object BillingManager {
                     )
                 )
                 .setObfuscatedAccountId(orderId)
+                .setObfuscatedProfileId(User.get().userId ?: "")
                 .setIsOfferPersonalized(true) // 面向欧美市场的GDPR设置
                 .build()
         }
@@ -538,26 +537,20 @@ object BillingManager {
             purchases.forEach {
                 if (it.purchaseState == Purchase.PurchaseState.PURCHASED) {
                     if (!it.isAcknowledged) {
-                        if (!processingTokens.add(it.purchaseToken)) {
-                            Logger.d(TAG, "验券跳过（处理中）：${it.purchaseToken}")
-                        } else {
-                            Logger.d(TAG, "验券调用：${it.purchaseState}======>${it}")
-                            try {
-                                ApiFactory.apiService.verifyPurchased(
-                                    VerifyPurchasedBody(
-                                        it.purchaseToken,
-                                        it.accountIdentifiers?.obfuscatedAccountId,
-                                        it.products.firstOrNull()
-                                    )
+                        Logger.d(TAG, "验券调用：${it.purchaseState}======>${it}")
+                        try {
+                            ApiFactory.apiService.verifyPurchased(
+                                VerifyPurchasedBody(
+                                    it.purchaseToken,
+                                    it.accountIdentifiers?.obfuscatedAccountId,
+                                    it.products.firstOrNull()
                                 )
-                                newlyVerified.add(it)
-                            } catch (e: Exception) {
-                                allVerified = false
-                                Logger.e(TAG, "验券失败: ${e.message}")
-                                FirebaseCrashlytics.getInstance().recordException(e)
-                            } finally {
-                                processingTokens.remove(it.purchaseToken)
-                            }
+                            )
+                            newlyVerified.add(it)
+                        } catch (e: Exception) {
+                            allVerified = false
+                            Logger.e(TAG, "验券失败: ${e.message}")
+                            FirebaseCrashlytics.getInstance().recordException(e)
                         }
                     } else {
                         Logger.d(TAG, "已经验过券了：${it.purchaseState}======>${it}")
@@ -603,6 +596,7 @@ object BillingManager {
         billingClient = null
         onPurchaseSuccess = null
         onPurchaseFail = null
+        productCache.clear()
     }
 
     /**
