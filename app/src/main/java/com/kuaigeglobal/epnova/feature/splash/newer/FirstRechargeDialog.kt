@@ -3,16 +3,19 @@ package com.kuaigeglobal.epnova.feature.splash.newer
 import android.view.Gravity
 import androidx.core.os.bundleOf
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.lifecycleScope
 import com.blankj.utilcode.util.ActivityUtils
 import com.kuaigeglobal.epnova.common.Constants
 import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.ext.onUserSignIn
 import com.kuaigeglobal.epnova.core.google.billing.BillingManager
+import com.kuaigeglobal.epnova.core.google.billing.PurchaseResult
 import com.kuaigeglobal.epnova.core.network.apis.response.FirstRechargeDialogData
 import com.kuaigeglobal.epnova.databinding.DialogFirstRechargeBinding
 import com.nhsd.basic.BaseVMDialogFragment
 import com.nhsd.basic.bus.observeEvents
 import com.nhsd.basic.ext.dp
+import kotlinx.coroutines.launch
 
 
 class FirstRechargeDialog : BaseVMDialogFragment<DialogFirstRechargeBinding, FirstRechargeViewModel>() {
@@ -59,10 +62,14 @@ class FirstRechargeDialog : BaseVMDialogFragment<DialogFirstRechargeBinding, Fir
             onClose?.invoke()
             dismissAllowingStateLoss()
         }
-        // 支付成功：关闭弹窗并通知外部
-        mRealVM.onPaySuccess = {
-            dismissAllowingStateLoss()
-            onPaySuccess?.invoke()
+        // 支付结果：通过 Flow 观察，生命周期安全
+        viewLifecycleOwner.lifecycleScope.launch {
+            mRealVM.purchaseEvent.collect { result ->
+                if (result is PurchaseResult.Success) {
+                    dismissAllowingStateLoss()
+                    onPaySuccess?.invoke()
+                }
+            }
         }
         // 倒计时归零：自动关闭弹窗（用户此时若在看仍可完成支付，但 VM 已停止计时）
         mRealVM.countdownFinished.observe(viewLifecycleOwner) { finished ->

@@ -1,6 +1,7 @@
 package com.kuaigeglobal.epnova.feature.recharge
 
 import com.kuaigeglobal.epnova.core.AppRepository
+import com.kuaigeglobal.epnova.core.network.apis.request.CreateOrderBody
 import com.kuaigeglobal.epnova.core.network.apis.request.CreatePointOrderBody
 import com.kuaigeglobal.epnova.core.network.apis.request.UserTokenBody
 import kotlinx.coroutines.Dispatchers
@@ -12,6 +13,14 @@ class CoinRepository : AppRepository() {
      * 金币商品配置列表
      */
     suspend fun coinConfigList() = withContext(Dispatchers.IO) { api.coinsConfigList(UserTokenBody()) }
+
+    /**
+     * 创建 Google 支付订单（金币类商品，Android 端通用）
+     * @param goodsCode 商品编号（算力配置表编号）
+     */
+    suspend fun createGoogleOrder(goodsCode: String?) = withContext(Dispatchers.IO) {
+        api.createOrder(CreateOrderBody(goodsCode = goodsCode, goodsType = 1, mobileType = 1))
+    }
 
     /**
      * 交易支付方式配置列表

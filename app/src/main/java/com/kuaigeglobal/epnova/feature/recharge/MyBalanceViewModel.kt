@@ -17,10 +17,10 @@ import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.ext.launch
 import com.kuaigeglobal.epnova.core.ext.launchWithLoading
 import com.kuaigeglobal.epnova.core.google.billing.BillingManager
+import com.kuaigeglobal.epnova.core.google.billing.PurchaseResult
 import com.kuaigeglobal.epnova.core.manager.AppEvent
 import com.kuaigeglobal.epnova.core.manager.EventManager
 import com.kuaigeglobal.epnova.core.network.apis.entity.CoinConfigInfo
-import com.kuaigeglobal.epnova.core.network.apis.request.CreateOrderBody
 import com.kuaigeglobal.epnova.core.network.apis.response.SimpleBannerInfo
 import com.kuaigeglobal.epnova.core.response
 import com.kuaigeglobal.epnova.feature.details.ComputingPowerDetailsActivity
@@ -30,9 +30,13 @@ import com.nhsd.basic.ext.getResString
 import com.nhsd.basic.ext.showToast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.NonCancellable.isActive
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.launch
 
 class MyBalanceViewModel(@LayoutRes private val paymentItemLayout: Int) : AppRepositoryViewModel<CoinRepository>() {
@@ -50,8 +54,12 @@ class MyBalanceViewModel(@LayoutRes private val paymentItemLayout: Int) : AppRep
     var isDialog = false
     val cost by lazy { mBundle.getInt(Constants.Extra.COST, 0) }
 
-    /** 充值（Google 支付）成功后的回调，由外部（Dialog）注入 */
-    var onPurchaseSuccess: (() -> Unit)? = null
+    private val _purchaseEvent = MutableSharedFlow<PurchaseResult>(extraBufferCapacity = 1)
+
+    /** 支付结果事件流，View 层订阅此 Flow 响应 UI 变化 */
+    val purchaseEvent: SharedFlow<PurchaseResult> = _purchaseEvent.asSharedFlow()
+
+    private var purchaseJob: Job? = null
 
     /**
      * 账户余额
@@ -100,13 +108,14 @@ class MyBalanceViewModel(@LayoutRes private val paymentItemLayout: Int) : AppRep
     }
 
     fun loadGoogleProducts(vms: List<ItemRechargePowerVM>?) {
-        BillingManager.loadPowerPrices(vms) { map ->
+        val productIds = vms?.mapNotNull { it.data.get()?.googleProductId } ?: return
+        BillingManager.loadPowerPrices(productIds) { map ->
             viewModelScope.launch(Dispatchers.Main) {
                 if (map.isEmpty()) {
                     getString(R.string.network_error_fetch_products).showToast()
                     return@launch
                 }
-                vms?.forEach { item ->
+                vms.forEach { item ->
                     val productCode = item.data.get()?.googleProductId
                     if (map.containsKey(productCode)) {
                         item.priceText.set(map[productCode]?.first)
@@ -143,42 +152,29 @@ class MyBalanceViewModel(@LayoutRes private val paymentItemLayout: Int) : AppRep
             EventManager.onAppTrack(AppEvent.SF_CLICK_COMPUTE_RECHARGE_PAYMENT_BUTTON)
         }
 
-        createOrder(item) {
-            BillingManager.launchPurchase(
-                topActivity,
-                item.googleProductId ?: "",
-                it ?: "",
-                onSuccess = {
+        // 先订阅结果，再发起支付，确保不遗漏回调
+        purchaseJob?.cancel()
+        purchaseJob = viewModelScope.launch {
+            BillingManager.purchaseResultFlow.take(1).collect { result ->
+                if (result is PurchaseResult.Success) {
                     loadConfig()
                     refreshBalance()
-                    onPurchaseSuccess?.invoke()
-                },
-                onFail = { errorCode ->
-                    if (errorCode != 3) {
-
-                    }
                 }
-            )
-        }
-    }
-
-    fun createOrder(
-        info: CoinConfigInfo,
-        onSuccess: ((String?) -> Unit)? = null
-    ) {
-        launchWithLoading {
-            response(
-                mRepo.api.createOrder(
-                    CreateOrderBody(
-                        goodsCode = info.coionsConfigCode,
-                        goodsType = 1,
-                        mobileType = 1
-                    )
-                )
-            ) {
-                onSuccess?.invoke(data?.orderNo)
+                _purchaseEvent.emit(result)
             }
         }
+
+        launchWithLoading(
+            block = {
+                response(mRepo.createGoogleOrder(item.coionsConfigCode)) {
+                    BillingManager.launchPurchase(topActivity, item.googleProductId ?: "", data?.orderNo ?: "")
+                }
+            },
+            onError = {
+                // createOrder 失败时取消等待，避免 purchaseJob 悬空
+                purchaseJob?.cancel()
+            }
+        )
     }
 
     fun viewPaymentAgreement() {
@@ -222,6 +218,7 @@ class MyBalanceViewModel(@LayoutRes private val paymentItemLayout: Int) : AppRep
 
     override fun onCleared() {
         countDownJob?.cancel()
+        purchaseJob?.cancel()
         super.onCleared()
     }
 

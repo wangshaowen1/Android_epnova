@@ -18,11 +18,14 @@ import com.kuaigeglobal.epnova.common.ext.ioScope
 import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.network.apis.ApiFactory
 import com.kuaigeglobal.epnova.core.network.apis.request.VerifyPurchasedBody
-import com.kuaigeglobal.epnova.feature.recharge.ItemRechargePowerVM
 import com.nhsd.basic.ext.launchNoCrash
 import com.nhsd.basic.ext.showToast
 import com.nhsd.basic.utils.Logger
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.withContext
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
@@ -46,12 +49,13 @@ object BillingManager {
     private val activePageCount = AtomicInteger(0) // 有多少个页面在使用支付功能
     private var pendingDisconnect = false // 购买进行中时触发了 endConnection，购买结束后补偿断开
 
-    var onPurchaseSuccess: ((Purchase?) -> Unit)? = null
+    private val _purchaseResult = MutableSharedFlow<PurchaseResult>(
+        extraBufferCapacity = 1,
+        onBufferOverflow = BufferOverflow.DROP_OLDEST
+    )
 
-    /**
-     * 购买失败回调：-1：购买流程启动失败；2：支付失败；3：支付取消；4：支付成功但权益发放失败
-     */
-    var onPurchaseFail: ((Int?) -> Unit)? = null
+    /** 支付结果流，ViewModel 订阅此 Flow 接收结果，不再使用全局回调 */
+    val purchaseResultFlow: SharedFlow<PurchaseResult> = _purchaseResult.asSharedFlow()
 
     /**
      * 预下单的订单号
@@ -91,8 +95,9 @@ object BillingManager {
                         handlePurchases(purchases) { _, _, allVerified ->
                             if (allVerified) {
                                 App.instance.getString(R.string.payment_successful).showToast()
+                                // 进程重启场景：无 ViewModel 订阅，emit 会被自动丢弃，仅靠 Toast 提示
+                                _purchaseResult.tryEmit(PurchaseResult.Success(purchases.firstOrNull()))
                             }
-                            // onPurchaseSuccess 已丢失，无法回调 UI，下次进入商品页 queryPendingPurchases 会刷新权益
                         }
                     } else {
                         queryPendingPurchases()
@@ -107,10 +112,10 @@ object BillingManager {
                             orderId = null
                             if (allVerified) {
                                 showToast(R.string.payment_successful)
-                                onPurchaseSuccess?.invoke(purchases?.firstOrNull())
+                                _purchaseResult.tryEmit(PurchaseResult.Success(purchases?.firstOrNull()))
                             } else {
                                 showToast(R.string.payment_failed_retry)
-                                onPurchaseFail?.invoke(4)
+                                _purchaseResult.tryEmit(PurchaseResult.Failed.BenefitFailed)
                             }
                             tryDisconnectAfterPurchase()
                         }
@@ -126,10 +131,10 @@ object BillingManager {
                             if (purchase != null) {
                                 orderId = null
                                 showToast(R.string.payment_successful)
-                                onPurchaseSuccess?.invoke(purchase)
+                                _purchaseResult.tryEmit(PurchaseResult.Success(purchase))
                             } else {
                                 showToast(R.string.payment_failed_retry)
-                                onPurchaseFail?.invoke(2)
+                                _purchaseResult.tryEmit(PurchaseResult.Failed.PaymentFailed)
                                 reportOrderStatus(currentOrderId, 2, reason)
                             }
                             tryDisconnectAfterPurchase()
@@ -142,7 +147,7 @@ object BillingManager {
                             "Purchases failed: $billingResult ,purchase:${purchases?.getOrNull(0)?.toString()}"
                         )
                         reportOrderStatus(currentOrderId, 3)
-                        onPurchaseFail?.invoke(3)
+                        _purchaseResult.tryEmit(PurchaseResult.Cancelled)
                         tryDisconnectAfterPurchase()
                     }
 
@@ -154,7 +159,7 @@ object BillingManager {
                         )
                         reportOrderStatus(currentOrderId, 2, reason)
                         showToast(R.string.payment_failed_retry)
-                        onPurchaseFail?.invoke(2)
+                        _purchaseResult.tryEmit(PurchaseResult.Failed.PaymentFailed)
                         tryDisconnectAfterPurchase()
                     }
                 }
@@ -211,26 +216,20 @@ object BillingManager {
     }
 
     /**
-     * 获取google上价格
+     * 批量获取 Google 商品价格
+     * @param productIds INAPP 类型的商品 ID 列表
+     * @param onSuccess key=productId，value=Triple(格式化价格, 微分价格, 货币代码)
      */
     fun loadPowerPrices(
-        products: List<ItemRechargePowerVM>?,
+        productIds: List<String>,
         onSuccess: ((HashMap<String, Triple<String, Long, String>>) -> Unit)? = null
     ) {
-        val pairs = products?.map {
-            Pair(
-                it.data.get()?.googleProductId, BillingClient.ProductType.INAPP
-            )
-        }
+        val pairs = productIds.map { Pair(it, BillingClient.ProductType.INAPP) }
         preloadProductDetails(pairs) { list ->
             val map = HashMap<String, Triple<String, Long, String>>()
             list?.forEach { details ->
-                productCache[details.productId] = details
-                val vm = products?.find { it.data.get()?.googleProductId == details.productId }
-                if (vm != null) {
-                    getPriceParameters(details)?.apply {
-                        map[details.productId] = this
-                    }
+                getPriceParameters(details)?.apply {
+                    map[details.productId] = this
                 }
             }
             onSuccess?.invoke(map)
@@ -340,45 +339,25 @@ object BillingManager {
     }
 
     /**
-     * 发起购买
+     * 发起购买。结果通过 [purchaseResultFlow] 下发，调用方需在此之前订阅。
      * @param productId google商品ID
      * @param orderId 自建预订单ID
-     * @param productType 商品类型（续订，一次性）
-     * @param onSuccess 购买成功回调
+     * @param productType 商品类型（1-一次性，2-订阅）
      */
     fun launchPurchase(
         activity: Activity?,
         productId: String,
         orderId: String,
         productType: Int = 1,
-        onSuccess: ((Purchase?) -> Unit)? = null,
-        onFail: ((Int?) -> Unit)? = null
     ) {
         if (activity == null) {
             Logger.d(TAG, "activity is null")
             return
         }
         connectIfNeeded { state ->
-            // [新增] 1. 检查是否正在购买中，如果是则直接返回，防止重复点击
-            //state -1 连接失败  1 连接ing  2 连接成功
             // orderId != null 说明上一笔 Google 回调还未结清（可能断线重连后 isPurchasing 已被 reset），禁止覆盖
             if (isPurchasing.get() || this.orderId != null || state == 1 || state == -1) {
-//                if (state == 1) {
-//                    showToast(R.string.tip_connecting_to_payment_service)
-//                } else if (state == -1) {
-//                    showToast(R.string.tip_payment_service_connection_failed)
-//                }
-//                if (orderId != BillingManager.orderId) {
-//                    Logger.d(TAG, "重复点击购买，直接取消 orderId = $orderId")
-//                    reportOrderStatus(orderId, 3, "重复点击购买，直接取消 orderId = $orderId  userId=${User.get().id}")
-//                }
                 return@connectIfNeeded
-            }
-            this.onPurchaseSuccess = {
-                onSuccess?.invoke(it)
-            }
-            this.onPurchaseFail = {
-                onFail?.invoke(it)
             }
             isPurchasing.set(true)
             launchFlow(
@@ -416,7 +395,7 @@ object BillingManager {
                     launchBillingFlow(activity, list.productDetailsList[0], orderId)
                 } else {
                     isPurchasing.set(false)
-                    onPurchaseFail?.invoke(-1)
+                    _purchaseResult.tryEmit(PurchaseResult.Failed.LaunchFailed)
                     tryDisconnectAfterPurchase()
                     Logger.d(TAG, "查询商品信息失败")
                 }
@@ -470,7 +449,7 @@ object BillingManager {
                 )
                 // 购买流程启动失败，立即上报失败
                 reportOrderStatus(orderId, 2, reason)
-                onPurchaseFail?.invoke(-1)
+                _purchaseResult.tryEmit(PurchaseResult.Failed.LaunchFailed)
                 tryDisconnectAfterPurchase()
             }
         } catch (e: Exception) {
@@ -482,7 +461,7 @@ object BillingManager {
             )
             // 购买流程启动失败，立即上报失败
             reportOrderStatus(orderId, 2, reason)
-            onPurchaseFail?.invoke(-1)
+            _purchaseResult.tryEmit(PurchaseResult.Failed.LaunchFailed)
             tryDisconnectAfterPurchase()
         }
     }
@@ -594,8 +573,6 @@ object BillingManager {
         pendingDisconnect = false
         billingClient?.endConnection()
         billingClient = null
-        onPurchaseSuccess = null
-        onPurchaseFail = null
         productCache.clear()
     }
 

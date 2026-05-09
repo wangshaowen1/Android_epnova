@@ -9,7 +9,7 @@ import com.kuaigeglobal.epnova.common.ext.topActivity
 import com.kuaigeglobal.epnova.core.Global
 import com.kuaigeglobal.epnova.core.ext.launchWithLoading
 import com.kuaigeglobal.epnova.core.google.billing.BillingManager
-import com.kuaigeglobal.epnova.core.network.apis.request.CreateOrderBody
+import com.kuaigeglobal.epnova.core.google.billing.PurchaseResult
 import com.kuaigeglobal.epnova.core.network.apis.response.FirstRechargeDialogData
 import com.kuaigeglobal.epnova.core.response
 import com.kuaigeglobal.epnova.feature.recharge.CoinRepository
@@ -18,6 +18,10 @@ import com.nhsd.basic.ext.getParcelableValue
 import com.nhsd.basic.ext.showToast
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.launch
 
 class FirstRechargeViewModel : AppRepositoryViewModel<CoinRepository>() {
@@ -32,10 +36,13 @@ class FirstRechargeViewModel : AppRepositoryViewModel<CoinRepository>() {
     /** 倒计时归零信号，由 Dialog 观察后自动关闭 */
     val countdownFinished = MutableLiveData(false)
 
-    /** 支付成功回调，由外部（Dialog）注入 */
-    var onPaySuccess: (() -> Unit)? = null
+    private val _purchaseEvent = MutableSharedFlow<PurchaseResult>(extraBufferCapacity = 1)
+
+    /** 支付结果事件流，View 层订阅此 Flow 响应 UI 变化 */
+    val purchaseEvent: SharedFlow<PurchaseResult> = _purchaseEvent.asSharedFlow()
 
     private var countDownJob: Job? = null
+    private var purchaseJob: Job? = null
 
     fun isFromHome(): Boolean {
         return scene == FirstRechargeDialog.SCENE_HOME
@@ -75,49 +82,35 @@ class FirstRechargeViewModel : AppRepositoryViewModel<CoinRepository>() {
 
     override fun onCleared() {
         countDownJob?.cancel()
+        purchaseJob?.cancel()
         super.onCleared()
     }
 
     fun googlePay() {
         if (AppNavigator.checkLoginIntercepted()) return
-        createOrder(data?.coionsConfigCode) {
-            BillingManager.launchPurchase(
-                topActivity,
-                data?.googleProductId ?: "",
-                it ?: "",
-                onSuccess = {
-                    refreshBalance()
-//                    showToast(R.string.payment_successful)
-                    onPaySuccess?.invoke()
-                },
-                onFail = { errorCode ->
-                    if (errorCode == 3) {
-//                        showToast(R.string.payment_cancelled)
-                    } else {
-//                        showToast(R.string.payment_failed_retry)
-                    }
-                }
-            )
-        }
-    }
+        val rechargeData = data ?: return
 
-    fun createOrder(
-        code: String?,
-        onSuccess: ((String?) -> Unit)? = null
-    ) {
-        launchWithLoading {
-            response(
-                mRepo.api.createOrder(
-                    CreateOrderBody(
-                        goodsCode = code,
-                        goodsType = 1,
-                        mobileType = 1
-                    )
-                )
-            ) {
-                onSuccess?.invoke(data?.orderNo)
+        // 先订阅结果，再发起支付，确保不遗漏回调
+        purchaseJob?.cancel()
+        purchaseJob = viewModelScope.launch {
+            BillingManager.purchaseResultFlow.take(1).collect { result ->
+                if (result is PurchaseResult.Success) {
+                    refreshBalance()
+                }
+                _purchaseEvent.emit(result)
             }
         }
+
+        launchWithLoading(
+            block = {
+                response(mRepo.createGoogleOrder(rechargeData.coionsConfigCode)) {
+                    BillingManager.launchPurchase(topActivity, rechargeData.googleProductId ?: "", data?.orderNo ?: "")
+                }
+            },
+            onError = {
+                purchaseJob?.cancel()
+            }
+        )
     }
 
     private fun refreshBalance() {

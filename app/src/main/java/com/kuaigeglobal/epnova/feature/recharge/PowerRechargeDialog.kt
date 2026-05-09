@@ -11,6 +11,7 @@ import com.kuaigeglobal.epnova.core.Events
 import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.ext.showRechargeDialog
 import com.kuaigeglobal.epnova.core.google.billing.BillingManager
+import com.kuaigeglobal.epnova.core.google.billing.PurchaseResult
 import com.kuaigeglobal.epnova.core.manager.AppEvent
 import com.kuaigeglobal.epnova.core.manager.EventManager
 import com.kuaigeglobal.epnova.databinding.DialogRechargePowerBinding
@@ -19,6 +20,7 @@ import com.nhsd.basic.bus.observeEvents
 import com.nhsd.basic.ext.showToast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import androidx.lifecycle.lifecycleScope
 
 class PowerRechargeDialog : BaseBottomPushVMDialogFragment<DialogRechargePowerBinding, MyBalanceViewModel>() {
 
@@ -72,11 +74,15 @@ class PowerRechargeDialog : BaseBottomPushVMDialogFragment<DialogRechargePowerBi
         BillingManager.markActivePage(true)
         BillingManager.queryPendingPurchases()
         mRealVM.isDialog = true
-        // 充值成功：自动关闭弹窗并触发外部回调（屏蔽 onDismiss 避免双触发）
-        mRealVM.onPurchaseSuccess = {
-            onDismissCallback = null
-            dismissAllowingStateLoss()
-            onRechargeSuccessCallback?.invoke()
+        // 支付结果：通过 Flow 观察，生命周期安全
+        viewLifecycleOwner.lifecycleScope.launch {
+            mRealVM.purchaseEvent.collect { result ->
+                if (result is PurchaseResult.Success) {
+                    onDismissCallback = null
+                    dismissAllowingStateLoss()
+                    onRechargeSuccessCallback?.invoke()
+                }
+            }
         }
         observeEvents {
             on<Events.UserDataEvent> {
