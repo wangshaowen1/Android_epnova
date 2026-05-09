@@ -10,7 +10,6 @@ import com.kuaigeglobal.epnova.common.ext.topActivity
 import com.kuaigeglobal.epnova.core.Events
 import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.ext.showRechargeDialog
-import com.kuaigeglobal.epnova.core.google.billing.BillingManager
 import com.kuaigeglobal.epnova.core.google.billing.PurchaseResult
 import com.kuaigeglobal.epnova.core.manager.AppEvent
 import com.kuaigeglobal.epnova.core.manager.EventManager
@@ -71,8 +70,6 @@ class PowerRechargeDialog : BaseBottomPushVMDialogFragment<DialogRechargePowerBi
 
     override fun onPrepareView() {
         super.onPrepareView()
-        BillingManager.markActivePage(true)
-        BillingManager.queryPendingPurchases()
         mRealVM.isDialog = true
         // 支付结果：通过 Flow 观察，生命周期安全
         viewLifecycleOwner.lifecycleScope.launch {
@@ -96,8 +93,4 @@ class PowerRechargeDialog : BaseBottomPushVMDialogFragment<DialogRechargePowerBi
         return MyBalanceViewModel(R.layout.item_recharge_payment_dialog)
     }
 
-    override fun onDestroy() {
-        BillingManager.markActivePage(false)
-        super.onDestroy()
-    }
 }

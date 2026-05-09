@@ -50,6 +50,7 @@ class FirstRechargeViewModel : AppRepositoryViewModel<CoinRepository>() {
 
     override fun onCreate() {
         super.onCreate()
+        BillingManager.markActivePage(true)
         // 获取到期时间戳
         val invalidTime = data?.coionsMarketingTime ?: 0L
         if (invalidTime > 0) {
@@ -81,6 +82,7 @@ class FirstRechargeViewModel : AppRepositoryViewModel<CoinRepository>() {
     }
 
     override fun onCleared() {
+        BillingManager.markActivePage(false)
         countDownJob?.cancel()
         purchaseJob?.cancel()
         super.onCleared()

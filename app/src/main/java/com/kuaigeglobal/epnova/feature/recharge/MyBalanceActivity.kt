@@ -13,7 +13,6 @@ import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.ext.topActivity
 import com.kuaigeglobal.epnova.core.Config
 import com.kuaigeglobal.epnova.core.Events
-import com.kuaigeglobal.epnova.core.google.billing.BillingManager
 import com.kuaigeglobal.epnova.core.manager.AppEvent
 import com.kuaigeglobal.epnova.core.manager.EventManager
 import com.kuaigeglobal.epnova.databinding.ActivityMyBalanceBinding
@@ -32,7 +31,6 @@ class MyBalanceActivity : BaseViewModelActivity<ActivityMyBalanceBinding, MyBala
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         EventManager.onAppTrack(AppEvent.SF_VIEW_RECHARGE_PAGE)
-        BillingManager.markActivePage(true)
         termsOfService()
         observeEvents {
             on<Events.UserDataEvent> {
@@ -45,12 +43,6 @@ class MyBalanceActivity : BaseViewModelActivity<ActivityMyBalanceBinding, MyBala
     {
         return MyBalanceViewModel(R.layout.item_recharge_payment)
     }
-
-    override fun onDestroy() {
-        BillingManager.markActivePage(false)
-        super.onDestroy()
-    }
-
 
     private fun termsOfService() {
         val spannableString =

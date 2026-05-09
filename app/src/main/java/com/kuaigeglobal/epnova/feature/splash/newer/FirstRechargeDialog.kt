@@ -53,7 +53,6 @@ class FirstRechargeDialog : BaseVMDialogFragment<DialogFirstRechargeBinding, Fir
 
     override fun onPrepareView() {
         super.onPrepareView()
-        BillingManager.markActivePage(true)
         val googleProductId = mRealVM.data?.googleProductId
         BillingManager.loadNewerGiftPrice(googleProductId) { map ->
             binding.btnBuy.text = map[googleProductId]?.first
@@ -84,8 +83,4 @@ class FirstRechargeDialog : BaseVMDialogFragment<DialogFirstRechargeBinding, Fir
         }
     }
 
-    override fun onDestroy() {
-        BillingManager.markActivePage(false)
-        super.onDestroy()
-    }
 }

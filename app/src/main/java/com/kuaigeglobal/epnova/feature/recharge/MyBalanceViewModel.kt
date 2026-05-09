@@ -74,6 +74,8 @@ class MyBalanceViewModel(@LayoutRes private val paymentItemLayout: Int) : AppRep
 
     override fun onCreate() {
         super.onCreate()
+        BillingManager.markActivePage(true)
+        BillingManager.queryPendingPurchases()
         loadConfig()
     }
 
@@ -217,6 +219,7 @@ class MyBalanceViewModel(@LayoutRes private val paymentItemLayout: Int) : AppRep
     }
 
     override fun onCleared() {
+        BillingManager.markActivePage(false)
         countDownJob?.cancel()
         purchaseJob?.cancel()
         super.onCleared()
