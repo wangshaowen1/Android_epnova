@@ -141,7 +141,7 @@ class MainActivity : BaseViewModelActivity<ActivityMainBinding, MainViewModel>()
         lifecycleScope.launchNoCrash {
             delay(1000)
             BillingManager.markActivePage(true)
-            BillingManager.queryPendingPurchases {
+            BillingManager.queryPendingPurchases { _, _ ->
                 BillingManager.markActivePage(false)
             }
         }

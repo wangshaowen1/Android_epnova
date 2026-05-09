@@ -25,6 +25,7 @@ import com.nhsd.basic.utils.Logger
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.concurrent.atomic.AtomicBoolean
+import java.util.concurrent.atomic.AtomicInteger
 
 object BillingManager {
     //VIP 订阅 (基础)： dt_sub_vip1_month   基础id  vip1-month-plan1
@@ -42,7 +43,7 @@ object BillingManager {
 
     var isConnecting = AtomicBoolean(false)
     private val isPurchasing = AtomicBoolean(false)
-    private var activePageCount = 0 // 有多少个页面在使用支付功能
+    private val activePageCount = AtomicInteger(0) // 有多少个页面在使用支付功能
     private var pendingDisconnect = false // 购买进行中时触发了 endConnection，购买结束后补偿断开
 
     var onPurchaseSuccess: ((Purchase?) -> Unit)? = null
@@ -60,24 +61,24 @@ object BillingManager {
     // 商品缓存
     private val productCache = mutableMapOf<String, ProductDetails>()
 
+    // 正在处理中的 purchaseToken，防止 listener 和 queryPendingPurchases 并发重复验单
+    private val processingTokens = java.util.concurrent.ConcurrentHashMap.newKeySet<String>()
+
     init {
         billingClient = createBillingClient()
     }
 
     fun markActivePage(enter: Boolean) {
         if (enter) {
-            activePageCount++
+            activePageCount.incrementAndGet()
         } else {
-            activePageCount--
-            if (activePageCount < 0) activePageCount = 0
-        }
-        if (!enter) {
+            if (activePageCount.decrementAndGet() < 0) activePageCount.set(0)
             endConnection()
         }
     }
 
     fun isActive(): Boolean {
-        return activePageCount > 0
+        return activePageCount.get() > 0
     }
 
     private fun createBillingClient(): BillingClient {
@@ -363,7 +364,8 @@ object BillingManager {
         connectIfNeeded { state ->
             // [新增] 1. 检查是否正在购买中，如果是则直接返回，防止重复点击
             //state -1 连接失败  1 连接ing  2 连接成功
-            if (isPurchasing.get() || state == 1 || state == -1) {
+            // orderId != null 说明上一笔 Google 回调还未结清（可能断线重连后 isPurchasing 已被 reset），禁止覆盖
+            if (isPurchasing.get() || this.orderId != null || state == 1 || state == -1) {
 //                if (state == 1) {
 //                    showToast(R.string.tip_connecting_to_payment_service)
 //                } else if (state == -1) {
@@ -536,20 +538,26 @@ object BillingManager {
             purchases.forEach {
                 if (it.purchaseState == Purchase.PurchaseState.PURCHASED) {
                     if (!it.isAcknowledged) {
-                        Logger.d(TAG, "验券调用：${it.purchaseState}======>${it}")
-                        try {
-                            ApiFactory.apiService.verifyPurchased(
-                                VerifyPurchasedBody(
-                                    it.purchaseToken,
-                                    it.accountIdentifiers?.obfuscatedAccountId,
-                                    it.products.firstOrNull()
+                        if (!processingTokens.add(it.purchaseToken)) {
+                            Logger.d(TAG, "验券跳过（处理中）：${it.purchaseToken}")
+                        } else {
+                            Logger.d(TAG, "验券调用：${it.purchaseState}======>${it}")
+                            try {
+                                ApiFactory.apiService.verifyPurchased(
+                                    VerifyPurchasedBody(
+                                        it.purchaseToken,
+                                        it.accountIdentifiers?.obfuscatedAccountId,
+                                        it.products.firstOrNull()
+                                    )
                                 )
-                            )
-                            newlyVerified.add(it)
-                        } catch (e: Exception) {
-                            allVerified = false
-                            Logger.e(TAG, "验券失败: ${e.message}")
-                            FirebaseCrashlytics.getInstance().recordException(e)
+                                newlyVerified.add(it)
+                            } catch (e: Exception) {
+                                allVerified = false
+                                Logger.e(TAG, "验券失败: ${e.message}")
+                                FirebaseCrashlytics.getInstance().recordException(e)
+                            } finally {
+                                processingTokens.remove(it.purchaseToken)
+                            }
                         }
                     } else {
                         Logger.d(TAG, "已经验过券了：${it.purchaseState}======>${it}")
