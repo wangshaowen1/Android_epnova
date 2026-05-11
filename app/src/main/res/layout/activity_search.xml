@@ -78,6 +78,7 @@
             android:layout_height="match_parent"
             android:layout_marginTop="@dimen/spacing_m"
             setLoadState="@{layout.loadState}"
+            app:noDataSrc="@drawable/img_default_search"
             app:noData="@string/home_search_no_results">
 
             <androidx.recyclerview.widget.RecyclerView

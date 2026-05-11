@@ -3,9 +3,10 @@ package com.kuaigeglobal.epnova.feature.home.search
 import android.app.Activity
 import android.content.Intent
 import android.view.inputmethod.EditorInfo
+import androidx.core.widget.doAfterTextChanged
+import com.blankj.utilcode.util.KeyboardUtils
 import com.kuaigeglobal.epnova.common.ext.topActivity
 import com.kuaigeglobal.epnova.databinding.ActivitySearchBinding
-import com.blankj.utilcode.util.KeyboardUtils
 import com.nhsd.basic.BaseViewModelActivity
 
 class SearchActivity :
@@ -38,6 +39,9 @@ class SearchActivity :
                 KeyboardUtils.hideSoftInput(binding.btnSearch)
                 true
             } else false
+        }
+        binding.btnSearch.doAfterTextChanged {
+            mRealVM.search()
         }
     }
 

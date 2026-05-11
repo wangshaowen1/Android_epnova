@@ -469,8 +469,8 @@
 
                 <Button
                     android:id="@+id/stv_log_out"
+                    style="@style/Text.Medium"
                     setVisible="@{layout.isRealLogin}"
-                    style="@style/Text14"
                     singleClick="@{layout.clickHandler::onClick}"
                     android:layout_width="match_parent"
                     android:layout_height="44dp"
@@ -479,7 +479,9 @@
                     android:background="@drawable/bg_06_ffffff_r100"
                     android:gravity="center"
                     android:text="@string/app_log_out"
-                    android:textColor="?attr/funcColorFailure" />
+                    android:textAllCaps="false"
+                    android:textColor="?attr/funcColorFailure"
+                    android:textSize="14sp" />
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
     </LinearLayout>
