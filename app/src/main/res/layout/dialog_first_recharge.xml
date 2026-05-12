@@ -149,7 +149,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:includeFontPadding="false"
-                            android:text="@{`+`+layout.data.coionsNum}"
+                            android:text="@{`+`+layout.data.giveNum}"
                             android:textColor="@color/color_ff1f4b"
                             android:textSize="24sp"
                             app:layout_constraintBottom_toBottomOf="@id/bgPowerRight"
