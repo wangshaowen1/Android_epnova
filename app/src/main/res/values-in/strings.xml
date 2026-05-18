@@ -575,7 +575,9 @@ Jika Anda memilih \"Tidak Setuju\", Anda tidak akan dapat menggunakan produk dan
     <string name="rewards_title">Hadiah</string>
     <string name="rewards_rules">Peraturan</string>
     <string name="rewards_balance">Saldo</string>
-    <string name="rewards_checked_days">Sudah check-in selama %1$d hari</string>
+    <plurals name="rewards_checked_days">
+        <item quantity="other">Sudah check-in selama %1$d hari</item>
+    </plurals>
     <string name="rewards_day_1">Hari %1$d</string>
     <string name="rewards_check_in">Check-in</string>
     <string name="rewards_earn_rewards">Dapatkan Hadiah</string>

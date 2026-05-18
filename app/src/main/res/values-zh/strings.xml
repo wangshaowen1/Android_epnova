@@ -570,7 +570,9 @@
     <string name="rewards_title">福利中心</string>
     <string name="rewards_rules">规则</string>
     <string name="rewards_balance">余额</string>
-    <string name="rewards_checked_days">已签到 %1$d 天</string>
+    <plurals name="rewards_checked_days">
+        <item quantity="other">已签到 %1$d 天</item>
+    </plurals>
     <string name="rewards_day_1">第 %1$d 天</string>
     <string name="rewards_check_in">签到</string>
     <string name="rewards_earn_rewards">领取奖励</string>

@@ -1,8 +1,8 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation,ExtraTranslation">
-    <string name="app_name">EpNova</string>
-    <string name="facebook_app_id">3218717494963372</string>
-    <string name="fb_login_protocol_scheme">fb3218717494963372</string>
-    <string name="facebook_client_token">e79d753cfcf9a9013f8b3e89ba6894dd</string>
+    <string name="app_name" translatable="false">EpNova</string>
+    <string name="facebook_app_id" translatable="false">3218717494963372</string>
+    <string name="fb_login_protocol_scheme" translatable="false">fb3218717494963372</string>
+    <string name="facebook_client_token" translatable="false">e79d753cfcf9a9013f8b3e89ba6894dd</string>
     <string name="request_failed_tips">Slow connection. Please try again in a moment.</string>
     <string name="no_network_tips">Connection failed. Please check your network.</string>
 
@@ -579,7 +579,10 @@
     <string name="rewards_title">Rewards</string>
     <string name="rewards_rules">Rules</string>
     <string name="rewards_balance">Balance</string>
-    <string name="rewards_checked_days">Checked in for %1$d day(s)</string>
+    <plurals name="rewards_checked_days">
+        <item quantity="one">Checked in for %1$d day</item>
+        <item quantity="other">Checked in for %1$d days</item>
+    </plurals>
     <string name="rewards_day_1">Day %1$d</string>
     <string name="rewards_check_in">Check In</string>
     <string name="rewards_earn_rewards">Earn Rewards</string>
