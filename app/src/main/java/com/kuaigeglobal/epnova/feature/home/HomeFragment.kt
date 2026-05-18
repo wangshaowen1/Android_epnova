@@ -14,6 +14,7 @@ import com.kuaigeglobal.epnova.core.network.apis.entity.BannerInfo
 import com.kuaigeglobal.epnova.databinding.FragmentHomeBinding
 import com.kuaigeglobal.epnova.feature.home.search.SearchActivity
 import com.kuaigeglobal.epnova.feature.main.MainViewModel
+import com.kuaigeglobal.epnova.feature.rewards.RewardsActivity
 import com.kuaigeglobal.epnova.router.AppRouter
 import com.kuaigeglobal.epnova.widget.decoration.StaggeredGridSpaceItemDecoration
 import com.kuaigeglobal.epnova.widget.stateful.paging.MyMultiStatePagingFooterAdapter
@@ -61,6 +62,9 @@ class HomeFragment :
     private fun initListener() {
         binding.btnSearch.setOnSingleClickListener {
             SearchActivity.start(mActivity)
+        }
+        binding.btnRewards.setOnSingleClickListener {
+            RewardsActivity.start(mActivity)
         }
     }
 

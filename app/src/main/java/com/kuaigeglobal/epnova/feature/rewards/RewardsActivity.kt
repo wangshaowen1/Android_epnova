@@ -1,5 +1,8 @@
 package com.kuaigeglobal.epnova.feature.rewards
 
+import android.content.Context
+import android.content.Intent
+import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -11,49 +14,52 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.core.ext.onUserStatusChanged
-import com.kuaigeglobal.epnova.databinding.FragmentRewardsBinding
+import com.kuaigeglobal.epnova.databinding.ActivityRewardsBinding
 import com.kuaigeglobal.epnova.widget.decoration.GridSpacingItemDecoration
-import com.nhsd.basic.BaseViewModelFragment
+import com.nhsd.basic.BaseViewModelActivity
 import com.nhsd.basic.bus.observeEvents
 import com.nhsd.basic.ext.dp
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
-class RewardsFragment : BaseViewModelFragment<FragmentRewardsBinding, RewardsViewModel>() {
+class RewardsActivity : BaseViewModelActivity<ActivityRewardsBinding, RewardsViewModel>() {
 
     companion object {
-        fun newInstance() = RewardsFragment()
+        @JvmStatic
+        fun start(context: Context) {
+            val starter = Intent(context, RewardsActivity::class.java)
+            context.startActivity(starter)
+        }
     }
 
-    override fun onPrepareView() {
-        super.onPrepareView()
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         initView()
         observeEvents()
         mRealVM.loadData()
     }
 
-    override fun onHiddenChanged(hidden: Boolean) {
-        super.onHiddenChanged(hidden)
-        if (!hidden) mRealVM.loadData()
+    override fun onResume() {
+        super.onResume()
+//        mRealVM.loadData()
     }
 
     private fun initView() {
-        binding.rvCheckIn.layoutManager = GridLayoutManager(requireContext(), 7)
+        binding.rvCheckIn.layoutManager = GridLayoutManager(this, 7)
         binding.rvCheckIn.addItemDecoration(GridSpacingItemDecoration(7, 2.dp, 0))
         binding.rvCheckIn.adapter = mRealVM.checkInAdapter
 
-        binding.rvEarnRewards.layoutManager = LinearLayoutManager(requireContext())
+        binding.rvEarnRewards.layoutManager = LinearLayoutManager(this)
         binding.rvEarnRewards.adapter = mRealVM.earnAdapter
     }
 
     private fun observeEvents() {
         lifecycleScope.launch {
             mRealVM.showAdEvent.collectLatest { ctx ->
-                val activity = activity ?: return@collectLatest
                 showLoadingDialog()
                 mRealVM.adManager.loadAndShow(
-                    context = requireContext(),
-                    activity = activity,
+                    context = this@RewardsActivity,
+                    activity = this@RewardsActivity,
                     customData = ctx.customData,
                     onLoaded = { hideLoadingDialog() },
                     onRewarded = {
@@ -84,13 +90,13 @@ class RewardsFragment : BaseViewModelFragment<FragmentRewardsBinding, RewardsVie
     private fun showCheckInSuccessDialog(rewardNum: Int, adRewardCoins: Int) {
         val dialog = CheckInSuccessDialog.newInstance(rewardNum, adRewardCoins)
         dialog.onWatchAdClicked = { mRealVM.preReportCheckInAd() }
-        dialog.show(childFragmentManager)
+        dialog.show(supportFragmentManager)
     }
 
     // ─── 获得金币 Toast ───────────────────────────────────────────────────────
 
     private fun showRewardToast(message: String) {
-        val activity = activity ?: return
+        val activity = this@RewardsActivity
         val decorView = activity.window.decorView as ViewGroup
         val toastView = LayoutInflater.from(activity)
             .inflate(R.layout.toast_reward_coins, decorView, false)
@@ -121,12 +127,12 @@ class RewardsFragment : BaseViewModelFragment<FragmentRewardsBinding, RewardsVie
 
     // ─── 点击事件 ─────────────────────────────────────────────────────────────
 
-    override fun <Data> onClick(view: View, data: Data?) {
+    override fun <Data> onClick(view: View?, data: Data?) {
         super.onClick(view, data)
-        when (view.id) {
+        when (view?.id) {
             R.id.btnCheckIn      -> mRealVM.doCheckIn()
             R.id.btnCheckInAd    -> mRealVM.preReportCheckInAd()
-            R.id.btnRules        -> RewardRulesDialog.newInstance().show(childFragmentManager)
+            R.id.btnRules        -> RewardRulesDialog.newInstance().show(supportFragmentManager)
         }
     }
 }

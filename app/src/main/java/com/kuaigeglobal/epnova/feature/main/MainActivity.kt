@@ -28,7 +28,6 @@ import com.kuaigeglobal.epnova.feature.aicompose.generating.GeneratingViewModel
 import com.kuaigeglobal.epnova.feature.home.HomeFragment
 import com.kuaigeglobal.epnova.feature.mine.MineFragment
 import com.kuaigeglobal.epnova.feature.rewards.RewardWelcomeDialog
-import com.kuaigeglobal.epnova.feature.rewards.RewardsFragment
 import com.kuaigeglobal.epnova.router.AppNavigator
 import com.kuaigeglobal.epnova.router.AppRouter
 import com.nhsd.basic.BaseViewModelActivity
@@ -171,10 +170,10 @@ class MainActivity : BaseViewModelActivity<ActivityMainBinding, MainViewModel>()
                     setKeepScreenOn(false)
                     mRealVM.showTab.set(1)
 //                    CreationRootActivity.start(this)
-                    supportFragmentManager.switchFragment(
-                        R.id.fragment,
-                        RewardsFragment::class.java
-                    )
+//                    supportFragmentManager.switchFragment(
+//                        R.id.fragment,
+//                        RewardsActivity::class.java
+//                    )
                 }
 
 

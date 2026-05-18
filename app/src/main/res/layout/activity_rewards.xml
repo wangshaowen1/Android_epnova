@@ -182,9 +182,10 @@
                             android:drawablePadding="4dp"
                             android:gravity="center"
                             android:includeFontPadding="false"
-                            android:text="@string/rewards_extra_30_coins"
+                            android:text="@{@string/rewards_extra_30_coins(layout.adRewardCoins)}"
                             android:textColor="?attr/textColor1"
-                            android:textSize="16sp" />
+                            android:textSize="16sp"
+                            tools:text="@string/rewards_extra_30_coins" />
                     </FrameLayout>
 
                     <!-- 状态3：今日广告已看 → Come back tomorrow + 刷新时间 -->

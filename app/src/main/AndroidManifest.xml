@@ -284,8 +284,9 @@
         <activity
             android:name=".feature.splash.newer.GuideStep4VideoActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".feature.settings.lang.LanguagesActivity" />
-        <activity android:name=".feature.home.search.SearchActivity" android:windowSoftInputMode="stateVisible|adjustPan"/>
+        <activity android:name=".feature.settings.lang.LanguagesActivity" android:screenOrientation="portrait" />
+        <activity android:name=".feature.home.search.SearchActivity" android:windowSoftInputMode="stateVisible|adjustPan" android:screenOrientation="portrait"/>
+        <activity android:name=".feature.rewards.RewardsActivity" android:screenOrientation="portrait" />
     </application>
     <queries>
         <intent>

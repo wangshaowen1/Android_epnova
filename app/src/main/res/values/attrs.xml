@@ -3,11 +3,11 @@
     <!-- <attr name="gravity" format="integer" />
      <attr name="spacing" format="dimension" />-->
     <attr name="isLightTheme" format="boolean" />
-    <!-- 主题色1 5a6afe-->
+    <!-- 主题色1 FF2E55-->
     <attr name="themeColor1" format="color" />
-    <!-- 主题色2 78a2ff-->
+    <!-- 主题色2 78A2FF-->
     <attr name="themeColor2" format="color" />
-    <!-- 主题色3 7b9ffc 20-->
+    <!-- 主题色3 7B9FFC 20-->
     <attr name="themeColor3" format="color" />
 
     <!-- 功能色/成功 27c346-->
