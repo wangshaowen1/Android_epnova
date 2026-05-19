@@ -940,4 +940,55 @@ object ApiConstants {
      * 查询剧集锁定状态
      */
     const val EPISODE_UNLOCK_LOCK_STATUS = "app/story/unlock/lock-status"
+
+    /**
+     * 剧集-修改剧集梗概
+     */
+    const val UPDATE_STORY_SUMMARY = "work/updateStorySummary"
+
+
+    /**
+     * 获取作品剧集分镜配置
+     */
+    const val GET_STORYBOARD_MODEL_CONFIG = "work/config/getStoryboardConfig"
+
+    /**
+     * 切换分镜模型
+     */
+    const val SWITCH_MODEL = "work/storyboard/switchModel"
+
+    /**
+     * 取消场景形象选用
+     */
+    const val CANCEL_SCENE_IMAGE = "v2/work/asset/scene/appearance/unset"
+
+    /**
+     * 取消角色形象选用
+     */
+    const val CANCEL_ROLE_IMAGE = "v2/work/asset/role/appearance/unset"
+
+    /**
+     * 取消道具形象选用
+     */
+    const val CANCEL_PROP_IMAGE = "v2/work/asset/prop/appearance/unset"
+
+    /**
+     * 作品角色列表
+     */
+    const val WORK_ASSET_ROLE_PAGE = "v2/work/asset/role/list"
+
+    /**
+     * 角色形象列表
+     */
+    const val WORK_ASSET_ROLE_IMAGE_PAGE = "v2/work/asset/role/appearance/list"
+
+    /**
+     * 作品道具列表
+     */
+    const val WORK_ASSET_PROP_PAGE = "v2/work/asset/prop/list"
+
+    /**
+     * 作品场景列表
+     */
+    const val WORK_ASSET_SCENE_PAGE = "v2/work/asset/scene/list"
 }

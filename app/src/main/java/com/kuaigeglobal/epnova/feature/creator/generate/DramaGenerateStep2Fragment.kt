@@ -3,8 +3,8 @@ package com.kuaigeglobal.epnova.feature.creator.generate
 import android.animation.ObjectAnimator
 import android.os.Bundle
 import android.text.Editable
-import android.view.GestureDetector
-import android.view.MotionEvent
+import android.text.Spanned
+import android.text.style.ForegroundColorSpan
 import android.view.animation.LinearInterpolator
 import androidx.lifecycle.lifecycleScope
 import com.kuaigeglobal.epnova.R
@@ -12,12 +12,12 @@ import com.kuaigeglobal.epnova.common.Constants
 import com.kuaigeglobal.epnova.common.SimpleTextWatcher
 import com.kuaigeglobal.epnova.common.ext.applySmartFocusManager
 import com.kuaigeglobal.epnova.common.ext.showConfirmPrompt
-import com.kuaigeglobal.epnova.common.utils.KeyboardUtils
 import com.kuaigeglobal.epnova.core.ext.sensitiveWordCheck
 import com.kuaigeglobal.epnova.core.manager.AppEvent
 import com.kuaigeglobal.epnova.core.manager.EventManager
 import com.kuaigeglobal.epnova.databinding.FragmentDramaGenerateStep2Binding
 import com.kuaigeglobal.epnova.feature.creator.data.DramaGenerateConstants
+import com.kuaigeglobal.epnova.feature.editor.info.InputDialog
 import com.kuaigeglobal.epnova.feature.mine.child.MyCreationsFragment
 import com.kuaigeglobal.epnova.feature.series.SeriesActivity
 import com.nhsd.basic.BaseViewModelFragment
@@ -114,52 +114,79 @@ class DramaGenerateStep2Fragment :
     private fun handleNextStep() {
         lifecycleScope.launch {
             sensitiveWordCheck(mRealVM.input.value, {
+                sensitiveHighlightedText = null
                 mRealVM.confirmGenerate { workId, storyId, taskId ->
                     hostVm?.nextStep(3, workId, storyId, taskId)
                 }
             }, {
-                it?.let {
-                    binding.inputView.setText(it)
+                sensitiveHighlightedText = it
+                it?.let { spanned ->
+                    binding.inputView.text = spanned
+                    scrollToFirstSensitiveWord(spanned)
                 }
             })
         }
     }
+
+    private fun scrollToFirstSensitiveWord(spannedText: CharSequence) {
+        binding.inputView.post {
+            val layout = binding.inputView.layout ?: return@post
+            val spanned = spannedText as? Spanned ?: return@post
+            val spans = spanned.getSpans(0, spanned.length, ForegroundColorSpan::class.java)
+            if (spans.isEmpty()) return@post
+
+            val firstSpanStart = spans.minOf { spanned.getSpanStart(it) }
+            val line = layout.getLineForOffset(firstSpanStart)
+            val lineTop = layout.getLineTop(line)
+
+            // 通过屏幕坐标计算 inputView 相对于 scrollContainer 内容区域的偏移
+            val scrollViewOffset = IntArray(2)
+            binding.scrollContainer.getLocationOnScreen(scrollViewOffset)
+            val inputViewOffset = IntArray(2)
+            binding.inputView.getLocationOnScreen(inputViewOffset)
+
+            val inputViewRelativeTop = inputViewOffset[1] - scrollViewOffset[1] + binding.scrollContainer.scrollY
+            val lineAbsoluteY = inputViewRelativeTop + binding.inputView.paddingTop + lineTop
+
+            // 将标红行居中显示
+            val lineHeight = layout.getLineBottom(line) - lineTop
+            val centeredY = lineAbsoluteY + lineHeight / 2 - binding.scrollContainer.height / 2
+            binding.scrollContainer.smoothScrollTo(0, maxOf(0, centeredY))
+        }
+    }
+
+    private var sensitiveHighlightedText: CharSequence? = null
+
     var isNotified = false
 
     private fun setupTouchInterceptor() {
-        val gestureDetector = GestureDetector(context, object : GestureDetector.SimpleOnGestureListener() {
-            override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
-                if (mRealVM.isScriptLoading.get()) return super.onSingleTapConfirmed(e)
+        binding.inputView.setOnSingleClickListener {
+            if (mRealVM.isScriptLoading.get()) return@setOnSingleClickListener
 
-                if (mRealVM.input.value?.trim().isNullOrEmpty() || isNotified) {
-                    enterEditMode()
-                    return super.onSingleTapConfirmed(e)
-                }
-                isNotified = true
-                mActivity.showConfirmPrompt(
-                    getString(R.string.edit_text_warning),
-                    confirmText = getString(R.string.confirm_edit)
-                ) {
-                    enterEditMode()
-                }
-                return true
+            if (mRealVM.input.value?.trim().isNullOrEmpty() || isNotified) {
+                enterEditMode()
+                return@setOnSingleClickListener
             }
-        })
-
-        binding.inputView.setOnTouchListener { _, event -> gestureDetector.onTouchEvent(event) }
+            isNotified = true
+            mActivity.showConfirmPrompt(
+                getString(R.string.edit_text_warning),
+                confirmText = getString(R.string.continue_editing)
+            ) {
+                enterEditMode()
+            }
+        }
     }
 
     private fun enterEditMode() {
-        binding.inputView.let { editText ->
-            editText.setOnTouchListener(null)
-            editText.setFocusable(true)
-            editText.setFocusableInTouchMode(true)
-            editText.setCursorVisible(true)
-
-            editText.requestFocus()
-            editText.postDelayed({
-                KeyboardUtils.showKeyboard(editText)
-            }, 100)
+        mRealVM.input.value.let {
+            InputDialog.show(
+                type = InputDialog.TYPE_EPISODE_CONTENT,
+                content = it,
+                highlightedContent = sensitiveHighlightedText
+            ) { text ->
+                sensitiveHighlightedText = null
+                mRealVM.input.value = text
+            }
         }
     }
 
@@ -186,8 +213,7 @@ class DramaGenerateStep2Fragment :
         hostVm?.title?.observe(this) {
             if (it != mRealVM.mWorkName.value) {
                 mRealVM.mWorkName.value = it
-
-                mRealVM.episodeTitle.set("$it ${getString(R.string.episode_number_format, mRealVM.chapterIndex)}")
+                mRealVM.episodeTitle.set("《$it》第${mRealVM.chapterIndex}集")
             }
         }
     }

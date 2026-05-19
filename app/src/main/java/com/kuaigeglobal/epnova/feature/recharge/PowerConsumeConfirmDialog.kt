@@ -47,9 +47,7 @@ class PowerConsumeConfirmDialog : BaseBottomPushVMDialogFragment<DialogPowerCons
         super.onPrepareView()
         binding.btnConfirm.setOnSingleClickListener {
             if (PowerRechargeDialog.checkLowBalance(mRealVM.cost)) return@setOnSingleClickListener
-            if (mRealVM.checkedPolicy.get()) {
-                Config.get().notifyPowerConsumeClose(1)
-            }
+            Config.get().notifyPowerConsumeClose(1)
             onConfirm.invoke()
             dismissAllowingStateLoss()
         }

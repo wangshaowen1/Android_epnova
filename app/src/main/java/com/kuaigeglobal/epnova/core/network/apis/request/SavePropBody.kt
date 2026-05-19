@@ -35,4 +35,6 @@ data class SavePropBody(
      * 道具图片描述提示词
      */
     val propPrompt: String?,
+    val source: Int? = 2,//创作步骤标识，用于区分调用来源（如：1=资产管理 2=创作流程 等）
+    val imageUrl: String? = null,//图片地址
 )

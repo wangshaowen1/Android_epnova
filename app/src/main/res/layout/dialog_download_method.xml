@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_color2_tr20">
+
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="17dp"
+        android:text="@string/choose_video_download_method"
+        android:textAppearance="@style/Text16"
+        android:textColor="?attr/textColor1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/btnWithWatermark"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginHorizontal="15dp"
+        android:layout_marginTop="17dp"
+        android:background="@drawable/fill_color1_r8"
+        android:drawableStart="@drawable/icon_menu_download"
+        android:drawablePadding="8dp"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="15dp"
+        android:text="@string/download_with_watermark"
+        android:textAppearance="@style/Text14"
+        android:textColor="?attr/textColor3"
+        app:layout_constraintDimensionRatio="345:51"
+        app:layout_constraintTop_toBottomOf="@+id/tvTitle" />
+
+    <TextView
+        android:id="@+id/btnWithoutWatermark"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginHorizontal="15dp"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/fill_color1_r8"
+        android:drawableStart="@drawable/icon_menu_download"
+        android:drawablePadding="8dp"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="15dp"
+        android:text="@string/download_without_watermark"
+        android:textAppearance="@style/Text14"
+        android:textColor="?attr/textColor3"
+        app:layout_constraintDimensionRatio="345:51"
+        app:layout_constraintTop_toBottomOf="@+id/btnWithWatermark" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnWithoutWatermark">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/download_video_considered_as_agreement"
+            android:textAppearance="@style/Text12"
+            android:textColor="?attr/textColor3" />
+
+        <TextView
+            android:id="@+id/btnPolicy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingVertical="12dp"
+            android:text="@string/download_agreement"
+            android:textAppearance="@style/Text12"
+            android:textColor="?attr/textColor1" />
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/btnClose"
+        android:layout_width="54dp"
+        android:layout_height="54dp"
+        android:paddingHorizontal="15dp"
+        android:src="@drawable/icon_close"
+        app:layout_constraintBottom_toBottomOf="@+id/tvTitle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tvTitle" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

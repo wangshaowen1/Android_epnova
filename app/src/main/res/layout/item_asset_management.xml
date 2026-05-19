@@ -27,28 +27,54 @@
             android:layout_height="0dp"
             android:layout_marginStart="15dp"
             android:scaleType="centerCrop"
-            android:src="?attr/fillColor1"
             android:visibility="@{item.status == 2 ? View.VISIBLE : View.INVISIBLE}"
             app:layout_constraintDimensionRatio="108:152"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintWidth_percent="0.288"
-            app:riv_corner_radius="8dp"
-            tools:src="@drawable/img_default_cover_3_4" />
+            app:riv_corner_radius="8dp" />
 
-        <ImageView
-            setVisible="@{item.status == 2}"
+        <com.kuaigeglobal.epnova.widget.GradientBorderView
+            android:id="@+id/ivCoverBorder"
+            showBackground="@{item.status != 2}"
+            singleClick="@{(v)->item.onItemClick.invoke(v)}"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:clickable="@{item.status!=2}"
+            app:backgroundStartColor="?attr/fillColor1"
+            app:borderStartColor="?attr/borderColor2"
+            app:borderWidth="1dp"
+            app:layout_constraintBottom_toBottomOf="@+id/ivCover"
+            app:layout_constraintEnd_toEndOf="@+id/ivCover"
+            app:layout_constraintStart_toStartOf="@+id/ivCover"
+            app:layout_constraintTop_toTopOf="@+id/ivCover"
+            app:roundCornerRadius="8dp" />
+
+        <TextView
+            style="@style/TextAppearance.AIChip"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="6dp"
-            app:layout_constraintStart_toStartOf="@+id/ivCover"
+            android:layout_margin="@dimen/spacing_s"
+            android:visibility="@{item.status == 2 ? View.VISIBLE : View.INVISIBLE}"
+            app:layout_constraintStart_toStartOf="@id/ivCover"
+            app:layout_constraintTop_toTopOf="@id/ivCover" />
+
+        <ImageView
+            android:id="@+id/btnImageDel"
+            setVisible="@{item.status == 2}"
+            singleClick="@{(v)->item.onItemClick.invoke(v)}"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:padding="4dp"
+            android:src="@drawable/icon_close_background_dark"
+            app:layout_constraintEnd_toEndOf="@+id/ivCover"
             app:layout_constraintTop_toTopOf="@+id/ivCover" />
 
         <ImageView
             setVisible="@{item.status == 2}"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:padding="8dp"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:padding="4dp"
             android:src="@drawable/icon_magnify"
             app:layout_constraintBottom_toBottomOf="@+id/ivCover"
             app:layout_constraintEnd_toEndOf="@+id/ivCover" />
@@ -65,11 +91,16 @@
             app:layout_constraintStart_toStartOf="@+id/ivCover"
             app:layout_constraintTop_toTopOf="@+id/ivCover" />
 
-        <ImageView
-            setVisible="@{item.status &lt; 1}"
+        <TextView
+            setVisible="@{item.status &lt; 1||item.status==10}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/icon_ai_image_text4"
+            android:drawableTop="@drawable/icon_ai_image_text4"
+            android:drawablePadding="@dimen/spacing_m"
+            android:gravity="center"
+            android:text="@{item.hint}"
+            android:textColor="?attr/textColor4"
+            android:textSize="12sp"
             android:tintMode="src_in"
             app:layout_constraintBottom_toBottomOf="@+id/ivCover"
             app:layout_constraintEnd_toEndOf="@+id/ivCover"
@@ -81,41 +112,28 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/icon_image_fail"
-            android:tint="?attr/textColor4"
             android:tintMode="src_in"
             app:layout_constraintBottom_toBottomOf="@+id/ivCover"
             app:layout_constraintEnd_toEndOf="@+id/ivCover"
             app:layout_constraintStart_toStartOf="@+id/ivCover"
-            app:layout_constraintTop_toTopOf="@+id/ivCover" />
-
-        <com.kuaigeglobal.epnova.widget.GradientBorderView
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:borderStartColor="?attr/borderColor2"
-            app:borderWidth="1dp"
-            app:layout_constraintBottom_toBottomOf="@+id/ivCover"
-            app:layout_constraintEnd_toEndOf="@+id/ivCover"
-            app:layout_constraintStart_toStartOf="@+id/ivCover"
             app:layout_constraintTop_toTopOf="@+id/ivCover"
-            app:roundCornerRadius="8dp" />
+            app:tint="?attr/textColor4" />
 
-        <com.kuaigeglobal.epnova.widget.RecyclerEditText
+        <com.kuaigeglobal.epnova.widget.NestedScrollTextView
             android:id="@+id/etAssetDesc"
-            content="@{item.assetDesc}"
-            onTextInputListener="@{item.assetDescInputListener}"
-            setEditing="@{item.editingAssetDesc}"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="15dp"
             android:background="@drawable/fill_color1_r8"
-            android:ellipsize="end"
             android:gravity="top"
             android:hint="@{item.assetDescHint}"
             android:lineSpacingExtra="@dimen/lineSpacingExtraShort"
             android:maxLength="200"
             android:onClick="@{(v)->item.onItemClick.invoke(v)}"
             android:padding="12dp"
+            android:scrollbars="vertical"
+            android:text="@{item.assetDesc}"
             android:textAppearance="@style/Text13"
             android:textColor="?attr/textColor2"
             android:textColorHint="?attr/textColor4"
@@ -168,23 +186,25 @@
             singleClick="@{(v)->item.clickGenerate()}"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginHorizontal="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
             android:background="@drawable/fill_color1_r4"
             app:layout_constraintBottom_toBottomOf="@+id/etAssetName"
             app:layout_constraintEnd_toStartOf="@+id/btnDelete"
             app:layout_constraintStart_toEndOf="@+id/etAssetName"
-            app:layout_constraintTop_toTopOf="@+id/etAssetName">
+            app:layout_constraintTop_toTopOf="@+id/etAssetName"
+            app:layout_goneMarginEnd="0dp">
 
             <com.kuaigeglobal.epnova.widget.GradientTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="@{item.status &lt; 1 ? item.generateButtonText : @string/regenerate}"
+                android:text="@{item.status &lt; 1||item.status==10 ? item.generateButtonText : @string/regenerate}"
                 android:textAppearance="@style/Text13"
                 android:textColor="@android:color/white"
                 app:endColor="#8F83FF"
                 app:startColor="#68BFF9"
-                tools:text="@string/generate" />
+                tools:text="生成角色" />
         </FrameLayout>
 
         <ImageView
@@ -192,9 +212,9 @@
             singleClick="@{(v)->item.onItemClick.invoke(v)}"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginStart="8dp"
             android:background="@drawable/fill_color1_r4"
             android:scaleType="centerInside"
+            android:visibility="gone"
             android:src="@drawable/icon_delete_text4_16"
             app:layout_constraintBottom_toBottomOf="@+id/etAssetName"
             app:layout_constraintDimensionRatio="1"

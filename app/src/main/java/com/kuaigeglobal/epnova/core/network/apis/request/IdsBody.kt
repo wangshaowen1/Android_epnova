@@ -14,3 +14,10 @@ data class IdsBody(
     val id: String?,
     val operateType: Int? = null
 )
+
+
+data class AssetUnlinkBody(
+    val workId: String? = null,
+    val storyId: String? = null,
+    val assetId: String? = null,
+)

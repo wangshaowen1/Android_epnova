@@ -28,6 +28,7 @@ import com.kuaigeglobal.epnova.core.network.apis.request.IdsBody
 import com.kuaigeglobal.epnova.core.network.apis.request.TaskIdBody
 import com.kuaigeglobal.epnova.core.network.apis.request.WorkBody
 import com.kuaigeglobal.epnova.core.response
+import com.kuaigeglobal.epnova.feature.download.DownloadingViewModel
 import com.kuaigeglobal.epnova.kit.media.PlayerFactory
 import com.kuaigeglobal.epnova.kit.media.play
 import com.kuaigeglobal.epnova.kit.media.setPlayUrl
@@ -47,7 +48,7 @@ import java.io.File
 /**
  * 编辑分镜视频
  */
-class EditStoryboardVideoViewModel : AppRepositoryViewModel<EditStoryboardRepository>() {
+class EditStoryboardVideoViewModel : AppRepositoryViewModel<EditStoryboardRepository>(), DownloadingViewModel.DownloadStatusHolder {
     var storyInfo: EpisodeInfo? = null
         private set
     val workId by lazy { mBundle.getString(Constants.Extra.WORK_ID) }
@@ -97,6 +98,9 @@ class EditStoryboardVideoViewModel : AppRepositoryViewModel<EditStoryboardReposi
     private var synthesisTask: VideoSynthesisTask? = null
     private var loopSynthesisStatusJob: Job? = null
     private var progressJob: Job? = null
+    private var downloadJob: Job? = null
+    val downloading by lazy { MutableLiveData(false) }
+    override val downloadProgress by lazy { ObservableInt() }
     val subtitle by lazy { ObservableField<String>() }
 
     override fun onCreate() {
@@ -112,6 +116,7 @@ class EditStoryboardVideoViewModel : AppRepositoryViewModel<EditStoryboardReposi
     }
 
     override fun onCleared() {
+        cancelDownload()
         progressJob?.cancel()
         loopSynthesisStatusJob?.cancel()
         adapter.items.forEach { it.clear() }
@@ -279,19 +284,37 @@ class EditStoryboardVideoViewModel : AppRepositoryViewModel<EditStoryboardReposi
         return adapter.items.any { it.data.get()?.videoGenerateFailed == true }
     }
 
-    fun download(storyboard: SimpleStoryboardInfo, videoUrl: String) {
-        launchWithLoading {
-            val resource = VideoStoryboardResource(videoUrl, storyboard, RetrofitClient.httpClient)
-            resource.download { }
-            val destFile = File(PathUtils.getExternalDownloadsPath(), resource.file.name)
-            val copied = if (destFile.exists()) true else withContext(Dispatchers.IO) { FileUtils.copy(resource.file.putAIGCMetadata(storyboard), destFile) }
-            if (copied) {
-                FileUtils.notifySystemToScan(destFile)
-                showToast(R.string.video_saved_to_album)
-            } else {
+    override fun cancelDownload() {
+        downloadJob?.cancel()
+        downloadJob = null
+        downloading.value = false
+    }
+
+    fun download(storyboard: SimpleStoryboardInfo, videoUrl: String, watermark: Boolean) {
+        if (downloading.value == true) return
+        downloadProgress.set(0)
+        downloading.value = true
+        downloadJob = launch(
+            block = {
+                val resource = VideoStoryboardResource(videoUrl, storyboard, watermark, RetrofitClient.httpClient)
+                resource.download { downloadProgress.set(it) }
+                val destFile = File(PathUtils.getExternalDownloadsPath(), resource.file.name)
+                val copied = if (destFile.exists()) true else withContext(Dispatchers.IO) { FileUtils.copy(resource.file.putAIGCMetadata(storyboard), destFile) }
+                if (copied) {
+                    FileUtils.notifySystemToScan(destFile)
+                    showToast(R.string.video_saved_to_album)
+                } else {
+                    showToast(R.string.toast_save_fail)
+                }
+                downloadJob = null
+                downloading.value = false
+            },
+            onError = {
                 showToast(R.string.toast_save_fail)
+                downloadJob = null
+                downloading.value = false
             }
-        }
+        )
     }
 
     val isSynthesised get() = storyInfo?.stepProgress in arrayOf(40, 45, 50)
@@ -422,7 +445,8 @@ class EditStoryboardVideoViewModel : AppRepositoryViewModel<EditStoryboardReposi
                 }
                 if (cleared) return@launch
                 //获取分镜列表
-                val storyboards = runCatching { withContext(Dispatchers.IO) { mRepo.api.workStoryboardList(WorkBody(workId, storyId)).data } }.getOrNull()
+                val storyboards =
+                    runCatching { withContext(Dispatchers.IO) { mRepo.api.workStoryboardList(WorkBody(workId, storyId)).data } }.getOrNull()
                 if (storyboards.isNullOrEmpty()) {
                     loadState.set(LoadStateViewHolder.NO_DATA)
                 } else {

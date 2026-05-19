@@ -4,6 +4,7 @@ import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableInt
 import androidx.lifecycle.viewModelScope
 import com.blankj.utilcode.util.KeyboardUtils
+import com.blankj.utilcode.util.StringUtils.getString
 import com.drake.spannable.replaceSpan
 import com.drake.spannable.span.CenterImageSpan
 import com.kuaigeglobal.epnova.App
@@ -20,9 +21,12 @@ import com.kuaigeglobal.epnova.core.ext.showRechargeDialog
 import com.kuaigeglobal.epnova.core.manager.AppEvent
 import com.kuaigeglobal.epnova.core.manager.EventManager
 import com.kuaigeglobal.epnova.core.network.apis.ApiResponse
+import com.kuaigeglobal.epnova.core.network.apis.entity.RoleImageInfo
+import com.kuaigeglobal.epnova.core.network.apis.entity.SimpleAsset
 import com.kuaigeglobal.epnova.core.network.apis.entity.SimplePropInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.SimpleRoleInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.SimpleSceneInfo
+import com.kuaigeglobal.epnova.core.network.apis.request.AppearanceIdBody
 import com.kuaigeglobal.epnova.core.network.apis.request.StrategyTypeBody
 import com.kuaigeglobal.epnova.core.network.apis.request.WorkBody
 import com.kuaigeglobal.epnova.core.response
@@ -37,9 +41,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
-import kotlin.collections.remove
-import kotlin.text.get
-import kotlin.text.set
 
 /**
  * 资产管理
@@ -115,11 +116,13 @@ class AssetManagementViewModel : AppRepositoryViewModel<AssetManagementRepositor
         }
     private val progressHelper by lazy { AutoProgressSimulator(viewModelScope) { show, title, progress -> promptGenerating.set(show) } }
     val promptGenerating by lazy { ObservableBoolean() }
-    private val powerSpan by lazy { CenterImageSpan(App.instance, R.drawable.ic_coins).apply { setDrawableSize(16.dp, 16.dp) } }
+    private val powerSpan by lazy { CenterImageSpan(App.instance, R.drawable.icon_power).apply { setDrawableSize(16.dp, 16.dp) } }
     private var editConfirm = false
     val hasRole by lazy { ObservableBoolean(false) }
     val hasScene by lazy { ObservableBoolean(false) }
     val hasProp by lazy { ObservableBoolean(false) }
+
+    var onAssetImageSelectEvent: ((ItemAssetVM<*>) -> Unit)? = null
 
     override fun onResume() {
         super.onResume()
@@ -127,9 +130,9 @@ class AssetManagementViewModel : AppRepositoryViewModel<AssetManagementRepositor
             KeyboardUtils.registerSoftInputChangedListener(it) { height ->
                 keyboardHeight.set(height)
                 if (height <= 0) {
-                    editingAssetDescVM?.exitEditAssetDesc()
+//                    editingAssetDescVM?.exitEditAssetDesc()
                     editingAssetNameVM?.exitEditAssetName()
-                    editingAssetDescVM = null
+//                    editingAssetDescVM = null
                     editingAssetNameVM = null
                 }
             }
@@ -234,7 +237,7 @@ class AssetManagementViewModel : AppRepositoryViewModel<AssetManagementRepositor
                     hasRole.set(true)
                     items.add(ItemTitleVM(R.string.roles.getResString()))
                     items.addAll(roles)
-                    items.add(addRoleItem)
+//                    items.add(addRoleItem)
                 }
                 val scenes = scenesResponse.data?.map { info -> info.toItemAssetVM() }
                 if (scenes.isNullOrEmpty()) {
@@ -243,7 +246,7 @@ class AssetManagementViewModel : AppRepositoryViewModel<AssetManagementRepositor
                     hasScene.set(true)
                     items.add(ItemTitleVM(R.string.scenes.getResString()))
                     items.addAll(scenes)
-                    items.add(addSceneItem)
+//                    items.add(addSceneItem)
                 }
                 val props = propsResponse.data?.map { info -> info.toItemAssetVM() }
                 if (props.isNullOrEmpty()) {
@@ -252,7 +255,7 @@ class AssetManagementViewModel : AppRepositoryViewModel<AssetManagementRepositor
                     hasProp.set(true)
                     items.add(ItemTitleVM(R.string.props.getResString()))
                     items.addAll(props)
-                    items.add(addPropItem)
+//                    items.add(addPropItem)
                 }
                 adapter.items.forEach { if (it is ItemAssetVM<*>) it.clear() }
                 adapter.submitList(items)
@@ -270,23 +273,40 @@ class AssetManagementViewModel : AppRepositoryViewModel<AssetManagementRepositor
     private fun SimpleRoleInfo.toItemAssetVM() =
         ItemRoleVM(workId, storyId, ::onItemChanged, this, getAiPriceProvider = { getOrRequestAiPrice() }).applyConfig()
 
-    private fun SimpleSceneInfo.toItemAssetVM() = ItemSceneVM(workId, storyId, ::onItemChanged, this, getAiPriceProvider = { getOrRequestAiPrice() }).applyConfig()
+    private fun SimpleSceneInfo.toItemAssetVM() =
+        ItemSceneVM(workId, storyId, ::onItemChanged, this, getAiPriceProvider = { getOrRequestAiPrice() }).applyConfig()
 
-    private fun SimplePropInfo.toItemAssetVM() = ItemPropVM(workId, storyId, ::onItemChanged, this, getAiPriceProvider = { getOrRequestAiPrice() }).applyConfig()
+    private fun SimplePropInfo.toItemAssetVM() =
+        ItemPropVM(workId, storyId, ::onItemChanged, this, getAiPriceProvider = { getOrRequestAiPrice() }).applyConfig()
 
     fun addRole(addItem: ItemAddVM) {
+        val count = adapter.items.count { it is ItemRoleVM || it is ItemPropVM || it is ItemSceneVM }
+        if (count >= 9) {
+            getString(R.string.asset_image_limit_reached).showToast()
+            return
+        }
         val index = adapter.items.indexOf(addItem)
         adapter.add(index, ItemRoleVM(workId, storyId, ::onItemChanged, null, getAiPriceProvider = { getOrRequestAiPrice() }).applyConfig())
         onItemChanged()
     }
 
     fun addScene(addItem: ItemAddVM) {
+        val count = adapter.items.count { it is ItemRoleVM || it is ItemPropVM || it is ItemSceneVM }
+        if (count >= 9) {
+            getString(R.string.asset_image_limit_reached).showToast()
+            return
+        }
         val index = adapter.items.indexOf(addItem)
         adapter.add(index, ItemSceneVM(workId, storyId, ::onItemChanged, null, getAiPriceProvider = { getOrRequestAiPrice() }).applyConfig())
         onItemChanged()
     }
 
     fun addProp(addItem: ItemAddVM) {
+        val count = adapter.items.count { it is ItemRoleVM || it is ItemPropVM || it is ItemSceneVM }
+        if (count >= 9) {
+            getString(R.string.asset_image_limit_reached).showToast()
+            return
+        }
         val index = adapter.items.indexOf(addItem)
         adapter.add(index, ItemPropVM(workId, storyId, ::onItemChanged, null, getAiPriceProvider = { getOrRequestAiPrice() }).applyConfig())
         onItemChanged()
@@ -301,7 +321,7 @@ class AssetManagementViewModel : AppRepositoryViewModel<AssetManagementRepositor
             if (item is ItemAssetVM<*>) {
                 //-1=新创建 0=待生成 1=生成中 2=成功 3=失败
                 when (item.status.get()) {
-                    -1, 0 -> newNum++
+                    -1, 0, 10 -> newNum++
                     1 -> generatingNum++
                     2 -> generatedNum++
                     3 -> failedNum++
@@ -314,8 +334,6 @@ class AssetManagementViewModel : AppRepositoryViewModel<AssetManagementRepositor
                 calcCost()
             }
 
-            generatingNum > 0 -> step.set(STEP_IMAGE_GENERATING)
-
             failedNum > 0 -> {
                 if (showToast && step.get() != STEP_IMAGE_GENERATE_FAILED) {
                     R.string.asset_generation_partial_failure.getResString().showToast()
@@ -323,6 +341,8 @@ class AssetManagementViewModel : AppRepositoryViewModel<AssetManagementRepositor
                 step.set(STEP_IMAGE_GENERATE_FAILED)
                 calcCost()
             }
+
+            generatingNum > 0 -> step.set(STEP_IMAGE_GENERATING)
 
             else -> step.set(STEP_IMAGE_GENERATED)
         }
@@ -332,43 +352,58 @@ class AssetManagementViewModel : AppRepositoryViewModel<AssetManagementRepositor
         onItemClick.value = click@{ view ->
             when (view?.id) {
                 R.id.ivCover -> {
-                    assetImage.get()?.let { PhotoPagerActivity.launch(topActivity, it) }
+                    assetImage.get()?.let { PhotoPagerActivity.launchWithAiChip(topActivity, it) }
+                }
+
+                R.id.ivCoverBorder -> {
+                    if (status.get() == -1) return@click
+                    if (assetImage.get().isNullOrEmpty() || (status.get() == 0 || status.get() == 10)) {
+                        onAssetImageSelectEvent?.invoke(this)
+                        return@click
+                    }
+                }
+
+                R.id.btnImageDel -> {
+                    data.get()?.let {
+                        cancelImage(this)
+                    }
                 }
 
                 R.id.etAssetDesc -> {
                     editingAssetNameVM?.exitEditAssetName()
                     editingAssetNameVM = null
-                    if (editingAssetDescVM == this) return@click
-                    inputJob?.cancel()
-                    val edit: (delay: Long) -> Unit = { delay ->
-                        editingAssetDescVM?.exitEditAssetDesc()
-                        editingAssetDescVM = this
-                        if (delay > 0) {
-                            inputJob = launch {
-                                delay(delay)
-                                editAssetDesc()
-                            }
-                        } else {
-                            editAssetDesc()
-                        }
-                    }
+//                    if (editingAssetDescVM == this) return@click
+//                    inputJob?.cancel()
+//                    val edit: (delay: Long) -> Unit = { delay ->
+//                        editingAssetDescVM?.exitEditAssetDesc()
+//                        editingAssetDescVM = this
+//                        if (delay > 0) {
+//                            inputJob = launch {
+//                                delay(delay)
+//                                editAssetDesc()
+//                            }
+//                        } else {
+//                            editAssetDesc()
+//                        }
+//                    }
                     if (assetDesc.get().isNullOrEmpty() || editConfirm) {
-                        edit.invoke(0)
+                        editConfirm = true
+                        editAssetDesc()
                     } else {
                         editConfirm = true
                         topActivity?.showCommonDialog(
-                            title = R.string.confirm_edit.getResString(), tip = R.string.edit_text_warning.getResString(), confirmText =
+                            tip = R.string.edit_text_warning.getResString(), confirmText =
                                 R.string.continue_editing.getResString()
                         ) {
-                            edit.invoke(200)
+                            editAssetDesc()
                         }
                     }
                 }
 
                 R.id.etAssetNameCover -> {
-                    editingAssetDescVM?.exitEditAssetDesc()
+//                    editingAssetDescVM?.exitEditAssetDesc()
                     editingAssetNameVM?.exitEditAssetName()
-                    editingAssetDescVM = null
+//                    editingAssetDescVM = null
                     editingAssetNameVM = this
                     editAssetName()
                 }
@@ -378,7 +413,11 @@ class AssetManagementViewModel : AppRepositoryViewModel<AssetManagementRepositor
                         adapter.remove(this)
                         onItemChanged(false)
                     } else {
-                        topActivity?.showCommonDialog(title = R.string.confirm_deletion.getResString(), tip = R.string.delete_impact_warning.getResString(), confirmText = R.string.del.getResString()) {
+                        topActivity?.showCommonDialog(
+                            title = R.string.confirm_deletion.getResString(),
+                            tip = R.string.delete_impact_warning.getResString(),
+                            confirmText = R.string.del.getResString()
+                        ) {
                             deleteAsset(this)
                         }
                     }
@@ -413,8 +452,8 @@ class AssetManagementViewModel : AppRepositoryViewModel<AssetManagementRepositor
         val notGenerateItems = arrayListOf<Triple<ItemAssetVM<*>, String, String>>()
         adapter.items.forEachIndexed { index, item ->
             if (item is ItemAssetVM<*>) {
-                if (item.status.get() < 1 || item.status.get() == 3) {
-                    val assetDesc = if (item.editingAssetDesc.get()) item.editingAssetDescText else item.assetDesc.get()
+                if (item.status.get() < 1 || item.status.get() == 3 || item.status.get() == 10) {
+                    val assetDesc = item.assetDesc.get()
                     val assetName = if (item.editingAssetName.get()) item.editingAssetNameText else item.assetName.get()
                     if (assetDesc.isNullOrEmpty() || assetName.isNullOrEmpty()) {
                         notInput = true
@@ -479,7 +518,7 @@ class AssetManagementViewModel : AppRepositoryViewModel<AssetManagementRepositor
         launch {
             getOrRequestAiPrice()
             if (aiPrice > 0) {
-                val num = adapter.items.count { it is ItemAssetVM<*> && it.status.get().let { status -> status < 1 || status == 3 } }
+                val num = adapter.items.count { it is ItemAssetVM<*> && it.status.get().let { status -> status < 1 || status == 3 || status == 10 } }
                 cost.set(aiPrice * num)
             }
         }
@@ -504,6 +543,77 @@ class AssetManagementViewModel : AppRepositoryViewModel<AssetManagementRepositor
         launchWithLoading {
             response(mRepo.api.generateAllStoryboardDescription(WorkBody(workId, storyId))) {
                 toNextStep?.invoke(workId, storyId, data?.taskId)
+            }
+        }
+    }
+
+    fun cancelImage(vm: ItemAssetVM<*>?) {
+        launchWithLoading {
+            val asset = vm?.data?.get()
+            val response = withContext(Dispatchers.IO) {
+                when (asset) {
+                    is SimpleRoleInfo -> mRepo.api.cancelRoleImage(AppearanceIdBody(asset.assetAppearanceId))
+                    is SimpleSceneInfo -> mRepo.api.cancelSceneImage(AppearanceIdBody(asset.assetAppearanceId))
+                    else -> mRepo.api.cancelPropImage(AppearanceIdBody(asset?.assetAppearanceId))
+                }
+            }
+            if (!response.isSuccess) {
+                response.msg?.showToast()
+                return@launchWithLoading
+            } else {
+                vm?.updateStatus(0, null)
+                calcCost()
+            }
+        }
+    }
+
+    fun saveImage(simpleAsset: SimpleAsset?, roleImageInfo: RoleImageInfo?, assetId: String? = null) {
+        launchWithLoading {
+            val response = withContext(Dispatchers.IO) {
+                when (simpleAsset) {
+                    is SimpleSceneInfo -> mRepo.workAssetSceneSave(
+                        assetId,
+                        simpleAsset?.assetAppearanceId,
+                        workId,
+                        storyId,
+                        null,
+                        null,
+                        imageUrl = simpleAsset?.assetImage
+                    )
+
+                    is SimplePropInfo -> mRepo.workAssetPropSave(
+                        assetId,
+                        simpleAsset?.assetAppearanceId,
+                        workId,
+                        storyId,
+                        null,
+                        null,
+                        simpleAsset?.assetImage
+                    )
+
+                    else -> mRepo.workAssetRoleSave(
+                        simpleAsset?.assetId,
+                        roleImageInfo?.appearanceId,
+                        workId,
+                        storyId,
+                        null,
+                        null,
+                        roleImageInfo?.sourceAppearanceId,
+                        roleImageInfo?.imageUrl
+                    )
+                }
+            }
+            if (response.isSuccess) {
+                adapter.items.find {
+                    it is ItemAssetVM<*> && it.data.get()?.assetId == (assetId ?: simpleAsset?.assetId)
+                }?.let {
+                    (it as? ItemAssetVM<*>)?.apply {
+                        updateStatus(2, response.data?.assetImage)
+                    }
+                    calcCost()
+                }
+            } else {
+                response.msg?.showToast()
             }
         }
     }

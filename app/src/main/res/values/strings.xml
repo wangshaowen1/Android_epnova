@@ -611,4 +611,56 @@
     <string name="tab_rewards">Rewards</string>
     <string name="tab_profile">Profile</string>
     <string name="login_claim_coins">Claim %s Coins</string>
+
+
+
+    <string name="pay_success">支付成功</string>
+    <string name="starring">已出演</string>
+    <string name="click_button_to_watch_full_episodes">点击下方平台按钮，跳转观看完整剧集</string>
+    <string name="confirm_exit_without_saving">当前内容尚未保存，退出后修改将无法恢复，是否确认退出？</string>
+    <string name="exit_directly">直接退出</string>
+    <string name="edit_story_synopsis">编辑故事梗概</string>
+    <string name="choose_video_download_method">选择视频下载方式</string>
+    <string name="download_with_watermark">下载含水印版本</string>
+    <string name="download_without_watermark">下载无水印版本</string>
+    <string name="download_video_considered_as_agreement">下载视频即视为同意</string>
+    <string name="download_agreement">《下载协议》</string>
+    <string name="edit_episode_content">编辑剧本</string>
+    <string name="edit_asset_desc">编辑资产描述</string>
+    <string name="edit_storyboard_desc">编辑分镜设计</string>
+    <string name="role_desc">角色描述</string>
+    <string name="prop_desc">道具描述</string>
+    <string name="scene_desc">场景描述</string>
+    <string name="btn_regenerate_cost">重新生成  %1$s %2$d</string>
+    <string name="exit_during_generation_warning">资源图正在生成中，退出将导致本次生成失败，是否继续退出？</string>
+    <string name="continue_exit">继续退出</string>
+    <string name="save_and_overwrite_asset_warning">当前资源图未保存，是否保存并覆盖原资源？覆盖后不可恢复。</string>
+    <string name="exit_without_saving">退出不保存</string>
+    <string name="save_and_overwrite">保存并覆盖</string>
+    <string name="confirm_overwrite_asset_warning">图片保存后将覆盖原资源，覆盖后不可恢复，请确认是否继续？</string>
+    <string name="select_prop">选择道具</string>
+    <string name="select_scene">选择场景</string>
+    <string name="select_role_image">选择形象</string>
+    <string name="character_appearance">角色形象</string>
+    <string name="set_character_appearance">设置角色形象</string>
+    <string name="set_scene">设置场景</string>
+    <string name="set_prop">设置道具</string>
+    <string name="image_load_failed_regenerate">图片加载失败，重新生成</string>
+    <string name="no_assets_start_creating">暂无资产，去开启想象</string>
+    <string name="delete_work_permanent_warning">删除后，作品剧集及作品相关的资产图片将一并删除，无法恢复</string>
+    <string name="asset_image_limit_reached">资产图数量已达上限</string>
+    <string name="insufficient_balance_recharge_to_continue">算力不足，充值后继续生成。</string>
+    <string name="title_order_appeal">订单申诉</string>
+    <string name="order_question_about">对订单有疑问</string>
+    <string name="order_status_credited">已到账</string>
+    <string name="order_status_processing">处理中</string>
+    <string name="order_status_failed">未到账</string>
+    <string name="published_short_dramas_count">已有 %s 部短剧发行成功</string>
+    <string name="watch_now">立即观看</string>
+    <string name="order_appeal">订单申诉</string>
+    <string name="content_restriction_warning">内容不能涉及ip形象、违规等内容，否则会无法生成</string>
+    <string name="compute_power_notice">《算力须知》</string>
+    <string name="generate_role">生成角色</string>
+    <string name="balance_fail_hint">充值后AI将自动恢复创作，无需重新开始</string>
+    <string name="balance_fail_title">算力不足，无法继续生成</string>
 </resources>

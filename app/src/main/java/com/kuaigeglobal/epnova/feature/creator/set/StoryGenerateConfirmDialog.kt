@@ -32,12 +32,10 @@ class StoryGenerateConfirmDialog : BaseBottomPushVMDialogFragment<DialogStoryGen
         binding.tvPower.text = powerConsume?.toString()
         binding.btnConfirm.setOnClickListener {
             mRealVM.confirmPowerConsume { data ->
-                    if (mRealVM.checkedPolicy.get()) {
-                        Config.get().notifyPowerConsumeClose(0)
-                    }
-                    onConfirm.invoke(data)
-                    dismissAllowingStateLoss()
-                }
+                Config.get().notifyPowerConsumeClose(0)
+                onConfirm.invoke(data)
+                dismissAllowingStateLoss()
+            }
         }
     }
 }

@@ -28,6 +28,13 @@ class GradientBorderView : View {
 
     private val bgPaint by lazy { Paint(Paint.ANTI_ALIAS_FLAG) }
     private val borderPaint by lazy { Paint(Paint.ANTI_ALIAS_FLAG) }
+    var showBackground = true
+        set(value) {
+            if (field != value) {
+                field = value
+                invalidate()
+            }
+        }
     var showBorder = true
         set(value) {
             if (field != value) {
@@ -167,10 +174,12 @@ class GradientBorderView : View {
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-        if (showBorder && borderWidth > 0) {
-            canvas.withClip(bgPath) { drawPaint(bgPaint) }
-        } else {
-            canvas.drawRoundRect(0f, 0f, width.toFloat(), height.toFloat(), cornerRadius, cornerRadius, bgPaint)
+        if (showBackground) {
+            if (showBorder && borderWidth > 0) {
+                canvas.withClip(bgPath) { drawPaint(bgPaint) }
+            } else {
+                canvas.drawRoundRect(0f, 0f, width.toFloat(), height.toFloat(), cornerRadius, cornerRadius, bgPaint)
+            }
         }
     }
 

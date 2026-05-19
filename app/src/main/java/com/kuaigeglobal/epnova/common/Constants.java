@@ -64,6 +64,17 @@ public class Constants {
         String AI_REPLY = "9";
     }
 
+    public interface Model {
+        /**
+         * 动态漫
+         */
+        String STORYBOARD_DYNAMIC = "storyboard_dynamic";
+        /**
+         * 解说漫
+         */
+        String STORYBOARD_NARRATION = "storyboard_narration";
+    }
+
     public interface Extra {
         String USER_TOKEN = "userToken";
         String USER_NAME = "userName";
@@ -87,9 +98,8 @@ public class Constants {
 
         String STYLE_ID = "STYLE_Id";
         String VIDEO_RATIO = "VIDEO_RATIO";
-        @NotNull
         String CONTENT = "content";
-
+        String EXTRA = "EXTRA";
         String WORK_TYPE = "WORK_TYPE";
         //举报场景  1-音乐播放界面举报
         String REPORT_SCENE = "reportScene";
@@ -109,18 +119,13 @@ public class Constants {
         String CHAPTER_INDEX = "chapterIndex";
         String MV_ID = "mvId";
         String TRACK_NAME = "trackName";
-        @Nullable
         String TRACKS = "tracks";
-        @Nullable
         String PAGE = "page";
 
         String FROM_PAGE = "fromPage";
-        @Nullable
         String MODE = "mode";
 
-        @Nullable
         String TYPE = "type";
-        @Nullable
         String PREVIEW = "preview";
         String NAME = "name";
         String TAB = "tab";
@@ -129,11 +134,9 @@ public class Constants {
         String INTERCEPT_BACK = "interceptBack";
         String PLAY_MODE = "playMode";
         String IN_HOME = "inHome";
-        @Nullable
         String COINS = "coins";
         String MESSAGE = "message";
         String CONFIG_ID = "CONFIG_ID";
-        @Nullable
         String REWARD_TYPE = "rewardType";
         String SELECT_MODE = "SELECT_MODE";
         String INDEX = "INDEX";
@@ -164,6 +167,9 @@ public class Constants {
         String PLAYER_IN_SERIES = "playerInSeries";
         String NEWLY_PUBLISH = "newlyPublish";
         String RESTORE = "restore";
+        String ASSET_ID = "ASSET_ID";
+        String ROLE_IMAGE = "ROLE_IMAGE";
+        String APPEARANCE_ID = "APPEARANCE_ID";
     }
 
 }

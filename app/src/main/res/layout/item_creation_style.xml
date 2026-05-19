@@ -12,46 +12,60 @@
         <import type="android.view.View" />
     </data>
 
-    <com.kuaigeglobal.epnova.widget.BorderConstraintLayout
-        android:layout_width="92dp"
-        android:layout_height="92dp"
-        android:layout_marginEnd="10dp"
-        android:onClick="@{(v)->item.onItemClick.invoke(v)}"
-        app:borderEndColor="@color/gradient_btn_end_dark"
-        app:borderStartColor="@color/gradient_btn_start_dark"
-        app:borderWidth="1.5dp"
-        app:roundCornerRadius="@dimen/radius_m"
-        app:showBorder="@{item.checked}">
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
 
-        <com.kuaigeglobal.epnova.widget.CropShapeImageView
-            loadThumbnailUri="@{item.data.styleCoverUrl}"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:shapeAppearanceOverlay="@style/roundStyle_r8"
-            tools:srcCompat="@mipmap/ic_launcher" />
+        <com.kuaigeglobal.epnova.widget.BorderConstraintLayout
+            android:layout_width="92dp"
+            android:layout_height="92dp"
+            android:layout_marginTop="6dp"
+            android:layout_marginEnd="10dp"
+            android:onClick="@{(v)->item.onItemClick.invoke(v)}"
+            app:borderEndColor="@color/gradient_btn_end_dark"
+            app:borderStartColor="@color/gradient_btn_start_dark"
+            app:borderWidth="1.5dp"
+            app:roundCornerRadius="@dimen/radius_m"
+            app:showBorder="@{item.checked}">
+
+            <com.kuaigeglobal.epnova.widget.CropShapeImageView
+                loadThumbnailUri="@{item.data.styleCoverUrl}"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:shapeAppearanceOverlay="@style/roundStyle_r8"
+                tools:srcCompat="@mipmap/ic_launcher" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:layout_marginTop="5dp"
+                android:src="@drawable/ic_vip54"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                style="@style/Text12"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/gradient_top_00_000000_bottom_60_000000_br8"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:paddingVertical="@dimen/spacing_s"
+                android:singleLine="true"
+                android:text="@{item.data.styleName}"
+                android:textColor="?attr/textColor1"
+                app:layout_constraintBottom_toBottomOf="parent"
+                tools:text="日式动漫" />
+        </com.kuaigeglobal.epnova.widget.BorderConstraintLayout>
 
         <ImageView
+            setVisible="@{item.data.isHotConfig()}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="6dp"
-            android:layout_marginTop="5dp"
-            android:src="@drawable/ic_vip54"
-            android:visibility="gone"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            style="@style/Text12"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/gradient_top_00_000000_bottom_60_000000_br8"
-            android:ellipsize="end"
-            android:gravity="center"
-            android:paddingVertical="@dimen/spacing_s"
-            android:singleLine="true"
-            android:text="@{item.data.styleName}"
-            android:textColor="?attr/textColor1"
-            app:layout_constraintBottom_toBottomOf="parent"
-            tools:text="日式动漫" />
-    </com.kuaigeglobal.epnova.widget.BorderConstraintLayout>
+            android:layout_gravity="end"
+            android:layout_marginEnd="4dp"
+            android:src="@drawable/ic_hot" />
+    </FrameLayout>
 </layout>

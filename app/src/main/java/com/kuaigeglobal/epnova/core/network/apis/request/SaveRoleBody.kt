@@ -35,4 +35,7 @@ data class SaveRoleBody(
      * 角色形象提示词（形象表字段）
      */
     val rolePrompt: String?,
+    val source: Int? = 2,//创作步骤标识，用于区分调用来源（如：1=资产管理 2=创作流程 等）
+    val parentAppearanceId: String? = null,//基于某个形象重新生成时传入，为空则视为原始生成
+    val imageUrl: String? = null,//图片地址
 )

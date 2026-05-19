@@ -7,6 +7,8 @@ import com.kuaigeglobal.epnova.base.viewmodel.AppRepositoryViewModel
 import com.kuaigeglobal.epnova.base.viewmodel.ToolbarViewModel
 import com.kuaigeglobal.epnova.common.Constants
 import com.kuaigeglobal.epnova.core.AppRepository
+import com.kuaigeglobal.epnova.core.Config
+import com.kuaigeglobal.epnova.core.network.apis.entity.CreationModelInfo
 import com.kuaigeglobal.epnova.feature.creator.data.DramaGenerateConstants
 import com.nhsd.basic.ext.getResString
 import com.nhsd.basic.utils.Logger
@@ -27,6 +29,13 @@ class StoryEditorViewModel : AppRepositoryViewModel<AppRepository>() {
 
     //当前处于的步骤序号1-5
     val step = MutableLiveData<Int>()
+
+    val dramaCategoryPopupEnabled by lazy { Config.get().isSwitchModelEnable() }
+
+    //当前选择的创作模型
+    val currentCreationModel = MutableLiveData<CreationModelInfo?>()
+    val switchModelEvent = MutableLiveData<Long>()
+
 
     //从1还是从2开始，从2开始就是4步创作流程
     val startFrom = MutableLiveData<Int>()
@@ -128,4 +137,10 @@ class StoryEditorViewModel : AppRepositoryViewModel<AppRepository>() {
         }
         this.step.value = step
     }
+
+    fun showModels(step: Int): Boolean {
+        return step == 4
+    }
+
+
 }

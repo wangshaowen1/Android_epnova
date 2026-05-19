@@ -75,14 +75,11 @@
                         tools:text="《时代之光》第1集"
                         tools:visibility="invisible" />
 
-                    <EditText
+                    <TextView
                         android:id="@+id/inputView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@null"
-                        android:cursorVisible="false"
                         android:enabled="@{!layout.isScriptLoading()}"
-                        android:focusable="false"
                         android:gravity="top|start"
                         android:maxLength="@{layout.maxInputLength}"
                         android:minHeight="200dp"

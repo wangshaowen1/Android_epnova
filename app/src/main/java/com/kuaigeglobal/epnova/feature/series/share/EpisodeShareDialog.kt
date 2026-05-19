@@ -1,16 +1,14 @@
 package com.kuaigeglobal.epnova.feature.series.share
 
-import android.graphics.Bitmap
 import android.view.View
 import androidx.core.os.bundleOf
 import androidx.fragment.app.FragmentManager
 import com.blankj.utilcode.util.ClipboardUtils
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.Constants
-import com.kuaigeglobal.epnova.common.ext.getImageBitmap
 import com.kuaigeglobal.epnova.core.network.apis.entity.ShortDramaInfo
 import com.kuaigeglobal.epnova.databinding.DialogEpisodeShareBinding
-import com.kuaigeglobal.epnova.feature.play.more.DownloadTypeDialog
+import com.kuaigeglobal.epnova.feature.play.more.DownloadMethodDialog
 import com.kuaigeglobal.epnova.feature.settings.report.ReportActivity
 import com.nhsd.basic.BaseBottomPushVMDialogFragment
 import com.nhsd.basic.ext.getParcelableValue
@@ -19,7 +17,7 @@ import com.nhsd.basic.ext.showToast
 /**
  * 单集-分享
  */
-class EpisodeShareDialog : BaseBottomPushVMDialogFragment<DialogEpisodeShareBinding, EpisodeShareViewModel>(), DownloadTypeDialog.DownloadTypeLauncher {
+class EpisodeShareDialog : BaseBottomPushVMDialogFragment<DialogEpisodeShareBinding, EpisodeShareViewModel>(), DownloadMethodDialog.DownloadTypeLauncher {
     companion object {
 
         /**
@@ -136,7 +134,7 @@ class EpisodeShareDialog : BaseBottomPushVMDialogFragment<DialogEpisodeShareBind
         dismissAllowingStateLoss()
     }
 
-    interface ShareLauncher : DownloadTypeDialog.DownloadTypeLauncher {
+    interface ShareLauncher : DownloadMethodDialog.DownloadTypeLauncher {
         fun uploadVideo(watermark: Boolean, onUpload: (url: String) -> Unit)
     }
 }

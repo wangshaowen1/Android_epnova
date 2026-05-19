@@ -5,12 +5,15 @@ import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.base.viewmodel.AppRepositoryViewModel
 import com.kuaigeglobal.epnova.common.Constants
 import com.kuaigeglobal.epnova.core.AppRepository
+import com.kuaigeglobal.epnova.core.Config
+import com.kuaigeglobal.epnova.router.AppRouter
 import com.nhsd.basic.ext.getResString
 
 
 class PowerConsumeConfirmViewModel : AppRepositoryViewModel<AppRepository>() {
     val scene by lazy { mBundle.getInt(Constants.Extra.TYPE) }
     val cost by lazy { mBundle.getInt(Constants.Extra.COST) }
+    val pointPowerDto by lazy { Config.get().appConfig.workPointPowerPopUpDto }
     val title by lazy {
         when (scene) {
             PowerConsumeConfirmDialog.SCENE_GENERATE_ASSETS_IMAGE -> R.string.generate_asset_image.getResString()
@@ -27,5 +30,9 @@ class PowerConsumeConfirmViewModel : AppRepositoryViewModel<AppRepository>() {
 
     fun checkPolicy() {
         checkedPolicy.set(checkedPolicy.get().not())
+    }
+
+    fun powerService() {
+        AppRouter.jump(pointPowerDto?.jumpUri)
     }
 }

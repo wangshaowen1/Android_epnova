@@ -161,6 +161,11 @@ class AppConfigData {
      * APP-跳转小程序地址-导师 20260323新增
      */
     val appJumpMiniProgramAdvisorUrl: String? = null
+
+    /**
+     * 20260512新增作品-算力/权益类弹窗配置（先根据enableSwitch判断开关再跳转url）
+     */
+    val workPointPowerPopUpDto: WorkPointPowerPopUpDto? = null
 }
 
 data class SimpleBannerInfo(
@@ -178,6 +183,13 @@ data class PaymentRanking(
     val status: Int? = null,
     //排序，数字大的在前面
     val short: Int? = null
+)
+
+
+data class WorkPointPowerPopUpDto(
+    val enableSwitch: Int? = null,//是否开启（0-关，1-开）
+    val jumpUri: String? = null,
+    val titleText: String? = null,
 )
 
 /**

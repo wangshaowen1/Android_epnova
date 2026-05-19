@@ -26,3 +26,9 @@ data class RoleSwitchBody(
     val roleId: String? = null,
     val oldRoleId: String? = null,
 ) : UserTokenBody()
+
+class RoleIdPagedBody(
+    val roleId: String? = null,
+    pageNum: Int,
+    pageSize: Int,
+) : PagedBody(pageNum, pageSize)

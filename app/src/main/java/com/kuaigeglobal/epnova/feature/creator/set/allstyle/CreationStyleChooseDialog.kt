@@ -33,8 +33,8 @@ class CreationStyleChooseDialog : BaseBottomPushVMDialogFragment<DialogCreationS
         binding.recyclerView.addItemDecoration(
             GridSpacingItemDecoration(
                 4,
-                10.dp,
-                12.dp
+                4.dp,
+                6.dp
             )
         )
 //        binding.recyclerView.layoutManager = GridLayoutManager(mActivity, 4).apply {

@@ -50,12 +50,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
-                android:maxWidth="160dp"
+                android:maxWidth="120dp"
                 android:maxLines="1"
-                android:hint="@string/untitled_title"
-                android:textColorHint="?attr/textColor4"
                 android:text="@{layout.title}"
                 android:textColor="?attr/textColor3"
+                android:textColorHint="?attr/textColor4"
                 android:textSize="16sp"
                 tools:text="代码纪元：觉醒指令..." />
 
@@ -68,6 +67,29 @@
                 android:importantForAccessibility="no"
                 android:src="@drawable/icon_edit_full_gray"
                 android:visibility="@{(layout.step&lt;=1||(layout.step==2&amp;&amp;layout.model==DramaGenerateConstants.MODEL_STORY))?View.VISIBLE:View.GONE}" />
+
+            <androidx.legacy.widget.Space
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <TextView
+                android:id="@+id/btnModels"
+                setVisible="@{layout.showModels(layout.step)&amp;&amp;layout.currentCreationModel!=null&amp;&amp;layout.dramaCategoryPopupEnabled}"
+                singleClick="@{layout.clickHandler::onClick}"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/spacing_l"
+                android:background="@drawable/fill_color2_stroke_r8"
+                android:drawableEnd="@drawable/icon_arrow_down"
+                android:drawablePadding="4dp"
+                android:gravity="center"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="@dimen/spacing_s"
+                android:text="@{layout.currentCreationModel.configName}"
+                android:textColor="?attr/textColor1"
+                android:textSize="14sp"
+                tools:text="解说漫模型" />
         </LinearLayout>
 
         <include

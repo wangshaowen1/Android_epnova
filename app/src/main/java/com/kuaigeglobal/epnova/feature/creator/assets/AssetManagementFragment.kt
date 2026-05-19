@@ -1,15 +1,23 @@
 package com.kuaigeglobal.epnova.feature.creator.assets
 
+import android.app.Activity
 import android.view.View
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.databinding.Observable
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.kuaigeglobal.epnova.R
+import com.kuaigeglobal.epnova.common.Constants
 import com.kuaigeglobal.epnova.common.ext.applySmartFocusManager
 import com.kuaigeglobal.epnova.core.Events
 import com.kuaigeglobal.epnova.core.Global
 import com.kuaigeglobal.epnova.core.manager.AppEvent
 import com.kuaigeglobal.epnova.core.manager.EventManager
+import com.kuaigeglobal.epnova.core.network.apis.entity.RoleImageInfo
+import com.kuaigeglobal.epnova.core.network.apis.entity.SimpleAsset
+import com.kuaigeglobal.epnova.core.network.apis.entity.SimpleRoleInfo
+import com.kuaigeglobal.epnova.core.network.apis.entity.SimpleSceneInfo
+import com.kuaigeglobal.epnova.core.network.apis.request.QueryAssetBody
 import com.kuaigeglobal.epnova.databinding.FragmentAssetManagementBinding
 import com.kuaigeglobal.epnova.feature.creator.data.DramaGenerateConstants
 import com.kuaigeglobal.epnova.feature.creator.generate.OnBackPressedHandler
@@ -17,8 +25,11 @@ import com.kuaigeglobal.epnova.feature.creator.generate.StoryEditorActivity
 import com.kuaigeglobal.epnova.feature.creator.generate.StoryEditorViewModel
 import com.kuaigeglobal.epnova.feature.mine.child.MyCreationsFragment
 import com.kuaigeglobal.epnova.feature.series.SeriesActivity
+import com.kuaigeglobal.epnova.feature.works.assetmanager.child.AssetSelectActivity
+import com.kuaigeglobal.epnova.feature.works.assetmanager.roleimage.RoleImageSelectActivity
 import com.nhsd.basic.BaseViewModelFragment
 import com.nhsd.basic.bus.observeEvents
+import com.nhsd.basic.ext.getParcelableValue
 import com.nhsd.basic.ext.getParentViewModel
 import com.nhsd.basic.ext.isActive
 import com.nhsd.basic.ext.showToast
@@ -44,6 +55,21 @@ class AssetManagementFragment : BaseViewModelFragment<FragmentAssetManagementBin
     private val layoutManager get() = bindingNullable?.rvAssets?.layoutManager as? LinearLayoutManager
     private val hostVm by lazy { getParentViewModel<StoryEditorViewModel>() }
     val from by lazy { hostVm?.from }
+    val imageSelectLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val simpleAsset = result.data?.getParcelableValue(Constants.Extra.DATA, SimpleAsset::class.java)
+            val assetId = result.data?.getStringExtra(Constants.Extra.ASSET_ID)
+            mRealVM.saveImage(simpleAsset, null, assetId)
+        }
+    }
+
+    val roleImageSelectLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val roleInfo = result.data?.getParcelableValue(Constants.Extra.DATA, SimpleRoleInfo::class.java)
+            val roleImageInfo = result.data?.getParcelableValue(Constants.Extra.ROLE_IMAGE, RoleImageInfo::class.java)
+            mRealVM.saveImage(roleInfo, roleImageInfo)
+        }
+    }
 
     override fun onPrepareView() {
         super.onPrepareView()
@@ -69,6 +95,19 @@ class AssetManagementFragment : BaseViewModelFragment<FragmentAssetManagementBin
             }
         })
         EventManager.onAppTrack(AppEvent.SF_VIEW_ASSET_MANAGEMENT_PAGE)
+        mRealVM.onAssetImageSelectEvent = { vm ->
+            val asset = vm.data.get()
+            val bizType = when (asset) {
+                is SimpleRoleInfo -> QueryAssetBody.BIZ_TYPE_ROLE
+                is SimpleSceneInfo -> QueryAssetBody.BIZ_TYPE_SCENE
+                else -> QueryAssetBody.BIZ_TYPE_PROP
+            }
+            if (bizType == QueryAssetBody.BIZ_TYPE_ROLE) {
+                roleImageSelectLauncher.launch(RoleImageSelectActivity.getIntent(activity, mRealVM.workId, asset as? SimpleRoleInfo, true))
+            } else {
+                imageSelectLauncher.launch(AssetSelectActivity.getIntent(activity, bizType, mRealVM.workId, asset?.assetAppearanceId, asset?.assetId))
+            }
+        }
         observeEvents {
             on<Events.RoleGenerateEvent> { if (isActive) mRealVM.onRoleGenerate(it) }
             on<Events.SceneGenerateEvent> { if (isActive) mRealVM.onSceneGenerate(it) }

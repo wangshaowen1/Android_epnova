@@ -287,6 +287,8 @@
         <activity android:name=".feature.settings.lang.LanguagesActivity" android:screenOrientation="portrait" />
         <activity android:name=".feature.home.search.SearchActivity" android:windowSoftInputMode="stateVisible|adjustPan" android:screenOrientation="portrait"/>
         <activity android:name=".feature.rewards.RewardsActivity" android:screenOrientation="portrait" />
+        <activity android:name=".feature.works.assetmanager.roleimage.RoleImageSelectActivity" />
+        <activity android:name=".feature.works.assetmanager.child.AssetSelectActivity" />
     </application>
     <queries>
         <intent>

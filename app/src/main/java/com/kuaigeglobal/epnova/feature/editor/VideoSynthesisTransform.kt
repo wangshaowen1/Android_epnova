@@ -7,6 +7,7 @@ import com.kuaige.videoedit.ffmpeg.FFmpegCommandBuilder
 import com.kuaige.videoedit.ffmpeg.FFmpegHelper
 import com.kuaige.videoedit.resource.Resource
 import java.io.File
+import kotlin.div
 
 /**
  * 音乐视频 (FFmpeg 实现)
@@ -17,7 +18,7 @@ class VideoSynthesisTransform(
 
     override val resourceManager by lazy {
         VideoSynthesisResourceManager(storyboards.mapNotNull { storyboard ->
-            storyboard.videoUrl?.let { VideoStoryboardResource(it, storyboard, RetrofitClient.httpClient) }
+            storyboard.videoUrl?.let { VideoStoryboardResource(it, storyboard, false, RetrofitClient.httpClient) }
         })
     }
 
@@ -29,8 +30,8 @@ class VideoSynthesisTransform(
             ?: throw kotlin.IllegalStateException("Video materials missing")
         val builder = FFmpegCommandBuilder()
         val fileListFile = generateConcatFile(videos, outputFile)
-        builder.addInput(fileListFile.absolutePath, "-f concat -safe 0")
-        val extra = "-c:v libx264 -preset veryfast -r 30 -pix_fmt yuv420p"
+        builder.addInput(fileListFile.absolutePath, "-fflags +genpts -f concat -safe 0")
+        val extra = "-vf 'fps=30' -c:v libx264 -preset veryfast -c:a aac -b:a 128k -pix_fmt yuv420p"
         val duration = videos.sumOf { FFmpegHelper.parseDuration(it.file.absolutePath) } / 1000
         return builder.build(outputFile.absolutePath, extra) to duration
     }

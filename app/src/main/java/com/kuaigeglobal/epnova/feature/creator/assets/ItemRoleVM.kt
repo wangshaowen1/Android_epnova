@@ -13,6 +13,7 @@ import com.kuaigeglobal.epnova.core.network.apis.ApiFactory
 import com.kuaigeglobal.epnova.core.network.apis.ApiResponse
 import com.kuaigeglobal.epnova.core.network.apis.entity.ReferenceImageInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.SimpleRoleInfo
+import com.kuaigeglobal.epnova.core.network.apis.request.AssetUnlinkBody
 import com.kuaigeglobal.epnova.core.network.apis.request.GenerateAssetBody
 import com.kuaigeglobal.epnova.core.network.apis.request.IdsBody
 import com.kuaigeglobal.epnova.core.network.apis.request.SaveRoleBody
@@ -27,6 +28,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlin.text.get
+import kotlin.text.set
+import kotlin.toString
 
 class ItemRoleVM(
     workId: String?,
@@ -39,11 +43,11 @@ class ItemRoleVM(
     override val assetType: String = R.string.roles.getResString()
     override val assetDescHint: String = R.string.role_description.getResString()
     override val assetNameHint: String = R.string.role_name.getResString()
-    override val generateButtonText: String = R.string.generate.getResString()
+    override val generateButtonText: String = R.string.generate_role.getResString()
 
     override fun clickGenerate() {
         if (status.get() == 1) return
-        val rolePrompt = if (editingAssetDesc.get()) editingAssetDescText else assetDesc.get()
+        val rolePrompt = assetDesc.get()
         val roleName = if (editingAssetName.get()) editingAssetNameText else assetName.get()
         if (rolePrompt.isNullOrEmpty()) {
             showToast(R.string.please_enter_role_description)
@@ -202,7 +206,7 @@ class ItemRoleVM(
     }
 
     override suspend fun delete(): ApiResponse<Any> {
-        return withContext(Dispatchers.IO) { ApiFactory.apiService.workAssetRoleDelete(IdsBody(null, data.get()?.appearanceId)) }
+        return withContext(Dispatchers.IO) { ApiFactory.apiService.workAssetRoleDelete(AssetUnlinkBody(workId, storyId, data.get()?.assetId)) }
     }
 
     override fun loopGenStatus() {
@@ -220,6 +224,11 @@ class ItemRoleVM(
                 }
                 data.notifyChange()
                 taskStatus?.genStatus?.let { updateStatus(it) }
+                if (status.get() == 3) {
+                    withContext(Dispatchers.Main) {
+                        (taskStatus?.errorMsg ?: R.string.asset_generation_partial_failure.getResString()).showToast()
+                    }
+                }
             }
             if (status.get() == 1) {
                 delay(3000)

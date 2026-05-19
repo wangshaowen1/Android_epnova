@@ -9,13 +9,23 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
+    <TextView
+        android:id="@+id/aiChip"
+        style="@style/TextAppearance.AIChip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical|end"
+        android:layout_marginHorizontal="@dimen/spacing_l"
+        android:layout_marginBottom="80dp"
+        android:visibility="gone" />
+
     <ProgressBar
-        android:visibility="gone"
         android:id="@+id/photo_full_progress"
+        style="@style/progress_bar"
         android:layout_width="320dp"
         android:layout_height="320dp"
         android:layout_gravity="center"
         android:padding="142dp"
-        style="@style/progress_bar"/>
+        android:visibility="gone" />
 
 </FrameLayout>

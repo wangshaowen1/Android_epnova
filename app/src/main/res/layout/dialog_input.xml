@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="layout"
+            type="com.kuaigeglobal.epnova.feature.editor.info.InputViewModel" />
+
+        <import type="android.text.TextUtils" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_color2_tr20"
+        android:paddingBottom="20dp">
+
+        <TextView
+            android:id="@+id/tvTitle"
+            style="@style/Text16"
+            setTextBold="@{true}"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_l"
+            android:text="@{layout.title}"
+            android:textColor="?attr/textColor1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="修改故事简介" />
+
+        <TextView
+            android:id="@+id/tvSubTitle"
+            style="@style/Text12"
+            android:layout_width="0dp"
+            android:layout_marginHorizontal="@dimen/spacing_l"
+            app:layout_constraintHorizontal_bias="0"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="17dp"
+            android:text="@string/content_restriction_warning"
+            android:textColor="?attr/textColor4"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvTitle" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="355dp"
+            android:layout_marginHorizontal="@dimen/spacing_l"
+            android:layout_marginTop="@dimen/spacing_m"
+            android:layout_marginBottom="@dimen/spacing_m"
+            android:background="@drawable/bg_fill_color_1_r8"
+            android:orientation="vertical"
+            app:layout_constraintTop_toBottomOf="@id/tvSubTitle">
+
+            <TextView
+                setVisible="@{!TextUtils.isEmpty(layout.subTitle)}"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/spacing_m"
+                android:text="@{layout.subTitle}"
+                android:textColor="?attr/textColor2"
+                android:textSize="14sp"
+                tools:text="第1集  代码觉醒" />
+
+            <View
+                setVisible="@{!TextUtils.isEmpty(layout.subTitle)}"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginHorizontal="@dimen/spacing_m"
+                android:background="?attr/borderColor2" />
+
+            <com.kuaigeglobal.epnova.widget.CounterInputLayout
+                android:id="@+id/inputView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="top|start"
+                android:maxLength="@{layout.maxLength}"
+                app:inputBottomMargin="24dp"
+                app:inputCounterGravity="right"
+                app:inputCounterRightMargin="0dp"
+                app:inputCounterTextColor="?attr/textColor4"
+                app:inputCounterTextSize="12sp"
+                app:inputCounterVisible="true"
+                app:inputHint="@string/enter_content"
+                app:inputHorizontalPadding="@dimen/spacing_m"
+                app:inputMaxLength="500"
+                app:inputTextColor="?attr/textColor2"
+                app:inputTextColorHint="?attr/textColor4"
+                app:inputTextSize="14sp"
+                app:inputVerticalPadding="@dimen/spacing_m" />
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|end"
+            android:layout_marginStart="@dimen/spacing_l"
+            android:padding="3dp"
+            android:src="@drawable/icon_close"
+            app:layout_constraintBottom_toBottomOf="@id/tvTitle"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tvTitle" />
+
+        <Button
+            android:id="@+id/btnOk"
+            style="@style/Button.Bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/spacing_l"
+            android:background="@drawable/bg_theme_color1_r50"
+            android:gravity="center"
+            android:paddingHorizontal="18dp"
+            android:paddingVertical="4dp"
+            android:text="@string/confirm_ok"
+            android:textColor="?attr/textColor1"
+            android:textStyle="bold"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="@id/tvTitle"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tvTitle" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

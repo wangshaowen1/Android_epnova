@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="layout"
+            type="com.kuaigeglobal.epnova.feature.works.assetmanager.roleimage.RoleImageSelectViewModel" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <include
+            android:id="@+id/toolbar"
+            layout="@layout/view_model_toolbar"
+            app:toolbar="@{layout.mToolbarVM}" />
+
+        <com.scwang.smart.refresh.layout.SmartRefreshLayout
+            android:id="@+id/srl"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:overScrollMode="never"
+            app:srlAccentColor="@color/white"
+            app:srlEnablePreviewInEditMode="true"
+            app:srlPrimaryColor="@color/transparent">
+
+            <com.kuaigeglobal.epnova.widget.LoadStateViewHolder
+                android:id="@+id/lsv"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:noDataSrc="@drawable/img_empty"
+                app:noData="@string/no_assets_start_creating">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:clipToPadding="false"
+                    android:overScrollMode="never"
+                    android:paddingHorizontal="9dp"
+                    android:paddingVertical="6dp"
+                    android:scrollbars="none"
+                    app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                    app:spanCount="3"
+                    tools:itemCount="3"
+                    tools:listitem="@layout/item_asset_role" />
+            </com.kuaigeglobal.epnova.widget.LoadStateViewHolder>
+        </com.scwang.smart.refresh.layout.SmartRefreshLayout>
+
+        <LinearLayout
+            setVisible="@{layout.selectModel&amp;&amp;!layout.isDataEmpty()}"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/spacing_l"
+            android:layout_marginBottom="34dp">
+
+            <Button
+                android:id="@+id/btnCancel"
+                style="@style/Button.Bold.Cancel"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:text="@string/cancel" />
+
+            <Button
+                android:id="@+id/btnConfirm"
+                style="@style/Button.Bold"
+                android:layout_width="0dp"
+                android:layout_marginStart="@dimen/spacing_l"
+                android:layout_weight="1"
+                android:text="@string/confirm_ok" />
+        </LinearLayout>
+    </LinearLayout>
+</layout>

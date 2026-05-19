@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.view.marginEnd
 import androidx.core.view.marginStart
+import androidx.fragment.app.FragmentManager
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.Constants
 import com.kuaigeglobal.epnova.common.ext.applySmartFocusManager
@@ -16,10 +17,14 @@ import com.kuaigeglobal.epnova.core.Events
 import com.kuaigeglobal.epnova.core.manager.AppEvent
 import com.kuaigeglobal.epnova.core.manager.EventManager
 import com.kuaigeglobal.epnova.core.network.apis.entity.EpisodeInfo
+import com.kuaigeglobal.epnova.core.network.apis.entity.SimpleStoryboardInfo
 import com.kuaigeglobal.epnova.databinding.ActivityEditStoryboardVideoBinding
 import com.kuaigeglobal.epnova.feature.creator.data.DramaGenerateConstants
 import com.kuaigeglobal.epnova.feature.creator.generate.StoryEditorActivity
+import com.kuaigeglobal.epnova.feature.download.DownloadingDialog
+import com.kuaigeglobal.epnova.feature.download.DownloadingViewModel
 import com.kuaigeglobal.epnova.feature.mine.child.MyCreationsFragment
+import com.kuaigeglobal.epnova.feature.play.more.DownloadMethodDialog
 import com.kuaigeglobal.epnova.feature.series.SeriesActivity
 import com.nhsd.basic.BaseViewModelActivity
 import com.nhsd.basic.bus.observeEvents
@@ -29,7 +34,7 @@ import com.nhsd.basic.ext.showToast
 /**
  * 编辑分镜视频
  */
-class EditStoryboardVideoActivity : BaseViewModelActivity<ActivityEditStoryboardVideoBinding, EditStoryboardVideoViewModel>() {
+class EditStoryboardVideoActivity : BaseViewModelActivity<ActivityEditStoryboardVideoBinding, EditStoryboardVideoViewModel>(), DownloadMethodDialog.DownloadTypeLauncher, DownloadingViewModel.DownloadStatusHolderFactory {
     companion object {
         @JvmStatic
         fun launchIntent(
@@ -60,6 +65,8 @@ class EditStoryboardVideoActivity : BaseViewModelActivity<ActivityEditStoryboard
     }
 
     val from by lazy { intent?.getStringExtra(Constants.Extra.FROM_PAGE) }
+    private var downloadStoryboard: SimpleStoryboardInfo? = null
+    private var downloadingDialog: DownloadingDialog? = null
 
     override fun onBackPressed() {
         mRealVM.getStoryInfo {
@@ -117,6 +124,16 @@ class EditStoryboardVideoActivity : BaseViewModelActivity<ActivityEditStoryboard
                 }
             }
         }
+        mRealVM.downloading.observe(this) {
+            if (it) {
+                if (downloadingDialog == null) {
+                    downloadingDialog = DownloadingDialog.show(this)
+                }
+            } else {
+                downloadingDialog?.dismissAllowingStateLoss()
+                downloadingDialog = null
+            }
+        }
         observeEvents {
             on<Events.StoryboardSavedEvent> {
                 mRealVM.updateStoryboard(it.storyboardInfo)
@@ -155,10 +172,11 @@ class EditStoryboardVideoActivity : BaseViewModelActivity<ActivityEditStoryboard
                     return
                 }
                 if (current.videoGenerated) {
-                    requestRead2WritePermissions { granted ->
-                        if (granted) {
-                            current.videoUrl?.let { mRealVM.download(current, it) }
-                        }
+                    downloadStoryboard = current
+                    if (current.hasWatermark == true) {
+                        downloadVideo(false)
+                    } else {
+                        DownloadMethodDialog.show(this@EditStoryboardVideoActivity)
                     }
                 }
             }
@@ -175,4 +193,16 @@ class EditStoryboardVideoActivity : BaseViewModelActivity<ActivityEditStoryboard
         }
     }
 
+    override fun getStatusHolder(): DownloadingViewModel.DownloadStatusHolder? = mRealVM
+
+    override fun fragmentManager(): FragmentManager? = supportFragmentManager
+
+    override fun downloadVideo(watermark: Boolean) {
+        requestRead2WritePermissions { granted ->
+            if (granted) {
+                val current = downloadStoryboard ?: return@requestRead2WritePermissions
+                current.videoUrl?.let { mRealVM.download(current, it, watermark) }
+            }
+        }
+    }
 }

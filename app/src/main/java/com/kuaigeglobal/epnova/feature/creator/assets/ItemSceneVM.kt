@@ -13,8 +13,8 @@ import com.kuaigeglobal.epnova.core.network.apis.ApiFactory
 import com.kuaigeglobal.epnova.core.network.apis.ApiResponse
 import com.kuaigeglobal.epnova.core.network.apis.entity.ReferenceImageInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.SimpleSceneInfo
+import com.kuaigeglobal.epnova.core.network.apis.request.AssetUnlinkBody
 import com.kuaigeglobal.epnova.core.network.apis.request.GenerateAssetBody
-import com.kuaigeglobal.epnova.core.network.apis.request.IdsBody
 import com.kuaigeglobal.epnova.core.network.apis.request.SaveSceneBody
 import com.kuaigeglobal.epnova.core.network.apis.request.TaskIdBody
 import com.kuaigeglobal.epnova.core.response
@@ -39,11 +39,11 @@ class ItemSceneVM(
     override val assetType: String = R.string.scenes.getResString()
     override val assetDescHint: String = R.string.scene_description.getResString()
     override val assetNameHint: String = R.string.scene_name.getResString()
-    override val generateButtonText: String = R.string.generate.getResString()
+    override val generateButtonText: String = R.string.generate_scene.getResString()
 
     override fun clickGenerate() {
         if (status.get() == 1) return
-        val scenePrompt = if (editingAssetDesc.get()) editingAssetDescText else assetDesc.get()
+        val scenePrompt = assetDesc.get()
         val sceneName = if (editingAssetName.get()) editingAssetNameText else assetName.get()
         if (scenePrompt.isNullOrEmpty()) {
             showToast(R.string.please_enter_scene_description)
@@ -201,7 +201,7 @@ class ItemSceneVM(
     }
 
     override suspend fun delete(): ApiResponse<Any> {
-        return withContext(Dispatchers.IO) { ApiFactory.apiService.workAssetSceneDelete(IdsBody(null, data.get()?.appearanceId)) }
+        return withContext(Dispatchers.IO) { ApiFactory.apiService.workAssetSceneDelete(AssetUnlinkBody(workId, storyId, data.get()?.assetId)) }
     }
 
     override fun loopGenStatus() {

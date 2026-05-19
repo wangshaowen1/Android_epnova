@@ -29,4 +29,6 @@ data class TaskStatusInfo(
      * 查询单个是直接返回结果,比如资产、分镜图片url等
      */
     val result: String? = null,
+
+    val errorMsg: String? = null,
 )

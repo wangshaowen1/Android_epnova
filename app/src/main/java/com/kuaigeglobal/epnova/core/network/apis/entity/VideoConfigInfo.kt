@@ -21,8 +21,13 @@ data class VideoConfigInfo(
     //扩展配置（视频风格图片url）
     val extraConfig: String? = null,
     //排序号
-    val sortNo: Int? = null
+    val sortNo: Int? = null,
+    val isDefault: Int? = null,//是否默认(0-否,1-是)
 ) : Parcelable {
+
+    fun isDefaultConfig(): Boolean {
+        return isDefault == 1
+    }
     fun isCustomInput(): Boolean {
         return configCode == MODE_CUSTOM
     }
@@ -50,8 +55,18 @@ data class VideoStyleConfigInfo(
     val styleCode: String? = null,
     val styleCoverUrl: String? = null,
     val styleName: String? = null,
-    val stylePrompt: String? = null
-) : Parcelable
+    val stylePrompt: String? = null,
+    val isDefault: Int? = null,//是否默认(0-否,1-是)
+    val isHot: Int? = null,//是否热门(0-否,1-是)
+) : Parcelable{
+    fun isDefaultConfig(): Boolean {
+        return isDefault == 1
+    }
+
+    fun isHotConfig(): Boolean {
+        return isHot == 1
+    }
+}
 
 //配置类型(2-故事集数,3-视频比例,4-视频风格)
 @Parcelize

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="item"
+            type="com.kuaigeglobal.epnova.feature.works.assetmanager.child.ItemAssetsChildVm" />
+
+        <import type="android.view.View" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        singleClick="@{(v)->item.onItemClick()}"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:paddingBottom="@dimen/spacing_m"
+        tools:layout_width="107dp">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/view"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="@drawable/fill_color1_r8"
+            android:scaleType="centerCrop"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintTop_toTopOf="parent"
+            app:shapeAppearance="@style/roundStyle_r8" />
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/iv_image"
+            loadThumbnailUri="@{item.data.assetImage}"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/img_default_cover_1_1"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintTop_toTopOf="parent"
+            app:shapeAppearance="@style/roundStyle_r8" />
+
+        <TextView
+            android:id="@+id/tv_folder_name"
+            style="@style/Text12"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_s"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:maxLines="1"
+            android:text="@{item.data.assetName}"
+            android:textColor="?attr/textColor2"
+            app:layout_constraintTop_toBottomOf="@id/iv_image"
+            tools:text="斗罗大陆:修罗..." />
+
+        <View
+            setVisible="@{item.checked}"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/theme_color1_stroke_r8"
+            app:layout_constraintBottom_toBottomOf="@id/iv_image"
+            app:layout_constraintEnd_toEndOf="@id/iv_image"
+            app:layout_constraintStart_toStartOf="@id/iv_image"
+            app:layout_constraintTop_toTopOf="@id/iv_image" />
+
+        <ImageView
+            setVisible="@{item.checked}"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/selected_box2"
+            app:layout_constraintBottom_toBottomOf="@id/iv_image"
+            app:layout_constraintEnd_toEndOf="@id/iv_image" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

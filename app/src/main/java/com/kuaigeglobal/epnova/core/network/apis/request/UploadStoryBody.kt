@@ -36,7 +36,7 @@ data class WorkTaskData(
 /**
  * {
  *         "workId": "作品ID",
- *         "genStatus": "[枚举]生成状态 [0=待生成 1=生成中 2=成功 3=失败 4=算力不足，请充值 5=审核失败]
+ *         "genStatus": "[枚举]生成状态 [0=待生成 1=生成中 2=成功 3=失败 4=算力不足，请充值 5=审核失败  6=无算力-生成草稿]
  *         "result": "生成结果（作品梗概内容）"
  *     }
  */
@@ -62,11 +62,18 @@ data class PollSummaryData(
     fun isSensitive(): Boolean {
         return genStatus == 5
     }
+
+    /**
+     * 无算力，弹出充值弹窗
+     */
+    fun isNoPower(): Boolean {
+        return genStatus == 6
+    }
 }
 
 @Parcelize
 data class RollNovelSummaryResult(
-    val workDesc: String? = null,
+    var workDesc: String? = null,
     val workTitle: String? = null,
     val structureList: List<RollNovelStructure>? = null,
 ) : Parcelable{
@@ -93,7 +100,7 @@ data class RollNovelSummaryResult(
 data class RollNovelStructure(
     val id: String? = null,
     val storyId: String? = null,
-    val storySummary: String? = null,
+    var storySummary: String? = null,
     val storyTitle: String? = null
 ) : Parcelable
 

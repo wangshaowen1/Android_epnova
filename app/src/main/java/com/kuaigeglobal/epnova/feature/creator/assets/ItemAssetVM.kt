@@ -3,10 +3,16 @@ package com.kuaigeglobal.epnova.feature.creator.assets
 import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableInt
+import com.blankj.utilcode.util.StringUtils.getString
+import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.base.item.AppItemViewModel
 import com.kuaigeglobal.epnova.core.network.apis.ApiResponse
 import com.kuaigeglobal.epnova.core.network.apis.entity.ReferenceImageInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.SimpleAsset
+import com.kuaigeglobal.epnova.core.network.apis.entity.SimplePropInfo
+import com.kuaigeglobal.epnova.core.network.apis.entity.SimpleRoleInfo
+import com.kuaigeglobal.epnova.core.network.apis.entity.SimpleSceneInfo
+import com.kuaigeglobal.epnova.feature.editor.info.InputDialog
 import com.kuaigeglobal.epnova.widget.RecyclerEditText
 import kotlinx.coroutines.Job
 
@@ -24,7 +30,7 @@ abstract class ItemAssetVM<Item : SimpleAsset>(
 ) : AppItemViewModel<Item>(data) {
 
     /**
-     * -1=新创建 0=待生成 1=生成中 2=成功 3=失败
+     * -1=新创建 0=待生成 1=生成中 2=成功 3=失败 10=取消设置（和待生成0一样处理）
      */
     val status by lazy { ObservableInt(data?.status ?: -1) }
 
@@ -60,10 +66,20 @@ abstract class ItemAssetVM<Item : SimpleAsset>(
     protected var loopGenStatusJob: Job? = null
     protected var cleared = false
 
+    val hint = ObservableField<String>()
+
     init {
         if (status.get() == 1) {
             loopGenStatus()
         }
+        hint.set(
+            when (data) {
+                is SimpleRoleInfo -> getString(R.string.set_character_appearance)
+                is SimpleSceneInfo -> getString(R.string.set_scene)
+                is SimplePropInfo -> getString(R.string.set_prop)
+                else -> ""
+            }
+        )
     }
 
     fun clear() {
@@ -77,20 +93,23 @@ abstract class ItemAssetVM<Item : SimpleAsset>(
     }
 
     fun editAssetDesc() {
-        assetDescInputListener.set(object : RecyclerEditText.OnTextInputListener {
-            override fun onTextInput(text: String) {
-                editingAssetDescText = text
-            }
-        })
-        editingAssetDesc.set(true)
-        editingAssetDescText = assetDesc.get()
+        InputDialog.show(InputDialog.TYPE_ASSET_DESC, content = assetDesc.get()?.toString()) {
+            assetDesc.set(it)
+        }
+//        assetDescInputListener.set(object : RecyclerEditText.OnTextInputListener {
+//            override fun onTextInput(text: String) {
+//                editingAssetDescText = text
+//            }
+//        })
+//        editingAssetDesc.set(true)
+//        editingAssetDescText = assetDesc.get()
     }
 
-    open fun exitEditAssetDesc() {
-        assetDescInputListener.set(null)
-        editingAssetDesc.set(false)
-        assetDesc.set(editingAssetDescText)
-    }
+//    open fun exitEditAssetDesc() {
+//        assetDescInputListener.set(null)
+//        editingAssetDesc.set(false)
+//        assetDesc.set(editingAssetDescText)
+//    }
 
     fun editAssetName() {
         assetNameInputListener.set(object : RecyclerEditText.OnTextInputListener {
@@ -142,6 +161,12 @@ abstract class ItemAssetVM<Item : SimpleAsset>(
 
     fun updateStatus(status: Int) {
         this.status.set(status)
+        onItemChanged()
+    }
+
+    fun updateStatus(status: Int, imageUrl: String?) {
+        this.status.set(status)
+        assetImage.set(imageUrl)
         onItemChanged()
     }
 

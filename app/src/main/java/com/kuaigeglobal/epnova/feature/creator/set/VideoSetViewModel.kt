@@ -1,12 +1,10 @@
 package com.kuaigeglobal.epnova.feature.creator.set
 
-import android.view.KeyEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import androidx.appcompat.widget.AppCompatEditText
-import androidx.core.widget.doAfterTextChanged
 import com.blankj.utilcode.util.KeyboardUtils
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.base.RecyclerViewVM
@@ -57,11 +55,11 @@ class VideoSetViewModel : AppRepositoryViewModel<AppRepository>() {
                 episodeVms.add(initEpisodeVm(it))
             }
         }
-        checkedEpisodeSet?.checked?.set(false)
-        checkedEpisodeSet = episodeVms.maxByOrNull {//找最大的默认
-            it.data.get()?.configValue?.toIntOrNull() ?: Int.MIN_VALUE
-        }
-        checkedEpisodeSet?.checked?.set(true)
+//        checkedEpisodeSet?.checked?.set(false)
+//        checkedEpisodeSet = episodeVms.maxByOrNull {//找最大的默认
+//            it.data.get()?.configValue?.toIntOrNull() ?: Int.MIN_VALUE
+//        }
+//        checkedEpisodeSet?.checked?.set(true)
 
         configsData?.ratioItemVoList?.forEach {
             ratioVms.add(initRatioVm(it))
@@ -73,6 +71,10 @@ class VideoSetViewModel : AppRepositoryViewModel<AppRepository>() {
 
     fun initEpisodeVm(ratio: VideoConfigInfo): ItemVideoConfigVm {
         return ItemVideoConfigVm(ratio).apply {
+            if (ratio.isDefaultConfig()) {
+                checked.set(true)
+                checkedEpisodeSet = this
+            }
             onItemClick.value = { view ->
                 if (checkedEpisodeSet != this) {
                     checkedEpisodeSet?.checked?.set(false)
@@ -128,7 +130,7 @@ class VideoSetViewModel : AppRepositoryViewModel<AppRepository>() {
 
     fun initRatioVm(ratio: VideoConfigInfo): ItemVideoConfigVm {
         return ItemVideoConfigVm(ratio).apply {
-            if (checkedRatio == null) {
+            if (ratio.isDefaultConfig()) {
                 checked.set(true)
                 checkedRatio = this
             }
@@ -144,7 +146,7 @@ class VideoSetViewModel : AppRepositoryViewModel<AppRepository>() {
 
     fun initStyleVm(info: VideoStyleConfigInfo): ItemCreationStyleVm {
         return ItemCreationStyleVm(info).apply {
-            if (checkedStyle == null) {
+            if (info.isDefaultConfig()) {
                 checked.set(true)
                 checkedStyle = this
             }

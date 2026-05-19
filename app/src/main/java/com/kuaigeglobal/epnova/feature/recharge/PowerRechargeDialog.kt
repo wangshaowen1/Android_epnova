@@ -23,7 +23,7 @@ import androidx.lifecycle.lifecycleScope
 
 class PowerRechargeDialog : BaseBottomPushVMDialogFragment<DialogRechargePowerBinding, MyBalanceViewModel>() {
 
-    var onDismissCallback: (() -> Unit)? = null
+    var onDismissCallback: ((Boolean) -> Unit)? = null
     var onRechargeSuccessCallback: (() -> Unit)? = null
 
     companion object {
@@ -44,8 +44,9 @@ class PowerRechargeDialog : BaseBottomPushVMDialogFragment<DialogRechargePowerBi
         fun show(
             thisEpisode: Int? = null,
             showToast: Boolean = false,
+            toastMessage: String?=null,
             onRechargeSuccess: (() -> Unit)? = null,
-            onDismiss: (() -> Unit)? = null
+            onDismiss: ((Boolean) -> Unit)? = null
         ) {
             (topActivity as? FragmentActivity)?.supportFragmentManager?.let {
                 if (it.fragments.any { fragment -> fragment is PowerRechargeDialog }) return
@@ -57,15 +58,17 @@ class PowerRechargeDialog : BaseBottomPushVMDialogFragment<DialogRechargePowerBi
                     onRechargeSuccessCallback = onRechargeSuccess
                 }.show(it)
                 if (showToast) {
-                    showToast(R.string.insufficient_balance_please_recharge)
+                    toastMessage?.showToast() ?: showToast(R.string.insufficient_balance_please_recharge)
                 }
             }
         }
     }
 
+    private var isPaid = false
+
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
-        onDismissCallback?.invoke()
+        onDismissCallback?.invoke(isPaid)
     }
 
     override fun onPrepareView() {
@@ -75,6 +78,7 @@ class PowerRechargeDialog : BaseBottomPushVMDialogFragment<DialogRechargePowerBi
         viewLifecycleOwner.lifecycleScope.launch {
             mRealVM.purchaseEvent.collect { result ->
                 if (result is PurchaseResult.Success) {
+                    isPaid = true
                     onDismissCallback = null
                     dismissAllowingStateLoss()
                     onRechargeSuccessCallback?.invoke()

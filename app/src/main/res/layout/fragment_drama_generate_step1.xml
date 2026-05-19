@@ -28,8 +28,8 @@
             android:orientation="vertical">
 
             <androidx.core.widget.NestedScrollView
-                android:layout_width="match_parent"
                 isScrollable="@{!layout.isSummaryLoading()}"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
                 <LinearLayout
@@ -54,7 +54,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/spacing_m"
-                        android:text="@{layout.storySummaryResult.result.workDesc}"
                         android:textColor="?attr/textColor3"
                         android:visibility="@{!layout.isSummaryLoading?View.VISIBLE:View.GONE}"
                         tools:text="唐三在武魂觉醒仪式上，意外觉醒出被视为“废武魂”的蓝银草，却暗中展现出不寻常的天赋..." />
@@ -83,15 +82,18 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/spacing_m"
-                            android:text="@{layout.storySummaryResult.toastTextProgress}"
+                            android:layout_marginBottom="@dimen/spacing_s"
+                            android:text="@{layout.isBalanceFail ? @string/balance_fail_title : layout.storySummaryResult.toastTextProgress}"
                             android:textColor="?attr/textColor1"
+                            android:textStyle="normal"
                             tools:text="正在读取小说内容..." />
 
                         <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/spacing_m"
-                            android:gravity="center">
+                            android:layout_marginTop="@dimen/spacing_xs"
+                            android:gravity="center"
+                            android:visibility="@{layout.isBalanceFail ? View.GONE : View.VISIBLE}">
 
                             <TextView
                                 style="@style/Text13"
@@ -106,7 +108,6 @@
                                 android:layout_height="wrap_content"
                                 android:text="@{layout.storySummaryResult.toastTextTime}"
                                 android:textColor="?attr/textColor1"
-                                android:textStyle="bold"
                                 tools:text="12-15分钟" />
                         </LinearLayout>
 
@@ -114,9 +115,19 @@
                             style="@style/Text13"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
-                            android:text="@string/ai_generation_continues_on_exit"
-                            android:textColor="?attr/textColor4" />
+                            android:layout_marginTop="@dimen/spacing_xs"
+                            android:text="@{layout.isBalanceFail ? @string/balance_fail_hint : @string/ai_generation_continues_on_exit}"
+                            android:textColor="?attr/textColor4"
+                            tools:text="@string/ai_generation_continues_on_exit" />
+
+                        <Button
+                            android:id="@+id/btnRecharge"
+                            style="@style/Button.Bold"
+                            android:layout_width="match_parent"
+                            android:layout_marginHorizontal="@dimen/spacing_l"
+                            android:layout_marginTop="@dimen/spacing_m"
+                            android:text="@string/top_up_now"
+                            android:visibility="@{layout.isBalanceFail ? View.VISIBLE : View.GONE}" />
                     </LinearLayout>
 
                     <TextView
@@ -201,6 +212,7 @@
                     android:text="@string/regenerate"
                     android:textSize="12sp" />
             </LinearLayout>
+
         </ViewAnimator>
 
         <FrameLayout

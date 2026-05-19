@@ -21,6 +21,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
+import kotlin.text.get
+import kotlin.text.set
 
 class ItemStoryboardVM(
     /**
@@ -102,7 +104,9 @@ class ItemStoryboardVM(
                 },
                 error = {
                     this?.msg?.showToast()
-                    data.get()?.genStatusVideo = preStatus
+                    val item = data.get()?.copy()
+                    item?.genStatusVideo = preStatus
+                    data.set(item)
                 })
         }
     }
@@ -118,6 +122,11 @@ class ItemStoryboardVM(
                 val taskStatus = withContext(Dispatchers.IO) { ApiFactory.apiService.workStoryboardSingleStatus(TaskIdBody(taskId, 72)).data }
                 storyboard.genStatusVideo = taskStatus?.genStatus
                 storyboard.videoUrl = taskStatus?.result
+                if (taskStatus?.genStatus == 3) {
+                    withContext(Dispatchers.Main) {
+                        taskStatus.errorMsg?.showToast()
+                    }
+                }
                 data.notifyChange()
             }
             if (storyboard.videoGenerating) {

@@ -22,7 +22,9 @@ import com.kuaigeglobal.epnova.core.network.apis.entity.RewardAdTaskListData
 import com.kuaigeglobal.epnova.core.network.apis.entity.RewardCheckInListData
 import com.kuaigeglobal.epnova.core.network.apis.entity.RewardCheckInReportData
 import com.kuaigeglobal.epnova.core.network.apis.entity.AdMobPreportData
+import com.kuaigeglobal.epnova.core.network.apis.entity.CreationModelInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.ResultAdPollData
+import com.kuaigeglobal.epnova.core.network.apis.entity.RoleImageInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.StoryUnlockInfoData
 import com.kuaigeglobal.epnova.core.network.apis.entity.StoryUnlockPreloadData
 import com.kuaigeglobal.epnova.core.network.apis.entity.StoryUnlockResultData
@@ -48,6 +50,8 @@ import com.kuaigeglobal.epnova.core.network.apis.entity.WorkVOInfo
 import com.kuaigeglobal.epnova.core.network.apis.request.AIExpandBody
 import com.kuaigeglobal.epnova.core.network.apis.request.AISynopsisBody
 import com.kuaigeglobal.epnova.core.network.apis.request.AdPreReportBody
+import com.kuaigeglobal.epnova.core.network.apis.request.AppearanceIdBody
+import com.kuaigeglobal.epnova.core.network.apis.request.AssetUnlinkBody
 import com.kuaigeglobal.epnova.core.network.apis.request.BannerBody
 import com.kuaigeglobal.epnova.core.network.apis.request.BindPhoneBody
 import com.kuaigeglobal.epnova.core.network.apis.request.BookShelfIdPagedBody
@@ -120,10 +124,13 @@ import com.kuaigeglobal.epnova.core.network.apis.request.ShareReportBody
 import com.kuaigeglobal.epnova.core.network.apis.request.ShortLikeBody
 import com.kuaigeglobal.epnova.core.network.apis.request.ShotSegmentIdBody
 import com.kuaigeglobal.epnova.core.network.apis.request.RewardAdPollBody
+import com.kuaigeglobal.epnova.core.network.apis.request.RoleIdPagedBody
+import com.kuaigeglobal.epnova.core.network.apis.request.SaveStorySummaryBody
 import com.kuaigeglobal.epnova.core.network.apis.request.StoryUnlockAdResultBody
 import com.kuaigeglobal.epnova.core.network.apis.request.StoryUnlockCoinsBody
 import com.kuaigeglobal.epnova.core.network.apis.request.StoryboardIdBody
 import com.kuaigeglobal.epnova.core.network.apis.request.StrategyTypeBody
+import com.kuaigeglobal.epnova.core.network.apis.request.SwitchModelBody
 import com.kuaigeglobal.epnova.core.network.apis.request.SynthesisUploadBody
 import com.kuaigeglobal.epnova.core.network.apis.request.TaskIdBody
 import com.kuaigeglobal.epnova.core.network.apis.request.TipOffBody
@@ -774,7 +781,7 @@ interface ApiService {
      * 场景单个删除
      */
     @POST(ApiConstants.WORK_ASSET_SCENE_DELETE)
-    suspend fun workAssetSceneDelete(@Body body: IdsBody): ApiResponse<Any>
+    suspend fun workAssetSceneDelete(@Body body: AssetUnlinkBody): ApiResponse<Any>
 
     /**
      * 角色列表
@@ -792,7 +799,7 @@ interface ApiService {
      * 角色单个删除
      */
     @POST(ApiConstants.WORK_ASSET_ROLE_DELETE)
-    suspend fun workAssetRoleDelete(@Body body: IdsBody): ApiResponse<Any>
+    suspend fun workAssetRoleDelete(@Body body: AssetUnlinkBody): ApiResponse<Any>
 
     /**
      * 道具列表
@@ -810,7 +817,7 @@ interface ApiService {
      * 道具单个删除
      */
     @POST(ApiConstants.WORK_ASSET_PROP_DELETE)
-    suspend fun workAssetPropDelete(@Body body: IdsBody): ApiResponse<Any>
+    suspend fun workAssetPropDelete(@Body body: AssetUnlinkBody): ApiResponse<Any>
 
     /**
      * 生成单个资产图片（重新生成/生成）
@@ -1325,4 +1332,64 @@ interface ApiService {
      */
     @POST(ApiConstants.EPISODE_UNLOCK_LOCK_STATUS)
     suspend fun episodeUnlockLockStatus(@Body body: WorkBody): ApiResponse<StoryUnlockStatusData?>
+
+    /**
+     * 剧集-修改剧集梗概
+     */
+    @POST(ApiConstants.UPDATE_STORY_SUMMARY)
+    suspend fun updateStorySummary(@Body body: SaveStorySummaryBody): ApiResponse<Any?>
+
+    /**
+     * 获取作品剧集分镜配置
+     */
+    @POST(ApiConstants.GET_STORYBOARD_MODEL_CONFIG)
+    suspend fun getStoryboardModelConfig(@Body body: WorkBody): ApiResponse<List<CreationModelInfo>?>
+
+    /**
+     * 切换分镜模型
+     */
+    @POST(ApiConstants.SWITCH_MODEL)
+    suspend fun switchModel(@Body body: SwitchModelBody): ApiResponse<Any>
+
+    /**
+     *取消场景形象选用
+     */
+    @POST(ApiConstants.CANCEL_SCENE_IMAGE)
+    suspend fun cancelSceneImage(@Body body: AppearanceIdBody): ApiResponse<Any?>
+
+    /**
+     *取消角色形象选用
+     */
+    @POST(ApiConstants.CANCEL_ROLE_IMAGE)
+    suspend fun cancelRoleImage(@Body body: AppearanceIdBody): ApiResponse<Any?>
+
+    /**
+     *取消道具形象选用
+     */
+    @POST(ApiConstants.CANCEL_PROP_IMAGE)
+    suspend fun cancelPropImage(@Body body: AppearanceIdBody): ApiResponse<Any?>
+
+    /**
+     * 作品角色列表
+     */
+    @POST(ApiConstants.WORK_ASSET_ROLE_PAGE)
+    suspend fun workAssetRolePage(@Body body: WorkIdPagedBody): ApiResponse<PagedList<SimpleRoleInfo>?>
+
+    /**
+     * 作品角色形象列表
+     */
+    @POST(ApiConstants.WORK_ASSET_ROLE_IMAGE_PAGE)
+    suspend fun workAssetRoleImagePage(@Body body: RoleIdPagedBody): ApiResponse<PagedList<RoleImageInfo>?>
+
+    /**
+     * 作品道具列表
+     */
+    @POST(ApiConstants.WORK_ASSET_PROP_PAGE)
+    suspend fun workAssetPropPage(@Body body: WorkIdPagedBody): ApiResponse<PagedList<SimplePropInfo>?>
+
+    /**
+     * 作品场景列表
+     */
+    @POST(ApiConstants.WORK_ASSET_SCENE_PAGE)
+    suspend fun workAssetScenePage(@Body body: WorkIdPagedBody): ApiResponse<PagedList<SimpleSceneInfo>?>
 }

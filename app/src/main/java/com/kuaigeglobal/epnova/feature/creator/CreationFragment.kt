@@ -12,6 +12,7 @@ import com.kuaigeglobal.epnova.common.SimpleTextWatcher
 import com.kuaigeglobal.epnova.core.Config
 import com.kuaigeglobal.epnova.core.Events
 import com.kuaigeglobal.epnova.core.Global
+import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.ext.onUserSignOut
 import com.kuaigeglobal.epnova.core.ext.sensitiveWordCheck
 import com.kuaigeglobal.epnova.core.manager.AppEvent
@@ -27,9 +28,11 @@ import com.kuaigeglobal.epnova.feature.creator.data.DramaGenerateConstants
 import com.kuaigeglobal.epnova.feature.creator.generate.StoryEditorActivity
 import com.kuaigeglobal.epnova.feature.creator.set.StoryGenerateConfirmDialog
 import com.kuaigeglobal.epnova.feature.creator.set.VideoSetDialog
+import com.kuaigeglobal.epnova.feature.splash.newer.FirstRechargeDialog
 import com.kuaigeglobal.epnova.router.AppNavigator
 import com.kuaigeglobal.epnova.widget.GeneratingDialog
 import com.nhsd.basic.BaseViewModelFragment
+import com.nhsd.basic.bus.FlowEventBus
 import com.nhsd.basic.bus.observeEvents
 import com.nhsd.basic.ext.showToast
 import kotlinx.coroutines.launch
@@ -122,6 +125,13 @@ class CreationFragment :
             if (mRealVM.inspirationModel()) Global.inspirationContent =
                 it else Global.customizedContent = it
         }
+        mRealVM.firstRechargeCache.observe(this) { data ->
+            data?.let {
+                EventManager.onAppTrack(AppEvent.SF_VIEW_HOME_NEWCOMER_GIFTPACK_PAGE)
+                FirstRechargeDialog.show(FirstRechargeDialog.SCENE_HOME, it)
+                Config.get().markFirstRechargeShown(FirstRechargeDialog.SCENE_HOME)
+            }
+        }
 
         observeEvents {
             onUserSignOut {
@@ -139,71 +149,88 @@ class CreationFragment :
         mRealVM.videoSetConfig(true) {
             val config = mRealVM.videoSetConfig.value
             VideoSetDialog.newInstance(workTitle, config, if (!fileUrl.isNullOrEmpty()) mRealVM.analysisResult?.charCount else null).apply {
-                onSuccess = { range, custom, ratio, style, name ->
+                onSuccess = { dialog, range, custom, ratio, style, name ->
+                    val progressLogic = {
+                        dialog?.dismissAllowingStateLoss()
+                        val isFileModel = !fileUrl.isNullOrEmpty()
+                        val content = this@CreationFragment.mRealVM.input.value
 
-                    val isFileModel = !fileUrl.isNullOrEmpty()
-                    val content = this@CreationFragment.mRealVM.input.value
+                        val singleModel =
+                            range == VideoConfigInfo.MODE_SINGLE || (range == VideoConfigInfo.MODE_CUSTOM && custom?.toIntOrNull() == 1)
+                        val modelType = when {
+                            isFileModel -> DramaGenerateConstants.MODEL_STORY_DOCUMENTS
+                            singleModel -> DramaGenerateConstants.MODEL_STORY_SINGLE
+                            this@CreationFragment.mRealVM.inspirationModel() -> DramaGenerateConstants.MODEL_INSPIRATION
+                            else -> DramaGenerateConstants.MODEL_STORY
+                        }
+                        val workType = when {
+                            isFileModel -> WorkInfo.NOVEL_UPLOAD
+                            this@CreationFragment.mRealVM.inspirationModel() -> WorkInfo.INSPIRATION_CREATION
+                            else -> WorkInfo.NOVEL_CREATION
+                        }
 
-                    val singleModel =
-                        range == VideoConfigInfo.MODE_SINGLE || (range == VideoConfigInfo.MODE_CUSTOM && custom?.toIntOrNull() == 1)
-                    val modelType = when {
-                        isFileModel -> DramaGenerateConstants.MODEL_STORY_DOCUMENTS
-                        singleModel -> DramaGenerateConstants.MODEL_STORY_SINGLE
-                        this@CreationFragment.mRealVM.inspirationModel() -> DramaGenerateConstants.MODEL_INSPIRATION
-                        else -> DramaGenerateConstants.MODEL_STORY
-                    }
-                    val workType = when {
-                        isFileModel -> WorkInfo.NOVEL_UPLOAD
-                        this@CreationFragment.mRealVM.inspirationModel() -> WorkInfo.INSPIRATION_CREATION
-                        else -> WorkInfo.NOVEL_CREATION
-                    }
+                        val startEditor: (WorkTaskData?) -> Unit = { data ->
+                            //只有小说文档模式有data
+                            if (this@CreationFragment.mRealVM.inspirationModel()) Global.inspirationContent = "" else Global.customizedContent = ""
+                            StoryEditorActivity.start(
+                                context = mActivity,
+                                workId = data?.workId,
+                                name = name,
+                                workType = workType,
+                                model = modelType
+                            )
+                            FlowEventBus.postSync(Events.MainTabEvent(Events.MainTabEvent.TAB_MY_CREATIONS))
+                            mActivity.finish()
+                        }
 
-                    val startEditor: (WorkTaskData?) -> Unit = { data ->
-                        //只有小说文档模式有data
-                        StoryEditorActivity.start(
-                            context = mActivity,
-                            workId = data?.workId,
-                            name = name,
-                            workType = workType,
-                            model = modelType
-                        )
-                    }
-
-                    if (isFileModel) {
-                        this@CreationFragment.mRealVM
-                        val charCount = this@CreationFragment.mRealVM.analysisResult?.charCount ?: 0
-                        val body = UploadStoryBody(
-                            charCount,
-                            fileUrl,
-                            this@CreationFragment.mRealVM.fileName,
-                            "txt",
-                            name,
-                            range,
-                            custom, ratio, style
-                        )
-                        if (Config.get().notifyPowerConsume(0)) {
-                            StoryGenerateConfirmDialog.newInstance(body, this@CreationFragment.mRealVM.analysisResult?.estimatedPower?.roundToInt())
-                                .apply {
-                                    onConfirm = { data -> startEditor(data) }
-                                }.show(this@CreationFragment.childFragmentManager)
-                        } else {
-                            this@CreationFragment.mRealVM.confirmPowerConsume(body) { data ->
-                                startEditor(data)
+                        if (isFileModel) {
+                            this@CreationFragment.mRealVM
+                            val charCount = this@CreationFragment.mRealVM.analysisResult?.charCount ?: 0
+                            val body = UploadStoryBody(
+                                charCount,
+                                fileUrl,
+                                this@CreationFragment.mRealVM.fileName,
+                                "txt",
+                                name,
+                                range,
+                                custom, ratio, style
+                            )
+                            if (Config.get().notifyPowerConsume(0)) {
+                                StoryGenerateConfirmDialog.newInstance(
+                                    body,
+                                    this@CreationFragment.mRealVM.analysisResult?.estimatedPower?.roundToInt()
+                                )
+                                    .apply {
+                                        onConfirm = { data -> startEditor(data) }
+                                    }.show(this@CreationFragment.childFragmentManager)
+                            } else {
+                                this@CreationFragment.mRealVM.confirmPowerConsume(body) { data ->
+                                    startEditor(data)
+                                }
+                            }
+                        } else {//非小说文档走这里
+                            val body = CreateTaskBody(
+                                workInspiration = content,
+                                content = content,
+                                workTitle = name,
+                                totalEpisodeCntCode = range,
+                                totalEpisodeCnt = custom,
+                                workRatio = ratio,
+                                workStyleCode = style
+                            )
+                            this@CreationFragment.mRealVM.createTask(modelType, body) {
+                                startEditor(it)
                             }
                         }
-                    } else {//非小说文档走这里
-                        val body = CreateTaskBody(
-                            workInspiration = content,
-                            content = content,
-                            workTitle = name,
-                            totalEpisodeCntCode = range,
-                            totalEpisodeCnt = custom,
-                            workRatio = ratio,
-                            workStyleCode = style
-                        )
-                        this@CreationFragment.mRealVM.createTask(modelType, body) {
-                            startEditor(it)
+                    }
+
+                    val canShowFirstRecharge = !User.get().hasPaid() && !Config.get().isFirstRechargeShown(FirstRechargeDialog.SCENE_HOME)
+                    if (canShowFirstRecharge) {
+                        this@CreationFragment.mRealVM.getFirstRechargeInfo {
+                            progressLogic()
                         }
+                    } else {
+                        progressLogic()
                     }
                 }
             }.show(childFragmentManager)

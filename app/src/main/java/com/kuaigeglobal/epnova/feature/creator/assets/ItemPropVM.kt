@@ -13,8 +13,8 @@ import com.kuaigeglobal.epnova.core.network.apis.ApiFactory
 import com.kuaigeglobal.epnova.core.network.apis.ApiResponse
 import com.kuaigeglobal.epnova.core.network.apis.entity.ReferenceImageInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.SimplePropInfo
+import com.kuaigeglobal.epnova.core.network.apis.request.AssetUnlinkBody
 import com.kuaigeglobal.epnova.core.network.apis.request.GenerateAssetBody
-import com.kuaigeglobal.epnova.core.network.apis.request.IdsBody
 import com.kuaigeglobal.epnova.core.network.apis.request.SavePropBody
 import com.kuaigeglobal.epnova.core.network.apis.request.TaskIdBody
 import com.kuaigeglobal.epnova.core.response
@@ -39,11 +39,11 @@ class ItemPropVM(
     override val assetType: String = R.string.props.getResString()
     override val assetDescHint: String = R.string.prop_description.getResString()
     override val assetNameHint: String = R.string.prop_name.getResString()
-    override val generateButtonText: String = R.string.generate.getResString()
+    override val generateButtonText: String = R.string.generate_prop.getResString()
 
     override fun clickGenerate() {
         if (status.get() == 1) return
-        val propPrompt = if (editingAssetDesc.get()) editingAssetDescText else assetDesc.get()
+        val propPrompt = assetDesc.get()
         val propName = if (editingAssetName.get()) editingAssetNameText else assetName.get()
         if (propPrompt.isNullOrEmpty()) {
             showToast(R.string.please_enter_prop_description)
@@ -204,7 +204,7 @@ class ItemPropVM(
     }
 
     override suspend fun delete(): ApiResponse<Any> {
-        return withContext(Dispatchers.IO) { ApiFactory.apiService.workAssetPropDelete(IdsBody(null, data.get()?.appearanceId)) }
+        return withContext(Dispatchers.IO) { ApiFactory.apiService.workAssetPropDelete(AssetUnlinkBody(workId, storyId, data.get()?.assetId)) }
     }
 
     override fun loopGenStatus() {

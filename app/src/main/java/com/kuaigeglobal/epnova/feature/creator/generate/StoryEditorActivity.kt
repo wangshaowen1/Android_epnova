@@ -26,6 +26,7 @@ class StoryEditorActivity :
 
         //来源 来自剧集详情
         const val FROM_SERIES = "fromSeries"
+
         //来源 来自我的作品
         const val FROM_MY_WORKS = "fromMyWorks"
 
@@ -83,7 +84,7 @@ class StoryEditorActivity :
             starter.putExtra(Constants.Extra.CHAPTER_INDEX, chapterIndex)
             starter.putExtra(Constants.Extra.CONTENT, dramaContent)
             starter.putExtra(Constants.Extra.VIDEO_RATIO, videoRatio)
-            starter.putExtra(Constants.Extra.FROM_PAGE,from)
+            starter.putExtra(Constants.Extra.FROM_PAGE, from)
             context.startActivity(starter)
         }
 
@@ -117,7 +118,7 @@ class StoryEditorActivity :
             starter.putExtra(Constants.Extra.WORK_TYPE, workType)
             starter.putExtra(Constants.Extra.MODE, model)
             starter.putExtra(Constants.Extra.VIDEO_RATIO, videoRatio)
-            starter.putExtra(Constants.Extra.FROM_PAGE,from)
+            starter.putExtra(Constants.Extra.FROM_PAGE, from)
             context.startActivity(starter)
         }
     }
@@ -189,6 +190,10 @@ class StoryEditorActivity :
                     mRealVM.title.value = it
                 }
                 dialog.show(supportFragmentManager)
+            }
+
+            R.id.btnModels -> {
+                mRealVM.switchModelEvent.value = System.currentTimeMillis()
             }
         }
     }

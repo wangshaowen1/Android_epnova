@@ -1,6 +1,7 @@
 package com.kuaigeglobal.epnova.core.network.apis.entity
 
 import android.os.Parcelable
+import com.kuaigeglobal.epnova.common.Constants
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 
@@ -71,7 +72,19 @@ data class SimpleStoryboardInfo(
     /**
      * [枚举]视频生成状态 0=待生成 1=生成中 2=成功 3=失败 5=重绘中 6=重绘完成
      */
-    var genStatusVideo: Int? = null
+    var genStatusVideo: Int? = null,
+    /**
+     * 分镜创建时间
+     */
+    val createTime : String? = null,
+    /**
+     * 视频是否含有水印：true=含水印（v1.4上线前生成），false=无水印，null=无法判断
+     */
+    val hasWatermark : Boolean? = null,
+    /**
+     * 漫剧类别 [storyboard_dynamic=动态漫 storyboard_narration=解说漫]
+     */
+    val comicType: String? = null,
 ) : Parcelable {
 
     val videoGenerating get() = genStatusVideo == 1 || genStatusVideo == 5
@@ -88,5 +101,12 @@ data class SimpleStoryboardInfo(
     val subtitleGenerated get() = subtitle?.generated == true
 
     val subtitleGenerateFailed get() = subtitle?.generateFailed == true
+
+    /**
+     * 是解说漫
+     */
+    fun isNarration(): Boolean {
+        return comicType == Constants.Model.STORYBOARD_NARRATION
+    }
 
 }

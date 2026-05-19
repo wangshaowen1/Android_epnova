@@ -2,6 +2,7 @@ package com.kuaigeglobal.epnova.feature.creator.storyboard
 
 import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableInt
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.blankj.utilcode.util.KeyboardUtils
 import com.drake.spannable.replaceSpan
@@ -10,6 +11,7 @@ import com.kuaigeglobal.epnova.App
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.base.item.AppItemViewModel
 import com.kuaigeglobal.epnova.base.viewmodel.AppRepositoryViewModel
+import com.kuaigeglobal.epnova.common.Constants
 import com.kuaigeglobal.epnova.common.ext.showCommonDialog
 import com.kuaigeglobal.epnova.common.ext.topActivity
 import com.kuaigeglobal.epnova.common.utils.AutoProgressSimulator
@@ -18,9 +20,11 @@ import com.kuaigeglobal.epnova.core.ext.launch
 import com.kuaigeglobal.epnova.core.ext.launchWithLoading
 import com.kuaigeglobal.epnova.core.ext.showRechargeDialog
 import com.kuaigeglobal.epnova.core.network.apis.ApiResponse
+import com.kuaigeglobal.epnova.core.network.apis.entity.CreationModelInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.SimpleStoryboardInfo
 import com.kuaigeglobal.epnova.core.network.apis.request.IdsBody
 import com.kuaigeglobal.epnova.core.network.apis.request.StrategyTypeBody
+import com.kuaigeglobal.epnova.core.network.apis.request.SwitchModelBody
 import com.kuaigeglobal.epnova.core.network.apis.request.TaskIdBody
 import com.kuaigeglobal.epnova.core.network.apis.request.WorkBody
 import com.kuaigeglobal.epnova.core.response
@@ -36,9 +40,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import kotlin.collections.remove
-import kotlin.text.get
-import kotlin.text.set
 
 /**
  * 分镜设计
@@ -50,7 +51,7 @@ class StoryboardDesignViewModel : AppRepositoryViewModel<AppRepository>() {
         /**
          * 初始化
          */
-        private const val STEP_INIT = 0
+        const val STEP_INIT = 0
 
         /**
          * 分镜描述生成中
@@ -85,7 +86,12 @@ class StoryboardDesignViewModel : AppRepositoryViewModel<AppRepository>() {
     private var inputJob: Job? = null
     val step by lazy { ObservableInt(STEP_INIT) }
     val cost by lazy { ObservableInt() }
-    private var genVideoPrice = 0
+    val creationModels = MutableLiveData<List<CreationModelInfo>>()
+    val currentCreationModel = MutableLiveData<CreationModelInfo?>()
+    /** key = strategyType（3-动态漫，5-解说漫），value = 单位价格；均在 Main 线程读写 */
+    private val priceCache = mutableMapOf<Int, Int>()
+    /** 正在进行中的价格请求，避免并发重复发起 */
+    private val priceFetchJobs = mutableMapOf<Int, Job>()
     val keyboardHeight by lazy { ObservableInt() }
     var generating = false
         set(value) {
@@ -100,7 +106,7 @@ class StoryboardDesignViewModel : AppRepositoryViewModel<AppRepository>() {
         }
     private val progressHelper by lazy { AutoProgressSimulator(viewModelScope) { show, title, progress -> promptGenerating.set(show) } }
     val promptGenerating by lazy { ObservableBoolean() }
-    private val powerSpan by lazy { CenterImageSpan(App.instance, R.drawable.ic_coins).apply { setDrawableSize(16.dp, 16.dp) } }
+    private val powerSpan by lazy { CenterImageSpan(App.instance, R.drawable.icon_power).apply { setDrawableSize(16.dp, 16.dp) } }
     private var editConfirm = false
 
     override fun onResume() {
@@ -108,10 +114,10 @@ class StoryboardDesignViewModel : AppRepositoryViewModel<AppRepository>() {
         topActivity?.let {
             KeyboardUtils.registerSoftInputChangedListener(it) { height ->
                 keyboardHeight.set(height)
-                if (height <= 0) {
-                    editingStoryboardDescVM?.exitEditStoryboardDesc()
-                    editingStoryboardDescVM = null
-                }
+//                if (height <= 0) {
+//                    editingStoryboardDescVM?.exitEditStoryboardDesc()
+//                    editingStoryboardDescVM = null
+//                }
             }
         }
     }
@@ -143,6 +149,7 @@ class StoryboardDesignViewModel : AppRepositoryViewModel<AppRepository>() {
             val allStoryboardDescriptionStatus = withContext(Dispatchers.IO) { mRepo.api.generateAllStoryboardDescription(WorkBody(workId, storyId)).data }
             taskId = allStoryboardDescriptionStatus?.taskId
             if (allStoryboardDescriptionStatus?.genStatus == 1 || allStoryboardDescriptionStatus?.genStatus == 2) {
+                adapter.submitList(emptyList())
                 step.set(STEP_DESCRIPTION_GENERATING)
                 loopAllStoryboardDescriptionStatus()
             } else {
@@ -195,7 +202,7 @@ class StoryboardDesignViewModel : AppRepositoryViewModel<AppRepository>() {
                 val storyboards = mRepo.api.workStoryboardList(WorkBody(workId, storyId)).data
                 val items = mutableListOf<AppItemViewModel<*>>()
                 storyboards?.map { it.toItemStoryboardVM() }?.let { items.addAll(it) }
-                items.add(addStoryboardItem)
+                addOrRemoveStoryboardItem(items)
                 adapter.items.forEach { if (it is ItemAssetVM<*>) it.clear() }
                 adapter.submitList(items)
                 updateItemNo()
@@ -207,6 +214,16 @@ class StoryboardDesignViewModel : AppRepositoryViewModel<AppRepository>() {
                 generating = false
             }
         )
+    }
+
+    fun addOrRemoveStoryboardItem(items: MutableList<AppItemViewModel<*>>) {
+        val isNarration = currentCreationModel.value?.configCode == Constants.Model.STORYBOARD_NARRATION
+        val hasAddItem = items.contains(addStoryboardItem)
+        if (isNarration && hasAddItem) {
+            items.remove(addStoryboardItem)
+        } else if (!isNarration && !hasAddItem) {
+            items.add(addStoryboardItem)
+        }
     }
 
     private fun SimpleStoryboardInfo.toItemStoryboardVM() = ItemStoryboardVM(workId, storyId, this).applyConfig()
@@ -232,26 +249,27 @@ class StoryboardDesignViewModel : AppRepositoryViewModel<AppRepository>() {
         onItemClick.value = click@{ view ->
             when (view?.id) {
                 R.id.etStoryboardDesc -> {
-                    if (editingStoryboardDescVM == this) return@click
-                    inputJob?.cancel()
-                    val edit: (delay: Long) -> Unit = { delay ->
-                        editingStoryboardDescVM?.exitEditStoryboardDesc()
-                        editingStoryboardDescVM = this
-                        if (delay > 0) {
-                            inputJob = launch {
-                                delay(delay)
-                                editStoryboardDesc()
-                            }
-                        } else {
-                            editStoryboardDesc()
-                        }
-                    }
+//                    if (editingStoryboardDescVM == this) return@click
+//                    inputJob?.cancel()
+//                    val edit: (delay: Long) -> Unit = { delay ->
+//                        editingStoryboardDescVM?.exitEditStoryboardDesc()
+//                        editingStoryboardDescVM = this
+//                        if (delay > 0) {
+//                            inputJob = launch {
+//                                delay(delay)
+//                                editStoryboardDesc()
+//                            }
+//                        } else {
+//                            editStoryboardDesc()
+//                        }
+//                    }
                     if (storyBoardDesc.get().isNullOrEmpty() || editConfirm) {
-                        edit.invoke(0)
+                        editConfirm = true
+                        editStoryboardDesc()
                     } else {
                         editConfirm = true
-                        topActivity?.showCommonDialog(title = R.string.confirm_edit.getResString(), tip = R.string.edit_text_warning.getResString(), confirmText = R.string.continue_editing.getResString()) {
-                            edit.invoke(200)
+                        topActivity?.showCommonDialog(tip = R.string.edit_text_warning.getResString(), confirmText = R.string.continue_editing.getResString()) {
+                            editStoryboardDesc()
                         }
                     }
                 }
@@ -283,21 +301,35 @@ class StoryboardDesignViewModel : AppRepositoryViewModel<AppRepository>() {
     private fun calcCost() {
         cost.set(0)
         launch {
-            if (genVideoPrice <= 0) {
-                withContext(Dispatchers.IO) {
-                    mRepo.api.queryAiPrice(StrategyTypeBody(3)).data?.pointNum?.let { genVideoPrice = it }
-                }
-            }
-            if (genVideoPrice > 0) {
-                val totalDuration = adapter.items.sumOf { item ->
-                    if (item is ItemStoryboardVM) {
-                        item.data.get()?.duration ?: 15
-                    } else {
-                        0
+            val model = currentCreationModel.value
+            val type = if (model?.isNarration() == true) 5 else 3
+            if (!priceCache.containsKey(type)) {
+                // 若已有同 type 的请求在途，直接等它完成，不重复发起
+                val job = priceFetchJobs.getOrPut(type) {
+                    launch {
+                        val pointNum = withContext(Dispatchers.IO) {
+                            mRepo.api.queryAiPrice(StrategyTypeBody(type, workId = workId, storyId = storyId)).data?.pointNum
+                        }
+                        // 写回 Main 线程，与读操作同线程，无并发安全问题
+                        pointNum?.let { priceCache[type] = it }
+                        priceFetchJobs.remove(type)
                     }
                 }
-                cost.set(genVideoPrice * totalDuration)
+                job.join()
             }
+            val price = priceCache[type] ?: 0
+            if (price <= 0) {
+                showToast(R.string.request_failed_tips)
+                return@launch
+            }
+            val totalDuration = adapter.items.sumOf { item ->
+                if (item is ItemStoryboardVM) {
+                    item.data.get()?.duration ?: 15
+                } else {
+                    0
+                }
+            }
+            cost.set(price * totalDuration)
         }
     }
 
@@ -307,7 +339,8 @@ class StoryboardDesignViewModel : AppRepositoryViewModel<AppRepository>() {
             return
         }
         val cost = cost.get()
-        if (cost == 0 && genVideoPrice == 0) {
+        val type = if (currentCreationModel.value?.isNarration() == true) 5 else 3
+        if (cost == 0 && !priceCache.containsKey(type)) {
             calcCost()
             return
         }
@@ -339,7 +372,7 @@ class StoryboardDesignViewModel : AppRepositoryViewModel<AppRepository>() {
 
     fun buttonText(step: Int, cost: Int): CharSequence? {
         return when (step) {
-            STEP_DESCRIPTION_GENERATED -> if (cost > 0) "${R.string.generate_storyboard_video.getResString()}  $POWER $cost".replaceSpan(POWER) { powerSpan } else R.string.generate_storyboard_video.getResString()
+            STEP_DESCRIPTION_GENERATED -> if (cost > 0) "生成分镜视频  $POWER $cost".replaceSpan(POWER) { powerSpan } else R.string.generate_storyboard_video.getResString()
             else -> null
         }
     }
@@ -364,6 +397,29 @@ class StoryboardDesignViewModel : AppRepositoryViewModel<AppRepository>() {
         launchWithLoading {
             adapter.items.forEach { if (it is ItemStoryboardVM) it.save(false) }
             callback.invoke()
+        }
+    }
+
+    suspend fun getModels(): Int {
+        val response = withContext(Dispatchers.IO) { mRepo.api.getStoryboardModelConfig(WorkBody(workId, storyId)) }
+        if (!response.isSuccess) {
+            return 0
+        }
+        val data = response.data
+        creationModels.value = data ?: emptyList()
+        val selectedModel = data?.firstOrNull { it.isDefault() } ?: data?.firstOrNull()
+        currentCreationModel.value = selectedModel
+        return selectedModel?.configValue ?: 0
+    }
+
+    fun switchModel(model: CreationModelInfo?, callback: (() -> Unit)?) {
+        launchWithLoading {
+            response(mRepo.api.switchModel(SwitchModelBody(workId, storyId, model?.configCode))) {
+                model?.let {
+                    currentCreationModel.value = it
+                    callback?.invoke()
+                }
+            }
         }
     }
 }

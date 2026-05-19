@@ -1,0 +1,190 @@
+package com.kuaigeglobal.epnova.feature.editor.info
+
+import android.content.DialogInterface
+import android.text.Editable
+import android.text.Spanned
+import android.text.style.ForegroundColorSpan
+import android.view.KeyEvent
+import androidx.core.os.bundleOf
+import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.lifecycleScope
+import com.blankj.utilcode.util.ActivityUtils
+import com.blankj.utilcode.util.KeyboardUtils
+import com.blankj.utilcode.util.ThreadUtils
+import com.kuaigeglobal.epnova.R
+import com.kuaigeglobal.epnova.common.Constants
+import com.kuaigeglobal.epnova.common.SimpleTextWatcher
+import com.kuaigeglobal.epnova.common.ext.applySmartFocusManager
+import com.kuaigeglobal.epnova.common.ext.showConfirmPrompt
+import com.kuaigeglobal.epnova.common.ext.topActivity
+import com.kuaigeglobal.epnova.core.ext.sensitiveWordCheck
+import com.kuaigeglobal.epnova.databinding.DialogInputBinding
+import com.nhsd.basic.BaseBottomPushVMDialogFragment
+import com.nhsd.basic.ext.isActive
+import com.nhsd.basic.ext.showToast
+import kotlinx.coroutines.launch
+
+/**
+ * 修改描述-通用版
+ */
+class InputDialog :
+    BaseBottomPushVMDialogFragment<DialogInputBinding, InputViewModel>() {
+
+    companion object {
+        const val TYPE_WORK_DESC = 0
+        const val TYPE_EPISODE_SUMMARY = 1
+        const val TYPE_EPISODE_CONTENT = 3
+        const val TYPE_ASSET_DESC = 4
+        const val TYPE_STORYBOARD_DESC = 5
+
+        /**通用类型，只编辑文案，不需要其他逻辑*/
+        const val TYPE_NORMAL = 2
+
+        private const val KEY_HIGHLIGHTED_CONTENT = "key_highlighted_content"
+
+        fun show(
+            type: Int? = TYPE_NORMAL,
+            workId: String? = null,
+            storyId: String? = null,
+            content: String? = null,
+            extra: String? = null,
+            highlightedContent: CharSequence? = null,
+            callback: (String) -> Unit
+        ) {
+            val activity = topActivity as? FragmentActivity ?: return
+            InputDialog().apply {
+                arguments = bundleOf(
+                    Constants.Extra.WORK_ID to workId,
+                    Constants.Extra.STORY_ID to storyId,
+                    Constants.Extra.TYPE to type,
+                    Constants.Extra.CONTENT to content,
+                    Constants.Extra.EXTRA to extra,
+                    KEY_HIGHLIGHTED_CONTENT to highlightedContent
+                )
+                this.callback = callback
+            }.show(activity.supportFragmentManager)
+        }
+    }
+
+    var callback: ((String) -> Unit)? = null
+
+
+    override fun onStart() {
+        super.onStart()
+
+        // 2. 拦截物理返回键
+        dialog?.setOnKeyListener { _, keyCode, event ->
+            if (keyCode == KeyEvent.KEYCODE_BACK && event.action == KeyEvent.ACTION_UP) {
+                closeConfirm() // 统一走你的检查逻辑
+                true // 表示我们已经消费了该事件
+            } else {
+                false
+            }
+        }
+    }
+
+    override fun onPrepareView() {
+        super.onPrepareView()
+        binding.root.applySmartFocusManager()
+        binding.inputView.setTextNoSelection("")
+        binding.close.setOnClickListener {
+            closeConfirm()
+        }
+        binding.inputView.addTextChangedListener(object : SimpleTextWatcher() {
+            override fun afterTextChanged(s: Editable?) {
+                mRealVM.input.value = s.toString()
+            }
+        })
+
+        mRealVM.input.observe(this) {
+            if (it != binding.inputView.text) {
+                mRealVM.hasChange = true
+                binding.inputView.setTextNoSelection(it)
+            }
+        }
+
+        // 若外部传入了带高亮的文本（如敏感词检测结果），在初始文本设置完后覆盖应用
+        arguments?.getCharSequence(KEY_HIGHLIGHTED_CONTENT)?.let { highlighted ->
+            binding.inputView.post {
+                binding.inputView.setTextNoSelection(highlighted)
+                scrollToFirstSensitiveWord(highlighted)
+            }
+        }
+
+        binding.btnOk.setOnClickListener {
+            if (binding.inputView.text.trim().isEmpty()) {
+                getString(R.string.enter_update_content).showToast()
+                return@setOnClickListener
+            }
+            if (mRealVM.content != binding.inputView.text) {
+                save()
+            } else {
+                dismissAllowingStateLoss()
+            }
+        }
+        binding.inputView.input.postDelayed({
+            if (isActive) {
+                binding.inputView.input.requestFocus()
+                KeyboardUtils.showSoftInput(binding.inputView.input)
+            }
+        }, 100)
+    }
+
+    fun closeConfirm() {
+        if (mRealVM.hasChange && mRealVM.content != binding.inputView.text) {
+            topActivity?.showConfirmPrompt(
+                tip = getString(R.string.confirm_exit_without_saving),
+                cancelText = getString(R.string.exit_directly),
+                confirmText = getString(R.string.save_and_exit),
+                cancel = {
+                    dismissAllowingStateLoss()
+                },
+                confirm = {
+                    save()
+                })
+        } else {
+            dismissAllowingStateLoss()
+        }
+    }
+
+    private fun save() {
+        lifecycleScope.launch {
+            sensitiveWordCheck(mRealVM.input.value).let { (isPass, highlightText) ->
+                if (!isPass) {
+                    highlightText?.let {
+                        binding.inputView.setText(it)
+                        scrollToFirstSensitiveWord(it)
+                    }
+                } else {
+                    mRealVM.save {
+                        callback?.invoke(binding.inputView.text.trim())
+                        dismissAllowingStateLoss()
+                    }
+                }
+            }
+        }
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        hideSoftInput()
+        super.onDismiss(dialog)
+    }
+
+    override fun onDestroy() {
+        hideSoftInput()
+        super.onDestroy()
+    }
+
+    private fun hideSoftInput() {
+        ThreadUtils.runOnUiThreadDelayed({ KeyboardUtils.hideSoftInput(ActivityUtils.getTopActivity()) }, 100)
+    }
+
+    private fun scrollToFirstSensitiveWord(text: CharSequence) {
+        if (text !is Spanned) return
+        val spans = text.getSpans(0, text.length, ForegroundColorSpan::class.java)
+        if (spans.isEmpty()) return
+        val firstSpan = spans.minByOrNull { text.getSpanStart(it) } ?: return
+        val endPos = text.getSpanEnd(firstSpan)
+        binding.inputView.input.setSelection(endPos)
+    }
+}

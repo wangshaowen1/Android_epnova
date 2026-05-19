@@ -185,7 +185,7 @@ class EditStoryboardViewModel : AppRepositoryViewModel<EditStoryboardRepository>
     fun retryGenerateVideo(finish: Boolean = false) {
         val storyboard = storyboard.get() ?: return
         if (storyboard.videoGenerating) {
-          showToast(R.string.video_generating_please_wait)
+            showToast(R.string.video_generating_please_wait)
             return
         }
         val prompt = storyBoardDesc.value?.toString()
@@ -266,6 +266,11 @@ class EditStoryboardViewModel : AppRepositoryViewModel<EditStoryboardRepository>
                         genStatusVideo = taskStatus?.genStatus
                         videoUrl = taskStatus?.result
                     }
+                    if (taskStatus?.genStatus == 3) {
+                        withContext(Dispatchers.Main) {
+                            taskStatus.errorMsg?.showToast()
+                        }
+                    }
                     storyboard.notifyChange()
                 }
                 if (storyboard.get()?.videoGenerating != true) {
@@ -339,9 +344,11 @@ class EditStoryboardViewModel : AppRepositoryViewModel<EditStoryboardRepository>
     private fun getGenPrice() {
         launch {
             withContext(Dispatchers.IO) {
-                mRepo.api.queryAiPrice(StrategyTypeBody(3)).data?.pointNum?.let {
+                val storyboard = storyboard.get()
+                val type = if (storyboard?.isNarration() == true) 5 else 3
+                mRepo.api.queryAiPrice(StrategyTypeBody(type, workId = storyboard?.workId, storyId = storyboard?.storyId)).data?.pointNum?.let {
                     genVideoPrice = it
-                    genVideoCost.set(it * (storyboard.get()?.duration ?: 0))
+                    genVideoCost.set(it * (storyboard?.duration ?: 0))
                 }
             }
         }

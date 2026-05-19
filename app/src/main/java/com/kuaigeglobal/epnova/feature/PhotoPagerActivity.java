@@ -18,6 +18,7 @@ import android.widget.FrameLayout;
 import android.widget.GridLayout;
 import android.widget.GridView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.core.util.Pair;
@@ -47,6 +48,8 @@ import com.nhsd.basic.BaseActivity;
 import com.nhsd.basic.utils.T;
 import com.nhsd.crop.util.ViewUtils;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,6 +66,7 @@ public class PhotoPagerActivity extends BaseActivity {
     public static final String EXTRA_MAX_CHECK_COUNT = "maxCheckCount";
     public static final String EXTRA_HIDE_STATUS_BAR = "hide_status_bar";
     public static final String EXTRA_RESULT = "result";
+    public static final String EXTRA_AI_CHIP = "ai_chip";
     private HackyViewPager mViewPager;
 
     private PhotoPagerAdapter adapter;
@@ -81,6 +85,7 @@ public class PhotoPagerActivity extends BaseActivity {
     private FrameLayout footerLayout;
     private CheckBox photoCheckedStatus;
     private boolean checkable;
+    private boolean aiChip;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -150,6 +155,7 @@ public class PhotoPagerActivity extends BaseActivity {
         firstViewPosition = intent.getIntExtra(EXTRA_FIRST_VIEW_POSITION, 0);
         totalCount = intent.getIntExtra(EXTRA_TOTAL_COUNT, 0);
         backgroundColor = intent.getIntExtra(EXTRA_BACKGROUND_COLOR, 0);
+        aiChip = intent.getBooleanExtra(EXTRA_AI_CHIP, false);
         ArrayList<String> positions = intent.getStringArrayListExtra(EXTRA_VIEW_POSITIONS);
         if (positions != null) {
             viewPositions = new ArrayList<>();
@@ -170,6 +176,11 @@ public class PhotoPagerActivity extends BaseActivity {
         }
         if (photoItems == null) {
             photoItems = new ArrayList<>();
+        }
+        if (aiChip) {
+            for (PhotoItem item : photoItems) {
+                item.setAiChip(aiChip);
+            }
         }
 
         adapter = new PhotoPagerAdapter(mViewPager, photoItems);
@@ -412,7 +423,9 @@ public class PhotoPagerActivity extends BaseActivity {
 //            holder.progress.animate().setStartDelay(PROGRESS_DELAY).alpha(1f);
             if (photoItems.size() > position) {
                 // Loading image
-                GlideHelper.loadFlickrFull(OssHelp.asOssWebp(photoItems.get(position).getUri()), photoItems.get(position).getThumbUri(), holder.image,
+                PhotoItem photoItem = photoItems.get(position);
+                holder.aiChip.setVisibility(photoItem.isAiChip() ? View.VISIBLE : View.GONE);
+                GlideHelper.loadFlickrFull(OssHelp.asOssWebp(photoItem.getUri()), photoItem.getThumbUri(), holder.image,
                         new GlideHelper.ImageLoadingListener() {
                             @Override
                             public void onLoaded() {
@@ -480,12 +493,14 @@ public class PhotoPagerActivity extends BaseActivity {
 
         class ViewHolder extends RecyclePagerAdapter.ViewHolder {
             final GestureImageView image;
+            final TextView aiChip;
             //            final View progress;
             boolean gesturesDisabled;
 
             ViewHolder(ViewGroup parent) {
                 super(ViewUtils.inflate(parent, R.layout.item_photo_full));
                 image = itemView.findViewById(R.id.photo_full_image);
+                aiChip = itemView.findViewById(R.id.aiChip);
 //                image.setLayerType(View.LAYER_TYPE_SOFTWARE,null);
 //                progress = ViewUtils.find(itemView, R.id.photo_full_progress);
             }
@@ -525,6 +540,21 @@ public class PhotoPagerActivity extends BaseActivity {
         intent.putExtra(EXTRA_CLICK_POSITION, clickViewAndPhotoPosition.second);
         intent.putExtra(EXTRA_TOTAL_COUNT, totalCount);
         intent.putExtra(EXTRA_BACKGROUND_COLOR, backgroundColor);
+        context.startActivity(intent);
+    }
+
+    public static void launchWithAiChip(Context context, String photoUri) {
+        ArrayList<String> uris = new ArrayList<>();
+        uris.add(photoUri);
+        ArrayList<@Nullable PhotoItem> photos = DataUtils.toPhotoItem(uris);
+        Intent intent = new Intent(context, PhotoPagerActivity.class);
+        ArrayList<String> viewPositions = new ArrayList<>();
+        intent.putParcelableArrayListExtra(EXTRA_PHOTOS, photos);
+//        intent.putExtra(EXTRA_VIEW_POSITIONS, 0);
+//        intent.putExtra(EXTRA_CLICK_POSITION, 0);
+//        intent.putExtra(EXTRA_TOTAL_COUNT, 1);
+//        intent.putExtra(EXTRA_BACKGROUND_COLOR, 0);
+        intent.putExtra(EXTRA_AI_CHIP, true);
         context.startActivity(intent);
     }
 

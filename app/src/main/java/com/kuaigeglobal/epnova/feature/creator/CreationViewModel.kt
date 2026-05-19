@@ -12,9 +12,9 @@ import com.kuaigeglobal.epnova.base.viewmodel.AppRepositoryViewModel
 import com.kuaigeglobal.epnova.common.ext.topActivity
 import com.kuaigeglobal.epnova.common.utils.TextEncodingUtil
 import com.kuaigeglobal.epnova.core.Global
+import com.kuaigeglobal.epnova.core.ext.launch
 import com.kuaigeglobal.epnova.core.ext.parseMessage
 import com.kuaigeglobal.epnova.core.ext.requestWithLoading
-import com.kuaigeglobal.epnova.core.ext.showRechargeDialog
 import com.kuaigeglobal.epnova.core.network.apis.ApiException
 import com.kuaigeglobal.epnova.core.network.apis.ApiResponse
 import com.kuaigeglobal.epnova.core.network.apis.entity.InspirationInfo
@@ -24,12 +24,14 @@ import com.kuaigeglobal.epnova.core.network.apis.request.SSEContentBody
 import com.kuaigeglobal.epnova.core.network.apis.request.UploadStoryBody
 import com.kuaigeglobal.epnova.core.network.apis.request.UserTokenBody
 import com.kuaigeglobal.epnova.core.network.apis.request.WorkTaskData
+import com.kuaigeglobal.epnova.core.network.apis.response.FirstRechargeDialogData
 import com.kuaigeglobal.epnova.core.network.sse.SSEStreamHandler
 import com.kuaigeglobal.epnova.core.network.sse.processor.PlainTextSseProcessor
 import com.kuaigeglobal.epnova.feature.creator.CreationFragment.Companion.KEY_MODEL
 import com.kuaigeglobal.epnova.feature.creator.CreationFragment.Companion.MODEL_INSPIRATION
 import com.kuaigeglobal.epnova.feature.creator.data.CreationRepository
 import com.kuaigeglobal.epnova.feature.creator.data.DramaGenerateConstants
+import com.kuaigeglobal.epnova.feature.recharge.PowerRechargeDialog
 import com.nhsd.basic.ext.getResString
 import com.nhsd.basic.ext.getThemeColor
 import com.nhsd.basic.ext.showToast
@@ -56,6 +58,7 @@ class CreationViewModel : AppRepositoryViewModel<CreationRepository>() {
     private val unshownInspirations = mutableListOf<InspirationInfo>()
     val inspirationPrompts by lazy { MutableLiveData<List<InspirationInfo>>() }
     val videoSetConfig by lazy { MutableLiveData<VideoConfigData>() }
+    val firstRechargeCache = MutableLiveData<FirstRechargeDialogData>()
 
     fun inspirationModel(): Boolean {
         return creationModel == MODEL_INSPIRATION
@@ -225,11 +228,15 @@ class CreationViewModel : AppRepositoryViewModel<CreationRepository>() {
             apiBlock = {
                 mRepo.api.novelUploadSummary(body)
             },
-            onSuccess = { callback.invoke(data) },
+            onSuccess = {
+                Global.refreshBalance()
+                callback.invoke(data)
+            },
             onError = {
                 if (it is ApiException && it.errorCode == ApiResponse.RESPONSE_CODE_POWER_NOT_ENOUGH) {
                     viewModelScope.launch {
-                        showRechargeDialog(true)
+                        //这里和VideoSetDialog共用首充礼包弹出场景，前面会弹，这就不需要弹了，直接弹出充值弹出
+                        PowerRechargeDialog.show(showToast = true)
                     }
                 } else {
                     it?.message?.showToast()
@@ -249,5 +256,17 @@ class CreationViewModel : AppRepositoryViewModel<CreationRepository>() {
 
         // 如果匹配成功，返回第一个捕获组的内容
         return matchResult?.groups?.get(1)?.value
+    }
+
+    fun getFirstRechargeInfo(callback: () -> Unit) {
+        launch {
+            // 2. 请求首充接口 (这里必须先于活动配置完成)
+            val firstRechargeResponse = mRepo.api.getFirstRechargeDialogInfo()
+            if (firstRechargeResponse.data != null && firstRechargeResponse.data?.isNeedShow() == true) {
+                firstRechargeCache.value = firstRechargeResponse.data
+            } else {
+                callback.invoke()
+            }
+        }
     }
 }

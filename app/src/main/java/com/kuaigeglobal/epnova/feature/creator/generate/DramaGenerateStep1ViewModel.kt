@@ -3,8 +3,8 @@ package com.kuaigeglobal.epnova.feature.creator.generate
 import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableInt
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.kuaigeglobal.epnova.base.viewmodel.AppRepositoryViewModel
-import com.kuaigeglobal.epnova.common.utils.NotificationHelper
 import com.kuaigeglobal.epnova.core.ext.PollingState
 import com.kuaigeglobal.epnova.core.ext.launchPolling
 import com.kuaigeglobal.epnova.core.ext.requestWithLoading
@@ -15,6 +15,8 @@ import com.kuaigeglobal.epnova.core.network.apis.request.WorkInfoUpdateBody
 import com.kuaigeglobal.epnova.feature.creator.data.CreationRepository
 import com.kuaigeglobal.epnova.feature.creator.data.DramaGenerateConstants
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 /**
  * 故事梗概生成
@@ -23,9 +25,14 @@ class DramaGenerateStep1ViewModel : AppRepositoryViewModel<CreationRepository>()
 
     companion object {
         const val TAG = "DramaGenerateStep1ViewModel"
-        const val DISPLAY_FAIL = 1
         const val DISPLAY_CONTENT = 0
+        const val DISPLAY_FAIL = 1
     }
+
+    /**
+     * 算力不足时，延迟2s后触发充值弹窗（Activity负责弹出并回调 onRecharged）
+     */
+    val showRechargeDialogEvent = MutableLiveData<Unit>()
 
 
     //小说文档扣费后生成的workId，用于轮询
@@ -47,6 +54,7 @@ class DramaGenerateStep1ViewModel : AppRepositoryViewModel<CreationRepository>()
     var storySummaryResult = MutableLiveData<PollSummaryData?>()
 
     val isStoryDocumentsMode = ObservableBoolean(false)
+    val isBalanceFail = ObservableBoolean(false)
 
     fun refreshDisplayContent() {
         val isDoc = model == DramaGenerateConstants.MODEL_STORY_DOCUMENTS
@@ -70,6 +78,7 @@ class DramaGenerateStep1ViewModel : AppRepositoryViewModel<CreationRepository>()
         // 防抖与去重：如果已经在轮询中，直接 return
         if (novelSummaryPollingJob?.isActive == true) return
         isSummaryLoading.set(true)
+        isBalanceFail.set(false)
         nextStepEnabled.set(false)
         displayChild.set(DISPLAY_CONTENT)
         storySummaryResult.value = null
@@ -90,6 +99,7 @@ class DramaGenerateStep1ViewModel : AppRepositoryViewModel<CreationRepository>()
                     data?.isSuccess() == true -> PollingState.SUCCESS
                     data?.isSensitive() == true -> PollingState.SUCCESS
                     data?.isFail() == true -> PollingState.FAIL
+                    data?.isNoPower() == true -> PollingState.FAIL
                     else -> PollingState.CONTINUE
                 }
             },
@@ -102,14 +112,35 @@ class DramaGenerateStep1ViewModel : AppRepositoryViewModel<CreationRepository>()
                 isSummaryLoading.set(false)
             },
             onFail = { response, error ->
-                displayChild.set(DISPLAY_FAIL)
-                storySummaryResult.value = response?.data
-                isSummaryLoading.set(false)
+                if (response?.data?.isNoPower() == true) {
+                    storySummaryResult.value = response.data
+                    // 算力不足：延迟2s后通知Activity弹充值弹窗，期间保持loading状态
+                    viewModelScope.launch {
+                        delay(2000)
+                        showRechargeDialogEvent.value = Unit
+                    }
+                } else {
+                    displayChild.set(DISPLAY_FAIL)
+                    storySummaryResult.value = response?.data
+                    isSummaryLoading.set(false)
+                }
             },
             onPolling = { response ->
                 storySummaryResult.value = response?.data
             }
         )
+    }
+
+    /**
+     * 充值弹窗结果回调（由Activity在弹窗关闭后调用）
+     * @param recharged true=充值成功，继续轮询；false=取消或失败，显示错误UI
+     */
+    fun onRecharged(recharged: Boolean) {
+        if (recharged) {
+            pollSummary()
+        } else {
+            isBalanceFail.set(true)
+        }
     }
 
     /**

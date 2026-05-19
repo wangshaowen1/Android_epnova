@@ -318,6 +318,14 @@ class Config : NetworkChangedListener {
         mmkv.encode("firstRechargeShown${User.get().userId}_$scene", true)
     }
 
+    fun storeSwitchModelEnable(enable: Boolean) {
+        mmkv.encode("switch_model_enable", enable)
+    }
+
+    fun isSwitchModelEnable(): Boolean {
+        return mmkv.decodeBool("switch_model_enable", false)
+    }
+
     fun clear() {
         val keysToRemove = arrayOf(
             FIRST_OPEN_APP,

@@ -9,15 +9,57 @@ public class PhotoItem implements Parcelable {
     protected String id;
     protected String thumbUri;
     protected String uri;
+    protected boolean aiChip;
+
+    public PhotoItem() {
+    }
 
     public PhotoItem(String thumbUri, String uri) {
         this.thumbUri = thumbUri;
         this.uri = uri;
     }
 
+    public PhotoItem(String thumbUri, String uri,boolean aiChip) {
+        this.thumbUri = thumbUri;
+        this.uri = uri;
+        this.aiChip = aiChip;
+    }
+
     public PhotoItem(String id) {
         this.id = id;
     }
+
+    protected PhotoItem(Parcel in) {
+        id = in.readString();
+        thumbUri = in.readString();
+        uri = in.readString();
+        aiChip = in.readByte() != 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
+        dest.writeString(thumbUri);
+        dest.writeString(uri);
+        dest.writeByte((byte) (aiChip ? 1 : 0));
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<PhotoItem> CREATOR = new Creator<PhotoItem>() {
+        @Override
+        public PhotoItem createFromParcel(Parcel in) {
+            return new PhotoItem(in);
+        }
+
+        @Override
+        public PhotoItem[] newArray(int size) {
+            return new PhotoItem[size];
+        }
+    };
 
     public String getId() {
         return id;
@@ -46,36 +88,11 @@ public class PhotoItem implements Parcelable {
         this.uri = uri;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public boolean isAiChip() {
+        return aiChip;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.id);
-        dest.writeString(this.thumbUri);
-        dest.writeString(this.uri);
+    public void setAiChip(boolean aiChip) {
+        this.aiChip = aiChip;
     }
-
-    public PhotoItem() {
-    }
-
-    protected PhotoItem(Parcel in) {
-        this.id = in.readString();
-        this.thumbUri = in.readString();
-        this.uri = in.readString();
-    }
-
-    public static final Creator<PhotoItem> CREATOR = new Creator<PhotoItem>() {
-        @Override
-        public PhotoItem createFromParcel(Parcel source) {
-            return new PhotoItem(source);
-        }
-
-        @Override
-        public PhotoItem[] newArray(int size) {
-            return new PhotoItem[size];
-        }
-    };
 }

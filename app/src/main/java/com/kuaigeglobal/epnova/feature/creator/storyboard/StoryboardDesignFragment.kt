@@ -2,6 +2,7 @@ package com.kuaigeglobal.epnova.feature.creator.storyboard
 
 import android.view.View
 import androidx.databinding.Observable
+import androidx.lifecycle.lifecycleScope
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.ext.applySmartFocusManager
 import com.kuaigeglobal.epnova.common.ext.showCommonDialog
@@ -13,6 +14,7 @@ import com.kuaigeglobal.epnova.feature.creator.data.DramaGenerateConstants
 import com.kuaigeglobal.epnova.feature.creator.generate.OnBackPressedHandler
 import com.kuaigeglobal.epnova.feature.creator.generate.StoryEditorActivity
 import com.kuaigeglobal.epnova.feature.creator.generate.StoryEditorViewModel
+import com.kuaigeglobal.epnova.feature.creator.set.ModelChooseDialog
 import com.kuaigeglobal.epnova.feature.editor.EditStoryboardVideoActivity
 import com.kuaigeglobal.epnova.feature.mine.child.MyCreationsFragment
 import com.kuaigeglobal.epnova.feature.series.SeriesActivity
@@ -20,6 +22,7 @@ import com.nhsd.basic.BaseViewModelFragment
 import com.nhsd.basic.ext.getParentViewModel
 import com.nhsd.basic.ext.getResString
 import com.nhsd.basic.ext.showToast
+import kotlinx.coroutines.launch
 
 /**
  * 分镜设计
@@ -36,6 +39,29 @@ class StoryboardDesignFragment :
 
     override fun onPrepareView() {
         super.onPrepareView()
+        mRealVM.currentCreationModel.observe(this) {
+            hostVm?.currentCreationModel?.value = it
+        }
+        hostVm?.switchModelEvent?.observe(this) {
+            if (it == null || it == 0L) return@observe
+            if (mRealVM.generating) {
+                "分镜描述生成中，请稍候".showToast()
+                return@observe
+            }
+//            EventManager.onAppTrack(AppEvent.SF_CLICK_STORYBOARD_TOPRIGHT_SWITCH_BTN)
+            ModelChooseDialog.newInstance(mRealVM.currentCreationModel.value?.configCode, mRealVM.creationModels.value).apply {
+                onSuccess = { model ->
+                    this@StoryboardDesignFragment.mRealVM.let { vm ->
+                        vm.switchModel(model) {
+                            vm.step.set(StoryboardDesignViewModel.STEP_INIT)
+                            vm.retry()
+                            dismissAllowingStateLoss()
+                        }
+                    }
+                }
+            }
+                .show(childFragmentManager)
+        }
         binding.root.applySmartFocusManager()
         mRealVM.workId = hostVm?.workId
         mRealVM.storyId = hostVm?.storyId
@@ -45,6 +71,9 @@ class StoryboardDesignFragment :
                 Global.refreshBalance()
             }
         })
+        lifecycleScope.launch {
+            mRealVM.getModels()
+        }
         mRealVM.retry()
         EventManager.onAppTrack(AppEvent.SF_VIEW_STORYBOARD_DESIGN_PAGE)
     }
