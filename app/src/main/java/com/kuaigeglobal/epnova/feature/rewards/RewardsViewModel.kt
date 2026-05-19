@@ -48,7 +48,7 @@ class RewardsViewModel : AppRepositoryViewModel<AppRepository>() {
     val adManager: RewardedAdManager by lazy { RewardedAdManager(mRepo.api, viewModelScope) }
 
     /**
-     * Fragment 收到后负责加载并展示 AdMob 激励广告。
+     * Fragment 收到后负责加载并展示激励广告。
      * vm == null 表示签到广告（adScene=1）；否则为任务广告（adScene=2）。
      */
     data class AdWatchContext(val vm: ItemEarnRewardVM?, val customData: String, val nonce: String)

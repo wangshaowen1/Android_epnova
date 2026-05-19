@@ -11,7 +11,8 @@ import com.alibaba.android.alpha.Task
 import com.blankj.utilcode.util.ProcessUtils
 import com.blankj.utilcode.util.Utils
 import com.github.gzuliyujiang.oaid.DeviceID
-import com.google.android.gms.ads.MobileAds
+import com.unity3d.ads.IUnityAdsInitializationListener
+import com.unity3d.ads.UnityAds
 import com.kuaige.oss.OssType
 import com.kuaigeglobal.epnova.common.Cache
 import com.kuaigeglobal.epnova.common.SP
@@ -23,6 +24,7 @@ import com.kuaigeglobal.epnova.core.manager.AdStrategyManager
 import com.kuaigeglobal.epnova.core.manager.AppsFlyerManager
 import com.kuaigeglobal.epnova.core.manager.OssManager
 import com.kuaigeglobal.epnova.core.manager.PlaceManager
+import com.kuaigeglobal.epnova.core.manager.ad.UnityRewardedAdPlatform
 import com.kuaigeglobal.epnova.feature.splash.SplashActivity
 import com.kuaigeglobal.epnova.kit.SignUtils
 import com.kuaigeglobal.epnova.widget.CommonDialog
@@ -308,12 +310,21 @@ class App : BaseApp() {
             DeviceID.register(this)
             // AppsFlyer 开始数据采集（用户已同意隐私协议）
             AppsFlyerManager.start(this)
-            // 初始化 AdMob SDK（在主进程中执行，异步不阻塞启动）
+            // 初始化 Unity Ads SDK（在主进程中执行，异步不阻塞启动）
             if (ProcessUtils.isMainProcess()) {
-                ioScope.launch {
-                    MobileAds.initialize(instance){
+                UnityAds.initialize(instance, UnityRewardedAdPlatform.GAME_ID, BuildConfig.DEBUG,
+                    object : IUnityAdsInitializationListener {
+                        override fun onInitializationComplete() {
+                            Logger.d("UnityAds init success")
+                        }
+                        override fun onInitializationFailed(
+                            error: UnityAds.UnityAdsInitializationError,
+                            message: String
+                        ) {
+                            Logger.d("UnityAds init fail reason:${message}")
+                        }
                     }
-                }
+                )
             }
         }
     }

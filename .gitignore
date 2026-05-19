@@ -17,3 +17,4 @@ local.properties
 /.claude/
 /.mcp.json
 /.vscode/
+/.kotlin/

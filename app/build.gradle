@@ -336,8 +336,8 @@ dependencies {
     implementation 'com.google.android.gms:play-services-base:18.9.0'
     implementation libs.play.services.auth
     implementation libs.play.services.ads.identifier
-    // AdMob 激励广告 SDK
-    implementation 'com.google.android.gms:play-services-ads:25.2.0'
+    // Unity Ads 激励广告 SDK
+    implementation 'com.unity3d.ads:unity-ads:4.16.3'
 
     implementation 'com.google.android.libraries.identity.googleid:googleid:1.1.1' // 新的一键登录库
     implementation "androidx.credentials:credentials:1.5.0"

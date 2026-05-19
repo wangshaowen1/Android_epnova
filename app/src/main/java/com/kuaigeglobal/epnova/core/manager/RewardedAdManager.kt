@@ -5,8 +5,8 @@ import android.content.Context
 import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import com.kuaigeglobal.epnova.R
-import com.kuaigeglobal.epnova.core.manager.ad.AdmobRewardedAdPlatform
 import com.kuaigeglobal.epnova.core.manager.ad.IRewardedAdPlatform
+import com.kuaigeglobal.epnova.core.manager.ad.UnityRewardedAdPlatform
 import com.kuaigeglobal.epnova.core.network.apis.ApiService
 import com.kuaigeglobal.epnova.core.network.apis.request.StoryUnlockAdResultBody
 import com.kuaigeglobal.epnova.core.network.apis.request.WorkBody
@@ -51,7 +51,7 @@ class RewardedAdManager(
     private val api: ApiService,
     private val scope: CoroutineScope,
     // 切换广告平台只需替换此默认参数
-    private val platform: IRewardedAdPlatform = AdmobRewardedAdPlatform()
+    private val platform: IRewardedAdPlatform = UnityRewardedAdPlatform()
 ) {
 
     companion object {
