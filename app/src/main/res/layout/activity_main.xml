@@ -68,6 +68,33 @@
                 android:layout_weight="1">
 
                 <com.kuaigeglobal.epnova.widget.FixedAnimatedRadioButton
+                    android:id="@+id/rbCreate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:button="@null"
+                    android:drawableTop="@drawable/cb_main_tab_create"
+                    android:drawablePadding="4dp"
+                    android:gravity="center"
+                    android:text="@string/creation"
+                    android:textColor="@color/cb_main_tab_txt"
+                    android:textSize="10sp"
+                    tools:checked="false" />
+
+                <View
+                    android:id="@+id/tabCreate"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:onClick="@{layout.clickHandler::onClick}" />
+
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <com.kuaigeglobal.epnova.widget.FixedAnimatedRadioButton
                     android:id="@+id/rbWorks"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

@@ -308,7 +308,7 @@
     <string name="generating_story_script">正在生成故事剧本…</string>
     <string name="estimated_duration_2_3m">2–3分钟</string>
     <string name="next_create_assets">下一步：创建资产</string>
-    <string name="create_now">立即创作</string>
+    <string name="create_now">创作短剧</string>
     <string name="viral_comic_drama">爆款漫剧</string>
     <string name="login_or_register">登录/注册</string>
     <string name="help_center">帮助中心</string>
@@ -601,5 +601,9 @@
     <string name="tab_rewards">福利中心</string>
     <string name="tab_profile">个人中心</string>
     <string name="login_claim_coins">领取 %s 金币</string>
+    <string name="create_page_top_earners">收益榜单</string>
+    <string name="create_page_resource_center">资源中心</string>
+    <string name="create_page_published">已发布</string>
+    <string name="create_page_income">收益</string>
 </resources>
 

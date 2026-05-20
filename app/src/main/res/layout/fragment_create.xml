@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="layout"
+            type="com.kuaigeglobal.epnova.feature.create.CreateViewModel" />
+
+        <import type="android.view.View" />
+    </data>
+
+    <com.scwang.smart.refresh.layout.SmartRefreshLayout
+        android:id="@+id/srl"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:srlEnableLoadMore="false"
+        app:srlPrimaryColor="@color/transparent">
+
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:descendantFocusability="blocksDescendants">
+
+            <com.google.android.material.appbar.AppBarLayout
+                android:id="@+id/appbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:elevation="0dp"
+                android:stateListAnimator="@drawable/appbar_elevation">
+
+                <com.google.android.material.appbar.CollapsingToolbarLayout
+                    android:id="@+id/llTop"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <com.zhpan.bannerview.BannerViewPager
+                            android:id="@+id/banner"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            app:bvp_can_loop="true"
+                            app:bvp_indicator_visibility="gone"
+                            app:bvp_interval="4000"
+                            app:bvp_scroll_duration="600"
+                            app:layout_constraintDimensionRatio="375:246"
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:background="@color/color_20_ffffff" />
+
+                        <com.zhpan.indicator.IndicatorView
+                            android:id="@+id/iv_indicator"
+                            android:layout_width="wrap_content"
+                            android:layout_height="4dp"
+                            android:layout_gravity="bottom|center_horizontal"
+                            android:layout_marginEnd="@dimen/spacing_l"
+                            android:layout_marginBottom="30dp"
+                            android:orientation="horizontal"
+                            app:layout_constraintBottom_toBottomOf="@id/banner"
+                            app:layout_constraintEnd_toEndOf="@id/banner" />
+
+                        <Button
+                            android:id="@+id/btnCreation"
+                            style="@style/Button.Bold.Gradient"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_marginHorizontal="20dp"
+                            android:layout_marginTop="-12dp"
+                            app:layout_constraintDimensionRatio="325:48"
+                            app:layout_constraintTop_toBottomOf="@id/banner" />
+
+                        <TextView
+                            style="@style/Text16"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:drawableStart="@drawable/icon_ai"
+                            android:drawablePadding="10dp"
+                            android:text="@string/create_now"
+                            android:textColor="@color/sel_common_button_txt"
+                            app:layout_constraintBottom_toBottomOf="@id/btnCreation"
+                            app:layout_constraintEnd_toEndOf="@id/btnCreation"
+                            app:layout_constraintStart_toStartOf="@id/btnCreation"
+                            app:layout_constraintTop_toTopOf="@id/btnCreation" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp">
+
+                    <com.nhsd.magicindicator.MagicIndicator
+                        android:id="@+id/magic_indicator"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="15dp"
+                        android:layout_marginBottom="@dimen/spacing_l"
+                        android:gravity="center"
+                        app:layout_constraintTop_toBottomOf="parent"
+                        tools:layout_editor_absoluteX="0dp" />
+
+                    <androidx.viewpager2.widget.ViewPager2
+                        android:id="@+id/view_pager2"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/magic_indicator" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </com.google.android.material.appbar.AppBarLayout>
+        </androidx.coordinatorlayout.widget.CoordinatorLayout>
+    </com.scwang.smart.refresh.layout.SmartRefreshLayout>
+</layout>

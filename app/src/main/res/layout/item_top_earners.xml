@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="item"
+            type="com.kuaigeglobal.epnova.feature.create.child.ItemTopEarnersVm" />
+
+        <import type="android.view.View" />
+
+        <import type="com.kuaigeglobal.epnova.common.utils.DateUtil" />
+
+    </data>
+
+    <LinearLayout
+        singleClick="@{(v)->item.onItemClick.invoke(v)}"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/fill_color1_r12"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingHorizontal="9.5dp"
+        android:paddingVertical="@dimen/spacing_m">
+
+        <!-- 图片信息 -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/ivCover"
+                loadThumbnailUri="@{item.data.workCoverUrl}"
+                placeHolder="@{@drawable/img_default_cover_3_4}"
+                android:layout_width="74dp"
+                android:layout_height="99dp"
+                android:scaleType="centerCrop"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:shapeAppearance="@style/roundStyle_r8"
+                tools:src="@drawable/img_default_cover_3_4" />
+
+            <TextView
+                android:id="@+id/tv_views"
+                style="@style/Text11"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableStart="@drawable/icon_play_small"
+                android:drawablePadding="2dp"
+                android:padding="4dp"
+                android:textColor="?attr/textColor1"
+                app:layout_constraintBottom_toBottomOf="@id/ivCover"
+                app:layout_constraintEnd_toEndOf="@id/ivCover"
+                tools:text="7.6K" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_m"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <!-- 标题 -->
+            <TextView
+                android:id="@+id/tv_title"
+                style="@style/Text14"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:text="@{item.data.workTitle}"
+                android:textColor="?attr/textColor1"
+                android:textStyle="bold"
+                tools:text="疯批傅爷宠她成瘾" />
+
+            <!-- 上架平台 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:id="@+id/ll_platforms"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:minHeight="20dp"
+                    android:orientation="horizontal" />
+
+                <TextView
+                    style="@style/Text12"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="@string/create_page_published"
+                    android:textColor="@color/fill_color_4_dark" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- 累计收益 -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/Text11"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="$"
+                    android:textColor="@color/color_f59e0b" />
+
+                <TextView
+                    android:id="@+id/tv_income"
+                    style="@style/Text18"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/color_f59e0b"
+                    tools:text="8,320" />
+            </LinearLayout>
+
+            <TextView
+                style="@style/Text12"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:layout_marginStart="@dimen/spacing_xs"
+                android:text="@string/create_page_income"
+                android:textColor="@color/color_30_ffffff" />
+        </LinearLayout>
+    </LinearLayout>
+</layout>

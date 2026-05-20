@@ -313,7 +313,7 @@
     <string name="generating_story_script">Generating story script…</string>
     <string name="estimated_duration_2_3m">2–3 minutes</string>
     <string name="next_create_assets">Next: Create Assets</string>
-    <string name="create_now">Create Now</string>
+    <string name="create_now">Creating Short Dramas</string>
     <string name="viral_comic_drama">Trending Comics</string>
     <string name="login_or_register">Log In / Sign Up</string>
     <string name="help_center">Help Center</string>
@@ -614,9 +614,6 @@
     <string name="tab_profile">Profile</string>
     <string name="tab_my_list">My List</string>
     <string name="login_claim_coins">Claim %s Coins</string>
-
-
-
     <string name="pay_success">支付成功</string>
     <string name="starring">已出演</string>
     <string name="click_button_to_watch_full_episodes">点击下方平台按钮，跳转观看完整剧集</string>
@@ -666,4 +663,8 @@
     <string name="generate_role">生成角色</string>
     <string name="balance_fail_hint">充值后AI将自动恢复创作，无需重新开始</string>
     <string name="balance_fail_title">算力不足，无法继续生成</string>
+    <string name="create_page_top_earners">Top Earners</string>
+    <string name="create_page_resource_center">Resource Center</string>
+    <string name="create_page_published">Published</string>
+    <string name="create_page_income">Income</string>
 </resources>

@@ -70,6 +70,11 @@ object AppEvent {
     const val SF_CLICK_HOME_RECOMMEND_VIDEO = "sf_click_home_recommend_video"
 
     /**
+     * 访问创作tab页｜用户点击底部导航栏创作Tab，进入创作页
+     */
+    const val SF_VIEW_CREATE_TAB_PAGE = "sf_view_create_tab_page"
+
+    /**
      * 访问作品tab页｜用户点击底部导航栏作品Tab，进入个人作品页
      */
     const val SF_VIEW_WORKS_TAB_PAGE = "sf_view_works_tab_page"

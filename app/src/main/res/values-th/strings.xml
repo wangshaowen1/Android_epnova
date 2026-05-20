@@ -316,7 +316,7 @@
     <string name="generating_story_script">กำลังสร้างสคริปต์เรื่อง…</string>
     <string name="estimated_duration_2_3m">2–3 นาที</string>
     <string name="next_create_assets">ถัดไป: สร้างสินทรัพย์</string>
-    <string name="create_now">สร้างเดี๋ยวนี้</string>
+    <string name="create_now">สร้างละครสั้น</string>
     <string name="viral_comic_drama">การ์ตูนยอดนิยม</string>
     <string name="login_or_register">เข้าสู่ระบบ / สมัครสมาชิก</string>
     <string name="help_center">ศูนย์ช่วยเหลือ</string>
@@ -607,4 +607,8 @@
     <string name="tab_rewards">รางวัล</string>
     <string name="tab_profile">โปรไฟล์</string>
     <string name="login_claim_coins">รับ %s เหรียญ</string>
+    <string name="create_page_top_earners">ผู้สร้างรายได้สูงสุด</string>
+    <string name="create_page_resource_center">ศูนย์ทรัพยากร</string>
+    <string name="create_page_published">เผยแพร่แล้ว</string>
+    <string name="create_page_income">รายได้</string>
 </resources>

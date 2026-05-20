@@ -25,6 +25,7 @@ import com.kuaigeglobal.epnova.core.manager.EventManager
 import com.kuaigeglobal.epnova.core.manager.UpgradeManager
 import com.kuaigeglobal.epnova.databinding.ActivityMainBinding
 import com.kuaigeglobal.epnova.feature.aicompose.generating.GeneratingViewModel
+import com.kuaigeglobal.epnova.feature.create.CreateFragment
 import com.kuaigeglobal.epnova.feature.home.HomeFragment
 import com.kuaigeglobal.epnova.feature.mine.MineFragment
 import com.kuaigeglobal.epnova.feature.rewards.RewardWelcomeDialog
@@ -165,11 +166,22 @@ class MainActivity : BaseViewModelActivity<ActivityMainBinding, MainViewModel>()
                     }
                 }
 
+                R.id.rbCreate -> {
+                    //创建
+                    EventManager.onAppTrack(AppEvent.SF_VIEW_CREATE_TAB_PAGE)
+                    setKeepScreenOn(false)
+                    mRealVM.showTab.set(1)
+                    supportFragmentManager.switchFragment(
+                        R.id.fragment,
+                        CreateFragment::class.java
+                    )
+                }
+
                 R.id.rbWorks -> {
                     //热门
                     EventManager.onAppTrack(AppEvent.SF_VIEW_WORKS_TAB_PAGE)
                     setKeepScreenOn(false)
-                    mRealVM.showTab.set(1)
+                    mRealVM.showTab.set(2)
 //                    CreationRootActivity.start(this)
                     supportFragmentManager.switchFragment(
                         R.id.fragment,
@@ -182,15 +194,16 @@ class MainActivity : BaseViewModelActivity<ActivityMainBinding, MainViewModel>()
                     //我的
                     EventManager.onAppTrack(AppEvent.SF_VIEW_MINE_TAB_PAGE)
                     setKeepScreenOn(false)
-                    mRealVM.showTab.set(2)
+                    mRealVM.showTab.set(3)
                     supportFragmentManager.switchFragment(R.id.fragment, MineFragment::class.java)
                 }
             }
         }
         when (Config.get().appConfig.openAppLoadTab) {
             0 -> binding.mrg.check(R.id.rbHome)
-            1 -> binding.mrg.check(R.id.rbWorks)
-            2 -> binding.mrg.check(R.id.rbMine)
+            1 -> binding.mrg.check(R.id.rbCreate)
+            2 -> binding.mrg.check(R.id.rbWorks)
+            3 -> binding.mrg.check(R.id.rbMine)
             else -> binding.mrg.check(R.id.rbHome)
         }
     }
@@ -245,6 +258,15 @@ class MainActivity : BaseViewModelActivity<ActivityMainBinding, MainViewModel>()
 //                        true
 //                    } else false
 //                }
+            }
+
+            R.id.tabCreate -> {
+                clickTab(
+                    tabId = R.id.rbCreate,
+                    interceptor = { AppNavigator.checkLoginIntercepted(true) } // 传入拦截逻辑
+                ) {
+                    binding.mrg.check(R.id.rbCreate) // 真正执行切换
+                }
             }
 
             R.id.tabWorks -> {

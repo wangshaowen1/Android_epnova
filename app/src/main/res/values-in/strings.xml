@@ -316,7 +316,7 @@ Untuk mengkonfirmasi, ketuk [Minta Penghapusan].</string>
     <string name="generating_story_script">Sedang membuat skrip cerita…</string>
     <string name="estimated_duration_2_3m">2–3 menit</string>
     <string name="next_create_assets">Berikutnya: Buat Aset</string>
-    <string name="create_now">Buat Sekarang</string>
+    <string name="create_now">Membuat Drama Pendek</string>
     <string name="viral_comic_drama">Komik Populer</string>
     <string name="login_or_register">Masuk / Daftar</string>
     <string name="help_center">Pusat Bantuan</string>
@@ -606,4 +606,8 @@ Jika Anda memilih \"Tidak Setuju\", Anda tidak akan dapat menggunakan produk dan
     <string name="tab_rewards">Hadiah</string>
     <string name="tab_profile">Profil</string>
     <string name="login_claim_coins">Klaim %s Koin</string>
+    <string name="create_page_top_earners">Penghasilan Teratas</string>
+    <string name="create_page_resource_center">Pusat Sumber Daya</string>
+    <string name="create_page_published">Diterbitkan</string>
+    <string name="create_page_income">Penghasilan</string>
 </resources>
