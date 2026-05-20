@@ -6,7 +6,7 @@
     <data>
 
         <variable
-            name="layout"
+            name="viewModel"
             type="com.kuaigeglobal.epnova.feature.create.child.TopEarnersViewModel" />
     </data>
 
@@ -37,7 +37,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginHorizontal="@dimen/spacing_m"
-                    android:orientation="vertical"
                     android:overScrollMode="never"
                     app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
                     tools:listitem="@layout/item_top_earners" />
@@ -45,6 +44,3 @@
         </com.scwang.smart.refresh.layout.SmartRefreshLayout>
     </FrameLayout>
 </layout>
-
-
-

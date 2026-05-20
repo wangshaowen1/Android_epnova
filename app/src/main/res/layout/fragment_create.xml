@@ -21,16 +21,14 @@
 
         <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:descendantFocusability="blocksDescendants">
+            android:layout_height="match_parent">
 
             <com.google.android.material.appbar.AppBarLayout
                 android:id="@+id/appbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
-                android:elevation="0dp"
-                android:stateListAnimator="@drawable/appbar_elevation">
+                android:elevation="0dp">
 
                 <com.google.android.material.appbar.CollapsingToolbarLayout
                     android:id="@+id/llTop"
@@ -90,30 +88,23 @@
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 </com.google.android.material.appbar.CollapsingToolbarLayout>
 
-                <androidx.constraintlayout.widget.ConstraintLayout
+                <com.nhsd.magicindicator.MagicIndicator
+                    android:id="@+id/magic_indicator"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp">
-
-                    <com.nhsd.magicindicator.MagicIndicator
-                        android:id="@+id/magic_indicator"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="15dp"
-                        android:layout_marginBottom="@dimen/spacing_l"
-                        android:gravity="center"
-                        app:layout_constraintTop_toBottomOf="parent"
-                        tools:layout_editor_absoluteX="0dp" />
-
-                    <androidx.viewpager2.widget.ViewPager2
-                        android:id="@+id/view_pager2"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/magic_indicator" />
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
+                    android:layout_marginStart="15dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginBottom="@dimen/spacing_l"
+                    android:gravity="center"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:layout_editor_absoluteX="0dp" />
             </com.google.android.material.appbar.AppBarLayout>
+
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/view_pager2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
     </com.scwang.smart.refresh.layout.SmartRefreshLayout>
 </layout>
