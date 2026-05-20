@@ -28,6 +28,7 @@ import com.kuaigeglobal.epnova.feature.aicompose.generating.GeneratingViewModel
 import com.kuaigeglobal.epnova.feature.home.HomeFragment
 import com.kuaigeglobal.epnova.feature.mine.MineFragment
 import com.kuaigeglobal.epnova.feature.rewards.RewardWelcomeDialog
+import com.kuaigeglobal.epnova.feature.works.MyListFragment
 import com.kuaigeglobal.epnova.router.AppNavigator
 import com.kuaigeglobal.epnova.router.AppRouter
 import com.nhsd.basic.BaseViewModelActivity
@@ -170,10 +171,10 @@ class MainActivity : BaseViewModelActivity<ActivityMainBinding, MainViewModel>()
                     setKeepScreenOn(false)
                     mRealVM.showTab.set(1)
 //                    CreationRootActivity.start(this)
-//                    supportFragmentManager.switchFragment(
-//                        R.id.fragment,
-//                        RewardsActivity::class.java
-//                    )
+                    supportFragmentManager.switchFragment(
+                        R.id.fragment,
+                        MyListFragment::class.java
+                    )
                 }
 
 
@@ -399,7 +400,7 @@ class MainActivity : BaseViewModelActivity<ActivityMainBinding, MainViewModel>()
                     }
 
                     Events.MainTabEvent.TAB_MY_CREATIONS -> {
-                        binding.mrg.check(R.id.rbMine)
+                        binding.mrg.check(R.id.rbWorks)
                     }
 
                     Events.MainTabEvent.TAB_MINE -> {

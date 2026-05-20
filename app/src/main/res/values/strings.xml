@@ -610,6 +610,7 @@
     <string name="tab_explore">Explore</string>
     <string name="tab_rewards">Rewards</string>
     <string name="tab_profile">Profile</string>
+    <string name="tab_my_list">My List</string>
     <string name="login_claim_coins">Claim %s Coins</string>
 
 

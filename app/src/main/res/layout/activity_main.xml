@@ -73,10 +73,10 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:button="@null"
-                    android:drawableTop="@drawable/icon_rewards"
+                    android:drawableTop="@drawable/cb_main_tab_works"
                     android:drawablePadding="4dp"
                     android:gravity="center"
-                    android:text="@string/tab_rewards"
+                    android:text="@string/tab_my_list"
                     android:textColor="@color/cb_main_tab_txt"
                     android:textSize="10sp"
                     tools:checked="false" />
