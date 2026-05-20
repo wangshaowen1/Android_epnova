@@ -34,10 +34,20 @@ object OssManager {
         OssConfigProvider.init(ossType, ossConfig, ossFileNameProvider)
     }
 
+    /**
+     * OssStsConfig(
+     *             accessKeyId = "A********************************************Y",
+     *             accessKeySecret = "T*******************************************==",
+     *             bucket = "kuaige",
+     *             endpoint = "tos-cn-guangzhou.volces.com",
+     *             region = "cn-guangzhou",
+     *             netImageUrl = TOS_NET_IMAGE_URL,
+     *         )
+     */
     private fun getTosOssStsConfig(): OssStsConfig {
         return OssStsConfig(
-            accessKeyId = "AKLTYzFjZjJhMDQ2YTRkNGZiMDhmN2UyNGJkYzE4MzM0ODY",
-            accessKeySecret = "TWpZMlpUbGlOVGxtWldabE5HUm1PR0ZpTldKa1pHRmhPVEEzTm1Oall6VQ==",
+            accessKeyId = "",
+            accessKeySecret = "",
             bucket = "kuaige",
             endpoint = "tos-cn-guangzhou.volces.com",
             region = "cn-guangzhou",
@@ -56,10 +66,18 @@ object OssManager {
         )
     }
 
+    /**
+     *  accessKeyId = "A****************************G",
+     *             accessKeySecret = "L***************************w",
+     *             bucket = "jinguo-13******72",
+     *             endpoint = "",
+     *             region = "ap-guangzhou",
+     *             netImageUrl = "",
+     */
     private fun getTencentOssStsConfig(): OssStsConfig {
         return OssStsConfig(
-            accessKeyId = "AKIDXwBF6lCSWN1ReeR1FMHC2ulSxHNGyTmG",
-            accessKeySecret = "LSM3Xr44rUuDIA1jOuELFvOdfWIuUr0w",
+            accessKeyId = "",
+            accessKeySecret = "",
             bucket = "jinguo-1357264972",
             endpoint = "",
             region = "ap-guangzhou",
