@@ -24,7 +24,7 @@ import com.kuaigeglobal.epnova.core.network.apis.request.SSEContentBody
 import com.kuaigeglobal.epnova.core.network.apis.request.UploadStoryBody
 import com.kuaigeglobal.epnova.core.network.apis.request.UserTokenBody
 import com.kuaigeglobal.epnova.core.network.apis.request.WorkTaskData
-import com.kuaigeglobal.epnova.core.network.apis.response.FirstRechargeDialogData
+import com.kuaigeglobal.epnova.core.network.apis.response.FirstRechargeCreditsDialogData
 import com.kuaigeglobal.epnova.core.network.sse.SSEStreamHandler
 import com.kuaigeglobal.epnova.core.network.sse.processor.PlainTextSseProcessor
 import com.kuaigeglobal.epnova.feature.creator.CreationFragment.Companion.KEY_MODEL
@@ -58,7 +58,7 @@ class CreationViewModel : AppRepositoryViewModel<CreationRepository>() {
     private val unshownInspirations = mutableListOf<InspirationInfo>()
     val inspirationPrompts by lazy { MutableLiveData<List<InspirationInfo>>() }
     val videoSetConfig by lazy { MutableLiveData<VideoConfigData>() }
-    val firstRechargeCache = MutableLiveData<FirstRechargeDialogData>()
+    val firstRechargeCache = MutableLiveData<FirstRechargeCreditsDialogData>()
 
     fun inspirationModel(): Boolean {
         return creationModel == MODEL_INSPIRATION
@@ -261,7 +261,7 @@ class CreationViewModel : AppRepositoryViewModel<CreationRepository>() {
     fun getFirstRechargeInfo(callback: () -> Unit) {
         launch {
             // 2. 请求首充接口 (这里必须先于活动配置完成)
-            val firstRechargeResponse = mRepo.api.getFirstRechargeDialogInfo()
+            val firstRechargeResponse = mRepo.api.getFirstRechargeCreditsDialogInfo()
             if (firstRechargeResponse.data != null && firstRechargeResponse.data?.isNeedShow() == true) {
                 firstRechargeCache.value = firstRechargeResponse.data
             } else {

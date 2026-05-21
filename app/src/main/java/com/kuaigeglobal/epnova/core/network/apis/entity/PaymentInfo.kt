@@ -1,6 +1,8 @@
 package com.kuaigeglobal.epnova.core.network.apis.entity
 
+import android.os.Parcelable
 import com.kuaigeglobal.epnova.R
+import kotlinx.parcelize.Parcelize
 
 /**
  * {
@@ -10,6 +12,7 @@ import com.kuaigeglobal.epnova.R
  *     "payMerchantConfigId": "支付商配置表ID（苹果内购不需要设置）"
  * }
  */
+@Parcelize
 data class PaymentInfo(
     /**
      * 支付方式配置编号（雪花算法ID）
@@ -31,7 +34,7 @@ data class PaymentInfo(
      * 是否默认选中（0-非默认、1-默认）
      */
     val isDefault: Int?
-) {
+) : Parcelable {
     val name
         get() = when (payWay) {
             1 -> "微信"

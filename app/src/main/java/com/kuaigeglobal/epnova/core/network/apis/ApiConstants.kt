@@ -806,6 +806,11 @@ object ApiConstants {
     const val GET_FIRST_RECHARGE_DIALOG_INFO = "gift/newUser/popup/info"
 
     /**
+     * 获取算力新人专享礼
+     */
+    const val GET_FIRST_RECHARGE_CREDITS_DIALOG_INFO = "app/window/newUserGift"
+
+    /**
      * 播放-分页查询播放历史列表
      */
     const val USER_PLAY_HISTORY_PAGE = "user/work/history/page"

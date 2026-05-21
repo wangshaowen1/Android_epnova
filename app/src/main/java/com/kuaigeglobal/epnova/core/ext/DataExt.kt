@@ -21,6 +21,7 @@ import com.kuaigeglobal.epnova.core.network.apis.entity.SimpleStoryboardInfo
 import com.kuaigeglobal.epnova.core.network.apis.request.ContentBody
 import com.kuaigeglobal.epnova.core.network.apis.response.UserHomeData
 import com.kuaigeglobal.epnova.feature.recharge.PowerRechargeDialog
+import com.kuaigeglobal.epnova.feature.splash.newer.FirstRechargeCreditsDialog
 import com.kuaigeglobal.epnova.feature.splash.newer.FirstRechargeDialog
 import com.kuaigeglobal.epnova.feature.web.SimpleBrowserActivity
 import com.nhsd.basic.ext.getResColor
@@ -203,9 +204,9 @@ suspend fun showRechargeDialog(
     showToast: Boolean = false,
     rechargeTab: Int = PowerRechargeDialog.TAB_CREDITS
 ) {
-    PowerRechargeDialog.show(0, showToast, rechargeTab = rechargeTab)
-//    if (!showFirstRecharge(showToast)) {
-//    }
+    if (!showFirstRecharge(showToast, rechargeTab)) {
+        PowerRechargeDialog.show(0, showToast, rechargeTab = rechargeTab)
+    }
 }
 
 /**
@@ -219,6 +220,38 @@ suspend fun showFirstRecharge(
     val canShowFirstRecharge = !User.get().hasPaid() &&
             !Config.get().isFirstRechargeShown(FirstRechargeDialog.SCENE_OTHER)
     if (!canShowFirstRecharge) return false
+    val isShown = if (rechargeTab == PowerRechargeDialog.TAB_CREDITS) {
+        showCreditsFirstRecharge(showToast, rechargeTab)
+    } else {
+        showCoinsFirstRecharge(showToast, rechargeTab)
+    }
+    if (isShown) {
+        Config.get().markFirstRechargeShown(FirstRechargeDialog.SCENE_OTHER)
+    }
+    return isShown
+}
+
+private suspend fun showCreditsFirstRecharge(
+    showToast: Boolean,
+    rechargeTab: Int
+): Boolean {
+    val firstRechargeDialogData = withContext(Dispatchers.IO) {
+        ApiFactory.apiService.getFirstRechargeCreditsDialogInfo()
+    }.data
+    if (firstRechargeDialogData == null) return false
+    EventManager.onAppTrack(AppEvent.SF_VIEW_CREATE_NEWCOMER_GIFTPACK_PAGE)
+    val dialog = FirstRechargeCreditsDialog.show(FirstRechargeCreditsDialog.SCENE_OTHER, firstRechargeDialogData)?.apply {
+        onClose = {
+            PowerRechargeDialog.show(0, showToast, rechargeTab = rechargeTab)
+        }
+    }
+    return dialog != null
+}
+
+private suspend fun showCoinsFirstRecharge(
+    showToast: Boolean,
+    rechargeTab: Int
+): Boolean {
     val firstRechargeDialogData = withContext(Dispatchers.IO) {
         ApiFactory.apiService.getFirstRechargeDialogInfo()
     }.data
@@ -229,6 +262,5 @@ suspend fun showFirstRecharge(
             PowerRechargeDialog.show(0, showToast, rechargeTab = rechargeTab)
         }
     }
-    Config.get().markFirstRechargeShown(FirstRechargeDialog.SCENE_OTHER)
     return dialog != null
 }

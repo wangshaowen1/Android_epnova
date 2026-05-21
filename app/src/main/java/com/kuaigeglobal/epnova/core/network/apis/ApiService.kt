@@ -156,6 +156,7 @@ import com.kuaigeglobal.epnova.core.network.apis.response.DramasIdData
 import com.kuaigeglobal.epnova.core.network.apis.response.DramasSeriesIdData
 import com.kuaigeglobal.epnova.core.network.apis.response.EpisodeDirectoryData
 import com.kuaigeglobal.epnova.core.network.apis.response.EpisodePlayData
+import com.kuaigeglobal.epnova.core.network.apis.response.FirstRechargeCreditsDialogData
 import com.kuaigeglobal.epnova.core.network.apis.response.FirstRechargeDialogData
 import com.kuaigeglobal.epnova.core.network.apis.response.FollowingData
 import com.kuaigeglobal.epnova.core.network.apis.response.HomeBookShelfData
@@ -1170,6 +1171,12 @@ interface ApiService {
      */
     @POST(ApiConstants.GET_FIRST_RECHARGE_DIALOG_INFO)
     suspend fun getFirstRechargeDialogInfo(): ApiResponse<FirstRechargeDialogData?>
+
+    /**
+     * 获取算力新人专享礼
+     */
+    @POST(ApiConstants.GET_FIRST_RECHARGE_CREDITS_DIALOG_INFO)
+    suspend fun getFirstRechargeCreditsDialogInfo(): ApiResponse<FirstRechargeCreditsDialogData?>
 
     /**
      * 播放-分页查询播放历史列表

@@ -10,15 +10,16 @@ import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.ext.onUserSignIn
 import com.kuaigeglobal.epnova.core.google.billing.BillingManager
 import com.kuaigeglobal.epnova.core.google.billing.PurchaseResult
-import com.kuaigeglobal.epnova.core.network.apis.response.FirstRechargeDialogData
+import com.kuaigeglobal.epnova.core.network.apis.response.FirstRechargeCreditsDialogData
 import com.kuaigeglobal.epnova.databinding.DialogFirstRechargeCreditsBinding
 import com.nhsd.basic.BaseVMDialogFragment
 import com.nhsd.basic.bus.observeEvents
 import com.nhsd.basic.ext.dp
+import com.nhsd.basic.ext.setOnSingleClickListener
 import kotlinx.coroutines.launch
 
 class FirstRechargeCreditsDialog :
-    BaseVMDialogFragment<DialogFirstRechargeCreditsBinding, FirstRechargeViewModel>() {
+    BaseVMDialogFragment<DialogFirstRechargeCreditsBinding, FirstRechargeCreditsViewModel>() {
 
     companion object {
 
@@ -27,7 +28,7 @@ class FirstRechargeCreditsDialog :
 
         fun show(
             scene: Int = SCENE_OTHER,
-            firstRechargeDialogData: FirstRechargeDialogData?
+            firstRechargeDialogData: FirstRechargeCreditsDialogData?
         ): FirstRechargeCreditsDialog? {
             if (firstRechargeDialogData?.isNeedShow() == false) return null
             val activity = ActivityUtils.getTopActivity() as? FragmentActivity ?: return null
@@ -63,16 +64,16 @@ class FirstRechargeCreditsDialog :
     }
 
     private fun initPrice() {
-        val googleProductId = mRealVM.data?.googleProductId
+        val googleProductId = mRealVM.data?.pointConfigVO?.googleProductId
         BillingManager.loadNewerGiftPrice(googleProductId) { map ->
-            val priceText = map[googleProductId]?.first ?: return@loadNewerGiftPrice
-            binding.tvCurrentPrice.text = priceText
-            binding.tvExclusivePrice.text = priceText
+            viewLifecycleOwner.lifecycleScope.launch {
+                mRealVM.updateGooglePrice(map[googleProductId]?.first)
+            }
         }
     }
 
     private fun initEvents() {
-        binding.ivClose.setOnClickListener {
+        binding.ivClose.setOnSingleClickListener {
             onClose?.invoke()
             dismissAllowingStateLoss()
         }
