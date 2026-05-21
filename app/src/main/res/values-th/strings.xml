@@ -77,6 +77,9 @@
     <string name="payment_successful">ชำระเงินสำเร็จ</string>
     <string name="payment_cancelled">ยกเลิกการชำระเงิน</string>
     <string name="payment_failed_retry">ชำระเงินล้มเหลว โปรดลองอีกครั้ง</string>
+    <string name="google_payment_unsuccessful_title">การชำระเงินไม่สำเร็จ</string>
+    <string name="google_payment_unsuccessful_content">ระบบดำเนินการชำระเงินของคุณแล้ว แต่เราไม่สามารถยืนยันคำสั่งซื้อได้ โปรดติดต่อฝ่ายสนับสนุน แล้วเราจะช่วยแก้ไขโดยเร็ว</string>
+    <string name="close">ปิด</string>
     <string name="yesterday">เมื่อวานนี้</string>
     <string name="day_before_yesterday">เมื่อวานซืน</string>
     <string name="day">วัน</string>

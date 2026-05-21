@@ -11,11 +11,13 @@ import android.text.style.ClickableSpan
 import android.util.TypedValue
 import android.view.View
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.ext.topActivity
 import com.kuaigeglobal.epnova.common.utils.CommonNavigatorUtils
 import com.kuaigeglobal.epnova.core.Config
 import com.kuaigeglobal.epnova.core.Events
+import com.kuaigeglobal.epnova.core.google.billing.PurchaseResult
 import com.kuaigeglobal.epnova.core.manager.AppEvent
 import com.kuaigeglobal.epnova.core.manager.EventManager
 import com.kuaigeglobal.epnova.databinding.ActivityMyBalanceBinding
@@ -30,6 +32,7 @@ import com.nhsd.magicindicator.buildins.commonnavigator.abs.CommonNavigatorAdapt
 import com.nhsd.magicindicator.buildins.commonnavigator.abs.IPagerIndicator
 import com.nhsd.magicindicator.buildins.commonnavigator.abs.IPagerTitleView
 import com.nhsd.magicindicator.buildins.commonnavigator.titles.ScaleTransitionPagerTitleView
+import kotlinx.coroutines.launch
 
 class MyBalanceActivity : BaseViewModelActivity<ActivityMyBalanceBinding, MyBalanceViewModel>() {
     companion object {
@@ -44,6 +47,7 @@ class MyBalanceActivity : BaseViewModelActivity<ActivityMyBalanceBinding, MyBala
         initTitleBar()
         initRecyclerView()
         setupTip(MyBalanceViewModel.TAB_COINS)
+        observePurchaseEvent()
         observeEvents {
             on<Events.UserDataEvent> {
                 mRealVM.updateBalance()
@@ -96,6 +100,16 @@ class MyBalanceActivity : BaseViewModelActivity<ActivityMyBalanceBinding, MyBala
 
     private fun initRecyclerView() {
         binding.rvRechargeAmount.adapter = mRealVM.coinsAdapter
+    }
+
+    private fun observePurchaseEvent() {
+        lifecycleScope.launch {
+            mRealVM.purchaseEvent.collect { result ->
+                if (result == PurchaseResult.Failed.BenefitFailed) {
+                    showGooglePaymentExceptionDialog()
+                }
+            }
+        }
     }
 
     private fun switchTab(index: Int) {

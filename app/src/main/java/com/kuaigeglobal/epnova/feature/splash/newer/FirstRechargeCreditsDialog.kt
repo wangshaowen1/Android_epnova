@@ -12,6 +12,7 @@ import com.kuaigeglobal.epnova.core.google.billing.BillingManager
 import com.kuaigeglobal.epnova.core.google.billing.PurchaseResult
 import com.kuaigeglobal.epnova.core.network.apis.response.FirstRechargeCreditsDialogData
 import com.kuaigeglobal.epnova.databinding.DialogFirstRechargeCreditsBinding
+import com.kuaigeglobal.epnova.feature.recharge.showGooglePaymentExceptionDialog
 import com.nhsd.basic.BaseVMDialogFragment
 import com.nhsd.basic.bus.observeEvents
 import com.nhsd.basic.ext.dp
@@ -79,9 +80,14 @@ class FirstRechargeCreditsDialog :
         }
         viewLifecycleOwner.lifecycleScope.launch {
             mRealVM.purchaseEvent.collect { result ->
-                if (result is PurchaseResult.Success) {
-                    dismissAllowingStateLoss()
-                    onPaySuccess?.invoke()
+                when (result) {
+                    is PurchaseResult.Success -> {
+                        dismissAllowingStateLoss()
+                        onPaySuccess?.invoke()
+                    }
+
+                    PurchaseResult.Failed.BenefitFailed -> activity?.showGooglePaymentExceptionDialog()
+                    else -> Unit
                 }
             }
         }

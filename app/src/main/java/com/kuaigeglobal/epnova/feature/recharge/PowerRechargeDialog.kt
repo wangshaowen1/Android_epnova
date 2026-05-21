@@ -88,11 +88,16 @@ class PowerRechargeDialog : BaseBottomPushVMDialogFragment<DialogRechargePowerBi
         // 支付结果：通过 Flow 观察，生命周期安全
         viewLifecycleOwner.lifecycleScope.launch {
             mRealVM.purchaseEvent.collect { result ->
-                if (result is PurchaseResult.Success) {
-                    isPaid = true
-                    onDismissCallback = null
-                    dismissAllowingStateLoss()
-                    onRechargeSuccessCallback?.invoke()
+                when (result) {
+                    is PurchaseResult.Success -> {
+                        isPaid = true
+                        onDismissCallback = null
+                        dismissAllowingStateLoss()
+                        onRechargeSuccessCallback?.invoke()
+                    }
+
+                    PurchaseResult.Failed.BenefitFailed -> activity?.showGooglePaymentExceptionDialog()
+                    else -> Unit
                 }
             }
         }

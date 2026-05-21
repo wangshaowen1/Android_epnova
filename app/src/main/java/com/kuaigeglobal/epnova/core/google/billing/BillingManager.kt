@@ -92,7 +92,7 @@ object BillingManager {
                     // 进程被杀重启场景：orderId 已丢失，但 Google 仍会推送 pending purchases
                     // 若 responseCode == OK 且有 purchases，直接验签并 Toast 提示；UI 回调依赖后续 queryPendingPurchases 补偿
                     if (billingResult.responseCode == BillingClient.BillingResponseCode.OK && !purchases.isNullOrEmpty()) {
-                        handlePurchases(purchases) { _, _, allVerified ->
+                        handlePurchases(purchases) { _, _, _, allVerified ->
                             if (allVerified) {
                                 App.instance.getString(R.string.payment_successful).showToast()
                                 // 进程重启场景：无 ViewModel 订阅，emit 会被自动丢弃，仅靠 Toast 提示
@@ -108,13 +108,12 @@ object BillingManager {
                 when (billingResult.responseCode) {
                     BillingClient.BillingResponseCode.OK -> {//购买成功
                         Logger.d(TAG, "Purchases updated: $purchases")
-                        handlePurchases(purchases) { _, _, allVerified ->
+                        handlePurchases(purchases) { _, _, _, allVerified ->
                             orderId = null
                             if (allVerified) {
                                 showToast(R.string.payment_successful)
                                 _purchaseResult.tryEmit(PurchaseResult.Success(purchases?.firstOrNull()))
                             } else {
-                                showToast(R.string.payment_failed_retry)
                                 _purchaseResult.tryEmit(PurchaseResult.Failed.BenefitFailed)
                             }
                             tryDisconnectAfterPurchase()
@@ -126,12 +125,19 @@ object BillingManager {
                             "Google购买异常===>PurchasesUpdatedListener: $billingResult , purchase:${purchases?.getOrNull(0)} order=$currentOrderId userId=${User.get().id}"
                         FirebaseCrashlytics.getInstance().recordException(Exception(reason))
                         // 第一次立即查
-                        queryPendingPurchases { list, _ ->
+                        queryPendingPurchases { list, _, verifyFailedList, _ ->
                             val purchase = list?.find { it.accountIdentifiers?.obfuscatedAccountId == currentOrderId }
                             if (purchase != null) {
                                 orderId = null
-                                showToast(R.string.payment_successful)
-                                _purchaseResult.tryEmit(PurchaseResult.Success(purchase))
+                                val isCurrentVerifyFailed = verifyFailedList.any {
+                                    it.accountIdentifiers?.obfuscatedAccountId == currentOrderId
+                                }
+                                if (isCurrentVerifyFailed) {
+                                    _purchaseResult.tryEmit(PurchaseResult.Failed.BenefitFailed)
+                                } else {
+                                    showToast(R.string.payment_successful)
+                                    _purchaseResult.tryEmit(PurchaseResult.Success(purchase))
+                                }
                             } else {
                                 showToast(R.string.payment_failed_retry)
                                 _purchaseResult.tryEmit(PurchaseResult.Failed.PaymentFailed)
@@ -467,11 +473,18 @@ object BillingManager {
     }
 
     // 查询历史购买记录，newlyVerified 为本次新验签成功的购买列表，可用于后台补偿场景的提示
-    fun queryPendingPurchases(onConsumeOver: ((List<Purchase>?, newlyVerified: List<Purchase>) -> Unit)? = null) {
+    fun queryPendingPurchases(
+        onConsumeOver: ((
+            all: List<Purchase>?,
+            newlyVerified: List<Purchase>,
+            verifyFailedList: List<Purchase>,
+            allVerified: Boolean
+        ) -> Unit)? = null
+    ) {
         connectIfNeeded { state ->
             if (state != 2) {
                 Logger.d(TAG, "查询历史购买失败，连接状态: $state")
-                onConsumeOver?.invoke(null, emptyList())
+                onConsumeOver?.invoke(null, emptyList(), emptyList(), false)
                 return@connectIfNeeded
             }
             ioScope.launchNoCrash {
@@ -489,8 +502,8 @@ object BillingManager {
                     inAppPurchases + subsPurchases
                 }
                 withContext(Dispatchers.Main) {
-                    handlePurchases(purchases) { list, newlyVerified, _ ->
-                        onConsumeOver?.invoke(list, newlyVerified)
+                    handlePurchases(purchases) { list, newlyVerified, verifyFailedList, allVerified ->
+                        onConsumeOver?.invoke(list, newlyVerified, verifyFailedList, allVerified)
                     }
                 }
             }
@@ -503,16 +516,22 @@ object BillingManager {
      */
     private fun handlePurchases(
         purchases: List<Purchase>?,
-        onConsumeOver: ((all: List<Purchase>?, newlyVerified: List<Purchase>, allVerified: Boolean) -> Unit)? = null
+        onConsumeOver: ((
+            all: List<Purchase>?,
+            newlyVerified: List<Purchase>,
+            verifyFailedList: List<Purchase>,
+            allVerified: Boolean
+        ) -> Unit)? = null
     ) {
         if (purchases.isNullOrEmpty()) {
             Logger.d(TAG, "No purchases found")
-            onConsumeOver?.invoke(null, emptyList(), true)
+            onConsumeOver?.invoke(null, emptyList(), emptyList(), true)
             return
         }
         ioScope.launchNoCrash {
             var allVerified = true
             val newlyVerified = mutableListOf<Purchase>()
+            val verifyFailedList = mutableListOf<Purchase>()
             purchases.forEach {
                 if (it.purchaseState == Purchase.PurchaseState.PURCHASED) {
                     if (!it.isAcknowledged) {
@@ -528,6 +547,7 @@ object BillingManager {
                             newlyVerified.add(it)
                         } catch (e: Exception) {
                             allVerified = false
+                            verifyFailedList.add(it)
                             Logger.e(TAG, "验券失败: ${e.message}")
                             FirebaseCrashlytics.getInstance().recordException(e)
                         }
@@ -539,7 +559,7 @@ object BillingManager {
                 }
             }
             withContext(Dispatchers.Main) {
-                onConsumeOver?.invoke(purchases, newlyVerified, allVerified)
+                onConsumeOver?.invoke(purchases, newlyVerified, verifyFailedList, allVerified)
             }
         }
     }

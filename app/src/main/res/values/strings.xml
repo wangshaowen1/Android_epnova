@@ -91,6 +91,9 @@
     <string name="payment_successful">Payment successful</string>
     <string name="payment_cancelled">Payment Cancelled</string>
     <string name="payment_failed_retry">Payment failed, please try again</string>
+    <string name="google_payment_unsuccessful_title">Payment Unsuccessful</string>
+    <string name="google_payment_unsuccessful_content">Your payment was processed but we couldn\'t verify your order. Please contact support and we\'ll resolve it promptly.</string>
+    <string name="close">Close</string>
     <string name="yesterday">Yesterday</string>
     <string name="day_before_yesterday">2 Days Ago</string>
     <string name="day">Day</string>
