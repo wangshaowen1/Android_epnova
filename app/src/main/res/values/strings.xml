@@ -492,6 +492,10 @@
     <string name="no_data">No Data</string>
     <string name="delete_episode">Delete Episode</string>
     <string name="delete_episode_warning">Deleting this episode will permanently erase its script, asset images, and storyboard videos. Coins used cannot be refunded.</string>
+    <string name="delete_work_published_or_review_toast">This drama contains published or under-review episodes and cannot be deleted.</string>
+    <string name="delete_episode_published_or_review_toast">This episode is published or under review and cannot be deleted.</string>
+    <string name="episode_publish_locked_function_toast">This episode is published or under-review and this function is unavailable.</string>
+    <string name="delete_episodes_confirm_warning">Are you sure you want to delete these episodes? This action cannot be undone.</string>
     <string name="full_screen">Full Screen</string>
     <string name="drama_has_ended">This drama has ended.</string>
     <string name="delete_work_warning">Are you sure you want to delete this work?</string>

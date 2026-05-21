@@ -3,9 +3,11 @@ package com.kuaigeglobal.epnova.feature.series
 import android.annotation.SuppressLint
 import androidx.databinding.ObservableBoolean
 import androidx.lifecycle.viewModelScope
+import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.base.item.AppItemViewModel
 import com.kuaigeglobal.epnova.core.network.apis.entity.EpisodeInfo
 import com.kuaigeglobal.epnova.feature.works.ItemMultipleChoiceEventsViewModel
+import com.nhsd.basic.ext.showToast
 import kotlinx.coroutines.launch
 
 /**
@@ -28,14 +30,22 @@ class ItemSeriesEpisodeVM(
             eventVm.postEvent(SeriesEpisodeEvent.Click(position, this))
             return
         }
+        if (isDeleteLocked()) {
+            showToast(R.string.delete_episode_published_or_review_toast)
+            return
+        }
         if (isSelected.get()) {
             isSelected.set(false)
-            eventVm.removeSelectedItem(episodeInfo?.storyId ?: "")
+            eventVm.removeSelectedItem(data.get()?.storyId ?: "")
         } else {
             isSelected.set(true)
-            eventVm.addSelectedItem(episodeInfo?.storyId ?: "")
+            eventVm.addSelectedItem(data.get()?.storyId ?: "")
         }
         eventVm.postEvent(SeriesEpisodeEvent.ComposeState(isSelected.get(), this))
+    }
+
+    fun isDeleteLocked(): Boolean {
+        return data.get()?.isPublishedOrUnderReview() == true
     }
 
     init {

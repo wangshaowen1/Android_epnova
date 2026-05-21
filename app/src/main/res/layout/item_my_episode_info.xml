@@ -142,6 +142,16 @@
             app:layout_constraintEnd_toEndOf="@id/ivCover"
             tools:text="03:26" />
 
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/bg_60_000000_r8"
+            android:visibility="@{(!item.isView() &amp;&amp; item.deleteLocked &amp;&amp; !item.data.notCreated) ? View.VISIBLE : View.GONE}"
+            app:layout_constraintBottom_toBottomOf="@+id/ivCover"
+            app:layout_constraintEnd_toEndOf="@+id/ivCover"
+            app:layout_constraintStart_toStartOf="@+id/ivCover"
+            app:layout_constraintTop_toTopOf="@+id/ivCover" />
+
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -161,6 +171,7 @@
             android:layout_height="16dp"
             android:layout_marginTop="6dp"
             android:layout_marginEnd="8dp"
+            android:alpha="@{item.deleteLocked ? 0.5f : 1f}"
             android:importantForAccessibility="no"
             android:src="@{item.isSelected()?@drawable/ic_my_work_selected:@drawable/ic_my_work_not_selected}"
             android:visibility="@{item.isView()?View.GONE:View.VISIBLE}"

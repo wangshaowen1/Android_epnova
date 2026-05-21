@@ -62,6 +62,7 @@ class EditStoryboardVideoViewModel : AppRepositoryViewModel<EditStoryboardReposi
     val scrollToItem by lazy { MutableLiveData<Int>(-1) }
     val adapter by lazy { QuickAdapter<ItemStoryboardVM>(R.layout.item_short_drama_editor_segment, emptyList()) }
     val nextStepEnabled by lazy { ObservableBoolean(false) }
+    val publishLocked by lazy { ObservableBoolean(false) }
     val storyboardPlayer by lazy {
         PlayerFactory.createPlayer(true, autoAudioFocus = true).apply {
             addListener(object : Player.Listener {
@@ -106,6 +107,7 @@ class EditStoryboardVideoViewModel : AppRepositoryViewModel<EditStoryboardReposi
     override fun onCreate() {
         super.onCreate()
         storyInfo = mBundle.getParcelableValue(Constants.Extra.DATA, EpisodeInfo::class.java)
+        updatePublishLocked()
         getStoryboardList()
         getStoryInfo { }
     }
@@ -319,6 +321,7 @@ class EditStoryboardVideoViewModel : AppRepositoryViewModel<EditStoryboardReposi
 
     val isSynthesised get() = storyInfo?.stepProgress in arrayOf(40, 45, 50)
     fun deleteCurrentStoryboard() {
+        if (showPublishLockedToast()) return
         launchWithLoading {
             response(mRepo.api.workStoryboardDelete(IdsBody(null, currentStoryboard.get()?.data?.get()?.storyboardId, if (isSynthesised) 4 else null))) {
                 val currentStoryboard = currentStoryboard.get()
@@ -334,6 +337,7 @@ class EditStoryboardVideoViewModel : AppRepositoryViewModel<EditStoryboardReposi
     }
 
     fun synthesis() {
+        if (showPublishLockedToast()) return
         if (anyStoryboardGenerating()) {
             showToast(R.string.video_generating_please_wait)
             return
@@ -385,6 +389,7 @@ class EditStoryboardVideoViewModel : AppRepositoryViewModel<EditStoryboardReposi
         launchWithLoading {
             response(mRepo.api.singleEpisodeDetails(WorkBody(workId, storyId))) {
                 data?.let { storyInfo = it }
+                updatePublishLocked()
                 data?.workRatio?.let { workRatio.set(it) }
                 callback.invoke(storyInfo)
             }
@@ -405,6 +410,7 @@ class EditStoryboardVideoViewModel : AppRepositoryViewModel<EditStoryboardReposi
      * 重新生成分镜
      */
     fun regenerateStoryboards() {
+        if (showPublishLockedToast()) return
         launch {
             loadState.set(LoadStateViewHolder.LOADING)
             //先查询分镜列表
@@ -473,6 +479,26 @@ class EditStoryboardVideoViewModel : AppRepositoryViewModel<EditStoryboardReposi
             }
 
         }
+    }
+
+    fun generateCurrentStoryboard() {
+        if (showPublishLockedToast()) return
+        currentStoryboard.get()?.generate(storyInfo)
+    }
+
+    fun generateCurrentSubtitle() {
+        if (showPublishLockedToast()) return
+        currentStoryboard.get()?.generateSubtitle()
+    }
+
+    fun showPublishLockedToast(): Boolean {
+        if (!publishLocked.get()) return false
+        showToast(R.string.episode_publish_locked_function_toast)
+        return true
+    }
+
+    private fun updatePublishLocked() {
+        publishLocked.set(storyInfo?.isPublishedOrUnderReview() == true)
     }
 
 }

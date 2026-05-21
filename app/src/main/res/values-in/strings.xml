@@ -494,6 +494,10 @@ Untuk mengkonfirmasi, ketuk [Minta Penghapusan].</string>
     <string name="no_data">Tidak Ada Data</string>
     <string name="delete_episode">Hapus Episode</string>
     <string name="delete_episode_warning">Menghapus episode ini akan menghapus skrip, gambar aset, dan video storyboard secara permanen. Kredit yang digunakan tidak dapat dikembalikan.</string>
+    <string name="delete_work_published_or_review_toast">This drama contains published or under-review episodes and cannot be deleted.</string>
+    <string name="delete_episode_published_or_review_toast">This episode is published or under review and cannot be deleted.</string>
+    <string name="episode_publish_locked_function_toast">This episode is published or under-review and this function is unavailable.</string>
+    <string name="delete_episodes_confirm_warning">Are you sure you want to delete these episodes? This action cannot be undone.</string>
 
     <string name="credits_validity_period">Kredit berlaku selama 1 tahun sejak pembelian.</string>
     <string name="credits_usage_description">Kredit dapat digunakan untuk membuat drama pendek Anda sendiri.</string>

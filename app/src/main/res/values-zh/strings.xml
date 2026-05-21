@@ -487,6 +487,10 @@
     <string name="no_data">暂无数据</string>
     <string name="delete_episode">删除剧集</string>
     <string name="delete_episode_warning">删除后，该集的剧本、资产图、分镜视频等将被清空，已消耗算力将无法恢复</string>
+    <string name="delete_work_published_or_review_toast">该剧包含已发布/审核中剧集，暂不支持删除。</string>
+    <string name="delete_episode_published_or_review_toast">该剧集已发布或审核中，暂不支持删除。</string>
+    <string name="episode_publish_locked_function_toast">该剧集已发布或审核中，该功能无法使用。</string>
+    <string name="delete_episodes_confirm_warning">确定要删除这些剧集吗？此操作不可恢复。</string>
     <string name="full_screen">Full Screen</string>
     <string name="drama_has_ended">当前剧集已播放完毕</string>
     <string name="delete_work_warning">确定要删除该作品吗?此操作不可恢复。</string>

@@ -296,10 +296,12 @@ class App : BaseApp() {
 
     fun initSdkAfterAgreeLicense() {
         if (hasAgree()) {
-            Global.guestLogin({
-                User.get().updateFrom(it)
-                SignUtils.signIn()
-            })
+            if (!User.get().isLogin) {
+                Global.guestLogin({
+                    User.get().updateFrom(it)
+                    SignUtils.signIn()
+                })
+            }
             Utils.init(this)
             DeviceID.register(this)
             // AppsFlyer 开始数据采集（用户已同意隐私协议）

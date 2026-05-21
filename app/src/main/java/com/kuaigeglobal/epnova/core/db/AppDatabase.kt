@@ -3,6 +3,8 @@ package com.kuaigeglobal.epnova.core.db
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import com.kuaigeglobal.epnova.core.db.dao.AIMessageDao
 import com.kuaigeglobal.epnova.core.db.dao.ChatSceneDao
 import com.kuaigeglobal.epnova.core.db.dao.RemoteKeysDao
@@ -28,7 +30,7 @@ import com.nhsd.basic.BaseApp
         WorkInformationInfo::class,
         WorkInfoEntity::class,
         RemoteKeys::class
-    ], version = 1, exportSchema = true
+    ], version = 2, exportSchema = true
 )
 abstract class AppDatabase : RoomDatabase() {
 

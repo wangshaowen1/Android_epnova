@@ -494,6 +494,10 @@
     <string name="no_data">ไม่มีข้อมูล</string>
     <string name="delete_episode">ลบตอน</string>
     <string name="delete_episode_warning">การลบตอนนี้จะลบสคริปต์ รูปภาพสินทรัพย์ และวิดีโอสตอรี่บอร์ดอย่างถาวร เครดิตที่ใช้ไปไม่สามารถคืนได้</string>
+    <string name="delete_work_published_or_review_toast">This drama contains published or under-review episodes and cannot be deleted.</string>
+    <string name="delete_episode_published_or_review_toast">This episode is published or under review and cannot be deleted.</string>
+    <string name="episode_publish_locked_function_toast">This episode is published or under-review and this function is unavailable.</string>
+    <string name="delete_episodes_confirm_warning">Are you sure you want to delete these episodes? This action cannot be undone.</string>
 
     <string name="credits_validity_period">เครดิตมีอายุการใช้งาน 1 ปีตั้งแต่วันที่ซื้อ</string>
     <string name="credits_usage_description">สามารถใช้เครดิตสร้างละครสั้นของคุณเองได้</string>

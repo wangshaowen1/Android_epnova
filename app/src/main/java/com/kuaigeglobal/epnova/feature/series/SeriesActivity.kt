@@ -290,8 +290,14 @@ class SeriesActivity : BaseViewModelActivity<ActivitySeriesBinding, SeriesViewMo
                     popup.dismiss()
                     WorksManagementActivity.start(this, workId = mRealVM.workId)
                 }
+                val deleteLocked = mRealVM.workInfo.value?.hasPublishedOrUnderReviewEpisode() == true
+                popupView.binding.btnDel.alpha = if (deleteLocked) 0.5f else 1f
                 popupView.binding.btnDel.setOnSingleClickListener {
                     popup.dismiss()
+                    if (deleteLocked) {
+                        showToast(R.string.delete_work_published_or_review_toast)
+                        return@setOnSingleClickListener
+                    }
                     showCommonDialog(title = getString(R.string.delete_work_warning)) {
                         mRealVM.delete()
                     }

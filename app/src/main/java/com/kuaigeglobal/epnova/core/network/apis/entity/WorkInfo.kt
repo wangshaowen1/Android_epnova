@@ -46,9 +46,9 @@ data class WorkInfo(
     var workStoryItemList: List<EpisodeInfo>? = null,
     /**[枚举]签约状态(0-未申请 1-审核中 2-已通过 3-已驳回)*/
     val contractStatus: Int? = null,
-    /**[枚举]发行状态(0-未发行 1-待签约 2-发行上架中 3-已发行)*/
+    /**20260520 发布状态（1=审核中 2=通过 3=审核失败）*/
     val publishStatus: Int? = null,
-    /**驳回原因*/
+    /**20260520 驳回原因（审核失败）*/
     val rejectReason: String? = null,
     /**签约评级（S/A/B/C等）*/
     val contractLevel: String? = null,
@@ -58,10 +58,16 @@ data class WorkInfo(
     val publishPlatformImageList: List<String>? = null,
     /**作品-自己发行流程Url*/
     val workSelfPublishProcessUrl: String? = null,
-    /**作品-签约发行页面完整 Url（字典 WORK_CONTRACT_PUBLISH_PAGE_URL 基础地址 + workId 参数，带 Redis 缓存）*/
+    /**20260520 作品-发行页面完整 Url（用于跳转 H5）*/
     val workContractPublishPageUrl: String? = null,
-    /**是否展示「去发行」按钮（0-不展示 1-展示，总集数 totalEpisodeCnt>=30 时展示）*/
+    /**20260520 是否展示「去发行」按钮（0=不展示 1=展示）*/
     val showPublishButton: Int? = null,
+    /**20260520 全局发布状态：0=未发布，1=审核中，2=已发布，3=审核失败*/
+    val globalPublishStatus: Int? = null,
+    /**20260520 已发布（审核通过）的剧集数量*/
+    val publishedEpisodeCnt: Int? = null,
+    /**20260520 My List-My Creations 封面角标：0=None,10=Draft,20=Unpublished,30=In Review,40=Review Failed,50=Published*/
+    val coverBadgeType: Int? = null,
 ) : Parcelable {
 
     companion object {
@@ -97,6 +103,45 @@ data class WorkInfo(
 
         /**失败状态*/
         const val FAILED_STATE = 70
+
+        /**发布审核中*/
+        const val PUBLISH_STATUS_REVIEWING = 1
+
+        /**发布审核通过*/
+        const val PUBLISH_STATUS_PASSED = 2
+
+        /**发布审核失败*/
+        const val PUBLISH_STATUS_FAILED = 3
+
+        /**全局发布状态：未发布*/
+        const val GLOBAL_PUBLISH_STATUS_UNPUBLISHED = 0
+
+        /**全局发布状态：审核中*/
+        const val GLOBAL_PUBLISH_STATUS_REVIEWING = 1
+
+        /**全局发布状态：已发布*/
+        const val GLOBAL_PUBLISH_STATUS_PUBLISHED = 2
+
+        /**全局发布状态：审核失败*/
+        const val GLOBAL_PUBLISH_STATUS_FAILED = 3
+
+        /**封面角标：无*/
+        const val COVER_BADGE_NONE = 0
+
+        /**封面角标：草稿*/
+        const val COVER_BADGE_DRAFT = 10
+
+        /**封面角标：未发布*/
+        const val COVER_BADGE_UNPUBLISHED = 20
+
+        /**封面角标：审核中*/
+        const val COVER_BADGE_IN_REVIEW = 30
+
+        /**封面角标：审核失败*/
+        const val COVER_BADGE_REVIEW_FAILED = 40
+
+        /**封面角标：已发布*/
+        const val COVER_BADGE_PUBLISHED = 50
 
     }
 
@@ -143,6 +188,18 @@ data class WorkInfo(
 
     fun isMine(): Boolean {
         return User.get().isSameId(userId)
+    }
+
+    fun isPublishedOrUnderReview(): Boolean {
+        return publishStatus in listOf(PUBLISH_STATUS_REVIEWING, PUBLISH_STATUS_PASSED) ||
+                globalPublishStatus in listOf(GLOBAL_PUBLISH_STATUS_REVIEWING, GLOBAL_PUBLISH_STATUS_PUBLISHED) ||
+                coverBadgeType in listOf(COVER_BADGE_IN_REVIEW, COVER_BADGE_PUBLISHED)
+    }
+
+    fun hasPublishedOrUnderReviewEpisode(): Boolean {
+        return isPublishedOrUnderReview() ||
+                (publishedEpisodeCnt ?: 0) > 0 ||
+                workStoryItemList.orEmpty().any { it.isPublishedOrUnderReview() }
     }
 
     val stripedTrickTitle
@@ -200,6 +257,13 @@ data class WorkInfo(
         if (workRatio != other.workRatio) return false
         if (workInspiration != other.workInspiration) return false
         if (workCoverUrl != other.workCoverUrl) return false
+        if (publishStatus != other.publishStatus) return false
+        if (rejectReason != other.rejectReason) return false
+        if (workContractPublishPageUrl != other.workContractPublishPageUrl) return false
+        if (showPublishButton != other.showPublishButton) return false
+        if (globalPublishStatus != other.globalPublishStatus) return false
+        if (publishedEpisodeCnt != other.publishedEpisodeCnt) return false
+        if (coverBadgeType != other.coverBadgeType) return false
 
         return true
     }
@@ -217,6 +281,13 @@ data class WorkInfo(
         result = 31 * result + (workRatio?.hashCode() ?: 0)
         result = 31 * result + (workInspiration?.hashCode() ?: 0)
         result = 31 * result + (workCoverUrl?.hashCode() ?: 0)
+        result = 31 * result + (publishStatus ?: 0)
+        result = 31 * result + (rejectReason?.hashCode() ?: 0)
+        result = 31 * result + (workContractPublishPageUrl?.hashCode() ?: 0)
+        result = 31 * result + (showPublishButton ?: 0)
+        result = 31 * result + (globalPublishStatus ?: 0)
+        result = 31 * result + (publishedEpisodeCnt ?: 0)
+        result = 31 * result + (coverBadgeType ?: 0)
         return result
     }
 }
@@ -280,6 +351,12 @@ data class EpisodeInfo(
     val taskGenResultStoryVO: TaskGenResultStoryVO? = null,
     /**是否首次创建（0=否删除过，1=是首次创建）*/
     val firstCreationFlag: Int? = null,
+    /**20260520 发布状态（1=审核中 2=通过 3=审核失败）*/
+    val publishStatus: Int? = null,
+    /**20260520 驳回原因（审核失败）*/
+    val rejectReason: String? = null,
+    /**20260520 剧集封面角标：0=None,10=Draft,20=Unpublished,30=In Review,40=Review Failed,50=Published*/
+    val coverBadgeType: Int? = null,
 
     val liked: Boolean? = null,
     val likeCount: Int? = null,
@@ -335,6 +412,11 @@ data class EpisodeInfo(
 
     fun isLocked(): Boolean {
         return lockStatus == 2
+    }
+
+    fun isPublishedOrUnderReview(): Boolean {
+        return publishStatus in listOf(WorkInfo.PUBLISH_STATUS_REVIEWING, WorkInfo.PUBLISH_STATUS_PASSED) ||
+                coverBadgeType in listOf(WorkInfo.COVER_BADGE_IN_REVIEW, WorkInfo.COVER_BADGE_PUBLISHED)
     }
 
 

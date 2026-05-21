@@ -24,6 +24,7 @@ import com.kuaigeglobal.epnova.widget.stateful.paging.MyMultiStatePagingFooterAd
 import com.nhsd.basic.BaseViewModelActivity
 import com.nhsd.basic.bus.FlowEventBus
 import com.nhsd.basic.ext.dp
+import com.nhsd.basic.ext.showToast
 import kotlinx.coroutines.launch
 import kotlin.collections.containsAll
 import kotlin.compareTo
@@ -114,11 +115,10 @@ class WorksManagementActivity :
         }
 
         mRealVM.selectedCount.observe(this) { count ->
-            val currentItems = episodeAdapter.snapshot().items
-            val currentIds = currentItems.mapNotNull { it.storyId }.toHashSet()
+            val currentIds = currentSelectableIds()
 
             // 判断是否全选
-            val isAllSelected = count > 0 && eventVm.getSelectedItems().containsAll(currentIds)
+            val isAllSelected = currentIds.isNotEmpty() && count > 0 && eventVm.getSelectedItems().containsAll(currentIds)
 
             binding.btnSelectAll.text = if (isAllSelected) {
                 getString(R.string.deselect_all)  // 反选
@@ -165,6 +165,13 @@ class WorksManagementActivity :
         episodeAdapter.refresh()
     }
 
+    private fun currentSelectableIds(): HashSet<String> {
+        return episodeAdapter.snapshot().items
+            .filterNot { it.isPublishedOrUnderReview() }
+            .mapNotNull { it.storyId }
+            .toHashSet()
+    }
+
     override fun <Data> onClick(view: View?, data: Data?) {
         super.onClick(view, data)
         when (view?.id) {
@@ -175,7 +182,7 @@ class WorksManagementActivity :
                 }
                 topActivity?.showConfirmPrompt(
                     title = getString(R.string.delete_episode),
-                    tip = getString(R.string.delete_episode_warning),
+                    tip = getString(R.string.delete_episodes_confirm_warning),
                     cancelText = getString(R.string.cancel),
                     confirmText =  getString(R.string.del)
                 ) {
@@ -185,8 +192,11 @@ class WorksManagementActivity :
 
 
             R.id.btnSelectAll -> {
-                val currentItems: List<EpisodeInfo> = episodeAdapter.snapshot().items
-                val currentIds = currentItems.mapNotNull { it.storyId }.toHashSet()
+                val currentIds = currentSelectableIds()
+                if (currentIds.isEmpty()) {
+                    showToast(R.string.delete_episode_published_or_review_toast)
+                    return
+                }
                 val selectedItems = eventVm.getSelectedItems()
 
                 // 判断是否已经全选

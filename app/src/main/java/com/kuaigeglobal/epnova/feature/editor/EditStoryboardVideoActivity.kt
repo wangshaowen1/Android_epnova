@@ -109,6 +109,7 @@ class EditStoryboardVideoActivity : BaseViewModelActivity<ActivityEditStoryboard
         binding.loadState.setNoDataIcon(0)
         binding.root.applySmartFocusManager()
         binding.loadState.setNoDataButton(getString(R.string.generate_storyboard_video)) {
+            if (mRealVM.showPublishLockedToast()) return@setNoDataButton
             mRealVM.regenerateStoryboards()
         }
         mRealVM.scrollToItem.observe(this) { itemPosition ->
@@ -152,6 +153,7 @@ class EditStoryboardVideoActivity : BaseViewModelActivity<ActivityEditStoryboard
         super.onClick(view, data)
         when (view?.id) {
             R.id.btnRegenerate -> {
+                if (mRealVM.showPublishLockedToast()) return
                 val current = mRealVM.currentStoryboard.get()?.data?.get() ?: return
                 if (current.videoGenerating) {
                     getString(R.string.video_generating_please_wait).showToast()
@@ -182,12 +184,14 @@ class EditStoryboardVideoActivity : BaseViewModelActivity<ActivityEditStoryboard
             }
 
             R.id.btnDelete -> {
+                if (mRealVM.showPublishLockedToast()) return
                 showCommonDialog(tip = getString(R.string.confirm_delete_scene_warning), confirmText = getString(R.string.confirm_del)) {
                     mRealVM.deleteCurrentStoryboard()
                 }
             }
 
             R.id.btnGenerate -> {
+                if (mRealVM.showPublishLockedToast()) return
                 mRealVM.synthesis()
             }
         }
