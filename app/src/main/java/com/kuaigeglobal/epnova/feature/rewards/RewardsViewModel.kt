@@ -51,7 +51,13 @@ class RewardsViewModel : AppRepositoryViewModel<AppRepository>() {
      * Fragment 收到后负责加载并展示激励广告。
      * vm == null 表示签到广告（adScene=1）；否则为任务广告（adScene=2）。
      */
-    data class AdWatchContext(val vm: ItemEarnRewardVM?, val customData: String, val nonce: String)
+    data class AdWatchContext(
+        val vm: ItemEarnRewardVM?,
+        val customData: String,
+        val nonce: String,
+        val adMarkup: String? = null,
+        val objectId: String? = null
+    )
     private val _showAdEvent = MutableSharedFlow<AdWatchContext>(extraBufferCapacity = 1)
     val showAdEvent: SharedFlow<AdWatchContext> = _showAdEvent
 
@@ -147,7 +153,15 @@ class RewardsViewModel : AppRepositoryViewModel<AppRepository>() {
                 val d = data ?: return@request
                 val customData = d.customData ?: return@request
                 val nonce = d.nonce ?: return@request
-                _showAdEvent.tryEmit(AdWatchContext(vm = vm, customData = customData, nonce = nonce))
+                _showAdEvent.tryEmit(
+                    AdWatchContext(
+                        vm = vm,
+                        customData = customData,
+                        nonce = nonce,
+                        adMarkup = d.adMarkup,
+                        objectId = d.objectId
+                    )
+                )
             }
         )
     }
@@ -198,7 +212,15 @@ class RewardsViewModel : AppRepositoryViewModel<AppRepository>() {
                 val d = data ?: return@request
                 val customData = d.customData ?: return@request
                 val nonce = d.nonce ?: return@request
-                _showAdEvent.tryEmit(AdWatchContext(vm = null, customData = customData, nonce = nonce))
+                _showAdEvent.tryEmit(
+                    AdWatchContext(
+                        vm = null,
+                        customData = customData,
+                        nonce = nonce,
+                        adMarkup = d.adMarkup,
+                        objectId = d.objectId
+                    )
+                )
             }
         )
     }

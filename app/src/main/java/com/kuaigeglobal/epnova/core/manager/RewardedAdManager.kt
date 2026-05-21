@@ -125,6 +125,8 @@ class RewardedAdManager(
         context: Context,
         activity: Activity,
         customData: String,
+        adMarkup: String? = null,
+        objectId: String? = null,
         onLoaded: (() -> Unit)? = null,
         onRewarded: () -> Unit,
         onFailed: (() -> Unit)? = null
@@ -134,6 +136,8 @@ class RewardedAdManager(
         platform.load(
             context = context,
             customData = customData,
+            adMarkup = adMarkup,
+            objectId = objectId,
             onLoaded = {
                 Logger.d(TAG, "loadAndShow: ad loaded")
                 isAdLoading.set(false)
@@ -184,11 +188,15 @@ class RewardedAdManager(
 
             val customData = prepareRes.data!!.customData
             nonce = prepareRes.data!!.nonce
+            val adMarkup = prepareRes.data!!.adMarkup
+            val objectId = prepareRes.data!!.objectId
 
             withContext(Dispatchers.Main) {
                 platform.load(
                     context = context,
                     customData = customData,
+                    adMarkup = adMarkup,
+                    objectId = objectId,
                     onLoaded = {
                         Logger.d(TAG, "startPrepare: ad loaded")
                         isAdLoading.set(false)

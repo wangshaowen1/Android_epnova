@@ -24,6 +24,8 @@ interface IRewardedAdPlatform {
     fun load(
         context: Context,
         customData: String?,
+        adMarkup: String? = null,
+        objectId: String? = null,
         onLoaded: () -> Unit,
         onFailed: () -> Unit
     )

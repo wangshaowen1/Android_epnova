@@ -37,8 +37,6 @@ import com.nhsd.permisson.PermissionX
 import com.scwang.smart.refresh.footer.ClassicsFooter
 import com.scwang.smart.refresh.layout.SmartRefreshLayout
 import com.tencent.mmkv.MMKV
-import com.unity3d.ads.IUnityAdsInitializationListener
-import com.unity3d.ads.UnityAds
 import java.lang.ref.WeakReference
 import java.util.LinkedList
 import java.util.Locale
@@ -308,19 +306,7 @@ class App : BaseApp() {
             AppsFlyerManager.start(this)
             // 初始化 Unity Ads SDK（在主进程中执行，异步不阻塞启动）
             if (ProcessUtils.isMainProcess()) {
-                UnityAds.initialize(instance, UnityRewardedAdPlatform.GAME_ID, BuildConfig.DEBUG,
-                    object : IUnityAdsInitializationListener {
-                        override fun onInitializationComplete() {
-                            Logger.d("UnityAds init success")
-                        }
-                        override fun onInitializationFailed(
-                            error: UnityAds.UnityAdsInitializationError,
-                            message: String
-                        ) {
-                            Logger.d("UnityAds init fail reason:${message}")
-                        }
-                    }
-                )
+                UnityRewardedAdPlatform.initialize(instance)
             }
         }
     }
