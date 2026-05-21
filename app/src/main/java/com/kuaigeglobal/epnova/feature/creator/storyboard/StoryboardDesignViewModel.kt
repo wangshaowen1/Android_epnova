@@ -348,7 +348,7 @@ class StoryboardDesignViewModel : AppRepositoryViewModel<AppRepository>() {
     }
 
     private fun generate(cost: Int, toNextStep: ((workId: String?, storyId: String?, taskId: String?) -> Unit)? = null) {
-        if (PowerRechargeDialog.checkLowBalance(cost)) return
+        if (PowerRechargeDialog.checkLowBalance(cost, PowerRechargeDialog.TAB_CREDITS)) return
         launchWithLoading {
             adapter.items.forEach { if (it is ItemStoryboardVM && !it.save()) return@launchWithLoading }
             response(

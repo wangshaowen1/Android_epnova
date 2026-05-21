@@ -39,14 +39,17 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.launch
 
-class MyBalanceViewModel(@LayoutRes private val paymentItemLayout: Int) : AppRepositoryViewModel<CoinRepository>() {
+class MyBalanceViewModel(
+    @LayoutRes private val paymentItemLayout: Int,
+    initialTab: Int = TAB_COINS
+) : AppRepositoryViewModel<CoinRepository>() {
 
     companion object {
         const val TAB_COINS = 0
         const val TAB_CREDITS = 1
     }
 
-    var currentTab = TAB_COINS
+    var currentTab = initialTab
         private set
 
     var isDialog = false
@@ -252,6 +255,7 @@ class MyBalanceViewModel(@LayoutRes private val paymentItemLayout: Int) : AppRep
             purchaseJob?.cancel()
             return
         }
+        if (isDialog) EventManager.onAppTrack(AppEvent.SF_CLICK_COMPUTE_RECHARGE_PAYMENT_BUTTON)
         launchWithLoading(
             block = {
                 response(mRepo.createGoogleOrder(item.pointConfigCode)) {

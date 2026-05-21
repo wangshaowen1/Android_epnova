@@ -95,14 +95,22 @@ class DramaGenerateStep1Fragment :
             }
         }
         mRealVM.showRechargeDialogEvent.observe(this) {
-            PowerRechargeDialog.show(showToast = true, toastMessage = getString(R.string.insufficient_balance_recharge_to_continue), onDismiss = { recharged ->
-                mRealVM.onRecharged(recharged)
-            })
+            PowerRechargeDialog.show(
+                showToast = true,
+                toastMessage = getString(R.string.insufficient_balance_recharge_to_continue),
+                rechargeTab = PowerRechargeDialog.TAB_CREDITS,
+                onDismiss = { recharged ->
+                    mRealVM.onRecharged(recharged)
+                }
+            )
         }
         binding.btnRecharge.setOnSingleClickListener {
-            PowerRechargeDialog.show(onDismiss = { recharged ->
-                mRealVM.onRecharged(recharged)
-            })
+            PowerRechargeDialog.show(
+                rechargeTab = PowerRechargeDialog.TAB_CREDITS,
+                onDismiss = { recharged ->
+                    mRealVM.onRecharged(recharged)
+                }
+            )
         }
 
         binding.btnRegenerate.setOnSingleClickListener {

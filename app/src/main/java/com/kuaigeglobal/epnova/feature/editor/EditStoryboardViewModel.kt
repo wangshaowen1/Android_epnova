@@ -202,7 +202,7 @@ class EditStoryboardViewModel : AppRepositoryViewModel<EditStoryboardRepository>
     }
 
     private fun generate(storyboard: SimpleStoryboardInfo, prompt: String, cost: Int, finish: Boolean = false) {
-        if (PowerRechargeDialog.checkLowBalance(cost)) return
+        if (PowerRechargeDialog.checkLowBalance(cost, PowerRechargeDialog.TAB_CREDITS)) return
         launchWithLoading {
             if (prompt != storyboard.storyBoardDesc) {
                 sensitiveWordCheck(prompt).let { (isPass, highlightText) ->

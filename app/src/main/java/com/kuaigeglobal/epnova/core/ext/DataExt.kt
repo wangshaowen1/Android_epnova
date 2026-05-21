@@ -199,8 +199,11 @@ suspend fun sensitiveWordCheck(content: String?, needHighlight: Boolean? = true)
     return true to null
 }
 
-suspend fun showRechargeDialog(showToast: Boolean = false) {
-        PowerRechargeDialog.show(0,showToast)
+suspend fun showRechargeDialog(
+    showToast: Boolean = false,
+    rechargeTab: Int = PowerRechargeDialog.TAB_CREDITS
+) {
+    PowerRechargeDialog.show(0, showToast, rechargeTab = rechargeTab)
 //    if (!showFirstRecharge(showToast)) {
 //    }
 }
@@ -209,8 +212,12 @@ suspend fun showRechargeDialog(showToast: Boolean = false) {
  * 显示首充弹窗
  * @return 是否显示成功
  */
-suspend fun showFirstRecharge(showToast: Boolean): Boolean {
-    val canShowFirstRecharge = !User.get().hasPaid() && !Config.get().isFirstRechargeShown(FirstRechargeDialog.SCENE_OTHER)
+suspend fun showFirstRecharge(
+    showToast: Boolean,
+    rechargeTab: Int = PowerRechargeDialog.TAB_CREDITS
+): Boolean {
+    val canShowFirstRecharge = !User.get().hasPaid() &&
+            !Config.get().isFirstRechargeShown(FirstRechargeDialog.SCENE_OTHER)
     if (!canShowFirstRecharge) return false
     val firstRechargeDialogData = withContext(Dispatchers.IO) {
         ApiFactory.apiService.getFirstRechargeDialogInfo()
@@ -219,7 +226,7 @@ suspend fun showFirstRecharge(showToast: Boolean): Boolean {
     EventManager.onAppTrack(AppEvent.SF_VIEW_CREATE_NEWCOMER_GIFTPACK_PAGE)
     val dialog = FirstRechargeDialog.show(FirstRechargeDialog.SCENE_OTHER, firstRechargeDialogData)?.apply {
         onClose = {
-            PowerRechargeDialog.show(0,showToast)
+            PowerRechargeDialog.show(0, showToast, rechargeTab = rechargeTab)
         }
     }
     Config.get().markFirstRechargeShown(FirstRechargeDialog.SCENE_OTHER)
