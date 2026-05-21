@@ -549,6 +549,12 @@
     <string name="newbie_coins">Coins</string>
     <string name="newbie_bonus">Bonus</string>
     <string name="newbie_limited_time">Limited Time</string>
+    <string name="newbie_new_user_exclusive_gift">New User Exclusive Gift！</string>
+    <string name="newbie_current_credits">Current Credits</string>
+    <string name="newbie_exclusive_bonus">Exclusive Bonus</string>
+    <string name="newbie_credits_bonus_detail">%1$s + %2$s Bouns</string>
+    <string name="newbie_limited_time_offer">Limited-Time Offer:</string>
+    <string name="newbie_pay_now">Pay Now</string>
     <string name="settings_language">Language</string>
     <string name="settings_auto_unlock_episode">Auto unlock episode</string>
     <string name="store_store">Store</string>
@@ -614,6 +620,9 @@
     <string name="tab_profile">Profile</string>
     <string name="tab_my_list">My List</string>
     <string name="login_claim_coins">Claim %s Coins</string>
+
+
+
     <string name="pay_success">支付成功</string>
     <string name="starring">已出演</string>
     <string name="click_button_to_watch_full_episodes">点击下方平台按钮，跳转观看完整剧集</string>

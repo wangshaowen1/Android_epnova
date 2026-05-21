@@ -551,6 +551,12 @@ Jika Anda memilih \"Tidak Setuju\", Anda tidak akan dapat menggunakan produk dan
     <string name="store_history">Riwayat</string>
     <string name="store_coins">Koin</string>
     <string name="store_credits">Credits</string>
+    <string name="newbie_new_user_exclusive_gift">New User Exclusive Gift！</string>
+    <string name="newbie_current_credits">Current Credits</string>
+    <string name="newbie_exclusive_bonus">Exclusive Bonus</string>
+    <string name="newbie_credits_bonus_detail">%1$s + %2$s Bouns</string>
+    <string name="newbie_limited_time_offer">Limited-Time Offer:</string>
+    <string name="newbie_pay_now">Pay Now</string>
     <string name="store_reward_coins">Koin Hadiah</string>
     <string name="store_coins_tips">Tips\nSyarat Penggunaan dan Kebijakan Privasi\n1. Koin berlaku selama 1 tahun sejak pembelian.\n2. Koin dapat digunakan untuk membuka kunci episode secara berurutan.\n3. Koin akan digunakan terlebih dahulu saat membuka kunci episode. Jika jumlah tidak mencukupi, koin hadiah akan digunakan secara otomatis.\n4. Setelah episode dibuka kunci dengan Kredit, dapat ditonton tanpa batas waktu.\n5. Jika Anda memiliki pertanyaan lain, silakan hubungi layanan pelanggan melalui Profil -&gt; Pengaturan -&gt; Umpan Balik &amp; Saran.</string>
     <string name="store_credits_tips">Tips：\n1. Credits berlaku selama 1 tahun sejak pembelian.\n2. Credits dapat digunakan untuk membuat drama pendek Anda sendiri.\n3. Credits yang sudah digunakan untuk pembuatan tidak dapat dikembalikan.\n4. Jika Anda memiliki pertanyaan lain, silakan hubungi layanan pelanggan melalui Profil → Umpan Balik &amp; Saran.\n5. Syarat Penggunaan dan Kebijakan Privasi.</string>

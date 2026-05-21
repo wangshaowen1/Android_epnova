@@ -28,7 +28,7 @@ import com.kuaigeglobal.epnova.feature.creator.data.DramaGenerateConstants
 import com.kuaigeglobal.epnova.feature.creator.generate.StoryEditorActivity
 import com.kuaigeglobal.epnova.feature.creator.set.StoryGenerateConfirmDialog
 import com.kuaigeglobal.epnova.feature.creator.set.VideoSetDialog
-import com.kuaigeglobal.epnova.feature.splash.newer.FirstRechargeDialog
+import com.kuaigeglobal.epnova.feature.splash.newer.FirstRechargeCreditsDialog
 import com.kuaigeglobal.epnova.router.AppNavigator
 import com.kuaigeglobal.epnova.widget.GeneratingDialog
 import com.nhsd.basic.BaseViewModelFragment
@@ -128,8 +128,8 @@ class CreationFragment :
         mRealVM.firstRechargeCache.observe(this) { data ->
             data?.let {
                 EventManager.onAppTrack(AppEvent.SF_VIEW_HOME_NEWCOMER_GIFTPACK_PAGE)
-                FirstRechargeDialog.show(FirstRechargeDialog.SCENE_HOME, it)
-                Config.get().markFirstRechargeShown(FirstRechargeDialog.SCENE_HOME)
+                FirstRechargeCreditsDialog.show(FirstRechargeCreditsDialog.SCENE_HOME, it)
+                Config.get().markFirstRechargeShown(FirstRechargeCreditsDialog.SCENE_HOME)
             }
         }
 
@@ -224,7 +224,8 @@ class CreationFragment :
                         }
                     }
 
-                    val canShowFirstRecharge = !User.get().hasPaid() && !Config.get().isFirstRechargeShown(FirstRechargeDialog.SCENE_HOME)
+                    val canShowFirstRecharge = !User.get().hasPaid() &&
+                        !Config.get().isFirstRechargeShown(FirstRechargeCreditsDialog.SCENE_HOME)
                     if (canShowFirstRecharge) {
                         this@CreationFragment.mRealVM.getFirstRechargeInfo {
                             progressLogic()

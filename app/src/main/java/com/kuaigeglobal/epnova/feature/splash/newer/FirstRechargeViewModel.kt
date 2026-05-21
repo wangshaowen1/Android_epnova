@@ -14,6 +14,7 @@ import com.kuaigeglobal.epnova.core.network.apis.response.FirstRechargeDialogDat
 import com.kuaigeglobal.epnova.core.response
 import com.kuaigeglobal.epnova.feature.recharge.CoinRepository
 import com.kuaigeglobal.epnova.router.AppNavigator
+import com.nhsd.basic.ext.getResString
 import com.nhsd.basic.ext.getParcelableValue
 import com.nhsd.basic.ext.showToast
 import kotlinx.coroutines.Job
@@ -32,6 +33,18 @@ class FirstRechargeViewModel : AppRepositoryViewModel<CoinRepository>() {
     val hourStr = MutableLiveData("00")
     val minuteStr = MutableLiveData("00")
     val secondStr = MutableLiveData("00")
+
+    val currentCreditsText: String
+        get() = (data?.coionsNum ?: 0).toString()
+
+    val exclusiveCreditsText: String
+        get() = ((data?.coionsNum ?: 0) + (data?.giveNum ?: 0)).toString()
+
+    val exclusiveBonusText: String
+        get() = R.string.newbie_credits_bonus_detail.getResString(
+            (data?.coionsNum ?: 0).toString(),
+            (data?.giveNum ?: 0).toString()
+        )
 
     /** 倒计时归零信号，由 Dialog 观察后自动关闭 */
     val countdownFinished = MutableLiveData(false)

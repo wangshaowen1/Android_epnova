@@ -1,0 +1,388 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="layout"
+            type="com.kuaigeglobal.epnova.feature.splash.newer.FirstRechargeViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="290dp"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/ivHeader"
+            android:layout_width="246dp"
+            android:layout_height="109dp"
+            android:adjustViewBounds="true"
+            android:contentDescription="@null"
+            android:scaleType="fitCenter"
+            android:src="@drawable/img_first_recharge_credits_top"
+            app:layout_constraintEnd_toEndOf="@id/cardMain"
+            app:layout_constraintStart_toStartOf="@id/cardMain"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cardMain"
+            android:layout_width="290dp"
+            android:layout_height="315dp"
+            android:layout_marginTop="88dp"
+            android:background="@drawable/bg_first_recharge_credits_dialog"
+            android:clipToOutline="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/viewTopBg"
+                android:layout_width="0dp"
+                android:layout_height="178dp"
+                android:contentDescription="@null"
+                android:scaleType="fitXY"
+                android:src="@drawable/bg_first_recharge_credits_top_figma"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.kuaigeglobal.epnova.widget.GradientTextView
+                android:id="@+id/tvTitle"
+                style="@style/Text.Bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="21dp"
+                android:gravity="center"
+                android:includeFontPadding="false"
+                android:maxLines="2"
+                android:text="@string/newbie_new_user_exclusive_gift"
+                android:textSize="20sp"
+                app:endColor="#F640C6"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constrainedWidth="true"
+                app:middleColor="#A947FF"
+                app:startColor="#3A44FF" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cardCurrentCredits"
+                android:layout_width="104dp"
+                android:layout_height="102dp"
+                android:layout_marginStart="22dp"
+                android:layout_marginTop="78dp"
+                android:background="@drawable/bg_fefefe_r12"
+                android:elevation="4dp"
+                android:outlineAmbientShadowColor="#7AF0D9F8"
+                android:outlineSpotShadowColor="#7AF0D9F8"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:id="@+id/tvCurrentCreditsLabel"
+                    style="@style/Text.Regular"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    android:gravity="center"
+                    android:includeFontPadding="false"
+                    android:maxLines="2"
+                    android:text="@string/newbie_current_credits"
+                    android:textColor="#666666"
+                    android:textSize="11sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constrainedWidth="true" />
+
+                <TextView
+                    android:id="@+id/tvCurrentCredits"
+                    style="@style/Text.Bold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="10dp"
+                    android:layout_marginTop="8dp"
+                    android:gravity="center"
+                    android:includeFontPadding="false"
+                    android:text="@{layout.currentCreditsText}"
+                    android:textColor="#333333"
+                    android:textSize="20sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tvCurrentCreditsLabel"
+                    app:layout_constrainedWidth="true"
+                    tools:text="1500" />
+
+                <TextView
+                    android:id="@+id/tvCurrentPrice"
+                    style="@style/Text.Regular"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="70dp"
+                    android:gravity="center"
+                    android:includeFontPadding="false"
+                    android:text="@{layout.data.coionsPrice}"
+                    android:textColor="#666666"
+                    android:textSize="12sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constrainedWidth="true"
+                    tools:text="$ 14.99" />
+
+                <View
+                    android:id="@+id/viewCurrentDivider"
+                    android:layout_width="70dp"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="66dp"
+                    android:background="#F2F2F2"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cardExclusiveBonus"
+                android:layout_width="128dp"
+                android:layout_height="134dp"
+                android:layout_marginTop="62dp"
+                android:layout_marginEnd="21dp"
+                android:background="@drawable/bg_first_recharge_credits_card_selected"
+                android:elevation="6dp"
+                android:outlineAmbientShadowColor="#4DE869DD"
+                android:outlineSpotShadowColor="#4DE869DD"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:id="@+id/tvExclusiveBonusLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="10dp"
+                    android:layout_marginTop="12dp"
+                    android:fontFamily="@font/outfit_medium"
+                    android:gravity="center"
+                    android:includeFontPadding="false"
+                    android:maxLines="2"
+                    android:text="@string/newbie_exclusive_bonus"
+                    android:textColor="#6023F3"
+                    android:textSize="12sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constrainedWidth="true" />
+
+                <com.kuaigeglobal.epnova.widget.GradientTextView
+                    android:id="@+id/tvExclusiveCredits"
+                    style="@style/Text.Bold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="10dp"
+                    android:layout_marginTop="4dp"
+                    android:gravity="center"
+                    android:includeFontPadding="false"
+                    android:text="@{layout.exclusiveCreditsText}"
+                    android:textSize="28sp"
+                    app:endColor="#ffFF6E52"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tvExclusiveBonusLabel"
+                    app:layout_constrainedWidth="true"
+                    app:middleColor="#ffFF3997"
+                    app:startColor="#ff8B33FF"
+                    tools:text="1800" />
+
+                <com.kuaigeglobal.epnova.widget.GradientTextView
+                    android:id="@+id/tvExclusiveBonusDetail"
+                    style="@style/Text.Medium"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:background="@drawable/bg_feecf7_r50"
+                    android:gravity="center"
+                    android:includeFontPadding="false"
+                    android:maxLines="2"
+                    android:paddingHorizontal="9dp"
+                    android:paddingVertical="6dp"
+                    android:text="@{layout.exclusiveBonusText}"
+                    android:textSize="12sp"
+                    app:endColor="#ffFF6E52"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tvExclusiveCredits"
+                    app:layout_constrainedWidth="true"
+                    app:middleColor="#ffFF3997"
+                    app:startColor="#ff8B33FF"
+                    tools:text="1500 + 300 Bouns" />
+
+                <FrameLayout
+                    android:id="@+id/viewExclusivePrice"
+                    android:layout_width="0dp"
+                    android:layout_height="30dp"
+                    android:background="@drawable/bg_first_recharge_credits_price_selected"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent">
+
+                    <TextView
+                        android:id="@+id/tvExclusivePrice"
+                        style="@style/Text.Medium"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:includeFontPadding="false"
+                        android:text="@{layout.data.coionsPrice}"
+                        android:textColor="@color/white"
+                        android:textSize="14sp"
+                        tools:text="$ 14.99" />
+                </FrameLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <ImageView
+                android:id="@+id/tvPlus"
+                android:layout_width="33dp"
+                android:layout_height="29dp"
+                android:layout_marginStart="113dp"
+                android:layout_marginTop="121dp"
+                android:contentDescription="@null"
+                android:elevation="12dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_first_recharge_credits_plus"
+                android:translationZ="12dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <LinearLayout
+                android:id="@+id/viewCountdown"
+                android:layout_width="wrap_content"
+                android:layout_height="24dp"
+                android:layout_marginTop="215dp"
+                android:gravity="center"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    style="@style/Text.Regular"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:includeFontPadding="false"
+                    android:text="@string/newbie_limited_time_offer"
+                    android:textColor="#150359"
+                    android:textSize="11sp" />
+
+                <TextView
+                    android:id="@+id/tvHour"
+                    style="@style/Text.SemiBold"
+                    android:layout_width="28dp"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="10dp"
+                    android:background="@drawable/bg_f5e6fb_r4"
+                    android:gravity="center"
+                    android:includeFontPadding="false"
+                    android:text="@{layout.hourStr}"
+                    android:textColor="#100053"
+                    android:textSize="12sp"
+                    tools:text="23" />
+
+                <TextView
+                    style="@style/Text.SemiBold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="6dp"
+                    android:gravity="center"
+                    android:includeFontPadding="false"
+                    android:text=":"
+                    android:textColor="#100053"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/tvMinute"
+                    style="@style/Text.SemiBold"
+                    android:layout_width="28dp"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="6dp"
+                    android:background="@drawable/bg_f5e6fb_r4"
+                    android:gravity="center"
+                    android:includeFontPadding="false"
+                    android:text="@{layout.minuteStr}"
+                    android:textColor="#100053"
+                    android:textSize="12sp"
+                    tools:text="59" />
+
+                <TextView
+                    style="@style/Text.SemiBold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="6dp"
+                    android:gravity="center"
+                    android:includeFontPadding="false"
+                    android:text=":"
+                    android:textColor="#100053"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/tvSecond"
+                    style="@style/Text.SemiBold"
+                    android:layout_width="28dp"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="6dp"
+                    android:background="@drawable/bg_f5e6fb_r4"
+                    android:gravity="center"
+                    android:includeFontPadding="false"
+                    android:text="@{layout.secondStr}"
+                    android:textColor="#100053"
+                    android:textSize="12sp"
+                    tools:text="00" />
+            </LinearLayout>
+
+            <FrameLayout
+                android:id="@+id/btnBuy"
+                singleClick="@{()->layout.googlePay()}"
+                android:layout_width="252dp"
+                android:layout_height="52dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/viewCountdown">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:contentDescription="@null"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/bg_first_recharge_credits_pay_figma" />
+
+                <TextView
+                    style="@style/Text.Bold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="11dp"
+                    android:gravity="center"
+                    android:includeFontPadding="false"
+                    android:text="@string/newbie_pay_now"
+                    android:textColor="@color/white"
+                    android:textSize="16sp" />
+            </FrameLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        <ImageView
+            android:id="@+id/ivClose"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginTop="20dp"
+            android:contentDescription="@null"
+            android:src="@drawable/icon_dialog_bottom_close"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/cardMain" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

@@ -546,6 +546,12 @@
     <string name="store_history">历史记录</string>
     <string name="store_coins">金币</string>
     <string name="store_credits">Credits</string>
+    <string name="newbie_new_user_exclusive_gift">New User Exclusive Gift！</string>
+    <string name="newbie_current_credits">Current Credits</string>
+    <string name="newbie_exclusive_bonus">Exclusive Bonus</string>
+    <string name="newbie_credits_bonus_detail">%1$s + %2$s Bouns</string>
+    <string name="newbie_limited_time_offer">Limited-Time Offer:</string>
+    <string name="newbie_pay_now">Pay Now</string>
     <string name="store_reward_coins">奖励金币</string>
     <string name="store_coins_tips">温馨提示 使用条款和隐私政策\n1. 金币自购买之日起 1 年内有效。\n2. 金币可按顺序解锁剧集章节。\n3. 解锁章节时将优先使用金币；若余额不足，将自动使用奖励金币。\n4. 章节一经使用点券解锁，可无限次观看。\n5. 如有其他疑问，请通过「我的」→「设置」→「意见与建议」联系客服。</string>
     <string name="store_credits_tips">温馨提示：\n1. Credits 自购买之日起 1 年内有效。\n2. Credits 可用于创作您自己的短剧。\n3. Credits 一经用于创作，不予退款。\n4. 如有其他疑问，请通过「我的」→「意见与建议」联系客服。\n5. 使用条款和隐私政策。</string>
