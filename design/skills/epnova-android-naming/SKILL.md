@@ -1,155 +1,155 @@
 ---
 name: epnova-android-naming
-description: Epnova Android Kotlin naming rules for package, class, ViewModel, Repository, API model, resource, View id, state, event, constant, function, layout, drawable, string, dimen, and attr names. Use when the user mentions naming, 命名, 命名规则, resource naming, 资源命名, drawable naming, id naming, string key, class naming, package naming, or when generating/reviewing Epnova Android code, XML layouts, drawable resources, string resources, Retrofit APIs, request bodies, response/entity models, adapters, ViewModels, Repositories, events, states, constants, and keys.
+description: "Epnova Android Kotlin 命名规范。用户提到命名、命名规则、resource naming、资源命名、drawable naming、id naming、string key、class naming、package naming，或需要生成/审查包名、类名、ViewModel、Repository、API 模型、资源文件、View id、状态、事件、常量、函数、layout、drawable、string、dimen、attr、Retrofit API、请求体、响应/实体模型、Adapter、key 时使用。"
 ---
 
-# Epnova Android Naming
+# Epnova Android 命名规范
 
-## Trigger Conditions
+## 触发条件
 
-Use this skill when the task includes any naming decision or naming review in the Epnova Android project:
+当任务包含 Epnova Android 项目的命名决策或命名审查时使用本 skill：
 
-- The user mentions naming, 命名, 命名规则, 资源命名, drawable 命名, id 命名, string key, 包名, 类名, 方法名, 字段名, or 常量名.
-- Generating or reviewing package, class, function, property, ViewModel, Repository, Adapter, item VM, UiState, event, effect, constant, Intent extra, Bundle key, MMKV key, or SharedPreferences key names.
-- Adding or reviewing Android resource names: layout, drawable, selector, gradient, string, dimen, attr, style, color, View id, and BindingAdapter attribute names.
-- Adding or reviewing Retrofit API names, request body names, response model names, entity names, Room entity names, DAO names, mapper names, or UiModel names.
-- Implementing UI from Figma or XML where new resources or View ids need project-consistent names.
+- 用户提到 naming、命名、命名规则、资源命名、drawable 命名、id 命名、string key、包名、类名、方法名、字段名或常量名。
+- 生成或审查包名、类名、函数名、属性名、ViewModel、Repository、Adapter、item VM、UiState、事件、effect、常量、Intent extra、Bundle key、MMKV key、SharedPreferences key。
+- 新增或审查 Android 资源名：layout、drawable、selector、gradient、string、dimen、attr、style、color、View id 和 BindingAdapter 属性名。
+- 新增或审查 Retrofit API 名、request body 名、response model 名、entity 名、Room entity 名、DAO 名、mapper 名或 UiModel 名。
+- 按 Figma 或 XML 实现 UI 时，需要新增资源名或 View id，并要求与项目命名一致。
 
-## Core Rule
+## 核心规则
 
-Follow the current Epnova project style first. Do not introduce generic Android template names when an existing local pattern is available.
+优先遵循当前 Epnova 项目风格。已有本地模式时，不引入通用 Android 模板式命名。
 
-Use Kotlin by default. Keep legacy Java names only when editing existing Java files.
+默认使用 Kotlin。只有编辑历史 Java 文件时，才沿用 Java 相关命名。
 
-## Packages
+## 包名
 
-- Use lowercase package names.
-- Place new business code under the closest existing `feature/<domain>` package.
-- Use `data`, `request`, `response`, `entity`, and `mapper` only when the subpackage has a clear role.
-- Avoid creating deep one-page package trees.
-- Avoid copying historical misspellings such as `manger` into new packages unless compatibility requires it.
+- 包名使用小写。
+- 新业务代码放到最接近的现有 `feature/<domain>` 包下。
+- 只有子包职责明确时，才使用 `data`、`request`、`response`、`entity`、`mapper`。
+- 避免为单个页面创建过深的包层级。
+- 除非兼容历史代码必须如此，否则不要把 `manger` 这类历史拼写错误复制到新包名中。
 
-## Classes
+## 类名
 
-- Activity: `XxxActivity`
-- Fragment: `XxxFragment`
-- ViewModel: `XxxViewModel`
-- Repository: `XxxRepository`
-- Dialog: `XxxDialog`
-- Adapter: `XxxAdapter`
-- Item ViewModel: `ItemXxxVM`
-- Ui state: `XxxUiState`
-- Event: `XxxEvent`
-- Effect: `XxxEffect`, only when explicitly needed
-- Enum: `XxxEnum` or an established business name such as `MainBulletFrameEnum`
+- Activity：`XxxActivity`
+- Fragment：`XxxFragment`
+- ViewModel：`XxxViewModel`
+- Repository：`XxxRepository`
+- Dialog：`XxxDialog`
+- Adapter：`XxxAdapter`
+- Item ViewModel：`ItemXxxVM`
+- UI 状态：`XxxUiState`
+- 事件：`XxxEvent`
+- Effect：`XxxEffect`，仅在明确需要时使用
+- 枚举：`XxxEnum`，或使用已有业务命名，例如 `MainBulletFrameEnum`
 
-Prefer concrete business names:
+优先使用具体业务名：
 
-- Good: `SeriesViewModel`, `AssetManagementRepository`, `ItemRechargeCreditsVM`
-- Avoid: `CommonViewModel2`, `DataManager`, `ListItem`, `MyAdapter`
+- 推荐：`SeriesViewModel`、`AssetManagementRepository`、`ItemRechargeCreditsVM`
+- 避免：`CommonViewModel2`、`DataManager`、`ListItem`、`MyAdapter`
 
-Use `Manager`, `Controller`, or `Helper` only for coordination, platform isolation, or utility responsibilities.
+只有用于协调、平台隔离或工具职责时，才使用 `Manager`、`Controller`、`Helper`。
 
-## Properties
+## 变量与属性
 
-- Use lowerCamelCase for variables, properties, and functions.
-- Do not add a private `m` prefix in new code. Keep framework fields like `mRealVM`, `mRepo`, and `mBundle` unchanged.
-- Name `LiveData` by business meaning, not by type: `workInfo`, `loginTaskData`, `episodeInfo`.
-- Name flows by business meaning; add `Flow` only when helpful: `feedFlow`, `currentWaterfallId`.
-- Adapter variables: `xxxAdapter`.
-- Job variables: `xxxJob`.
-- Boolean names start with `is`, `has`, `can`, or `should`.
-- Collection names are plural or use `xxxList`: `episodes`, `selectedIds`, `roleImageList`.
+- 变量、属性和函数使用 lowerCamelCase。
+- 新代码不要给私有字段添加 `m` 前缀。框架已有字段如 `mRealVM`、`mRepo`、`mBundle` 保持不变。
+- `LiveData` 按业务含义命名，不按类型命名：`workInfo`、`loginTaskData`、`episodeInfo`。
+- Flow 按业务含义命名；只有有助于表达连续流时才加 `Flow`：`feedFlow`、`currentWaterfallId`。
+- Adapter 变量：`xxxAdapter`。
+- Job 变量：`xxxJob`。
+- Boolean 命名以 `is`、`has`、`can` 或 `should` 开头。
+- 集合命名使用复数或 `xxxList`：`episodes`、`selectedIds`、`roleImageList`。
 
-## Functions
+## 函数
 
-- Use verb-led names: `loadData()`, `fetchUserInfo()`, `submitFeedback()`, `updateLoadState()`.
-- Use `onXxx` for callbacks: `onPaySuccess()`, `onItemSelected()`.
-- Use standard init names: `initView()`, `initListener()`, `initObservers()`, `initData()`.
-- Use `fetchXxx()` for active remote refresh.
-- Use `loadXxx()` for page data loading, possibly with cache.
-- Use `getXxx()` for lightweight reads or existing API naming.
-- Use `queryXxx()` for query-style APIs.
-- Use `submitXxx()`, `saveXxx()`, `deleteXxx()` for user-triggered mutations.
+- 函数名以动词开头：`loadData()`、`fetchUserInfo()`、`submitFeedback()`、`updateLoadState()`。
+- 回调使用 `onXxx`：`onPaySuccess()`、`onItemSelected()`。
+- 初始化使用项目常见命名：`initView()`、`initListener()`、`initObservers()`、`initData()`。
+- 主动远程刷新使用 `fetchXxx()`。
+- 页面数据加载使用 `loadXxx()`，可以包含缓存。
+- 轻量读取或沿用已有 API 命名时使用 `getXxx()`。
+- 查询类接口使用 `queryXxx()`。
+- 用户触发的变更操作使用 `submitXxx()`、`saveXxx()`、`deleteXxx()`。
 
-Avoid vague names such as `doSomething()`, `handleData()`, and `process()` unless the local scope is tiny and obvious.
+除非局部作用域非常小且含义明确，否则避免 `doSomething()`、`handleData()`、`process()` 这类泛名。
 
-## Constants And Keys
+## 常量与 Key
 
-- Put constants in `companion object` unless a shared `Constants` location already exists.
-- Use upper snake case.
-- Intent/Bundle keys: `KEY_XXX` or `Constants.Extra.XXX`.
-- Request codes: `REQUEST_CODE_XXX`.
-- Defaults: `DEFAULT_XXX`.
-- Page sizes: `PAGE_SIZE`, `INITIAL_LOAD_SIZE`.
-- Time intervals: `CLICK_INTERVAL_TIME`, `POLLING_INTERVAL_MS`.
-- Extract MMKV, SharedPreferences, cache keys, protocol fields, event types, and interface enum values to named constants.
+- 常量默认放在 `companion object`，除非已有共享 `Constants` 位置。
+- 使用 upper snake case。
+- Intent/Bundle key：`KEY_XXX` 或 `Constants.Extra.XXX`。
+- 请求码：`REQUEST_CODE_XXX`。
+- 默认值：`DEFAULT_XXX`。
+- 分页大小：`PAGE_SIZE`、`INITIAL_LOAD_SIZE`。
+- 时间间隔：`CLICK_INTERVAL_TIME`、`POLLING_INTERVAL_MS`。
+- MMKV、SharedPreferences、缓存 key、协议字段、事件类型和接口枚举值都要抽成具名常量。
 
-## API And Models
+## API 与模型
 
-- Retrofit method names use lowerCamelCase and match business action: `getUserHomeInfo()`, `seriesFollow()`, `createOrder()`.
-- API constants in `ApiConstants.kt` use upper snake case.
-- Request body: `XxxBody`, for example `WorkIdBody`.
-- Paged request body: `XxxPagedBody`.
-- Aggregated API response model: `XxxData`, for example `HomeBookShelfData`.
-- API entity: `XxxInfo`, for example `WorkInfo`, `EpisodeInfo`, `PaymentInfo`.
-- Room entity: `XxxEntity`.
-- Mapper functions: `toXxx()`, for example `toDomain()`, `toEntity()`, `toUiModel()`.
-- Add `XxxUiModel` only when UI needs a separate display model.
+- Retrofit 方法名使用 lowerCamelCase，并匹配业务动作：`getUserHomeInfo()`、`seriesFollow()`、`createOrder()`。
+- `ApiConstants.kt` 中的 API 常量使用 upper snake case。
+- 请求体：`XxxBody`，例如 `WorkIdBody`。
+- 分页请求体：`XxxPagedBody`。
+- 聚合响应模型：`XxxData`，例如 `HomeBookShelfData`。
+- API 实体：`XxxInfo`，例如 `WorkInfo`、`EpisodeInfo`、`PaymentInfo`。
+- Room 实体：`XxxEntity`。
+- Mapper 函数：`toXxx()`，例如 `toDomain()`、`toEntity()`、`toUiModel()`。
+- 只有 UI 需要单独展示模型时，才新增 `XxxUiModel`。
 
-## Resources
+## 资源文件
 
-Layout files:
+Layout 文件：
 
-- Activity: `activity_xxx.xml`
-- Fragment: `fragment_xxx.xml`
-- Dialog: `dialog_xxx.xml`
-- RecyclerView item: `item_xxx.xml`
-- Include fragment: `layout_xxx.xml` or `include_xxx.xml`
+- Activity：`activity_xxx.xml`
+- Fragment：`fragment_xxx.xml`
+- Dialog：`dialog_xxx.xml`
+- RecyclerView item：`item_xxx.xml`
+- Include fragment：`layout_xxx.xml` 或 `include_xxx.xml`
 
-Drawable files:
+Drawable 文件：
 
-- Icon: `icon_xxx.xml` or `ic_xxx.xml`
-- Image: `img_xxx.webp` or `img_xxx.png`
-- Solid background: `bg_<alpha>_<color>_<corner><radius>.xml`
-- Selector: `selector_xxx.xml` or `cb_xxx.xml`
-- Gradient: `gradient_<alpha1>_<color1>_<alpha2>_<color2>_<direction>_<corner><radius>.xml`
-- Oval/shape: `oval_xxx.xml` or `shape_xxx.xml`
-- Progress: `progress_xxx.xml`
+- 图标：`icon_xxx.xml` 或 `ic_xxx.xml`
+- 图片：`img_xxx.webp` 或 `img_xxx.png`
+- 纯色背景：`bg_<alpha>_<color>_<corner><radius>.xml`
+- Selector：`selector_xxx.xml` 或 `cb_xxx.xml`
+- 渐变：`gradient_<alpha1>_<color1>_<alpha2>_<color2>_<direction>_<corner><radius>.xml`
+- Oval/shape：`oval_xxx.xml` 或 `shape_xxx.xml`
+- Progress：`progress_xxx.xml`
 
-Drawable token rules:
+Drawable token 规则：
 
-- `<alpha>` uses two lowercase hex digits without `#`: `00`, `10`, `20`, `50`, `80`, `ff`.
-- `<color>` uses six lowercase hex digits without `#`: `ffffff`, `000000`, `121212`.
-- `<radius>` uses the dp value only, without `dp`: `r8`, `r12`, `tr16`.
-- Capsule backgrounds always use `r50`, for example `bg_ff_ffffff_r50.xml`.
-- Use `r<radius>` for all corners.
-- Use `tr<radius>` for top corners only.
-- Use `br<radius>` for bottom corners only.
-- For solid backgrounds, prefer exact value names over semantic names when the resource is generic:
+- `<alpha>` 使用两位小写 16 进制，不带 `#`：`00`、`10`、`20`、`50`、`80`、`ff`。
+- `<color>` 使用六位小写 16 进制，不带 `#`：`ffffff`、`000000`、`121212`。
+- `<radius>` 只写 dp 数值，不带 `dp`：`r8`、`r12`、`tr16`。
+- 胶囊类背景一律使用 `r50`，例如 `bg_ff_ffffff_r50.xml`。
+- 四角圆角使用 `r<radius>`。
+- 仅顶部圆角使用 `tr<radius>`。
+- 仅底部圆角使用 `br<radius>`。
+- 通用纯色背景优先使用精确值命名，不使用语义名：
   - `bg_20_ffffff_r8.xml`
   - `bg_80_121212_r16.xml`
   - `bg_ff_f5f5f5_tr24.xml`
-- For new gradient resources, include both color stops first, then direction and corner:
+- 新增渐变资源先写两个色值，再写方向和圆角：
   - `gradient_ff_fff1ea_ff_ffffff_top_r16.xml`
   - `gradient_ff_ff6159_ff_d91f1f_left_r16.xml`
   - `gradient_80_121212_80_1c1c2d_top_tr16.xml`
-- Supported direction tokens: `top`, `bottom`, `left`, `right`, `ltop`, `rtop`, `lbottom`, `rbottom`. Keep legacy direction-first names when editing existing files, but use the color-first order for new files.
-- If a drawable is highly screen-specific or function-specific, use `shape_bg_<feature>_<state_or_role>.xml` instead of encoding every value, for example `shape_bg_publish_task.xml`, `shape_bg_story_upload.xml`, `shape_bg_work_popularity.xml`.
-- Do not use vague names such as `bg_gray.xml`, `shape_1.xml`, or `gradient_button.xml` when values or business role can be named.
+- 支持的方向标记：`top`、`bottom`、`left`、`right`、`ltop`、`rtop`、`lbottom`、`rbottom`。编辑历史文件时保留已有方向前置命名；新增文件使用色值前置顺序。
+- 如果 drawable 明显属于某个界面或功能，可以用 `shape_bg_<feature>_<state_or_role>.xml` 表达业务语义，不必强行编码所有数值，例如 `shape_bg_publish_task.xml`、`shape_bg_story_upload.xml`、`shape_bg_work_popularity.xml`。
+- 能用色值或业务角色命名时，不使用 `bg_gray.xml`、`shape_1.xml`、`gradient_button.xml` 这类泛名。
 
-Other resources:
+其他资源：
 
-- Reuse common dimens such as `spacing_xs`, `spacing_s`, `spacing_m`, `spacing_l`, `radius_s`, `radius_m`, and `radius_l`.
-- Business-specific dimens use `business_property`, for example `main_bottom_nav_height`.
-- String keys use semantic names, for example `feedback_submit_success`.
-- Avoid positional names such as `text_button_1`.
+- 优先复用通用 dimen，例如 `spacing_xs`、`spacing_s`、`spacing_m`、`spacing_l`、`radius_s`、`radius_m`、`radius_l`。
+- 业务专用 dimen 使用 `business_property`，例如 `main_bottom_nav_height`。
+- String key 使用语义名，例如 `feedback_submit_success`。
+- 避免 `text_button_1` 这类位置型命名。
 
-## View IDs
+## View ID
 
-Use lowerCamelCase View ids, matching existing XML style.
+View id 使用 lowerCamelCase，并与现有 XML 风格保持一致。
 
-Common prefixes:
+常用前缀：
 
 - `tv`: TextView
 - `iv`: ImageView
@@ -163,16 +163,16 @@ Common prefixes:
 - `tab`: custom tab click layer
 - `rb`: RadioButton
 
-Prefer business meaning: `btnSearch`, `ivCover`, `tvTitle`.
+优先表达业务含义：`btnSearch`、`ivCover`、`tvTitle`。
 
-Avoid `view1`, `text2`, `button3`, and other positional names.
+避免 `view1`、`text2`、`button3` 这类位置型命名。
 
-## Review Checklist
+## 审查清单
 
-Before finishing generated code, check:
+生成代码结束前检查：
 
-- Names match an existing nearby feature pattern.
-- No new Hilt, `AppContainer`, `ViewModelFactory`, `AppResult`, or `AppError` names were introduced for naming-only consistency.
-- API, request body, response, entity, and mapper names live in the expected package.
-- XML layout variables remain `layout` for pages and `item` for list items.
-- New string, drawable, layout, and id names are semantic and searchable.
+- 命名符合附近已有 feature 模式。
+- 没有为了命名一致性引入新的 Hilt、`AppContainer`、`ViewModelFactory`、`AppResult` 或 `AppError` 名称。
+- API、请求体、响应、实体和 mapper 名称位于预期包下。
+- XML layout 变量保持页面用 `layout`、列表 item 用 `item`。
+- 新 string、drawable、layout 和 id 名称有语义、可搜索。

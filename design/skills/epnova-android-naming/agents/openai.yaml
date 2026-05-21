@@ -1,4 +1,4 @@
 interface:
-  display_name: "Epnova Android Naming"
-  short_description: "Apply Epnova Android Kotlin and resource naming rules."
-  default_prompt: "Use Epnova Android naming rules when generating or reviewing package, class, function, model, API, resource, drawable, string key, View id, state, event, constant, and key names."
+  display_name: "Epnova Android 命名规范"
+  short_description: "按 Epnova 项目规范处理 Kotlin 和资源命名。"
+  default_prompt: "使用 Epnova Android 命名规范生成或审查包名、类名、函数名、模型名、API、资源文件、drawable、string key、View id、状态、事件、常量和 key。"

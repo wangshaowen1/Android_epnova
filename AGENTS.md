@@ -1,16 +1,16 @@
-# Epnova Codex Project Memory
+# Epnova Codex 项目记忆
 
-## Response And Collaboration
+## 回复与协作
 
-- Always answer in Chinese.
-- Prefer concise, direct engineering communication.
-- Project owner is an Android developer working on the Epnova AI short-drama creation app.
-- Main language is Kotlin, with some legacy Java.
-- Package name: `com.kuaigeglobal.epnova`.
-- The project shares the same `nhsd.basic` base framework style as FastFilm.
-- When this file conflicts with `design/android-codegen-guidelines-epnova.md`, use `design/android-codegen-guidelines-epnova.md` as the source of truth.
+- 始终使用中文回答。
+- 优先使用简洁、直接的工程沟通方式。
+- 项目负责人是 Android 开发者，当前项目是 Epnova AI 短剧创作应用。
+- 主语言是 Kotlin，保留少量历史 Java。
+- 包名是 `com.kuaigeglobal.epnova`。
+- 项目与 FastFilm 使用相同风格的 `nhsd.basic` 基础框架。
+- 当本文件与 `design/android-codegen-guidelines-epnova.md` 冲突时，以 `design/android-codegen-guidelines-epnova.md` 为准。
 
-## Project Baseline
+## 项目基础
 
 - 主业务包名：`com.kuaigeglobal.epnova`
 - 主业务工程：`app`
@@ -22,7 +22,7 @@
 - 数据库：Room，入口为 `core/db/AppDatabase.kt`
 - 协程：优先使用项目已有 `launch`、`request`、`requestWithLoading`、`launchPolling`
 
-## Architecture Rules
+## 架构规则
 
 新增代码必须贴合当前项目，而不是套用通用 Android 模板：
 
@@ -32,7 +32,7 @@
 - 不要为了“标准 Clean Architecture”新增 `domain`、`UseCase`、`AppResult`、`AppError`。现阶段应沿用项目的 `ApiResponse<T>`、`response(...)` 和 `ApiException` 处理链。
 - 不要默认把接口实体再包装成 Domain Model / UiModel。项目中 `core/network/apis/entity` 下的模型已被 UI、ItemVM 和业务逻辑直接使用。只有页面显示字段明显复杂、需要组合多个来源或防止接口字段污染 UI 时，才新增轻量 UiModel/Mapper。
 
-## Package Layout
+## 包目录规则
 
 新增功能优先放在 `feature/<业务域>/` 下，和现有页面保持同一风格。
 
@@ -52,8 +52,9 @@
 
 不要新增多 Gradle Module，除非用户明确要求重构工程结构。
 
-## Base Class Rules
+## Base 类规则
 
+- 新页面/页面骨架规范已抽成项目内 skill：[epnova-android-feature-scaffold](design/skills/epnova-android-feature-scaffold/SKILL.md)。生成或审查 Activity、Fragment、ViewModel、XML、ToolbarViewModel、start/newInstance、mBundle 参数读取等基础页面结构时优先使用该 skill。
 - Activity 直接继承 `com.nhsd.basic.BaseViewModelActivity<VB, VM>`。
 - Fragment 直接继承 `com.nhsd.basic.BaseViewModelFragment<VB, VM>`。
 - 普通 ViewModel 继承 `AppViewModel`。
@@ -64,7 +65,7 @@
 - 底部弹窗优先使用 `BaseBottomPushVMDialogFragment<VB, VM>` 或 `BaseBottomPushDialogFragment<VB>`。
 - 页面中直接使用基类注入对象：`binding`、`mRealVM`、`mRepo`、`mBundle`。
 
-## UI And XML
+## UI 与 XML
 
 - XML 默认使用 `<layout>` 根节点。
 - 页面 ViewModel 变量名必须是 `layout`。
@@ -80,7 +81,7 @@
   - `app/src/main/res/values-th/strings.xml`
   - `app/src/main/res/values-in/strings.xml`
 
-## ViewModel Rules
+## ViewModel 规则
 
 - ViewModel 负责页面状态、用户事件处理、调用 Repository、调度协程和处理页面业务。
 - ViewModel 不直接依赖 Activity、Fragment、View。
@@ -93,7 +94,7 @@
 - 轮询、SSE、下载、支付监听等长任务必须保存 `Job` 或 handler，并在 `onCleared()` 中取消。
 - 避免为了“不可变暴露”大规模改造已有 `MutableLiveData` 公有字段。新增复杂状态可以采用私有 `MutableLiveData` + 公开 `LiveData`，但以不破坏项目一致性为准。
 
-## Repository Rules
+## Repository 规则
 
 - 通用仓库继承 `AppRepository` 或 `CommonRepository`。
 - 功能仓库放在对应 feature 下，例如 `feature/series/SeriesRepository.kt`。
@@ -103,8 +104,9 @@
 - API 错误处理优先交给 `response(...)`、`request(...)`、`requestWithLoading(...)`，不要在 Repository 中随意吞异常。
 - 只有当错误文案、重试策略、缓存降级等属于数据层职责时，才在 Repository 中封装。
 
-## API And Models
+## API 与模型
 
+- Retrofit 接口接入与 ViewModel 请求调用规范已抽成项目内 skill：[epnova-android-api-request](design/skills/epnova-android-api-request/SKILL.md)。新增或审查 `ApiConstants`、`ApiService`、请求体、响应模型、Repository 方法、`response(...)` / `request(...)` / `requestWithLoading(...)` 调用时优先使用该 skill。
 - Retrofit 方法统一写在 `core/network/apis/ApiService.kt`。
 - API 路径常量写在 `ApiConstants.kt`。
 - 请求体写在 `core/network/apis/request/`。
@@ -115,7 +117,7 @@
 - 数据库模型和接口/UI 模型有差异时，在 `core/db/mapper/` 或 feature 内新增 mapper。
 - 不修改 `ApiResponse.java`，除非用户明确要求做全局网络层改造。
 
-## Async And Error Handling
+## 异步与错误处理
 
 优先使用项目已有扩展：
 
@@ -143,7 +145,7 @@
 - 分页列表使用 Paging3，按现有 `PagingSource`、`RemoteMediator`、`PagingDataAdapter` 风格实现。
 - Adapter 只负责渲染和转发点击事件，不直接请求网络。
 
-## UseCase And MVI
+## UseCase 与 MVI
 
 默认不生成 UseCase，也不生成完整 MVI。
 
@@ -162,7 +164,7 @@
 
 不要生成 Store、Reducer、Intent、Effect 全套结构，除非用户明确要求。
 
-## Third-Party SDK Isolation
+## 第三方 SDK 隔离
 
 广告、支付、推送、统计、登录、归因等能力必须隔离在 `core/manager/` 或对应 `core/google/`、`core/facebook/` 包下。
 
@@ -176,7 +178,7 @@
   - Google Billing：`core/google/billing/BillingManager.kt`
   - 统计：`core/manager/EventManager.kt`
 
-## Naming And Code Style
+## 命名与代码风格
 
 命名细则已抽成项目内 skill：[epnova-android-naming](design/skills/epnova-android-naming/SKILL.md)。生成或审查命名时优先使用该 skill。
 
@@ -195,7 +197,7 @@
 - Boolean 命名以 `is`、`has`、`can`、`should` 开头。
 - 列表集合使用复数或 `xxxList`。
 
-## Resource Naming
+## 资源命名
 
 - layout 文件：
   - Activity：`activity_xxx.xml`
@@ -222,10 +224,10 @@
 - 界面特有或功能语义强的资源可以用 `shape_bg_<功能>_<状态或角色>.xml`，例如 `shape_bg_publish_task.xml`、`shape_bg_story_upload.xml`。
 - 不使用 `bg_gray.xml`、`shape_1.xml`、`gradient_button.xml` 这类不可搜索的泛名。
 
-## Comments
+## 注释
 
-- Use Chinese comments when comments are needed.
-- Class comments may use the project style:
+- 需要注释时使用中文。
+- 类注释可以沿用项目风格：
 
 ```kotlin
 /**
@@ -233,18 +235,18 @@
  */
 ```
 
-- Comments should explain why, not restate obvious code.
-- TODO format: `//TODO xxx`.
+- 注释应解释原因，不要复述显而易见的代码。
+- TODO 格式：`//TODO xxx`。
 
-## Dialogs
+## 弹窗
 
-- Center dialog with ViewModel: `BaseVMDialogFragment<VB, VM>`。
-- Bottom dialog with ViewModel: `BaseBottomPushVMDialogFragment<VB, VM>`。
-- Simple center dialog without ViewModel: `BaseDialogFragment<VB>`。
-- Very small ViewBinding-only dialog may use `Dialog(context, style)`。
-- Dialog arguments should be passed through `arguments` and read from `mBundle` in ViewModel where applicable.
+- 带 ViewModel 的中间弹窗：`BaseVMDialogFragment<VB, VM>`。
+- 带 ViewModel 的底部弹窗：`BaseBottomPushVMDialogFragment<VB, VM>`。
+- 不带 ViewModel 的简单中间弹窗：`BaseDialogFragment<VB>`。
+- 极小的 ViewBinding-only 弹窗可以使用 `Dialog(context, style)`。
+- 弹窗参数通过 `arguments` 传递，适合时在 ViewModel 中从 `mBundle` 读取。
 
-## Generation Checklist
+## 生成前检查清单
 
 生成代码前先判断：
 
@@ -258,12 +260,12 @@
 - 是否新增了字符串资源并同步多语言文件？
 - 是否误引入了 Hilt、AppContainer、ViewModelFactory、AppResult/AppError 等当前项目没有采用的结构？
 
-## Figma And Design Access
+## Figma 与设计稿访问
 
-- Access Figma designs through available MCP tools or curl with the Figma REST API.
-- Do not use WebFetch for Figma URLs.
-- Android UI implementation should first map Figma values to local `style`、`theme`、`attr`、`color`、`dimen`、`drawable`、`selector` and BindingAdapter resources.
-- Do not describe or implement Android UI in CSS/SCSS terms. If a design token looks like a Web/CSS token, translate it into the closest Android project style/theme resource.
+- 访问 Figma 设计稿时，优先使用可用 MCP 工具，或通过 curl 调用 Figma REST API。
+- 不使用 WebFetch 读取 Figma URL。
+- Android UI 实现应优先把 Figma 数值映射到本地 `style`、`theme`、`attr`、`color`、`dimen`、`drawable`、`selector` 和 BindingAdapter。
+- 不用 CSS/SCSS 术语描述或实现 Android UI。如果设计 token 看起来像 Web/CSS token，应翻译成最接近的 Android 项目 style/theme 资源。
 
 ## Figma UI 精确实现规范
 
@@ -295,7 +297,7 @@
 - 列出无法精确还原的内容及原因，例如缺少字体文件、缺少图片资产、设计稿未提供移动端状态。
 - 不把设计说明文案写进页面 UI，除非设计稿本身包含这些文案。
 
-## Ignore Rules
+## 忽略规则
 
-- Claude ignore equivalent: `**/OssManager.kt`.
-- Do not inspect or edit `OssManager.kt` unless explicitly requested.
+- 等同 Claude ignore：`**/OssManager.kt`。
+- 除非用户明确要求，不要查看或编辑 `OssManager.kt`。

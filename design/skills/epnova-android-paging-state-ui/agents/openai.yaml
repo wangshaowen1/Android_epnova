@@ -1,4 +1,4 @@
 interface:
-  display_name: "Epnova Android Paging State UI"
-  short_description: "Generate and review Epnova Paging3 list pages with standard state UI."
-  default_prompt: "Use Epnova Android Paging State UI rules when implementing or reviewing paginated lists, Paging3, PagingSource, PagingDataAdapter, SmartRefreshLayout, LoadStateViewHolder, MyMultiStatePagingFooterAdapter, refresh/retry behavior, empty/error/loading UI, and optional RemoteMediator database-cache paging."
+  display_name: "Epnova Android 分页状态 UI"
+  short_description: "按 Epnova 项目规范生成和审查 Paging3 分页列表与状态 UI。"
+  default_prompt: "使用 Epnova Android 分页状态 UI 规范实现或审查分页列表、Paging3、PagingSource、PagingDataAdapter、SmartRefreshLayout、LoadStateViewHolder、MyMultiStatePagingFooterAdapter、刷新/重试行为、空/错/加载 UI，以及可选的 RemoteMediator 数据库缓存分页。"

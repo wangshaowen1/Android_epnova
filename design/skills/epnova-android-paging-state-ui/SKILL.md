@@ -1,44 +1,44 @@
 ---
 name: epnova-android-paging-state-ui
-description: Epnova Android Paging3 list and state UI implementation rules. Use when the user mentions pagination, paging, 分页, 分页加载, 上拉加载, 下拉刷新, load more, refresh, Paging3, PagingSource, PagingDataAdapter, RemoteMediator, VideoRemoteMediator, SmartRefreshLayout, LoadStateViewHolder, MyMultiStatePagingFooterAdapter, empty/error/loading state UI, retry, status UI, 状态 UI, 空状态, 错误状态, 加载状态, or when generating/reviewing paginated Android Kotlin pages, adapters, ViewModels, XML list layouts, Room cached paging, and refresh/retry behavior.
+description: "Epnova Android Paging3 分页加载与状态 UI 实现规范。用户提到 pagination、paging、分页、分页加载、上拉加载、下拉刷新、load more、refresh、Paging3、PagingSource、PagingDataAdapter、RemoteMediator、VideoRemoteMediator、SmartRefreshLayout、LoadStateViewHolder、MyMultiStatePagingFooterAdapter、empty/error/loading state UI、retry、status UI、状态 UI、空状态、错误状态、加载状态，或需要生成/审查分页 Android Kotlin 页面、Adapter、ViewModel、XML 列表布局、Room 缓存分页、刷新/重试行为时使用。"
 ---
 
-# Epnova Android Paging State UI
+# Epnova Android 分页状态 UI
 
-## Trigger Conditions
+## 触发条件
 
-Use this skill when the task includes paginated lists or list state UI in the Epnova Android project:
+当任务涉及 Epnova Android 项目的分页列表或列表状态 UI 时使用本 skill：
 
-- The user mentions pagination, paging, 分页, 分页加载, 上拉加载, 下拉刷新, 加载更多, 刷新, Paging3, PagingSource, PagingDataAdapter, LoadState, or cached paging.
-- Generating or reviewing a paginated Activity/Fragment, ViewModel pager, PagingSource, PagingDataAdapter, item VM, XML RecyclerView layout, footer state, retry logic, or refresh logic.
-- Implementing or reviewing `SmartRefreshLayout`, `LoadStateViewHolder`, `MyMultiStatePagingFooterAdapter`, empty/error/loading/content UI, no-more-data UI, or page-level state switching.
-- Adding or reviewing `RemoteMediator` / `VideoRemoteMediator`; only apply that branch when Room database cache, offline cache, local-first display, or cross-session list persistence is required.
-- Fixing bugs involving duplicate refresh, append error state, empty list display, lifecycle collection, grid footer span, or `PagingSource.load()` side effects.
+- 用户提到 pagination、paging、分页、分页加载、上拉加载、下拉刷新、加载更多、刷新、Paging3、PagingSource、PagingDataAdapter、LoadState 或 cached paging。
+- 生成或审查分页 Activity/Fragment、ViewModel pager、PagingSource、PagingDataAdapter、item VM、XML RecyclerView 布局、footer 状态、重试逻辑或刷新逻辑。
+- 实现或审查 `SmartRefreshLayout`、`LoadStateViewHolder`、`MyMultiStatePagingFooterAdapter`、empty/error/loading/content UI、没有更多数据 UI 或页面级状态切换。
+- 新增或审查 `RemoteMediator` / `VideoRemoteMediator`；只有需要 Room 数据库缓存、离线缓存、本地优先展示或跨会话列表持久化时，才使用该分支。
+- 修复重复刷新、append 错误状态、空列表展示、生命周期收集、网格 footer span 或 `PagingSource.load()` 副作用相关 bug。
 
-## Core Rule
+## 核心规则
 
-Default to `PagingSource + PagingDataAdapter + LoadStateViewHolder`.
+默认使用 `PagingSource + PagingDataAdapter + LoadStateViewHolder`。
 
-Only add `RemoteMediator` when the user explicitly needs Room database cache, offline cache, local-first display, or cross-session list persistence. Treat `VideoRemoteMediator` and other `RemoteMediator` examples as the database-cache branch, not the default branch.
+只有用户明确需要 Room 数据库缓存、离线缓存、本地优先展示或跨会话列表持久化时，才加入 `RemoteMediator`。`VideoRemoteMediator` 和其他 `RemoteMediator` 示例属于数据库缓存分支，不是默认分支。
 
-For current project examples and known pitfalls, read [project-examples.md](references/project-examples.md) when implementing or reviewing a paging page.
+实现或审查分页页面时，读取 [project-examples.md](references/project-examples.md) 对齐当前项目示例和已知坑点。
 
-## Default Structure
+## 默认结构
 
-Use the existing project stack:
+使用现有项目栈：
 
-- Page: `BaseViewModelActivity<VB, VM>` or `BaseViewModelFragment<VB, VM>`.
-- ViewModel: `AppRepositoryViewModel<AppRepository>` when API access is needed.
-- XML: `<layout>` root, page variable name `layout`.
-- Refresh and state container: `SmartRefreshLayout` -> `LoadStateViewHolder` -> `RecyclerView`.
-- Adapter: `PagingDataAdapter<T, RecyclerView.ViewHolder>`.
-- Footer: `MyMultiStatePagingFooterAdapter`.
+- 页面：`BaseViewModelActivity<VB, VM>` 或 `BaseViewModelFragment<VB, VM>`。
+- ViewModel：需要 API 访问时使用 `AppRepositoryViewModel<AppRepository>`。
+- XML：`<layout>` 根节点，页面变量名为 `layout`。
+- 刷新和状态容器：`SmartRefreshLayout` -> `LoadStateViewHolder` -> `RecyclerView`。
+- Adapter：`PagingDataAdapter<T, RecyclerView.ViewHolder>`。
+- Footer：`MyMultiStatePagingFooterAdapter`。
 
-Do not introduce Hilt, AppContainer, ViewModelFactory, AppResult/AppError, UseCase, or full MVI for a normal paging page.
+普通分页页面不要引入 Hilt、AppContainer、ViewModelFactory、AppResult/AppError、UseCase 或完整 MVI。
 
-## XML Pattern
+## XML 模式
 
-Use this shape unless the nearby feature already has a stronger pattern:
+除非附近 feature 已有更强局部模式，否则使用以下结构：
 
 ```xml
 <com.scwang.smart.refresh.layout.SmartRefreshLayout
@@ -65,11 +65,11 @@ Use this shape unless the nearby feature already has a stronger pattern:
 </com.scwang.smart.refresh.layout.SmartRefreshLayout>
 ```
 
-Prefer `match_parent` for a full-page `RecyclerView` inside `LoadStateViewHolder`. Use `wrap_content` only when the list is intentionally nested in a measured parent and the surrounding layout is known to handle scrolling.
+全页 `LoadStateViewHolder` 内的 `RecyclerView` 优先使用 `match_parent`。只有列表刻意嵌套在可测量父容器中，并且外层布局明确处理滚动时，才使用 `wrap_content`。
 
-## ViewModel Pattern
+## ViewModel 模式
 
-Create the pager in ViewModel and cache it in `viewModelScope`.
+在 ViewModel 中创建 pager，并使用 `viewModelScope` 缓存。
 
 ```kotlin
 fun getXxxPage(): Flow<PagingData<XxxInfo>> {
@@ -89,13 +89,13 @@ fun getXxxPage(): Flow<PagingData<XxxInfo>> {
 }
 ```
 
-If the query condition can change, use a reload trigger or `StateFlow.flatMapLatest`, then `cachedIn(viewModelScope)`.
+如果查询条件会变化，使用 reload trigger 或 `StateFlow.flatMapLatest`，再接 `cachedIn(viewModelScope)`。
 
-## PagingSource Rules
+## PagingSource 规则
 
-Keep `PagingSource` focused on loading pages. It should not update `ObservableBoolean`, `LiveData`, adapter state, or other UI state from `load()`.
+`PagingSource` 只专注加载分页数据，不要在 `load()` 中更新 `ObservableBoolean`、`LiveData`、Adapter 状态或其他 UI 状态。
 
-Prefer passing `mRepo.api` or a small loader lambda into the `PagingSource`. Avoid direct `ApiFactory.apiService` in new code unless editing an old class that already follows that style.
+优先把 `mRepo.api` 或小型 loader lambda 传入 `PagingSource`。除非正在编辑已经沿用该风格的旧类，新代码避免直接使用 `ApiFactory.apiService`。
 
 ```kotlin
 class XxxPagingSource(
@@ -131,11 +131,11 @@ class XxxPagingSource(
 }
 ```
 
-If the backend ignores `params.loadSize` and always uses a fixed page size, compare returned size with the actual requested page size.
+如果后端忽略 `params.loadSize` 并总是使用固定 page size，判断是否还有更多数据时要和实际请求 page size 对比。
 
-## Page Setup
+## 页面初始化
 
-Set the adapter, footer, state holder, and data collection together.
+Adapter、footer、状态容器和数据收集要一起初始化。
 
 ```kotlin
 private val xxxAdapter by lazy { XxxAdapter(eventVm) }
@@ -172,23 +172,23 @@ private fun dataUpdate() {
 }
 ```
 
-For `Fragment`, prefer `viewLifecycleOwner.lifecycleScope` plus `viewLifecycleOwner.repeatOnLifecycle(...)` when available.
+Fragment 中可用时优先使用 `viewLifecycleOwner.lifecycleScope` 和 `viewLifecycleOwner.repeatOnLifecycle(...)`。
 
-Do not pass `onRefreshListener = { adapter.refresh() }` to `startRefreshWithAdapter`; the extension already calls `pagingDataAdapter.refresh()`. Use `onRefreshListener` only for extra work such as restarting polling or refreshing header data.
+不要把 `onRefreshListener = { adapter.refresh() }` 传给 `startRefreshWithAdapter`；该扩展已经会调用 `pagingDataAdapter.refresh()`。`onRefreshListener` 只用于重启轮询、刷新头部数据等额外工作。
 
-## Adapter Rules
+## Adapter 规则
 
-Keep adapters display-only:
+Adapter 只负责展示：
 
-- Extend `PagingDataAdapter<T, RecyclerView.ViewHolder>`.
-- Use stable business id in `areItemsTheSame`.
-- Use `oldItem == newItem` in `areContentsTheSame` unless there is a measured reason to compare specific fields.
-- Use `binding.getVm(...)` for item VM when the existing item layout uses DataBinding.
-- Forward click/selection events through item event VM or callback. Do not request network in adapter.
+- 继承 `PagingDataAdapter<T, RecyclerView.ViewHolder>`。
+- `areItemsTheSame` 使用稳定业务 id。
+- `areContentsTheSame` 默认使用 `oldItem == newItem`，除非有明确理由只比较特定字段。
+- 现有 item layout 使用 DataBinding 时，通过 `binding.getVm(...)` 获取 item VM。
+- 点击/选择事件通过 item event VM 或 callback 转发。Adapter 不直接请求网络。
 
-## State UI Rules
+## 状态 UI 规则
 
-Use project helpers instead of hand-rolling loading/empty/error switching:
+使用项目 helper，不要手写 loading/empty/error 切换：
 
 - `SmartRefreshLayout.startRefreshWithAdapter(...)`
 - `LoadStateViewHolder.showLoading()`
@@ -199,39 +199,39 @@ Use project helpers instead of hand-rolling loading/empty/error switching:
 
 Page-level state is driven by `adapter.loadState.refresh` in `startRefreshWithAdapter`.
 
-Footer state is driven by `append` through `withLoadStateFooter(...)`.
+Footer 状态通过 `withLoadStateFooter(...)` 由 `append` 驱动。
 
-For grid lists, call `applyGridSpanSizeLookup()` after setting an adapter with footer so footer/empty state spans all columns.
+网格列表设置带 footer 的 Adapter 后，调用 `applyGridSpanSizeLookup()`，确保 footer/空状态横跨所有列。
 
-If the page has non-paging headers through `ConcatAdapter`, verify empty state behavior explicitly. `startRefreshWithAdapter` uses the paging adapter item count, not the concat adapter total count.
+如果页面通过 `ConcatAdapter` 添加非分页 header，需要明确验证空状态行为。`startRefreshWithAdapter` 使用 paging adapter 的 item count，不是 concat adapter 总数。
 
-## RemoteMediator Branch
+## RemoteMediator 分支
 
-Use `RemoteMediator` only when database cache is part of the requirement.
+只有需求包含数据库缓存时，才使用 `RemoteMediator`。
 
-When using it:
+使用时：
 
-- Keep API, DAO, and database dependencies passed from `mRepo`.
-- Use `database.withTransaction`.
-- Clear only the scoped cache on `LoadType.REFRESH`.
-- Store page keys or remote keys for reliable `APPEND`.
-- Return `MediatorResult.Error(ApiException(...))` when `ApiResponse` is unsuccessful.
-- Rethrow `CancellationException`.
-- Map Room entity to API/domain model outside the adapter, usually in `Pager.flow.map { pagingData.map { it.toDomain() } }`.
+- API、DAO 和 database 依赖保持从 `mRepo` 传入。
+- 使用 `database.withTransaction`。
+- `LoadType.REFRESH` 只清理当前作用域缓存。
+- 存储 page key 或 remote key，保证 `APPEND` 可靠。
+- `ApiResponse` 失败时返回 `MediatorResult.Error(ApiException(...))`。
+- 重新抛出 `CancellationException`。
+- 在 Adapter 外把 Room entity 转成 API/domain 模型，通常放在 `Pager.flow.map { pagingData.map { it.toDomain() } }`。
 
-Do not add Room entity, DAO, mapper, or `RemoteMediator` just to make a normal network list look more architectural.
+不要为了让普通网络列表看起来更“架构化”而新增 Room entity、DAO、mapper 或 `RemoteMediator`。
 
-## Review Checklist
+## 审查清单
 
-Before finishing a paging page, check:
+分页页面完成前检查：
 
-- `startRefreshWithAdapter` is called once and does not duplicate `adapter.refresh()`.
-- Fragment collection uses the view lifecycle.
-- `PagingSource.load()` has no UI side effects.
-- New code avoids direct `ApiFactory.apiService` unless preserving nearby legacy style.
-- `CancellationException` is not swallowed.
-- API failure becomes `LoadResult.Error(ApiException(...))`.
-- `RecyclerView` is not accidentally `wrap_content` in a full-page list.
-- Footer retry uses `adapter.retry()`, page retry uses `adapter.refresh()`.
-- Grid/staggered footer spans full width.
-- Empty/error/loading text and icons use string/drawable resources and project styles.
+- `startRefreshWithAdapter` 只调用一次，并且没有重复调用 `adapter.refresh()`。
+- Fragment 收集使用 view 生命周期。
+- `PagingSource.load()` 没有 UI 副作用。
+- 除非为了保留附近历史风格，新代码避免直接使用 `ApiFactory.apiService`。
+- 没有吞掉 `CancellationException`。
+- API 失败转成 `LoadResult.Error(ApiException(...))`。
+- 全页列表中的 `RecyclerView` 没有误用 `wrap_content`。
+- Footer 重试使用 `adapter.retry()`，页面重试使用 `adapter.refresh()`。
+- 网格/瀑布流 footer 横跨全宽。
+- 空/错/加载文案和图标使用 string/drawable 资源与项目 style。
