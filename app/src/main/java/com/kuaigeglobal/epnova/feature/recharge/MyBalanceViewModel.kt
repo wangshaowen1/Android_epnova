@@ -7,7 +7,6 @@ import androidx.lifecycle.viewModelScope
 import com.blankj.utilcode.util.StringUtils.getString
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.base.viewmodel.AppRepositoryViewModel
-import com.kuaigeglobal.epnova.base.viewmodel.ToolbarViewModel
 import com.kuaigeglobal.epnova.common.Constants
 import com.kuaigeglobal.epnova.common.adapter.QuickAdapter
 import com.kuaigeglobal.epnova.common.ext.topActivity
@@ -21,6 +20,7 @@ import com.kuaigeglobal.epnova.core.google.billing.PurchaseResult
 import com.kuaigeglobal.epnova.core.manager.AppEvent
 import com.kuaigeglobal.epnova.core.manager.EventManager
 import com.kuaigeglobal.epnova.core.network.apis.entity.CoinConfigInfo
+import com.kuaigeglobal.epnova.core.network.apis.entity.PointConfigInfo
 import com.kuaigeglobal.epnova.core.network.apis.response.SimpleBannerInfo
 import com.kuaigeglobal.epnova.core.response
 import com.kuaigeglobal.epnova.feature.details.ComputingPowerDetailsActivity
@@ -41,36 +41,36 @@ import kotlinx.coroutines.launch
 
 class MyBalanceViewModel(@LayoutRes private val paymentItemLayout: Int) : AppRepositoryViewModel<CoinRepository>() {
 
-    //toolbar 配置
-    val toolbar by lazy {
-        ToolbarViewModel(
-            title = R.string.store_store.getResString(),
-            navigationAction = { back() },
-            menuText = R.string.store_history.getResString(),
-            menuAction = { ComputingPowerDetailsActivity.start(topActivity) }
-        )
+    companion object {
+        const val TAB_COINS = 0
+        const val TAB_CREDITS = 1
     }
+
+    var currentTab = TAB_COINS
+        private set
 
     var isDialog = false
     val cost by lazy { mBundle.getInt(Constants.Extra.COST, 0) }
 
     private val _purchaseEvent = MutableSharedFlow<PurchaseResult>(extraBufferCapacity = 1)
-
-    /** 支付结果事件流，View 层订阅此 Flow 响应 UI 变化 */
     val purchaseEvent: SharedFlow<PurchaseResult> = _purchaseEvent.asSharedFlow()
 
     private var purchaseJob: Job? = null
 
-    /**
-     * 账户余额
-     */
     val balance by lazy { ObservableField<String>() }
+    val creditsBalance by lazy { ObservableField<String>("0") }
+    val displayBalance by lazy { ObservableField<String>() }
+    val balanceLabel by lazy { ObservableField<String>(R.string.store_coins.getResString()) }
     val userGiveCoins by lazy { ObservableField<String>() }
     val userPurchasedCoins by lazy { ObservableField<String>() }
     val loadState by lazy { ObservableInt() }
-    val powerAdapter by lazy { QuickAdapter<ItemRechargePowerVM>(R.layout.item_recharge_power, emptyList()) }
-    private var currentPower: ItemRechargePowerVM? = null
     val workCourseBanner by lazy { ObservableField<SimpleBannerInfo>() }
+
+    val coinsAdapter by lazy { QuickAdapter<ItemRechargePowerVM>(R.layout.item_recharge_power, emptyList()) }
+    val creditsAdapter by lazy { QuickAdapter<ItemRechargeCreditsVM>(R.layout.item_recharge_credits, emptyList()) }
+
+    private var currentCoinsItem: ItemRechargePowerVM? = null
+    private var currentCreditsItem: ItemRechargeCreditsVM? = null
 
     init {
         BillingManager.markActivePage(true)
@@ -89,30 +89,69 @@ class MyBalanceViewModel(@LayoutRes private val paymentItemLayout: Int) : AppRep
         workCourseBanner.set(if (User.get().isPurchasedCourse()) null else Config.get().appConfig.workCourseBanner)
     }
 
+    fun onTabSelected(index: Int) {
+        currentTab = index
+        when (index) {
+            TAB_COINS -> {
+                balanceLabel.set(R.string.store_coins.getResString())
+                displayBalance.set(balance.get())
+                if (coinsAdapter.items.isEmpty()) loadCoinsConfig()
+                else loadState.set(LoadStateViewHolder.CONTENT)
+            }
+            TAB_CREDITS -> {
+                balanceLabel.set(R.string.store_credits.getResString())
+                displayBalance.set(creditsBalance.get())
+                if (creditsAdapter.items.isEmpty()) loadCreditsConfig()
+                else loadState.set(LoadStateViewHolder.CONTENT)
+            }
+        }
+    }
+
     fun loadConfig() {
-        if (powerAdapter.items.isEmpty()) loadState.set(LoadStateViewHolder.LOADING)
+        if (currentTab == TAB_COINS) loadCoinsConfig() else loadCreditsConfig()
+    }
+
+    private fun loadCoinsConfig() {
+        if (coinsAdapter.items.isEmpty()) loadState.set(LoadStateViewHolder.LOADING)
         launch(
             block = {
-                val pointConfigListDeferred = async { mRepo.coinConfigList().data }
-                val pointConfigList = pointConfigListDeferred.await()
-                pointConfigList?.coionsBalanceNum?.let { User.get().storeCoins(it) }
+                val deferred = async { mRepo.coinConfigList().data }
+                val data = deferred.await()
+                data?.coionsBalanceNum?.let { User.get().storeCoins(it) }
                 updateBalance()
-                pointConfigList?.items?.map { ItemRechargePowerVM(it).apply { onItemClick.value = { select() } } }.let { vms ->
-                    powerAdapter.submitList(vms)
-                    loadGoogleProducts(vms)
-//                    (vms?.firstOrNull { it.data.get()?.isDefault == 1 } ?: vms?.firstOrNull())?.select()
-                    vms?.find { it.data.get()?.isDiscountValid() == true }?.let {
-                        startGlobalCountDown()
-                    }
+                data?.items?.map { ItemRechargePowerVM(it).apply { onItemClick.value = { selectCoins() } } }.let { vms ->
+                    coinsAdapter.submitList(vms)
+                    loadGoogleProductsForCoins(vms)
+                    vms?.find { it.data.get()?.isDiscountValid() == true }?.let { startGlobalCountDown() }
                 }
                 updateLoadState()
             },
-            onError = {
-                updateLoadState()
-            })
+            onError = { updateLoadState() }
+        )
     }
 
-    fun loadGoogleProducts(vms: List<ItemRechargePowerVM>?) {
+    fun loadCreditsConfig() {
+        if (creditsAdapter.items.isEmpty()) loadState.set(LoadStateViewHolder.LOADING)
+        launch(
+            block = {
+                val deferred = async { mRepo.pointConfigList().data }
+                val data = deferred.await()
+                data?.pointBalanceNum?.let {
+                    creditsBalance.set(it.toString())
+                    if (currentTab == TAB_CREDITS) displayBalance.set(it.toString())
+                }
+                data?.items?.map { ItemRechargeCreditsVM(it).apply { onItemClick.value = { selectCredits() } } }.let { vms ->
+                    creditsAdapter.submitList(vms)
+                    loadGoogleProductsForCredits(vms)
+                    vms?.find { it.data.get()?.isDiscountValid() == true }?.let { startGlobalCountDown() }
+                }
+                updateLoadState()
+            },
+            onError = { updateLoadState() }
+        )
+    }
+
+    private fun loadGoogleProductsForCoins(vms: List<ItemRechargePowerVM>?) {
         val productIds = vms?.mapNotNull { it.data.get()?.googleProductId } ?: return
         BillingManager.loadPowerPrices(productIds) { map ->
             viewModelScope.launch(Dispatchers.Main) {
@@ -126,38 +165,50 @@ class MyBalanceViewModel(@LayoutRes private val paymentItemLayout: Int) : AppRep
                         item.priceText.set(map[productCode]?.first)
                     }
                 }
-                powerAdapter.notifyDataSetChanged()
+                coinsAdapter.notifyDataSetChanged()
+            }
+        }
+    }
+
+    private fun loadGoogleProductsForCredits(vms: List<ItemRechargeCreditsVM>?) {
+        val productIds = vms?.mapNotNull { it.data.get()?.googleProductId } ?: return
+        BillingManager.loadPowerPrices(productIds) { map ->
+            viewModelScope.launch(Dispatchers.Main) {
+                if (map.isEmpty()) {
+                    getString(R.string.network_error_fetch_products).showToast()
+                    return@launch
+                }
+                vms.forEach { item ->
+                    val productCode = item.data.get()?.googleProductId
+                    if (map.containsKey(productCode)) {
+                        item.priceText.set(map[productCode]?.first)
+                    }
+                }
+                creditsAdapter.notifyDataSetChanged()
             }
         }
     }
 
     private fun updateLoadState() {
-        if (powerAdapter.items.isEmpty()) {
-            loadState.set(LoadStateViewHolder.RETRY)
-        } else {
-            loadState.set(LoadStateViewHolder.CONTENT)
-        }
+        val isEmpty = if (currentTab == TAB_COINS) coinsAdapter.items.isEmpty() else creditsAdapter.items.isEmpty()
+        loadState.set(if (isEmpty) LoadStateViewHolder.RETRY else LoadStateViewHolder.CONTENT)
     }
 
-    private fun ItemRechargePowerVM.select() {
-        currentPower?.isChecked?.set(false)
+    private fun ItemRechargePowerVM.selectCoins() {
+        currentCoinsItem?.isChecked?.set(false)
         isChecked.set(true)
-        currentPower = this
+        currentCoinsItem = this
+        recharge()
+    }
+
+    private fun ItemRechargeCreditsVM.selectCredits() {
+        currentCreditsItem?.isChecked?.set(false)
+        isChecked.set(true)
+        currentCreditsItem = this
         recharge()
     }
 
     fun recharge() {
-        val item = currentPower?.data?.get()
-        if (item == null) {
-            showToast(R.string.please_select_recharge_amount)
-            return
-        }
-
-        if (isDialog) {
-            EventManager.onAppTrack(AppEvent.SF_CLICK_COMPUTE_RECHARGE_PAYMENT_BUTTON)
-        }
-
-        // 先订阅结果，再发起支付，确保不遗漏回调
         purchaseJob?.cancel()
         purchaseJob = viewModelScope.launch {
             BillingManager.purchaseResultFlow.take(1).collect { result ->
@@ -169,17 +220,50 @@ class MyBalanceViewModel(@LayoutRes private val paymentItemLayout: Int) : AppRep
             }
         }
 
+        if (currentTab == TAB_COINS) {
+            rechargeCoins()
+        } else {
+            rechargeCredits()
+        }
+    }
+
+    private fun rechargeCoins() {
+        val item = currentCoinsItem?.data?.get()
+        if (item == null) {
+            showToast(R.string.please_select_recharge_amount)
+            purchaseJob?.cancel()
+            return
+        }
+        if (isDialog) EventManager.onAppTrack(AppEvent.SF_CLICK_COMPUTE_RECHARGE_PAYMENT_BUTTON)
         launchWithLoading(
             block = {
                 response(mRepo.createGoogleOrder(item.coionsConfigCode)) {
                     BillingManager.launchPurchase(topActivity, item.googleProductId ?: "", data?.orderNo ?: "")
                 }
             },
-            onError = {
-                // createOrder 失败时取消等待，避免 purchaseJob 悬空
-                purchaseJob?.cancel()
-            }
+            onError = { purchaseJob?.cancel() }
         )
+    }
+
+    private fun rechargeCredits() {
+        val item = currentCreditsItem?.data?.get()
+        if (item == null) {
+            showToast(R.string.please_select_recharge_amount)
+            purchaseJob?.cancel()
+            return
+        }
+        launchWithLoading(
+            block = {
+                response(mRepo.createGoogleOrder(item.pointConfigCode)) {
+                    BillingManager.launchPurchase(topActivity, item.googleProductId ?: "", data?.orderNo ?: "")
+                }
+            },
+            onError = { purchaseJob?.cancel() }
+        )
+    }
+
+    fun navigateToHistory() {
+        ComputingPowerDetailsActivity.start(topActivity)
     }
 
     fun viewPaymentAgreement() {
@@ -200,6 +284,7 @@ class MyBalanceViewModel(@LayoutRes private val paymentItemLayout: Int) : AppRep
             balance.set(coins.toString())
             userGiveCoins.set(User.get().giveCoins.toString())
         }
+        if (currentTab == TAB_COINS) displayBalance.set(balance.get())
     }
 
     private fun refreshBalance() {
@@ -212,10 +297,8 @@ class MyBalanceViewModel(@LayoutRes private val paymentItemLayout: Int) : AppRep
         countDownJob?.cancel()
         countDownJob = viewModelScope.launch {
             while (isActive) {
-                // 每秒通知所有 Item 更新时间
-                powerAdapter.items.forEach { vm ->
-                    vm.updateTime()
-                }
+                coinsAdapter.items.forEach { vm -> vm.updateTime() }
+                creditsAdapter.items.forEach { vm -> vm.updateTime() }
                 delay(1000)
             }
         }
@@ -227,5 +310,4 @@ class MyBalanceViewModel(@LayoutRes private val paymentItemLayout: Int) : AppRep
         purchaseJob?.cancel()
         super.onCleared()
     }
-
 }

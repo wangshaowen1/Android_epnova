@@ -11,12 +11,9 @@ import com.alibaba.android.alpha.Task
 import com.blankj.utilcode.util.ProcessUtils
 import com.blankj.utilcode.util.Utils
 import com.github.gzuliyujiang.oaid.DeviceID
-import com.unity3d.ads.IUnityAdsInitializationListener
-import com.unity3d.ads.UnityAds
 import com.kuaige.oss.OssType
 import com.kuaigeglobal.epnova.common.Cache
 import com.kuaigeglobal.epnova.common.SP
-import com.kuaigeglobal.epnova.common.ext.ioScope
 import com.kuaigeglobal.epnova.core.Config
 import com.kuaigeglobal.epnova.core.Global
 import com.kuaigeglobal.epnova.core.User
@@ -40,7 +37,8 @@ import com.nhsd.permisson.PermissionX
 import com.scwang.smart.refresh.footer.ClassicsFooter
 import com.scwang.smart.refresh.layout.SmartRefreshLayout
 import com.tencent.mmkv.MMKV
-import kotlinx.coroutines.launch
+import com.unity3d.ads.IUnityAdsInitializationListener
+import com.unity3d.ads.UnityAds
 import java.lang.ref.WeakReference
 import java.util.LinkedList
 import java.util.Locale
@@ -300,12 +298,10 @@ class App : BaseApp() {
 
     fun initSdkAfterAgreeLicense() {
         if (hasAgree()) {
-            if (User.get().isVisitor) {
-                Global.guestLogin({
-                    User.get().updateFrom(it)
-                    SignUtils.signIn()
-                })
-            }
+            Global.guestLogin({
+                User.get().updateFrom(it)
+                SignUtils.signIn()
+            })
             Utils.init(this)
             DeviceID.register(this)
             // AppsFlyer 开始数据采集（用户已同意隐私协议）

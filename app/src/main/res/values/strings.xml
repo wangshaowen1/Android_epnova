@@ -554,8 +554,10 @@
     <string name="store_store">Store</string>
     <string name="store_history">History</string>
     <string name="store_coins">Coins</string>
+    <string name="store_credits">Credits</string>
     <string name="store_reward_coins">Reward Coins</string>
     <string name="store_coins_tips">Tips\nTerms of Service and Privacy Policy.\n1. Coins valid for 1 year from purchase.\n2. Coins can be used to unlock episodes in order.\n3. Coins will be used first when unlocking episodes.If the amount is insufficient, reward coins will automatically be used.\n4. Once an episode is unlocked with Coins, it can be viewed an unlimited number of times.\n5. If you have any other questions, please contact customer service via Profile → Settings → FeedBack &amp; Suggestions.</string>
+    <string name="store_credits_tips">Tips：\n1. Credits valid for 1 year from purchase.\n2. Credits can be used to create your own short dramas.\n3. Once Credits are used for creation, they are non-refundable.\n4. If you have any other questions, please contact customer service via Profile → FeedBack &amp; Suggestions.\n5. Terms of Service and Privacy Policy.</string>
     <string name="transaction_history_title">Transaction History</string>
     <string name="transaction_history_all">All</string>
     <string name="transaction_history_earned">Earned</string>

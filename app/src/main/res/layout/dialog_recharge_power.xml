@@ -143,7 +143,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/spacing_m"
-                    android:adapter="@{layout.powerAdapter}"
+                    android:adapter="@{layout.coinsAdapter}"
                     android:overScrollMode="never"
                     android:paddingHorizontal="9dp"
                     android:paddingTop="6dp"

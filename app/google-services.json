@@ -37,6 +37,13 @@
             {
               "client_id": "1034433079236-a2lup2th9rc5940iom9i05geg0rg1fno.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "1034433079236-jcvm1tkjl1iebufeu83sqnt5mmh4uete.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.kuaigeglobal.epnova"
+              }
             }
           ]
         }

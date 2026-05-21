@@ -639,6 +639,11 @@ object ApiConstants {
     const val COINS_CONFIG_LIST = "trade/coions/config/list"
 
     /**
+     * 算力信息配置列表
+     */
+    const val POINT_CONFIG_LIST = "trade/point/config/list"
+
+    /**
      * 交易支付方式配置列表
      */
     const val PAYMENT_CONFIG_LIST = "trade/pay/way/config/list"

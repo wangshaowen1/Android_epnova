@@ -164,6 +164,7 @@ import com.kuaigeglobal.epnova.core.network.apis.response.OrderNoData
 import com.kuaigeglobal.epnova.core.network.apis.response.PictureBook
 import com.kuaigeglobal.epnova.core.network.apis.response.PointAmountData
 import com.kuaigeglobal.epnova.core.network.apis.response.CoinConfigData
+import com.kuaigeglobal.epnova.core.network.apis.response.PointConfigData
 import com.kuaigeglobal.epnova.core.network.apis.response.ShelfStatusData
 import com.kuaigeglobal.epnova.core.network.apis.response.ShortLikeData
 import com.kuaigeglobal.epnova.core.network.apis.response.StoryboardListData
@@ -966,6 +967,12 @@ interface ApiService {
      */
     @POST(ApiConstants.COINS_CONFIG_LIST)
     suspend fun coinsConfigList(@Body body: UserTokenBody): ApiResponse<CoinConfigData?>
+
+    /**
+     * 算力信息配置列表
+     */
+    @POST(ApiConstants.POINT_CONFIG_LIST)
+    suspend fun pointConfigList(@Body body: UserTokenBody): ApiResponse<PointConfigData?>
 
     /**
      * 交易支付方式配置列表

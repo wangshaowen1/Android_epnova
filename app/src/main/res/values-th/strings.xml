@@ -551,8 +551,10 @@
     <string name="store_store">ร้านค้า</string>
     <string name="store_history">ประวัติ</string>
     <string name="store_coins">เหรียญ</string>
+    <string name="store_credits">Credits</string>
     <string name="store_reward_coins">เหรียญรางวัล</string>
     <string name="store_coins_tips">"คำแนะนำ\nข้อกำหนดการให้บริการและนโยบายความเป็นส่วนตัว\n1. เหรียญมีอายุการใช้งาน 1 ปี นับจากวันที่ซื้อ\n2. สามารถใช้เหรียญปลดล็อกตอนตามลำดับได้\n3. จะใช้เหรียญก่อนเมื่อปลดล็อกตอน หากจำนวนไม่พอ จะใช้เหรียญรางวัลโดยอัตโนมัติ\n4. ตอนที่ปลดล็อกด้วยเหรียญแล้ว สามารถดูได้ไม่จำกัดจำนวนครั้ง\n5. หากมีคำถามอื่นๆ โปรดติดต่อฝ่ายบริการลูกค้าผ่าน โปรไฟล์ -> การตั้งค่า -> ข้อคิดเห็นและข้อเสนอแนะ"</string>
+    <string name="store_credits_tips">"คำแนะนำ：\n1. Credits มีอายุการใช้งาน 1 ปี นับจากวันที่ซื้อ\n2. สามารถใช้ Credits สร้างละครสั้นของตัวเองได้\n3. Credits ที่ใช้สำหรับการสร้างแล้ว ไม่สามารถขอคืนได้\n4. หากมีคำถามอื่นๆ โปรดติดต่อฝ่ายบริการลูกค้าผ่าน โปรไฟล์ → ข้อคิดเห็นและข้อเสนอแนะ\n5. ข้อกำหนดการให้บริการ และนโยบายความเป็นส่วนตัว"</string>
     <string name="transaction_history_title">ประวัติธุรกรรม</string>
     <string name="transaction_history_all">ทั้งหมด</string>
     <string name="transaction_history_earned">รายรับ</string>

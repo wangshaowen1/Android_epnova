@@ -15,6 +15,11 @@ class CoinRepository : AppRepository() {
     suspend fun coinConfigList() = withContext(Dispatchers.IO) { api.coinsConfigList(UserTokenBody()) }
 
     /**
+     * Credits（算力）商品配置列表
+     */
+    suspend fun pointConfigList() = withContext(Dispatchers.IO) { api.pointConfigList(UserTokenBody()) }
+
+    /**
      * 创建 Google 支付订单（金币类商品，Android 端通用）
      * @param goodsCode 商品编号（算力配置表编号）
      */

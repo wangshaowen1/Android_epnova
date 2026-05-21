@@ -12,22 +12,71 @@
         <import type="android.view.View" />
     </data>
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <include
-            android:id="@+id/toolbar"
-            layout="@layout/view_model_toolbar"
-            toolbar="@{layout.toolbar}" />
+        <ImageView
+            android:id="@+id/ivBg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_store_coins"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- Status bar placeholder -->
+        <com.kuaigeglobal.epnova.widget.StatusBarView
+            android:id="@+id/vStatusBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- Custom title bar with MagicIndicator -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/clTitleBar"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/action_bar_size"
+            app:layout_constraintTop_toBottomOf="@+id/vStatusBar">
+
+            <ImageView
+                android:id="@+id/ivBack"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:paddingHorizontal="@dimen/spacing_m"
+                android:src="@drawable/icon_back_left"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.nhsd.magicindicator.MagicIndicator
+                android:id="@+id/magicIndicator"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/tvHistory"
+                app:layout_constraintStart_toEndOf="@+id/ivBack"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/tvHistory"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:paddingHorizontal="@dimen/spacing_l"
+                android:src="@drawable/icon_store_history"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <com.kuaigeglobal.epnova.widget.LoadStateViewHolder
             displayChild="@{layout.loadState}"
             onRetry="@{layout::loadConfig}"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1">
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/clTitleBar">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -44,20 +93,22 @@
 
                         <TextView
                             android:id="@+id/tvBalance"
-                            android:layout_width="69dp"
+                            android:layout_width="wrap_content"
                             android:layout_height="28dp"
                             android:layout_marginTop="@dimen/spacing_l"
+                            android:drawableEnd="@drawable/icon_attention"
+                            android:drawablePadding="@dimen/spacing_xs"
                             android:fontFamily="@font/outfit_regular"
                             android:gravity="center"
-                            android:text="@string/store_coins"
+                            android:text="@{layout.balanceLabel}"
                             android:textAppearance="@style/Text12"
                             android:textColor="?attr/textColor3"
-                            app:layout_constraintEnd_toStartOf="@id/tvRewardsCoins"
+                            app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <ImageView
-                            android:id="@+id/ivPower"
+                            android:id="@+id/ivBalanceIcon"
                             android:layout_width="20dp"
                             android:layout_height="20dp"
                             android:src="@drawable/ic_coins"
@@ -72,54 +123,14 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="4dp"
-                            android:layout_marginTop="10dp"
+                            android:layout_marginTop="@dimen/spacing_s"
                             android:fontFamily="@font/outfit_medium"
-                            android:text="@{layout.userPurchasedCoins}"
+                            android:text="@{layout.displayBalance}"
                             android:textColor="?attr/textColor1"
                             android:textSize="20sp"
                             app:layout_constraintEnd_toEndOf="@id/tvBalance"
-                            app:layout_constraintStart_toEndOf="@+id/ivPower"
+                            app:layout_constraintStart_toEndOf="@+id/ivBalanceIcon"
                             app:layout_constraintTop_toBottomOf="@+id/tvBalance"
-                            tools:text="1000" />
-
-                        <TextView
-                            android:id="@+id/tvRewardsCoins"
-                            android:layout_width="98dp"
-                            android:layout_height="28dp"
-                            android:layout_marginTop="@dimen/spacing_l"
-                            android:fontFamily="@font/outfit_regular"
-                            android:gravity="center"
-                            android:text="@string/store_reward_coins"
-                            android:textAppearance="@style/Text12"
-                            android:textColor="?attr/textColor3"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toEndOf="@id/tvBalance"
-                            app:layout_constraintTop_toTopOf="parent" />
-
-                        <ImageView
-                            android:id="@+id/ivRewardsCoins"
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:src="@drawable/ic_coins"
-                            app:layout_constraintBottom_toBottomOf="@+id/tvRewardsCoinsBalance"
-                            app:layout_constraintEnd_toStartOf="@+id/tvRewardsCoinsBalance"
-                            app:layout_constraintHorizontal_chainStyle="packed"
-                            app:layout_constraintStart_toStartOf="@id/tvRewardsCoins"
-                            app:layout_constraintTop_toTopOf="@+id/tvRewardsCoinsBalance" />
-
-                        <TextView
-                            android:id="@+id/tvRewardsCoinsBalance"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="4dp"
-                            android:layout_marginTop="10dp"
-                            android:fontFamily="@font/outfit_medium"
-                            android:text="@{layout.userGiveCoins}"
-                            android:textColor="?attr/textColor1"
-                            android:textSize="20sp"
-                            app:layout_constraintEnd_toEndOf="@id/tvRewardsCoins"
-                            app:layout_constraintStart_toEndOf="@+id/ivRewardsCoins"
-                            app:layout_constraintTop_toBottomOf="@+id/tvRewardsCoins"
                             tools:text="1000" />
 
                         <include
@@ -151,7 +162,6 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/spacing_m"
-                            android:adapter="@{layout.powerAdapter}"
                             android:overScrollMode="never"
                             android:paddingHorizontal="9dp"
                             android:paddingVertical="6dp"
@@ -225,6 +235,6 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </com.kuaigeglobal.epnova.widget.LoadStateViewHolder>
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>
