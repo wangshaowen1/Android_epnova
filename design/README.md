@@ -7,3 +7,6 @@
 ## 当前文档
 
 - `code-interface-directory.md`：代码功能，接口目录索引
+- `work-publish-flow.md`：作品发布流程说明，包含首次发布 H5 交互与非首次发布原生逻辑
+- `work-publish-logic.md`：作品发布功能逻辑说明，包含状态体系、集数计算、边界条件和弹窗/toast 文案
+- `work-publish-current-code-analysis.md`：作品发布相关代码现状说明，区分旧发行残留与新发布流程改造点

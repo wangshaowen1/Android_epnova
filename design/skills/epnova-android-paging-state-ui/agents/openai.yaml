@@ -1,0 +1,4 @@
+interface:
+  display_name: "Epnova Android Paging State UI"
+  short_description: "Generate and review Epnova Paging3 list pages with standard state UI."
+  default_prompt: "Use Epnova Android Paging State UI rules when implementing or reviewing paginated lists, Paging3, PagingSource, PagingDataAdapter, SmartRefreshLayout, LoadStateViewHolder, MyMultiStatePagingFooterAdapter, refresh/retry behavior, empty/error/loading UI, and optional RemoteMediator database-cache paging."
