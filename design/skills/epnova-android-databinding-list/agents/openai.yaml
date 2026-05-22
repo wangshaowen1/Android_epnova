@@ -1,0 +1,4 @@
+interface:
+  display_name: "Epnova Android 非分页列表"
+  short_description: "按 Epnova 项目规范生成和审查普通 DataBinding RecyclerView 列表。"
+  default_prompt: "使用 Epnova Android 非分页 DataBinding 列表规范实现或审查 QuickAdapter、AppItemViewModel、ItemXxxVM、BaseMultiItemAdapter、submitList、item XML 的 item 变量、点击事件转发和普通 RecyclerView 列表更新。"

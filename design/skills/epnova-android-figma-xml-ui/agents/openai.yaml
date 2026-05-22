@@ -1,0 +1,4 @@
+interface:
+  display_name: "Epnova Android Figma XML UI"
+  short_description: "按项目 style/theme/attr 与资源命名把 Figma 或截图还原为 Android XML。"
+  default_prompt: "使用 Epnova Android Figma XML UI 规范生成或审查 Figma/截图到 Android XML 的页面、组件、弹窗、列表 item、状态 UI，优先映射项目 style/theme/attr、Text style、?attr/textColor1、drawable 命名和多语言文案布局。"
