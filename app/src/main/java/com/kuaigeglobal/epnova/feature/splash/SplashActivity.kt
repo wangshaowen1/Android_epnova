@@ -25,6 +25,7 @@ class SplashActivity : BaseViewModelActivity<ActivitySplashBinding, SplashViewMo
     PolicyDialog.PolicyCallback {
     companion object {
         private const val TAG = "SplashActivity"
+        private const val EXTRA_SCHEME = "scheme"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -75,7 +76,9 @@ class SplashActivity : BaseViewModelActivity<ActivitySplashBinding, SplashViewMo
 
     private fun jumpToTheHomepage() {
         // 只将自定义 scheme URI 传给 MainActivity，HTTPS 链接（AppsFlyer OneLink）由 AF SDK 自行处理
-        val schemeUri = intent.data
+        val schemeUri = intent.getStringExtra(EXTRA_SCHEME)
+            ?.takeIf { !TextUtils.isEmpty(it) }
+            ?: intent.data
             ?.takeIf { !TextUtils.isEmpty(it.host) && it.scheme != "https" && it.scheme != "http" }
             ?.toString()
         MainActivity.start(this@SplashActivity, schemeUri)

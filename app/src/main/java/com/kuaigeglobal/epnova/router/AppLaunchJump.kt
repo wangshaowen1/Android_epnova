@@ -67,16 +67,7 @@ object AppLaunchJump {
      */
     private fun jump(activity: FragmentActivity, uri: Uri) {
         Logger.i("push jump $activity")
-        when (uri.host) {
-            //歌曲生成弹窗跳转链接 kuaige://bookGenerated?bookId=...&bookTitle=...
-            "bookGenerated" -> {
-//                BookGeneratedDialog.show(
-//                    uri.getQueryParameter("bookId"),
-//                    uri.getQueryParameter("bookTitle"),
-//                    uri.getQueryParameter("bookCover"),
-//                    activity)
-            }
-        }
+        AppRouter.jump(uri)
     }
 
 

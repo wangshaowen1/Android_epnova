@@ -1,6 +1,7 @@
 package com.kuaigeglobal.epnova.feature.recharge
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.text.Spannable
@@ -13,6 +14,7 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.kuaigeglobal.epnova.R
+import com.kuaigeglobal.epnova.common.Constants
 import com.kuaigeglobal.epnova.common.ext.topActivity
 import com.kuaigeglobal.epnova.common.utils.CommonNavigatorUtils
 import com.kuaigeglobal.epnova.core.Config
@@ -26,7 +28,6 @@ import com.nhsd.basic.BaseViewModelActivity
 import com.nhsd.basic.bus.observeEvents
 import com.nhsd.basic.ext.dp
 import com.nhsd.basic.ext.getResColor
-import com.nhsd.basic.ext.startActivity
 import com.nhsd.magicindicator.buildins.commonnavigator.CommonNavigator
 import com.nhsd.magicindicator.buildins.commonnavigator.abs.CommonNavigatorAdapter
 import com.nhsd.magicindicator.buildins.commonnavigator.abs.IPagerIndicator
@@ -36,8 +37,13 @@ import kotlinx.coroutines.launch
 
 class MyBalanceActivity : BaseViewModelActivity<ActivityMyBalanceBinding, MyBalanceViewModel>() {
     companion object {
-        fun start() {
-            topActivity?.startActivity(MyBalanceActivity::class.java)
+        fun start(tab: Int = MyBalanceViewModel.TAB_COINS) {
+            val activity = topActivity ?: return
+            activity.startActivity(
+                Intent(activity, MyBalanceActivity::class.java).apply {
+                    putExtra(Constants.Extra.TAB, tab)
+                }
+            )
         }
     }
 
@@ -46,7 +52,7 @@ class MyBalanceActivity : BaseViewModelActivity<ActivityMyBalanceBinding, MyBala
         EventManager.onAppTrack(AppEvent.SF_VIEW_RECHARGE_PAGE)
         initTitleBar()
         initRecyclerView()
-        setupTip(MyBalanceViewModel.TAB_COINS)
+        updateTabUi(mRealVM.currentTab)
         observePurchaseEvent()
         observeEvents {
             on<Events.UserDataEvent> {
@@ -56,7 +62,10 @@ class MyBalanceActivity : BaseViewModelActivity<ActivityMyBalanceBinding, MyBala
     }
 
     override fun createViewModel(): MyBalanceViewModel {
-        return MyBalanceViewModel(R.layout.item_recharge_payment)
+        val initialTab = intent.getIntExtra(Constants.Extra.TAB, MyBalanceViewModel.TAB_COINS)
+            .takeIf { it == MyBalanceViewModel.TAB_COINS || it == MyBalanceViewModel.TAB_CREDITS }
+            ?: MyBalanceViewModel.TAB_COINS
+        return MyBalanceViewModel(R.layout.item_recharge_payment, initialTab)
     }
 
     private fun initTitleBar() {
@@ -94,12 +103,16 @@ class MyBalanceActivity : BaseViewModelActivity<ActivityMyBalanceBinding, MyBala
             }
         }
         binding.magicIndicator.navigator = navigator
-        binding.magicIndicator.onPageSelected(MyBalanceViewModel.TAB_COINS)
-        binding.magicIndicator.onPageScrolled(MyBalanceViewModel.TAB_COINS, 0f, 0)
+        binding.magicIndicator.onPageSelected(mRealVM.currentTab)
+        binding.magicIndicator.onPageScrolled(mRealVM.currentTab, 0f, 0)
     }
 
     private fun initRecyclerView() {
-        binding.rvRechargeAmount.adapter = mRealVM.coinsAdapter
+        binding.rvRechargeAmount.adapter = if (mRealVM.currentTab == MyBalanceViewModel.TAB_CREDITS) {
+            mRealVM.creditsAdapter
+        } else {
+            mRealVM.coinsAdapter
+        }
     }
 
     private fun observePurchaseEvent() {

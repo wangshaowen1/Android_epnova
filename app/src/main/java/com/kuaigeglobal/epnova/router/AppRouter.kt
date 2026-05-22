@@ -28,6 +28,10 @@ import com.kuaigeglobal.epnova.feature.creator.generate.StoryEditorActivity
 import com.kuaigeglobal.epnova.feature.editor.EditStoryboardVideoActivity
 import com.kuaigeglobal.epnova.feature.main.MainActivity
 import com.kuaigeglobal.epnova.feature.play.DramasPlayPagerActivity
+import com.kuaigeglobal.epnova.feature.recharge.MyBalanceActivity
+import com.kuaigeglobal.epnova.feature.recharge.MyBalanceViewModel
+import com.kuaigeglobal.epnova.feature.rewards.RewardsActivity
+import com.kuaigeglobal.epnova.feature.series.SeriesActivity
 import com.kuaigeglobal.epnova.feature.web.SimpleBrowserActivity.Companion.launch
 import com.kuaigeglobal.epnova.widget.LoadingDialog2
 import com.nhsd.basic.bus.FlowEventBus
@@ -125,6 +129,36 @@ object AppRouter : IRouter {
             "toHome" -> {//epnovascheme://toHome
                 FlowEventBus.postSync(Events.MainTabEvent(Events.MainTabEvent.TAB_HOME))
                 ActivityUtils.finishToActivity(MainActivity::class.java, false)
+            }
+
+            "toRewards" -> {//epnovascheme://toRewards
+                if (AppNavigator.checkLoginIntercepted(showToast = false)) {
+                    return
+                }
+                val context = topActivity ?: return
+                RewardsActivity.start(context)
+            }
+
+            "toStoreCoins" -> {//epnovascheme://toStoreCoins
+                if (AppNavigator.checkLoginIntercepted(showToast = false)) {
+                    return
+                }
+                MyBalanceActivity.start(MyBalanceViewModel.TAB_COINS)
+            }
+
+            "toStoreCredits" -> {//epnovascheme://toStoreCredits
+                if (AppNavigator.checkLoginIntercepted(showToast = false)) {
+                    return
+                }
+                MyBalanceActivity.start(MyBalanceViewModel.TAB_CREDITS)
+            }
+
+            "toSeriesDetail" -> {//epnovascheme://toSeriesDetail?workId=%s
+                val workId = uri.getQueryParameter("workId")
+                if (workId.isNullOrEmpty()) {
+                    return
+                }
+                SeriesActivity.start(workId)
             }
 
             "toTargetEpisode" -> {//epnovascheme://toTargetEpisode?workId=%s&storyId=%s
