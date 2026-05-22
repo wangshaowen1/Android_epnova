@@ -100,11 +100,6 @@ class SettingsActivity : BaseViewModelActivity<ActivitySettingsBinding, Settings
                 Config.get().saveEpisodeAutoUnlock(not == true)
             }
 
-            R.id.ll_languages -> {
-                //语言
-                LanguagesActivity.start(this)
-            }
-
             R.id.sll_cancel_the_account -> {
                 //注销账号
                 if (AppNavigator.checkLoginIntercepted(true)) {
@@ -171,14 +166,6 @@ class SettingsActivity : BaseViewModelActivity<ActivitySettingsBinding, Settings
                     Config.get().appConfig.thirdPartyInfoShareListUrl,
                     getString(R.string.app_shared_list)
                 )
-            }
-
-            R.id.suggestions_feedback -> {
-                if (AppNavigator.checkLoginIntercepted(false)) {
-                    return
-                }
-                //建议与反馈
-                FeedbackActivity.start(this)
             }
         }
     }

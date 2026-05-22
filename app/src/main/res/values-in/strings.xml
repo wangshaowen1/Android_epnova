@@ -623,4 +623,10 @@ Jika Anda memilih \"Tidak Setuju\", Anda tidak akan dapat menggunakan produk dan
     <string name="create_page_resource_center">Pusat Sumber Daya</string>
     <string name="create_page_published">Diterbitkan</string>
     <string name="create_page_income">Penghasilan</string>
+    <string name="profile_recharge">Isi Ulang</string>
+    <string name="profile_credits">Kredit</string>
+    <string name="profile_income">Penghasilan</string>
+    <string name="profile_feedback_suggestions">Saran dan Masukan</string>
+    <string name="credits_popup_instructions">Kredit dapat digunakan untuk membuat drama pendek buatan Anda sendiri.</string>
+    <string name="coins_popup_instructions">Koin dapat digunakan untuk membuka kunci episode secara berurutan.</string>
 </resources>

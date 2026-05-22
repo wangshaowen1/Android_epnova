@@ -624,4 +624,10 @@
     <string name="create_page_resource_center">ศูนย์ทรัพยากร</string>
     <string name="create_page_published">เผยแพร่แล้ว</string>
     <string name="create_page_income">รายได้</string>
+    <string name="profile_recharge">เติมเงิน</string>
+    <string name="profile_credits">เครดิต</string>
+    <string name="profile_income">รายได้</string>
+    <string name="profile_feedback_suggestions">ข้อเสนอแนะและความคิดเห็น</string>
+    <string name="credits_popup_instructions">เครดิตสามารถใช้สร้างละครสั้นของคุณเองได้</string>
+    <string name="coins_popup_instructions">เหรียญสามารถใช้ปลดล็อกตอนละครตามลำดับได้</string>
 </resources>

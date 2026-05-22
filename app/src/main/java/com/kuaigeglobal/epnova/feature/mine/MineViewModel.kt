@@ -12,6 +12,7 @@ import com.kuaigeglobal.epnova.core.ext.launch
 import com.kuaigeglobal.epnova.core.network.apis.request.UserTokenBody
 import com.kuaigeglobal.epnova.core.network.apis.response.SimpleBannerInfo
 import com.kuaigeglobal.epnova.core.response
+import com.kuaigeglobal.epnova.feature.settings.lang.languagesConfigs
 import com.nhsd.basic.ext.getResString
 
 /**
@@ -30,6 +31,8 @@ class MineViewModel : AppRepositoryViewModel<AppRepository>() {
      */
     val balance by lazy { ObservableField<String>() }
     val workCourseBanner by lazy { ObservableField<SimpleBannerInfo>() }
+
+    val language by lazy { languagesConfigs.find { it.code == Config.get().getSavedLanguage() } }
 
     val loginRewardsValid = ObservableBoolean(User.get().isGuest)
     val loginRewards = ObservableField<String>(Config.get().loginRewards)

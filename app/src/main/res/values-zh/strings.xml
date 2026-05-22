@@ -618,5 +618,11 @@
     <string name="create_page_resource_center">资源中心</string>
     <string name="create_page_published">已发布</string>
     <string name="create_page_income">收益</string>
+    <string name="profile_recharge">充值</string>
+    <string name="profile_credits">积分 / 点数</string>
+    <string name="profile_income">收益</string>
+    <string name="profile_feedback_suggestions">反馈与建议</string>
+    <string name="credits_popup_instructions">积分可用于创作专属短剧。</string>
+    <string name="coins_popup_instructions">金币可按顺序解锁剧集。</string>
 </resources>
 

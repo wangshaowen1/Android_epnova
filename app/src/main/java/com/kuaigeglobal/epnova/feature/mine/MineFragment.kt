@@ -1,32 +1,31 @@
 package com.kuaigeglobal.epnova.feature.mine
 
+import android.app.Dialog
+import android.content.Context
 import android.view.View
-import androidx.fragment.app.Fragment
 import com.blankj.utilcode.util.ClipboardUtils
 import com.kuaigeglobal.epnova.R
-import com.kuaigeglobal.epnova.common.adapter.FragmentStateCacheAdapter
-import com.kuaigeglobal.epnova.common.ext.removeTheRipples
+import com.kuaigeglobal.epnova.common.ext.showConfirmDialog
 import com.kuaigeglobal.epnova.common.ext.topActivity
-import com.kuaigeglobal.epnova.common.utils.CommonNavigatorUtils
 import com.kuaigeglobal.epnova.core.Config
 import com.kuaigeglobal.epnova.core.Events
 import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.ext.onUserStatusChanged
 import com.kuaigeglobal.epnova.databinding.FragmentMineBinding
 import com.kuaigeglobal.epnova.feature.main.MainViewModel
-import com.kuaigeglobal.epnova.feature.mine.child.MineChildFragment
 import com.kuaigeglobal.epnova.feature.recharge.MyBalanceActivity
+import com.kuaigeglobal.epnova.feature.rewards.RewardsActivity
 import com.kuaigeglobal.epnova.feature.settings.SettingsActivity
 import com.kuaigeglobal.epnova.feature.settings.feedback.FeedbackActivity
+import com.kuaigeglobal.epnova.feature.settings.lang.LanguagesActivity
 import com.kuaigeglobal.epnova.feature.web.SimpleBrowserActivity
 import com.kuaigeglobal.epnova.router.AppNavigator
 import com.nhsd.basic.BaseViewModelFragment
 import com.nhsd.basic.bus.observeEvents
-import com.nhsd.basic.ext.dp
+import com.nhsd.basic.ext.getResString
 import com.nhsd.basic.ext.getViewModelOfActivity
 import com.nhsd.basic.ext.showToast
-import com.nhsd.magicindicator.ViewPagerHelper
-import com.nhsd.magicindicator.buildins.commonnavigator.indicators.LinePagerIndicator
+import kotlin.Boolean
 
 class MineFragment : BaseViewModelFragment<FragmentMineBinding, MineViewModel>() {
 
@@ -92,18 +91,6 @@ class MineFragment : BaseViewModelFragment<FragmentMineBinding, MineViewModel>()
                 AppNavigator.checkRealLogin(false)
             }
 
-            R.id.ll_qa -> {
-                SimpleBrowserActivity.launch(activity, Config.get().appConfig.appHelpCenterUrl)
-            }
-
-            R.id.btnSettings -> {
-                //设置
-                if (AppNavigator.checkLoginIntercepted(false)) {
-                    return
-                }
-                SettingsActivity.start(requireActivity())
-            }
-
             R.id.tv_id, R.id.iv_copy -> {
                 //复制
                 User.get().userUid?.let {
@@ -112,7 +99,48 @@ class MineFragment : BaseViewModelFragment<FragmentMineBinding, MineViewModel>()
                 }
             }
 
-            R.id.suggestions_feedback -> {
+            R.id.ll_qa -> {
+                SimpleBrowserActivity.launch(activity, Config.get().appConfig.appHelpCenterUrl)
+            }
+
+            R.id.ll_store, R.id.tv_recharge -> {
+                if (AppNavigator.checkLoginIntercepted(false)) {
+                    return
+                }
+                //商城
+                MyBalanceActivity.start()
+            }
+            
+            R.id.iv_coins_tooltip -> {
+                //金币-tooltip
+                activity?.showConfirmDialog(
+                    title = null,
+                    tips = getString(R.string.coins_popup_instructions),
+                    positiveButtonText = getString(R.string.confirm_ok))
+            }
+
+            R.id.iv_credits_tooltip -> {
+                //积分 / 点数-tooltip
+                activity?.showConfirmDialog(
+                    title = null,
+                    tips = getString(R.string.credits_popup_instructions),
+                    positiveButtonText = getString(R.string.confirm_ok))
+            }
+
+            R.id.ll_rewards -> {
+                if (AppNavigator.checkLoginIntercepted(false)) {
+                    return
+                }
+                //福利中心
+                RewardsActivity.start(mActivity)
+            }
+
+            R.id.ll_languages -> {
+                //语言
+                LanguagesActivity.start(mActivity)
+            }
+
+            R.id.ll_suggestions_feedback -> {
                 if (AppNavigator.checkLoginIntercepted(false)) {
                     return
                 }
@@ -120,48 +148,17 @@ class MineFragment : BaseViewModelFragment<FragmentMineBinding, MineViewModel>()
                 FeedbackActivity.start(topActivity)
             }
 
-            R.id.btnMyBalance -> {
+            R.id.ll_settings -> {
+                //设置
                 if (AppNavigator.checkLoginIntercepted(false)) {
                     return
                 }
-                MyBalanceActivity.start()
-                //Toast.makeText(view.context,"hello", Toast.LENGTH_SHORT).show()
-
-
+                SettingsActivity.start(requireActivity())
             }
         }
     }
 
     private fun initView() {
-        binding.magicIndicator.navigator = CommonNavigatorUtils.getCommonNavigatorVp2(
-            mActivity,
-            listOf(
-                getString(R.string.profile_history),
-                getString(R.string.profile_collection)
-            ),
-            isAdjustMode = true,
-            binding.viewPager,
-            indicatorView = CommonNavigatorUtils.getLinePagerIndicatorGradient(context = mActivity)
-                .also { indicator ->
-                    indicator?.lineWidth = (28).dp.toFloat()
-                    indicator?.mode = LinePagerIndicator.MODE_EXACTLY
-                    indicator?.yOffset = (1).dp.toFloat()
-                }
-        )
-        val fragmentList = arrayListOf<Fragment>()
-//        fragmentList.add(MyCreationsFragment.newInstance())
-        fragmentList.add(MineChildFragment.newInstance(type = MineChildFragment.TYPE_HISTORY))
-        fragmentList.add(MineChildFragment.newInstance(type = MineChildFragment.TYPE_COLLECTION))
 
-        val viewPagerAdapter = FragmentStateCacheAdapter(
-            childFragmentManager,
-            lifecycle
-        )
-        viewPagerAdapter.setFragments(fragmentList)
-        binding.viewPager.adapter = viewPagerAdapter
-        ViewPagerHelper.bind(binding.magicIndicator, binding.viewPager)
-
-        binding.viewPager.setCurrentItem(0, false)
-        binding.viewPager.removeTheRipples()
     }
 }

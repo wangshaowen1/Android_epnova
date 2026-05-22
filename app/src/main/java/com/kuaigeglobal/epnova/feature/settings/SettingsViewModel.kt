@@ -15,7 +15,6 @@ import com.kuaigeglobal.epnova.core.ext.parseMessage
 import com.kuaigeglobal.epnova.core.network.apis.ApiException
 import com.kuaigeglobal.epnova.core.network.apis.request.UserTokenBody
 import com.kuaigeglobal.epnova.core.response
-import com.kuaigeglobal.epnova.feature.settings.lang.languagesConfigs
 import com.kuaigeglobal.epnova.kit.SignUtils
 import com.nhsd.basic.ext.getResString
 import com.nhsd.basic.ext.showToast
@@ -46,7 +45,6 @@ class SettingsViewModel : AppRepositoryViewModel<AppRepository>() {
 
     val beiAn by lazy { Config.get().appConfig.beianNo }
 
-    val language by lazy { languagesConfigs.find { it.code == Config.get().getSavedLanguage() } }
     val episodeAutoUnlock = ObservableField(Config.get().isEpisodeAutoUnlock())
     val isRealLogin = ObservableBoolean(User.get().isLogin)
 

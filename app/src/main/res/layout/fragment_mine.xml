@@ -20,6 +20,7 @@
         android:background="?android:windowBackground">
 
         <ImageView
+            importantForAccessibility="no"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
@@ -34,49 +35,7 @@
             <com.kuaigeglobal.epnova.widget.StatusBarView
                 android:id="@+id/sbv"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:gravity="end|center_vertical">
-
-                <LinearLayout
-                    android:id="@+id/btnMyBalance"
-                    singleClick="@{layout.clickHandler::onClick}"
-                    android:layout_width="wrap_content"
-                    android:layout_height="28dp"
-                    android:background="@drawable/bg_fill_color_1_stroke_r50"
-                    android:gravity="center"
-                    android:orientation="horizontal"
-                    android:paddingHorizontal="10dp">
-
-                    <ImageView
-                        android:layout_width="18dp"
-                        android:layout_height="18dp"
-                        android:src="@drawable/ic_coins" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="4dp"
-                        android:fontFamily="@font/d_din_pro_600_semibold"
-                        android:text="@{layout.balance}"
-                        android:textAppearance="@style/Text16"
-                        android:textColor="?attr/textColor1"
-                        tools:text="8392" />
-                </LinearLayout>
-
-                <ImageView
-                    android:id="@+id/btnSettings"
-                    singleClick="@{layout.clickHandler::onClick}"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingHorizontal="@dimen/spacing_l"
-                    android:src="@drawable/icon_setting" />
-            </LinearLayout>
+                android:layout_height="wrap_content" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -158,13 +117,13 @@
 
                 <TextView
                     android:id="@+id/tv_id"
-                    style="@style/Text14"
+                    style="@style/Text12"
                     singleClick="@{layout.clickHandler::onClick}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/spacing_s"
                     android:text="@{`UID:`+layout.userInfo[`id`]}"
-                    android:textColor="?attr/textColor5"
+                    android:textColor="?attr/textColor4"
                     app:layout_constraintBottom_toBottomOf="@id/siv_avatar"
                     app:layout_constraintStart_toStartOf="@id/tv_name"
                     app:layout_constraintTop_toBottomOf="@id/tv_name"
@@ -183,18 +142,360 @@
                     app:layout_constraintTop_toTopOf="@id/tv_id" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <com.nhsd.magicindicator.MagicIndicator
-                android:id="@+id/magic_indicator"
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="34dp"
-                android:layout_marginTop="24dp" />
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/spacing_l"
+                android:layout_marginTop="@dimen/dp20"
+                android:background="@drawable/bg_06_ffffff_r12"
+                android:paddingBottom="13dp">
 
-            <androidx.viewpager2.widget.ViewPager2
-                android:id="@+id/view_pager"
+                <LinearLayout
+                    android:id="@+id/ll_store"
+                    singleClick="@{layout.clickHandler::onClick}"
+                    android:layout_width="match_parent"
+                    android:layout_height="51dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="15dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <TextView
+                        style="@style/Text16"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/store_store"
+                        android:textColor="?attr/textColor2" />
+
+                    <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:importantForAccessibility="no"
+                        android:src="@drawable/arrow_right_gray36" />
+                </LinearLayout>
+
+                <View
+                    android:id="@+id/divider"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginHorizontal="15dp"
+                    android:background="@color/border_color_2_dark"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/ll_store" />
+
+                <TextView
+                    android:id="@+id/tv_coins_data"
+                    style="@style/Text20"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginTop="13dp"
+                    android:maxLines="1"
+                    android:text="0"
+                    android:textColor="?attr/textColor1"
+                    app:layout_constraintEnd_toStartOf="@+id/tv_credits_data"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/divider"
+                    tools:text="0" />
+
+                <ImageView
+                    android:id="@+id/iv_coins"
+                    android:layout_width="12dp"
+                    android:layout_height="12dp"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/icon_coins"
+                    app:layout_constraintBottom_toBottomOf="@id/tv_coins"
+                    app:layout_constraintStart_toStartOf="@id/tv_coins_data"
+                    app:layout_constraintTop_toTopOf="@id/tv_coins" />
+
+                <TextView
+                    android:id="@+id/tv_coins"
+                    style="@style/Text12"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="2dp"
+                    android:layout_marginTop="4dp"
+                    android:text="@string/newbie_coins"
+                    android:textColor="?attr/textColor4"
+                    app:layout_constraintStart_toEndOf="@id/iv_coins"
+                    app:layout_constraintTop_toBottomOf="@id/tv_coins_data" />
+
+                <ImageView
+                    android:id="@+id/iv_coins_tooltip"
+                    singleClick="@{layout.clickHandler::onClick}"
+                    android:layout_width="12dp"
+                    android:layout_height="12dp"
+                    android:layout_marginStart="2dp"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/icon_attention"
+                    app:layout_constraintBottom_toBottomOf="@+id/tv_coins"
+                    app:layout_constraintStart_toEndOf="@+id/tv_coins"
+                    app:layout_constraintTop_toTopOf="@+id/tv_coins" />
+
+                <TextView
+                    android:id="@+id/tv_credits_data"
+                    style="@style/Text20"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="40dp"
+                    android:layout_marginEnd="43dp"
+                    android:maxLines="1"
+                    android:text="0"
+                    android:textColor="?attr/textColor1"
+                    app:layout_constraintEnd_toStartOf="@id/tv_recharge"
+                    app:layout_constraintStart_toEndOf="@id/iv_coins_tooltip"
+                    app:layout_constraintTop_toTopOf="@id/tv_coins_data"
+                    tools:text="0" />
+
+                <ImageView
+                    android:id="@+id/iv_credits"
+                    android:layout_width="12dp"
+                    android:layout_height="12dp"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/icon_credits"
+                    app:layout_constraintBottom_toBottomOf="@id/tv_credits"
+                    app:layout_constraintStart_toStartOf="@id/tv_credits_data"
+                    app:layout_constraintTop_toTopOf="@id/tv_credits" />
+
+                <TextView
+                    android:id="@+id/tv_credits"
+                    style="@style/Text12"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="2dp"
+                    android:layout_marginTop="4dp"
+                    android:text="@string/profile_credits"
+                    android:textColor="?attr/textColor4"
+                    app:layout_constraintStart_toEndOf="@id/iv_credits"
+                    app:layout_constraintTop_toBottomOf="@id/tv_credits_data" />
+
+                <ImageView
+                    android:id="@+id/iv_credits_tooltip"
+                    singleClick="@{layout.clickHandler::onClick}"
+                    android:layout_width="12dp"
+                    android:layout_height="12dp"
+                    android:layout_marginStart="2dp"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/icon_attention"
+                    app:layout_constraintBottom_toBottomOf="@+id/tv_credits"
+                    app:layout_constraintStart_toEndOf="@+id/tv_credits"
+                    app:layout_constraintTop_toTopOf="@+id/tv_credits" />
+
+                <TextView
+                    android:id="@+id/tv_recharge"
+                    style="@style/Text14"
+                    singleClick="@{layout.clickHandler::onClick}"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_theme_color1_r41"
+                    android:gravity="center"
+                    android:paddingHorizontal="14dp"
+                    android:paddingVertical="8dp"
+                    android:text="@string/profile_recharge"
+                    android:textColor="?attr/textColor1"
+                    app:layout_constraintBottom_toBottomOf="@+id/tv_credits"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/tv_credits_data" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="15dp"
                 android:layout_marginTop="@dimen/spacing_l"
-                android:layout_weight="1" />
+                android:background="@drawable/bg_06_ffffff_r12"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/ll_income"
+                    singleClick="@{layout.clickHandler::onClick}"
+                    android:layout_width="match_parent"
+                    android:layout_height="54dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="@dimen/spacing_l">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:importantForAccessibility="no"
+                        android:src="@drawable/icon_mine_income" />
+
+                    <TextView
+                        style="@style/Text14"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/spacing_m"
+                        android:layout_weight="1"
+                        android:text="@string/profile_income"
+                        android:textColor="?attr/textColor1" />
+
+                    <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:importantForAccessibility="no"
+                        android:src="@drawable/arrow_right_gray36" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_rewards"
+                    singleClick="@{layout.clickHandler::onClick}"
+                    android:layout_width="match_parent"
+                    android:layout_height="54dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="@dimen/spacing_l">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:importantForAccessibility="no"
+                        android:src="@drawable/icon_mine_rewards" />
+
+                    <TextView
+                        style="@style/Text14"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/spacing_m"
+                        android:layout_weight="1"
+                        android:text="@string/rewards_title"
+                        android:textColor="?attr/textColor1" />
+
+                    <TextView
+                        android:id="@+id/tv_rewards_data"
+                        style="@style/Text12"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:background="@drawable/bg_theme_color1_r38"
+                        android:gravity="center"
+                        android:minHeight="22dp"
+                        android:paddingHorizontal="6dp"
+                        android:text="+1000"
+                        android:textColor="?attr/textColor1"
+                        tools:text="+1000" />
+
+                    <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:importantForAccessibility="no"
+                        android:src="@drawable/arrow_right_gray36" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="15dp"
+                android:layout_marginTop="@dimen/spacing_l"
+                android:background="@drawable/bg_06_ffffff_r12"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/ll_languages"
+                    singleClick="@{layout.clickHandler::onClick}"
+                    android:layout_width="match_parent"
+                    android:layout_height="54dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="@dimen/spacing_l">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:importantForAccessibility="no"
+                        android:src="@drawable/icon_mine_language" />
+
+                    <TextView
+                        style="@style/Text14"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/spacing_m"
+                        android:layout_weight="1"
+                        android:text="@string/settings_language"
+                        android:textColor="?attr/textColor1" />
+
+                    <TextView
+                        style="@style/Text14"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:text="@{layout.language.name}"
+                        android:textColor="?attr/textColor4"
+                        tools:text="English" />
+
+                    <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:importantForAccessibility="no"
+                        android:src="@drawable/arrow_right_gray36" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_suggestions_feedback"
+                    singleClick="@{layout.clickHandler::onClick}"
+                    android:layout_width="match_parent"
+                    android:layout_height="54dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="@dimen/spacing_l">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:importantForAccessibility="no"
+                        android:src="@drawable/icon_mine_feedback" />
+
+                    <TextView
+                        style="@style/Text14"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/spacing_m"
+                        android:layout_weight="1"
+                        android:text="@string/suggest_and_feedback"
+                        android:textColor="?attr/textColor1" />
+
+                    <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:importantForAccessibility="no"
+                        android:src="@drawable/arrow_right_gray36" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_settings"
+                    singleClick="@{layout.clickHandler::onClick}"
+                    android:layout_width="match_parent"
+                    android:layout_height="54dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="@dimen/spacing_l">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:importantForAccessibility="no"
+                        android:src="@drawable/icon_mine_set" />
+
+                    <TextView
+                        style="@style/Text14"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/spacing_m"
+                        android:layout_weight="1"
+                        android:text="@string/title_settings"
+                        android:textColor="?attr/textColor1" />
+
+                    <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:importantForAccessibility="no"
+                        android:src="@drawable/arrow_right_gray36" />
+                </LinearLayout>
+            </LinearLayout>
         </LinearLayout>
 
         <com.kuaigeglobal.epnova.widget.MoveFrameLayout
