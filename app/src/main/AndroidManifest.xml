@@ -310,6 +310,7 @@
         <activity android:name=".feature.rewards.RewardsActivity" android:screenOrientation="portrait" />
         <activity android:name=".feature.works.assetmanager.roleimage.RoleImageSelectActivity" />
         <activity android:name=".feature.works.assetmanager.child.AssetSelectActivity" />
+        <activity android:name=".feature.income.IncomeActivity" android:screenOrientation="portrait" />
     </application>
     <queries>
         <intent>

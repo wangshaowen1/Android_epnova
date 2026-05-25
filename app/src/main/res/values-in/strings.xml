@@ -629,4 +629,12 @@ Jika Anda memilih \"Tidak Setuju\", Anda tidak akan dapat menggunakan produk dan
     <string name="profile_feedback_suggestions">Saran dan Masukan</string>
     <string name="credits_popup_instructions">Kredit dapat digunakan untuk membuat drama pendek buatan Anda sendiri.</string>
     <string name="coins_popup_instructions">Koin dapat digunakan untuk membuka kunci episode secara berurutan.</string>
+    <string name="income_available_balance">Saldo Tersedia</string>
+    <string name="income_withdraw">Tarik Dana</string>
+    <string name="income_withdraw_request_guide">Silakan ajukan permintaan Anda beserta email di Profil → Saran &amp; Masukan. Kami akan menghubungi Anda melalui email yang Anda berikan.</string>
+    <string name="income_total_earned">Total Pendapatan</string>
+    <string name="income_pending_amount">Jumlah Tertunda</string>
+    <string name="income_tooltip_total_earned_desc">Total jumlah pendapatan yang diperoleh pengguna sejak pendaftaran.</string>
+    <string name="income_monthly_income_settlement_desc">Pendapatan bulanan akan ditransfer secara otomatis ke saldo yang dapat ditarik pada pukul 00:00 tanggal 1 setiap bulan.</string>
+    <string name="income_exchange_rate">Nilai tukar: 100 Koin = 1 Dolar</string>
 </resources>

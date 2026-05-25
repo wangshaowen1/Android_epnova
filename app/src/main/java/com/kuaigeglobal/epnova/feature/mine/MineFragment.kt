@@ -1,7 +1,5 @@
 package com.kuaigeglobal.epnova.feature.mine
 
-import android.app.Dialog
-import android.content.Context
 import android.view.View
 import com.blankj.utilcode.util.ClipboardUtils
 import com.kuaigeglobal.epnova.R
@@ -12,6 +10,7 @@ import com.kuaigeglobal.epnova.core.Events
 import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.ext.onUserStatusChanged
 import com.kuaigeglobal.epnova.databinding.FragmentMineBinding
+import com.kuaigeglobal.epnova.feature.income.IncomeActivity
 import com.kuaigeglobal.epnova.feature.main.MainViewModel
 import com.kuaigeglobal.epnova.feature.recharge.MyBalanceActivity
 import com.kuaigeglobal.epnova.feature.rewards.RewardsActivity
@@ -22,7 +21,6 @@ import com.kuaigeglobal.epnova.feature.web.SimpleBrowserActivity
 import com.kuaigeglobal.epnova.router.AppNavigator
 import com.nhsd.basic.BaseViewModelFragment
 import com.nhsd.basic.bus.observeEvents
-import com.nhsd.basic.ext.getResString
 import com.nhsd.basic.ext.getViewModelOfActivity
 import com.nhsd.basic.ext.showToast
 import kotlin.Boolean
@@ -110,13 +108,14 @@ class MineFragment : BaseViewModelFragment<FragmentMineBinding, MineViewModel>()
                 //商城
                 MyBalanceActivity.start()
             }
-            
+
             R.id.iv_coins_tooltip -> {
                 //金币-tooltip
                 activity?.showConfirmDialog(
                     title = null,
                     tips = getString(R.string.coins_popup_instructions),
-                    positiveButtonText = getString(R.string.confirm_ok))
+                    positiveButtonText = getString(R.string.confirm_ok)
+                )
             }
 
             R.id.iv_credits_tooltip -> {
@@ -124,7 +123,13 @@ class MineFragment : BaseViewModelFragment<FragmentMineBinding, MineViewModel>()
                 activity?.showConfirmDialog(
                     title = null,
                     tips = getString(R.string.credits_popup_instructions),
-                    positiveButtonText = getString(R.string.confirm_ok))
+                    positiveButtonText = getString(R.string.confirm_ok)
+                )
+            }
+
+            R.id.ll_income -> {
+                //收益
+                IncomeActivity.start(mActivity)
             }
 
             R.id.ll_rewards -> {

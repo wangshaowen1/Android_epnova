@@ -630,4 +630,12 @@
     <string name="profile_feedback_suggestions">ข้อเสนอแนะและความคิดเห็น</string>
     <string name="credits_popup_instructions">เครดิตสามารถใช้สร้างละครสั้นของคุณเองได้</string>
     <string name="coins_popup_instructions">เหรียญสามารถใช้ปลดล็อกตอนละครตามลำดับได้</string>
+    <string name="income_available_balance">ยอดคงเหลือที่ใช้ได้</string>
+    <string name="income_withdraw">ถอนเงิน</string>
+    <string name="income_withdraw_request_guide">กรุณาส่งคำขอพร้อมอีเมลของคุณในโปรไฟล์ → ข้อเสนอแนะและความคิดเห็น เราจะติดต่อคุณผ่านอีเมลที่คุณให้มา</string>
+    <string name="income_total_earned">รายได้รวม</string>
+    <string name="income_pending_amount">จำนวนเงินที่รอชำระ</string>
+    <string name="income_tooltip_total_earned_desc">จำนวนเงินรายได้ทั้งหมดที่ผู้ใช้ได้รับตั้งแต่ลงทะเบียน</string>
+    <string name="income_monthly_income_settlement_desc">รายได้ประจำเดือนจะถูกโอนไปยังยอดคงเหลือที่ถอนได้โดยอัตโนมัติเวลา 00:00 ของวันที่ 1 ของทุกเดือน</string>
+    <string name="income_exchange_rate">อัตราแลกเปลี่ยน: 100 คอยน์ = 1 ดอลลาร์สหรัฐ</string>
 </resources>

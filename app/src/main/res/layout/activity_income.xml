@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="layout"
+            type="com.kuaigeglobal.epnova.feature.income.IncomeViewModel" />
+
+        <import type="android.view.View" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="?android:windowBackground">
+
+        <ImageView
+            android:id="@+id/ivBg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:importantForAccessibility="no"
+            android:scaleType="fitXY"
+            android:src="@drawable/bg_income_top"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- 状态栏占位 -->
+        <com.kuaigeglobal.epnova.widget.StatusBarView
+            android:id="@+id/statusBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- 标题栏 -->
+        <FrameLayout
+            android:id="@+id/tool_bar"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/action_bar_size"
+            app:layout_constraintTop_toBottomOf="@id/statusBar">
+
+            <ImageView
+                android:id="@+id/ivBack"
+                singleClick="@{layout.clickHandler::onClick}"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="start|center_vertical"
+                android:importantForAccessibility="no"
+                android:paddingStart="12dp"
+                android:src="@drawable/icon_back_left" />
+
+            <TextView
+                style="@style/Text16"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="@font/outfit_semibold"
+                android:text="@string/profile_income"
+                android:textColor="?attr/textColor1" />
+        </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/spacing_l"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tool_bar">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_l"
+                android:background="@drawable/bg_income_withdraw"
+                android:paddingTop="@dimen/spacing_l"
+                android:paddingBottom="@dimen/spacing_m">
+
+                <TextView
+                    android:id="@+id/tv_available_balance"
+                    style="@style/Text14"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp20"
+                    android:text="@string/income_available_balance"
+                    android:textColor="?attr/textColor2"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/tv_available_balance_data"
+                    style="@style/Text28"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_s"
+                    android:layout_marginEnd="55dp"
+                    android:text="$ 999.00"
+                    android:textColor="?attr/textColor1"
+                    app:layout_constraintEnd_toStartOf="@+id/tv_withdraw"
+                    app:layout_constraintHorizontal_bias="0"
+                    app:layout_constraintStart_toStartOf="@+id/tv_available_balance"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_available_balance" />
+
+                <!-- 右侧：提现按钮 -->
+                <TextView
+                    android:id="@+id/tv_withdraw"
+                    style="@style/Text13"
+                    singleClick="@{layout.clickHandler::onClick}"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/dp20"
+                    android:background="@drawable/bg_96_ffffff_r50"
+                    android:paddingHorizontal="16dp"
+                    android:paddingVertical="8dp"
+                    android:text="@string/income_withdraw"
+                    android:textColor="@color/color_000000"
+                    app:layout_constraintBottom_toBottomOf="@+id/tv_available_balance_data"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/tv_available_balance" />
+
+                <View
+                    android:id="@+id/divider"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginHorizontal="@dimen/dp20"
+                    android:layout_marginTop="@dimen/spacing_l"
+                    android:background="?attr/fillColor3"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_available_balance_data" />
+
+                <TextView
+                    android:id="@+id/tv_total_earned"
+                    style="@style/Text12"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="44dp"
+                    android:layout_marginTop="12dp"
+                    android:text="@string/income_total_earned"
+                    android:textColor="?attr/textColor3"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/divider" />
+
+                <ImageView
+                    android:id="@+id/iv_total_earned_tooltip"
+                    singleClick="@{layout.clickHandler::onClick}"
+                    android:layout_width="12dp"
+                    android:layout_height="12dp"
+                    android:layout_marginStart="4dp"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/icon_attention"
+                    app:layout_constraintBottom_toBottomOf="@+id/tv_total_earned"
+                    app:layout_constraintStart_toEndOf="@+id/tv_total_earned"
+                    app:layout_constraintTop_toTopOf="@+id/tv_total_earned" />
+
+                <TextView
+                    style="@style/Text16"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_xs"
+                    android:text="$1,284.50"
+                    android:textColor="?attr/textColor1"
+                    app:layout_constraintEnd_toEndOf="@+id/iv_total_earned_tooltip"
+                    app:layout_constraintStart_toStartOf="@id/tv_total_earned"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_total_earned" />
+
+                <TextView
+                    android:id="@+id/tv_pending_amount"
+                    style="@style/Text12"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="50dp"
+                    android:text="@string/income_pending_amount"
+                    android:textColor="?attr/textColor3"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/tv_total_earned" />
+
+                <ImageView
+                    android:id="@+id/iv_pending_amount_tooltip"
+                    singleClick="@{layout.clickHandler::onClick}"
+                    android:layout_width="12dp"
+                    android:layout_height="12dp"
+                    android:layout_marginStart="4dp"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/icon_attention"
+                    app:layout_constraintBottom_toBottomOf="@+id/tv_pending_amount"
+                    app:layout_constraintStart_toEndOf="@+id/tv_pending_amount"
+                    app:layout_constraintTop_toTopOf="@+id/tv_pending_amount" />
+
+                <TextView
+                    style="@style/Text16"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_xs"
+                    android:text="$1,284.50"
+                    android:textColor="?attr/textColor1"
+                    app:layout_constraintEnd_toEndOf="@+id/iv_pending_amount_tooltip"
+                    app:layout_constraintStart_toStartOf="@+id/tv_pending_amount"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_pending_amount" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_xl">
+
+                <TextView
+                    android:id="@+id/tv_income_details"
+                    style="@style/Text16"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/income_details"
+                    android:textColor="?attr/textColor1"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/tv_exchange_rate"
+                    style="@style/Text12"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/income_exchange_rate"
+                    android:textColor="?attr/textColor3"
+                    app:layout_constraintStart_toStartOf="@+id/tv_income_details"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_income_details" />
+
+                <TextView
+                    android:id="@+id/tv_monthfilter"
+                    style="@style/Text12"
+                    singleClick="@{layout.clickHandler::onClick}"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_06_ffffff_b1_2e2e30_r50"
+                    android:drawableEnd="@drawable/icon_grey_arrow_down"
+                    android:drawablePadding="4dp"
+                    android:gravity="center"
+                    android:paddingHorizontal="@dimen/spacing_m"
+                    android:paddingVertical="@dimen/spacing_s"
+                    android:text="March 2026"
+                    android:textColor="?attr/textColor1"
+                    app:layout_constraintBottom_toBottomOf="@+id/tv_exchange_rate"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/tv_income_details"
+                    tools:text="March 2026" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <com.scwang.smart.refresh.layout.SmartRefreshLayout
+                android:id="@+id/srl"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:overScrollMode="never"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:srlAccentColor="@color/white"
+                app:srlEnablePreviewInEditMode="true"
+                app:srlPrimaryColor="@color/transparent">
+
+                <com.kuaigeglobal.epnova.widget.LoadStateViewHolder
+                    android:id="@+id/lsv"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:noData="@string/transaction_history_no_records">
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rv_income_details"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_l"
+                        android:nestedScrollingEnabled="false"
+                        android:overScrollMode="never"
+                        android:scrollbars="none"
+                        tools:listitem="@layout/item_income_details" />
+                </com.kuaigeglobal.epnova.widget.LoadStateViewHolder>
+            </com.scwang.smart.refresh.layout.SmartRefreshLayout>
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

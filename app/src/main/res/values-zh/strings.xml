@@ -624,5 +624,13 @@
     <string name="profile_feedback_suggestions">反馈与建议</string>
     <string name="credits_popup_instructions">积分可用于创作专属短剧。</string>
     <string name="coins_popup_instructions">金币可按顺序解锁剧集。</string>
+    <string name="income_available_balance">可用余额</string>
+    <string name="income_withdraw">提现</string>
+    <string name="income_withdraw_request_guide">请在「个人资料 → 意见与反馈」中提交申请并附上您的邮箱，我们将通过您提供的邮箱联系您。</string>
+    <string name="income_total_earned">累计收益</string>
+    <string name="income_pending_amount">待结算金额</string>
+    <string name="income_tooltip_total_earned_desc">用户自注册以来获得的全部收入总额。</string>
+    <string name="income_monthly_income_settlement_desc">每月收入将于每月 1 日 00:00 自动转入您的可提现余额。</string>
+    <string name="income_exchange_rate">汇率：100 金币 = 1 美元</string>
 </resources>
 
