@@ -632,5 +632,6 @@
     <string name="income_tooltip_total_earned_desc">用户自注册以来获得的全部收入总额。</string>
     <string name="income_monthly_income_settlement_desc">每月收入将于每月 1 日 00:00 自动转入您的可提现余额。</string>
     <string name="income_exchange_rate">汇率：100 金币 = 1 美元</string>
+    <string name="transaction_received">获得</string>
 </resources>
 

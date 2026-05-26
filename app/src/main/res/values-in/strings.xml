@@ -637,4 +637,5 @@ Jika Anda memilih \"Tidak Setuju\", Anda tidak akan dapat menggunakan produk dan
     <string name="income_tooltip_total_earned_desc">Total jumlah pendapatan yang diperoleh pengguna sejak pendaftaran.</string>
     <string name="income_monthly_income_settlement_desc">Pendapatan bulanan akan ditransfer secara otomatis ke saldo yang dapat ditarik pada pukul 00:00 tanggal 1 setiap bulan.</string>
     <string name="income_exchange_rate">Nilai tukar: 100 Koin = 1 Dolar</string>
+    <string name="transaction_received">Diterima</string>
 </resources>

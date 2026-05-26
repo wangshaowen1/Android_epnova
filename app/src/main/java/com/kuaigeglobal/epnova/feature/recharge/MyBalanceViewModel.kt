@@ -19,8 +19,6 @@ import com.kuaigeglobal.epnova.core.google.billing.BillingManager
 import com.kuaigeglobal.epnova.core.google.billing.PurchaseResult
 import com.kuaigeglobal.epnova.core.manager.AppEvent
 import com.kuaigeglobal.epnova.core.manager.EventManager
-import com.kuaigeglobal.epnova.core.network.apis.entity.CoinConfigInfo
-import com.kuaigeglobal.epnova.core.network.apis.entity.PointConfigInfo
 import com.kuaigeglobal.epnova.core.network.apis.response.SimpleBannerInfo
 import com.kuaigeglobal.epnova.core.response
 import com.kuaigeglobal.epnova.feature.details.ComputingPowerDetailsActivity
@@ -267,7 +265,7 @@ class MyBalanceViewModel(
     }
 
     fun navigateToHistory() {
-        ComputingPowerDetailsActivity.start(topActivity)
+        ComputingPowerDetailsActivity.start(topActivity, currentTab)
     }
 
     fun viewPaymentAgreement() {

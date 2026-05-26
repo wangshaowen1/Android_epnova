@@ -638,4 +638,5 @@
     <string name="income_tooltip_total_earned_desc">จำนวนเงินรายได้ทั้งหมดที่ผู้ใช้ได้รับตั้งแต่ลงทะเบียน</string>
     <string name="income_monthly_income_settlement_desc">รายได้ประจำเดือนจะถูกโอนไปยังยอดคงเหลือที่ถอนได้โดยอัตโนมัติเวลา 00:00 ของวันที่ 1 ของทุกเดือน</string>
     <string name="income_exchange_rate">อัตราแลกเปลี่ยน: 100 คอยน์ = 1 ดอลลาร์สหรัฐ</string>
+    <string name="transaction_received">ได้รับแล้ว</string>
 </resources>

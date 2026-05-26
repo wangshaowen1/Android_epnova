@@ -16,6 +16,7 @@ import com.nhsd.magicindicator.buildins.commonnavigator.abs.CommonNavigatorAdapt
 import com.nhsd.magicindicator.buildins.commonnavigator.abs.IPagerIndicator
 import com.nhsd.magicindicator.buildins.commonnavigator.abs.IPagerTitleView
 import com.nhsd.magicindicator.buildins.commonnavigator.indicators.LinePagerIndicator
+import com.nhsd.magicindicator.buildins.commonnavigator.indicators.WrapPagerIndicator
 import com.nhsd.magicindicator.buildins.commonnavigator.titles.SimplePagerTitleView
 
 /**
@@ -178,6 +179,16 @@ object CommonNavigatorUtils {
         //        R.color.color_ffa029.getResColor()
         //    )
         //)
+        return indicator
+    }
+
+    fun getWrapPagerIndicator(context: Context?): WrapPagerIndicator? {
+        if (context == null) return null
+        val indicator = WrapPagerIndicator(context)
+        indicator.verticalPadding = 7.dp
+        indicator.horizontalPadding = 15.dp
+        indicator.fillColor = R.color.color_10_ffffff.getResColor()
+        indicator.roundRadius = 10.dp.toFloat()
         return indicator
     }
 }

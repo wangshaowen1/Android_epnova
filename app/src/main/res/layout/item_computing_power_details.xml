@@ -14,14 +14,16 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/bg_06_ffffff_r12"
+        android:padding="15dp">
 
         <TextView
             android:id="@+id/tv_title"
             style="@style/Text.Regular"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
             android:text="@{item.data.tradeTitle}"
             android:textColor="?attr/textColor1"
             app:layout_constraintBottom_toTopOf="@id/tv_subtitle"
@@ -58,7 +60,7 @@
             android:text="@{item.data.formattedTradeDate}"
             android:textColor="?attr/textColor4"
             android:textSize="12sp"
-            app:layout_constraintBottom_toTopOf="@id/line"
+            app:layout_constraintBottom_toTopOf="parent"
             app:layout_constraintEnd_toStartOf="@id/tv_amount_money"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_subtitle"
@@ -79,21 +81,13 @@
 
         <ImageView
             android:id="@+id/iv_amount_money"
+            imageResource="@{item.iconRes()}"
             android:layout_width="16dp"
             android:layout_height="16dp"
             android:importantForAccessibility="no"
-            android:src="@drawable/ic_coins"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
-        <View
-            android:id="@+id/line"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="10dp"
-            android:background="@color/border_color_1_dark"
-            app:layout_constraintTop_toBottomOf="@id/tv_time" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>

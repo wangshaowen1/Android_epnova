@@ -26,10 +26,16 @@
             android:id="@+id/magic_indicator"
             android:layout_width="match_parent"
             android:layout_height="34dp"
-            android:layout_marginStart="4dp"
+            android:layout_marginTop="12dp"
             android:orientation="horizontal"
             android:overScrollMode="never"
             android:scrollbars="none" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginBottom="11dp"
+            android:background="?attr/borderColor1" />
 
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/view_pager"

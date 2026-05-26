@@ -1,7 +1,6 @@
 package com.kuaigeglobal.epnova.feature.details
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
@@ -9,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.kuaigeglobal.epnova.common.ext.getVm
 import com.kuaigeglobal.epnova.core.network.apis.response.ComputingPowerDetailsInfo
 import com.kuaigeglobal.epnova.databinding.ItemComputingPowerDetailsBinding
+import com.kuaigeglobal.epnova.feature.details.child.ComputingPowerDetailsTabFragment
 import com.nhsd.basic.item.BindingViewHolder
 
 /**
@@ -20,7 +20,9 @@ import com.nhsd.basic.item.BindingViewHolder
  * @Version: 1.0
  * *****************************************
  */
-class ComputingPowerDetailsAdapter  : PagingDataAdapter<ComputingPowerDetailsInfo, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
+class ComputingPowerDetailsAdapter(
+    private val assetType: Int = ComputingPowerDetailsTabFragment.ASSET_TYPE_COINS
+) : PagingDataAdapter<ComputingPowerDetailsInfo, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
@@ -45,9 +47,9 @@ class ComputingPowerDetailsAdapter  : PagingDataAdapter<ComputingPowerDetailsInf
         override fun bind(position: Int) {
             getItem(position)?.let { item ->
                 val transVM = binding.getVm(position, item, ItemComputingPowerDetailsVm::class.java)
+                transVM.assetType = assetType
                 binding.item = transVM
                 binding.executePendingBindings()
-                binding.line.visibility = if (position == itemCount - 1) View.GONE else View.VISIBLE
             }
         }
     }

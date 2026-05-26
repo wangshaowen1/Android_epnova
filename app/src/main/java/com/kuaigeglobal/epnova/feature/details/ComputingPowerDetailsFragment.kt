@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.lifecycle.lifecycleScope
 import com.kuaigeglobal.epnova.common.ext.startRefreshWithAdapter
 import com.kuaigeglobal.epnova.databinding.FragmentPointsDetailBinding
+import com.kuaigeglobal.epnova.feature.details.child.ComputingPowerDetailsTabFragment
 import com.kuaigeglobal.epnova.widget.decoration.TopSpaceDecoration
 import com.kuaigeglobal.epnova.widget.stateful.paging.MyMultiStatePagingFooterAdapter
 import com.nhsd.basic.BaseViewModelFragment
@@ -25,19 +26,24 @@ class ComputingPowerDetailsFragment :
     companion object {
         //类型
         const val TYPE_PROTAGONIST = "typeProtagonist"
+        const val ASSET_TYPE = "assetType"
 
         //全部
         const val TYPE_ALL = 0
 
-        //充值明细
-        const val TYPE_RECHARGE = 1
+        //获得
+        const val TYPE_RECEIVED = 1
 
-        //消耗明细
-        const val TYPE_CONSUME = 2
-        fun newInstance(typeProtagonist: Int = TYPE_ALL): ComputingPowerDetailsFragment {
+        //支出
+        const val TYPE_SPENT = 2
+        fun newInstance(
+            typeProtagonist: Int = TYPE_ALL,
+            assetType: Int = ComputingPowerDetailsTabFragment.ASSET_TYPE_COINS
+        ): ComputingPowerDetailsFragment {
             val fragment = ComputingPowerDetailsFragment()
             val bundle = Bundle()
             bundle.putInt(TYPE_PROTAGONIST, typeProtagonist)
+            bundle.putInt(ASSET_TYPE, assetType)
             fragment.arguments = bundle
             return fragment
         }
@@ -46,7 +52,10 @@ class ComputingPowerDetailsFragment :
 
     //明细
     private val computingPowerDetailsAdapter by lazy {
-        ComputingPowerDetailsAdapter()
+        ComputingPowerDetailsAdapter(
+            arguments?.getInt(ASSET_TYPE, ComputingPowerDetailsTabFragment.ASSET_TYPE_COINS)
+                ?: ComputingPowerDetailsTabFragment.ASSET_TYPE_COINS
+        )
     }
 
     override fun onPrepareView() {
