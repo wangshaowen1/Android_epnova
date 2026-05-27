@@ -15,6 +15,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.Constants
+import com.kuaigeglobal.epnova.common.ext.showConfirmDialog
 import com.kuaigeglobal.epnova.common.ext.topActivity
 import com.kuaigeglobal.epnova.common.utils.CommonNavigatorUtils
 import com.kuaigeglobal.epnova.core.Config
@@ -188,5 +189,20 @@ class MyBalanceActivity : BaseViewModelActivity<ActivityMyBalanceBinding, MyBala
             startIndex + target.length,
             Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
         )
+    }
+
+    override fun <Data> onClick(view: View?, data: Data?) {
+        super.onClick(view, data)
+        when (view?.id) {
+            R.id.tvBalance -> {
+                //Coins/Credits右侧提示符号
+                val isCoins = mRealVM.currentTab == MyBalanceViewModel.TAB_COINS
+                showConfirmDialog(
+                    title = null,
+                    tips = getString(if (isCoins) R.string.coins_popup_instructions else R.string.credits_popup_instructions),
+                    positiveButtonText = getString(R.string.confirm_ok)
+                )
+            }
+        }
     }
 }

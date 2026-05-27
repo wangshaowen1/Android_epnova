@@ -100,6 +100,7 @@
                             android:drawablePadding="@dimen/spacing_xs"
                             android:fontFamily="@font/outfit_regular"
                             android:gravity="center"
+                            android:onClick="@{layout.clickHandler::onClick}"
                             android:text="@{layout.balanceLabel}"
                             android:textAppearance="@style/Text12"
                             android:textColor="?attr/textColor3"
