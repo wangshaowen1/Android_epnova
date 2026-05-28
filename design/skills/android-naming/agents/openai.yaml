@@ -1,0 +1,4 @@
+interface:
+  display_name: "Android 命名规范"
+  short_description: "按当前项目规范处理 Kotlin 和资源命名。"
+  default_prompt: "仅在用户要求命名审查、命名冲突、不确定命名、批量新增资源/模型/事件/key 时使用 Android 命名规范；单个 id/string/drawable 且附近已有清晰模式时直接沿用当前代码。"

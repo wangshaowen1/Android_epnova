@@ -1,4 +1,0 @@
-interface:
-  display_name: "Epnova Android 页面骨架"
-  short_description: "按 Epnova 项目规范生成 Activity、Fragment、ViewModel 和 XML 页面骨架。"
-  default_prompt: "使用 Epnova Android 页面骨架规范创建或审查新 Android 页面、Activity、Fragment、ViewModel、XML 布局、ToolbarViewModel、start/newInstance 参数、mBundle 读取和基础 MVVM 页面结构。"

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Android 非分页列表"
+  short_description: "按当前项目规范新增、重构或审查普通 DataBinding RecyclerView 列表。"
+  default_prompt: "仅在实际新增、重构或审查非分页 RecyclerView/DataBinding 列表实现时使用，包含 Adapter、ItemVM、item layout、列表数据更新和点击转发；只排查列表 bug、只改 item 文案/样式或一小段刷新逻辑时不触发。"

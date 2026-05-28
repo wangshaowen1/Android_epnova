@@ -1,4 +1,0 @@
-interface:
-  display_name: "Epnova Android 弹窗"
-  short_description: "按 Epnova 项目规范选择和实现 Dialog / DialogFragment。"
-  default_prompt: "使用 Epnova Android 弹窗规范生成或审查 BaseDialogFragment、BaseVMDialogFragment、BaseBottomPushDialogFragment、BaseBottomPushVMDialogFragment、CommonDialog、参数传递、按钮事件、回调和结果返回。"

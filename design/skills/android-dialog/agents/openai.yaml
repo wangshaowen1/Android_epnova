@@ -1,0 +1,4 @@
+interface:
+  display_name: "Android 弹窗"
+  short_description: "按当前项目规范新增、重构或审查 Dialog / DialogFragment。"
+  default_prompt: "仅在实际新增、重构或审查 Dialog/DialogFragment 的基类选择、参数传递、show/newInstance、按钮事件、回调结果、生命周期、键盘处理或关闭逻辑时使用；只改已有弹窗文案、Toast、字段展示、简单样式或局部绑定时不触发。"

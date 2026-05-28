@@ -1,0 +1,4 @@
+interface:
+  display_name: "Android Figma XML UI"
+  short_description: "按项目 style/theme/attr 与资源命名还原 Android XML 可见 UI。"
+  default_prompt: "仅在实际按 Figma/截图生成或校准 Android XML 可见 UI，且 android-figma-xml-quick.md 无法覆盖时使用完整 Figma XML UI 规范；截图只是说明 bug、检查差异、逻辑搬迁、事件绑定或静态检查时不触发。"

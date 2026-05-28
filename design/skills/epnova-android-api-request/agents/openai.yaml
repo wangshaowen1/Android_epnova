@@ -1,4 +1,0 @@
-interface:
-  display_name: "Epnova Android 接口请求"
-  short_description: "按 Epnova 项目规范接入 Retrofit API 和 ViewModel 请求。"
-  default_prompt: "使用 Epnova Android 接口请求规范新增或审查 ApiConstants、ApiService、请求体、响应模型、Repository 方法、ViewModel 中的 response/request/requestWithLoading 调用，以及普通接口的 loading 和错误处理。"
