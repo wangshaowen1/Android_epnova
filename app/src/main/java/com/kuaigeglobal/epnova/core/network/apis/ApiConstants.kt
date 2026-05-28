@@ -30,6 +30,11 @@ object ApiConstants {
     const val COMPLETE_USER_DATA_INFO = "user/modifyUserInfo"
 
     /**
+     * 设置App语言
+     */
+    const val SET_APP_LANGUAGE = "user/app/language/set"
+
+    /**
      * 获取APP升级信息
      */
     const val GET_APP_UPGRADE_INFO = "app/getAppUpgradeInfo"

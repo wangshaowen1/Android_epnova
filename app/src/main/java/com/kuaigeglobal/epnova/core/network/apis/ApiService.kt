@@ -230,6 +230,12 @@ interface ApiService {
     suspend fun modifyUserInfo(@Body body: CompleteUserDataInfoBody): ApiResponse<Any?>
 
     /**
+     * 设置App语言
+     */
+    @POST(ApiConstants.SET_APP_LANGUAGE)
+    suspend fun setAppLanguage(@Body body: UserTokenBody): ApiResponse<Any?>
+
+    /**
      * 获取APP升级信息
      */
     @POST(ApiConstants.GET_APP_UPGRADE_INFO)
