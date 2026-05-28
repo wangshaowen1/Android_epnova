@@ -12,6 +12,23 @@
 - Figma、列表、弹窗、分页、异步、命名等详细规则在对应 skill 中维护，不在本文件重复展开。
 - 完整 Checklist 只用于整页生成、复杂改动、用户要求全量审查或发布前审查。
 
+## 组合场景最小读取
+
+组合任务按实际触达范围读取，不因为标题里出现相关词就连锁读取全部 skill。
+
+| 组合场景 | 推荐读取顺序 | 边界 |
+| --- | --- | --- |
+| 新页面 + API | `android-codegen-quick-rules.md` -> `android-feature-scaffold` -> `android-api-request` | 只有接口链路实际新增/修改时读 API skill。 |
+| 新页面 + 普通列表 | `android-codegen-quick-rules.md` -> `android-feature-scaffold` -> `android-databinding-list` | 列表非分页时不要读分页 skill。 |
+| 新页面 + 分页 | `android-codegen-quick-rules.md` -> `android-feature-scaffold` -> `android-paging-state-ui` | 不为普通分页默认新增 `RemoteMediator`。 |
+| API + 长任务 | `android-codegen-quick-rules.md` -> `android-api-request` -> 必要时 `android-async-task` | 一次性请求不触发异步长任务 skill；轮询、SSE、下载才触发。 |
+| Figma 普通区域 | 目标 Figma 节点 -> `android-figma-xml-quick.md` | 信息足够时不读完整 Figma skill，不全量扫 `res`。 |
+| Figma 弹窗 | 目标 Figma 节点 -> `android-figma-xml-quick.md` -> `android-dialog` | 只有完整精确还原、复杂资产或信息不足时再读 `android-figma-xml-ui`。 |
+| 弹窗 + API | `android-codegen-quick-rules.md` -> `android-dialog` -> 必要时 `android-api-request` | 只改文案、Toast、简单字段时不读弹窗 skill。 |
+| 分页 + item 操作 | `android-codegen-quick-rules.md` -> `android-paging-state-ui` | 复杂点击/多选/跨页刷新按分页 skill 内事件规则处理，不转普通列表 skill。 |
+| 导航 + 全局刷新 | `android-codegen-quick-rules.md` -> `android-navigation-events` | 单个明确 Activity 跳转只查目标 `start/getIntent/newInstance`。 |
+| 作品发布改造 | `work-publish-flow.md` -> `work-publish-logic.md` -> `work-publish-current-code-analysis.md` -> 按实际触达 skill | 旧发行/签约字段只能作代码现状参考，不作为新发布流程最终业务口径。 |
+
 ## 场景路由
 
 ### 页面骨架

@@ -10,6 +10,14 @@
 - 多语言目录以当前分支 `app/src/main/res/values*/strings.xml` 为准。
 - 不查看或编辑 `**/OssManager.kt`，除非用户明确要求。
 
+## 快照使用和刷新规则
+
+- `code-interface-scan-summary.md` 是历史快照，只能作为导航索引，不作为当前分支最终事实。
+- 触达 API、SDK、Room、主包路径、语言目录、Manifest、Gradle 依赖或路由入口前，必须用 `rg` 或直接读取当前文件重新确认。
+- 如果快照生成时间距离当前日期超过 14 天，或当前分支已有较大目录/API/SDK 调整，只能使用快照中的目录线索，不能直接引用其中的接口数量、字段语义或方法清单作为结论。
+- 发现快照与当前代码不一致时，以当前代码为准；如差异影响后续任务，应在输出中说明快照已过期或局部不适用。
+- 需要重扫时，按本文推荐命令重新生成摘要，并保留生成时间、扫描范围、排除范围和需要人工确认的差异点。
+
 ## 推荐扫描命令
 
 ```bash
@@ -19,6 +27,14 @@ rg -n "suspend fun|@GET|@POST|@Body|ApiResponse<" app/src/main/java -g "!**/OssM
 rg -n "fun start\\(|fun getIntent\\(|fun newInstance\\(|AppRouter|FlowEventBus|Events\\." app/src/main/java -g "!**/OssManager.kt"
 rg -n "Billing|Pay|Payment|Wechat|Alipay|Douyin|Firebase|Google|Facebook|Umeng|Bugly|OAID|Push|AppsFlyer|Adjust|Rangers|GrowingIO" app/build.gradle app/src/main app/src/main/java -g "!**/OssManager.kt"
 rg --files app/src/main/res | rg "values.*[/\\\\]strings\\.xml$"
+```
+
+也可以使用脚本生成当前分支摘要：
+
+```powershell
+powershell -ExecutionPolicy Bypass -File design/scripts/scan_code_interface.ps1
+powershell -ExecutionPolicy Bypass -File design/scripts/scan_code_interface.ps1 -WriteSummary
+powershell -ExecutionPolicy Bypass -File design/scripts/scan_code_interface.ps1 -ComparePath design/code-interface-scan-summary.md
 ```
 
 ## 输出建议
