@@ -35,7 +35,7 @@
 | Figma 页面/组件 | 目标 Figma 节点、`android-figma-xml-quick.md` | 必要时 `android-figma-xml-ui` | 整个 Figma 文件、全量 `res` |
 | Figma 弹窗 | 目标 Figma 节点、`android-figma-xml-quick.md` | `android-dialog`，必要时 `android-figma-xml-ui` | 新页面骨架 skill |
 | 命名审查 / 批量资源 | `android-codegen-quick-rules.md` | `android-naming`、必要时 XML 资源规则 | 为单个清晰命名读取完整命名 skill |
-| 作品发布改造 | `work-publish-*.md`、当前代码 | 按实际触达 API / dialog / navigation / list skill | 旧发行逻辑作为最终依据 |
+| 作品发布改造 | `project/work-publish-*.md`、当前代码 | 按实际触达 API / dialog / navigation / list skill | 旧发行逻辑作为最终依据 |
 
 ## 根目录规范文档
 
@@ -55,22 +55,23 @@
 
 - `scripts/check_android_xml_tokens.ps1`：静态检查 Android XML 的裸色值、常见 spacing/radius token、字体兜底、局部字距/行高和简单 drawable 命名；小改优先用 `-ChangedLinesOnly`，避免历史 XML 问题干扰。
 - `scripts/scan_code_interface.ps1`：按当前分支扫描主工程源码、API、Repository、feature 目录和语言资源；默认输出到终端，显式传 `-WriteSummary` 才写摘要文件，可用 `-ComparePath` 对比历史快照。
+- `scripts/sync_design_docs.ps1`：在两个项目的 `design` 目录之间同步通用规范和脚本；默认排除需求文档目录 `project/**`，也不覆盖项目专属 `code-interface-scan-summary.md`。
 
 脚本只作为辅助检查工具。发现问题后仍需结合当前代码同类实现、设计稿要求和对应 skill 判断是否修改。
 
 ## 专项业务文档
 
-- `work-publish-flow.md`：作品发布流程说明，明确首次发布走 H5、非首次发布走 Android 原生，以及 Android 与 H5 的职责边界。
-- `work-publish-logic.md`：作品发布状态、可发布集数计算、边界条件、弹窗和 Toast 文案。
-- `work-publish-current-code-analysis.md`：作品发布相关当前代码现状，说明旧发行/签约逻辑与新发布流程的差距和建议改造顺序。
+- `project/work-publish-flow.md`：作品发布流程说明，明确首次发布走 H5、非首次发布走 Android 原生，以及 Android 与 H5 的职责边界。
+- `project/work-publish-logic.md`：作品发布状态、可发布集数计算、边界条件、弹窗和 Toast 文案。
+- `project/work-publish-current-code-analysis.md`：作品发布相关当前代码现状，说明旧发行/签约逻辑与新发布流程的差距和建议改造顺序。
 
 只有任务明确涉及作品发布、发布状态、发布入口、发布弹窗、作品/剧集发布角标或相关接口时，才读取这些专项文档。
 
 ## 版本设计资料
 
-- `1.8.0/README.md`：快出片 V1.8.0 Android 原型整理，记录 Android 需要实现、展示或对接的页面、状态、弹窗、字幕、充值、埋点等需求。
-- `1.8.0/screenshot-index.md`：V1.8.0 Android 原型截图索引，按做短剧 Tab、创作状态、作品详情横条、分镜成功弹窗、算力充值、我的/设置/帮助、字幕修正归档截图。
-- `1.8.0/assets/`：V1.8.0 Android 原型截图资源，仅用于 UI 结构、布局和视觉参考。
+- `project/1.8.0/README.md`：快出片 V1.8.0 Android 原型整理，记录 Android 需要实现、展示或对接的页面、状态、弹窗、字幕、充值、埋点等需求。
+- `project/1.8.0/screenshot-index.md`：V1.8.0 Android 原型截图索引，按做短剧 Tab、创作状态、作品详情横条、分镜成功弹窗、算力充值、我的/设置/帮助、字幕修正归档截图。
+- `project/1.8.0/assets/`：V1.8.0 Android 原型截图资源，仅用于 UI 结构、布局和视觉参考。
 
 ## 项目 Skills
 
@@ -93,8 +94,8 @@
 - 标准 Android 代码生成优先读取 `android-codegen-quick-rules.md`，再按本次实际修改范围读取命中场景的最小必要 skill；只有 quick rules 无法覆盖、任务跨模块、涉及 Room/SDK/多语言等高风险能力、场景路由不明确或用户要求完整规范时，才读取 `android-codegen-guidelines.md` 和 `android-codegen-scenarios.md`。
 - “检查一下 / 不走 Gradle / 局部确认”优先读取 `android-check-quick.md`；只有发现问题、任务跨模块或用户要求完整审查时，才读取 `android-codegen-checklist.md`。
 - 只有本次明确按 Figma/截图实现或校准可见 UI 时，才优先读取 `android-figma-xml-quick.md`；整页重写、复杂资源导出、目标节点信息不足或用户要求完整精确还原时，才读取 `skills/android-figma-xml-ui/`。普通 XML 小改、逻辑搬迁、修引用和静态检查走目标代码与 `android-check-quick.md`。
-- 只有用户明确提到 V1.8.0、20260522、截图编号/归档页面，或任务明显来自该归档需求时，才读取 `1.8.0/README.md`。需要视觉核对时先读 `1.8.0/screenshot-index.md` 定位目标截图，只有目标截图确实相关时才打开具体图片。
-- 只有任务明确涉及作品发布流程或发布状态时，才读取 `work-publish-*.md` 专项文档。
+- 只有用户明确提到 V1.8.0、20260522、截图编号/归档页面，或任务明显来自该归档需求时，才读取 `project/1.8.0/README.md`。需要视觉核对时先读 `project/1.8.0/screenshot-index.md` 定位目标截图，只有目标截图确实相关时才打开具体图片。
+- 只有任务明确涉及作品发布流程或发布状态时，才读取 `project/work-publish-*.md` 专项文档。
 - 项目内可复用 skill 位于 `design/skills/`，用于页面骨架、API 请求、命名、分页、普通列表、弹窗、导航事件、Figma XML UI、异步任务等高频场景。
 - `design/` 文档用于索引项目惯例和降低重复搜索成本，不覆盖用户当前要求和当前代码中的同类真实实现；当文档与当前代码冲突时，先按当前代码同类实现处理，并保留安全和项目禁令。
 - 规则文件不得写死复制来源项目的项目名、包名、scheme、语言目录或 SDK 名称；这些信息一律从当前分支读取。

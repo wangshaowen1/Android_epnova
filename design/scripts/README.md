@@ -45,3 +45,39 @@ powershell -ExecutionPolicy Bypass -File design/scripts/scan_code_interface.ps1 
 
 - `-ComparePath`：把当前扫描结果和指定快照做文本差异对比，默认忽略生成时间行。
 - `-FailOnDiff`：有差异时返回失败码，适合后续 CI 或人工刷新前检查。
+
+## sync_design_docs.ps1
+
+在两个项目的 `design` 目录之间同步规范文档和脚本。默认同步通用白名单，不同步 `project/**` 需求文档目录，也不同步 `code-interface-scan-summary.md` 这类项目专属快照，不删除目标目录多余文件。
+
+常用命令：
+
+```powershell
+# 干跑，查看会同步哪些文件
+powershell -ExecutionPolicy Bypass -File design/scripts/sync_design_docs.ps1 -TargetDesign D:/workspace/FastFilm/dev/design
+
+# Epnova -> FastFilm，按默认白名单同步
+powershell -ExecutionPolicy Bypass -File design/scripts/sync_design_docs.ps1 -TargetDesign D:/workspace/FastFilm/dev/design -Apply
+
+# FastFilm -> Epnova，反向同步默认白名单
+powershell -ExecutionPolicy Bypass -File D:/workspace/Epnova/Dev/design/scripts/sync_design_docs.ps1 -SourceDesign D:/workspace/FastFilm/dev/design -TargetDesign D:/workspace/Epnova/Dev/design -Apply
+
+# 只同步源项目当前 Git 变更中的 design 文件
+powershell -ExecutionPolicy Bypass -File design/scripts/sync_design_docs.ps1 -TargetDesign D:/workspace/FastFilm/dev/design -ChangedOnly -Apply
+
+# 同步整个 design 目录，仍默认跳过 project 需求目录和项目专属快照
+powershell -ExecutionPolicy Bypass -File design/scripts/sync_design_docs.ps1 -TargetDesign D:/workspace/FastFilm/dev/design -All -Apply
+```
+
+参数说明：
+
+- `-SourceDesign`：源 `design` 目录；默认是脚本所在项目的 `design`。
+- `-TargetDesign`：目标 `design` 目录，必填。
+- `-Apply`：实际复制；不传时只 dry-run。
+- `-ChangedOnly`：只同步源项目 Git 状态中修改、新增、未跟踪的 `design` 文件。
+- `-All`：同步源 `design` 下所有文件，但仍默认跳过 `project/**` 和 `code-interface-scan-summary.md`。
+- `-IncludeProjectSnapshot`：允许同步 `code-interface-scan-summary.md`；仅在明确要覆盖项目专属快照时使用。
+- `-IncludeProjectDocs`：允许同步 `project/**` 需求文档目录；仅在明确要覆盖目标项目需求资料时使用。
+- `-Include` / `-Exclude`：手动指定包含或排除的相对路径。
+
+`sync_design_to_fastfilm.ps1` 只是兼容包装器，默认目标为 `D:\workspace\FastFilm\dev\design`，内部调用 `sync_design_docs.ps1`。

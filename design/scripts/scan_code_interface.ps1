@@ -116,8 +116,6 @@ $settingsFile = Resolve-RepoPath "settings.gradle"
 $appGradle = Resolve-RepoPath "app/build.gradle"
 $configGradle = Resolve-RepoPath "config.gradle"
 $manifestFile = Resolve-RepoPath "app/src/main/AndroidManifest.xml"
-$apiServiceFile = Resolve-RepoPath "app/src/main/java/com/kuaigeglobal/epnova/core/network/apis/ApiService.kt"
-$apiConstantsFile = Resolve-RepoPath "app/src/main/java/com/kuaigeglobal/epnova/core/network/apis/ApiConstants.kt"
 
 $settingsLines = Read-TextLines $settingsFile
 $gradleLines = Read-TextLines $appGradle
@@ -136,6 +134,14 @@ if ($applicationId -eq "rootProject.ext.android.applicationId") {
     }
 }
 $applicationName = Get-ManifestApplicationName $manifestLines
+$namespacePath = if ($namespace) { $namespace.Replace(".", "\") } else { "" }
+$sourcePackageRoot = if ($namespacePath) {
+    Join-Path "app/src/main/java" $namespacePath
+} else {
+    $SourceRoot
+}
+$apiServiceFile = Resolve-RepoPath (Join-Path $sourcePackageRoot "core/network/apis/ApiService.kt")
+$apiConstantsFile = Resolve-RepoPath (Join-Path $sourcePackageRoot "core/network/apis/ApiConstants.kt")
 
 $modules = New-Object System.Collections.Generic.List[string]
 foreach ($line in $settingsLines) {
@@ -200,8 +206,7 @@ if (Test-Path -LiteralPath $resRootFull) {
 }
 
 $featureDirs = @()
-$namespacePath = if ($namespace) { $namespace.Replace(".", "\") } else { "com\kuaigeglobal\epnova" }
-$featureRoot = Resolve-RepoPath (Join-Path "app/src/main/java" (Join-Path $namespacePath "feature"))
+$featureRoot = Resolve-RepoPath (Join-Path $sourcePackageRoot "feature")
 if (Test-Path -LiteralPath $featureRoot) {
     $featureDirs = Get-ChildItem -LiteralPath $featureRoot -Directory |
         ForEach-Object {
@@ -256,8 +261,16 @@ $markdown.Add("") | Out-Null
 
 $markdown.Add("## Core API Files") | Out-Null
 $markdown.Add("") | Out-Null
-$markdown.Add("- ``$(Get-RelativePath $apiServiceFile)``") | Out-Null
-$markdown.Add("- ``$(Get-RelativePath $apiConstantsFile)``") | Out-Null
+if (Test-Path -LiteralPath $apiServiceFile) {
+    $markdown.Add("- ``$(Get-RelativePath $apiServiceFile)``") | Out-Null
+} else {
+    $markdown.Add("- missing: ``$apiServiceFile``") | Out-Null
+}
+if (Test-Path -LiteralPath $apiConstantsFile) {
+    $markdown.Add("- ``$(Get-RelativePath $apiConstantsFile)``") | Out-Null
+} else {
+    $markdown.Add("- missing: ``$apiConstantsFile``") | Out-Null
+}
 $markdown.Add("") | Out-Null
 
 $markdown.Add("## ApiService Methods") | Out-Null
