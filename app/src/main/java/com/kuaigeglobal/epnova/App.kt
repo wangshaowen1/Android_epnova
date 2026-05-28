@@ -19,6 +19,7 @@ import com.kuaigeglobal.epnova.core.Global
 import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.manager.AdStrategyManager
 import com.kuaigeglobal.epnova.core.manager.AppsFlyerManager
+import com.kuaigeglobal.epnova.core.manager.LocaleHelper
 import com.kuaigeglobal.epnova.core.manager.OssManager
 import com.kuaigeglobal.epnova.core.manager.PlaceManager
 import com.kuaigeglobal.epnova.core.manager.ad.UnityRewardedAdPlatform
@@ -39,7 +40,6 @@ import com.scwang.smart.refresh.layout.SmartRefreshLayout
 import com.tencent.mmkv.MMKV
 import java.lang.ref.WeakReference
 import java.util.LinkedList
-import java.util.Locale
 import java.util.Random
 
 class App : BaseApp() {
@@ -252,16 +252,7 @@ class App : BaseApp() {
     }
 
     private fun updateActivityLanguage(activity: Activity) {
-        val lang = config.getSavedLanguage() // 从 SP 读取 "th", "id" 等
-        val locale = Locale(lang)
-        Locale.setDefault(locale)
-
-        val resources = activity.resources
-        val config = resources.configuration
-        config.setLocale(locale)
-
-        // 兼容旧版本和新版本的更新方式
-        resources.updateConfiguration(config, resources.displayMetrics)
+        LocaleHelper.updateResources(activity.resources, config.getSavedLanguage())
     }
 
     private fun isLocalServer(): Boolean {

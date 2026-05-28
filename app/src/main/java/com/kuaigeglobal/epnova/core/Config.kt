@@ -10,6 +10,7 @@ import com.kuaigeglobal.epnova.common.Constants
 import com.kuaigeglobal.epnova.common.ext.ioScope
 import com.kuaigeglobal.epnova.common.utils.DateUtil
 import com.kuaigeglobal.epnova.common.utils.MmkvDelegate
+import com.kuaigeglobal.epnova.core.manager.LocaleHelper
 import com.kuaigeglobal.epnova.core.network.apis.ApiFactory.apiService
 import com.kuaigeglobal.epnova.core.network.apis.request.UserTokenBody
 import com.kuaigeglobal.epnova.core.network.apis.response.AppConfigData
@@ -21,7 +22,6 @@ import com.tencent.mmkv.MMKV
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
-import java.util.Locale
 
 /**
  * App配置信息与角色是否登录或切换无关 (已重构为 MMKV 委托实现)
@@ -52,7 +52,7 @@ class Config : NetworkChangedListener {
         private set
     var isDevelopmentMode: Boolean by MmkvDelegate(DEVELOPMENT_MODE, false) { mmkv }
         private set
-    var lang: String by MmkvDelegate(APP_LANG, resolveDefaultLang()) { mmkv }
+    var lang: String by MmkvDelegate(APP_LANG, LocaleHelper.resolveDefaultLanguage()) { mmkv }
         private set
     var episodeAutoUnlock: Boolean by MmkvDelegate(EPISODE_AUTO_UNLOCK, true) { mmkv }
         private set
@@ -219,14 +219,21 @@ class Config : NetworkChangedListener {
     }
 
     fun saveLanguage(langCode: String) {
-        this.lang = langCode
+        this.lang = LocaleHelper.normalizeLanguageCode(langCode)
     }
 
     fun saveEpisodeAutoUnlock(isAutoUnlock: Boolean) {
         this.episodeAutoUnlock = isAutoUnlock
     }
 
-    fun getSavedLanguage(): String = this.lang
+    fun getSavedLanguage(): String {
+        val normalized = LocaleHelper.normalizeLanguageCode(this.lang)
+        if (normalized != this.lang) {
+            this.lang = normalized
+        }
+        return normalized
+    }
+
     fun isEpisodeAutoUnlock(): Boolean = this.episodeAutoUnlock
 
     val isDebug: Boolean
@@ -358,18 +365,6 @@ class Config : NetworkChangedListener {
         const val UAT: Int = 2
         const val ONLINE: Int = 3
         const val DEVICE_TOKEN = "DEVICE_TOKEN"
-
-        /** 支持的语言列表，与 LanguagesViewModel.languagesConfigs 保持一致 */
-        private val SUPPORTED_LANGS = setOf("en", "th", "id")
-
-        /**
-         * 解析默认语言：取系统语言，"in" 映射为 "id"，不在支持列表内则回退 "en"
-         */
-        private fun resolveDefaultLang(): String {
-            // Android Java 层对印尼语返回 "in"，而 app 内部使用 "id"
-            val systemLang = Locale.getDefault().language.let { if (it == "in") "id" else it }
-            return if (systemLang in SUPPORTED_LANGS) systemLang else "en"
-        }
 
         @JvmStatic
         fun get(): Config {
