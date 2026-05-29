@@ -60,9 +60,7 @@ class RewardsActivity : BaseViewModelActivity<ActivityRewardsBinding, RewardsVie
                 mRealVM.adManager.loadAndShow(
                     context = this@RewardsActivity,
                     activity = this@RewardsActivity,
-                    customData = ctx.customData,
-                    adMarkup = ctx.adMarkup,
-                    objectId = ctx.objectId,
+                    nonce = ctx.nonce,
                     onLoaded = { hideLoadingDialog() },
                     onRewarded = {
                         if (ctx.vm != null) mRealVM.onAdWatched(ctx.vm, ctx.nonce)
@@ -91,7 +89,7 @@ class RewardsActivity : BaseViewModelActivity<ActivityRewardsBinding, RewardsVie
 
     private fun showCheckInSuccessDialog(rewardNum: Int, adRewardCoins: Int) {
         val dialog = CheckInSuccessDialog.newInstance(rewardNum, adRewardCoins)
-        dialog.onWatchAdClicked = { mRealVM.preReportCheckInAd() }
+        dialog.onWatchAdClicked = { mRealVM.prepareCheckInAd() }
         dialog.show(supportFragmentManager)
     }
 
@@ -133,7 +131,7 @@ class RewardsActivity : BaseViewModelActivity<ActivityRewardsBinding, RewardsVie
         super.onClick(view, data)
         when (view?.id) {
             R.id.btnCheckIn      -> mRealVM.doCheckIn()
-            R.id.btnCheckInAd    -> mRealVM.preReportCheckInAd()
+            R.id.btnCheckInAd    -> mRealVM.prepareCheckInAd()
             R.id.btnRules        -> RewardRulesDialog.newInstance().show(supportFragmentManager)
         }
     }

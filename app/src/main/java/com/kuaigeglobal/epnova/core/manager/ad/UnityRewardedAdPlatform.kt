@@ -2,14 +2,14 @@ package com.kuaigeglobal.epnova.core.manager.ad
 
 import android.app.Activity
 import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import com.kuaigeglobal.epnova.BuildConfig
 import com.nhsd.basic.utils.Logger
 import com.unity3d.ads.IUnityAdsInitializationListener
 import com.unity3d.ads.IUnityAdsLoadListener
 import com.unity3d.ads.IUnityAdsShowListener
 import com.unity3d.ads.UnityAds
-import com.unity3d.ads.UnityAdsLoadOptions
-import com.unity3d.ads.UnityAdsShowOptions
 import com.unity3d.ads.metadata.PlayerMetaData
 
 /**
@@ -24,9 +24,11 @@ class UnityRewardedAdPlatform : IRewardedAdPlatform {
         private const val TAG = "UnityRewardedAd"
         const val GAME_ID = "6107957"
         private const val AD_UNIT_ID = "Rewarded_Android"
-        private const val IS_BIDDING_AD_UNIT = true
+        private const val INIT_TIMEOUT_MS = 20_000L
+        private val mainHandler = Handler(Looper.getMainLooper())
         private val initCallbacks = mutableListOf<Pair<() -> Unit, () -> Unit>>()
         private var isInitializing = false
+        private var initTimeoutRunnable: Runnable? = null
 
         fun initialize(context: Context) {
             ensureInitialized(context.applicationContext, onSuccess = {}, onFailed = {})
@@ -37,6 +39,11 @@ class UnityRewardedAdPlatform : IRewardedAdPlatform {
             onSuccess: () -> Unit,
             onFailed: () -> Unit
         ) {
+            if (Looper.myLooper() != Looper.getMainLooper()) {
+                mainHandler.post { ensureInitialized(context.applicationContext, onSuccess, onFailed) }
+                return
+            }
+
             if (UnityAds.isInitialized) {
                 onSuccess()
                 return
@@ -46,11 +53,30 @@ class UnityRewardedAdPlatform : IRewardedAdPlatform {
             if (isInitializing) return
 
             isInitializing = true
-            Logger.d(TAG, "init start, gameId=$GAME_ID, testMode=${BuildConfig.DEBUG}")
-            UnityAds.initialize(context.applicationContext, GAME_ID, BuildConfig.DEBUG,
+            val testMode = BuildConfig.DEBUG
+            UnityAds.debugMode = testMode
+            Logger.d(
+                TAG,
+                "init env, sdkVersion=${UnityAds.version}, " +
+                    "isSupported=${UnityAds.isSupported}, isInitialized=${UnityAds.isInitialized}"
+            )
+            initTimeoutRunnable = Runnable {
+                if (!isInitializing) return@Runnable
+                Logger.d(TAG, "init timeout after ${INIT_TIMEOUT_MS}ms, gameId=$GAME_ID, testMode=$testMode")
+                isInitializing = false
+                initTimeoutRunnable = null
+                val callbacks = initCallbacks.toList()
+                initCallbacks.clear()
+                callbacks.forEach { it.second.invoke() }
+            }.also { mainHandler.postDelayed(it, INIT_TIMEOUT_MS) }
+
+            Logger.d(TAG, "init start, gameId=$GAME_ID, testMode=$testMode, package=${context.packageName}")
+            UnityAds.initialize(context.applicationContext, GAME_ID, testMode,
                 object : IUnityAdsInitializationListener {
                     override fun onInitializationComplete() {
                         Logger.d(TAG, "init success")
+                        initTimeoutRunnable?.let { mainHandler.removeCallbacks(it) }
+                        initTimeoutRunnable = null
                         isInitializing = false
                         val callbacks = initCallbacks.toList()
                         initCallbacks.clear()
@@ -62,6 +88,8 @@ class UnityRewardedAdPlatform : IRewardedAdPlatform {
                         message: String
                     ) {
                         Logger.d(TAG, "init failed: $error - $message")
+                        initTimeoutRunnable?.let { mainHandler.removeCallbacks(it) }
+                        initTimeoutRunnable = null
                         isInitializing = false
                         val callbacks = initCallbacks.toList()
                         initCallbacks.clear()
@@ -73,25 +101,18 @@ class UnityRewardedAdPlatform : IRewardedAdPlatform {
     }
 
     private var isLoaded = false
-    private var pendingCustomData: String? = null
-    private var pendingAdMarkup: String? = null
-    private var pendingObjectId: String? = null
+    private var pendingServerId: String? = null
 
     override fun load(
         context: Context,
-        customData: String?,
-        adMarkup: String?,
-        objectId: String?,
+        nonce: String?,
         onLoaded: () -> Unit,
         onFailed: () -> Unit
     ) {
-        pendingCustomData = customData
-        pendingAdMarkup = adMarkup
-        pendingObjectId = objectId
+        pendingServerId = nonce
         ensureInitialized(
             context = context,
             onSuccess = {
-                commitServerId(context)
                 loadAd(onLoaded, onFailed)
             },
             onFailed = onFailed
@@ -99,25 +120,8 @@ class UnityRewardedAdPlatform : IRewardedAdPlatform {
     }
 
     private fun loadAd(onLoaded: () -> Unit, onFailed: () -> Unit) {
-        val adMarkup = pendingAdMarkup?.takeIf { it.isNotBlank() }
-        val objectId = pendingObjectId?.takeIf { it.isNotBlank() }
-        if (IS_BIDDING_AD_UNIT && adMarkup == null) {
-            Logger.d(TAG, "bidding load failed: missing adMarkup for adUnitId=$AD_UNIT_ID")
-            isLoaded = false
-            onFailed()
-            return
-        }
-
-        val loadOptions = UnityAdsLoadOptions().apply {
-            adMarkup?.let { setAdMarkup(it) }
-            objectId?.let { setObjectId(it) }
-        }
-        Logger.d(
-            TAG,
-            "load start, adUnitId=$AD_UNIT_ID, bidding=$IS_BIDDING_AD_UNIT, " +
-                "hasAdMarkup=${adMarkup != null}, hasObjectId=${objectId != null}, testMode=${BuildConfig.DEBUG}"
-        )
-        UnityAds.load(AD_UNIT_ID, loadOptions, object : IUnityAdsLoadListener {
+        Logger.d(TAG, "load start, adUnitId=$AD_UNIT_ID, testMode=${BuildConfig.DEBUG}, hasServerId=${!pendingServerId.isNullOrBlank()}")
+        UnityAds.load(AD_UNIT_ID, object : IUnityAdsLoadListener {
             override fun onUnityAdsAdLoaded(placementId: String) {
                 Logger.d(TAG, "onUnityAdsAdLoaded: $placementId")
                 isLoaded = true
@@ -137,7 +141,7 @@ class UnityRewardedAdPlatform : IRewardedAdPlatform {
     }
 
     private fun commitServerId(context: Context) {
-        val serverId = pendingCustomData?.takeIf { it.isNotBlank() } ?: return
+        val serverId = pendingServerId?.takeIf { it.isNotBlank() } ?: return
         PlayerMetaData(context.applicationContext).apply {
             setServerId(serverId)
             commit()
@@ -155,10 +159,8 @@ class UnityRewardedAdPlatform : IRewardedAdPlatform {
             onFailed()
             return
         }
-        val showOptions = UnityAdsShowOptions().apply {
-            pendingObjectId?.takeIf { it.isNotBlank() }?.let { setObjectId(it) }
-        }
-        UnityAds.show(activity, AD_UNIT_ID, showOptions, object : IUnityAdsShowListener {
+        commitServerId(activity)
+        UnityAds.show(activity, AD_UNIT_ID, object : IUnityAdsShowListener {
             override fun onUnityAdsShowFailure(
                 placementId: String,
                 error: UnityAds.UnityAdsShowError,
@@ -191,8 +193,6 @@ class UnityRewardedAdPlatform : IRewardedAdPlatform {
 
     override fun release() {
         isLoaded = false
-        pendingCustomData = null
-        pendingAdMarkup = null
-        pendingObjectId = null
+        pendingServerId = null
     }
 }

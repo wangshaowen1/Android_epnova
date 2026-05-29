@@ -13,8 +13,8 @@ import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.ext.request
 import com.kuaigeglobal.epnova.core.manager.RewardedAdManager
 import com.kuaigeglobal.epnova.core.network.apis.entity.AdTaskItem
-import com.kuaigeglobal.epnova.core.network.apis.request.AdPreReportBody
-import com.kuaigeglobal.epnova.core.network.apis.request.RewardAdPollBody
+import com.kuaigeglobal.epnova.core.network.apis.request.RewardAdCompleteBody
+import com.kuaigeglobal.epnova.core.network.apis.request.RewardAdTaskPrepareBody
 import com.kuaigeglobal.epnova.core.network.apis.request.UserTokenBody
 import com.kuaigeglobal.epnova.router.AppNavigator
 import com.nhsd.basic.ext.getResString
@@ -48,15 +48,12 @@ class RewardsViewModel : AppRepositoryViewModel<AppRepository>() {
     val adManager: RewardedAdManager by lazy { RewardedAdManager(mRepo.api, viewModelScope) }
 
     /**
-     * Fragment 收到后负责加载并展示激励广告。
+     * Activity 收到后负责加载并展示激励广告。
      * vm == null 表示签到广告（adScene=1）；否则为任务广告（adScene=2）。
      */
     data class AdWatchContext(
         val vm: ItemEarnRewardVM?,
-        val customData: String,
-        val nonce: String,
-        val adMarkup: String? = null,
-        val objectId: String? = null
+        val nonce: String
     )
     private val _showAdEvent = MutableSharedFlow<AdWatchContext>(extraBufferCapacity = 1)
     val showAdEvent: SharedFlow<AdWatchContext> = _showAdEvent
@@ -140,26 +137,22 @@ class RewardsViewModel : AppRepositoryViewModel<AppRepository>() {
         )
     }
 
-    // ─── 广告观看前置上报（任务广告，adScene=2）────────────────────────────────
+    // ─── 广告任务-激励视频广告前置准备 ────────────────────────────────────────
 
     /**
-     * 用户点击任务 Watch 时调用：预报获取 customData + nonce，成功后通知 Fragment 加载广告。
+     * 用户点击任务 Watch 时调用：prepare 获取 nonce，成功后通知 Activity 加载广告。
      */
-    fun preReportAd(vm: ItemEarnRewardVM) {
+    fun prepareTaskAd(vm: ItemEarnRewardVM) {
         val recordId = vm.data.get()?.taskRecordId ?: return
         request(
-            apiBlock = { mRepo.api.rewardAdPreReport(AdPreReportBody(adScene = 2, bizId = recordId)) },
+            apiBlock = { mRepo.api.rewardAdTaskPrepare(RewardAdTaskPrepareBody(taskRecordId = recordId)) },
             onSuccess = {
                 val d = data ?: return@request
-                val customData = d.customData ?: return@request
                 val nonce = d.nonce ?: return@request
                 _showAdEvent.tryEmit(
                     AdWatchContext(
                         vm = vm,
-                        customData = customData,
-                        nonce = nonce,
-                        adMarkup = d.adMarkup,
-                        objectId = d.objectId
+                        nonce = nonce
                     )
                 )
             }
@@ -167,17 +160,19 @@ class RewardsViewModel : AppRepositoryViewModel<AppRepository>() {
     }
 
     /**
-     * 任务广告播完后由 Fragment 调用。
-     * 轮询 [rewardAdPoll]，rewardStatus：0=处理中，1=成功，2=失败。
+     * 任务广告播完后由 Activity 调用。
+     * 重复调用 complete 确认结果，adFlowStatus：0=处理中，1=成功，2=失败。
      */
     fun onAdWatched(vm: ItemEarnRewardVM, nonce: String) {
         if (vm.isDone.get()) return
         viewModelScope.launch {
             repeat(POLL_MAX_RETRY) { attempt ->
                 val res = runCatching {
-                    withContext(Dispatchers.IO) { mRepo.api.rewardAdPoll(RewardAdPollBody(adFlowId = nonce)) }
+                    withContext(Dispatchers.IO) {
+                        mRepo.api.rewardAdTaskComplete(RewardAdCompleteBody(nonce = nonce))
+                    }
                 }.getOrNull()
-                when (res?.data?.rewardStatus) {
+                when (res?.data?.adFlowStatus) {
                     1 -> {
                         vm.isDone.set(true)
                         vm.isWatch.set(false)
@@ -199,26 +194,21 @@ class RewardsViewModel : AppRepositoryViewModel<AppRepository>() {
         }
     }
 
-    // ─── 广告观看前置上报（签到广告，adScene=1）────────────────────────────────
+    // ─── 签到任务-激励视频广告前置准备 ────────────────────────────────────────
 
     /**
      * 用户在签到成功弹窗中点击"看广告领额外奖励"时调用。
-     * adScene=1 时服务端自己寻找当天任务，不需要 bizId。
      */
-    fun preReportCheckInAd() {
+    fun prepareCheckInAd() {
         request(
-            apiBlock = { mRepo.api.rewardAdPreReport(AdPreReportBody(adScene = 1)) },
+            apiBlock = { mRepo.api.rewardAdCheckInPrepare(UserTokenBody()) },
             onSuccess = {
                 val d = data ?: return@request
-                val customData = d.customData ?: return@request
                 val nonce = d.nonce ?: return@request
                 _showAdEvent.tryEmit(
                     AdWatchContext(
                         vm = null,
-                        customData = customData,
-                        nonce = nonce,
-                        adMarkup = d.adMarkup,
-                        objectId = d.objectId
+                        nonce = nonce
                     )
                 )
             }
@@ -226,16 +216,18 @@ class RewardsViewModel : AppRepositoryViewModel<AppRepository>() {
     }
 
     /**
-     * 签到广告播完后由 Fragment 调用。
-     * 轮询确认后更新余额、标记当天广告已看、通知 Fragment 展示获得金币 Toast。
+     * 签到广告播完后由 Activity 调用。
+     * 重复确认后更新余额、标记当天广告已看、通知 Activity 展示获得金币 Toast。
      */
     fun onCheckInAdWatched(nonce: String) {
         viewModelScope.launch {
             repeat(POLL_MAX_RETRY) { attempt ->
                 val res = runCatching {
-                    withContext(Dispatchers.IO) { mRepo.api.rewardAdPoll(RewardAdPollBody(adFlowId = nonce)) }
+                    withContext(Dispatchers.IO) {
+                        mRepo.api.rewardAdCheckInComplete(RewardAdCompleteBody(nonce = nonce))
+                    }
                 }.getOrNull()
-                when (res?.data?.rewardStatus) {
+                when (res?.data?.adFlowStatus) {
                     1 -> {
                         todayAdWatched.set(true)
                         val coins = adRewardCoins.get()
@@ -274,7 +266,7 @@ class RewardsViewModel : AppRepositoryViewModel<AppRepository>() {
     private fun buildEarnItemVM(item: AdTaskItem): ItemEarnRewardVM {
         return ItemEarnRewardVM(item).apply {
             when (item.taskStatus) {
-                0 -> onWatchAction  = { preReportAd(this) }
+                0 -> onWatchAction  = { prepareTaskAd(this) }
                 2 -> onLockedAction = { showToast(R.string.rewards_finish_previous_task) }
             }
         }

@@ -18,12 +18,12 @@ import com.kuaigeglobal.epnova.core.network.apis.entity.OverseasDeviceFingerprin
 import com.kuaigeglobal.epnova.core.network.apis.entity.PaymentData
 import com.kuaigeglobal.epnova.core.network.apis.entity.PaymentInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.ReferenceImageInfo
+import com.kuaigeglobal.epnova.core.network.apis.entity.RewardAdCompleteData
+import com.kuaigeglobal.epnova.core.network.apis.entity.RewardAdPrepareData
 import com.kuaigeglobal.epnova.core.network.apis.entity.RewardAdTaskListData
 import com.kuaigeglobal.epnova.core.network.apis.entity.RewardCheckInListData
 import com.kuaigeglobal.epnova.core.network.apis.entity.RewardCheckInReportData
-import com.kuaigeglobal.epnova.core.network.apis.entity.AdPreportData
 import com.kuaigeglobal.epnova.core.network.apis.entity.CreationModelInfo
-import com.kuaigeglobal.epnova.core.network.apis.entity.ResultAdPollData
 import com.kuaigeglobal.epnova.core.network.apis.entity.RoleImageInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.StoryUnlockInfoData
 import com.kuaigeglobal.epnova.core.network.apis.entity.StoryUnlockPreloadData
@@ -49,7 +49,6 @@ import com.kuaigeglobal.epnova.core.network.apis.entity.WorkInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.WorkVOInfo
 import com.kuaigeglobal.epnova.core.network.apis.request.AIExpandBody
 import com.kuaigeglobal.epnova.core.network.apis.request.AISynopsisBody
-import com.kuaigeglobal.epnova.core.network.apis.request.AdPreReportBody
 import com.kuaigeglobal.epnova.core.network.apis.request.AppearanceIdBody
 import com.kuaigeglobal.epnova.core.network.apis.request.AssetUnlinkBody
 import com.kuaigeglobal.epnova.core.network.apis.request.BannerBody
@@ -123,10 +122,11 @@ import com.kuaigeglobal.epnova.core.network.apis.request.SeriesSetPriceBody
 import com.kuaigeglobal.epnova.core.network.apis.request.ShareReportBody
 import com.kuaigeglobal.epnova.core.network.apis.request.ShortLikeBody
 import com.kuaigeglobal.epnova.core.network.apis.request.ShotSegmentIdBody
-import com.kuaigeglobal.epnova.core.network.apis.request.RewardAdPollBody
+import com.kuaigeglobal.epnova.core.network.apis.request.RewardAdCompleteBody
+import com.kuaigeglobal.epnova.core.network.apis.request.RewardAdTaskPrepareBody
 import com.kuaigeglobal.epnova.core.network.apis.request.RoleIdPagedBody
 import com.kuaigeglobal.epnova.core.network.apis.request.SaveStorySummaryBody
-import com.kuaigeglobal.epnova.core.network.apis.request.StoryUnlockAdResultBody
+import com.kuaigeglobal.epnova.core.network.apis.request.StoryUnlockAdCompleteBody
 import com.kuaigeglobal.epnova.core.network.apis.request.StoryUnlockCoinsBody
 import com.kuaigeglobal.epnova.core.network.apis.request.StoryboardIdBody
 import com.kuaigeglobal.epnova.core.network.apis.request.StrategyTypeBody
@@ -1305,12 +1305,6 @@ interface ApiService {
     suspend fun rewardAdTaskList(@Body body: UserTokenBody): ApiResponse<RewardAdTaskListData>
 
     /**
-     * 广告观看前置上报
-     */
-    @POST(ApiConstants.REWARD_AD_PRE_REPORT)
-    suspend fun rewardAdPreReport(@Body body: AdPreReportBody): ApiResponse<AdPreportData>
-
-    /**
      * 播放器-剧集自动解锁（每集预加载时调用，余额充足则静默扣费解锁）
      */
     @POST(ApiConstants.STORY_UNLOCK_PRELOAD)
@@ -1329,22 +1323,40 @@ interface ApiService {
     suspend fun storyUnlockCoins(@Body body: StoryUnlockCoinsBody): ApiResponse<StoryUnlockResultData?>
 
     /**
-     * 解锁弹窗-广告前置准备（返回 customData/nonce 传给广告 SDK）
+     * 剧集解锁-激励视频广告前置准备
      */
-    @POST(ApiConstants.STORY_UNLOCK_AD_PREPARE)
-    suspend fun storyUnlockAdPrepare(@Body body: WorkBody): ApiResponse<AdPreportData?>
+    @POST(ApiConstants.AD_REWARD_STORY_UNLOCK_PREPARE)
+    suspend fun storyUnlockAdPrepare(@Body body: WorkBody): ApiResponse<RewardAdPrepareData?>
 
     /**
-     * 解锁弹窗-广告解锁结果轮询
+     * 剧集解锁-激励视频广告完成确认
      */
-    @POST(ApiConstants.STORY_UNLOCK_AD_RESULT)
-    suspend fun storyUnlockAdResult(@Body body: StoryUnlockAdResultBody): ApiResponse<StoryUnlockResultData?>
+    @POST(ApiConstants.AD_REWARD_STORY_UNLOCK_COMPLETE)
+    suspend fun storyUnlockAdComplete(@Body body: StoryUnlockAdCompleteBody): ApiResponse<RewardAdCompleteData?>
 
     /**
-     * 广告奖励轮询结果
+     * 签到任务-激励视频广告前置准备
      */
-    @POST(ApiConstants.REWARD_AD_POLL)
-    suspend fun rewardAdPoll(@Body body: RewardAdPollBody): ApiResponse<ResultAdPollData?>
+    @POST(ApiConstants.AD_REWARD_CHECKIN_PREPARE)
+    suspend fun rewardAdCheckInPrepare(@Body body: UserTokenBody): ApiResponse<RewardAdPrepareData?>
+
+    /**
+     * 签到任务-激励视频广告完成确认
+     */
+    @POST(ApiConstants.AD_REWARD_CHECKIN_COMPLETE)
+    suspend fun rewardAdCheckInComplete(@Body body: RewardAdCompleteBody): ApiResponse<RewardAdCompleteData?>
+
+    /**
+     * 广告任务-激励视频广告前置准备
+     */
+    @POST(ApiConstants.AD_REWARD_TASK_PREPARE)
+    suspend fun rewardAdTaskPrepare(@Body body: RewardAdTaskPrepareBody): ApiResponse<RewardAdPrepareData?>
+
+    /**
+     * 广告任务-激励视频广告完成确认
+     */
+    @POST(ApiConstants.AD_REWARD_TASK_COMPLETE)
+    suspend fun rewardAdTaskComplete(@Body body: RewardAdCompleteBody): ApiResponse<RewardAdCompleteData?>
 
     /**
      * 查询剧集锁定状态

@@ -8,7 +8,7 @@ import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.core.manager.ad.IRewardedAdPlatform
 import com.kuaigeglobal.epnova.core.manager.ad.UnityRewardedAdPlatform
 import com.kuaigeglobal.epnova.core.network.apis.ApiService
-import com.kuaigeglobal.epnova.core.network.apis.request.StoryUnlockAdResultBody
+import com.kuaigeglobal.epnova.core.network.apis.request.StoryUnlockAdCompleteBody
 import com.kuaigeglobal.epnova.core.network.apis.request.WorkBody
 import com.nhsd.basic.ext.getResString
 import com.nhsd.basic.ext.showToast
@@ -23,7 +23,7 @@ import kotlinx.coroutines.withContext
  * @Introduce: 激励广告管理器（平台无关）
  *
  * 封装完整的广告解锁流程：
- *   prepare API → load Ad（配置 SSV）→ show → poll 服务端结果
+ *   prepare API → load Ad（配置 SSV）→ show → complete 服务端确认
  *
  * 广告平台通过 [IRewardedAdPlatform] 注入，切换平台只需修改默认参数：
  * ```
@@ -43,8 +43,8 @@ import kotlinx.coroutines.withContext
  * // 方式2：加载完成后立即展示（EpisodeUnlockDialog Watch Ads 模式）
  * adManager.prepareLoadAndShow(context, activity, workId, storyId)
  *
- * // 方式3：外部已完成 preReport，直接加载并展示
- * adManager.loadAndShow(context, activity, customData, onRewarded = { ... })
+ * // 方式3：外部已完成 prepare，直接加载并展示
+ * adManager.loadAndShow(context, activity, nonce, onRewarded = { ... })
  * ```
  */
 class RewardedAdManager(
@@ -104,7 +104,7 @@ class RewardedAdManager(
         if (!isAdReady.get()) return
         platform.show(
             activity = activity,
-            onRewarded = { pollAdResult() },
+            onRewarded = { completeAdResult() },
             onDismissed = { isAdReady.set(false) },
             onFailed = {
                 isAdReady.set(false)
@@ -114,8 +114,8 @@ class RewardedAdManager(
     }
 
     /**
-     * 加载并立即展示广告，customData 由外部提供（调用方已完成 preReport 步骤）。
-     * 广告看完后回调 [onRewarded]，不触发内部轮询——后续上报逻辑由调用方自行处理。
+     * 加载并立即展示广告，nonce 由外部提供（调用方已完成 prepare 步骤）。
+     * 广告看完后回调 [onRewarded]，不触发内部确认——后续完成确认逻辑由调用方自行处理。
      *
      * @param onLoaded   广告加载成功、即将展示时回调（可用于隐藏 loading）
      * @param onRewarded 用户看完广告获得奖励时回调
@@ -124,9 +124,7 @@ class RewardedAdManager(
     fun loadAndShow(
         context: Context,
         activity: Activity,
-        customData: String,
-        adMarkup: String? = null,
-        objectId: String? = null,
+        nonce: String,
         onLoaded: (() -> Unit)? = null,
         onRewarded: () -> Unit,
         onFailed: (() -> Unit)? = null
@@ -135,9 +133,7 @@ class RewardedAdManager(
         isAdLoading.set(true)
         platform.load(
             context = context,
-            customData = customData,
-            adMarkup = adMarkup,
-            objectId = objectId,
+            nonce = nonce,
             onLoaded = {
                 Logger.d(TAG, "loadAndShow: ad loaded")
                 isAdLoading.set(false)
@@ -186,17 +182,19 @@ class RewardedAdManager(
                 return@launch
             }
 
-            val customData = prepareRes.data!!.customData
-            nonce = prepareRes.data!!.nonce
-            val adMarkup = prepareRes.data!!.adMarkup
-            val objectId = prepareRes.data!!.objectId
+            val adNonce = prepareRes.data!!.nonce
+            if (adNonce.isNullOrBlank()) {
+                isAdLoading.set(false)
+                statusText.set(null)
+                showAdNotReadyToast()
+                return@launch
+            }
+            nonce = adNonce
 
             withContext(Dispatchers.Main) {
                 platform.load(
                     context = context,
-                    customData = customData,
-                    adMarkup = adMarkup,
-                    objectId = objectId,
+                    nonce = adNonce,
                     onLoaded = {
                         Logger.d(TAG, "startPrepare: ad loaded")
                         isAdLoading.set(false)
@@ -216,7 +214,7 @@ class RewardedAdManager(
         }
     }
 
-    private fun pollAdResult() {
+    private fun completeAdResult() {
         val wId = currentWorkId ?: return
         val sId = currentStoryId ?: return
         val n = nonce ?: return
@@ -227,22 +225,22 @@ class RewardedAdManager(
         scope.launch {
             repeat(POLL_MAX_RETRY) { attempt ->
                 val res = withContext(Dispatchers.IO) {
-                    api.storyUnlockAdResult(
-                        StoryUnlockAdResultBody(workId = wId, storyId = sId, nonce = n)
+                    api.storyUnlockAdComplete(
+                        StoryUnlockAdCompleteBody(workId = wId, storyId = sId, nonce = n)
                     )
                 }
 
                 if (res.isSuccess) {
-                    when (res.data?.status) {
+                    when (res.data?.adFlowStatus) {
                         1 -> {
-                            Logger.d(TAG, "pollAdResult: success")
+                            Logger.d(TAG, "completeAdResult: success")
                             isPolling.set(false)
                             statusText.set(null)
                             onUnlockSuccess?.invoke()
                             return@launch
                         }
                         2 -> {
-                            Logger.d(TAG, "pollAdResult: failed")
+                            Logger.d(TAG, "completeAdResult: failed")
                             isPolling.set(false)
                             statusText.set(null)
                             onUnlockFailed?.invoke()

@@ -16,10 +16,10 @@ import com.nhsd.basic.ext.showToast
  * c3 激励广告解锁弹窗（Unity Ads RewardedAd + SSV）
  *
  * 流程：
- *  1. 弹窗展示时自动触发 storyUnlockAdPrepare（获取 customData/nonce）
- *  2. 加载 Unity Ads RewardedAd 并配置 SSV customData
+ *  1. 弹窗展示时自动触发 storyUnlockAdPrepare（获取 nonce）
+ *  2. 加载 Unity Ads RewardedAd 并配置 SSV nonce
  *  3. 用户点击按钮 → 展示广告
- *  4. 观看完毕 → 轮询 storyUnlockAdResult
+ *  4. 观看完毕 → 调用 storyUnlockAdComplete 确认结果
  *  5. 服务端确认 → 回调 onUnlockSuccess
  */
 class AdUnlockDialog : BaseVMDialogFragment<DialogAdUnlockBinding, AdUnlockViewModel>() {

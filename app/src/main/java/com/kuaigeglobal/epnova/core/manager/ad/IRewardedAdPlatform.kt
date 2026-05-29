@@ -17,15 +17,13 @@ interface IRewardedAdPlatform {
      * 广告位 ID 由各平台实现类自行持有，Manager 无需关心具体格式。
      *
      * @param context    上下文
-     * @param customData SSV 自定义校验数据，null 表示不需要服务端验证
+     * @param nonce      服务端生成的广告流水 ID，null 表示不需要服务端验证
      * @param onLoaded   加载成功回调（主线程）
      * @param onFailed   加载失败回调（主线程）
      */
     fun load(
         context: Context,
-        customData: String?,
-        adMarkup: String? = null,
-        objectId: String? = null,
+        nonce: String?,
         onLoaded: () -> Unit,
         onFailed: () -> Unit
     )

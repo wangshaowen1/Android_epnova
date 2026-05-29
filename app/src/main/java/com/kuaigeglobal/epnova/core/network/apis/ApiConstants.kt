@@ -917,16 +917,6 @@ object ApiConstants {
     const val STORY_UNLOCK_COINS = "app/story/unlock/coins"
 
     /**
-     * 解锁弹窗-广告前置准备（返回 customData / nonce）
-     */
-    const val STORY_UNLOCK_AD_PREPARE = "app/story/unlock/ad/prepare"
-
-    /**
-     * 解锁弹窗-广告解锁结果轮询
-     */
-    const val STORY_UNLOCK_AD_RESULT = "app/story/unlock/ad/result"
-
-    /**
      * 签到任务列表
      */
     const val REWARD_CHECKIN_LIST = "reward/task/checkin/list"
@@ -942,14 +932,34 @@ object ApiConstants {
     const val REWARD_AD_TASK_LIST = "reward/task/adTask/list"
 
     /**
-     * 广告观看前置上报
+     * 剧集解锁-激励视频广告前置准备
      */
-    const val REWARD_AD_PRE_REPORT = "reward/task/ad/preReport"
+    const val AD_REWARD_STORY_UNLOCK_PREPARE = "ad/reward/story/unlock/prepare"
 
     /**
-     * 广告奖励轮询结果
+     * 剧集解锁-激励视频广告完成确认
      */
-    const val REWARD_AD_POLL = "reward/task/ad/pollResult"
+    const val AD_REWARD_STORY_UNLOCK_COMPLETE = "ad/reward/story/unlock/complete"
+
+    /**
+     * 签到任务-激励视频广告前置准备
+     */
+    const val AD_REWARD_CHECKIN_PREPARE = "ad/reward/checkin/prepare"
+
+    /**
+     * 签到任务-激励视频广告完成确认
+     */
+    const val AD_REWARD_CHECKIN_COMPLETE = "ad/reward/checkin/complete"
+
+    /**
+     * 广告任务-激励视频广告前置准备
+     */
+    const val AD_REWARD_TASK_PREPARE = "ad/reward/task/prepare"
+
+    /**
+     * 广告任务-激励视频广告完成确认
+     */
+    const val AD_REWARD_TASK_COMPLETE = "ad/reward/task/complete"
 
     /**
      * 查询剧集锁定状态
