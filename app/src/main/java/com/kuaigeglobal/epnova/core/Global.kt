@@ -45,12 +45,12 @@ object Global {
         }
     }
 
-    fun refreshBalance() {
+    fun refreshCoinsAndPoints() {
         if (User.get().isVisitor) return
         ioScope.launchNoCrash {
-            val resp = ApiFactory.apiService.queryWalletInfo(UserTokenBody())
+            val resp = ApiFactory.apiService.queryCoinsAndPointsWalletInfo(UserTokenBody())
             if (resp.isSuccess) {
-                resp.data?.let { User.get().storeWallet(it) }
+                resp.data?.let { User.get().storeCoinsAndPointsWallet(it) }
             }
         }
     }

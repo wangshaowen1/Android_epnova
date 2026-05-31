@@ -629,9 +629,9 @@ object ApiConstants {
     const val SAVE_SEQUEL_NOVEL_STORY = "work/production/sequel/saveSequelNovelStory"
 
     /**
-     * 查询用户钱包信息
+     * 查询用户金币和算力聚合钱包
      */
-    const val QUERY_WALLET_INFO = "trade/user/coin/wallet"
+    const val QUERY_COINS_AND_POINTS_WALLET_INFO = "trade/user/balance/wallet"
 
     /**
      * 查询算力明细列表（分页）

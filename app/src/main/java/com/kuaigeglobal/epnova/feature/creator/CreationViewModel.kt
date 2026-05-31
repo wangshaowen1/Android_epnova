@@ -229,7 +229,7 @@ class CreationViewModel : AppRepositoryViewModel<CreationRepository>() {
                 mRepo.api.novelUploadSummary(body)
             },
             onSuccess = {
-                Global.refreshBalance()
+                Global.refreshCoinsAndPoints()
                 callback.invoke(data)
             },
             onError = {

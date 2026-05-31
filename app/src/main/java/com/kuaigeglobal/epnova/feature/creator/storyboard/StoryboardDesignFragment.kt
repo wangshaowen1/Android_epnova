@@ -68,7 +68,7 @@ class StoryboardDesignFragment :
         mRealVM.taskId = hostVm?.taskId
         mRealVM.step.addOnPropertyChangedCallback(object : Observable.OnPropertyChangedCallback() {
             override fun onPropertyChanged(sender: Observable?, propertyId: Int) {
-                Global.refreshBalance()
+                Global.refreshCoinsAndPoints()
             }
         })
         lifecycleScope.launch {

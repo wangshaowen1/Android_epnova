@@ -86,7 +86,7 @@ class MyBalanceViewModel(
     override fun onResume() {
         super.onResume()
         updateBalance()
-        refreshBalance()
+        refreshCoinsAndPoints()
         workCourseBanner.set(if (User.get().isPurchasedCourse()) null else Config.get().appConfig.workCourseBanner)
     }
 
@@ -215,7 +215,7 @@ class MyBalanceViewModel(
             BillingManager.purchaseResultFlow.take(1).collect { result ->
                 if (result is PurchaseResult.Success) {
                     loadConfig()
-                    refreshBalance()
+                    refreshCoinsAndPoints()
                 }
                 _purchaseEvent.emit(result)
             }
@@ -289,8 +289,8 @@ class MyBalanceViewModel(
         if (currentTab == TAB_COINS) displayBalance.set(balance.get())
     }
 
-    private fun refreshBalance() {
-        Global.refreshBalance()
+    private fun refreshCoinsAndPoints() {
+        Global.refreshCoinsAndPoints()
     }
 
     private var countDownJob: Job? = null

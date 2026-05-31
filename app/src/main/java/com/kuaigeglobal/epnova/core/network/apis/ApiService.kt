@@ -5,6 +5,7 @@ import com.kuaigeglobal.epnova.core.network.SSEvent
 import com.kuaigeglobal.epnova.core.network.apis.entity.AIPriceInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.BannerInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.CharacterInfo
+import com.kuaigeglobal.epnova.core.network.apis.entity.CoinsAndWalletInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.ContentInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.CreationStyleInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.DubbingGenStatusInfo
@@ -45,7 +46,6 @@ import com.kuaigeglobal.epnova.core.network.apis.entity.TaskStatusInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.UserShareUrlInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.VideoConfigData
 import com.kuaigeglobal.epnova.core.network.apis.entity.VipConfigInfo
-import com.kuaigeglobal.epnova.core.network.apis.entity.WalletInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.WorkInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.WorkVOInfo
 import com.kuaigeglobal.epnova.core.network.apis.request.AIExpandBody
@@ -959,10 +959,10 @@ interface ApiService {
     suspend fun saveSequelNovelStory(@Body body: SaveSequelNovelStoryBody): ApiResponse<SaveSequelNovelStoryInfo>
 
     /**
-     * 查询用户钱包信息
+     * 查询用户金币和算力聚合钱包
      */
-    @POST(ApiConstants.QUERY_WALLET_INFO)
-    suspend fun queryWalletInfo(@Body body: UserTokenBody): ApiResponse<WalletInfo?>
+    @POST(ApiConstants.QUERY_COINS_AND_POINTS_WALLET_INFO)
+    suspend fun queryCoinsAndPointsWalletInfo(@Body body: UserTokenBody): ApiResponse<CoinsAndWalletInfo?>
 
     /**
      * 查询算力明细列表（分页）

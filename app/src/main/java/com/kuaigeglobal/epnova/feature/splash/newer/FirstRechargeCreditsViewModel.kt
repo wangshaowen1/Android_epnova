@@ -91,7 +91,7 @@ class FirstRechargeCreditsViewModel : AppRepositoryViewModel<CoinRepository>() {
         purchaseJob = viewModelScope.launch {
             BillingManager.purchaseResultFlow.take(1).collect { result ->
                 if (result is PurchaseResult.Success) {
-                    refreshBalance()
+                    refreshCoinsAndPoints()
                 }
                 _purchaseEvent.emit(result)
             }
@@ -137,8 +137,8 @@ class FirstRechargeCreditsViewModel : AppRepositoryViewModel<CoinRepository>() {
         return if (time > now) time - now else time
     }
 
-    private fun refreshBalance() {
-        Global.refreshBalance()
+    private fun refreshCoinsAndPoints() {
+        Global.refreshCoinsAndPoints()
     }
 
     override fun onCleared() {

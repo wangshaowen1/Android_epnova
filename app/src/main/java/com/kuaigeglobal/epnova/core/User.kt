@@ -5,8 +5,8 @@ import android.text.TextUtils
 import com.google.gson.Gson
 import com.kuaigeglobal.epnova.App
 import com.kuaigeglobal.epnova.common.utils.MmkvDelegate
+import com.kuaigeglobal.epnova.core.network.apis.entity.CoinsAndWalletInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.CookieUserInfo
-import com.kuaigeglobal.epnova.core.network.apis.entity.WalletInfo
 import com.kuaigeglobal.epnova.core.network.apis.request.CompleteUserDataInfoBody
 import com.kuaigeglobal.epnova.core.network.apis.response.UserHomeData
 import com.nhsd.basic.Session
@@ -52,6 +52,10 @@ class User : IUser {
     var coins: Long by MmkvDelegate(COINS, 0) { mmkv }
         private set
     var giveCoins: Long by MmkvDelegate(GIVE_COINS, 0) { mmkv }
+        private set
+    var points: Long by MmkvDelegate(POINTS, 0) { mmkv }
+        private set
+    var givePoints: Long by MmkvDelegate(GIVE_POINTS, 0) { mmkv }
         private set
     var purchaseCourseStatus: Int? by MmkvDelegate(PURCHASE_COURSE_STATUS, 0) { mmkv }
         private set
@@ -192,9 +196,15 @@ class User : IUser {
         notifyChange(COINS)
     }
 
-    fun storeWallet(info: WalletInfo?) {
+    fun storeCoinsAndPointsWallet(info: CoinsAndWalletInfo?) {
+        //金币总数量
         this.coins = info?.coinsTotalNum ?: 0
-        this.giveCoins = info?.giveCoionsNum ?: 0
+        //赠送金币数量
+        this.giveCoins = info?.giveCoinsNum ?: 0
+        //算力总数量
+        this.points = info?.pointsTotalNum ?: 0
+        //赠送算力数量
+        this.givePoints = info?.givePointsNum ?: 0
     }
 
     fun storePurchaseCourseStatus(purchaseCourseStatus: Int?) {
@@ -232,7 +242,7 @@ class User : IUser {
         val keysToRemove = arrayOf(
             ID, LOGIN_REWARDS_VALID, USER_ID, PHONE_NUM, U_ID, NICK_NAME, GENDER, AVATAR_URL,
             USER_SOURCE, REGISTER_WAY, LAST_LOGIN_TIME, REGISTER_STATUS,
-            PURCHASE_COURSE_STATUS, IS_PAID, COINS, GIVE_COINS, FIRST_RECHARGE_DIALOG
+            PURCHASE_COURSE_STATUS, IS_PAID, COINS, GIVE_COINS, POINTS, GIVE_POINTS, FIRST_RECHARGE_DIALOG
         )
         mmkv.removeValuesForKeys(keysToRemove)
     }
@@ -255,6 +265,8 @@ class User : IUser {
         const val REGISTER_STATUS = "registerStatus"
         const val COINS = "computingPower"
         const val GIVE_COINS = "giveCoins"
+        const val POINTS = "points"
+        const val GIVE_POINTS = "givePoints"
         const val PURCHASE_COURSE_STATUS = "purchaseCourseStatus"
         const val FIRST_RECHARGE_DIALOG = "firstRechargeDialog"
         const val IS_PAID = "IS_PAID"

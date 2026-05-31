@@ -47,7 +47,7 @@ class MainViewModel : ShareShortDramaViewModel<AppRepository>() {
         super.onResume()
         isLogin.set(User.get().isLogged)
         if (isLogin.get()) {
-            Global.refreshBalance()
+            Global.refreshCoinsAndPoints()
         }
     }
 

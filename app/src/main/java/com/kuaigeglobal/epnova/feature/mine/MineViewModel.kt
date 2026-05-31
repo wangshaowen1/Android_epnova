@@ -26,10 +26,10 @@ class MineViewModel : AppRepositoryViewModel<AppRepository>() {
     //用户资料Map
     val userInfo by lazy { ObservableField<Map<String, String?>>() }
 
-    /**
-     * 账户余额
-     */
-    val balance by lazy { ObservableField<String>() }
+    //金币-Coins
+    val coins = ObservableField("0")
+    //积分/点数-Credits
+    val credits by lazy { ObservableField("0") }
 
     //福利中心-未领取奖励总额
     val unCheckNum by lazy { ObservableField("+0") }
@@ -83,7 +83,7 @@ class MineViewModel : AppRepositoryViewModel<AppRepository>() {
             refreshUserInfo()
             //获取用户福利未领取奖励总额
             getRewardUserUncheck()
-            Global.refreshBalance()
+            Global.refreshCoinsAndPoints()
             launch {
                 response(
                     bean = mRepo.api.getUserHomeInfo(UserTokenBody()),
@@ -128,7 +128,10 @@ class MineViewModel : AppRepositoryViewModel<AppRepository>() {
                 "avatar" to (user.avatarUrl ?: ""),
             )
         )
-        balance.set(user.coins.toString())
+        //金币-Coins
+        coins.set(user.coins.toString())
+        //积分/点数-Credits
+        credits.set(user.points.toString())
         workCourseBanner.set(if (user.isPurchasedCourse()) null else Config.get().appConfig.workCourseBanner)
     }
 
@@ -141,7 +144,10 @@ class MineViewModel : AppRepositoryViewModel<AppRepository>() {
                 "avatar" to user.avatarUrl,
             )
         )
-        balance.set(user.coins.toString())
+        //金币-Coins
+        coins.set(user.coins.toString())
+        //积分/点数-Credits
+        credits.set(user.points.toString())
         workCourseBanner.set(if (user.isPurchasedCourse()) null else Config.get().appConfig.workCourseBanner)
     }
 }
