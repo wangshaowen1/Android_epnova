@@ -30,6 +30,10 @@ class MineViewModel : AppRepositoryViewModel<AppRepository>() {
      * 账户余额
      */
     val balance by lazy { ObservableField<String>() }
+
+    //福利中心-未领取奖励总额
+    val unCheckNum by lazy { ObservableField("+0") }
+
     val workCourseBanner by lazy { ObservableField<SimpleBannerInfo>() }
 
     val language by lazy { languagesConfigs.find { it.code == Config.get().getSavedLanguage() } }
@@ -77,6 +81,8 @@ class MineViewModel : AppRepositoryViewModel<AppRepository>() {
         }
         User.get().let { user ->
             refreshUserInfo()
+            //获取用户福利未领取奖励总额
+            getRewardUserUncheck()
             Global.refreshBalance()
             launch {
                 response(
@@ -90,6 +96,28 @@ class MineViewModel : AppRepositoryViewModel<AppRepository>() {
         }
     }
 
+    /**
+     * 获取用户福利未领取奖励总额
+     */
+    private fun getRewardUserUncheck() {
+        if (User.get().isVisitor) {
+            unCheckNum.set("+0")
+            return
+        }
+        launch(block = {
+            response(
+                bean = mRepo.api.rewardUserUncheck(UserTokenBody()),
+                result = {
+                    unCheckNum.set("+${data?.unCheckNum ?: 0}")
+                },
+                error = {
+                    unCheckNum.set("+0")
+                }
+            )
+        }, onError = {
+            unCheckNum.set("+0")
+        })
+    }
 
     private fun notLoggedIn() {
         val user = User.get()

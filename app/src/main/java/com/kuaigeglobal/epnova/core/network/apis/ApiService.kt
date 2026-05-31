@@ -23,6 +23,7 @@ import com.kuaigeglobal.epnova.core.network.apis.entity.RewardAdPrepareData
 import com.kuaigeglobal.epnova.core.network.apis.entity.RewardAdTaskListData
 import com.kuaigeglobal.epnova.core.network.apis.entity.RewardCheckInListData
 import com.kuaigeglobal.epnova.core.network.apis.entity.RewardCheckInReportData
+import com.kuaigeglobal.epnova.core.network.apis.entity.RewardUserUncheckData
 import com.kuaigeglobal.epnova.core.network.apis.entity.CreationModelInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.RoleImageInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.StoryUnlockInfoData
@@ -1303,6 +1304,12 @@ interface ApiService {
      */
     @POST(ApiConstants.REWARD_AD_TASK_LIST)
     suspend fun rewardAdTaskList(@Body body: UserTokenBody): ApiResponse<RewardAdTaskListData>
+
+    /**
+     * 获取用户福利未领取奖励总额
+     */
+    @POST(ApiConstants.REWARD_USER_UNCHECK)
+    suspend fun rewardUserUncheck(@Body body: UserTokenBody): ApiResponse<RewardUserUncheckData?>
 
     /**
      * 播放器-剧集自动解锁（每集预加载时调用，余额充足则静默扣费解锁）

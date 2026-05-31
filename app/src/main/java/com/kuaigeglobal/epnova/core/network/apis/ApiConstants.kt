@@ -962,6 +962,11 @@ object ApiConstants {
     const val AD_REWARD_TASK_COMPLETE = "ad/reward/task/complete"
 
     /**
+     * 获取用户福利未领取奖励总额
+     */
+    const val REWARD_USER_UNCHECK = "reward/user/uncheck"
+
+    /**
      * 查询剧集锁定状态
      */
     const val EPISODE_UNLOCK_LOCK_STATUS = "app/story/unlock/lock-status"

@@ -374,7 +374,7 @@
                         android:gravity="center"
                         android:minHeight="22dp"
                         android:paddingHorizontal="6dp"
-                        android:text="+1000"
+                        android:text="@{layout.unCheckNum}"
                         android:textColor="?attr/textColor1"
                         tools:text="+1000" />
 
