@@ -290,6 +290,7 @@
                     singleClick="@{layout.clickHandler::onClick}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginEnd="15dp"
                     android:background="@drawable/bg_theme_color1_r50"
                     android:gravity="center"
                     android:paddingHorizontal="14dp"
