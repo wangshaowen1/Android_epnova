@@ -40,6 +40,15 @@ class FeedListController(
     // [关键修复] 记录最后一次播放的位置，防止 IDLE 状态重复触发
     private var lastPlayedPosition = -1
 
+    /**
+     * 初始化续播位置，只对下一次真正开始播放的目标 position 生效。
+     *
+     * RecyclerView 先滚动到目标 item，再异步触发 checkAndPlay；这里暂存秒级续播位置，
+     * 避免把 resumeSecond 泄漏到用户后续手动切集或自动下一集。
+     */
+    private var pendingStartPosition = RecyclerView.NO_POSITION
+    private var pendingStartPositionMs = 0L
+
     // 页面切换回调
     var onPageChanged: ((EpisodeInfo, Int) -> Unit)? = null
     /**
@@ -83,12 +92,14 @@ class FeedListController(
     /**
      * 由 Activity 在初始化数据完成后主动调用
      */
-    fun startInitialPlay(targetPosition: Int = 0) {
+    fun startInitialPlay(targetPosition: Int = 0, startPositionMs: Long = 0L) {
         if (adapter.itemCount == 0) return
         val safePosition = targetPosition.coerceIn(0, adapter.itemCount - 1)
 
         // 始终重置，确保跳集/解锁/选集后重新进入同一位置时能正常触发播放
         lastPlayedPosition = -1
+        pendingStartPosition = safePosition
+        pendingStartPositionMs = startPositionMs.coerceAtLeast(0L)
 
         if (getCurrentPosition() != safePosition) {
             layoutManager.scrollToPositionWithOffset(safePosition, 0)
@@ -103,6 +114,11 @@ class FeedListController(
         if (position < 0 || position >= adapter.itemCount) return
         lastPlayedPosition = position
         val item = adapter.currentList[position] ?: return
+
+        // 只有初始化目标集使用服务端续播秒数，其他播放路径默认从剧集自身起点开始。
+        val startPositionMs = if (position == pendingStartPosition) pendingStartPositionMs else 0L
+        pendingStartPosition = RecyclerView.NO_POSITION
+        pendingStartPositionMs = 0L
 
         // 发送 UI 状态等可以继续用当前的 holder
         val initialHolder = recyclerView.findViewHolderForAdapterPosition(position) as? VideoFeedAdapter.VideoViewHolder ?: return
@@ -127,7 +143,7 @@ class FeedListController(
                     if (getCurrentPosition() == position) {
                         val currentHolder = recyclerView.findViewHolderForAdapterPosition(position) as? VideoFeedAdapter.VideoViewHolder
                         if (currentHolder != null) {
-                            playerManager.attachAndPlay(readyItem, currentHolder.binding.playerView)
+                            playerManager.attachAndPlay(readyItem, currentHolder.binding.playerView, startPositionMs)
                         }
                     }
                 } catch (e: EpisodeLockedEx) {
@@ -143,7 +159,7 @@ class FeedListController(
             }
         } else {
             fetchUrlJob?.cancel()
-            playerManager.attachAndPlay(item, initialHolder.binding.playerView)
+            playerManager.attachAndPlay(item, initialHolder.binding.playerView, startPositionMs)
         }
         preloadNextItem(position)
     }

@@ -139,12 +139,18 @@ class FeedPlayerManager(
         })
     }
 
-    fun attachAndPlay(track: EpisodeInfo, coverPlayerView: CoverPlayerView) {
+    fun attachAndPlay(track: EpisodeInfo, coverPlayerView: CoverPlayerView, startPositionMs: Long = 0L) {
         currentPlayingId = track.storyId
         // 乐观更新状态，防止切视频闪烁
         _playerState.value = FeedPlayerState.Idle
+
+        // startPositionMs 只用于用户续播。必须在 mediaItem prepare 后 seek，确保 ExoPlayer 已持有正确媒体源；
+        // 同一个视频重复 attach 时也要支持 seek，覆盖“页面恢复但播放器已绑定”的场景。
         // 防止重复 attach 同一个视频导致画面闪烁
         if (exoPlayer.currentMediaItem?.mediaId == track.storyId && currentCoverPlayerView == coverPlayerView) {
+            if (startPositionMs > 0) {
+                exoPlayer.seekTo(startPositionMs)
+            }
             if (!exoPlayer.isPlaying && !isUserPaused) {
                 exoPlayer.play()
             }
@@ -175,12 +181,20 @@ class FeedPlayerManager(
             // 1. 如果是不同的视频，正常加载
             exoPlayer.setMediaItem(mediaItem)
             exoPlayer.prepare()
+            if (startPositionMs > 0) {
+                exoPlayer.seekTo(startPositionMs)
+            }
         } else {
             // 2. [关键修复] 如果是同一个视频（URL相同），检查是否处于播放结束状态
             // 如果上次播完了停在 ENDED，直接 play() 可能无法从头播，或者会瞬间触发 ENDED 事件
             if (exoPlayer.playbackState == Player.STATE_ENDED) {
                 exoPlayer.seekTo(0)
                 exoPlayer.prepare()
+                if (startPositionMs > 0) {
+                    exoPlayer.seekTo(startPositionMs)
+                }
+            } else if (startPositionMs > 0) {
+                exoPlayer.seekTo(startPositionMs)
             }
             // 3. 如果是从错误状态恢复，也建议重置一下
             if (exoPlayer.playerError != null) {

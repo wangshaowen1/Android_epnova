@@ -11,6 +11,7 @@ import com.kuaigeglobal.epnova.base.viewmodel.AppRepositoryViewModel
 import com.kuaigeglobal.epnova.core.Config
 import com.kuaigeglobal.epnova.core.ext.launch
 import com.kuaigeglobal.epnova.core.ext.launchWithLoading
+import com.kuaigeglobal.epnova.core.manager.EventManager
 import com.kuaigeglobal.epnova.core.network.RetrofitClient
 import com.kuaigeglobal.epnova.core.network.apis.entity.EpisodeInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.StoryUnlockInfoData
@@ -20,6 +21,7 @@ import com.kuaigeglobal.epnova.core.network.apis.request.CurrentWorkIdBody
 import com.kuaigeglobal.epnova.core.network.apis.request.WorkBody
 import com.kuaigeglobal.epnova.core.network.apis.request.WorkIdBody
 import com.kuaigeglobal.epnova.core.network.apis.request.WorkIdPagedBody
+import com.kuaigeglobal.epnova.core.network.apis.response.UserPlayData
 import com.kuaigeglobal.epnova.core.response
 import com.kuaigeglobal.epnova.feature.creator.data.CreationRepository
 import com.kuaigeglobal.epnova.feature.download.DownloadingViewModel
@@ -50,6 +52,15 @@ class DramasPlayPagerViewModel : AppRepositoryViewModel<CreationRepository>(), D
     private val _episodeList = MutableStateFlow<List<EpisodeInfo>>(emptyList())
     val episodeList = _episodeList.asStateFlow()
 
+    /**
+     * 播放器初始化状态。
+     *
+     * /user/work/player/state 同时承载收藏、点赞和续播信息；Activity 只读取这里的续播字段决定起播位置，
+     * 点赞/收藏仍在 ViewModel 内合并到现有页面状态，避免页面层直接拆接口响应。
+     */
+    private val _userPlayState = MutableStateFlow<UserPlayData?>(null)
+    val userPlayState = _userPlayState.asStateFlow()
+
 
     fun loadDrama(targetWorkId: String?, mode: PlayMode) {
         if (targetWorkId.isNullOrEmpty()) return
@@ -68,6 +79,13 @@ class DramasPlayPagerViewModel : AppRepositoryViewModel<CreationRepository>(), D
                 _currentWorkContext.value = detailRes.data
             }
 
+            // 进入播放器前先按作品维度查询一次状态，用于决定本次应该跳到哪一集、哪一秒续播。
+            // storyId 传 null 时接口不查单集点赞态，只返回作品维度的初始化状态。
+            val playerStateRes = withContext(Dispatchers.IO) { mRepo.api.userPlayerState(WorkBody(workId, null)) }
+            if (playerStateRes.isSuccess) {
+                applyUserPlayState(playerStateRes.data, null)
+            }
+
             // B. 获取剧集目录数据
             if (mode == PlayMode.SERIES) {
                 // 剧集模式：优先尝试吞掉“作品详情”传过来的内存数据
@@ -82,6 +100,26 @@ class DramasPlayPagerViewModel : AppRepositoryViewModel<CreationRepository>(), D
             val listRes = withContext(Dispatchers.IO) { mRepo.api.episodeDirectoryPage(WorkIdPagedBody(workId, 1, 200)) }
             if (listRes.isSuccess) {
                 _episodeList.value = listRes.data?.items ?: emptyList()
+            }
+        }
+    }
+
+    private fun applyUserPlayState(data: UserPlayData?, likedStoryId: String?) {
+        _userPlayState.value = data
+        if (data == null) return
+
+        val workContext = _currentWorkContext.value
+        if (workContext != null && data.collected != null) {
+            _currentWorkContext.value = workContext.copy(collected = data.collected)
+        }
+
+        val isLikedNow = data.liked
+        // 接口文档说明播放器入参不带 storyId 时一般不返回点赞态；只有切到具体剧集后才回填对应集的 liked。
+        if (likedStoryId != null && isLikedNow != null) {
+            _episodeList.update { currentList ->
+                currentList.map {
+                    if (it.storyId == likedStoryId) it.copy(liked = isLikedNow) else it
+                }
             }
         }
     }
@@ -192,24 +230,20 @@ class DramasPlayPagerViewModel : AppRepositoryViewModel<CreationRepository>(), D
         val targetStoryId = episode.storyId
         launch {
             response(mRepo.api.userPlayerState(WorkBody(workId, targetStoryId))) {
-                // 假设 data 里包含最新的点赞状态和数量，或者前端自己取反
-                val isLikedNow = data?.liked
-                val isCollectedNow = data?.collected
-
-                val workContext = _currentWorkContext.value
-                if (workContext != null && isCollectedNow != null) {
-                    _currentWorkContext.value = workContext.copy(collected = isCollectedNow)
-                }
-
-                isLikedNow?.let {
-                    _episodeList.update { currentList ->
-                        currentList.map {
-                            if (it.storyId == episode.storyId) it.copy(liked = isLikedNow) else it
-                        }
-                    }
-                }
+                applyUserPlayState(data, targetStoryId)
             }
         }
+    }
+
+    fun reportPlaybackProgress(
+        episode: EpisodeInfo?,
+        progressMs: Long,
+        durationMs: Long,
+        completed: Boolean = false,
+        progressPercent: Int? = null,
+    ) {
+        // 播放进度上报统一收口到 EventManager，避免页面/ViewModel 分散直调接口。
+        EventManager.reportPlaybackProgress(workId, episode, progressMs, durationMs, completed, progressPercent)
     }
 
     fun likeToggle(episode: EpisodeInfo?) {

@@ -29,11 +29,10 @@ class VideoFeedAdapter(private val interactionListener: InteractionListener) :
         fun onSeek(position: Int, progress: Long)
         fun onToggleCollect(position: Int)
         fun onToggleLike(position: Int)
-        fun onReportPlayback(position: Int, episodeInfo: EpisodeInfo?, progress: Long)
+        fun onReportPlayback(position: Int, episodeInfo: EpisodeInfo?, progress: Long, duration: Long)
         fun showEpisodeSelectDialog(position: Int)
     }
 
-    private val reportedStoryIds = mutableSetOf<String>()
     private var globalWorkInfo: WorkVOInfo? = null
 
     fun updateWorkInfo(workInfo: WorkVOInfo?) {
@@ -94,11 +93,6 @@ class VideoFeedAdapter(private val interactionListener: InteractionListener) :
         private val autoHideControlsTask = Runnable {
             binding.item?.isHideViews?.set(true)
             binding.item?.showCenterPlayBtn?.set(false)
-        }
-
-        // 3秒播放上报任务 (新需求)
-        private val reportPlaybackTask = Runnable {
-            performProgressReport(isThreshold = true)
         }
 
         init {
@@ -204,12 +198,6 @@ class VideoFeedAdapter(private val interactionListener: InteractionListener) :
                     // 播放时隐藏中心播放按钮（根据 PRD，只有暂停才显现按钮）
                     vm.showCenterPlayBtn.set(false)
 
-                    // --- 3秒上报逻辑 ---
-                    val storyId = getItem(bindingAdapterPosition)?.storyId
-                    if (storyId != null && !reportedStoryIds.contains(storyId)) {
-                        handler.removeCallbacks(reportPlaybackTask)
-                        handler.postDelayed(reportPlaybackTask, 3000L)
-                    }
                 }
 
                 is FeedPlayerManager.FeedPlayerState.Pause -> {
@@ -220,8 +208,6 @@ class VideoFeedAdapter(private val interactionListener: InteractionListener) :
                     vm.isHideViews.set(false) // 显示进度条、标题等
                     vm.showCenterPlayBtn.set(true) // 显示中间的播放按钮
 
-                    // 暂停期间取消上报任务
-                    handler.removeCallbacks(reportPlaybackTask)
                 }
 
                 is FeedPlayerManager.FeedPlayerState.Error -> {
@@ -259,27 +245,18 @@ class VideoFeedAdapter(private val interactionListener: InteractionListener) :
             handler.removeCallbacksAndMessages(null)
         }
 
-        fun performProgressReport(isThreshold: Boolean) {
+        fun performProgressReport() {
             val currentPos = bindingAdapterPosition
             if (currentPos == androidx.recyclerview.widget.RecyclerView.NO_POSITION) return
 
             val episode = getItem(currentPos) ?: return
-            val storyId = episode.storyId ?: return
+            val progress = binding.seekbar.currentPosition
+            val duration = binding.seekbar.duration
 
-            // 逻辑判断：
-            // 1. 如果是3秒定时任务触发：直接上报并记录 ID
-            // 2. 如果是滑走/退出触发：必须检查 reportedStoryIds 是否已包含该 ID（即是否待够了3秒）
-            if (isThreshold) {
-                if (!reportedStoryIds.contains(storyId)) {
-                    reportedStoryIds.add(storyId)
-                    interactionListener.onReportPlayback(currentPos, episode, binding.seekbar.currentPosition)
-                }
-            } else {
-                // 滑走或退出时，只有在“已满3秒”的情况下才上报最新进度
-                if (reportedStoryIds.contains(storyId)) {
-                    interactionListener.onReportPlayback(currentPos, episode, binding.seekbar.currentPosition)
-                }
-            }
+            // Adapter 只做切走/退出时的兜底，不再承担 10% 节点判断。
+            // 过滤 0 进度，避免 ViewHolder 复用或未开始播放时把服务端续播点覆盖为开头。
+            if (progress <= 0L || duration <= 0L) return
+            interactionListener.onReportPlayback(currentPos, episode, progress, duration)
         }
 
         fun onViewRecycled() {
@@ -329,8 +306,8 @@ class VideoFeedAdapter(private val interactionListener: InteractionListener) :
         }
 
         fun onDetached() {
-            // 尝试上报最终进度（内部会判断是否满3秒）
-            performProgressReport(isThreshold = false)
+            // 切走/退出时兜底上报当前进度，节点上报由播放页 progressFlow 统一处理。
+            performProgressReport()
             resetTimers() // 清理掉现有的 Handler 任务
         }
     }

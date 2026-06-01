@@ -25,8 +25,51 @@ object EventManager {
     }
 
     fun onPlayEvent(workId: String?, episode: EpisodeInfo?, progress: Long) {
+        reportPlaybackProgress(workId, episode, progress, (episode?.duration ?: 0L) * 1000L)
+    }
+
+    fun reportPlaybackProgress(
+        workId: String?,
+        episode: EpisodeInfo?,
+        progressMs: Long,
+        durationMs: Long,
+        completed: Boolean = false,
+        progressPercent: Int? = null,
+    ) {
+        val targetEpisode = episode ?: return
+        val storyId = targetEpisode.storyId ?: return
+        val safeDurationMs = durationMs.takeIf { it > 0 } ?: ((targetEpisode.duration ?: 0L) * 1000L)
+
+        // 非完播上报必须带有效播放位置，避免 ViewHolder 复用、首帧未回调或退出时把服务端进度覆盖成 0。
+        // 完播上报允许没有最新 current 回调，下面会用总时长作为 playSecond。
+        if (!completed && (progressMs <= 0L || safeDurationMs <= 0L)) return
+        val durationSeconds = (safeDurationMs / 1000L).toInt().takeIf { it > 0 }
+
+        // completed=true 时代表“已到片尾”，服务端下次会从 00:00 起播；
+        // 普通节点/暂停/切集上报只记录当前位置，不改变片尾语义。
+        val playSecond = if (completed && durationSeconds != null) {
+            durationSeconds
+        } else {
+            (progressMs.coerceAtLeast(0L) / 1000L).toInt()
+        }
+        val safeProgress = progressPercent ?: if (safeDurationMs > 0) {
+            ((progressMs.coerceAtLeast(0L) * 100L) / safeDurationMs).toInt().coerceIn(0, 100)
+        } else {
+            null
+        }
+
         ioScope.launchNoCrash {
-            ApiFactory.apiService.userPlayReport(UserPlayBody((progress / 1000).toInt(), episode?.sortNo, 3, episode?.storyId, workId))
+            ApiFactory.apiService.userPlayReport(
+                UserPlayBody(
+                    playProgress = if (completed) 100 else safeProgress,
+                    sortNo = targetEpisode.sortNo,
+                    storyId = storyId,
+                    workId = workId,
+                    playSecond = playSecond,
+                    durationSeconds = durationSeconds,
+                    completed = completed,
+                )
+            )
         }
     }
 

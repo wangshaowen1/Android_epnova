@@ -67,6 +67,25 @@ class DramasPlayPagerActivity :
     /** 当前集处于解锁流程中，阻止自动切集 */
     private var isEpisodeLocked = false
 
+    /**
+     * 当前播放集的最近上报节点。
+     *
+     * 产品口径是进度到 10%、20%... 时上报一次，不要求补发历史节点；这里不保存“本集所有已上报节点集合”，
+     * 只记录最近一次节点，避免 progressFlow 每 200ms 停留在同一个 10% 档位时连续刷请求。
+     * 如果用户拖回前面再重新播放到某节点，允许重复上报，服务端以最新进度覆盖即可。
+     */
+    private var lastProgressReportStoryId: String? = null
+    private var lastProgressReportNode = 0
+
+    /**
+     * 播放器最近一次回调的位置。
+     *
+     * 暂停、退出、切集时可能拿不到新的 ExoPlayer 回调，只能用这里缓存的最后位置做兜底上报；
+     * 不在这里主动读播放器，避免 Activity 直接依赖 ExoPlayer 实例。
+     */
+    private var lastPlaybackProgressMs = 0L
+    private var lastPlaybackDurationMs = 0L
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mRealVM.workId = intent.getStringExtra(Constants.Extra.WORK_ID)
@@ -90,7 +109,8 @@ class DramasPlayPagerActivity :
                     listController.updateScrollLimit(list)
                     // 如果是从选集弹窗过来的，或者初始化指定了位置，可以在这里直接跳集！
                     if (pendingJumpPosition >= 0 && list.isNotEmpty()) {
-                        listController.startInitialPlay(pendingJumpPosition)
+                        val (targetPosition, resumePositionMs) = resolveInitialPlayTarget(list)
+                        listController.startInitialPlay(targetPosition, resumePositionMs)
                         pendingJumpPosition = -1 // [关键] 用完立刻失效，防止列表刷新时乱跳
                     }
                 }
@@ -115,6 +135,7 @@ class DramasPlayPagerActivity :
         listController.onPageChanged = { episodeInfo, _ ->
             isEpisodeLocked = false  // 切集时解除拦截
             mRealVM.currentEpisode.set(episodeInfo)
+            resetProgressReportStateIfNeeded(episodeInfo.storyId)
             mRealVM.getUserPlayStatus(episodeInfo)
             val realWorkId = mRealVM.workId
             EventManager.onPlayEvent(realWorkId, episodeInfo.storyId)
@@ -340,6 +361,7 @@ class DramasPlayPagerActivity :
                 updateViewHolderSafely { holder ->
                     holder?.updateProgress(current, total)
                 }
+                reportProgressNodeIfNeeded(current, total)
             }
         }
 
@@ -383,7 +405,89 @@ class DramasPlayPagerActivity :
         }
     }
 
+    private fun resolveInitialPlayTarget(list: List<EpisodeInfo>): Pair<Int, Long> {
+        val userPlayState = mRealVM.userPlayState.value
+        val resumeStoryId = userPlayState?.resumeStoryId ?: userPlayState?.lastStoryId
+        val resumeSortNo = userPlayState?.resumeSortNo ?: userPlayState?.lastSortNo
+        val resumePosition = when {
+            !resumeStoryId.isNullOrEmpty() -> list.indexOfFirst { it.storyId == resumeStoryId }
+            resumeSortNo != null -> list.indexOfFirst { it.sortNo == resumeSortNo }
+            else -> -1
+        }
+
+        val fallbackPosition = pendingJumpPosition.coerceIn(0, list.lastIndex)
+        val targetPosition = if (resumePosition >= 0) resumePosition else fallbackPosition
+
+        // finished=true 表示服务端已判定播到片尾，即使返回了最近集信息，也必须从 00:00 起播。
+        // 没有续播记录或续播集不在当前列表里时，继续沿用入口传入的 position，避免影响选集/推荐入口。
+        val resumeSecond = if (resumePosition >= 0 && userPlayState?.finished != true) {
+            userPlayState?.resumeSecond ?: 0
+        } else {
+            0
+        }
+        val resumePositionMs = resumeSecond.coerceAtLeast(0).toLong() * 1000L
+        return targetPosition to resumePositionMs
+    }
+
+    private fun resetProgressReportStateIfNeeded(storyId: String?) {
+        if (lastProgressReportStoryId == storyId) return
+        lastProgressReportStoryId = storyId
+        lastProgressReportNode = 0
+        lastPlaybackProgressMs = 0L
+        lastPlaybackDurationMs = 0L
+    }
+
+    private fun reportProgressNodeIfNeeded(current: Long, total: Long) {
+        val episode = mRealVM.currentEpisode.get() ?: return
+        if (episode.storyId != playerManager.currentPlayingId || total <= 0) return
+
+        lastPlaybackProgressMs = current
+        lastPlaybackDurationMs = total
+
+        val progressPercent = ((current.coerceAtLeast(0L) * 100L) / total).toInt().coerceIn(0, 100)
+        val currentNode = (progressPercent / 10) * 10
+
+        // 只处理 10%~90% 的过程节点：100% 由播放结束事件带 completed=true 上报。
+        // 不补发跳过的节点，例如从 5% 拖到 60% 只会上报当前所在档位，避免把 seek 当成真实观看。
+        if (currentNode !in 10..90 || currentNode == lastProgressReportNode) return
+
+        lastProgressReportStoryId = episode.storyId
+        lastProgressReportNode = currentNode
+        mRealVM.reportPlaybackProgress(
+            episode = episode,
+            progressMs = current,
+            durationMs = total,
+            completed = false,
+            progressPercent = progressPercent,
+        )
+    }
+
+    private fun reportCurrentPlayback(completed: Boolean) {
+        val episode = mRealVM.currentEpisode.get() ?: return
+        if (episode.storyId != playerManager.currentPlayingId) return
+        val durationMs = lastPlaybackDurationMs.takeIf { it > 0 } ?: ((episode.duration ?: 0L) * 1000L)
+
+        // completed=true 是片尾语义，不是普通进度点。
+        // 服务端会据此在下次查询时返回 finished=true/resumeSecond=0，所以完播时强制用总时长和 100% 上报。
+        val progressMs = if (completed && durationMs > 0) durationMs else lastPlaybackProgressMs
+        val progressPercent = if (completed) {
+            100
+        } else if (durationMs > 0) {
+            ((progressMs.coerceAtLeast(0L) * 100L) / durationMs).toInt().coerceIn(0, 100)
+        } else {
+            null
+        }
+        mRealVM.reportPlaybackProgress(
+            episode = episode,
+            progressMs = progressMs,
+            durationMs = durationMs,
+            completed = completed,
+            progressPercent = progressPercent,
+        )
+    }
+
     private fun handlePlayEnded() {
+        reportCurrentPlayback(completed = true)
         if (isEpisodeLocked) return  // 解锁流程中，不自动切集
         if (adapter.itemCount == 0) return
 
@@ -421,8 +525,8 @@ class DramasPlayPagerActivity :
         mRealVM.likeToggle(item)
     }
 
-    override fun onReportPlayback(position: Int, episodeInfo: EpisodeInfo?, progress: Long) {
-        EventManager.onPlayEvent(mRealVM.workId, episodeInfo, progress)
+    override fun onReportPlayback(position: Int, episodeInfo: EpisodeInfo?, progress: Long, duration: Long) {
+        mRealVM.reportPlaybackProgress(episodeInfo, progress, duration)
     }
 
     override fun showEpisodeSelectDialog(position: Int) {
@@ -437,6 +541,7 @@ class DramasPlayPagerActivity :
     // --- 生命周期 ---
     override fun onPause() {
         super.onPause();
+        reportCurrentPlayback(completed = false)
         // 强制当前正在显示的 ViewHolder 上报进度
         val layoutManager = binding.recyclerView.layoutManager as? LinearLayoutManager
         val firstPos = layoutManager?.findFirstVisibleItemPosition() ?: -1

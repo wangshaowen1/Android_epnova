@@ -28,7 +28,12 @@ data class LikeData(
  *         "liked": "当前用户是否已点赞（表结构为作品维度时即作品级点赞态）",
  *         "lastStoryId": "用户在该作品下最近播放的剧集 ID",
  *         "lastSortNo": "最近播放集在作品内的序号（sort_no）",
- *         "playProgress": "最近播放集的进度百分比，0～100"
+ *         "playProgress": "最近播放集的进度百分比，0～100",
+ *         "resumeStoryId": "本次进入播放器应该续播的剧集 ID",
+ *         "resumeSortNo": "本次进入播放器应该续播的剧集序号",
+ *         "resumeSecond": "本次进入播放器应该跳转到的秒数；已到片尾时返回 0",
+ *         "durationSeconds": "最近播放剧集总时长（秒）",
+ *         "finished": "最近进度是否已到片尾"
  *     }
  */
 data class UserPlayData(
@@ -36,5 +41,10 @@ data class UserPlayData(
     val collected: Boolean? = null,
     val lastSortNo: Int? = null,
     val liked: Boolean? = null,
-    val playProgress: Int? = null
+    val playProgress: Int? = null,
+    val resumeStoryId: String? = null,
+    val resumeSortNo: Int? = null,
+    val resumeSecond: Int? = null,
+    val durationSeconds: Int? = null,
+    val finished: Boolean? = null,
 )
