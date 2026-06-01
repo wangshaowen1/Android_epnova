@@ -46,9 +46,9 @@ data class WorkInfo(
     var workStoryItemList: List<EpisodeInfo>? = null,
     /**[枚举]签约状态(0-未申请 1-审核中 2-已通过 3-已驳回)*/
     val contractStatus: Int? = null,
-    /**20260520 发布状态（1=审核中 2=通过 3=审核失败）*/
+    /**20260520 Epnova更新注释[枚举]发布状态(1=审核中 2=通过 3=审核失败（驳回/不通过）和最新的审核批次的状态一致（前端可用于剧集驳回原因取值判断）*/
     val publishStatus: Int? = null,
-    /**20260520 驳回原因（审核失败）*/
+    /**20260520 Epnova驳回原因继续用这个（作品/剧集的角标查看驳回原因也是取这个字段，审核失败的统一展示一样的原因）驳回原因（审核失败）*/
     val rejectReason: String? = null,
     /**签约评级（S/A/B/C等）*/
     val contractLevel: String? = null,
@@ -60,13 +60,13 @@ data class WorkInfo(
     val workSelfPublishProcessUrl: String? = null,
     /**20260520 作品-发行页面完整 Url（用于跳转 H5）*/
     val workContractPublishPageUrl: String? = null,
-    /**20260520 是否展示「去发行」按钮（0=不展示 1=展示）*/
+    /**20260520新增用于全部发行成功后置灰是否展示「去发行」按钮（0-不展示 1-展示，全部剧集已完结且全部发行置灰）*/
     val showPublishButton: Int? = null,
-    /**20260520 全局发布状态：0=未发布，1=审核中，2=已发布，3=审核失败*/
+    /**20260520新增[枚举]全局发布状态：0=未发布, 1=审核中, 2=已发布（通过/已上架）, 3=审核失败（不通过）*/
     val globalPublishStatus: Int? = null,
-    /**20260520 已发布（审核通过）的剧集数量*/
+    /**20260520新增已发布（审核通过）的剧集数量*/
     val publishedEpisodeCnt: Int? = null,
-    /**20260520 My List-My Creations 封面角标：0=None,10=Draft,20=Unpublished,30=In Review,40=Review Failed,50=Published*/
+    /**20260520新增My List-My Creations 封面右上角角标类型：0=None,10=Draft,20=Unpublished,30=In Review,40=Review Failed,50=Published*/
     val coverBadgeType: Int? = null,
 ) : Parcelable {
 
@@ -351,7 +351,7 @@ data class EpisodeInfo(
     val taskGenResultStoryVO: TaskGenResultStoryVO? = null,
     /**是否首次创建（0=否删除过，1=是首次创建）*/
     val firstCreationFlag: Int? = null,
-    /**20260520 发布状态（1=审核中 2=通过 3=审核失败）*/
+    /**20260520新增[枚举]剧集发布状态：0=未发布, 1=审核中, 2=已发布（通过/已上架）*/
     val publishStatus: Int? = null,
     /**20260520 驳回原因（审核失败）*/
     val rejectReason: String? = null,

@@ -80,12 +80,12 @@ class MyListFragment : BaseViewModelFragment<FragmentMyListBinding, MyListModel>
         binding.viewPager2.setCurrentItem(0, false)
         binding.viewPager2.removeTheRipples()
 
-        binding.viewPager2.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-            override fun onPageSelected(position: Int) {
-                super.onPageSelected(position)
-                binding.btnEdit.isVisible = position == 0
-            }
-        })
+//        binding.viewPager2.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+//            override fun onPageSelected(position: Int) {
+//                super.onPageSelected(position)
+//                binding.btnEdit.isVisible = position == 0
+//            }
+//        })
     }
 
     private fun dataUpdate() {

@@ -71,6 +71,8 @@ class DramasPlayPagerViewModel : AppRepositoryViewModel<CreationRepository>(), D
 
         this.workId = targetWorkId
         this.currentPlayMode = mode
+        // 切换/重新加载作品时先清空旧续播状态，避免状态接口失败后误用上一部作品的 resumeStoryId/resumeSortNo。
+        _userPlayState.value = null
 
         launch {
             // A. 获取作品详情 (共用)
