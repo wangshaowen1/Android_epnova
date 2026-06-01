@@ -1,10 +1,11 @@
 # 作品发布功能逻辑说明
 
 整理时间：2026-05-21  
+确认补充：2026-06-01
 来源：发布功能逻辑截图与作品详情页状态截图  
 关联流程文档：[作品发布流程说明](work-publish-flow.md)
 
-本文用于补充作品发布流程中的状态体系、发布入口判断、可发布集数计算、边界条件和弹窗/toast 文案。发布 H5 页面本身不由 Android 实现；Android 负责判断是否首次发布、打开 H5 容器、接收 H5 结果并刷新状态，首次发布进入 H5 后的流程全部由 H5 完成。
+本文用于补充作品发布流程中的状态体系、发布入口判断、可发布集数计算、边界条件和弹窗/toast 文案。发布 H5 页面本身不由 Android 实现；Android 负责查询发布状态接口、按 `needLegalInfoFlag` 打开 H5 容器、接收 H5 结果并刷新状态，首次发布进入 H5 后的流程全部由 H5 完成。
 
 ## 1. 状态体系
 
@@ -18,6 +19,8 @@
 | `Live` | 已发布 | 审核通过，已上线 |
 
 注意：剧集层面不展示 `Review Failed` 角标。审核失败时，只在作品层面展示 `Review Failed`；对应失败剧集状态回退为 `Unpublished`，允许用户重新提交。
+
+2026-06-01 确认：剧集接口不应返回 `coverBadgeType=40 Review Failed`。如果接口仍返回，视为接口问题，需要接口侧修正；Android 不按剧集层展示 `Review Failed`。
 
 ### 1.2 作品状态定义
 
@@ -74,32 +77,45 @@ Unpublished > Draft > In Review > Live
 
 ## 2. 发布入口与路径
 
-点击作品详情页底部 `Publish` 后，先判断是否为该作品首次发布。
+点击作品详情页底部 `Publish` 后，先请求 `/h5/work/publish/status`，再根据接口结果决定打开 H5、原生提交或展示业务提示。
 
 ```mermaid
 flowchart TD
-    A[点击 Publish] --> B{是否首次发布}
-    B -- 是 --> C[跳转 H5 发布页]
-    C --> D[协议确认]
-    D --> E[资料填写]
-    E --> F[提交]
-    B -- 否 --> G{是否满足续集发布条件}
-    G -- 无可发布已合成集 --> H[Toast: No episodes available to publish!]
-    G -- 有已合成集但不连续 --> I[Toast: Episodes must be published in order.]
-    G -- 满足 --> J{本次提交是否包含曾被驳回的剧集}
-    J -- 否 --> K[正常发布二次确认弹窗]
-    J -- 是 --> L[含驳回提示的二次确认弹窗] 
-    K --> M[提交审核]
-    L --> M
+    A[点击 Publish] --> B[查询 /h5/work/publish/status]
+    B --> C{canApplyFlag == 1}
+    C -- 否 --> D[展示 reasonMsg]
+    C -- 是 --> E{needLegalInfoFlag == 1}
+    E -- 是 --> F[跳转 H5 发布页]
+    F --> G[协议确认/资料填写/提交]
+    E -- 否 --> H[正常发布二次确认弹窗]
+    H --> I[提交 /h5/work/publish/submit]
 ```
 
 路径规则：
 
-- 首次发布：Android 判断为首次发布后跳转 H5 发布页，后续协议确认、资料填写与提交全部由 H5 完成。
-- 续集发布：Android 原生侧判断是否满足续集发布条件。
-- 无可发布的已合成集：直接 toast。
-- 有已合成集但不满足连续发布条件：直接 toast。
-- 满足续集发布条件：继续判断本次提交范围内是否包含曾被驳回的剧集，决定展示普通二次确认还是驳回提醒二次确认。
+- Android 点击 `Publish` 后先查 `/h5/work/publish/status`，不依赖本地 Paging 已加载剧集自行计算完整可发布范围。
+- `canApplyFlag=0`：直接展示后端 `reasonMsg`，例如无可发布剧集、不可跳集发布等业务原因。
+- `canApplyFlag=1 && needLegalInfoFlag=1`：跳转 H5 发布页，后续协议确认、资料填写与提交全部由 H5 完成。首次发布失败回来也仍算首次，继续走 H5。
+- `canApplyFlag=1 && needLegalInfoFlag=0`：Android 原生展示后续发布二次确认弹窗，并提交 `/h5/work/publish/submit`。
+- 后端会拼好拒审原因，Android 作品/剧集角标查看拒审原因统一取 `rejectReason`。
+
+### 2.1 发布按钮展示规则
+
+作品详情页底部 `Publish` 按钮按以下规则处理：
+
+| 条件 | 前端表现 |
+| --- | --- |
+| `showPublishButton == 0` | 隐藏按钮 |
+| `showPublishButton == 1` 且未全部发行 | 展示并可点击 |
+| `showPublishButton == 1` 且全部剧集已完结并全部发行 | 展示但置灰，不再提交 |
+
+全部发行判断建议使用：
+
+```text
+totalEpisodeCnt > 0 && publishedEpisodeCnt >= totalEpisodeCnt
+```
+
+如果 `totalEpisodeCnt` 为空或小于等于 0，不应误判为全部发行。
 
 ## 3. 发布条件与集数计算
 
@@ -116,9 +132,11 @@ flowchart TD
 - 第 1-15 集已合成，第 16 集未合成：首次提交范围为 `1-15`。
 - 第 1-16 集已合成，第 17 集未合成：首次提交范围为 `1-16`，确认弹窗标题展示 `Publish Episodes 1-16?`。
 
+Android 不在原生侧实现首次发布内的前 15 集校验、协议、法定姓名、邮箱和首次提交。只要 `/h5/work/publish/status` 返回 `needLegalInfoFlag=1`，就打开 H5；首次发布失败后重新进入仍按首次处理，继续走 H5。
+
 ### 3.2 续集发布可发布集数规则
 
-续集发布时，从已发布/审核中剧集之后继续计算可提交的连续剧集范围。
+续集发布时，业务规则仍然是从已发布/审核中剧集之后继续计算可提交的连续剧集范围；实际 Android 实现以 `/h5/work/publish/status` 返回的 `startEpisode/endEpisode/canApplyFlag/reasonMsg` 为准。
 
 规则：
 
@@ -138,6 +156,8 @@ flowchart TD
 ```
 
 此时可提交第 17、18 集。若第 17 集曾经被驳回过，则触发含驳回提示的二次确认弹窗。
+
+2026-06-01 确认：后续发布提交接口提交连续剧集范围，不提交剧集 ID 列表。Android 提交 `workId/auditBatchId/startEpisode/endEpisode`。
 
 ## 4. 边界条件
 
@@ -179,7 +199,7 @@ Episode publication failed. Please verify your content and retry.
 当所有剧集均为 `Live`：
 
 1. 作品角标展示 `Published · All Eps`。
-2. 底部 `Publish` 按钮置灰，不允许再次提交。
+2. 若 `showPublishButton=1`，底部 `Publish` 按钮展示但置灰，不允许再次提交；若 `showPublishButton=0`，按钮隐藏。
 3. 若仍点击或触发发布入口，应按无可发布内容处理。
 
 ### 4.4 续集无可发布剧集
@@ -189,6 +209,8 @@ Episode publication failed. Please verify your content and retry.
 ```text
 No episodes available to publish!
 ```
+
+实际 Android 实现中，该提示优先使用 `/h5/work/publish/status` 返回的 `reasonMsg`，不要本地硬编码覆盖后端文案。
 
 ## 5. 弹窗与 Toast 文案
 
@@ -262,7 +284,7 @@ Cancel / Publish
 
 #### 5.2.1 无可发布集 Toast
 
-触发条件：续集发布，无未发布且已合成的剧集，点击 `Publish`。
+触发条件：续集发布，`/h5/work/publish/status` 返回 `canApplyFlag=0` 且 `reasonMsg` 为无可发布剧集提示。
 
 形式：toast。
 
@@ -274,7 +296,7 @@ No episodes available to publish!
 
 #### 5.2.2 不可跳集发布 Toast
 
-触发条件：续集发布，有已合成集但不满足连续发布条件，点击 `Publish`。
+触发条件：续集发布，`/h5/work/publish/status` 返回 `canApplyFlag=0` 且 `reasonMsg` 为不可跳集发布提示。
 
 形式：toast。
 
@@ -287,6 +309,8 @@ Episodes must be published in order. You cannot skip episodes.
 #### 5.2.3 含驳回剧集二次确认弹窗
 
 触发条件：续集发布，满足连续发布条件，但本次提交范围内包含曾被驳回的剧集。
+
+2026-06-01 确认：接口侧会把拒审原因拼好放在 `rejectReason`。后续发布确认是否单独展示驳回提醒，如果接口不再返回“本次范围内包含曾被驳回剧集”的专用字段，则 Android 先按普通二次确认处理；作品层 `Review Failed` 原因展示仍取 `rejectReason`。
 
 形式：弹窗。
 
@@ -354,15 +378,61 @@ Your application has been submitted.
 
 说明：所有弹窗标题中的集数范围均为动态填充，需要根据本次实际提交集数展示。
 
-## 6. 与发布流程文档的关系
+## 6. 已确认接口字段
+
+### 6.1 查询作品发行状态
+
+```text
+POST /h5/work/publish/status
+```
+
+请求体：
+
+| 字段 | 类型 | 必填 | 说明 |
+| --- | --- | --- | --- |
+| `workId` | long | 是 | 作品 ID |
+
+返回 `data`：
+
+| 字段 | 类型 | 说明 |
+| --- | --- | --- |
+| `workId` | long | 作品 ID |
+| `auditBatchId` | long | 正在审核中的批次号，若存在 |
+| `needLegalInfoFlag` | int | 是否需要提交法定姓名/邮箱，`0=否`，`1=是` |
+| `startEpisode` | int | 当前可提交剧集区间起始集数，包含 |
+| `endEpisode` | int | 当前可提交剧集区间结束集数，包含 |
+| `canApplyFlag` | int | 是否可以继续提交申请，`0=否`，`1=是` |
+| `reasonMsg` | string | 业务提示文案，`canApplyFlag=0` 时直接展示 |
+
+### 6.2 提交作品剧集集中审核
+
+```text
+POST /h5/work/publish/submit
+```
+
+请求体：
+
+| 字段 | 类型 | 必填 | Android 是否传 | 说明 |
+| --- | --- | --- | --- | --- |
+| `workId` | long | 是 | 是 | 作品 ID |
+| `auditBatchId` | long | 否 | 是，有值则传 | 为空表示新建批次，不为空表示提交到指定批次 |
+| `startEpisode` | int | 是 | 是 | 提交审核起始集数，包含 |
+| `endEpisode` | int | 是 | 是 | 提交审核结束集数，包含 |
+| `legalName` | string | 否 | 否 | 仅第一次提交时 H5 填写 |
+| `emailAddress` | string | 否 | 否 | 仅第一次提交时 H5 填写 |
+
+返回体沿用项目 `ApiResponse`：`code/msg/data`。
+
+## 7. 与发布流程文档的关系
 
 [作品发布流程说明](work-publish-flow.md) 描述完整业务路径和 Android/H5 职责边界；本文补充状态计算、可发布集数计算和文案细节。
 
 实现时建议先按本文计算出：
 
 1. 当前作品状态。
-2. 是否首次发布。
-3. 本次可提交剧集范围。
-4. 本次提交范围内是否包含曾被驳回剧集。
+2. `showPublishButton` 和是否全部发行置灰。
+3. `/h5/work/publish/status` 返回的是否可继续申请。
+4. 是否需要 H5 法定姓名/邮箱流程。
+5. 本次可提交剧集范围和审核批次。
 
 再按 [作品发布流程说明](work-publish-flow.md) 选择 H5 或原生发布路径。

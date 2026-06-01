@@ -1,6 +1,7 @@
 # 作品发布相关代码现状说明
 
 整理时间：2026-05-21  
+确认补充：2026-06-01
 关联流程文档：[作品发布流程说明](work-publish-flow.md)  
 关联逻辑文档：[作品发布功能逻辑说明](work-publish-logic.md)
 
@@ -434,12 +435,163 @@ Draft / Unpublished / In Review / Review Failed / Published
 7. 提交成功后通过事件或刷新机制同步 `SeriesActivity` 与 `MyCreationsFragment`。
 8. 最后清理旧“发行/签约”残留字段和文案，避免与新“发布”混用。
 
-## 9. 待后端确认
+## 9. 待确认项状态
 
-以下内容仍依赖后端最终接口：
+2026-06-01 已确认并收口到第 10 节的内容：
 
-- 后续发布接口是提交连续剧集范围，还是提交剧集 ID 列表。
-- `WorkInfo` / `EpisodeInfo` 中“完成、待发布、审核中、已发布、审核失败/拒审”的状态枚举。
+- 后续发布接口提交连续剧集范围：`startEpisode` 到 `endEpisode`，不是剧集 ID 列表。
+- `WorkInfo` / `EpisodeInfo` 的发布状态枚举已按本地字段注释确认。
+- 首次发布或首次失败后重新提交，通过 `needLegalInfoFlag=1` 判断并继续打开 H5。
+- `workContractPublishPageUrl` 继续作为需要 H5 法定姓名/邮箱流程时的跳转 URL。
+- 作品 `coverBadgeType` 用于作品角标；剧集接口不应返回 `Review Failed`，若返回由接口侧修正。
+
+仍需在联调时观察确认：
+
 - H5 首次发布提交成功后，是自动关闭页面，还是只通知 Android 并由用户手动返回。
-- 首次发布 H5 URL 是否继续复用 `workContractPublishPageUrl`，还是新增更准确字段。
-- `coverBadgeType` 是否由后端直接按新优先级算好；如果不是，Android 是否需要本地按剧集状态计算作品角标。
+- `canApplyFlag=0` 的 `reasonMsg` 是否存在长文案或多行内容；默认 Toast，必要时切换通用弹窗。
+
+## 10. 2026-06-01 已确认补充
+
+本节记录 2026-06-01 根据接口截图和本地字段注释确认后的最终实现口径，优先级高于本文前面“待确认”的旧描述。
+
+### 10.1 已确认接口
+
+#### 查询作品发行状态
+
+```text
+POST /h5/work/publish/status
+```
+
+请求体：
+
+| 字段 | 类型 | 必填 | 说明 |
+| --- | --- | --- | --- |
+| `workId` | long | 是 | 作品 ID |
+
+返回 `data`：
+
+| 字段 | 类型 | 说明 |
+| --- | --- | --- |
+| `workId` | long | 作品 ID |
+| `auditBatchId` | long | 正在审核中的批次号，若存在 |
+| `needLegalInfoFlag` | int | 是否需要提交法定姓名/邮箱，`0=否`，`1=是` |
+| `startEpisode` | int | 当前可提交剧集区间起始集数，包含 |
+| `endEpisode` | int | 当前可提交剧集区间结束集数，包含 |
+| `canApplyFlag` | int | 是否可以继续提交申请，`0=否`，`1=是` |
+| `reasonMsg` | string | 业务提示文案，`canApplyFlag=0` 时前端直接展示 |
+
+#### 提交作品剧集集中审核
+
+```text
+POST /h5/work/publish/submit
+```
+
+请求体：
+
+| 字段 | 类型 | 必填 | Android 是否传 | 说明 |
+| --- | --- | --- | --- | --- |
+| `workId` | long | 是 | 是 | 作品 ID |
+| `auditBatchId` | long | 否 | 是，有值则传 | 审核批次 ID；为空表示新建批次，不为空表示提交到指定批次 |
+| `startEpisode` | int | 是 | 是 | 提交审核起始集数，包含 |
+| `endEpisode` | int | 是 | 是 | 提交审核结束集数，包含 |
+| `legalName` | string | 否 | 否 | 法定姓名，仅第一次提交时 H5 填写 |
+| `emailAddress` | string | 否 | 否 | 邮箱，仅第一次提交时 H5 填写 |
+
+返回体沿用项目 `ApiResponse`：`code/msg/data`。Android 后续发布不传 `legalName/emailAddress`。
+
+### 10.2 已确认字段语义
+
+`WorkInfo.kt` 当前已手动补充发布相关字段注释，后续实现按这些口径收口 helper：
+
+| 字段 | 确认语义 | 实现用途 |
+| --- | --- | --- |
+| `publishStatus` | 发布状态：`1=审核中`、`2=通过`、`3=审核失败/驳回/不通过`；与最新审核批次状态一致 | 用于审核批次状态和拒审原因判断 |
+| `rejectReason` | 驳回原因，作品/剧集角标查看驳回原因统一取这个字段；后端会拼好展示内容 | 作品层 `Review Failed` 弹窗内容 |
+| `workContractPublishPageUrl` | 作品发行页面完整 URL | `needLegalInfoFlag=1` 时打开 H5 |
+| `showPublishButton` | `0=隐藏`，`1=展示` | 底部 `Publish` 按钮隐藏/展示 |
+| `globalPublishStatus` | 全局发布状态：`0=未发布`、`1=审核中`、`2=已发布/通过/已上架`、`3=审核失败/不通过` | 作品整体发布状态 |
+| `publishedEpisodeCnt` | 已发布/审核通过的剧集数量 | `Published · N Eps`、全部发行置灰判断 |
+| `coverBadgeType` | 作品封面右上角角标：`0=None`、`10=Draft`、`20=Unpublished`、`30=In Review`、`40=Review Failed`、`50=Published` | 我的创作列表和作品详情状态角标 |
+| `EpisodeInfo.publishStatus` | 剧集发布状态：`0=未发布`、`1=审核中`、`2=已发布/通过/已上架`、`3=审核失败/不通过` | 剧集角标和删除/编辑锁定 |
+| `EpisodeInfo.coverBadgeType` | 剧集封面角标 | 剧集 item 角标；后端不应返回 `40=Review Failed` |
+
+补充口径：
+
+- 剧集层面不展示 `Review Failed`。如果剧集接口返回 `coverBadgeType=40`，视为接口问题，接口侧需要修正。
+- 首次发布失败回来也仍算首次；只要 `needLegalInfoFlag=1`，Android 继续打开 H5，不走原生提交。
+- `canApplyFlag=0` 时，Android 默认 Toast 展示 `reasonMsg`；如果后续出现长文案或多行文案，再改用通用弹窗。
+- 后端会拼好 `rejectReason`，Android 不需要本地按剧集范围拼拒审原因。
+
+### 10.3 发布按钮最终规则
+
+`activity_series.xml` 当前仍用旧逻辑：
+
+```text
+showPublishButton == 1 && contractStatus != 2
+contractStatus != 1
+publishButtonText(contractStatus)
+```
+
+后续应替换为：
+
+```text
+showPublishButton == 1
+```
+
+按钮置灰规则：
+
+```text
+totalEpisodeCnt > 0 && publishedEpisodeCnt >= totalEpisodeCnt
+```
+
+前端表现：
+
+| 条件 | 表现 |
+| --- | --- |
+| `showPublishButton == 0` | 隐藏 |
+| `showPublishButton == 1` 且未全部发行 | 展示并可点击 |
+| `showPublishButton == 1` 且全部剧集已完结并全部发行 | 展示但置灰，不请求发布状态接口 |
+
+### 10.4 点击 Publish 最终流程
+
+```text
+点击 Publish
+-> 如果按钮置灰，直接 return
+-> 调用 /h5/work/publish/status(workId)
+-> canApplyFlag == 0：展示 reasonMsg
+-> canApplyFlag == 1 && needLegalInfoFlag == 1：打开 workContractPublishPageUrl
+-> canApplyFlag == 1 && needLegalInfoFlag == 0：展示 Publish Episodes startEpisode-endEpisode? 确认弹窗
+-> 用户确认后调用 /h5/work/publish/submit(workId, auditBatchId, startEpisode, endEpisode)
+-> 成功后展示 You're all set! / Your application has been submitted.
+-> 刷新作品详情、剧集分页和我的创作列表
+```
+
+后续发布提交接口提交连续剧集范围，不提交剧集 ID 列表。
+
+### 10.5 代码落点更新
+
+需要新增/修改的代码落点：
+
+| 文件 | 变更 |
+| --- | --- |
+| `core/network/apis/ApiConstants.kt` | 新增 `WORK_PUBLISH_STATUS = "h5/work/publish/status"`、`WORK_PUBLISH_SUBMIT = "h5/work/publish/submit"` |
+| `core/network/apis/ApiService.kt` | 新增查询发布状态和提交审核两个 Retrofit 方法 |
+| `core/network/apis/request/` | 新增 `WorkPublishStatusBody`、`WorkPublishSubmitBody`，继承 `UserTokenBody` |
+| `core/network/apis/response/` 或 `entity/` | 新增 `WorkPublishStatusData` |
+| `feature/series/SeriesRepository.kt` | 封装 `getWorkPublishStatus(workId)` 和 `submitWorkPublish(...)` |
+| `feature/series/SeriesViewModel.kt` | 收口按钮置灰、发布状态查询、提交发布、成功刷新事件 |
+| `feature/series/SeriesActivity.kt` | 替换旧 `btnPublish -> SimpleBrowserActivity.launch(workContractPublishPageUrl)` |
+| `app/src/main/res/layout/activity_series.xml` | 去除旧 `contractStatus` 对发布按钮展示/可点/文案的控制 |
+| `core/network/apis/entity/WorkInfo.kt` | 补充发布状态 helper，避免 UI 直接散落判断 int |
+| `ItemSeriesEpisodeVM.kt`、`item_my_episode_info.xml` | 补剧集发布角标，剧集不展示 `Review Failed` |
+| `ItemMyWorkVM.kt`、`item_my_work.xml` | 补作品发布角标和 `Published · N Eps / All Eps` |
+| `core/Events.java` 或现有事件机制 | 发布成功后通知我的创作列表刷新 |
+
+### 10.6 与当前代码冲突点
+
+- `SeriesViewModel.publishStatusText()`、`publishStatusColor()`、`publishFailed()` 仍基于旧 `contractStatus + publishStatus`，需要替换为新发布状态。
+- `SeriesViewModel.publishButtonText()` 仍返回 `去发行/签约审核中/申请签约`，不符合新 `Publish` 流程。
+- `activity_series.xml` 中 `btnPublish` 仍受 `contractStatus` 控制，需要移除旧签约条件。
+- 当前 `SeriesRepository.seriesPublish(SeriesSetPriceBody)` 和 `ApiConstants.SERIES_PUBLISH = "shortDramasSeries/shelf"` 是旧上架/价格接口，不用于本次发布审核。
+- 作品列表和剧集 item 目前主要展示创作状态，尚未展示新发布角标。
+- `MyListFragment.kt` 当前工作区有一处 ViewPager2 page callback 被注释，可能导致切到 History/Collection 时 `btnEdit` 不再自动隐藏；这不是发布需求本身，但实现发布列表刷新前需要注意不要把该非相关改动误当需求逻辑。
