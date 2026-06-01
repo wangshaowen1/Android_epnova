@@ -32,7 +32,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_marginBottom="@dimen/spacing_m"
-                android:background="@null"
+                app:inputBackground="@null"
                 android:focusable="true"
                 android:focusableInTouchMode="true"
                 android:gravity="top|start"

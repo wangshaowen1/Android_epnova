@@ -77,7 +77,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/spacing_l"
             android:layout_marginTop="@dimen/spacing_m"
-            android:background="@drawable/bg_fill_color_1_r8"
+            app:inputBackground="@drawable/bg_fill_color_1_r8"
             android:textCursorDrawable="@drawable/edittext_cursor"
             app:inputCounterGravity="right"
             app:inputCounterRightMargin="0dp"

@@ -76,7 +76,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
-                    android:background="@drawable/bg_white_rectangle_corner_r12"
+                    app:inputBackground="@drawable/bg_white_rectangle_corner_r12"
                     app:inputCounterGravity="right|bottom"
                     app:inputCounterTextColor="@color/color_50_121212"
                     app:inputCounterTextSize="13sp"
