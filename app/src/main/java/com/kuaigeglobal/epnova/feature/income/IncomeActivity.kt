@@ -7,6 +7,7 @@ import android.view.View
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.ext.showConfirmDialog
 import com.kuaigeglobal.epnova.databinding.ActivityIncomeBinding
+import com.kuaigeglobal.epnova.widget.BottomYearMonthPickerDialog
 import com.nhsd.basic.BaseViewModelActivity
 
 class IncomeActivity : BaseViewModelActivity<ActivityIncomeBinding, IncomeViewModel>() {
@@ -31,7 +32,21 @@ class IncomeActivity : BaseViewModelActivity<ActivityIncomeBinding, IncomeViewMo
     override fun <Data> onClick(view: View?, data: Data?) {
         super.onClick(view, data)
         when (view?.id) {
+            //返回
             R.id.ivBack -> finish()
+
+            //年月选择
+            R.id.tv_monthfilter -> {
+                BottomYearMonthPickerDialog.show(
+                    manager = supportFragmentManager,
+                    minYearMonth = mRealVM.getMinSelectableYearMonth(),
+                    maxYearMonth = mRealVM.getMaxSelectableYearMonth(),
+                    selectedYearMonth = mRealVM.getSelectedYearMonth()
+                ) {
+                    mRealVM.confirmIncomeDetailsYearMonth(it)
+                }
+            }
+
             R.id.tv_withdraw -> {
                 //提现-tooltip
                 showConfirmDialog(

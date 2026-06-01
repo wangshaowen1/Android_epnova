@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_2a2a2b_r20"
+    android:orientation="vertical"
+    android:paddingBottom="34dp">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:layout_marginTop="18dp">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_gravity="center"
+            android:layout_marginHorizontal="@dimen/spacing_s"
+            android:background="@drawable/bg_income_month_picker_selected" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <com.flqy.datepicker.NumberPicker
+                android:id="@+id/wheel_year"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:internalLayout="@layout/data_picker_income_month_selector_wheel"
+                app:internalMinWidth="170dp"
+                app:selectionDividersDistance="48dp" />
+
+            <com.flqy.datepicker.NumberPicker
+                android:id="@+id/wheel_month"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:internalLayout="@layout/data_picker_income_month_selector_wheel"
+                app:internalMinWidth="170dp"
+                app:selectionDividersDistance="48dp" />
+        </LinearLayout>
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/btn_confirm"
+        style="@style/Text16"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_marginHorizontal="@dimen/spacing_l"
+        android:background="@drawable/bg_theme_color1_r50"
+        android:gravity="center"
+        android:text="@string/confirm_ok"
+        android:textColor="@color/white" />
+</LinearLayout>
