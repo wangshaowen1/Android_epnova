@@ -1,12 +1,15 @@
 package com.kuaigeglobal.epnova.core.manager
 
 import com.kuaigeglobal.epnova.common.ext.ioScope
+import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.network.apis.ApiFactory
 import com.kuaigeglobal.epnova.core.network.apis.entity.EpisodeInfo
+import com.kuaigeglobal.epnova.core.network.apis.request.FcmTokenBody
 import com.kuaigeglobal.epnova.core.network.apis.request.UserPlayBody
 import com.kuaigeglobal.epnova.core.network.apis.request.WorkBody
 import com.nhsd.basic.ext.launchNoCrash
 import com.nhsd.basic.utils.Logger
+import kotlinx.coroutines.delay
 
 
 /**
@@ -14,6 +17,48 @@ import com.nhsd.basic.utils.Logger
  * @author xiaoowuu
  */
 object EventManager {
+
+    /**
+     * 上报 FCM registration token。
+     *
+     * 这里同时负责本地缓存和网络上报，Firebase Service 只负责把系统回调转交进来，
+     * 避免后续再出现多个类各自保存、各自直调推送 token 接口的分散入口。
+     */
+    fun reportFcmToken(token: String?) {
+        val safeToken = token?.trim()?.takeIf { it.isNotEmpty() } ?: return
+
+        // FCM token 是设备级 token，先落本地，便于后续需要补报时复用；但接口是用户维度绑定，
+        // 当前没有有效 userToken 时不发请求，避免服务端收到无法归属用户的推送 token。
+        User.get().storeFcmToken(safeToken)
+        if (User.get().isVisitor) return
+
+        ioScope.launchNoCrash {
+            val maxRetries = 3
+            var retryCount = 0
+            var delayMillis = 1000L
+
+            while (retryCount < maxRetries) {
+                try {
+                    val response = ApiFactory.apiService.registerFcmToken(FcmTokenBody(safeToken))
+                    if (response.isSuccess) {
+                        Logger.d("EventManager", "FCM token report succeeded")
+                        return@launchNoCrash
+                    }
+                    Logger.w("EventManager", "FCM token report failed: ${response.errorMsg ?: response.msg}")
+                } catch (e: Exception) {
+                    Logger.w("EventManager", "FCM token report error: ${e.message}")
+                }
+
+                retryCount++
+                if (retryCount < maxRetries) {
+                    delay(delayMillis)
+                    delayMillis *= 2
+                }
+            }
+
+            Logger.e("EventManager", "FCM token report failed after $maxRetries attempts")
+        }
+    }
 
     /**
      * 作品播放量计数

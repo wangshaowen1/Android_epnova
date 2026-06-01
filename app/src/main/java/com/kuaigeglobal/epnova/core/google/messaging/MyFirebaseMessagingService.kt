@@ -12,17 +12,11 @@ import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.Constants
-import com.kuaigeglobal.epnova.common.ext.ioScope
 import com.kuaigeglobal.epnova.common.jsbridge.BridgeDataUtils
-import com.kuaigeglobal.epnova.core.User
+import com.kuaigeglobal.epnova.core.manager.EventManager
 import com.kuaigeglobal.epnova.core.model.PushMessageInfo
-import com.kuaigeglobal.epnova.core.network.apis.ApiFactory
-import com.kuaigeglobal.epnova.core.network.apis.request.FcmTokenBody
 import com.kuaigeglobal.epnova.feature.splash.SplashActivity
-import com.nhsd.basic.ext.launchNoCrash
 import com.nhsd.basic.utils.Logger
-import kotlinx.coroutines.delay
-import java.io.IOException
 
 
 class MyFirebaseMessagingService : FirebaseMessagingService() {
@@ -137,42 +131,11 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         //你手动调用了 FirebaseMessaging.getInstance().deleteToken() 或 FirebaseMessaging.getInstance().token。
         //如果设备上已经有有效 token，启动时不会重复回调。
 
-        Logger.d("MyFirebaseMessagingService", "onNewToken: $token")
+        Logger.d("MyFirebaseMessagingService", "onNewToken received")
         super.onNewToken(token)
-        User.get().storeFcmToken(token)
-        if (User.get().isVisitor) return
-        ioScope.launchNoCrash {
-            val maxRetries = 3
-            var currentRetry = 0
-            var delayMillis = 1000L // 初始延迟1秒
 
-            while (currentRetry < maxRetries) {
-                try {
-                    Logger.d("MyFirebaseMessagingService", "Attempt ${currentRetry + 1}/$maxRetries to refresh FCM token")
-//                    val response = ApiFactory.apiService.fcmTokenRefresh(FcmTokenBody(token))
-//                    if (response.isSuccess) {
-//                        Logger.d("MyFirebaseMessagingService", "FCM token refresh succeeded")
-//                        return@launchNoCrash
-//                    } else {
-//                        Logger.w("MyFirebaseMessagingService", "FCM token refresh failed: ${response.errorMsg}")
-//                    }
-                } catch (e: Exception) {
-                    when (e) {
-                        is IOException -> Logger.w("MyFirebaseMessagingService", "Network error: ${e.message}")
-                        else -> Logger.e("MyFirebaseMessagingService", "Unexpected error: ${e.message}")
-                    }
-                }
-                // 准备下一次重试
-                currentRetry++
-                if (currentRetry < maxRetries) {
-                    // 指数退避：每次延迟时间翻倍
-                    Logger.d("MyFirebaseMessagingService", "Retrying in ${delayMillis}ms...")
-                    delay(delayMillis)
-                    delayMillis *= 2
-                }
-            }
-
-            Logger.e("MyFirebaseMessagingService", "Failed to refresh FCM token after $maxRetries attempts")
-        }
+        // 推送 token 的保存、用户态判断、接口重试统一收敛到 EventManager；
+        // Service 只处理 Firebase 生命周期回调，避免这里再次直调业务接口。
+        EventManager.reportFcmToken(token)
     }
 }

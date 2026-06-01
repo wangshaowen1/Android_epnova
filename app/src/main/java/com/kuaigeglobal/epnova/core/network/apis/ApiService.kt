@@ -75,6 +75,7 @@ import com.kuaigeglobal.epnova.core.network.apis.request.DramasIdBody
 import com.kuaigeglobal.epnova.core.network.apis.request.DramasSeriesId
 import com.kuaigeglobal.epnova.core.network.apis.request.DramasTimbreBody
 import com.kuaigeglobal.epnova.core.network.apis.request.FeedbackBody
+import com.kuaigeglobal.epnova.core.network.apis.request.FcmTokenBody
 import com.kuaigeglobal.epnova.core.network.apis.request.GenerateAssetBody
 import com.kuaigeglobal.epnova.core.network.apis.request.GenerateStoryboardBody
 import com.kuaigeglobal.epnova.core.network.apis.request.GenerateSubtitleBody
@@ -236,6 +237,12 @@ interface ApiService {
      */
     @POST(ApiConstants.SET_APP_LANGUAGE)
     suspend fun setAppLanguage(@Body body: UserTokenBody): ApiResponse<Any?>
+
+    /**
+     * 注册 FCM 推送 Token
+     */
+    @POST(ApiConstants.REGISTER_FCM_TOKEN)
+    suspend fun registerFcmToken(@Body body: FcmTokenBody): ApiResponse<Any?>
 
     /**
      * 获取APP升级信息

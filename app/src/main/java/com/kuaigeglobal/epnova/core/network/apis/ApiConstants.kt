@@ -35,6 +35,11 @@ object ApiConstants {
     const val SET_APP_LANGUAGE = "user/app/language/set"
 
     /**
+     * 注册 FCM 推送 Token
+     */
+    const val REGISTER_FCM_TOKEN = "user/app/push/registerFcmToken"
+
+    /**
      * 获取APP升级信息
      */
     const val GET_APP_UPGRADE_INFO = "app/getAppUpgradeInfo"
