@@ -5,9 +5,10 @@ import com.kuaigeglobal.epnova.BuildConfig
 object DebugUtils {
     val ipsName by lazy {
         arrayOf(
-            "廖嘉宁：192.168.12.177",
-            "郭义明：192.168.10.44",
-            "刘子帆：192.168.13.167",
+            "廖嘉宁：192.168.12.82",
+            "杨帆：192.168.11.60",
+            "郭义明：192.168.11.44",
+            "刘子帆：192.168.11.91",
             "测试外网：epnova-test.kwaige.cn",
             "预发布：120.24.240.28:9010",
             "正式环境：api.epnovai.com"
@@ -15,9 +16,10 @@ object DebugUtils {
     }
     val ips by lazy {
         arrayOf(
-            "http://192.168.12.177:8088",
-            "http://192.168.10.44:8088",
-            "http://192.168.13.167:8088",
+            "http://192.168.12.82:8088",
+            "http://192.168.11.60:8088",
+            "http://192.168.11.44:8088",
+            "http://192.168.11.91:8088",
             "https://epnova-test.kwaige.cn",
             "http://120.24.240.28:7010",
             "https://api.epnovai.com"
