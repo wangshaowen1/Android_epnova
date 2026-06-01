@@ -94,7 +94,7 @@ object BillingManager {
                     if (billingResult.responseCode == BillingClient.BillingResponseCode.OK && !purchases.isNullOrEmpty()) {
                         handlePurchases(purchases) { _, _, _, allVerified ->
                             if (allVerified) {
-                                App.instance.getString(R.string.payment_successful).showToast()
+                                App.instance.getString(R.string.system_payment_success).showToast()
                                 // 进程重启场景：无 ViewModel 订阅，emit 会被自动丢弃，仅靠 Toast 提示
                                 _purchaseResult.tryEmit(PurchaseResult.Success(purchases.firstOrNull()))
                             }
@@ -111,7 +111,7 @@ object BillingManager {
                         handlePurchases(purchases) { _, _, _, allVerified ->
                             orderId = null
                             if (allVerified) {
-                                showToast(R.string.payment_successful)
+                                showToast(R.string.system_payment_success)
                                 _purchaseResult.tryEmit(PurchaseResult.Success(purchases?.firstOrNull()))
                             } else {
                                 _purchaseResult.tryEmit(PurchaseResult.Failed.BenefitFailed)
@@ -135,11 +135,11 @@ object BillingManager {
                                 if (isCurrentVerifyFailed) {
                                     _purchaseResult.tryEmit(PurchaseResult.Failed.BenefitFailed)
                                 } else {
-                                    showToast(R.string.payment_successful)
+                                    showToast(R.string.system_payment_success)
                                     _purchaseResult.tryEmit(PurchaseResult.Success(purchase))
                                 }
                             } else {
-                                showToast(R.string.payment_failed_retry)
+                                showToast(R.string.system_payment_failed)
                                 _purchaseResult.tryEmit(PurchaseResult.Failed.PaymentFailed)
                                 reportOrderStatus(currentOrderId, 2, reason)
                             }
@@ -164,7 +164,7 @@ object BillingManager {
                             Exception(reason)
                         )
                         reportOrderStatus(currentOrderId, 2, reason)
-                        showToast(R.string.payment_failed_retry)
+                        showToast(R.string.system_payment_failed)
                         _purchaseResult.tryEmit(PurchaseResult.Failed.PaymentFailed)
                         tryDisconnectAfterPurchase()
                     }

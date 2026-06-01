@@ -180,7 +180,7 @@
                             android:layout_marginHorizontal="@dimen/spacing_l"
                             android:fontFamily="@font/outfit_regular"
                             android:lineSpacingExtra="@dimen/lineSpacingExtra"
-                            android:text="@string/store_coins_tips"
+                            android:text="@string/store_tips_content_coins"
                             android:textColor="?attr/textColor4"
                             android:textSize="12sp"
                             app:layout_constraintEnd_toEndOf="parent"

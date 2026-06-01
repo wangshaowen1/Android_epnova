@@ -33,7 +33,7 @@ class ItemSeriesEpisodeVM(
             return
         }
         if (isDeleteLocked()) {
-            showToast(R.string.delete_episode_published_or_review_toast)
+            showToast(R.string.drama_ep_delete_forbidden_review)
             return
         }
         if (isSelected.get()) {

@@ -147,7 +147,7 @@ class SeriesViewModel : AppRepositoryViewModel<SeriesRepository>() {
 
     fun enablePublishButton(workInfo: WorkInfo?) = workInfo?.isPublishButtonEnabled() == true
 
-    fun publishButtonText(workInfo: WorkInfo?) = R.string.work_publish_action.getResString()
+    fun publishButtonText(workInfo: WorkInfo?) = R.string.drama_detail_publish.getResString()
 
     fun queryWorkPublishStatus(
         openPublishPage: (String?) -> Unit,
@@ -160,15 +160,15 @@ class SeriesViewModel : AppRepositoryViewModel<SeriesRepository>() {
             onSuccess = {
                 val status = data
                 if (status == null) {
-                    R.string.work_publish_range_invalid.getResString().showToast()
+                    R.string.tip_publish_no_episode_available.getResString().showToast()
                 } else if (!status.canApply()) {
                     val message = status.reasonMsg?.takeIf { it.isNotBlank() }
-                        ?: R.string.work_publish_range_invalid.getResString()
+                        ?: R.string.tip_publish_no_episode_available.getResString()
                     message.showToast()
                 } else if (status.needLegalInfo()) {
                     openPublishPage(info.workContractPublishPageUrl)
                 } else if (!status.hasValidEpisodeRange()) {
-                    R.string.work_publish_range_invalid.getResString().showToast()
+                    R.string.tip_publish_no_episode_available.getResString().showToast()
                 } else {
                     confirmNativePublish(status)
                 }
@@ -178,7 +178,7 @@ class SeriesViewModel : AppRepositoryViewModel<SeriesRepository>() {
 
     fun submitWorkPublish(status: WorkPublishStatusData) {
         if (!status.hasValidEpisodeRange()) {
-            R.string.work_publish_range_invalid.getResString().showToast()
+            R.string.tip_publish_no_episode_available.getResString().showToast()
             return
         }
         requestWithLoading(
@@ -191,7 +191,7 @@ class SeriesViewModel : AppRepositoryViewModel<SeriesRepository>() {
                 )
             },
             onSuccess = {
-                R.string.work_publish_success.getResString().showToast()
+                R.string.tip_application_submit_success.getResString().showToast()
                 FlowEventBus.postSync(Events.WorkPublishChangedEvent(workId))
             }
         )

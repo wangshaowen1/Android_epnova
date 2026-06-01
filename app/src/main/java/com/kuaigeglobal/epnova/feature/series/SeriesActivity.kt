@@ -302,10 +302,10 @@ class SeriesActivity : BaseViewModelActivity<ActivitySeriesBinding, SeriesViewMo
                 popupView.binding.btnDel.setOnSingleClickListener {
                     popup.dismiss()
                     if (deleteLocked) {
-                        showToast(R.string.delete_work_published_or_review_toast)
+                        showToast(R.string.drama_delete_failed)
                         return@setOnSingleClickListener
                     }
-                    showCommonDialog(title = getString(R.string.delete_work_warning)) {
+                    showCommonDialog(title = getString(R.string.drama_delete_work_confirm)) {
                         mRealVM.delete()
                     }
                 }
@@ -341,10 +341,14 @@ class SeriesActivity : BaseViewModelActivity<ActivitySeriesBinding, SeriesViewMo
 
     private fun showPublishConfirm(status: WorkPublishStatusData) {
         showConfirmPrompt(
-            title = getString(R.string.work_publish_episodes_title, status.episodeRangeText()),
-            tip = getString(R.string.work_publish_confirm_tip),
+            title = getString(
+                R.string.tip_publish_ep_number_confirm,
+                status.startEpisode?.toString().orEmpty(),
+                status.endEpisode?.toString().orEmpty()
+            ),
+            tip = getString(R.string.tip_publish_submit_review_notice),
             cancelText = getString(R.string.cancel),
-            confirmText = getString(R.string.work_publish_action),
+            confirmText = getString(R.string.drama_detail_publish),
             confirm = { _ ->
                 mRealVM.submitWorkPublish(status)
             }

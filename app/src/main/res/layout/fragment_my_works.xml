@@ -41,7 +41,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/action_bar_size"
             android:gravity="center"
-            android:text="@string/my_works"
+            android:text="@string/my_list_my_creations"
             android:textAppearance="@style/Text18"
             android:textColor="?attr/textColor1"
             app:layout_constraintTop_toBottomOf="@+id/statusBar" />

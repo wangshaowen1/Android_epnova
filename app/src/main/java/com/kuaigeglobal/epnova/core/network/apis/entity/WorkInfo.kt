@@ -227,13 +227,13 @@ data class WorkInfo(
 
     fun publishBadgeText(): String? {
         return when {
-            isPublishReviewFailed() -> R.string.work_publish_review_failed.getResString()
-            coverBadgeType == COVER_BADGE_DRAFT -> R.string.draft.getResString()
-            coverBadgeType == COVER_BADGE_UNPUBLISHED -> R.string.work_publish_unpublished.getResString()
-            isDraftStatus() -> R.string.draft.getResString()
-            globalPublishStatus == GLOBAL_PUBLISH_STATUS_UNPUBLISHED -> R.string.work_publish_unpublished.getResString()
+            isPublishReviewFailed() -> R.string.drama_detail_review_failed.getResString()
+            coverBadgeType == COVER_BADGE_DRAFT -> R.string.drama_detail_draft.getResString()
+            coverBadgeType == COVER_BADGE_UNPUBLISHED -> R.string.drama_detail_unpublished.getResString()
+            isDraftStatus() -> R.string.drama_detail_draft.getResString()
+            globalPublishStatus == GLOBAL_PUBLISH_STATUS_UNPUBLISHED -> R.string.drama_detail_unpublished.getResString()
             coverBadgeType == COVER_BADGE_IN_REVIEW || globalPublishStatus == GLOBAL_PUBLISH_STATUS_REVIEWING ||
-                    publishStatus == PUBLISH_STATUS_REVIEWING -> R.string.work_publish_in_review.getResString()
+                    publishStatus == PUBLISH_STATUS_REVIEWING -> R.string.drama_detail_in_review.getResString()
             coverBadgeType == COVER_BADGE_PUBLISHED || globalPublishStatus == GLOBAL_PUBLISH_STATUS_PUBLISHED ||
                     publishStatus == PUBLISH_STATUS_PASSED || (publishedEpisodeCnt ?: 0) > 0 -> publishPublishedText()
             else -> null
@@ -241,11 +241,17 @@ data class WorkInfo(
     }
 
     private fun publishPublishedText(): String {
-        return when {
-            isAllEpisodesPublished() -> R.string.work_publish_published_all.getResString()
-            (publishedEpisodeCnt ?: 0) > 0 -> R.string.work_publish_published_count.getResString(publishedEpisodeCnt ?: 0)
-            else -> R.string.work_publish_published.getResString()
+        val prefix = R.string.drama_detail_published.getResString()
+        val suffix = when {
+            isAllEpisodesPublished() -> R.string.drama_detail_all_eps.getResString()
+            (publishedEpisodeCnt ?: 0) > 0 -> {
+                val count = publishedEpisodeCnt ?: 0
+                val resId = if (count == 1) R.string.drama_detail_ep_1 else R.string.drama_detail_ep_2
+                resId.getResString(count.toString())
+            }
+            else -> return prefix
         }
+        return "$prefix · $suffix"
     }
 
     fun publishBadgeTextColor(): Int {
@@ -487,15 +493,15 @@ data class EpisodeInfo(
 
     fun publishBadgeText(): String? {
         return when {
-            coverBadgeType == WorkInfo.COVER_BADGE_DRAFT || isDraft() -> R.string.draft.getResString()
+            coverBadgeType == WorkInfo.COVER_BADGE_DRAFT || isDraft() -> R.string.drama_detail_draft.getResString()
             coverBadgeType in listOf(WorkInfo.COVER_BADGE_UNPUBLISHED, WorkInfo.COVER_BADGE_REVIEW_FAILED) ||
                     (isCompleted() && publishStatus in listOf(WorkInfo.PUBLISH_STATUS_UNPUBLISHED, WorkInfo.PUBLISH_STATUS_FAILED)) -> {
-                R.string.work_publish_unpublished.getResString()
+                R.string.drama_detail_unpublished.getResString()
             }
             coverBadgeType == WorkInfo.COVER_BADGE_IN_REVIEW ||
-                    publishStatus == WorkInfo.PUBLISH_STATUS_REVIEWING -> R.string.work_publish_in_review.getResString()
+                    publishStatus == WorkInfo.PUBLISH_STATUS_REVIEWING -> R.string.drama_detail_in_review.getResString()
             coverBadgeType == WorkInfo.COVER_BADGE_PUBLISHED ||
-                    publishStatus == WorkInfo.PUBLISH_STATUS_PASSED -> R.string.work_publish_published.getResString()
+                    publishStatus == WorkInfo.PUBLISH_STATUS_PASSED -> R.string.drama_detail_published.getResString()
             else -> null
         }
     }

@@ -493,7 +493,7 @@ class EditStoryboardVideoViewModel : AppRepositoryViewModel<EditStoryboardReposi
 
     fun showPublishLockedToast(): Boolean {
         if (!publishLocked.get()) return false
-        showToast(R.string.episode_publish_locked_function_toast)
+        showToast(R.string.drama_ep_function_unavailable_review)
         return true
     }
 

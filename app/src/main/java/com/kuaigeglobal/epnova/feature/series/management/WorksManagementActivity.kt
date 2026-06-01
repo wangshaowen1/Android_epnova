@@ -182,7 +182,7 @@ class WorksManagementActivity :
                 }
                 topActivity?.showConfirmPrompt(
                     title = getString(R.string.delete_episode),
-                    tip = getString(R.string.delete_episodes_confirm_warning),
+                    tip = getString(R.string.drama_delete_ep_batch_confirm),
                     cancelText = getString(R.string.cancel),
                     confirmText =  getString(R.string.del)
                 ) {
@@ -194,7 +194,7 @@ class WorksManagementActivity :
             R.id.btnSelectAll -> {
                 val currentIds = currentSelectableIds()
                 if (currentIds.isEmpty()) {
-                    showToast(R.string.delete_episode_published_or_review_toast)
+                    showToast(R.string.drama_ep_delete_forbidden_review)
                     return
                 }
                 val selectedItems = eventVm.getSelectedItems()

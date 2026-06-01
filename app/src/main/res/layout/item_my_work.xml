@@ -92,7 +92,7 @@
             android:background="@drawable/bg_fixed_white_1_round"
             android:gravity="center"
             android:paddingHorizontal="6dp"
-            android:text="@string/draft"
+            android:text="@string/drama_detail_draft"
             android:textAppearance="@style/Text10"
             android:textColor="@color/fixed_black_1"
             android:visibility="@{(item.data.isDraftStatus()&amp;&amp;item.isView()&amp;&amp;!item.hasPublishBadge())?View.VISIBLE:View.GONE}"

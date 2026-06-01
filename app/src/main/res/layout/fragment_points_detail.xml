@@ -44,7 +44,7 @@
                 android:id="@+id/lsv"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:noData="@string/transaction_history_no_records"
+                app:noData="@string/transaction_no_records"
                 app:noDataSrc="@drawable/img_history_empty">
 
                 <androidx.recyclerview.widget.RecyclerView

@@ -154,9 +154,9 @@ class MyBalanceActivity : BaseViewModelActivity<ActivityMyBalanceBinding, MyBala
 
     private fun setupTip(tabIndex: Int) {
         val tipResId = if (tabIndex == MyBalanceViewModel.TAB_COINS) {
-            R.string.store_coins_tips
+            R.string.store_tips_content_coins
         } else {
-            R.string.store_credits_tips
+            R.string.store_tips_content_credits
         }
         val rawText = getString(tipResId)
         val spannableString = SpannableString(rawText)

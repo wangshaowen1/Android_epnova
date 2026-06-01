@@ -130,7 +130,7 @@ class PowerRechargeDialog : BaseBottomPushVMDialogFragment<DialogRechargePowerBi
         binding.ivCostIcon.setImageResource(iconRes)
         binding.ivBalanceIcon.setImageResource(iconRes)
         binding.rvRechargeAmount.adapter = if (isCredits) mRealVM.creditsAdapter else mRealVM.coinsAdapter
-        binding.tvPolicy.setText(if (isCredits) R.string.store_credits_tips else R.string.episode_unlock_popup_coin_rule)
+        binding.tvPolicy.setText(if (isCredits) R.string.store_tips_content_credits else R.string.episode_unlock_popup_coin_rule)
     }
 
 }
