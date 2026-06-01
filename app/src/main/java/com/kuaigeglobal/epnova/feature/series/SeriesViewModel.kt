@@ -14,15 +14,20 @@ import com.kuaigeglobal.epnova.base.viewmodel.AppRepositoryViewModel
 import com.kuaigeglobal.epnova.common.Constants
 import com.kuaigeglobal.epnova.common.PagedProxy
 import com.kuaigeglobal.epnova.common.adapter.QuickAdapter
+import com.kuaigeglobal.epnova.core.Events
 import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.ext.launch
 import com.kuaigeglobal.epnova.core.ext.launchWithLoading
+import com.kuaigeglobal.epnova.core.ext.requestWithLoading
 import com.kuaigeglobal.epnova.core.network.apis.entity.EpisodeInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.WorkInfo
 import com.kuaigeglobal.epnova.core.network.apis.request.DeleteWorkBody
 import com.kuaigeglobal.epnova.core.network.apis.request.LatestEpisodeBody
+import com.kuaigeglobal.epnova.core.network.apis.response.WorkPublishStatusData
 import com.kuaigeglobal.epnova.core.response
 import com.kuaigeglobal.epnova.widget.LoadStateViewHolder
+import com.nhsd.basic.bus.FlowEventBus
+import com.nhsd.basic.ext.getResString
 import com.nhsd.basic.ext.showToast
 import kotlinx.coroutines.flow.Flow
 
@@ -119,49 +124,77 @@ class SeriesViewModel : AppRepositoryViewModel<SeriesRepository>() {
         }
     }
 
-    fun publishFailed(workInfo: WorkInfo?) = workInfo?.contractStatus == 3
+    fun publishFailed(workInfo: WorkInfo?) = workInfo?.isPublishReviewFailed() == true
 
     @ColorRes
-    fun publishStatusColor(workInfo: WorkInfo?) = when (workInfo?.contractStatus) {
-        /**[枚举]签约状态(0-未申请 1-审核中 2-已通过 3-已驳回)*/
-        0 -> R.color.text_color_3_dark
-        1 -> R.color.func_warning_dark
-        2 -> when (workInfo.publishStatus) {
-            /**[枚举]发行状态(0-未发行 1-待签约 2-发行上架中 3-已发行)*/
-            0 -> R.color.text_color_3_dark
-            1 -> R.color.func_warning_dark
-            2 -> R.color.func_special_dark
-            3 -> R.color.func_success_dark
-            else -> R.color.func_failure_dark
-        }
-
-        3 -> R.color.func_failure_dark
-        else -> R.color.func_failure_dark
+    fun publishStatusColor(workInfo: WorkInfo?) = when {
+        workInfo?.isPublishReviewFailed() == true -> R.color.func_failure_dark
+        workInfo?.coverBadgeType == WorkInfo.COVER_BADGE_IN_REVIEW ||
+                workInfo?.globalPublishStatus == WorkInfo.GLOBAL_PUBLISH_STATUS_REVIEWING ||
+                workInfo?.publishStatus == WorkInfo.PUBLISH_STATUS_REVIEWING -> R.color.func_warning_dark
+        workInfo?.coverBadgeType == WorkInfo.COVER_BADGE_PUBLISHED ||
+                workInfo?.globalPublishStatus == WorkInfo.GLOBAL_PUBLISH_STATUS_PUBLISHED ||
+                workInfo?.publishStatus == WorkInfo.PUBLISH_STATUS_PASSED ||
+                (workInfo?.publishedEpisodeCnt ?: 0) > 0 -> R.color.func_success_dark
+        else -> R.color.text_color_3_dark
     }
 
-    fun publishStatusText(workInfo: WorkInfo?) = when (workInfo?.contractStatus) {
-        /**[枚举]签约状态(0-未申请 1-审核中 2-已通过 3-已驳回)*/
-        0 -> "未发行"
-        1 -> "签约审核中"
-        2 -> when (workInfo.publishStatus) {
-            /**[枚举]发行状态(0-未发行 1-待签约 2-发行上架中 3-已发行)*/
-            0 -> "未发行"
-            1 -> "待签约"
-            2 -> "发行上架中"
-            3 -> "已发行"
-            else -> "未知状态"
-        }
+    fun publishStatusText(workInfo: WorkInfo?) = workInfo?.publishBadgeText().orEmpty()
 
-        3 -> "签约失败"
-        else -> "未知状态"
+    fun showPublishStatus(workInfo: WorkInfo?) = !workInfo?.publishBadgeText().isNullOrEmpty()
+
+    fun showPublishButton(workInfo: WorkInfo?) = workInfo?.showPublishButton() == true
+
+    fun enablePublishButton(workInfo: WorkInfo?) = workInfo?.isPublishButtonEnabled() == true
+
+    fun publishButtonText(workInfo: WorkInfo?) = R.string.work_publish_action.getResString()
+
+    fun queryWorkPublishStatus(
+        openPublishPage: (String?) -> Unit,
+        confirmNativePublish: (WorkPublishStatusData) -> Unit
+    ) {
+        val info = workInfo.value ?: return
+        if (!info.isPublishButtonEnabled()) return
+        requestWithLoading(
+            apiBlock = { mRepo.getWorkPublishStatus(workId) },
+            onSuccess = {
+                val status = data
+                if (status == null) {
+                    R.string.work_publish_range_invalid.getResString().showToast()
+                } else if (!status.canApply()) {
+                    val message = status.reasonMsg?.takeIf { it.isNotBlank() }
+                        ?: R.string.work_publish_range_invalid.getResString()
+                    message.showToast()
+                } else if (status.needLegalInfo()) {
+                    openPublishPage(info.workContractPublishPageUrl)
+                } else if (!status.hasValidEpisodeRange()) {
+                    R.string.work_publish_range_invalid.getResString().showToast()
+                } else {
+                    confirmNativePublish(status)
+                }
+            }
+        )
     }
 
-    fun publishButtonText(workInfo: WorkInfo?) = when (workInfo?.contractStatus) {
-        /**[枚举]签约状态(0-未申请 1-审核中 2-已通过 3-已驳回)*/
-        0 -> "去发行"
-        1 -> "签约审核中"
-        3 -> "申请签约"
-        else -> ""
+    fun submitWorkPublish(status: WorkPublishStatusData) {
+        if (!status.hasValidEpisodeRange()) {
+            R.string.work_publish_range_invalid.getResString().showToast()
+            return
+        }
+        requestWithLoading(
+            apiBlock = {
+                mRepo.submitWorkPublish(
+                    workId = workId,
+                    auditBatchId = status.auditBatchId,
+                    startEpisode = status.startEpisode,
+                    endEpisode = status.endEpisode
+                )
+            },
+            onSuccess = {
+                R.string.work_publish_success.getResString().showToast()
+                FlowEventBus.postSync(Events.WorkPublishChangedEvent(workId))
+            }
+        )
     }
 
     /**

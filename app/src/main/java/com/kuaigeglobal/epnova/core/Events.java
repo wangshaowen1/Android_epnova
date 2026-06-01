@@ -275,6 +275,17 @@ public class Events {
     }
 
     /**
+     * 作品发布状态更新事件
+     */
+    public static class WorkPublishChangedEvent implements AppEvent {
+        public final String workId;
+
+        public WorkPublishChangedEvent(String workId) {
+            this.workId = workId;
+        }
+    }
+
+    /**
      * 小说大纲流式输出完成
      */
     public static class ScriptContentGenerateSuccessEvent implements AppEvent {

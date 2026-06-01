@@ -1,6 +1,8 @@
 package com.kuaigeglobal.epnova.feature.series
 
 import android.annotation.SuppressLint
+import androidx.annotation.ColorRes
+import androidx.annotation.DrawableRes
 import androidx.databinding.ObservableBoolean
 import androidx.lifecycle.viewModelScope
 import com.kuaigeglobal.epnova.R
@@ -46,6 +48,24 @@ class ItemSeriesEpisodeVM(
 
     fun isDeleteLocked(): Boolean {
         return data.get()?.isPublishedOrUnderReview() == true
+    }
+
+    fun hasPublishBadge(): Boolean {
+        return !data.get()?.publishBadgeText().isNullOrEmpty()
+    }
+
+    fun publishBadgeText(): String {
+        return data.get()?.publishBadgeText().orEmpty()
+    }
+
+    @ColorRes
+    fun publishBadgeTextColor(): Int {
+        return data.get()?.publishBadgeTextColor() ?: R.color.fixed_white_1
+    }
+
+    @DrawableRes
+    fun publishBadgeBackground(): Int {
+        return data.get()?.publishBadgeBackground() ?: R.drawable.bg_60_000000_round
     }
 
     init {

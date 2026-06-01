@@ -1,12 +1,13 @@
 package com.kuaigeglobal.epnova.feature.works
 
+import androidx.annotation.ColorRes
+import androidx.annotation.DrawableRes
 import androidx.databinding.ObservableBoolean
-import androidx.databinding.ObservableField
 import androidx.lifecycle.viewModelScope
+import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.base.item.AppItemViewModel
 import com.kuaigeglobal.epnova.core.network.apis.entity.WorkInfo
 import kotlinx.coroutines.launch
-import kotlin.text.get
 
 class ItemMyWorkVM(
     private val eventVm: ItemMultipleChoiceEventsViewModel<MyWorksEvent, String>,
@@ -19,6 +20,24 @@ class ItemMyWorkVM(
 
     //是否选中
     val isSelected = ObservableBoolean(false)
+
+    fun hasPublishBadge(): Boolean {
+        return !data.get()?.publishBadgeText().isNullOrEmpty()
+    }
+
+    fun publishBadgeText(): String {
+        return data.get()?.publishBadgeText().orEmpty()
+    }
+
+    @ColorRes
+    fun publishBadgeTextColor(): Int {
+        return data.get()?.publishBadgeTextColor() ?: R.color.fixed_white_1
+    }
+
+    @DrawableRes
+    fun publishBadgeBackground(): Int {
+        return data.get()?.publishBadgeBackground() ?: R.drawable.bg_60_000000_round
+    }
 
     fun onClick() {
         val info = data.get()

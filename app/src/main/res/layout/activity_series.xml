@@ -163,10 +163,10 @@
 
                                     <TextView
                                         android:id="@+id/tvPublishStatus"
+                                        setVisible="@{layout.showPublishStatus(layout.workInfo)}"
                                         textColorRes="@{layout.publishStatusColor(layout.workInfo)}"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:visibility="gone"
                                         android:text="@{layout.publishStatusText(layout.workInfo)}"
                                         android:textAppearance="@style/Text13"
                                         tools:text="已发行"
@@ -271,7 +271,7 @@
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/btnContainer"
-                    setVisible="@{layout.workInfo.showPublishButton == 1 &amp;&amp; layout.workInfo.contractStatus != 2}"
+                    setVisible="@{layout.showPublishButton(layout.workInfo)}"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingVertical="10dp"
@@ -279,7 +279,7 @@
 
                     <LinearLayout
                         android:id="@+id/btnPublish"
-                        setEnabled="@{layout.workInfo.contractStatus != 1}"
+                        setEnabled="@{layout.enablePublishButton(layout.workInfo)}"
                         singleClick="@{layout.clickHandler::onClick}"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
@@ -291,7 +291,6 @@
                         app:layout_constraintTop_toTopOf="parent">
 
                         <ImageView
-                            setVisible="@{layout.workInfo.contractStatus == 0}"
                             android:layout_width="20dp"
                             android:layout_height="20dp"
                             android:layout_marginEnd="8dp"
@@ -303,7 +302,7 @@
                             android:text="@{layout.publishButtonText(layout.workInfo)}"
                             android:textAppearance="@style/Text16"
                             android:textColor="@color/fixed_white_1"
-                            tools:text="去发行" />
+                            tools:text="Publish" />
 
                     </LinearLayout>
 

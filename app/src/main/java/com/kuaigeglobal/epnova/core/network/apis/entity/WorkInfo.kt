@@ -107,6 +107,9 @@ data class WorkInfo(
         /**发布审核中*/
         const val PUBLISH_STATUS_REVIEWING = 1
 
+        /**未发布*/
+        const val PUBLISH_STATUS_UNPUBLISHED = 0
+
         /**发布审核通过*/
         const val PUBLISH_STATUS_PASSED = 2
 
@@ -200,6 +203,69 @@ data class WorkInfo(
         return isPublishedOrUnderReview() ||
                 (publishedEpisodeCnt ?: 0) > 0 ||
                 workStoryItemList.orEmpty().any { it.isPublishedOrUnderReview() }
+    }
+
+    fun showPublishButton(): Boolean {
+        return showPublishButton == 1
+    }
+
+    fun isAllEpisodesPublished(): Boolean {
+        val total = totalEpisodeCnt ?: return false
+        if (total <= 0) return false
+        return (publishedEpisodeCnt ?: 0) >= total
+    }
+
+    fun isPublishButtonEnabled(): Boolean {
+        return showPublishButton() && !isAllEpisodesPublished()
+    }
+
+    fun isPublishReviewFailed(): Boolean {
+        return coverBadgeType == COVER_BADGE_REVIEW_FAILED ||
+                globalPublishStatus == GLOBAL_PUBLISH_STATUS_FAILED ||
+                publishStatus == PUBLISH_STATUS_FAILED
+    }
+
+    fun publishBadgeText(): String? {
+        return when {
+            isPublishReviewFailed() -> R.string.work_publish_review_failed.getResString()
+            coverBadgeType == COVER_BADGE_DRAFT -> R.string.draft.getResString()
+            coverBadgeType == COVER_BADGE_UNPUBLISHED -> R.string.work_publish_unpublished.getResString()
+            isDraftStatus() -> R.string.draft.getResString()
+            globalPublishStatus == GLOBAL_PUBLISH_STATUS_UNPUBLISHED -> R.string.work_publish_unpublished.getResString()
+            coverBadgeType == COVER_BADGE_IN_REVIEW || globalPublishStatus == GLOBAL_PUBLISH_STATUS_REVIEWING ||
+                    publishStatus == PUBLISH_STATUS_REVIEWING -> R.string.work_publish_in_review.getResString()
+            coverBadgeType == COVER_BADGE_PUBLISHED || globalPublishStatus == GLOBAL_PUBLISH_STATUS_PUBLISHED ||
+                    publishStatus == PUBLISH_STATUS_PASSED || (publishedEpisodeCnt ?: 0) > 0 -> publishPublishedText()
+            else -> null
+        }
+    }
+
+    private fun publishPublishedText(): String {
+        return when {
+            isAllEpisodesPublished() -> R.string.work_publish_published_all.getResString()
+            (publishedEpisodeCnt ?: 0) > 0 -> R.string.work_publish_published_count.getResString(publishedEpisodeCnt ?: 0)
+            else -> R.string.work_publish_published.getResString()
+        }
+    }
+
+    fun publishBadgeTextColor(): Int {
+        return when {
+            isPublishReviewFailed() -> R.color.func_failure_dark
+            coverBadgeType == COVER_BADGE_DRAFT || isDraftStatus() -> R.color.fixed_black_1
+            coverBadgeType == COVER_BADGE_IN_REVIEW || globalPublishStatus == GLOBAL_PUBLISH_STATUS_REVIEWING ||
+                    publishStatus == PUBLISH_STATUS_REVIEWING -> R.color.func_warning_dark
+            coverBadgeType == COVER_BADGE_PUBLISHED || globalPublishStatus == GLOBAL_PUBLISH_STATUS_PUBLISHED ||
+                    publishStatus == PUBLISH_STATUS_PASSED || (publishedEpisodeCnt ?: 0) > 0 -> R.color.func_success_dark
+            else -> R.color.fixed_white_1
+        }
+    }
+
+    fun publishBadgeBackground(): Int {
+        return if (coverBadgeType == COVER_BADGE_DRAFT || isDraftStatus()) {
+            R.drawable.bg_fixed_white_1_round
+        } else {
+            R.drawable.bg_60_000000_round
+        }
     }
 
     val stripedTrickTitle
@@ -417,6 +483,40 @@ data class EpisodeInfo(
     fun isPublishedOrUnderReview(): Boolean {
         return publishStatus in listOf(WorkInfo.PUBLISH_STATUS_REVIEWING, WorkInfo.PUBLISH_STATUS_PASSED) ||
                 coverBadgeType in listOf(WorkInfo.COVER_BADGE_IN_REVIEW, WorkInfo.COVER_BADGE_PUBLISHED)
+    }
+
+    fun publishBadgeText(): String? {
+        return when {
+            coverBadgeType == WorkInfo.COVER_BADGE_DRAFT || isDraft() -> R.string.draft.getResString()
+            coverBadgeType in listOf(WorkInfo.COVER_BADGE_UNPUBLISHED, WorkInfo.COVER_BADGE_REVIEW_FAILED) ||
+                    (isCompleted() && publishStatus in listOf(WorkInfo.PUBLISH_STATUS_UNPUBLISHED, WorkInfo.PUBLISH_STATUS_FAILED)) -> {
+                R.string.work_publish_unpublished.getResString()
+            }
+            coverBadgeType == WorkInfo.COVER_BADGE_IN_REVIEW ||
+                    publishStatus == WorkInfo.PUBLISH_STATUS_REVIEWING -> R.string.work_publish_in_review.getResString()
+            coverBadgeType == WorkInfo.COVER_BADGE_PUBLISHED ||
+                    publishStatus == WorkInfo.PUBLISH_STATUS_PASSED -> R.string.work_publish_published.getResString()
+            else -> null
+        }
+    }
+
+    fun publishBadgeTextColor(): Int {
+        return when {
+            coverBadgeType == WorkInfo.COVER_BADGE_DRAFT || isDraft() -> R.color.fixed_black_1
+            coverBadgeType == WorkInfo.COVER_BADGE_IN_REVIEW ||
+                    publishStatus == WorkInfo.PUBLISH_STATUS_REVIEWING -> R.color.func_warning_dark
+            coverBadgeType == WorkInfo.COVER_BADGE_PUBLISHED ||
+                    publishStatus == WorkInfo.PUBLISH_STATUS_PASSED -> R.color.func_success_dark
+            else -> R.color.fixed_white_1
+        }
+    }
+
+    fun publishBadgeBackground(): Int {
+        return if (coverBadgeType == WorkInfo.COVER_BADGE_DRAFT || isDraft()) {
+            R.drawable.bg_fixed_white_1_round
+        } else {
+            R.drawable.bg_60_000000_round
+        }
     }
 
 

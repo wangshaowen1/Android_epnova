@@ -409,6 +409,16 @@ object ApiConstants {
     const val PUBLISH_SHORT_DRAMA = "shortDramas/work/publish"
 
     /**
+     * 查询作品发行状态
+     */
+    const val WORK_PUBLISH_STATUS = "h5/work/publish/status"
+
+    /**
+     * 提交作品剧集集中审核
+     */
+    const val WORK_PUBLISH_SUBMIT = "h5/work/publish/submit"
+
+    /**
      * 获取订单状态
      */
     const val GET_ORDER_STATUS = "order/getOrderStatus"

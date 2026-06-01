@@ -2,10 +2,12 @@ package com.kuaigeglobal.epnova.feature.series
 
 import com.kuaigeglobal.epnova.core.AppRepository
 import com.kuaigeglobal.epnova.core.network.apis.ApiConstants
-import com.kuaigeglobal.epnova.core.network.apis.request.WorkIdBody
 import com.kuaigeglobal.epnova.core.network.apis.request.SeriesFollowBody
 import com.kuaigeglobal.epnova.core.network.apis.request.SeriesModifyInfoBody
 import com.kuaigeglobal.epnova.core.network.apis.request.SeriesSetPriceBody
+import com.kuaigeglobal.epnova.core.network.apis.request.WorkIdBody
+import com.kuaigeglobal.epnova.core.network.apis.request.WorkPublishStatusBody
+import com.kuaigeglobal.epnova.core.network.apis.request.WorkPublishSubmitBody
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.http.POST
@@ -68,5 +70,31 @@ class SeriesRepository : AppRepository() {
     @POST(ApiConstants.SERIES_PUBLISH)
     suspend fun seriesPublish(body: SeriesSetPriceBody) = withContext(Dispatchers.IO) {
         api.seriesPublish(body)
+    }
+
+    /**
+     * 查询作品发行状态
+     */
+    suspend fun getWorkPublishStatus(workId: String?) = withContext(Dispatchers.IO) {
+        api.workPublishStatus(WorkPublishStatusBody(workId))
+    }
+
+    /**
+     * 提交作品剧集集中审核
+     */
+    suspend fun submitWorkPublish(
+        workId: String?,
+        auditBatchId: Long?,
+        startEpisode: Int?,
+        endEpisode: Int?
+    ) = withContext(Dispatchers.IO) {
+        api.workPublishSubmit(
+            WorkPublishSubmitBody(
+                workId = workId,
+                auditBatchId = auditBatchId,
+                startEpisode = startEpisode,
+                endEpisode = endEpisode
+            )
+        )
     }
 }

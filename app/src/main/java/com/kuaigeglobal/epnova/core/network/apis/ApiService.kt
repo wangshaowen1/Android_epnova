@@ -147,6 +147,8 @@ import com.kuaigeglobal.epnova.core.network.apis.request.WorkBody
 import com.kuaigeglobal.epnova.core.network.apis.request.WorkIdBody
 import com.kuaigeglobal.epnova.core.network.apis.request.WorkIdPagedBody
 import com.kuaigeglobal.epnova.core.network.apis.request.WorkInfoUpdateBody
+import com.kuaigeglobal.epnova.core.network.apis.request.WorkPublishStatusBody
+import com.kuaigeglobal.epnova.core.network.apis.request.WorkPublishSubmitBody
 import com.kuaigeglobal.epnova.core.network.apis.request.WorkTaskData
 import com.kuaigeglobal.epnova.core.network.apis.response.ActivityConfigData
 import com.kuaigeglobal.epnova.core.network.apis.response.LoginTaskData
@@ -176,6 +178,7 @@ import com.kuaigeglobal.epnova.core.network.apis.response.UpgradeData
 import com.kuaigeglobal.epnova.core.network.apis.response.UserHomeData
 import com.kuaigeglobal.epnova.core.network.apis.response.UserPlayData
 import com.kuaigeglobal.epnova.core.network.apis.response.WorkIdData
+import com.kuaigeglobal.epnova.core.network.apis.response.WorkPublishStatusData
 import kotlinx.coroutines.flow.Flow
 import retrofit2.http.Body
 import retrofit2.http.Headers
@@ -688,6 +691,18 @@ interface ApiService {
      */
     @POST(ApiConstants.PUBLISH_SHORT_DRAMA)
     suspend fun publishShortDrama(@Body body: DramasIdBody): ApiResponse<DramasSeriesIdData?>
+
+    /**
+     * 查询作品发行状态
+     */
+    @POST(ApiConstants.WORK_PUBLISH_STATUS)
+    suspend fun workPublishStatus(@Body body: WorkPublishStatusBody): ApiResponse<WorkPublishStatusData?>
+
+    /**
+     * 提交作品剧集集中审核
+     */
+    @POST(ApiConstants.WORK_PUBLISH_SUBMIT)
+    suspend fun workPublishSubmit(@Body body: WorkPublishSubmitBody): ApiResponse<Any?>
 
     /**
      * 获取订单状态

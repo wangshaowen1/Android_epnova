@@ -12,6 +12,7 @@ import androidx.lifecycle.lifecycleScope
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.Constants
 import com.kuaigeglobal.epnova.common.ext.showCommonDialog
+import com.kuaigeglobal.epnova.common.ext.showConfirmPrompt
 import com.kuaigeglobal.epnova.common.ext.startRefreshWithAdapter
 import com.kuaigeglobal.epnova.common.ext.topActivity
 import com.kuaigeglobal.epnova.core.Events
@@ -19,6 +20,7 @@ import com.kuaigeglobal.epnova.core.manager.AppEvent
 import com.kuaigeglobal.epnova.core.manager.EventManager
 import com.kuaigeglobal.epnova.core.network.apis.entity.EpisodeInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.WorkInfo
+import com.kuaigeglobal.epnova.core.network.apis.response.WorkPublishStatusData
 import com.kuaigeglobal.epnova.databinding.ActivitySeriesBinding
 import com.kuaigeglobal.epnova.databinding.PopupSeriesReleaseFailTipsBinding
 import com.kuaigeglobal.epnova.feature.creator.continuewriting.ContinueWritingActivity
@@ -142,10 +144,15 @@ class SeriesActivity : BaseViewModelActivity<ActivitySeriesBinding, SeriesViewMo
                     refresh()
                 }
             }
+            on<Events.WorkPublishChangedEvent> { event ->
+                if (isActive && event.workId == mRealVM.workId) {
+                    refresh()
+                }
+            }
         }
         mRealVM.workInfo.observe(this) {
             episodeAdapter.refresh()
-            if (it != null && it.contractStatus == 3 && !isShowPublishRejectReason) bindingNullable?.tvPublishStatus?.showPublishRejectReason()
+            if (it?.isPublishReviewFailed() == true && !isShowPublishRejectReason) bindingNullable?.tvPublishStatus?.showPublishRejectReason()
         }
         mRealVM.episodeInfo.observe(this) {
             if (it == null) {
@@ -316,16 +323,36 @@ class SeriesActivity : BaseViewModelActivity<ActivitySeriesBinding, SeriesViewMo
             }
 
             R.id.btnPublish -> {
-                mRealVM.workInfo.value?.workContractPublishPageUrl?.let {
-                    SimpleBrowserActivity.launch(this, it)
-                    EventManager.onAppTrack(AppEvent.SF_CLICK_GO_PUBLISH_BUTTON)
-                }
+                mRealVM.queryWorkPublishStatus(
+                    openPublishPage = { openPublishPage(it) },
+                    confirmNativePublish = { showPublishConfirm(it) }
+                )
             }
         }
     }
 
+    private fun openPublishPage(url: String?) {
+        if (url.isNullOrBlank()) {
+            showToast(R.string.work_publish_page_unavailable)
+            return
+        }
+        SimpleBrowserActivity.launch(this, url)
+    }
+
+    private fun showPublishConfirm(status: WorkPublishStatusData) {
+        showConfirmPrompt(
+            title = getString(R.string.work_publish_episodes_title, status.episodeRangeText()),
+            tip = getString(R.string.work_publish_confirm_tip),
+            cancelText = getString(R.string.cancel),
+            confirmText = getString(R.string.work_publish_action),
+            confirm = { _ ->
+                mRealVM.submitWorkPublish(status)
+            }
+        )
+    }
+
     private fun View.showPublishRejectReason() {
-        val rejectReason = mRealVM.workInfo.value?.rejectReason ?: return
+        val rejectReason = mRealVM.workInfo.value?.rejectReason?.takeIf { it.isNotBlank() } ?: return
         // 1. 填充布局
         val binding = PopupSeriesReleaseFailTipsBinding.inflate(LayoutInflater.from(this@SeriesActivity), null, false)
         binding.tvTips.text = rejectReason

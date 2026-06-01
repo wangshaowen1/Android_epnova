@@ -143,6 +143,9 @@ class MyCreationsFragment :
                 // 不管是退登还是换号，直接重置流
                 mRealVM.resetPagingForNewUser()
             }
+            on<Events.WorkPublishChangedEvent> {
+                refresh()
+            }
         }
 
         lifecycleScope.launch {

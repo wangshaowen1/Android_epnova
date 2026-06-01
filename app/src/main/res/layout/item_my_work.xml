@@ -74,13 +74,28 @@
             android:layout_width="wrap_content"
             android:layout_height="16dp"
             android:layout_margin="4dp"
+            backgroundRes="@{item.publishBadgeBackground()}"
+            textColorRes="@{item.publishBadgeTextColor()}"
+            android:gravity="center"
+            android:paddingHorizontal="6dp"
+            android:text="@{item.publishBadgeText()}"
+            android:textAppearance="@style/Text10"
+            android:visibility="@{(item.hasPublishBadge()&amp;&amp;item.isView())?View.VISIBLE:View.GONE}"
+            app:layout_constraintEnd_toEndOf="@+id/ivCover"
+            app:layout_constraintTop_toTopOf="@+id/ivCover"
+            tools:text="Published · All Eps" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="16dp"
+            android:layout_margin="4dp"
             android:background="@drawable/bg_fixed_white_1_round"
             android:gravity="center"
             android:paddingHorizontal="6dp"
             android:text="@string/draft"
             android:textAppearance="@style/Text10"
             android:textColor="@color/fixed_black_1"
-            android:visibility="@{(item.data.isDraftStatus()&amp;&amp;item.isView())?View.VISIBLE:View.GONE}"
+            android:visibility="@{(item.data.isDraftStatus()&amp;&amp;item.isView()&amp;&amp;!item.hasPublishBadge())?View.VISIBLE:View.GONE}"
             app:layout_constraintEnd_toEndOf="@+id/ivCover"
             app:layout_constraintTop_toTopOf="@+id/ivCover"
             tools:visibility="gone" />
@@ -96,7 +111,7 @@
             android:text="@string/waiting_to_synthesize"
             android:textAppearance="@style/Text10"
             android:textColor="@color/func_special_dark"
-            android:visibility="@{(item.data.workStatus==WorkInfo.WAIT_STATE&amp;&amp;item.isView())?View.VISIBLE:View.GONE}"
+            android:visibility="@{(item.data.workStatus==WorkInfo.WAIT_STATE&amp;&amp;item.isView()&amp;&amp;!item.hasPublishBadge())?View.VISIBLE:View.GONE}"
             app:layout_constraintEnd_toEndOf="@+id/ivCover"
             app:layout_constraintTop_toTopOf="@+id/ivCover" />
 

@@ -501,6 +501,18 @@
     <string name="delete_episode_published_or_review_toast">This episode is published or under review and cannot be deleted.</string>
     <string name="episode_publish_locked_function_toast">This episode is published or under-review and this function is unavailable.</string>
     <string name="delete_episodes_confirm_warning">Are you sure you want to delete these episodes? This action cannot be undone.</string>
+    <string name="work_publish_action">Publish</string>
+    <string name="work_publish_episodes_title">Publish Episodes %1$s?</string>
+    <string name="work_publish_confirm_tip">These episodes will be submitted for review and made available to viewers once approved. This action cannot be undone.</string>
+    <string name="work_publish_success">You\'re all set!\nYour application has been submitted.</string>
+    <string name="work_publish_page_unavailable">Publishing page unavailable. Please try again later.</string>
+    <string name="work_publish_range_invalid">No episodes available to publish!</string>
+    <string name="work_publish_unpublished">Unpublished</string>
+    <string name="work_publish_in_review">In Review</string>
+    <string name="work_publish_review_failed">Review Failed</string>
+    <string name="work_publish_published">Published</string>
+    <string name="work_publish_published_all">Published &#183; All Eps</string>
+    <string name="work_publish_published_count">Published &#183; %1$d Eps</string>
 
     <string name="credits_validity_period">เครดิตมีอายุการใช้งาน 1 ปีตั้งแต่วันที่ซื้อ</string>
     <string name="credits_usage_description">สามารถใช้เครดิตสร้างละครสั้นของคุณเองได้</string>
