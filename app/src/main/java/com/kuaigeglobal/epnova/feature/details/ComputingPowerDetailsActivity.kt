@@ -64,7 +64,7 @@ class ComputingPowerDetailsActivity :
     private fun initView() {
         val tabs = listOf(getString(R.string.store_coins), getString(R.string.store_credits))
         val navigator = CommonNavigator(this)
-        navigator.isAdjustMode = false
+        navigator.isAdjustMode = true
         navigator.isReselectWhenLayout = false
         navigator.adapter = object : CommonNavigatorAdapter() {
             override fun getCount() = tabs.size
@@ -72,7 +72,7 @@ class ComputingPowerDetailsActivity :
             override fun getTitleView(context: Context, index: Int): IPagerTitleView {
                 val titleView = SimplePagerTitleView(context)
                 titleView.setIsSelectedBold(true)
-                titleView.setPadding(67.dp, 0, 67.dp, 0)
+//                titleView.setPadding(67.dp, 0, 67.dp, 0)
                 titleView.setLines(1)
                 titleView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16f)
                 titleView.gravity = Gravity.CENTER
