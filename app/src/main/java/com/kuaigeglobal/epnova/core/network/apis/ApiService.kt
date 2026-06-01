@@ -11,6 +11,7 @@ import com.kuaigeglobal.epnova.core.network.apis.entity.CreationStyleInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.DubbingGenStatusInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.EpisodeInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.ExampleWorkInfo
+import com.kuaigeglobal.epnova.core.network.apis.entity.IncomeSummaryInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.InspirationInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.LogOffStatusInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.MyTvSeriesListInfo
@@ -963,6 +964,12 @@ interface ApiService {
      */
     @POST(ApiConstants.QUERY_COINS_AND_POINTS_WALLET_INFO)
     suspend fun queryCoinsAndPointsWalletInfo(@Body body: UserTokenBody): ApiResponse<CoinsAndWalletInfo?>
+
+    /**
+     * 用户收益汇总
+     */
+    @POST(ApiConstants.USER_INCOME_SUMMARY)
+    suspend fun userIncomeSummary(@Body body: UserTokenBody): ApiResponse<IncomeSummaryInfo?>
 
     /**
      * 查询算力明细列表（分页）

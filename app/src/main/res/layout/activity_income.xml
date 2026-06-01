@@ -96,12 +96,13 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/spacing_s"
                     android:layout_marginEnd="55dp"
-                    android:text="$ 999.00"
+                    android:text="@{layout.availableBalanceText}"
                     android:textColor="?attr/textColor1"
                     app:layout_constraintEnd_toStartOf="@+id/tv_withdraw"
                     app:layout_constraintHorizontal_bias="0"
                     app:layout_constraintStart_toStartOf="@+id/tv_available_balance"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_available_balance" />
+                    app:layout_constraintTop_toBottomOf="@+id/tv_available_balance"
+                    tools:text="$ 999.00" />
 
                 <!-- 右侧：提现按钮 -->
                 <TextView
@@ -160,11 +161,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/spacing_xs"
-                    android:text="$1,284.50"
+                    android:text="@{layout.totalEarnedText}"
                     android:textColor="?attr/textColor1"
                     app:layout_constraintEnd_toEndOf="@+id/iv_total_earned_tooltip"
                     app:layout_constraintStart_toStartOf="@id/tv_total_earned"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_total_earned" />
+                    app:layout_constraintTop_toBottomOf="@+id/tv_total_earned"
+                    tools:text="$1,284.50" />
 
                 <TextView
                     android:id="@+id/tv_pending_amount"
@@ -194,11 +196,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/spacing_xs"
-                    android:text="$1,284.50"
+                    android:text="@{layout.pendingAmountText}"
                     android:textColor="?attr/textColor1"
                     app:layout_constraintEnd_toEndOf="@+id/iv_pending_amount_tooltip"
                     app:layout_constraintStart_toStartOf="@+id/tv_pending_amount"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_pending_amount" />
+                    app:layout_constraintTop_toBottomOf="@+id/tv_pending_amount"
+                    tools:text="$1,284.50" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -238,7 +241,7 @@
                     android:gravity="center"
                     android:paddingHorizontal="@dimen/spacing_m"
                     android:paddingVertical="@dimen/spacing_s"
-                    android:text="March 2026"
+                    android:text="@{layout.currentMonthText}"
                     android:textColor="?attr/textColor1"
                     app:layout_constraintBottom_toBottomOf="@+id/tv_exchange_rate"
                     app:layout_constraintEnd_toEndOf="parent"

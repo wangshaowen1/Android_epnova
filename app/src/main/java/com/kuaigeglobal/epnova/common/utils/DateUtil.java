@@ -693,6 +693,30 @@ public class DateUtil {
     }
 
     /**
+     *
+     * 入参格式要求为 yyyy-MM，例如 2026-06；输出格式跟随当前系统/应用语言，
+     * 英文环境示例为 June 2026。为空时返回空字符串，解析失败时返回原始入参，
+     * 避免因为异常格式导致页面无内容。
+     *
+     * @param month 年份-月份字符串，格式 yyyy-MM
+     * @return 本地化月份展示文案
+     */
+    public static String formatYearMonthDisplay(@Nullable String month) {
+        String raw = month;
+        if (raw == null || raw.trim().isEmpty()) {
+            return "";
+        }
+        try {
+            SimpleDateFormat source = new SimpleDateFormat("yyyy-MM", Locale.US);
+            SimpleDateFormat target = new SimpleDateFormat("MMMM yyyy", Locale.getDefault());
+            Date date = source.parse(raw);
+            return date == null ? raw : target.format(date);
+        } catch (Exception e) {
+            return raw;
+        }
+    }
+
+    /**
      * "yyyy-MM-dd HH:mm:ss"
      *
      * @return
