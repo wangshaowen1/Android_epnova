@@ -3,7 +3,6 @@ package com.kuaigeglobal.epnova.feature.splash.newer
 import androidx.databinding.ObservableField
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.base.viewmodel.AppRepositoryViewModel
 import com.kuaigeglobal.epnova.common.Constants
 import com.kuaigeglobal.epnova.common.ext.topActivity
@@ -16,7 +15,6 @@ import com.kuaigeglobal.epnova.core.response
 import com.kuaigeglobal.epnova.feature.recharge.CoinRepository
 import com.kuaigeglobal.epnova.router.AppNavigator
 import com.nhsd.basic.ext.getParcelableValue
-import com.nhsd.basic.ext.getResString
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -34,23 +32,15 @@ class FirstRechargeCreditsViewModel : AppRepositoryViewModel<CoinRepository>() {
     val minuteStr = MutableLiveData("00")
     val secondStr = MutableLiveData("00")
 
-    val currentPriceText = ObservableField(data?.basicPrice.orEmpty())
-    val payPriceText = ObservableField(data?.pricePointText.ifNotBlank() ?: data?.basicPrice.orEmpty())
+    private val pointConfig get() = data?.pointConfigVO
 
-    val titleText: String
-        get() = data?.giftTag.ifNotBlank() ?: R.string.newbie_new_user_exclusive_gift.getResString()
-
-    val currentCreditsText: String
-        get() = data?.basicPoint.ifNotBlank() ?: "0"
+    val currentPriceText = ObservableField(pointConfig?.pointPrice.orEmpty())
 
     val exclusiveCreditsText: String
-        get() = data?.giveTotalPoint.ifNotBlank() ?: "0"
+        get() = getTotalPointText() ?: "0"
 
-    val exclusiveBonusText: String
-        get() = data?.extraGiftText.ifNotBlank() ?: R.string.newbie_credits_bonus_detail.getResString(
-            data?.basicPoint.ifNotBlank() ?: "0",
-            data?.givePoint.ifNotBlank() ?: "0"
-        )
+    val payProductId: String?
+        get() = pointConfig?.appleProductId.ifNotBlank()
 
     /** 倒计时归零后通知 Dialog 关闭。 */
     val countdownFinished = MutableLiveData(false)
@@ -80,7 +70,6 @@ class FirstRechargeCreditsViewModel : AppRepositoryViewModel<CoinRepository>() {
     fun updateGooglePrice(priceText: String?) {
         val text = priceText.ifNotBlank() ?: return
         currentPriceText.set(text)
-        payPriceText.set(text)
     }
 
     fun googlePay() {
@@ -100,7 +89,7 @@ class FirstRechargeCreditsViewModel : AppRepositoryViewModel<CoinRepository>() {
         launchWithLoading(
             block = {
                 response(mRepo.createGoogleOrder(pointConfig.pointConfigCode)) {
-                    BillingManager.launchPurchase(topActivity, pointConfig.googleProductId ?: "", data?.orderNo ?: "")
+                    BillingManager.launchPurchase(topActivity, payProductId ?: "", data?.orderNo ?: "")
                 }
             },
             onError = {
@@ -139,6 +128,10 @@ class FirstRechargeCreditsViewModel : AppRepositoryViewModel<CoinRepository>() {
 
     private fun refreshCoinsAndPoints() {
         Global.refreshCoinsAndPoints()
+    }
+
+    private fun getTotalPointText(): String? {
+        return pointConfig?.pointName.ifNotBlank() ?: pointConfig?.pointNum?.toString()
     }
 
     override fun onCleared() {

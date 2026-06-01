@@ -65,10 +65,10 @@ class FirstRechargeCreditsDialog :
     }
 
     private fun initPrice() {
-        val googleProductId = mRealVM.data?.pointConfigVO?.googleProductId
-        BillingManager.loadNewerGiftPrice(googleProductId) { map ->
+        val payProductId = mRealVM.payProductId
+        BillingManager.loadNewerGiftPrice(payProductId) { map ->
             viewLifecycleOwner.lifecycleScope.launch {
-                mRealVM.updateGooglePrice(map[googleProductId]?.first)
+                mRealVM.updateGooglePrice(map[payProductId]?.first)
             }
         }
     }

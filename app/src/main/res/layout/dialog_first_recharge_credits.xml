@@ -60,10 +60,10 @@
                 android:text="@string/newbie_new_user_exclusive_gift"
                 android:textSize="20sp"
                 app:endColor="#F640C6"
+                app:layout_constrainedWidth="true"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constrainedWidth="true"
                 app:middleColor="#A947FF"
                 app:startColor="#3A44FF" />
 
@@ -92,10 +92,10 @@
                     android:text="@string/newbie_current_credits"
                     android:textColor="#666666"
                     android:textSize="11sp"
+                    app:layout_constrainedWidth="true"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constrainedWidth="true" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
                     android:id="@+id/tvCurrentCredits"
@@ -106,13 +106,13 @@
                     android:layout_marginTop="8dp"
                     android:gravity="center"
                     android:includeFontPadding="false"
-                    android:text="@{layout.currentCreditsText}"
+                    android:text="@{layout.data.pointConfigVO.pointNum+``}"
                     android:textColor="#333333"
                     android:textSize="20sp"
+                    app:layout_constrainedWidth="true"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tvCurrentCreditsLabel"
-                    app:layout_constrainedWidth="true"
                     tools:text="1500" />
 
                 <TextView
@@ -123,13 +123,13 @@
                     android:layout_marginTop="70dp"
                     android:gravity="center"
                     android:includeFontPadding="false"
-                    android:text="@{layout.currentPriceText}"
+                    android:text="@{layout.data.pointConfigVO.pointPrice}"
                     android:textColor="#666666"
                     android:textSize="12sp"
+                    app:layout_constrainedWidth="true"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constrainedWidth="true"
                     tools:text="$ 14.99" />
 
                 <View
@@ -169,10 +169,10 @@
                     android:text="@string/newbie_exclusive_bonus"
                     android:textColor="#6023F3"
                     android:textSize="12sp"
+                    app:layout_constrainedWidth="true"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constrainedWidth="true" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <com.kuaigeglobal.epnova.widget.GradientTextView
                     android:id="@+id/tvExclusiveCredits"
@@ -186,10 +186,10 @@
                     android:text="@{layout.exclusiveCreditsText}"
                     android:textSize="28sp"
                     app:endColor="#ffFF6E52"
+                    app:layout_constrainedWidth="true"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tvExclusiveBonusLabel"
-                    app:layout_constrainedWidth="true"
                     app:middleColor="#ffFF3997"
                     app:startColor="#ff8B33FF"
                     tools:text="1800" />
@@ -206,13 +206,13 @@
                     android:maxLines="2"
                     android:paddingHorizontal="9dp"
                     android:paddingVertical="6dp"
-                    android:text="@{layout.exclusiveBonusText}"
+                    android:text="@{layout.data.pointConfigVO.pointNum+layout.data.pointConfigVO.pointMarketingText}"
                     android:textSize="12sp"
                     app:endColor="#ffFF6E52"
+                    app:layout_constrainedWidth="true"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tvExclusiveCredits"
-                    app:layout_constrainedWidth="true"
                     app:middleColor="#ffFF3997"
                     app:startColor="#ff8B33FF"
                     tools:text="1500 + 300 Bouns" />
@@ -234,7 +234,7 @@
                         android:layout_gravity="center"
                         android:gravity="center"
                         android:includeFontPadding="false"
-                        android:text="@{layout.payPriceText}"
+                        android:text="@{layout.data.pointConfigVO.pointPrice}"
                         android:textColor="@color/white"
                         android:textSize="14sp"
                         tools:text="$ 14.99" />
