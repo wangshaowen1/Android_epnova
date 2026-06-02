@@ -256,7 +256,7 @@ class MyBalanceViewModel(
         if (isDialog) EventManager.onAppTrack(AppEvent.SF_CLICK_COMPUTE_RECHARGE_PAYMENT_BUTTON)
         launchWithLoading(
             block = {
-                response(mRepo.createGoogleOrder(item.pointConfigCode)) {
+                response(mRepo.createGoogleCreditsPreOrder(item.pointConfigCode)) {
                     BillingManager.launchPurchase(topActivity, item.googleProductId ?: "", data?.orderNo ?: "")
                 }
             },

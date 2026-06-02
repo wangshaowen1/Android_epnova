@@ -1332,6 +1332,12 @@ interface ApiService {
     suspend fun createOrder(@Body body: CreateOrderBody): ApiResponse<OrderNoData>
 
     /**
+     * googlePay创建预内部单
+     */
+    @POST(ApiConstants.CREATE_GOOGLE_PRE_ORDER)
+    suspend fun createGooglePreOrder(@Body body: CreateOrderBody): ApiResponse<OrderNoData>
+
+    /**
      * 验证票据
      */
     @POST(ApiConstants.VERIFY_PURCHASED)

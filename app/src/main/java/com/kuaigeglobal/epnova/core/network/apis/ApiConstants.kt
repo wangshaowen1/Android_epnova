@@ -930,6 +930,11 @@ object ApiConstants {
     const val CREATE_ORDER = "trade/pay/google/coin/preOrder"
 
     /**
+     * googlePay创建预内部单
+     */
+    const val CREATE_GOOGLE_PRE_ORDER = "trade/pay/google/createPreOrder"
+
+    /**
      * 验证票据
      */
     const val VERIFY_PURCHASED = "trade/pay/google/coin/verifyReceipt"

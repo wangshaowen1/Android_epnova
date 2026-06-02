@@ -20,11 +20,19 @@ class CoinRepository : AppRepository() {
     suspend fun pointConfigList() = withContext(Dispatchers.IO) { api.pointConfigList(UserTokenBody()) }
 
     /**
-     * 创建 Google 支付订单（金币类商品，Android 端通用）
-     * @param goodsCode 商品编号（算力配置表编号）
+     * 创建 Google 支付订单（金币类商品）
+     * @param goodsCode 金币商品配置编码
      */
     suspend fun createGoogleOrder(goodsCode: String?) = withContext(Dispatchers.IO) {
         api.createOrder(CreateOrderBody(goodsCode = goodsCode, goodsType = 1, mobileType = 1))
+    }
+
+    /**
+     * 创建 Google 支付订单（算力类商品）
+     * @param goodsCode 算力商品配置编码
+     */
+    suspend fun createGoogleCreditsPreOrder(goodsCode: String?) = withContext(Dispatchers.IO) {
+        api.createGooglePreOrder(CreateOrderBody(goodsCode = goodsCode, goodsType = 1, mobileType = 1))
     }
 
     /**

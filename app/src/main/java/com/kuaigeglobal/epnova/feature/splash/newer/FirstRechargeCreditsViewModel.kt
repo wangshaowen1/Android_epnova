@@ -3,6 +3,7 @@ package com.kuaigeglobal.epnova.feature.splash.newer
 import androidx.databinding.ObservableField
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.base.viewmodel.AppRepositoryViewModel
 import com.kuaigeglobal.epnova.common.Constants
 import com.kuaigeglobal.epnova.common.ext.topActivity
@@ -15,6 +16,7 @@ import com.kuaigeglobal.epnova.core.response
 import com.kuaigeglobal.epnova.feature.recharge.CoinRepository
 import com.kuaigeglobal.epnova.router.AppNavigator
 import com.nhsd.basic.ext.getParcelableValue
+import com.nhsd.basic.ext.showToast
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -100,8 +102,8 @@ class FirstRechargeCreditsViewModel : AppRepositoryViewModel<CoinRepository>() {
 
         launchWithLoading(
             block = {
-                response(mRepo.createGoogleOrder(pointConfig.pointConfigCode)) {
-                    BillingManager.launchPurchase(topActivity, payProductId ?: "", data?.orderNo ?: "")
+                response(mRepo.createGoogleCreditsPreOrder(pointConfig.pointConfigCode)) {
+                    BillingManager.launchPurchase(topActivity, data?.googleProductId ?: "", data?.orderNo ?: "")
                 }
             },
             onError = {
