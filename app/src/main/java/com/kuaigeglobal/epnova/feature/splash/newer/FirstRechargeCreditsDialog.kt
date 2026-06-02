@@ -31,7 +31,7 @@ class FirstRechargeCreditsDialog :
             scene: Int = SCENE_OTHER,
             firstRechargeDialogData: FirstRechargeCreditsDialogData?
         ): FirstRechargeCreditsDialog? {
-            if (firstRechargeDialogData?.isNeedShow() == false) return null
+            if (firstRechargeDialogData?.isNeedShow() != true) return null
             val activity = ActivityUtils.getTopActivity() as? FragmentActivity ?: return null
             val dialog = FirstRechargeCreditsDialog().apply {
                 arguments = bundleOf(
@@ -66,6 +66,7 @@ class FirstRechargeCreditsDialog :
 
     private fun initPrice() {
         val payProductId = mRealVM.payProductId
+        if (payProductId.isNullOrBlank()) return
         BillingManager.loadNewerGiftPrice(payProductId) { map ->
             viewLifecycleOwner.lifecycleScope.launch {
                 mRealVM.updateGooglePrice(map[payProductId]?.first)

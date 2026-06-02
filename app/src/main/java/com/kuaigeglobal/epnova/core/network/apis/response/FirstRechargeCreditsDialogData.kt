@@ -39,9 +39,6 @@ import kotlinx.parcelize.Parcelize
  */
 @Parcelize
 data class FirstRechargeCreditsDialogData(
-    val pricePointText: String? = null,
-    val extraGiftText: String? = null,
-    val giftTag: String? = null,
     val popupInvalidTime: Long? = null,
     val needShow: Boolean? = null,
     val imageUrl: String? = null,
@@ -57,8 +54,9 @@ data class FirstRechargeCreditsDialogData(
 data class FirstRechargeCreditsPointConfig(
     val pointConfigId: String? = null,
     val pointConfigCode: String? = null,
-    val appleProductId: String? = null,
+    val googleProductId: String? = null,
     val pointName: String? = null,
+    val givePointNum: Long? = null,
     val pointPrice: String? = null,
     val pointNum: Long? = null,
     val pointMarketingTime: Long? = null,

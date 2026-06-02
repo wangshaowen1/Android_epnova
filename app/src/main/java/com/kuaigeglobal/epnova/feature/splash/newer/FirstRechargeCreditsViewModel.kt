@@ -34,13 +34,14 @@ class FirstRechargeCreditsViewModel : AppRepositoryViewModel<CoinRepository>() {
 
     private val pointConfig get() = data?.pointConfigVO
 
-    val currentPriceText = ObservableField(pointConfig?.pointPrice.orEmpty())
-
-    val exclusiveCreditsText: String
-        get() = getTotalPointText() ?: "0"
+    val currentPriceText = ObservableField("")
+    val payPriceText = ObservableField("")
+    val currentCreditsText = ObservableField("0")
+    val exclusiveCreditsText = ObservableField("0")
+    val exclusiveBonusText = ObservableField("")
 
     val payProductId: String?
-        get() = pointConfig?.appleProductId.ifNotBlank()
+        get() = pointConfig?.googleProductId.ifNotBlank()
 
     /** 倒计时归零后通知 Dialog 关闭。 */
     val countdownFinished = MutableLiveData(false)
@@ -57,7 +58,8 @@ class FirstRechargeCreditsViewModel : AppRepositoryViewModel<CoinRepository>() {
 
     override fun onCreate() {
         super.onCreate()
-        val remainingTime = getRemainingTime(data?.popupInvalidTime)
+        refreshDisplayData()
+        val remainingTime = getRemainingTime(data?.popupInvalidTime ?: pointConfig?.pointMarketingTime)
         if (remainingTime > 0) {
             startCountDown(remainingTime)
         }
@@ -70,6 +72,16 @@ class FirstRechargeCreditsViewModel : AppRepositoryViewModel<CoinRepository>() {
     fun updateGooglePrice(priceText: String?) {
         val text = priceText.ifNotBlank() ?: return
         currentPriceText.set(text)
+        payPriceText.set(text)
+    }
+
+    private fun refreshDisplayData() {
+        val priceText = getPriceText()
+        currentPriceText.set(priceText)
+        payPriceText.set(priceText)
+        currentCreditsText.set(getCurrentPointText())
+        exclusiveCreditsText.set(getTotalPointText())
+        exclusiveBonusText.set(getBonusText())
     }
 
     fun googlePay() {
@@ -123,15 +135,31 @@ class FirstRechargeCreditsViewModel : AppRepositoryViewModel<CoinRepository>() {
     private fun getRemainingTime(time: Long?): Long {
         if (time == null || time <= 0) return 0L
         val now = System.currentTimeMillis()
-        return if (time > now) time - now else time
+        return if (time > now) time - now else 0L
     }
 
     private fun refreshCoinsAndPoints() {
         Global.refreshCoinsAndPoints()
     }
 
-    private fun getTotalPointText(): String? {
-        return pointConfig?.pointName.ifNotBlank() ?: pointConfig?.pointNum?.toString()
+    private fun getPriceText(): String {
+        return pointConfig?.pointPrice ?: ""
+    }
+
+    private fun getBonusText(): String {
+        val pointText = pointConfig?.pointNum?.toString()
+        val marketingText = pointConfig?.pointMarketingText
+        return pointText + marketingText
+    }
+
+    private fun getCurrentPointText(): String {
+        return pointConfig?.pointNum?.toString() ?: "0"
+    }
+
+    private fun getTotalPointText(): String {
+        val num = pointConfig?.pointNum ?: 0
+        val give = pointConfig?.givePointNum ?: 0
+        return (num + give).toString()
     }
 
     override fun onCleared() {
