@@ -60,13 +60,7 @@ class ComputingPowerDetailsAdapter(
                 oldItem: ComputingPowerDetailsInfo,
                 newItem: ComputingPowerDetailsInfo
             ): Boolean {
-                val oldCode = oldItem.pointDetailCode ?: oldItem.coinsDetailCode
-                val newCode = newItem.pointDetailCode ?: newItem.coinsDetailCode
-                return if (oldCode != null && newCode != null) {
-                    oldCode == newCode
-                } else {
-                    oldItem == newItem
-                }
+                return oldItem == newItem
             }
 
             override fun areContentsTheSame(
