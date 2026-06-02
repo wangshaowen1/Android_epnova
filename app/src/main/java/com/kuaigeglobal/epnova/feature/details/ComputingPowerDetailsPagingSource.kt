@@ -6,6 +6,7 @@ import com.kuaigeglobal.epnova.core.network.apis.ApiException
 import com.kuaigeglobal.epnova.core.network.apis.ApiFactory
 import com.kuaigeglobal.epnova.core.network.apis.request.DetailTypeBody
 import com.kuaigeglobal.epnova.core.network.apis.response.ComputingPowerDetailsInfo
+import com.kuaigeglobal.epnova.feature.details.child.ComputingPowerDetailsTabFragment
 
 /**
  * *****************************************
@@ -16,8 +17,12 @@ import com.kuaigeglobal.epnova.core.network.apis.response.ComputingPowerDetailsI
  * @Version: 1.0
  * *****************************************
  * @param type 明细类型（0-全部、1-收入明细、2-消耗明细）
+ * @param assetType 资产类型（Coins/Credits）
  */
-class ComputingPowerDetailsPagingSource(private val type: Int) : PagingSource<Int, ComputingPowerDetailsInfo>() {
+class ComputingPowerDetailsPagingSource(
+    private val type: Int,
+    private val assetType: Int
+) : PagingSource<Int, ComputingPowerDetailsInfo>() {
 
     override fun getRefreshKey(state: PagingState<Int, ComputingPowerDetailsInfo>): Int? {
         return null
@@ -27,7 +32,11 @@ class ComputingPowerDetailsPagingSource(private val type: Int) : PagingSource<In
         return try {
             val pageNum = params.key ?: 1
             val body = DetailTypeBody(type, pageNum, params.loadSize)
-            val apiResponse = ApiFactory.apiService.queryPointDetailList(body)
+            val apiResponse = if (assetType == ComputingPowerDetailsTabFragment.ASSET_TYPE_CREDITS) {
+                ApiFactory.apiService.queryPointDetailList(body)
+            } else {
+                ApiFactory.apiService.queryCoinsDetailList(body)
+            }
             if (apiResponse.isSuccess) {
                 val prevKey = if (pageNum > 1) pageNum - 1 else null
                 val items: ArrayList<ComputingPowerDetailsInfo> = ArrayList()

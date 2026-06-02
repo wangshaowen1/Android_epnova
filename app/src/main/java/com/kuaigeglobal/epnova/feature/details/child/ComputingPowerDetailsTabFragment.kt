@@ -43,6 +43,8 @@ class ComputingPowerDetailsTabFragment :
         arguments?.getInt(KEY_ASSET_TYPE, ASSET_TYPE_COINS) ?: ASSET_TYPE_COINS
     }
 
+    private var viewPagerAdapter: FragmentStateCacheAdapter? = null
+
     override fun onPrepareView() {
         super.onPrepareView()
         initView()
@@ -100,8 +102,9 @@ class ComputingPowerDetailsTabFragment :
                 assetType = assetType
             )
         )
-        val viewPagerAdapter = FragmentStateCacheAdapter(childFragmentManager, lifecycle)
-        viewPagerAdapter.setFragments(fragmentList)
+        viewPagerAdapter = FragmentStateCacheAdapter(childFragmentManager, lifecycle).apply {
+            setFragments(fragmentList)
+        }
         binding.viewPager.adapter = viewPagerAdapter
         ViewPagerHelper.bind(binding.magicIndicator, binding.viewPager)
 
@@ -118,5 +121,16 @@ class ComputingPowerDetailsTabFragment :
         binding.viewPager.setCurrentItem(ComputingPowerDetailsFragment.TYPE_ALL, false)
         binding.magicIndicator.onPageSelected(ComputingPowerDetailsFragment.TYPE_ALL)
         binding.magicIndicator.onPageScrolled(ComputingPowerDetailsFragment.TYPE_ALL, 0f, 0)
+        binding.viewPager.post {
+            scrollAllListToTop()
+        }
+    }
+
+    /**
+     * 滚动All-Tab项列表至顶部
+     */
+    private fun scrollAllListToTop() {
+        (viewPagerAdapter?.getFragment(ComputingPowerDetailsFragment.TYPE_ALL) as? ComputingPowerDetailsFragment)
+            ?.scrollToTop()
     }
 }

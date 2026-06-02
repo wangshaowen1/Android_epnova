@@ -9,6 +9,7 @@ import com.kuaigeglobal.epnova.base.viewmodel.AppRepositoryViewModel
 import com.kuaigeglobal.epnova.common.Constant
 import com.kuaigeglobal.epnova.core.AppRepository
 import com.kuaigeglobal.epnova.core.network.apis.response.ComputingPowerDetailsInfo
+import com.kuaigeglobal.epnova.feature.details.child.ComputingPowerDetailsTabFragment
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -19,9 +20,12 @@ import kotlinx.coroutines.flow.Flow
  * @Data: 2025/9/10/周三  17:50
  * @Version: 1.0
  * *****************************************
+ *  * assetType 资产类型（Coins/Credits）
+ *  * typeProtagonist 明细类型（0-全部、1-收入明细、2-消耗明细）
  */
 class ComputingPowerDetailsFragmentViewModel : AppRepositoryViewModel<AppRepository>() {
 
+    private val assetType by lazy { mBundle.getInt(ComputingPowerDetailsFragment.ASSET_TYPE, ComputingPowerDetailsTabFragment.ASSET_TYPE_COINS) }
     private val typeProtagonist by lazy { mBundle.getInt(ComputingPowerDetailsFragment.TYPE_PROTAGONIST, ComputingPowerDetailsFragment.TYPE_ALL) }
 
     /**
@@ -36,7 +40,7 @@ class ComputingPowerDetailsFragmentViewModel : AppRepositoryViewModel<AppReposit
                 prefetchDistance = Constant.Paged.PREFETCH_DISTANCE,
             ),
             pagingSourceFactory = {
-                ComputingPowerDetailsPagingSource(typeProtagonist)
+                ComputingPowerDetailsPagingSource(typeProtagonist, assetType)
             }).flow.cachedIn(viewModelScope)
     }
 }

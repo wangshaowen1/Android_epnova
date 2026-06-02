@@ -2,6 +2,7 @@ package com.kuaigeglobal.epnova.feature.details
 
 import android.os.Bundle
 import androidx.lifecycle.lifecycleScope
+import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.ext.startRefreshWithAdapter
 import com.kuaigeglobal.epnova.databinding.FragmentPointsDetailBinding
 import com.kuaigeglobal.epnova.feature.details.child.ComputingPowerDetailsTabFragment
@@ -9,6 +10,7 @@ import com.kuaigeglobal.epnova.widget.decoration.TopSpaceDecoration
 import com.kuaigeglobal.epnova.widget.stateful.paging.MyMultiStatePagingFooterAdapter
 import com.nhsd.basic.BaseViewModelFragment
 import com.nhsd.basic.ext.dp
+import com.nhsd.basic.ext.getResString
 import kotlinx.coroutines.launch
 
 /**
@@ -73,7 +75,8 @@ class ComputingPowerDetailsFragment :
                 computingPowerDetailsAdapter.withLoadStateFooter(
                     MyMultiStatePagingFooterAdapter(
                         hostAdapter = computingPowerDetailsAdapter,
-                        noMoreThreshold = 12
+                        noMoreThreshold = 12,
+                        loadMoreLoadEnd = R.string.transaction_limit_90days.getResString()
                     ) { computingPowerDetailsAdapter.retry() })
         }
         binding.srl.startRefreshWithAdapter(
@@ -88,5 +91,10 @@ class ComputingPowerDetailsFragment :
                 computingPowerDetailsAdapter.submitData(it)
             }
         }
+    }
+
+    fun scrollToTop() {
+        if (view == null) return
+        binding.recyclerView.scrollToPosition(0)
     }
 }

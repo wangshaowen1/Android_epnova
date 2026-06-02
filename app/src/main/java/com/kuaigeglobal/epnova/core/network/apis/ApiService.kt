@@ -1008,6 +1008,12 @@ interface ApiService {
     suspend fun queryPointDetailList(@Body body: DetailTypeBody): ApiResponse<PagedList<ComputingPowerDetailsInfo>?>
 
     /**
+     * 查询金币明细列表（分页）
+     */
+    @POST(ApiConstants.QUERY_COINS_DETAIL_LIST)
+    suspend fun queryCoinsDetailList(@Body body: DetailTypeBody): ApiResponse<PagedList<ComputingPowerDetailsInfo>?>
+
+    /**
      * 算力信息配置列表
      */
     @POST(ApiConstants.COINS_CONFIG_LIST)
