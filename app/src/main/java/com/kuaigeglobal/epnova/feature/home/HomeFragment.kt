@@ -59,6 +59,17 @@ class HomeFragment :
         initListener()
     }
 
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+        if (hidden) return
+        mRealVM.getRewardUserUncheck()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mRealVM.getRewardUserUncheck()
+    }
+
     private fun initListener() {
         binding.btnSearch.setOnSingleClickListener {
             SearchActivity.start(mActivity)

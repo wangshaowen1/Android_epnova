@@ -373,9 +373,10 @@
                         android:layout_marginEnd="8dp"
                         android:background="@drawable/bg_theme_color1_r50"
                         android:gravity="center"
+                        setVisible="@{layout.unCheckNum>0}"
                         android:minHeight="22dp"
                         android:paddingHorizontal="6dp"
-                        android:text="@{layout.unCheckNum}"
+                        android:text="@{`+`+layout.unCheckNum}"
                         android:textColor="?attr/textColor1"
                         tools:text="+1000" />
 

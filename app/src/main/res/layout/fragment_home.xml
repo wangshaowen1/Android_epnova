@@ -77,6 +77,8 @@
                         android:layout_height="wrap_content"
                         android:background="@drawable/bg_theme_color1_r50"
                         android:paddingHorizontal="@dimen/spacing_xs"
+                        setVisible="@{layout.unCheckNum>0}"
+                        android:text="@{`+`+layout.unCheckNum}"
                         android:textColor="@color/white"
                         android:textSize="10sp"
                         android:translationX="8dp"

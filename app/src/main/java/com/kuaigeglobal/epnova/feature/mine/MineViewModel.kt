@@ -2,6 +2,7 @@ package com.kuaigeglobal.epnova.feature.mine
 
 import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
+import androidx.databinding.ObservableInt
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.base.viewmodel.AppRepositoryViewModel
 import com.kuaigeglobal.epnova.core.AppRepository
@@ -32,7 +33,7 @@ class MineViewModel : AppRepositoryViewModel<AppRepository>() {
     val credits by lazy { ObservableField("0") }
 
     //福利中心-未领取奖励总额
-    val unCheckNum by lazy { ObservableField("+0") }
+    val unCheckNum by lazy { ObservableInt() }
 
     val workCourseBanner by lazy { ObservableField<SimpleBannerInfo>() }
 
@@ -101,21 +102,21 @@ class MineViewModel : AppRepositoryViewModel<AppRepository>() {
      */
     private fun getRewardUserUncheck() {
         if (User.get().isVisitor) {
-            unCheckNum.set("+0")
+            unCheckNum.set(0)
             return
         }
         launch(block = {
             response(
                 bean = mRepo.api.rewardUserUncheck(UserTokenBody()),
                 result = {
-                    unCheckNum.set("+${data?.unCheckNum ?: 0}")
+                    unCheckNum.set(data?.unCheckNum ?: 0)
                 },
                 error = {
-                    unCheckNum.set("+0")
+                    unCheckNum.set(0)
                 }
             )
         }, onError = {
-            unCheckNum.set("+0")
+            unCheckNum.set(0)
         })
     }
 

@@ -1,5 +1,6 @@
 package com.kuaigeglobal.epnova.feature.home
 
+import androidx.databinding.ObservableInt
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.paging.ExperimentalPagingApi
@@ -11,29 +12,27 @@ import androidx.paging.map
 import com.kuaigeglobal.epnova.base.viewmodel.AppRepositoryViewModel
 import com.kuaigeglobal.epnova.core.AppRepository
 import com.kuaigeglobal.epnova.core.EntityCache
+import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.db.mapper.toDomain
 import com.kuaigeglobal.epnova.core.ext.launch
 import com.kuaigeglobal.epnova.core.network.apis.entity.BannerInfo
-import com.kuaigeglobal.epnova.core.network.apis.entity.WorkInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.WorkVOInfo
 import com.kuaigeglobal.epnova.core.network.apis.request.BannerBody
+import com.kuaigeglobal.epnova.core.network.apis.request.UserTokenBody
 import com.kuaigeglobal.epnova.core.network.apis.response.HomeBookShelfData
 import com.kuaigeglobal.epnova.core.response
 import com.kuaigeglobal.epnova.feature.home.data.VideoRemoteMediator
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
 
 
 class HomeViewModel : AppRepositoryViewModel<AppRepository>() {
 
     val bannerData = MutableLiveData<List<BannerInfo>>()
+    val unCheckNum = ObservableInt()
     private val bannerCache: EntityCache<List<BannerInfo>> by lazy {
         object : EntityCache<List<BannerInfo>>("HomeBannerList") {}
     }
@@ -49,6 +48,7 @@ class HomeViewModel : AppRepositoryViewModel<AppRepository>() {
         bookShelfCache.cache?.let { bookShelfData.value = it }
         getData()
         loadData()
+        getRewardUserUncheck()
     }
 
     fun getData() {
@@ -66,6 +66,26 @@ class HomeViewModel : AppRepositoryViewModel<AppRepository>() {
                 bookShelfData.value = data
                 bookShelfCache.cache(data) // 更新缓存
             })
+        })
+    }
+
+    fun getRewardUserUncheck() {
+        if (User.get().isVisitor) {
+            unCheckNum.set(0)
+            return
+        }
+        launch(block = {
+            response(
+                bean = mRepo.api.rewardUserUncheck(UserTokenBody()),
+                result = {
+                    unCheckNum.set(data?.unCheckNum ?: 0)
+                },
+                error = {
+                    unCheckNum.set(0)
+                }
+            )
+        }, onError = {
+            unCheckNum.set(0)
         })
     }
 
