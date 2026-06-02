@@ -155,26 +155,26 @@ class SeriesViewModel : AppRepositoryViewModel<SeriesRepository>() {
     ) {
         val info = workInfo.value ?: return
         if (!info.isPublishButtonEnabled()) return
-        if (!info.hasFirstPublishSucceeded()) {
-            openPublishPage(info.workContractPublishPageUrl)
-            return
-        }
         requestWithLoading(
             apiBlock = { mRepo.getWorkPublishStatus(workId) },
             onSuccess = {
                 val status = data
                 if (status == null) {
                     R.string.tip_publish_no_episode_available.getResString().showToast()
-                } else if (!status.canApply()) {
+                } else if (status.unavailable()) {
                     val message = status.reasonMsg?.takeIf { it.isNotBlank() }
                         ?: R.string.tip_publish_no_episode_available.getResString()
                     message.showToast()
-                } else if (status.needLegalInfo()) {
+                } else if (status.shouldOpenH5()) {
                     openPublishPage(info.workContractPublishPageUrl)
-                } else if (!status.hasValidEpisodeRange()) {
-                    R.string.tip_publish_no_episode_available.getResString().showToast()
+                } else if (status.shouldNativePublish()) {
+                    if (status.hasValidEpisodeRange()) {
+                        confirmNativePublish(status)
+                    } else {
+                        R.string.tip_publish_no_episode_available.getResString().showToast()
+                    }
                 } else {
-                    confirmNativePublish(status)
+                    R.string.tip_publish_no_episode_available.getResString().showToast()
                 }
             }
         )

@@ -219,10 +219,6 @@ data class WorkInfo(
         return showPublishButton() && !isAllEpisodesPublished()
     }
 
-    fun hasFirstPublishSucceeded(): Boolean {
-        return (publishedEpisodeCnt ?: 0) > 0
-    }
-
     fun isPublishReviewFailed(): Boolean {
         return coverBadgeType == COVER_BADGE_REVIEW_FAILED ||
                 globalPublishStatus == GLOBAL_PUBLISH_STATUS_FAILED ||

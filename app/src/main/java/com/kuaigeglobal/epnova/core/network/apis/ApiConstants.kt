@@ -416,12 +416,12 @@ object ApiConstants {
     /**
      * 查询作品发行状态
      */
-    const val WORK_PUBLISH_STATUS = "h5/work/publish/status"
+    const val WORK_PUBLISH_STATUS = "work/publish/status"
 
     /**
      * 提交作品剧集集中审核
      */
-    const val WORK_PUBLISH_SUBMIT = "h5/work/publish/submit"
+    const val WORK_PUBLISH_SUBMIT = "work/publish/submit"
 
     /**
      * 获取订单状态

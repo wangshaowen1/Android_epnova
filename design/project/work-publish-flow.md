@@ -8,24 +8,20 @@
 
 ## 1. 流程总览
 
-用户在作品详情页点击底部 `Publish` 后，先判断该作品是否为首次发布：
+用户在作品详情页点击底部 `Publish` 后，先请求发布状态接口，由接口判断发行入口：
 
-- 首次发布：进入发布 H5 页面，由 H5 完成协议确认、首批发布集数确认、个人资料填写和提交。首批发布最低门槛是前 15 集全部已合成，实际提交范围按第 1 集起连续已合成集动态计算。
-- 非首次发布：Android 原生侧处理后续剧集发布，包括可发布集判断、顺序发布校验、驳回集提醒、二次确认和提交审核。
-- 2026-06-01 确认：Android 后续发布通过发布状态接口 `/h5/work/publish/status` 获取 `canApplyFlag/reasonMsg/startEpisode/endEpisode/auditBatchId`，不再依赖本地已加载分页列表自行计算完整可发布范围。
-- 2026-06-02 补充：进入发布状态接口前，Android 需要先看作品是否已有首批发行成功记录。以 `publishedEpisodeCnt > 0` 作为“首次发行已成功”的判断；若 `publishedEpisodeCnt` 为空或为 `0`，即使用户之前已填写过法定姓名/邮箱但首批审核失败，也仍按首次发行未成功处理，直接打开 H5，不走原生后续发布。
+- H5 首次发行页：由 H5 完成协议确认、首批发布集数确认、个人资料填写和提交。首批发布最低门槛是前 15 集全部已合成，实际提交范围按第 1 集起连续已合成集动态计算。
+- 原生发行页：Android 原生侧处理后续剧集发布，包括可发布集判断、顺序发布校验、驳回集提醒、二次确认和提交审核。
+- 2026-06-02 确认：发布状态接口改为 `/work/publish/status`，提交接口改为 `/work/publish/submit`。Android 点击 `Publish` 后统一先请求状态接口，由接口返回的 `publishEntryType` 和 `firstPublishFlag` 判断是否首次/H5/原生，不再用本地 `publishedEpisodeCnt` 预判首次。
 
 ```mermaid
 flowchart LR
-    A[作品详情页点击 Publish] --> B{publishedEpisodeCnt > 0}
-    B -- 否 --> F[打开发布 H5 页面]
-    B -- 是 --> C[查询 /h5/work/publish/status]
-    C --> D{canApplyFlag == 1}
-    D -- 否 --> E[展示 reasonMsg]
-    D -- 是 --> G{needLegalInfoFlag == 1}
-    G -- 是 --> F
-    G -- 否 --> H[原生二次确认]
-    H --> I[提交 /h5/work/publish/submit]
+    A[作品详情页点击 Publish] --> B[查询 /work/publish/status]
+    B --> C{publishEntryType}
+    C -- 0 不可发布 --> D[展示 reasonMsg]
+    C -- 1 H5首次发行页 --> F[打开发布 H5 页面]
+    C -- 2 原生发行页 --> H[原生二次确认]
+    H --> I[提交 /work/publish/submit]
     F --> J[H5 发布成功回调]
     I --> K[提交后台审核成功]
     J --> L[刷新作品详情和剧集状态]
@@ -37,7 +33,7 @@ flowchart LR
 #### 查询作品发行状态
 
 ```text
-POST /h5/work/publish/status
+POST /work/publish/status
 ```
 
 请求体：
@@ -57,18 +53,20 @@ POST /h5/work/publish/status
 | `endEpisode` | int | 当前可提交剧集区间结束集数，包含 |
 | `canApplyFlag` | int | 是否可以继续提交申请，`0=否`，`1=是` |
 | `reasonMsg` | string | `canApplyFlag=0` 时给前端展示的业务提示文案 |
+| `publishEntryType` | int | 发行入口类型：`0=不可发布`，`1=H5 首次发行页`，`2=原生发行页` |
+| `firstPublishFlag` | int | 是否首次发行：`0=否`，`1=是` |
 
 Android 行为：
 
-- 请求 `/h5/work/publish/status` 前，先用 `publishedEpisodeCnt > 0` 判断首批是否已经发行成功；未成功时直接打开 H5。首次审核失败、已填资料但未产生已发布剧集，也仍走 H5。
-- `canApplyFlag=0`：不继续发布，直接展示 `reasonMsg`。默认用 Toast；如果文案较长或后端返回多行提示，可用通用弹窗展示。
-- `needLegalInfoFlag=1`：打开 H5。该字段仍作为接口侧兜底判断，但不能替代 `publishedEpisodeCnt` 对首批是否成功的判断。
-- `needLegalInfoFlag=0` 且 `canApplyFlag=1`：走 Android 原生后续发布确认和提交。
+- `publishEntryType=0`：不继续发布，直接展示 `reasonMsg`。默认用 Toast；如果文案较长或后端返回多行提示，可用通用弹窗展示。
+- `publishEntryType=1` 或 `firstPublishFlag=1`：打开 H5 首次发行页；首次审核失败回来仍由接口返回 H5 入口，Android 不本地判断。
+- `publishEntryType=2`：走 Android 原生后续发布确认和提交。
+- `publishEntryType` 缺失时，`canApplyFlag=0`、`needLegalInfoFlag=1` 作为旧字段兼容兜底。
 
 #### 提交作品剧集集中审核
 
 ```text
-POST /h5/work/publish/submit
+POST /work/publish/submit
 ```
 
 请求体：
@@ -174,16 +172,15 @@ Your application has been submitted.
 
 ## 3. 非首次发布流程，Android 原生负责
 
-非首次发布指该作品已经发布过首批剧集，且 `/h5/work/publish/status` 返回 `needLegalInfoFlag=0` 的场景。后续再次点击 `Publish` 时走 Android 原生逻辑。
+非首次发布指 `/work/publish/status` 返回 `publishEntryType=2` 的场景。后续再次点击 `Publish` 时走 Android 原生逻辑。
 
 ```mermaid
 flowchart LR
     A[点击 Publish] --> B[查询发布状态接口]
-    B --> C{canApplyFlag == 1}
-    C -- 否 --> D[Toast/Dialog: reasonMsg]
-    C -- 是 --> E{needLegalInfoFlag == 1}
-    E -- 是 --> F[打开 H5]
-    E -- 否 --> G[Publish Episodes startEpisode-endEpisode?]
+    B --> C{publishEntryType}
+    C -- 0 不可发布 --> D[Toast/Dialog: reasonMsg]
+    C -- 1 H5 --> F[打开 H5]
+    C -- 2 原生 --> G[Publish Episodes startEpisode-endEpisode?]
     G --> H[提交 submit 接口]
     H --> I[成功 Toast]
 ```
@@ -214,7 +211,7 @@ You cannot skip episodes.
 判断条件：
 
 - 发布状态接口返回 `canApplyFlag=1`。
-- 发布状态接口返回 `needLegalInfoFlag=0`。
+- 发布状态接口返回 `publishEntryType=2`。
 - `startEpisode`、`endEpisode` 有有效值。
 - 本次发布范围内没有曾经被拒审的集。
 
@@ -236,7 +233,7 @@ Cancel / Publish
 判断条件：
 
 - 发布状态接口返回 `canApplyFlag=1`。
-- 发布状态接口返回 `needLegalInfoFlag=0`。
+- 发布状态接口返回 `publishEntryType=2`。
 - `startEpisode`、`endEpisode` 有有效值。
 - 本次发布范围内包含曾经被拒审的集。
 
@@ -267,16 +264,16 @@ Your application has been submitted.
 
 ## 4. Android 与 H5 交互边界
 
-Android 不实现发布 H5 页面。已确认：Android 先通过 `publishedEpisodeCnt > 0` 判断首批是否已经发行成功；首批未成功时进入 H5。首批已成功后，再通过发布状态接口判断是否走原生后续发布或 H5 兜底。
+Android 不实现发布 H5 页面。已确认：Android 点击 `Publish` 后统一请求 `/work/publish/status`，通过接口返回的 `publishEntryType` 和 `firstPublishFlag` 判断是否进入 H5 或原生后续发布。
 
 Android 侧需要负责：
 
-1. 在作品详情页点击 `Publish` 后，先判断 `publishedEpisodeCnt > 0`；为空或为 `0` 时直接打开发布 H5 页面。
-2. 首批已发行成功后，再请求 `/h5/work/publish/status`；`needLegalInfoFlag=1` 时打开发布 H5 页面作为接口侧兜底。
+1. 在作品详情页点击 `Publish` 后，先请求 `/work/publish/status`。
+2. `publishEntryType=1` 或 `firstPublishFlag=1` 时打开发布 H5 页面；`needLegalInfoFlag=1` 作为旧字段兜底。
 3. 打开 H5 时传入 H5 所需的上下文参数，例如作品 ID、登录 token、语言、客户端类型等。
 4. 接收 H5 发布结果通知。
 5. H5 发布成功后刷新作品详情、剧集列表和发布状态。
-6. 首批已发行成功、`needLegalInfoFlag=0` 且 `canApplyFlag=1` 时走原生逻辑，不进入 H5。
+6. `publishEntryType=2` 且 `canApplyFlag=1` 时走原生逻辑，不进入 H5。
 7. 原生提交审核成功后刷新作品详情、剧集列表和发布状态，并通知我的创作列表刷新。
 
 H5 侧需要负责：
@@ -295,8 +292,9 @@ H5 侧需要负责：
 | 字段含义 | 用途 |
 | --- | --- |
 | 作品 ID | 打开 H5、提交后续发布、刷新详情 |
-| `publishedEpisodeCnt` | 判断首批是否已经发行成功；为 0 时直接打开 H5 |
-| `needLegalInfoFlag` | 首批已成功后的 H5 兜底判断 |
+| `publishEntryType` | 判断发行入口：不可发布、H5 首次发行页、原生发行页 |
+| `firstPublishFlag` | 判断是否首次发行，首次时进入 H5 |
+| `needLegalInfoFlag` | 旧字段兼容兜底，返回 1 时进入 H5 |
 | `canApplyFlag` | 决定是否允许继续发布申请 |
 | `reasonMsg` | 不允许发布时直接展示的业务提示 |
 | `auditBatchId` | 原生提交时传回后台，提交到指定审核批次 |
@@ -306,10 +304,10 @@ H5 侧需要负责：
 
 ## 6. 实现检查点
 
-- 点击 `Publish` 后必须先判断 `publishedEpisodeCnt > 0`；首批未发行成功时直接进入 H5。
-- 首批已成功后再请求 `/h5/work/publish/status`；`needLegalInfoFlag=1` 只打开 H5，不在 Android 原生侧实现 H5 页面内的弹窗、表单和协议逻辑。
+- 点击 `Publish` 后必须先请求 `/work/publish/status`。
+- `publishEntryType=1`、`firstPublishFlag=1` 或 `needLegalInfoFlag=1` 时只打开 H5，不在 Android 原生侧实现 H5 页面内的弹窗、表单和协议逻辑。
 - H5 发布成功后，Android 必须刷新作品详情和剧集状态，避免页面仍显示旧状态。
-- 非首次发布时，使用 `canApplyFlag/reasonMsg/startEpisode/endEpisode` 处理是否允许发布和发布范围。
+- 非首次发布时，优先使用 `publishEntryType=2` 进入原生发布，再用 `canApplyFlag/reasonMsg/startEpisode/endEpisode` 兜底处理是否允许发布和发布范围。
 - 后续发布二次确认弹窗标题中的剧集范围必须按 `startEpisode/endEpisode` 动态生成。
 - `canApplyFlag=0` 时必须展示后端 `reasonMsg`，不要自行拼接本地原因。
 - 所有成功提交审核的分支统一展示 `You're all set! Your application has been submitted.`。
@@ -318,11 +316,11 @@ H5 侧需要负责：
 
 ### 7.1 已确认项
 
-- Android 通过 `publishedEpisodeCnt > 0` 判断首批是否已经发行成功；首批未成功直接走 H5。
+- Android 通过 `/work/publish/status` 的 `publishEntryType/firstPublishFlag` 判断是否首次发行；首次发行直接走 H5。
 - 首次发布流程全部在 H5 内完成，Android 不实现 H5 内的协议、资料填写、发布确认和提交逻辑。
-- 后续发布使用 `/h5/work/publish/status` 和 `/h5/work/publish/submit`。
-- `needLegalInfoFlag=1` 代表仍需 H5 法定姓名/邮箱流程或接口侧要求 H5 兜底；首次发布失败回来也仍算首次。
-- `/h5/work/publish/submit` 一次提交连续剧集范围：`startEpisode` 到 `endEpisode`。
+- 后续发布使用 `/work/publish/status` 和 `/work/publish/submit`。
+- `publishEntryType=1` 或 `firstPublishFlag=1` 代表首次发行入口；首次发布失败回来也仍由接口返回 H5 入口。
+- `/work/publish/submit` 一次提交连续剧集范围：`startEpisode` 到 `endEpisode`。
 - `legalName`、`emailAddress` 只由 H5 首次提交传，Android 后续提交不传。
 - `showPublishButton` 实际有 3 种前端表现：`0=隐藏`，`1=展示可点击`，`1 且全部剧集已完结并全部发行=展示但置灰`。
 - 后端会把拒审原因拼到 `rejectReason`，Android 不需要本地按集拼接。
