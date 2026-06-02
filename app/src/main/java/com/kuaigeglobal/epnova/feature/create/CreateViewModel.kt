@@ -23,12 +23,17 @@ class CreateViewModel : AppRepositoryViewModel<AppRepository>() {
         getData()
     }
 
-    fun getData() {
-        launch(block = {
-            response(mRepo.api.getAppBanner(BannerBody(BannerBody.LOCATION_GUIDE_PAGE)), {
-                bannerData.value = data
-                bannerCache.cache(data)
-            })
-        })
+    fun getData(onComplete: (() -> Unit)? = null) {
+        launch(
+            block = {
+                response(mRepo.api.getAppBanner(BannerBody(BannerBody.LOCATION_GUIDE_PAGE)), {
+                    bannerData.value = data
+                    bannerCache.cache(data)
+                })
+            },
+            onComplete = {
+                onComplete?.invoke()
+            }
+        )
     }
 }

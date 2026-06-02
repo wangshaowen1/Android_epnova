@@ -461,7 +461,7 @@ object ApiConstants {
     const val GET_HISTORY_ROLES = "shortDramas/script/role/history"
 
     /**
-     * 首页作品列表
+     * Top Earners-分页查询作品列表
      */
     const val RECOMMEND_WORK_LIST = "app/home/work/page"
 

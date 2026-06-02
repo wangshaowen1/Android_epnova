@@ -47,6 +47,7 @@ class CreateFragment : BaseViewModelFragment<FragmentCreateBinding, CreateViewMo
     }
 
     private lateinit var bannerAdapter: BaseBannerAdapter<BannerInfo>
+    private val topEarnersFragment by lazy { TopEarnersFragment() }
 
     override fun onPrepareView() {
         super.onPrepareView()
@@ -98,10 +99,29 @@ class CreateFragment : BaseViewModelFragment<FragmentCreateBinding, CreateViewMo
             CreationRootActivity.start(activity)
         }
         binding.srl.setOnRefreshListener {
-            mRealVM.getData()
+            refreshPageData()
         }
 
         initViewpager()
+    }
+
+    private fun refreshPageData() {
+        var bannerDone = false
+        var topEarnersDone = false
+        fun finishIfAllDone() {
+            if (bannerDone && topEarnersDone) {
+                binding.srl.finishRefresh()
+            }
+        }
+
+        mRealVM.getData {
+            bannerDone = true
+            finishIfAllDone()
+        }
+        topEarnersFragment.refresh {
+            topEarnersDone = true
+            finishIfAllDone()
+        }
     }
 
     private fun dataUpdate() {
@@ -155,7 +175,7 @@ class CreateFragment : BaseViewModelFragment<FragmentCreateBinding, CreateViewMo
         binding.magicIndicator.navigator = navigator
 
         val fragmentList = arrayListOf<Fragment>()
-        fragmentList.add(TopEarnersFragment())
+        fragmentList.add(topEarnersFragment)
         fragmentList.add(ResourceCenterFragment())
 
         val viewPagerAdapter = FragmentStateCacheAdapter(
@@ -164,6 +184,7 @@ class CreateFragment : BaseViewModelFragment<FragmentCreateBinding, CreateViewMo
         )
         viewPagerAdapter.setFragments(fragmentList)
         binding.viewPager2.adapter = viewPagerAdapter
+        binding.viewPager2.offscreenPageLimit = fragmentList.size
         ViewPagerHelper.bind(binding.magicIndicator, binding.viewPager2)
         binding.viewPager2.setCurrentItem(0, false)
         binding.viewPager2.removeTheRipples()

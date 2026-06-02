@@ -14,33 +14,21 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.scwang.smart.refresh.layout.SmartRefreshLayout
-            android:id="@+id/srl"
+        <com.kuaigeglobal.epnova.widget.LoadStateViewHolder
+            android:id="@+id/lsv"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
-            android:overScrollMode="never"
-            app:srlAccentColor="@color/white"
-            app:srlEnablePreviewInEditMode="true"
-            app:srlPrimaryColor="@color/transparent">
+            app:noData="@string/empty_creation_history">
 
-            <com.kuaigeglobal.epnova.widget.LoadStateViewHolder
-                android:id="@+id/lsv"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_view"
+                setLinearLayoutManager="@{true}"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:noData="@string/empty_creation_history">
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recycler_view"
-                    setLinearLayoutManager="@{true}"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginHorizontal="@dimen/spacing_m"
-                    android:overScrollMode="never"
-                    app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
-                    tools:listitem="@layout/item_top_earners" />
-            </com.kuaigeglobal.epnova.widget.LoadStateViewHolder>
-        </com.scwang.smart.refresh.layout.SmartRefreshLayout>
+                android:layout_marginHorizontal="@dimen/spacing_m"
+                android:overScrollMode="never"
+                app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+                tools:listitem="@layout/item_top_earners" />
+        </com.kuaigeglobal.epnova.widget.LoadStateViewHolder>
     </FrameLayout>
 </layout>

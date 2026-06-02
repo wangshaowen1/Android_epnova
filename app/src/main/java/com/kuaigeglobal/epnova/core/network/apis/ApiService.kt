@@ -46,6 +46,7 @@ import com.kuaigeglobal.epnova.core.network.apis.entity.SimpleStoryboardInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.StoryUnlockStatusData
 import com.kuaigeglobal.epnova.core.network.apis.entity.SubtitleTaskStatusInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.TaskStatusInfo
+import com.kuaigeglobal.epnova.core.network.apis.entity.TopEarnerWorkInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.UserShareUrlInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.VideoConfigData
 import com.kuaigeglobal.epnova.core.network.apis.entity.VipConfigInfo
@@ -753,10 +754,10 @@ interface ApiService {
     suspend fun historyRoleSwitch(@Body body: RoleSwitchBody): ApiResponse<Any>
 
     /**
-     * 首页作品列表
+     * Top Earners-分页查询作品列表
      */
     @POST(ApiConstants.RECOMMEND_WORK_LIST)
-    suspend fun recommendWorkList(@Body body: PagedBody): ApiResponse<PagedList<WorkInfo>?>
+    suspend fun recommendWorkList(@Body body: PagedBody): ApiResponse<PagedList<TopEarnerWorkInfo>?>
 
     /**
      * 获取集数/视频比例/视频风格配置
