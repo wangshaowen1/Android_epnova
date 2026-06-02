@@ -19,15 +19,19 @@
         android:background="@drawable/bg_06_ffffff_r12"
         android:padding="@dimen/spacing_m">
 
-        <!-- 左侧图标 -->
-        <ImageView
+        <!-- 左侧封面 -->
+        <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/ivIcon"
+            loadUri="@{item.data.workCoverUrl}"
+            placeHolder="@{@drawable/img_default_cover_3_4}"
             android:layout_width="48dp"
             android:layout_height="64dp"
-            android:src="@drawable/ic_video_circle"
+            android:scaleType="centerCrop"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:shapeAppearanceOverlay="@style/roundStyle_r8"
+            tools:src="@drawable/img_default_cover_3_4" />
 
         <!-- 标题 + 播放量 -->
         <LinearLayout
@@ -48,7 +52,7 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:maxLines="2"
-                android:text="Code Era: Awakening Command"
+                android:text="@{item.workTitleText()}"
                 android:textColor="?attr/textColor1"
                 tools:text="Code Era: Awakening Command" />
 
@@ -59,9 +63,9 @@
                 android:layout_marginTop="8dp"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:text="4820 views"
+                android:text="@{item.playCountText()}"
                 android:textColor="?attr/textColor3"
-                tools:text="4820 views" />
+                tools:text="4,820 views" />
         </LinearLayout>
 
         <!-- 收益 -->
@@ -70,7 +74,7 @@
             style="@style/Text16"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="+$188.00"
+            android:text="@{item.incomeAmountText()}"
             android:textColor="?attr/textColor1"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

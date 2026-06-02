@@ -63,9 +63,10 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_marginHorizontal="@dimen/spacing_l"
             android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tool_bar">
@@ -271,10 +272,10 @@
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rv_income_details"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_marginTop="@dimen/spacing_l"
-                        android:nestedScrollingEnabled="false"
                         android:overScrollMode="never"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                         android:scrollbars="none"
                         tools:listitem="@layout/item_income_details" />
                 </com.kuaigeglobal.epnova.widget.LoadStateViewHolder>

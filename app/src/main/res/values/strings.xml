@@ -706,6 +706,7 @@
     <string name="income_tooltip_total_earned_desc">The total amount of income the user has earned since registration.</string>
     <string name="income_monthly_income_settlement_desc">Monthly income will be automatically transferred to your withdrawable balance at 00:00 on the 1st day of each month.</string>
     <string name="income_exchange_rate">Exchange rate:  100 Coins = $1 USD</string>
+    <string name="income_views_format">%1$s views</string>
     <string name="transaction_received">Received</string>
     <string name="store_tips_title">Tips :</string>
     <string name="transaction_credits_purchase">Credits Purchase</string>

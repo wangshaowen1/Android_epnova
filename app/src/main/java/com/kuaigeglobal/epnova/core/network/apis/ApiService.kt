@@ -11,6 +11,7 @@ import com.kuaigeglobal.epnova.core.network.apis.entity.CreationStyleInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.DubbingGenStatusInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.EpisodeInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.ExampleWorkInfo
+import com.kuaigeglobal.epnova.core.network.apis.entity.IncomeDetailInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.IncomeSummaryInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.InspirationInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.LogOffStatusInfo
@@ -81,6 +82,7 @@ import com.kuaigeglobal.epnova.core.network.apis.request.GenerateStoryboardBody
 import com.kuaigeglobal.epnova.core.network.apis.request.GenerateSubtitleBody
 import com.kuaigeglobal.epnova.core.network.apis.request.IdsBody
 import com.kuaigeglobal.epnova.core.network.apis.request.ImgUrlBody
+import com.kuaigeglobal.epnova.core.network.apis.request.IncomeDetailPageBody
 import com.kuaigeglobal.epnova.core.network.apis.request.KeyworkBody
 import com.kuaigeglobal.epnova.core.network.apis.request.LatestEpisodeBody
 import com.kuaigeglobal.epnova.core.network.apis.request.LoginByFlashMobileBody
@@ -992,6 +994,12 @@ interface ApiService {
      */
     @POST(ApiConstants.USER_INCOME_SUMMARY)
     suspend fun userIncomeSummary(@Body body: UserTokenBody): ApiResponse<IncomeSummaryInfo?>
+
+    /**
+     * 用户收益明细分页
+     */
+    @POST(ApiConstants.USER_INCOME_DETAIL_PAGE)
+    suspend fun userIncomeDetailPage(@Body body: IncomeDetailPageBody): ApiResponse<PagedList<IncomeDetailInfo>?>
 
     /**
      * 查询算力明细列表（分页）

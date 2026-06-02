@@ -324,6 +324,11 @@ object ApiConstants {
     const val USER_INCOME_SUMMARY = "income/user/summary"
 
     /**
+     * 用户收益明细分页
+     */
+    const val USER_INCOME_DETAIL_PAGE = "income/user/detail/page"
+
+    /**
      * 解锁首次生成的短剧(首次生成的短剧付费)
      */
     const val UNLOCK_FIRST_GENERATED_SHORT_DRAMA = "shortDramas/script/generate/first/payStatus/unlock"

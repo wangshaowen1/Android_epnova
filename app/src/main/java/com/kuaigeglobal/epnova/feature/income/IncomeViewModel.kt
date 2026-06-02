@@ -1,12 +1,23 @@
 package com.kuaigeglobal.epnova.feature.income
 
 import androidx.databinding.ObservableField
+import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.kuaigeglobal.epnova.base.viewmodel.AppRepositoryViewModel
+import com.kuaigeglobal.epnova.common.Constant
 import com.kuaigeglobal.epnova.common.utils.DateUtil
 import com.kuaigeglobal.epnova.core.AppRepository
 import com.kuaigeglobal.epnova.core.ext.request
+import com.kuaigeglobal.epnova.core.network.apis.entity.IncomeDetailInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.IncomeSummaryInfo
 import com.kuaigeglobal.epnova.core.network.apis.request.UserTokenBody
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.flatMapLatest
 
 class IncomeViewModel : AppRepositoryViewModel<AppRepository>() {
     companion object {
@@ -25,9 +36,6 @@ class IncomeViewModel : AppRepositoryViewModel<AppRepository>() {
     val earningsDetailsYearMonthText =
         ObservableField(DateUtil.formatYearMonthDisplay(DateUtil.getFormatDateTime("yyyy-MM")))
 
-    //用户收益汇总接口原始数据，保留给页面后续扩展使用
-    val summaryInfo = ObservableField<IncomeSummaryInfo>()
-
     //------------------年月选择器相关参数------------------
     //用户注册账号所在年月，格式 yyyy-MM，用作年月选择器最早可选值
     private var registeredYearMonth: String? = null
@@ -35,6 +43,11 @@ class IncomeViewModel : AppRepositoryViewModel<AppRepository>() {
     private var currentYearMonth: String? = DateUtil.getFormatDateTime("yyyy-MM")
     //当前收益明细对应筛选的年月，格式 yyyy-MM；遮罩进行取消时不更新该值
     private var selectedYearMonth: String? = null
+
+    //收益明细分页筛选年月触发器；Confirm 同一个年月也需要刷新列表，所以允许重复发射相同值
+    private val incomeDetailsYearMonthFlow = MutableSharedFlow<String?>(replay = 1).apply {
+        tryEmit(DateUtil.getFormatDateTime("yyyy-MM"))
+    }
 
     override fun onCreate() {
         super.onCreate()
@@ -49,7 +62,6 @@ class IncomeViewModel : AppRepositoryViewModel<AppRepository>() {
             apiBlock = { mRepo.api.userIncomeSummary(UserTokenBody()) },
             onSuccess = {
                 val d = data ?: return@request
-                summaryInfo.set(d)
                 //可提现余额
                 availableBalanceText.set(d.availableBalanceText ?: DEFAULT_AMOUNT_TEXT)
                 //累计收益
@@ -65,6 +77,7 @@ class IncomeViewModel : AppRepositoryViewModel<AppRepository>() {
                 //首次进入页面时，默认选中当前结算年月；用户确认选择后不被汇总接口刷新覆盖。
                 if (selectedYearMonth.isNullOrBlank()) {
                     selectedYearMonth = currentYearMonth
+                    incomeDetailsYearMonthFlow.tryEmit(selectedYearMonth)
                 }
                 earningsDetailsYearMonthText.set(DateUtil.formatYearMonthDisplay(selectedYearMonth))
             }
@@ -95,17 +108,26 @@ class IncomeViewModel : AppRepositoryViewModel<AppRepository>() {
     fun confirmIncomeDetailsYearMonth(yearMonth: String) {
         selectedYearMonth = yearMonth
         earningsDetailsYearMonthText.set(DateUtil.formatYearMonthDisplay(yearMonth))
-        //用户收益明细分页（获取对应年月收益明细）
-        refreshIncomeDetails(yearMonth)
+        incomeDetailsYearMonthFlow.tryEmit(yearMonth)
     }
 
     /**
-     *用户收益明细分页（获取对应年月收益明细）
-     *
-     * @param yearMonth 收益明细筛选年月，格式 yyyy-MM。
+     * 用户收益明细分页。
+     * 年月切换后会重新请求对应年月的收益明细。
      */
-    @Suppress("UNUSED_PARAMETER")
-    private fun refreshIncomeDetails(yearMonth: String) {
-
+    @OptIn(ExperimentalCoroutinesApi::class)
+    fun getIncomeDetailsPage(): Flow<PagingData<IncomeDetailInfo>> {
+        return incomeDetailsYearMonthFlow.flatMapLatest { yearMonth ->
+            Pager(
+                config = PagingConfig(
+                    initialLoadSize = Constant.Paged.PAGE_SIZE,
+                    pageSize = Constant.Paged.PAGE_SIZE,
+                    prefetchDistance = Constant.Paged.PREFETCH_DISTANCE,
+                ),
+                pagingSourceFactory = {
+                    IncomeDetailsPagingSource(yearMonth)
+                }
+            ).flow
+        }.cachedIn(viewModelScope)
     }
 }

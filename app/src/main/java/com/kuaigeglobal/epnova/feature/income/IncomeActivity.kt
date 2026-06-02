@@ -4,11 +4,16 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import androidx.lifecycle.lifecycleScope
 import com.kuaigeglobal.epnova.R
+import com.kuaigeglobal.epnova.common.ext.startRefreshWithAdapter
 import com.kuaigeglobal.epnova.common.ext.showConfirmDialog
 import com.kuaigeglobal.epnova.databinding.ActivityIncomeBinding
 import com.kuaigeglobal.epnova.widget.BottomYearMonthPickerDialog
+import com.kuaigeglobal.epnova.widget.stateful.paging.MyMultiStatePagingFooterAdapter
 import com.nhsd.basic.BaseViewModelActivity
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 class IncomeActivity : BaseViewModelActivity<ActivityIncomeBinding, IncomeViewModel>() {
 
@@ -20,13 +25,40 @@ class IncomeActivity : BaseViewModelActivity<ActivityIncomeBinding, IncomeViewMo
         }
     }
 
+    //收益明细分页列表
+    private val incomeDetailsAdapter by lazy { IncomeDetailsAdapter() }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initView()
+        dataUpdate()
     }
 
     private fun initView() {
+        binding.rvIncomeDetails.apply {
+            itemAnimator = null
+            isFocusable = false
+            adapter = incomeDetailsAdapter.withLoadStateFooter(
+                MyMultiStatePagingFooterAdapter(
+                    hostAdapter = incomeDetailsAdapter,
+                    noMoreThreshold = 12
+                ) {
+                    incomeDetailsAdapter.retry()
+                }
+            )
+        }
+        binding.srl.startRefreshWithAdapter(
+            pagingDataAdapter = incomeDetailsAdapter,
+            loadStateHolder = binding.lsv
+        )
+    }
 
+    private fun dataUpdate() {
+        lifecycleScope.launch {
+            mRealVM.getIncomeDetailsPage().collectLatest {
+                incomeDetailsAdapter.submitData(it)
+            }
+        }
     }
 
     override fun <Data> onClick(view: View?, data: Data?) {
