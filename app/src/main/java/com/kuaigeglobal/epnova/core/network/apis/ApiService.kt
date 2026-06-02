@@ -16,6 +16,7 @@ import com.kuaigeglobal.epnova.core.network.apis.entity.IncomeSummaryInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.InspirationInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.LogOffStatusInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.MyTvSeriesListInfo
+import com.kuaigeglobal.epnova.core.network.apis.entity.OnceTaskListData
 import com.kuaigeglobal.epnova.core.network.apis.entity.OrderStatusInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.OverseasDeviceFingerprint
 import com.kuaigeglobal.epnova.core.network.apis.entity.PaymentData
@@ -1074,10 +1075,22 @@ interface ApiService {
     suspend fun loginTaskPopup(): ApiResponse<LoginTaskData?>
 
     /**
+     * 查询一次性奖励任务列表
+     */
+    @POST(ApiConstants.ONCE_TASK_LIST)
+    suspend fun onceTaskList(): ApiResponse<OnceTaskListData?>
+
+    /**
      * 保存一次性任务记录-保存登录奖励任务完成
      */
     @POST(ApiConstants.REPORT_LOGIN_TASK)
     suspend fun reportLoginTask(): ApiResponse<LoginTaskData?>
+
+    /**
+     * 保存一次性任务记录-打开消息通知奖励
+     */
+    @POST(ApiConstants.REPORT_PUSH_NOTIFICATION_TASK)
+    suspend fun reportPushNotificationTask(): ApiResponse<LoginTaskData?>
 
     /**
      * 敏感词校验

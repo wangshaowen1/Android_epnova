@@ -13,6 +13,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kuaigeglobal.epnova.R
+import com.kuaigeglobal.epnova.common.utils.IntentUtils
 import com.kuaigeglobal.epnova.core.ext.onUserStatusChanged
 import com.kuaigeglobal.epnova.databinding.ActivityRewardsBinding
 import com.kuaigeglobal.epnova.widget.decoration.GridSpacingItemDecoration
@@ -32,6 +33,8 @@ class RewardsActivity : BaseViewModelActivity<ActivityRewardsBinding, RewardsVie
         }
     }
 
+    private var waitingNotificationSettingResult = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initView()
@@ -42,6 +45,10 @@ class RewardsActivity : BaseViewModelActivity<ActivityRewardsBinding, RewardsVie
     override fun onResume() {
         super.onResume()
 //        mRealVM.loadData()
+        if (waitingNotificationSettingResult) {
+            waitingNotificationSettingResult = false
+            mRealVM.onPushNotificationSettingReturned(IntentUtils.isNotificationEnabled(this))
+        }
     }
 
     private fun initView() {
@@ -78,6 +85,22 @@ class RewardsActivity : BaseViewModelActivity<ActivityRewardsBinding, RewardsVie
         lifecycleScope.launch {
             mRealVM.showCheckInAdRewardEvent.collectLatest { coins ->
                 showRewardToast(getString(R.string.rewards_50_reward_coins, coins.toString()))
+            }
+        }
+        lifecycleScope.launch {
+            mRealVM.checkPushNotificationEvent.collectLatest {
+                mRealVM.onPushNotificationPermissionChecked(IntentUtils.isNotificationEnabled(this@RewardsActivity))
+            }
+        }
+        lifecycleScope.launch {
+            mRealVM.openNotificationSettingEvent.collectLatest {
+                waitingNotificationSettingResult = true
+                IntentUtils.startOpenNotificationSetting(this@RewardsActivity)
+            }
+        }
+        lifecycleScope.launch {
+            mRealVM.showPushNotificationRewardEvent.collectLatest { rewardLabel ->
+                showRewardToast(getString(R.string.rewards_50_reward_coins, rewardLabel))
             }
         }
         observeEvents {

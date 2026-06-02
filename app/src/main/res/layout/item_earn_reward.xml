@@ -19,16 +19,30 @@
         android:background="@drawable/bg_1b191f_r16"
         android:padding="@dimen/spacing_m">
 
-        <!-- 左侧图标：登录任务用 ic_link_circle，广告任务用 ic_video_circle -->
-        <ImageView
-            android:id="@+id/ivIcon"
-            imageResource="@{item.iconRes}"
+        <!-- 左侧图标：一次性任务优先用服务端 iconUrl，缺失时使用本地兜底图标。 -->
+        <FrameLayout
+            android:id="@+id/flIcon"
             android:layout_width="42dp"
             android:layout_height="42dp"
-            android:src="@drawable/ic_video_circle"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/ivIcon"
+                imageResource="@{item.iconRes}"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_video_circle"
+                android:visibility="@{item.hasRemoteIcon ? View.GONE : View.VISIBLE}" />
+
+            <ImageView
+                android:id="@+id/ivRemoteIcon"
+                loadUri="@{item.iconUrl}"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="@{item.hasRemoteIcon ? View.VISIBLE : View.GONE}" />
+        </FrameLayout>
 
         <!-- 标题 + 描述 -->
         <LinearLayout
@@ -39,7 +53,7 @@
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/flAction"
-            app:layout_constraintStart_toEndOf="@id/ivIcon"
+            app:layout_constraintStart_toEndOf="@id/flIcon"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.5">
 
@@ -91,7 +105,7 @@
                 android:visibility="@{!item.isLoginTask &amp;&amp; item.isDone ? View.VISIBLE : View.GONE}"
                 tools:visibility="gone" />
 
-            <!-- 登录任务：Claim 按钮（未完成时显示） -->
+            <!-- 登录/一次性任务：Claim 按钮 -->
             <Button
                 android:id="@+id/btnClaim"
                 style="@style/Button.Bold"
@@ -102,7 +116,7 @@
                 android:paddingVertical="4dp"
                 android:text="@string/home_login_reward_claim"
                 android:textSize="14sp"
-                android:visibility="@{item.isLoginTask? View.VISIBLE : View.GONE}"
+                android:visibility="@{(item.isLoginTask || item.onceTask != null) ? View.VISIBLE : View.GONE}"
                 tools:visibility="gone" />
 
             <!-- 广告任务：Watch / Watch(locked) -->
