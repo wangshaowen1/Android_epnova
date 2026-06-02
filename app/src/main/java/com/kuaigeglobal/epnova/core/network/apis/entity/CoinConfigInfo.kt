@@ -15,33 +15,33 @@ import kotlinx.parcelize.Parcelize
  */
 @Parcelize
 data class CoinConfigInfo(
-    val coionsType: Int?,//金币套餐类型 1-常规购买金币套餐、2-新人礼包金币套餐
+    val coinsType: Int?,//金币套餐类型 1-常规购买金币套餐、2-新人礼包金币套餐
     val pointConfigId: String?,
     val googleProductId: String?,//Google商品ID
-    val coionsConfigCode: String?,
-    val coionsName: String?,
-    var coionsPrice: String?,//实际支付价格（单位：元）
-    val coionsNum: Long?,
-    val giveCoionsNum: Long?,//赠送金币数量
+    val coinsConfigCode: String?,
+    val coinsName: String?,
+    var coinsPrice: String?,//实际支付价格（单位：元）
+    val coinsNum: Long?,
+    val giveCoinsNum: Long?,//赠送金币数量
     val giveValidDays: Int?,//赠送金币有效期（单位：天）
     /**
      * 是否默认选中（0-非默认、1-默认）
      */
     val selectedStatus: Int?,//是否默认选中（0-非默认、1-默认），与库表对应；列表内至多一条为 1。
-    val coionsMarketingTime: Long?,//金币营销倒计时截止时间.空则代表不需要受限制精确到毫秒
-    val coionsMarketingText: String?,//金币营销倒计时文本
-    val coionsMarketingTag: String?,//金币营销角标文案（如：赠30%）
+    val coinsMarketingTime: Long?,//金币营销倒计时截止时间.空则代表不需要受限制精确到毫秒
+    val coinsMarketingText: String?,//金币营销倒计时文本
+    val coinsMarketingTag: String?,//金币营销角标文案（如：赠30%）
 ) : Parcelable {
 
     fun isDiscountValid(): Boolean {
-        return coionsMarketingTime != null && coionsMarketingTime > System.currentTimeMillis()
+        return coinsMarketingTime != null && coinsMarketingTime > System.currentTimeMillis()
     }
 
     fun getCountDownText(): String {
-        if (coionsMarketingTime == null) {
+        if (coinsMarketingTime == null) {
             return ""
         }
-        val time = coionsMarketingTime - System.currentTimeMillis()
+        val time = coinsMarketingTime - System.currentTimeMillis()
         if (time <= 0) {
             return ""
         }

@@ -14,7 +14,7 @@ class ItemRechargePowerVM(info: CoinConfigInfo) : AppItemViewModel<CoinConfigInf
     val discountText by lazy {
         ObservableField<String>()
     }
-    val priceText  = ObservableField<String>(info.coionsPrice)
+    val priceText  = ObservableField<String>(info.coinsPrice)
     fun updateTime() {
         val info = data.get() ?: return
         val discountValid = info.isDiscountValid()

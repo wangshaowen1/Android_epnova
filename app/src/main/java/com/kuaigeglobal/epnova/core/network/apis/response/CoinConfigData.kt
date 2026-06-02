@@ -20,5 +20,5 @@ data class CoinConfigData(
     /**
      * 可用算力数量
      */
-    val coionsBalanceNum: Long?,
+    val coinsBalanceNum: Long?,
 ): ListData<CoinConfigInfo>()

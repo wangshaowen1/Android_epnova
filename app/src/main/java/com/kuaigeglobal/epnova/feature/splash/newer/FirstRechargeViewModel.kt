@@ -53,7 +53,7 @@ class FirstRechargeViewModel : AppRepositoryViewModel<CoinRepository>() {
     override fun onCreate() {
         super.onCreate()
         // 获取到期时间戳
-        val invalidTime = data?.coionsMarketingTime ?: 0L
+        val invalidTime = data?.coinsMarketingTime ?: 0L
         if (invalidTime > 0) {
             startCountDown(invalidTime)
         }
@@ -106,7 +106,7 @@ class FirstRechargeViewModel : AppRepositoryViewModel<CoinRepository>() {
 
         launchWithLoading(
             block = {
-                response(mRepo.createGoogleOrder(rechargeData.coionsConfigCode)) {
+                response(mRepo.createGoogleOrder(rechargeData.coinsConfigCode)) {
                     BillingManager.launchPurchase(topActivity, rechargeData.googleProductId ?: "", data?.orderNo ?: "")
                 }
             },

@@ -118,7 +118,7 @@ class MyBalanceViewModel(
             block = {
                 val deferred = async { mRepo.coinConfigList().data }
                 val data = deferred.await()
-                data?.coionsBalanceNum?.let { User.get().storeCoins(it) }
+                data?.coinsBalanceNum?.let { User.get().storeCoins(it) }
                 updateBalance()
                 data?.items?.map { ItemRechargePowerVM(it).apply { onItemClick.value = { selectCoins() } } }.let { vms ->
                     coinsAdapter.submitList(vms)
@@ -238,7 +238,7 @@ class MyBalanceViewModel(
         if (isDialog) EventManager.onAppTrack(AppEvent.SF_CLICK_COMPUTE_RECHARGE_PAYMENT_BUTTON)
         launchWithLoading(
             block = {
-                response(mRepo.createGoogleOrder(item.coionsConfigCode)) {
+                response(mRepo.createGoogleOrder(item.coinsConfigCode)) {
                     BillingManager.launchPurchase(topActivity, item.googleProductId ?: "", data?.orderNo ?: "")
                 }
             },

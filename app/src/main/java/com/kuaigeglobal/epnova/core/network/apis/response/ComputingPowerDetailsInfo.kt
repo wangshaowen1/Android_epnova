@@ -22,7 +22,7 @@ import com.kuaigeglobal.epnova.common.utils.DateUtil
  */
 data class ComputingPowerDetailsInfo(
     /**算力明细编码*/
-    val coionsDetailCode: String?,
+    val coinsDetailCode: String?,
     /**交易类型（1-收入、2-支出）*/
     val transType: Int?,
     /**交易子类型（1001-算力充值、1002-生图失败退款、1003-生视频失败退款、2001-生成图片、2002-生成视频、2003-算力过期）*/

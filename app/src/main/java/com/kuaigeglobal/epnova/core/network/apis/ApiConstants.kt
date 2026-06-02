@@ -661,12 +661,12 @@ object ApiConstants {
     /**
      * 查询算力明细列表（分页）
      */
-    const val QUERY_POINT_DETAIL_LIST = "trade/coions/detail/list"
+    const val QUERY_POINT_DETAIL_LIST = "trade/coins/detail/list"
 
     /**
      * 算力信息配置列表
      */
-    const val COINS_CONFIG_LIST = "trade/coions/config/list"
+    const val COINS_CONFIG_LIST = "trade/coins/config/list"
 
     /**
      * 算力信息配置列表
