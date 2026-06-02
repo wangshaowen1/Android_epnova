@@ -5,7 +5,7 @@
 来源：发布功能逻辑截图与作品详情页状态截图  
 关联流程文档：[作品发布流程说明](work-publish-flow.md)
 
-本文用于补充作品发布流程中的状态体系、发布入口判断、可发布集数计算、边界条件和弹窗/toast 文案。发布 H5 页面本身不由 Android 实现；Android 负责查询发布状态接口、按 `needLegalInfoFlag` 打开 H5 容器、接收 H5 结果并刷新状态，首次发布进入 H5 后的流程全部由 H5 完成。
+本文用于补充作品发布流程中的状态体系、发布入口判断、可发布集数计算、边界条件和弹窗/toast 文案。发布 H5 页面本身不由 Android 实现；Android 先按 `publishedEpisodeCnt > 0` 判断首批是否已发行成功，首批未成功时打开 H5 容器，首批已成功后查询发布状态接口处理后续发布，接收 H5 结果并刷新状态。
 
 ## 1. 状态体系
 
@@ -77,25 +77,28 @@ Unpublished > Draft > In Review > Live
 
 ## 2. 发布入口与路径
 
-点击作品详情页底部 `Publish` 后，先请求 `/h5/work/publish/status`，再根据接口结果决定打开 H5、原生提交或展示业务提示。
+点击作品详情页底部 `Publish` 后，先用 `publishedEpisodeCnt > 0` 判断首批是否已经发行成功。首批未成功发行时直接打开 H5；首批已成功发行后，再请求 `/h5/work/publish/status`，根据接口结果决定原生提交、打开 H5 兜底或展示业务提示。
 
 ```mermaid
 flowchart TD
-    A[点击 Publish] --> B[查询 /h5/work/publish/status]
-    B --> C{canApplyFlag == 1}
-    C -- 否 --> D[展示 reasonMsg]
-    C -- 是 --> E{needLegalInfoFlag == 1}
-    E -- 是 --> F[跳转 H5 发布页]
+    A[点击 Publish] --> B{publishedEpisodeCnt > 0}
+    B -- 否 --> F[跳转 H5 发布页]
+    B -- 是 --> C[查询 /h5/work/publish/status]
+    C --> D{canApplyFlag == 1}
+    D -- 否 --> E[展示 reasonMsg]
+    D -- 是 --> H{needLegalInfoFlag == 1}
+    H -- 是 --> F
     F --> G[协议确认/资料填写/提交]
-    E -- 否 --> H[正常发布二次确认弹窗]
-    H --> I[提交 /h5/work/publish/submit]
+    H -- 否 --> I[正常发布二次确认弹窗]
+    I --> J[提交 /h5/work/publish/submit]
 ```
 
 路径规则：
 
-- Android 点击 `Publish` 后先查 `/h5/work/publish/status`，不依赖本地 Paging 已加载剧集自行计算完整可发布范围。
+- Android 点击 `Publish` 后先判断 `publishedEpisodeCnt > 0`；`publishedEpisodeCnt` 为空或为 `0` 表示首批发行尚未成功，直接跳转 H5。已填写过资料但首批审核失败的作品也按这个规则走 H5。
+- 首批已发行成功后，再查 `/h5/work/publish/status`；不依赖本地 Paging 已加载剧集自行计算完整可发布范围。
 - `canApplyFlag=0`：直接展示后端 `reasonMsg`，例如无可发布剧集、不可跳集发布等业务原因。
-- `canApplyFlag=1 && needLegalInfoFlag=1`：跳转 H5 发布页，后续协议确认、资料填写与提交全部由 H5 完成。首次发布失败回来也仍算首次，继续走 H5。
+- `canApplyFlag=1 && needLegalInfoFlag=1`：跳转 H5 发布页，作为接口侧兜底。首次发布是否成功优先看 `publishedEpisodeCnt > 0`。
 - `canApplyFlag=1 && needLegalInfoFlag=0`：Android 原生展示后续发布二次确认弹窗，并提交 `/h5/work/publish/submit`。
 - 后端会拼好拒审原因，Android 作品/剧集角标查看拒审原因统一取 `rejectReason`。
 
@@ -132,7 +135,7 @@ totalEpisodeCnt > 0 && publishedEpisodeCnt >= totalEpisodeCnt
 - 第 1-15 集已合成，第 16 集未合成：首次提交范围为 `1-15`。
 - 第 1-16 集已合成，第 17 集未合成：首次提交范围为 `1-16`，确认弹窗标题展示 `Publish Episodes 1-16?`。
 
-Android 不在原生侧实现首次发布内的前 15 集校验、协议、法定姓名、邮箱和首次提交。只要 `/h5/work/publish/status` 返回 `needLegalInfoFlag=1`，就打开 H5；首次发布失败后重新进入仍按首次处理，继续走 H5。
+Android 不在原生侧实现首次发布内的前 15 集校验、协议、法定姓名、邮箱和首次提交。`publishedEpisodeCnt <= 0` 时视为首批尚未发行成功，直接打开 H5；首次发布失败后重新进入仍按首次处理，继续走 H5。`needLegalInfoFlag=1` 仍可作为接口侧兜底打开 H5。
 
 ### 3.2 续集发布可发布集数规则
 

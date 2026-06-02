@@ -155,6 +155,10 @@ class SeriesViewModel : AppRepositoryViewModel<SeriesRepository>() {
     ) {
         val info = workInfo.value ?: return
         if (!info.isPublishButtonEnabled()) return
+        if (!info.hasFirstPublishSucceeded()) {
+            openPublishPage(info.workContractPublishPageUrl)
+            return
+        }
         requestWithLoading(
             apiBlock = { mRepo.getWorkPublishStatus(workId) },
             onSuccess = {

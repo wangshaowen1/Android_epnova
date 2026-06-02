@@ -441,7 +441,7 @@ Draft / Unpublished / In Review / Review Failed / Published
 
 - 后续发布接口提交连续剧集范围：`startEpisode` 到 `endEpisode`，不是剧集 ID 列表。
 - `WorkInfo` / `EpisodeInfo` 的发布状态枚举已按本地字段注释确认。
-- 首次发布或首次失败后重新提交，通过 `needLegalInfoFlag=1` 判断并继续打开 H5。
+- 首次发布或首次失败后重新提交，优先通过 `publishedEpisodeCnt > 0` 判断首批是否已发行成功；未成功时继续打开 H5。
 - `workContractPublishPageUrl` 继续作为需要 H5 法定姓名/邮箱流程时的跳转 URL。
 - 作品 `coverBadgeType` 用于作品角标；剧集接口不应返回 `Review Failed`，若返回由接口侧修正。
 
@@ -507,7 +507,7 @@ POST /h5/work/publish/submit
 | --- | --- | --- |
 | `publishStatus` | 发布状态：`1=审核中`、`2=通过`、`3=审核失败/驳回/不通过`；与最新审核批次状态一致 | 用于审核批次状态和拒审原因判断 |
 | `rejectReason` | 驳回原因，作品/剧集角标查看驳回原因统一取这个字段；后端会拼好展示内容 | 作品层 `Review Failed` 弹窗内容 |
-| `workContractPublishPageUrl` | 作品发行页面完整 URL | `needLegalInfoFlag=1` 时打开 H5 |
+| `workContractPublishPageUrl` | 作品发行页面完整 URL | 首批未发行成功或 `needLegalInfoFlag=1` 时打开 H5 |
 | `showPublishButton` | `0=隐藏`，`1=展示` | 底部 `Publish` 按钮隐藏/展示 |
 | `globalPublishStatus` | 全局发布状态：`0=未发布`、`1=审核中`、`2=已发布/通过/已上架`、`3=审核失败/不通过` | 作品整体发布状态 |
 | `publishedEpisodeCnt` | 已发布/审核通过的剧集数量 | `Published · N Eps`、全部发行置灰判断 |
@@ -518,7 +518,7 @@ POST /h5/work/publish/submit
 补充口径：
 
 - 剧集层面不展示 `Review Failed`。如果剧集接口返回 `coverBadgeType=40`，视为接口问题，接口侧需要修正。
-- 首次发布失败回来也仍算首次；只要 `needLegalInfoFlag=1`，Android 继续打开 H5，不走原生提交。
+- 首次发布失败回来也仍算首次；只要 `publishedEpisodeCnt <= 0`，Android 继续打开 H5，不走原生提交。`needLegalInfoFlag=1` 仅作为接口侧兜底。
 - `canApplyFlag=0` 时，Android 默认 Toast 展示 `reasonMsg`；如果后续出现长文案或多行文案，再改用通用弹窗。
 - 后端会拼好 `rejectReason`，Android 不需要本地按剧集范围拼拒审原因。
 
@@ -557,14 +557,17 @@ totalEpisodeCnt > 0 && publishedEpisodeCnt >= totalEpisodeCnt
 ```text
 点击 Publish
 -> 如果按钮置灰，直接 return
+-> 如果 publishedEpisodeCnt 为空或为 0，说明首批发行尚未成功，直接打开 workContractPublishPageUrl
 -> 调用 /h5/work/publish/status(workId)
 -> canApplyFlag == 0：展示 reasonMsg
--> canApplyFlag == 1 && needLegalInfoFlag == 1：打开 workContractPublishPageUrl
+-> canApplyFlag == 1 && needLegalInfoFlag == 1：打开 workContractPublishPageUrl（接口侧兜底）
 -> canApplyFlag == 1 && needLegalInfoFlag == 0：展示 Publish Episodes startEpisode-endEpisode? 确认弹窗
 -> 用户确认后调用 /h5/work/publish/submit(workId, auditBatchId, startEpisode, endEpisode)
 -> 成功后展示 You're all set! / Your application has been submitted.
 -> 刷新作品详情、剧集分页和我的创作列表
 ```
+
+补充口径：已填写过法定姓名/邮箱但首批审核失败时，`needLegalInfoFlag` 可能不再是 `1`，但只要 `publishedEpisodeCnt <= 0`，仍视为首次发行未成功，必须进入 H5，不能走 Android 原生续集发布。
 
 后续发布提交接口提交连续剧集范围，不提交剧集 ID 列表。
 
