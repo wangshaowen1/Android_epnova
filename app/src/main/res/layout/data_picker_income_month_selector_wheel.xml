@@ -3,14 +3,14 @@
 
     <view
         android:id="@+id/np__numberpicker_input"
+        style="@style/Text16"
         class="com.flqy.datepicker.NumberPicker$CustomEditText"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:background="@null"
         android:gravity="center"
-        android:paddingTop="14dp"
-        android:paddingBottom="14dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp"
         android:singleLine="true"
-        android:textColor="@color/color_80_ffffff"
-        android:textSize="24sp" />
+        android:textColor="?attr/textColor1" />
 </merge>
