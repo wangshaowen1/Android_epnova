@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
+import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import com.kuaigeglobal.epnova.core.Config
 import com.kuaigeglobal.epnova.databinding.FragmentCreateBinding
@@ -13,15 +14,17 @@ import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.adapter.FragmentStateCacheAdapter
 import com.kuaigeglobal.epnova.common.ext.removeTheRipples
 import com.kuaigeglobal.epnova.common.ext.topActivity
+import com.kuaigeglobal.epnova.core.databinding.loadUri
 import com.kuaigeglobal.epnova.core.network.apis.entity.BannerInfo
 import com.kuaigeglobal.epnova.feature.create.child.ResourceCenterFragment
 import com.kuaigeglobal.epnova.feature.create.child.TopEarnersFragment
+import com.kuaigeglobal.epnova.router.AppRouter
 import com.nhsd.basic.BaseViewModelFragment
 import com.nhsd.basic.ext.dp
 import com.nhsd.basic.ext.getResColor
+import com.nhsd.basic.ext.getResDrawable
 import com.nhsd.basic.ext.getThemeColor
 import com.nhsd.basic.ext.setOnSingleClickListener
-import com.nhsd.crop.util.ViewUtils
 import com.nhsd.magicindicator.ViewPagerHelper
 import com.nhsd.magicindicator.buildins.commonnavigator.CommonNavigator
 import com.nhsd.magicindicator.buildins.commonnavigator.abs.CommonNavigatorAdapter
@@ -48,6 +51,7 @@ class CreateFragment : BaseViewModelFragment<FragmentCreateBinding, CreateViewMo
     override fun onPrepareView() {
         super.onPrepareView()
         initView()
+        dataUpdate()
     }
 
     override fun onDestroy() {
@@ -55,18 +59,17 @@ class CreateFragment : BaseViewModelFragment<FragmentCreateBinding, CreateViewMo
     }
 
     private fun initView() {
-        binding.llTop.minimumHeight = ViewUtils.getStatusBarHeight(activity)
-        binding.appbar.addOnOffsetChangedListener { appBarLayout, verticalOffset ->
-            val totalScrollRange = appBarLayout.totalScrollRange.toFloat()
-            val ratio = abs(verticalOffset) / totalScrollRange
-            val alpha = if (ratio < 0.95f) 1f - ratio / 0.95f else 0f
-            binding.llTop.alpha = alpha
-        }
         bannerAdapter = object : BaseBannerAdapter<BannerInfo>() {
             override fun bindData(
                 holder: BaseViewHolder<BannerInfo>?, data: BannerInfo, position: Int, pageSize: Int
             ) {
-
+                holder?.apply {
+                    val image = findViewById<ImageView>(R.id.image)
+                    loadUri(image, data.imageUrl, R.drawable.img_default_cover_16_9.getResDrawable())
+                    image.setOnSingleClickListener {
+                        AppRouter.jump(data.jumpUri)
+                    }
+                }
             }
 
             override fun getLayoutId(viewType: Int): Int {
@@ -94,8 +97,17 @@ class CreateFragment : BaseViewModelFragment<FragmentCreateBinding, CreateViewMo
             if (Config.get().isInReview && AppNavigator.checkLoginIntercepted()) return@setOnSingleClickListener
             CreationRootActivity.start(activity)
         }
+        binding.srl.setOnRefreshListener {
+            mRealVM.getData()
+        }
 
         initViewpager()
+    }
+
+    private fun dataUpdate() {
+        mRealVM.bannerData.observe(this) {
+            binding.banner.refreshData(it)
+        }
     }
 
     override fun onStart() {
