@@ -1,5 +1,6 @@
 package com.kuaigeglobal.epnova.core.manager
 
+import com.google.firebase.messaging.FirebaseMessaging
 import com.kuaigeglobal.epnova.common.ext.ioScope
 import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.network.apis.ApiFactory
@@ -17,6 +18,8 @@ import kotlinx.coroutines.delay
  * @author xiaoowuu
  */
 object EventManager {
+
+    private var fetchingFcmToken = false
 
     /**
      * 上报 FCM registration token。
@@ -58,6 +61,33 @@ object EventManager {
 
             Logger.e("EventManager", "FCM token report failed after $maxRetries attempts")
         }
+    }
+
+    /**
+     * FCM token 补报入口。
+     *
+     * onNewToken 不是每次启动或登录都会触发：如果设备已经有有效 token，Firebase 不会再回调。
+     * 因此启动后和登录成功后都走这里兜底，优先复用本地已缓存的 token；只有本地为空时才主动向 Firebase 获取，
+     * 避免多个业务入口重复取 token、重复散落调用注册接口。
+     */
+    fun reportStoredOrCurrentFcmToken() {
+        val cachedToken = User.get().fcmToken?.trim()?.takeIf { it.isNotEmpty() }
+        if (cachedToken != null) {
+            reportFcmToken(cachedToken)
+            return
+        }
+        if (fetchingFcmToken) return
+
+        fetchingFcmToken = true
+        FirebaseMessaging.getInstance().token
+            .addOnSuccessListener { token ->
+                fetchingFcmToken = false
+                reportFcmToken(token)
+            }
+            .addOnFailureListener { error ->
+                fetchingFcmToken = false
+                Logger.w("EventManager", "FCM token fetch failed: ${error.message}")
+            }
     }
 
     /**

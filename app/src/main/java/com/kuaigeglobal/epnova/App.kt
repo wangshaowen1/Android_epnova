@@ -19,6 +19,7 @@ import com.kuaigeglobal.epnova.core.Global
 import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.manager.AdStrategyManager
 import com.kuaigeglobal.epnova.core.manager.AppsFlyerManager
+import com.kuaigeglobal.epnova.core.manager.EventManager
 import com.kuaigeglobal.epnova.core.manager.LocaleHelper
 import com.kuaigeglobal.epnova.core.manager.OssManager
 import com.kuaigeglobal.epnova.core.manager.PlaceManager
@@ -295,6 +296,8 @@ class App : BaseApp() {
             }
             Utils.init(this)
             DeviceID.register(this)
+            // 用户同意隐私后做一次启动兜底：已缓存 token 直接上报，未缓存才向 Firebase 获取。
+            EventManager.reportStoredOrCurrentFcmToken()
             // AppsFlyer 开始数据采集（用户已同意隐私协议）
             AppsFlyerManager.start(this)
             // 初始化 Unity Ads SDK（在主进程中执行，异步不阻塞启动）
