@@ -466,6 +466,11 @@ object ApiConstants {
     const val RECOMMEND_WORK_LIST = "app/home/work/page"
 
     /**
+     * Resource Center 资讯列表
+     */
+    const val OFFICIAL_CONSULTATION_LIST = "app/guide/official/consultation/list"
+
+    /**
      * 获取集数/视频比例/视频风格配置
      */
     const val VIDEO_SET_CONFIG = "work/config/getWorkSetUpConfig"

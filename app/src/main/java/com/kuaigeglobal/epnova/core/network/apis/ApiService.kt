@@ -17,6 +17,7 @@ import com.kuaigeglobal.epnova.core.network.apis.entity.InspirationInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.LogOffStatusInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.MyTvSeriesListInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.OnceTaskListData
+import com.kuaigeglobal.epnova.core.network.apis.entity.OfficialConsultationInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.OrderStatusInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.OverseasDeviceFingerprint
 import com.kuaigeglobal.epnova.core.network.apis.entity.PaymentData
@@ -758,6 +759,12 @@ interface ApiService {
      */
     @POST(ApiConstants.RECOMMEND_WORK_LIST)
     suspend fun recommendWorkList(@Body body: PagedBody): ApiResponse<PagedList<TopEarnerWorkInfo>?>
+
+    /**
+     * Resource Center 资讯列表
+     */
+    @POST(ApiConstants.OFFICIAL_CONSULTATION_LIST)
+    suspend fun officialConsultationList(@Body body: PagedBody): ApiResponse<PagedList<OfficialConsultationInfo>?>
 
     /**
      * 获取集数/视频比例/视频风格配置

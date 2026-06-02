@@ -48,6 +48,7 @@ class CreateFragment : BaseViewModelFragment<FragmentCreateBinding, CreateViewMo
 
     private lateinit var bannerAdapter: BaseBannerAdapter<BannerInfo>
     private val topEarnersFragment by lazy { TopEarnersFragment() }
+    private val resourceCenterFragment by lazy { ResourceCenterFragment() }
 
     override fun onPrepareView() {
         super.onPrepareView()
@@ -108,8 +109,9 @@ class CreateFragment : BaseViewModelFragment<FragmentCreateBinding, CreateViewMo
     private fun refreshPageData() {
         var bannerDone = false
         var topEarnersDone = false
+        var resourceCenterDone = false
         fun finishIfAllDone() {
-            if (bannerDone && topEarnersDone) {
+            if (bannerDone && topEarnersDone && resourceCenterDone) {
                 binding.srl.finishRefresh()
             }
         }
@@ -120,6 +122,10 @@ class CreateFragment : BaseViewModelFragment<FragmentCreateBinding, CreateViewMo
         }
         topEarnersFragment.refresh {
             topEarnersDone = true
+            finishIfAllDone()
+        }
+        resourceCenterFragment.refresh {
+            resourceCenterDone = true
             finishIfAllDone()
         }
     }
@@ -176,7 +182,7 @@ class CreateFragment : BaseViewModelFragment<FragmentCreateBinding, CreateViewMo
 
         val fragmentList = arrayListOf<Fragment>()
         fragmentList.add(topEarnersFragment)
-        fragmentList.add(ResourceCenterFragment())
+        fragmentList.add(resourceCenterFragment)
 
         val viewPagerAdapter = FragmentStateCacheAdapter(
             childFragmentManager,
