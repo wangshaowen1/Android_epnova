@@ -1,7 +1,7 @@
 package com.kuaigeglobal.epnova.core.network.apis.request
 
 /**
- * 剧集解锁激励视频广告完成确认请求体。
+ * 剧集解锁激励视频广告结果查询请求体。
  */
 data class StoryUnlockAdCompleteBody(
     /** 作品 ID */
@@ -21,7 +21,7 @@ data class RewardAdTaskPrepareBody(
 ) : UserTokenBody()
 
 /**
- * 签到/广告任务激励视频广告完成确认请求体。
+ * 签到/广告任务激励视频广告结果查询请求体。
  */
 data class RewardAdCompleteBody(
     /** 广告流水 ID，由对应 prepare 接口返回 */

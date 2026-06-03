@@ -11,9 +11,11 @@ import com.alibaba.android.alpha.Task
 import com.blankj.utilcode.util.ProcessUtils
 import com.blankj.utilcode.util.Utils
 import com.github.gzuliyujiang.oaid.DeviceID
+import com.google.android.gms.ads.MobileAds
 import com.kuaige.oss.OssType
 import com.kuaigeglobal.epnova.common.Cache
 import com.kuaigeglobal.epnova.common.SP
+import com.kuaigeglobal.epnova.common.ext.ioScope
 import com.kuaigeglobal.epnova.core.Config
 import com.kuaigeglobal.epnova.core.Global
 import com.kuaigeglobal.epnova.core.User
@@ -23,7 +25,6 @@ import com.kuaigeglobal.epnova.core.manager.EventManager
 import com.kuaigeglobal.epnova.core.manager.LocaleHelper
 import com.kuaigeglobal.epnova.core.manager.OssManager
 import com.kuaigeglobal.epnova.core.manager.PlaceManager
-import com.kuaigeglobal.epnova.core.manager.ad.UnityRewardedAdPlatform
 import com.kuaigeglobal.epnova.feature.splash.SplashActivity
 import com.kuaigeglobal.epnova.kit.SignUtils
 import com.kuaigeglobal.epnova.widget.CommonDialog
@@ -39,6 +40,7 @@ import com.nhsd.permisson.PermissionX
 import com.scwang.smart.refresh.footer.ClassicsFooter
 import com.scwang.smart.refresh.layout.SmartRefreshLayout
 import com.tencent.mmkv.MMKV
+import kotlinx.coroutines.launch
 import java.lang.ref.WeakReference
 import java.util.LinkedList
 import java.util.Random
@@ -300,9 +302,12 @@ class App : BaseApp() {
             EventManager.reportStoredOrCurrentFcmToken()
             // AppsFlyer 开始数据采集（用户已同意隐私协议）
             AppsFlyerManager.start(this)
-            // 初始化 Unity Ads SDK（在主进程中执行，异步不阻塞启动）
+            // 初始化 AdMob SDK（在主进程中执行，异步不阻塞启动）
             if (ProcessUtils.isMainProcess()) {
-                UnityRewardedAdPlatform.initialize(instance)
+                ioScope.launch {
+                    MobileAds.initialize(instance) {
+                    }
+                }
             }
         }
     }

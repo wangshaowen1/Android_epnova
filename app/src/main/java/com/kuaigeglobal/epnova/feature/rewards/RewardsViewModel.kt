@@ -67,7 +67,7 @@ class RewardsViewModel : AppRepositoryViewModel<AppRepository>() {
     private val _showCheckInSuccessEvent = MutableSharedFlow<Pair<Int, Int>>(extraBufferCapacity = 1)
     val showCheckInSuccessEvent: SharedFlow<Pair<Int, Int>> = _showCheckInSuccessEvent
 
-    /** 签到广告播完、服务端确认奖励后通知 Fragment 展示获得金币的 Toast，携带实际奖励金币数量 */
+    /** 签到广告播完、查询到奖励完成后通知 Activity 展示获得金币的 Toast，携带实际奖励金币数量 */
     private val _showCheckInAdRewardEvent = MutableSharedFlow<Int>(extraBufferCapacity = 1)
     val showCheckInAdRewardEvent: SharedFlow<Int> = _showCheckInAdRewardEvent
 
@@ -185,7 +185,7 @@ class RewardsViewModel : AppRepositoryViewModel<AppRepository>() {
 
     /**
      * 任务广告播完后由 Activity 调用。
-     * 重复调用 complete 确认结果，adFlowStatus：0=处理中，1=成功，2=失败。
+     * 重复调用 complete 查询 AdMob SSV 处理结果，adFlowStatus：0=处理中，1=成功，2=失败。
      */
     fun onAdWatched(vm: ItemEarnRewardVM, nonce: String) {
         if (vm.isDone.get()) return
@@ -241,7 +241,7 @@ class RewardsViewModel : AppRepositoryViewModel<AppRepository>() {
 
     /**
      * 签到广告播完后由 Activity 调用。
-     * 重复确认后更新余额、标记当天广告已看、通知 Activity 展示获得金币 Toast。
+     * 重复查询后更新余额、标记当天广告已看、通知 Activity 展示获得金币 Toast。
      */
     fun onCheckInAdWatched(nonce: String) {
         viewModelScope.launch {

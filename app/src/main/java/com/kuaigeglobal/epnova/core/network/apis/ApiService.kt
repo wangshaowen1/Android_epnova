@@ -1406,7 +1406,7 @@ interface ApiService {
     suspend fun storyUnlockAdPrepare(@Body body: WorkBody): ApiResponse<RewardAdPrepareData?>
 
     /**
-     * 剧集解锁-激励视频广告完成确认
+     * 剧集解锁-激励视频广告结果查询
      */
     @POST(ApiConstants.AD_REWARD_STORY_UNLOCK_COMPLETE)
     suspend fun storyUnlockAdComplete(@Body body: StoryUnlockAdCompleteBody): ApiResponse<RewardAdCompleteData?>
@@ -1418,7 +1418,7 @@ interface ApiService {
     suspend fun rewardAdCheckInPrepare(@Body body: UserTokenBody): ApiResponse<RewardAdPrepareData?>
 
     /**
-     * 签到任务-激励视频广告完成确认
+     * 签到任务-激励视频广告结果查询
      */
     @POST(ApiConstants.AD_REWARD_CHECKIN_COMPLETE)
     suspend fun rewardAdCheckInComplete(@Body body: RewardAdCompleteBody): ApiResponse<RewardAdCompleteData?>
@@ -1430,7 +1430,7 @@ interface ApiService {
     suspend fun rewardAdTaskPrepare(@Body body: RewardAdTaskPrepareBody): ApiResponse<RewardAdPrepareData?>
 
     /**
-     * 广告任务-激励视频广告完成确认
+     * 广告任务-激励视频广告结果查询
      */
     @POST(ApiConstants.AD_REWARD_TASK_COMPLETE)
     suspend fun rewardAdTaskComplete(@Body body: RewardAdCompleteBody): ApiResponse<RewardAdCompleteData?>

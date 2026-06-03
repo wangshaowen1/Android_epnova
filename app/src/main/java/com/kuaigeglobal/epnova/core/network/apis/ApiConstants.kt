@@ -987,7 +987,7 @@ object ApiConstants {
     const val AD_REWARD_STORY_UNLOCK_PREPARE = "ad/reward/story/unlock/prepare"
 
     /**
-     * 剧集解锁-激励视频广告完成确认
+     * 剧集解锁-激励视频广告结果查询
      */
     const val AD_REWARD_STORY_UNLOCK_COMPLETE = "ad/reward/story/unlock/complete"
 
@@ -997,7 +997,7 @@ object ApiConstants {
     const val AD_REWARD_CHECKIN_PREPARE = "ad/reward/checkin/prepare"
 
     /**
-     * 签到任务-激励视频广告完成确认
+     * 签到任务-激励视频广告结果查询
      */
     const val AD_REWARD_CHECKIN_COMPLETE = "ad/reward/checkin/complete"
 
@@ -1007,7 +1007,7 @@ object ApiConstants {
     const val AD_REWARD_TASK_PREPARE = "ad/reward/task/prepare"
 
     /**
-     * 广告任务-激励视频广告完成确认
+     * 广告任务-激励视频广告结果查询
      */
     const val AD_REWARD_TASK_COMPLETE = "ad/reward/task/complete"
 
