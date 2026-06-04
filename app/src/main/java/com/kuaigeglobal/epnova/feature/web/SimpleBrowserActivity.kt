@@ -483,7 +483,7 @@ class SimpleBrowserActivity : BaseViewModelActivity<ActivityBrowserBinding, Brow
 
                     "album" -> requestImages2VideosPermissions(
                         R.string.sdcard_permission_description.getResString(),
-                        withVideo = true,
+                        withVideo = false,
                         openSelect = true
                     ) { granted ->
                         val result =
@@ -639,7 +639,7 @@ class SimpleBrowserActivity : BaseViewModelActivity<ActivityBrowserBinding, Brow
     private fun choosePic() {
         requestImages2VideosPermissions(
             getString(R.string.sdcard_permission_description),
-            withVideo = true,
+            withVideo = false,
             openSelect = true
         ) { granted ->
             if (granted) {

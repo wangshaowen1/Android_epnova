@@ -374,7 +374,7 @@ class BrowserFragment : BaseViewModelFragment<FragmentBrowserBinding, BrowserVie
 
                     "album" -> requestImages2VideosPermissions(
                         R.string.sdcard_permission_description.getResString(),
-                        withVideo = true,
+                        withVideo = false,
                         openSelect = true
                     ) { granted ->
                         val result =
@@ -531,7 +531,7 @@ class BrowserFragment : BaseViewModelFragment<FragmentBrowserBinding, BrowserVie
     private fun choosePic() {
         requestImages2VideosPermissions(
             getString(R.string.sdcard_permission_description),
-            withVideo = true,
+            withVideo = false,
             openSelect = true
         ) { granted ->
             if (granted) {

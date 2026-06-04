@@ -17,7 +17,6 @@ package com.nhsd.mattise.ui;
 
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.READ_MEDIA_IMAGES;
-import static android.Manifest.permission.READ_MEDIA_VIDEO;
 import static android.Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 import static android.view.View.GONE;
@@ -653,7 +652,7 @@ public class MatisseActivity extends AppCompatActivity implements
     public void expandAuthorizedMedia() {
         String[] permissions;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-            permissions = new String[]{READ_MEDIA_VISUAL_USER_SELECTED, READ_MEDIA_IMAGES, READ_MEDIA_VIDEO};
+            permissions = new String[]{READ_MEDIA_VISUAL_USER_SELECTED, READ_MEDIA_IMAGES};
             PermissionX.with(this).permissions(permissions)
                     .onRequestRationale(getResources().getString(R.string.camera_permission_description)).request(result -> {
                         if (ContextCompat.checkSelfPermission(this, READ_MEDIA_VISUAL_USER_SELECTED) == PERMISSION_GRANTED) {

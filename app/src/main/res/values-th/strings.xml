@@ -11,7 +11,11 @@
     <string name="refresh_to_retry">รีเฟรช &amp; ลองใหม่</string>
     <string name="download_failed">ดาวน์โหลดล้มเหลว</string>
     <string name="i_know">เข้าใจแล้ว</string>
-    <string name="permissionx_default_denied_forever_rationale_message">หากต้องการใช้ฟีเจอร์นี้ กรุณาเปิดใช้งานสิทธิ์ %s ในการตั้งค่าอุปกรณ์ของคุณ</string>
+    <string name="permissionx_default_rationale_title">คำอธิบายสิทธิ์</string>
+    <string name="permissionx_default_denied_forever_rationale_title">ต้องเปิดสิทธิ์</string>
+    <string name="permissionx_default_denied_forever_rationale_negative">ยกเลิก</string>
+    <string name="permissionx_default_denied_forever_rationale_positive">เปิดใช้งาน</string>
+    <string name="permissionx_default_denied_forever_rationale_message">หากต้องการใช้ฟีเจอร์นี้ กรุณาเปิดสิทธิ์ที่จำเป็นในการตั้งค่าอุปกรณ์ของคุณ</string>
     <string name="cancel">ยกเลิก</string>
     <string name="messages">ข้อความระบบ</string>
     <string name="failed">ล้มเหลว</string>

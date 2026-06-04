@@ -11,7 +11,11 @@
     <string name="refresh_to_retry">Refresh &amp; Coba Lagi</string>
     <string name="download_failed">Gagal Mengunduh</string>
     <string name="i_know">Mengerti</string>
-    <string name="permissionx_default_denied_forever_rationale_message">Untuk menggunakan fitur ini, silakan aktifkan izin % s di pengaturan perangkat Anda.</string>
+    <string name="permissionx_default_rationale_title">Penjelasan Izin</string>
+    <string name="permissionx_default_denied_forever_rationale_title">Izin Diperlukan</string>
+    <string name="permissionx_default_denied_forever_rationale_negative">Batal</string>
+    <string name="permissionx_default_denied_forever_rationale_positive">Aktifkan</string>
+    <string name="permissionx_default_denied_forever_rationale_message">Untuk menggunakan fitur ini, silakan aktifkan izin yang diperlukan di pengaturan perangkat Anda.</string>
     <string name="cancel">Batal</string>
     <string name="messages">Pesan Sistem</string>
     <string name="failed">Gagal</string>

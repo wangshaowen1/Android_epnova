@@ -6,8 +6,8 @@ import android.os.Build
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
-import com.nhsd.basic.ext.showToast
 import com.kuaigeglobal.epnova.R
+import com.nhsd.basic.ext.showToast
 import kotlinx.coroutines.launch
 
 /**
@@ -200,8 +200,7 @@ private fun handleImagesVideoRequest(
     openSelect: Boolean,
     callback: ((granted: Boolean) -> Unit)?
 ) {
-    // 根据原逻辑：val permissions = if (withVideo) ... else ... (原代码中似乎注释掉了判断，直接取getImagesAndVideosPermissions，这里保持原逻辑)
-    val permissions = PermissionsUtils.getImagesAndVideosPermissions()
+    val permissions = if (withVideo) PermissionsUtils.getImagesAndVideosPermissions() else PermissionsUtils.getImagesPermissions()
 
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) { // Android 14+
         if (PermissionsUtils.checkUserSelectedPermission(context)) {

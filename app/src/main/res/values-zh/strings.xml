@@ -11,7 +11,11 @@
     <string name="refresh_to_retry">刷新重试</string>
     <string name="download_failed">下载失败</string>
     <string name="i_know">我知道了</string>
-    <string name="permissionx_default_denied_forever_rationale_message">为正常使用该功能，请前往系统应用设置中开启%s权限</string>
+    <string name="permissionx_default_rationale_title">权限使用说明</string>
+    <string name="permissionx_default_denied_forever_rationale_title">需要开启权限</string>
+    <string name="permissionx_default_denied_forever_rationale_negative">取消</string>
+    <string name="permissionx_default_denied_forever_rationale_positive">去开启</string>
+    <string name="permissionx_default_denied_forever_rationale_message">为正常使用该功能，请前往系统应用设置中开启所需权限</string>
 
     <string name="cancel">取消</string>
     <string name="messages">系统消息</string>

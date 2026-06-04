@@ -14,7 +14,11 @@
     <string name="refresh_to_retry">Refresh &amp; Retry</string>
     <string name="download_failed">Download Failed</string>
     <string name="i_know">Got It</string>
-    <string name="permissionx_default_denied_forever_rationale_message">To use this feature, please enable %s permission in your device settings.</string>
+    <string name="permissionx_default_rationale_title">Permission explanation</string>
+    <string name="permissionx_default_denied_forever_rationale_title">Permission required</string>
+    <string name="permissionx_default_denied_forever_rationale_negative">Cancel</string>
+    <string name="permissionx_default_denied_forever_rationale_positive">Enable</string>
+    <string name="permissionx_default_denied_forever_rationale_message">To use this feature, please enable the required permission in your device settings.</string>
 
     <string name="cancel">Cancel</string>
     <string name="messages">System Messages</string>

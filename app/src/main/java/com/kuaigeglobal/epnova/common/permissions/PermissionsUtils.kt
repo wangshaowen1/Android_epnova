@@ -60,17 +60,16 @@ object PermissionsUtils {
     }
 
     /**
-     * 检查图片、视频权限是否授予
+     * 检查媒体权限是否授予。
+     * 当前 Manifest 移除了 READ_MEDIA_VIDEO，运行时保持只申请图片/部分照片权限。
      */
     @JvmStatic
     fun checkMediaPermission(context: Context): Boolean {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-            (checkPermission(context, Manifest.permission.READ_MEDIA_IMAGES) && checkPermission(
-                context,
-                Manifest.permission.READ_MEDIA_VIDEO
-            )) || checkPermission(context, Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED)
+            checkPermission(context, Manifest.permission.READ_MEDIA_IMAGES) ||
+                    checkPermission(context, Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED)
         } else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.TIRAMISU) {
-            checkPermission(context, Manifest.permission.READ_MEDIA_IMAGES) && checkPermission(context, Manifest.permission.READ_MEDIA_VIDEO)
+            checkPermission(context, Manifest.permission.READ_MEDIA_IMAGES)
         } else {
             checkPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) && checkPermission(
                 context,
@@ -100,7 +99,8 @@ object PermissionsUtils {
     }
 
     /**
-     * 获取拍照，图片和视频的相关权限
+     * 获取拍照和媒体相关权限。
+     * 当前 Manifest 移除了 READ_MEDIA_VIDEO，运行时保持只申请图片/部分照片权限。
      */
     @JvmStatic
     fun getCamera2MediaPermissions(): Array<String> {
@@ -108,11 +108,10 @@ object PermissionsUtils {
             arrayOf(
                 Manifest.permission.CAMERA,
                 Manifest.permission.READ_MEDIA_IMAGES,
-                Manifest.permission.READ_MEDIA_VIDEO,
                 Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED
             )
         } else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.TIRAMISU) {
-            arrayOf(Manifest.permission.CAMERA, Manifest.permission.READ_MEDIA_IMAGES, Manifest.permission.READ_MEDIA_VIDEO)
+            arrayOf(Manifest.permission.CAMERA, Manifest.permission.READ_MEDIA_IMAGES)
         } else {
             arrayOf(Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE)
         }
@@ -134,14 +133,15 @@ object PermissionsUtils {
     }
 
     /**
-     * 获取图片和视频的相关权限
+     * 获取媒体相关权限。
+     * 当前 Manifest 移除了 READ_MEDIA_VIDEO，运行时保持只申请图片/部分照片权限。
      */
     @JvmStatic
     fun getImagesAndVideosPermissions(): Array<String> {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-            arrayOf(Manifest.permission.READ_MEDIA_IMAGES, Manifest.permission.READ_MEDIA_VIDEO, Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED)
+            arrayOf(Manifest.permission.READ_MEDIA_IMAGES, Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED)
         } else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.TIRAMISU) {
-            arrayOf(Manifest.permission.READ_MEDIA_IMAGES, Manifest.permission.READ_MEDIA_VIDEO)
+            arrayOf(Manifest.permission.READ_MEDIA_IMAGES)
         } else {
             arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE)
         }
