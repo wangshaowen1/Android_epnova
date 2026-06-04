@@ -785,7 +785,7 @@ interface ApiService {
     suspend fun updateWorkInfo(@Body body: WorkInfoUpdateBody): ApiResponse<Any>
 
     /**
-     * 编辑我的作品信息
+     * 作品播放量计数
      */
     @POST(ApiConstants.PLAY_EVENT_REPORT)
     suspend fun playEventReport(@Body body: PlayEventBody): ApiResponse<Any>
