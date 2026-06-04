@@ -1,5 +1,6 @@
 package com.kuaigeglobal.epnova.core.network.apis.response
 
+import com.kuaigeglobal.epnova.common.utils.DateUtil
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -47,13 +48,11 @@ data class ComputingPowerDetailsInfo(
 
         //积分消耗
         const val SCORE_TYPE_CONSUME = 2
-
-        private const val FORMAT_LOCAL_TRANSACTION_TIME = "yyyy-MM-dd HH:mm"
     }
 
     fun getFormattedTradeDate(): String {
         return tradeDate?.let {
-            SimpleDateFormat(FORMAT_LOCAL_TRANSACTION_TIME, Locale.getDefault()).format(Date(it))
+            DateUtil.getFormatDateTime(it, DateUtil.FORMAT_DATETIME_BIAS)
         } ?: ""
     }
 }
