@@ -8,6 +8,7 @@ import com.kuaigeglobal.epnova.core.network.apis.entity.CharacterInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.CoinsAndWalletInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.ContentInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.CreationStyleInfo
+import com.kuaigeglobal.epnova.core.network.apis.entity.CreatorWorkInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.DubbingGenStatusInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.EpisodeInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.ExampleWorkInfo
@@ -47,7 +48,6 @@ import com.kuaigeglobal.epnova.core.network.apis.entity.SimpleStoryboardInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.StoryUnlockStatusData
 import com.kuaigeglobal.epnova.core.network.apis.entity.SubtitleTaskStatusInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.TaskStatusInfo
-import com.kuaigeglobal.epnova.core.network.apis.entity.TopEarnerWorkInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.UserShareUrlInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.VideoConfigData
 import com.kuaigeglobal.epnova.core.network.apis.entity.VipConfigInfo
@@ -758,7 +758,7 @@ interface ApiService {
      * Top Earners-分页查询作品列表
      */
     @POST(ApiConstants.RECOMMEND_WORK_LIST)
-    suspend fun recommendWorkList(@Body body: PagedBody): ApiResponse<PagedList<TopEarnerWorkInfo>?>
+    suspend fun recommendWorkList(@Body body: PagedBody): ApiResponse<PagedList<CreatorWorkInfo>?>
 
     /**
      * Resource Center 资讯列表

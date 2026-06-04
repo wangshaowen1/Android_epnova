@@ -9,13 +9,18 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.kuaigeglobal.epnova.common.ext.getVm
 import com.kuaigeglobal.epnova.core.databinding.loadUri
-import com.kuaigeglobal.epnova.core.network.apis.entity.TopEarnerWorkInfo
+import com.kuaigeglobal.epnova.core.network.apis.entity.CreatorWorkInfo
 import com.kuaigeglobal.epnova.databinding.ItemTopEarnersBinding
 import com.kuaigeglobal.epnova.feature.play.DramasPlayPagerActivity
 import com.nhsd.basic.ext.dp
 import com.nhsd.basic.item.BindingViewHolder
 
-class TopEarnersAdapter : PagingDataAdapter<TopEarnerWorkInfo, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
+/**
+ * TopEarners 作品列表。
+ *
+ * 列表保持作品维度绑定 CreatorWorkInfo；播放器需要的 CreatorPlayableEpisode 会在新播放器阶段派生。
+ */
+class TopEarnersAdapter : PagingDataAdapter<CreatorWorkInfo, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
@@ -38,7 +43,8 @@ class TopEarnersAdapter : PagingDataAdapter<TopEarnerWorkInfo, RecyclerView.View
 
         override fun bind(position: Int) {
             getItem(position)?.let { item ->
-                val viewModel = binding.getVm<ItemTopEarnersVm, TopEarnerWorkInfo>(
+                // item VM 仍然绑定作品模型，避免列表阶段提前转换成播放单元。
+                val viewModel = binding.getVm<ItemTopEarnersVm, CreatorWorkInfo>(
                     key = item.workId,
                     item = item,
                     viewModelFactory = {
@@ -46,6 +52,7 @@ class TopEarnersAdapter : PagingDataAdapter<TopEarnerWorkInfo, RecyclerView.View
                     },
                 ).apply {
                     onItemClick.value = {
+                        // 临时保留旧入口。阶段五会替换为 CreatorPlayerActivity，并复用 TopEarnersCreatorFeedRepository。
                         DramasPlayPagerActivity.start(workId = item.workId, 0, false)
                     }
                 }
@@ -55,7 +62,8 @@ class TopEarnersAdapter : PagingDataAdapter<TopEarnerWorkInfo, RecyclerView.View
             }
         }
 
-        private fun bindPlatforms(item: TopEarnerWorkInfo) {
+        /**绑定发行平台 logo；平台链接属于 TopEarners/FastFilm 作品展示信息，不进入旧播放器体系。*/
+        private fun bindPlatforms(item: CreatorWorkInfo) {
             binding.llPlatforms.removeAllViews()
             item.platformLinks.orEmpty()
                 .mapNotNull { it.platformLogoUrl }
@@ -73,19 +81,20 @@ class TopEarnersAdapter : PagingDataAdapter<TopEarnerWorkInfo, RecyclerView.View
     }
 
     companion object {
-        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<TopEarnerWorkInfo>() {
+        /**分页列表以 workId 作为稳定 key；同一个作品的数据内容变化时仍触发 item 刷新。*/
+        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<CreatorWorkInfo>() {
             override fun areItemsTheSame(
-                oldItem: TopEarnerWorkInfo,
-                newItem: TopEarnerWorkInfo
+                oldItem: CreatorWorkInfo,
+                newItem: CreatorWorkInfo
             ): Boolean {
-                return oldItem == newItem
+                return oldItem.workId == newItem.workId
             }
 
             override fun areContentsTheSame(
-                oldItem: TopEarnerWorkInfo,
-                newItem: TopEarnerWorkInfo
+                oldItem: CreatorWorkInfo,
+                newItem: CreatorWorkInfo
             ): Boolean {
-                return oldItem.hashCode() == newItem.hashCode()
+                return oldItem == newItem
             }
         }
     }
