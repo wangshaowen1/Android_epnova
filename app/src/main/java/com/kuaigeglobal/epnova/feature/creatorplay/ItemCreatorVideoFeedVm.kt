@@ -12,9 +12,6 @@ import com.kuaigeglobal.epnova.core.network.apis.entity.CreatorPlayableEpisode
  */
 class ItemCreatorVideoFeedVm(data: CreatorPlayableEpisode?) : AppItemViewModel<CreatorPlayableEpisode>(data) {
 
-    /**封面可见性；首帧前和错误态显示，播放/暂停后保持视频帧。*/
-    val showCover = ObservableBoolean(true)
-
     /**中心播放按钮可见性，只在暂停态显示。*/
     val showPauseButton = ObservableBoolean(false)
 
@@ -27,16 +24,21 @@ class ItemCreatorVideoFeedVm(data: CreatorPlayableEpisode?) : AppItemViewModel<C
     /**错误文案，由 PlayerManager 提供轻量错误描述。*/
     val errorText = ObservableField("")
 
-    /**封面优先取剧集封面，缺失时使用作品封面兜底。*/
-    fun coverUrl(): String? {
-        val item = data.get()
-        return item?.episode?.workCoverUrl ?: item?.workContext?.workCoverUrl
-    }
-
     /**标题优先取剧集标题，缺失时使用作品标题兜底。*/
     fun title(): String? {
         val item = data.get()
         return item?.episode?.storyTitle ?: item?.workContext?.workTitle
+    }
+
+    /**简介优先取剧集梗概，缺失时使用作品简介兜底，保持 FastFilm 播放器的信息层级。*/
+    fun description(): String? {
+        val item = data.get()
+        return item?.episode?.storySummary ?: item?.workContext?.workDesc
+    }
+
+    /**简介为空时隐藏描述区域，避免播放器底部留下无意义空白。*/
+    fun hasDescription(): Boolean {
+        return description().isNullOrBlank().not()
     }
 
     /**视频时长毫秒值；接口模型里的 duration 按秒保存。*/
@@ -46,7 +48,6 @@ class ItemCreatorVideoFeedVm(data: CreatorPlayableEpisode?) : AppItemViewModel<C
 
     /**ViewHolder 绑定新数据时重置播放器 UI 状态，避免 RecyclerView 复用残留。*/
     fun resetPlayerUi() {
-        showCover.set(true)
         showPauseButton.set(false)
         showBuffering.set(false)
         showError.set(false)
@@ -58,14 +59,6 @@ class ItemCreatorVideoFeedVm(data: CreatorPlayableEpisode?) : AppItemViewModel<C
         showError.set(state is CreatorFeedPlayerManager.CreatorPlayerState.Error)
         showBuffering.set(state is CreatorFeedPlayerManager.CreatorPlayerState.Buffering)
         showPauseButton.set(state is CreatorFeedPlayerManager.CreatorPlayerState.Pause)
-
-        when (state) {
-            is CreatorFeedPlayerManager.CreatorPlayerState.Playing,
-            is CreatorFeedPlayerManager.CreatorPlayerState.Pause -> showCover.set(false)
-            is CreatorFeedPlayerManager.CreatorPlayerState.Idle,
-            is CreatorFeedPlayerManager.CreatorPlayerState.Error -> showCover.set(true)
-            is CreatorFeedPlayerManager.CreatorPlayerState.Buffering -> Unit
-        }
 
         if (state is CreatorFeedPlayerManager.CreatorPlayerState.Error) {
             errorText.set(state.msg)

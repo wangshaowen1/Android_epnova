@@ -25,15 +25,15 @@ object TopEarnersCreatorMapper {
     }
 
     /**从共享 CreatorWorkInfo feed 派生播放单元；TopEarners 是唯一允许跨作品切换的 source。*/
-    fun toPlayableEpisodeOrNull(
-        work: CreatorWorkInfo?,
+    fun toPlayableEpisode(
+        work: CreatorWorkInfo,
         feedIndex: Long,
         feedKey: String? = null
-    ): CreatorPlayableEpisode? {
-        val normalizedWork = normalizeWork(work) ?: return null
+    ): CreatorPlayableEpisode {
+        val normalizedWork = normalizeWork(work) ?: work
         val episode = normalizedWork.workStoryItemList.orEmpty()
             .firstOrNull()
-            ?: return null
+            ?: normalizedWork.toFallbackEpisode()
         return CreatorPlayableEpisode(
             episode = episode,
             workContext = normalizedWork.toCreatorWorkContext(),
@@ -43,10 +43,20 @@ object TopEarnersCreatorMapper {
         )
     }
 
+    /**nullable work 的安全转换入口；需要保持列表 position 时优先用非空 toPlayableEpisode。*/
+    fun toPlayableEpisodeOrNull(
+        work: CreatorWorkInfo?,
+        feedIndex: Long,
+        feedKey: String? = null
+    ): CreatorPlayableEpisode? {
+        work ?: return null
+        return toPlayableEpisode(work, feedIndex, feedKey)
+    }
+
     /**批量转换播放单元；后续播放器从同一个 work feed 派生播放 feed 时使用。*/
     fun toPlayableEpisodes(works: List<CreatorWorkInfo>?): List<CreatorPlayableEpisode> {
-        return works.orEmpty().mapIndexedNotNull { index, work ->
-            toPlayableEpisodeOrNull(work, feedIndex = index.toLong())
+        return works.orEmpty().mapIndexed { index, work ->
+            toPlayableEpisode(work, feedIndex = index.toLong())
         }
     }
 
@@ -75,6 +85,18 @@ object TopEarnersCreatorMapper {
             workRatio = workRatio ?: work.workRatio,
             playCount = playCount ?: work.playCount,
             workCoverUrl = workCoverUrl ?: work.workCoverUrl
+        )
+    }
+
+    /**TopEarners 理论上一作品一集；无 episode 时保留作品位置并让播放器展示空视频错误态。*/
+    private fun CreatorWorkInfo.toFallbackEpisode(): CreatorEpisodeInfo {
+        return CreatorEpisodeInfo(
+            workId = workId,
+            storyTitle = workTitle,
+            storySummary = workDesc,
+            workRatio = workRatio,
+            playCount = playCount,
+            workCoverUrl = workCoverUrl
         )
     }
 

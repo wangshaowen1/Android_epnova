@@ -2,6 +2,7 @@ package com.kuaigeglobal.epnova.feature.creatorplay
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.view.animation.AnimationUtils
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
@@ -101,6 +102,7 @@ class CreatorVideoFeedAdapter(
             binding.item = viewModel
             binding.seekbar.currentPosition = 0L
             binding.seekbar.duration = viewModel.durationMs()
+            binding.animBuffering.clearAnimation()
             binding.executePendingBindings()
         }
 
@@ -118,11 +120,43 @@ class CreatorVideoFeedAdapter(
             binding.executePendingBindings()
 
             if (binding.item?.showBuffering?.get() == true) {
-                binding.animBuffering.clearAnimation()
-                binding.animBuffering.startAnimation(rotateAnim)
+                startBufferingAnimationAfterLayout()
             } else {
                 binding.animBuffering.clearAnimation()
             }
+        }
+
+        /**loading 可见后等到 View 有尺寸再启动动画，避免旋转圆心按 0 宽高落在左上角。*/
+        private fun startBufferingAnimationAfterLayout() {
+            val loadingView = binding.animBuffering
+            loadingView.clearAnimation()
+            loadingView.post {
+                if (binding.item?.showBuffering?.get() != true) return@post
+                if (loadingView.width > 0 && loadingView.height > 0) {
+                    startBufferingAnimation()
+                    return@post
+                }
+
+                val observer = loadingView.viewTreeObserver
+                if (!observer.isAlive) return@post
+                observer.addOnPreDrawListener(object : ViewTreeObserver.OnPreDrawListener {
+                    override fun onPreDraw(): Boolean {
+                        if (observer.isAlive) {
+                            observer.removeOnPreDrawListener(this)
+                        }
+                        if (binding.item?.showBuffering?.get() == true) {
+                            startBufferingAnimation()
+                        }
+                        return true
+                    }
+                })
+            }
+        }
+
+        /**真正启动旋转动画前统一清理旧动画，避免 RecyclerView 复用后多个动画叠加。*/
+        private fun startBufferingAnimation() {
+            binding.animBuffering.clearAnimation()
+            binding.animBuffering.startAnimation(rotateAnim)
         }
     }
 

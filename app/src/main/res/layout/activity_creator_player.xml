@@ -26,5 +26,34 @@
             android:id="@+id/toolbar"
             layout="@layout/view_model_toolbar"
             app:toolbar="@{layout.toolbar}" />
+
+        <LinearLayout
+            android:id="@+id/actionContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|end"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingTop="@{layout.toolbar.paddingTop}">
+
+            <ImageView
+                android:id="@+id/btnEdit"
+                setVisible="@{layout.showOwnerActions}"
+                android:layout_width="40dp"
+                android:layout_height="@dimen/action_bar_size"
+                android:paddingVertical="10dp"
+                android:scaleType="center"
+                android:src="@drawable/icon_edit_full_rounded" />
+
+            <ImageView
+                android:id="@+id/btnMenu"
+                setVisible="@{layout.showMenuAction}"
+                android:layout_width="40dp"
+                android:layout_height="@dimen/action_bar_size"
+                android:layout_marginEnd="4dp"
+                android:paddingVertical="10dp"
+                android:scaleType="center"
+                android:src="@drawable/icon_more_h" />
+        </LinearLayout>
     </FrameLayout>
 </layout>

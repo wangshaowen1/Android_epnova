@@ -29,20 +29,6 @@
             app:use_controller="false" />
 
         <ImageView
-            android:id="@+id/coverImage"
-            loadUri="@{item.coverUrl()}"
-            setVisible="@{item.showCover}"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:scaleType="fitCenter"
-            app:layout_constraintBottom_toBottomOf="@id/playerView"
-            app:layout_constraintEnd_toEndOf="@id/playerView"
-            app:layout_constraintStart_toStartOf="@id/playerView"
-            app:layout_constraintTop_toTopOf="@id/playerView"
-            tools:background="@android:color/black"
-            tools:src="@drawable/img_default_cover_16_9" />
-
-        <ImageView
             android:id="@+id/btnPause"
             setVisible="@{item.showPauseButton}"
             android:layout_width="64dp"
@@ -88,17 +74,44 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/spacing_l"
-            android:layout_marginBottom="18dp"
+            android:layout_marginBottom="@dimen/spacing_xs"
             android:ellipsize="end"
             android:maxLines="2"
             android:shadowColor="@color/color_50_000000"
             android:shadowRadius="2"
             android:text="@{item.title()}"
             android:textColor="?attr/textColor1"
-            app:layout_constraintBottom_toTopOf="@id/seekbar"
+            app:layout_constraintBottom_toTopOf="@id/tvContent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             tools:text="代码纪元：觉醒指令" />
+
+        <com.kuaigeglobal.epnova.widget.expandtextview.ExpandableTextView
+            android:id="@+id/tvContent"
+            expandContent="@{item.description()}"
+            setVisible="@{item.hasDescription()}"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/spacing_l"
+            android:layout_marginBottom="14dp"
+            android:lineSpacingExtra="@dimen/lineSpacingExtra"
+            android:saveEnabled="false"
+            android:shadowColor="@color/color_50_000000"
+            android:shadowRadius="2"
+            android:textColor="?attr/textColor3"
+            android:textSize="14dp"
+            app:collapseLines="3"
+            app:collapseTipLabel="@string/collapse"
+            app:expandTipLabel="@string/expand"
+            app:expandable="true"
+            app:layout_constraintBottom_toTopOf="@id/seekbar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:tipPosition="align_right"
+            app:tipsColor="?attr/textColor2"
+            app:tipsSize="14dp"
+            tools:text="夏天是最美好的季节。阳光炽热而灿烂，天空湛蓝如宝石。"
+            tools:visibility="visible" />
 
         <com.kuaigeglobal.epnova.widget.PlayerSeekbar
             android:id="@+id/seekbar"

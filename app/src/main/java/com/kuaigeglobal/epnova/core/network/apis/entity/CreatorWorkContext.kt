@@ -1,6 +1,7 @@
 package com.kuaigeglobal.epnova.core.network.apis.entity
 
 import android.os.Parcelable
+import com.kuaigeglobal.epnova.core.User
 import kotlinx.parcelize.Parcelize
 
 /**
@@ -42,4 +43,10 @@ data class CreatorWorkContext(
 
     /**发布平台列表。*/
     val platformLinks: List<CreatorPlatformInfo>? = null
-) : Parcelable
+) : Parcelable {
+
+    /**是否当前登录用户自己的作品；新播放器据此切换举报菜单和创作者编辑/下载操作。*/
+    fun isMine(): Boolean {
+        return User.get().isSameId(userId)
+    }
+}

@@ -9,9 +9,10 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.kuaigeglobal.epnova.common.ext.getVm
 import com.kuaigeglobal.epnova.core.databinding.loadUri
+import com.kuaigeglobal.epnova.core.network.apis.entity.CreatorPlaySource
 import com.kuaigeglobal.epnova.core.network.apis.entity.CreatorWorkInfo
 import com.kuaigeglobal.epnova.databinding.ItemTopEarnersBinding
-import com.kuaigeglobal.epnova.feature.play.DramasPlayPagerActivity
+import com.kuaigeglobal.epnova.feature.creatorplay.CreatorPlayerActivity
 import com.nhsd.basic.ext.dp
 import com.nhsd.basic.item.BindingViewHolder
 
@@ -52,8 +53,10 @@ class TopEarnersAdapter : PagingDataAdapter<CreatorWorkInfo, RecyclerView.ViewHo
                     },
                 ).apply {
                     onItemClick.value = {
-                        // 临时保留旧入口。阶段五会替换为 CreatorPlayerActivity，并复用 TopEarnersCreatorFeedRepository。
-                        DramasPlayPagerActivity.start(workId = item.workId, 0, false)
+                        // TopEarners 是唯一允许跨作品上下切换的入口，播放器会复用同一个共享 work feed。
+                        val currentPosition = bindingAdapterPosition.takeIf { it != RecyclerView.NO_POSITION }
+                            ?: position
+                        CreatorPlayerActivity.start(CreatorPlaySource.TOP_EARNERS, currentPosition)
                     }
                 }
                 binding.item = viewModel
