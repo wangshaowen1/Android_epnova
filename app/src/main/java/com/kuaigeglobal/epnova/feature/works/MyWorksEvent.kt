@@ -1,6 +1,6 @@
 package com.kuaigeglobal.epnova.feature.works
 
-import com.kuaigeglobal.epnova.core.network.apis.entity.WorkInfo
+import com.kuaigeglobal.epnova.core.network.apis.entity.CreatorWorkInfo
 
 /**
  * *****************************************
@@ -13,7 +13,7 @@ import com.kuaigeglobal.epnova.core.network.apis.entity.WorkInfo
  */
 sealed class MyWorksEvent {
     //查看详情
-    class ViewDetails(val workInfo: WorkInfo?):MyWorksEvent()
+    class ViewDetails(val workInfo: CreatorWorkInfo?):MyWorksEvent()
     //编制状态下 status是已经改变后的状态
-    class ComposeState(status: Boolean,val workInfo: WorkInfo?):MyWorksEvent()
+    class ComposeState(status: Boolean,val workInfo: CreatorWorkInfo?):MyWorksEvent()
 }

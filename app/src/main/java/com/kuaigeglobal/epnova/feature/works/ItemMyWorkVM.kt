@@ -6,13 +6,13 @@ import androidx.databinding.ObservableBoolean
 import androidx.lifecycle.viewModelScope
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.base.item.AppItemViewModel
-import com.kuaigeglobal.epnova.core.network.apis.entity.WorkInfo
+import com.kuaigeglobal.epnova.core.network.apis.entity.CreatorWorkInfo
 import kotlinx.coroutines.launch
 
 class ItemMyWorkVM(
     private val eventVm: ItemMultipleChoiceEventsViewModel<MyWorksEvent, String>,
-    workInfo: WorkInfo?
-) : AppItemViewModel<WorkInfo>(workInfo) {
+    workInfo: CreatorWorkInfo?
+) : AppItemViewModel<CreatorWorkInfo>(workInfo) {
 
 
     //当前显示状态是查看(true)还是编辑(false)

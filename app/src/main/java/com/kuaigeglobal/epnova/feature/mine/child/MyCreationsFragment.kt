@@ -10,13 +10,14 @@ import com.kuaigeglobal.epnova.common.ext.topActivity
 import com.kuaigeglobal.epnova.core.Events
 import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.ext.onUserStatusChanged
-import com.kuaigeglobal.epnova.core.network.apis.entity.EpisodeInfo
-import com.kuaigeglobal.epnova.core.network.apis.entity.WorkInfo
+import com.kuaigeglobal.epnova.core.network.apis.entity.CreatorEpisodeInfo
+import com.kuaigeglobal.epnova.core.network.apis.entity.CreatorPlaySource
+import com.kuaigeglobal.epnova.core.network.apis.entity.CreatorWorkInfo
 import com.kuaigeglobal.epnova.databinding.FragmentMyCreationsBinding
 import com.kuaigeglobal.epnova.feature.creator.generate.StoryEditorActivity
+import com.kuaigeglobal.epnova.feature.creatorplay.CreatorPlayerActivity
+import com.kuaigeglobal.epnova.feature.creatorplay.data.WorkSeriesCreatorFeedRepository
 import com.kuaigeglobal.epnova.feature.main.MainActivity
-import com.kuaigeglobal.epnova.feature.play.DramasPlayPagerActivity
-import com.kuaigeglobal.epnova.feature.play.data.FeedRepository
 import com.kuaigeglobal.epnova.feature.series.SeriesActivity
 import com.kuaigeglobal.epnova.feature.works.ItemMultipleChoiceEventsViewModel
 import com.kuaigeglobal.epnova.feature.works.MyWorksAdapter
@@ -58,7 +59,7 @@ class MyCreationsFragment :
     }
     private var lastClickTime = 0L
     //当前点击的作品信息
-    var workInfo: WorkInfo? = null
+    var workInfo: CreatorWorkInfo? = null
     private var userId: String? = null
 
     override fun onPrepareView() {
@@ -169,7 +170,7 @@ class MyCreationsFragment :
                         }
                         if (event.workInfo?.totalEpisodeCnt == 1) {
                             //这个是单集的
-                            if (event.workInfo.workStatus == WorkInfo.COMPLETED_STATE) {
+                            if (event.workInfo.workStatus == CreatorWorkInfo.COMPLETED_STATE) {
                                 //已经完成了，直接播放
                                 workInfo = event.workInfo
                                 mRealVM.getEpisodes(event.workInfo.workId)
@@ -219,7 +220,7 @@ class MyCreationsFragment :
         }
     }
 
-    fun onPlayEpisodeClicked(workInfo: WorkInfo?, episodes: List<EpisodeInfo>, clickPosition: Int) {
+    fun onPlayEpisodeClicked(workInfo: CreatorWorkInfo?, episodes: List<CreatorEpisodeInfo>, clickPosition: Int) {
         // 1. [核心步骤] 过滤未完成的数据 + 转换为 Adapter 需要的 WorkInfo
         val validPlayList = episodes
             .filter { !it.videoUrl.isNullOrEmpty() } // 过滤条件
@@ -234,14 +235,16 @@ class MyCreationsFragment :
         val clickedEpisodeId = episodes[clickPosition].storyId
         val newPosition =
             validPlayList.indexOfFirst { it.storyId == clickedEpisodeId }.coerceAtLeast(0)
-        // 3. 存入 Repository
-        FeedRepository.setPreloadedSeries(workInfo?.workId ?: "", validPlayList)
-
-        // 4. 跳转播放页
-        DramasPlayPagerActivity.start(
-            workId = workInfo?.workId,
-            // 传入修正后的位置
-            position = newPosition
+        val creatorWork = workInfo?.copy(workStoryItemList = validPlayList)
+        val sourceKey = WorkSeriesCreatorFeedRepository.setPlayableFeed(
+            source = CreatorPlaySource.MY_CREATIONS,
+            work = creatorWork,
+            episodes = validPlayList
+        ) ?: return
+        CreatorPlayerActivity.start(
+            source = CreatorPlaySource.MY_CREATIONS,
+            position = newPosition,
+            sourceKey = sourceKey
         )
     }
 }

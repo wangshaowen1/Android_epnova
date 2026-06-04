@@ -5,7 +5,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.kuaigeglobal.epnova.core.network.apis.entity.WorkInfo
+import com.kuaigeglobal.epnova.core.network.apis.entity.CreatorWorkInfo
 import kotlinx.parcelize.Parcelize
 
 /**
@@ -24,7 +24,7 @@ data class WorkInformationInfo(
     @ColumnInfo(name = "primary_work_id")
     var workId: String = "",
     var sortIndex: Int = 0,
-    //作品本身的信息
+    // 创作体系作品本身的信息；MyCreations 列表和新创作播放器都从 Creator 模型读取。
     @Embedded
-    val work: WorkInfo,
+    val work: CreatorWorkInfo,
 ) : Parcelable

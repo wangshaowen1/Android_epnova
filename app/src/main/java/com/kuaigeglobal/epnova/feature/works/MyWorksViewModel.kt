@@ -14,8 +14,8 @@ import com.kuaigeglobal.epnova.core.AppRepository
 import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.ext.launch
 import com.kuaigeglobal.epnova.core.ext.launchWithLoading
-import com.kuaigeglobal.epnova.core.network.apis.entity.EpisodeInfo
-import com.kuaigeglobal.epnova.core.network.apis.entity.WorkInfo
+import com.kuaigeglobal.epnova.core.network.apis.entity.CreatorEpisodeInfo
+import com.kuaigeglobal.epnova.core.network.apis.entity.CreatorWorkInfo
 import com.kuaigeglobal.epnova.core.network.apis.request.DeleteWorkBody
 import com.kuaigeglobal.epnova.core.network.apis.request.UserTokenBody
 import com.kuaigeglobal.epnova.core.network.apis.request.WorkIdBody
@@ -40,7 +40,7 @@ class MyWorksViewModel : AppRepositoryViewModel<AppRepository>() {
     var isView = MutableLiveData(true)
 
     //合成中列表数据
-    var workInformationIds = hashMapOf<String, WorkInfo>()
+    var workInformationIds = hashMapOf<String, CreatorWorkInfo>()
 
     //刷新列表
     val isRefresh = MutableLiveData(false)
@@ -52,10 +52,10 @@ class MyWorksViewModel : AppRepositoryViewModel<AppRepository>() {
     var selectedCount = MutableLiveData(0)
 
     //作品详情
-    val workDtl = MutableLiveData<WorkInfo?>()
+    val workDtl = MutableLiveData<CreatorWorkInfo?>()
 
     //剧集详情
-    val episodeList = MutableLiveData<List<EpisodeInfo>?>()
+    val episodeList = MutableLiveData<List<CreatorEpisodeInfo>?>()
 
     // 1. 创建一个重载触发器，初始发射一个 Unit 确保首次加载
     private val reloadTrigger = MutableSharedFlow<Unit>(replay = 1).apply { tryEmit(Unit) }
@@ -177,7 +177,7 @@ class MyWorksViewModel : AppRepositoryViewModel<AppRepository>() {
         }
 
         // 处理逻辑：更新数据库和内存状态
-        val newWorkInformationId = hashMapOf<String, WorkInfo>()
+        val newWorkInformationId = hashMapOf<String, CreatorWorkInfo>()
         items.forEach { newWorkInformationId[it.workId ?: ""] = it }
 
         upsertByPictureBookIdAndType(items)
@@ -190,7 +190,7 @@ class MyWorksViewModel : AppRepositoryViewModel<AppRepository>() {
         return@withContext true // 还有正在生成的，继续轮询
     }
 
-    fun upsertByPictureBookIdAndType(pictureBooks: List<WorkInfo>?) {
+    fun upsertByPictureBookIdAndType(pictureBooks: List<CreatorWorkInfo>?) {
         if (pictureBooks.isNullOrEmpty()) return
 
         viewModelScope.launch {

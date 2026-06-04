@@ -20,6 +20,7 @@ import com.kuaigeglobal.epnova.common.utils.Utils
 import com.kuaigeglobal.epnova.core.Events
 import com.kuaigeglobal.epnova.core.manager.IRouter
 import com.kuaigeglobal.epnova.core.network.apis.ApiFactory
+import com.kuaigeglobal.epnova.core.network.apis.entity.CreatorWorkInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.EpisodeInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.WorkInfo
 import com.kuaigeglobal.epnova.core.network.apis.request.WorkBody
@@ -253,9 +254,33 @@ object AppRouter : IRouter {
     fun singleEpisodeSeriesDetails(
         work: WorkInfo?,
     ) {
-        if (work == null) {
-            return
-        }
+        singleEpisodeSeriesDetails(
+            workId = work?.workId,
+            workTitle = work?.workTitle,
+            workType = work?.workType
+        )
+    }
+
+    /**
+     * 查看单集 Creator 作品的剧集详情。
+     */
+    @JvmStatic
+    fun singleEpisodeSeriesDetails(
+        work: CreatorWorkInfo?,
+    ) {
+        singleEpisodeSeriesDetails(
+            workId = work?.workId,
+            workTitle = work?.workTitle,
+            workType = work?.workType
+        )
+    }
+
+    private fun singleEpisodeSeriesDetails(
+        workId: String?,
+        workTitle: String?,
+        workType: Int?
+    ) {
+        if (workId.isNullOrEmpty()) return
         val loading = (topActivity as? FragmentActivity)?.supportFragmentManager?.let {
             val dialog = LoadingDialog2()
             dialog.show(it)
@@ -266,7 +291,7 @@ object AppRouter : IRouter {
                 val res = withContext(Dispatchers.IO) {
                     ApiFactory.apiService.singleEpisodeSeriesDetails(
                         WorkBody(
-                            work.workId, null
+                            workId, null
                         )
                     )
                 }
@@ -276,9 +301,9 @@ object AppRouter : IRouter {
                     return@launchNoCrash
                 }
                 jumpToTarget(
-                    workId = work.workId,
-                    workTitle = work.workTitle,
-                    workType = work.workType,
+                    workId = workId,
+                    workTitle = workTitle,
+                    workType = workType,
                     1,
                     singleEpisodeDetailsInfo = res.data
                 )

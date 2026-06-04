@@ -85,9 +85,93 @@ object LegacyCreatorBridgeMapper {
         return episodes.orEmpty().mapNotNull { toCreatorEpisodeInfo(it, workIdFallback) }
     }
 
+    /**
+     * Creator 作品到旧编辑页参数的显式桥接。
+     *
+     * 仅用于 AppRouter、作品信息编辑等尚未切 Creator 的旧入口；不要把转换结果交给新播放器。
+     */
+    fun toLegacyWorkInfo(work: CreatorWorkInfo?): WorkInfo? {
+        work ?: return null
+        return WorkInfo(
+            workId = work.workId,
+            workTitle = work.workTitle,
+            workDesc = work.workDesc,
+            workStyleCode = work.workStyleCode,
+            workRatio = work.workRatio,
+            workInspiration = work.workInspiration,
+            workCoverUrl = work.workCoverUrl,
+            workType = work.workType,
+            workStatus = work.workStatus,
+            totalEpisodeCnt = work.totalEpisodeCnt,
+            finishedEpisodeCnt = work.finishedEpisodeCnt,
+            lastEpisodeNo = work.lastEpisodeNo,
+            lastGenerateTime = work.lastGenerateTime,
+            playCount = work.playCount,
+            userId = work.userId,
+            workStoryItemList = toLegacyEpisodeInfos(work.workStoryItemList, work.workId),
+            contractStatus = work.contractStatus,
+            publishStatus = work.publishStatus,
+            rejectReason = work.rejectReason,
+            contractLevel = work.contractLevel,
+            novelUploadIsOneStoryContentStatus = work.novelUploadIsOneStoryContentStatus,
+            publishPlatformImageList = work.publishPlatformImageList,
+            workSelfPublishProcessUrl = work.workSelfPublishProcessUrl,
+            workContractPublishPageUrl = work.workContractPublishPageUrl,
+            showPublishButton = work.showPublishButton,
+            globalPublishStatus = work.globalPublishStatus,
+            publishedEpisodeCnt = work.publishedEpisodeCnt,
+            coverBadgeType = work.coverBadgeType
+        )
+    }
+
+    /**Creator 剧集到旧编辑页参数的显式桥接，不补旧播放器内容消费字段。*/
+    fun toLegacyEpisodeInfo(episode: CreatorEpisodeInfo?, workIdFallback: String? = null): EpisodeInfo? {
+        episode ?: return null
+        return EpisodeInfo(
+            workId = episode.workId ?: workIdFallback,
+            storyId = episode.storyId,
+            storyTitle = episode.storyTitle,
+            storySummary = episode.storySummary,
+            storyContent = episode.storyContent,
+            sortNo = episode.sortNo,
+            stepProgress = episode.stepProgress,
+            stepStatus = episode.stepStatus,
+            storyboardTotal = episode.storyboardTotal,
+            videoUrl = episode.videoUrl,
+            duration = episode.duration,
+            workRatio = episode.workRatio,
+            playCount = episode.playCount,
+            sequelStoryId = episode.sequelStoryId,
+            workCoverUrl = episode.workCoverUrl,
+            taskGenResultStoryVO = episode.taskGenResultStoryVO?.toLegacyTaskGenResultStoryVO(),
+            firstCreationFlag = episode.firstCreationFlag,
+            publishStatus = episode.publishStatus,
+            rejectReason = episode.rejectReason,
+            coverBadgeType = episode.coverBadgeType
+        )
+    }
+
+    /**批量桥接 Creator 剧集列表到旧编辑页参数。*/
+    fun toLegacyEpisodeInfos(
+        episodes: List<CreatorEpisodeInfo>?,
+        workIdFallback: String? = null
+    ): List<EpisodeInfo> {
+        return episodes.orEmpty().mapNotNull { toLegacyEpisodeInfo(it, workIdFallback) }
+    }
+
     /**生成任务结果只复制创作流程字段，不带任何内容消费字段。*/
     private fun EpisodeInfo.TaskGenResultStoryVO.toCreatorTaskGenResultStoryVO(): CreatorEpisodeInfo.TaskGenResultStoryVO {
         return CreatorEpisodeInfo.TaskGenResultStoryVO(
+            bizType = bizType,
+            taskId = taskId,
+            genStatus = genStatus,
+            result = result
+        )
+    }
+
+    /**生成任务结果回传旧编辑页，只复制创作流程字段。*/
+    private fun CreatorEpisodeInfo.TaskGenResultStoryVO.toLegacyTaskGenResultStoryVO(): EpisodeInfo.TaskGenResultStoryVO {
+        return EpisodeInfo.TaskGenResultStoryVO(
             bizType = bizType,
             taskId = taskId,
             genStatus = genStatus,

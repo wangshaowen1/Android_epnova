@@ -7,7 +7,7 @@ import androidx.databinding.ObservableBoolean
 import androidx.lifecycle.viewModelScope
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.base.item.AppItemViewModel
-import com.kuaigeglobal.epnova.core.network.apis.entity.EpisodeInfo
+import com.kuaigeglobal.epnova.core.network.apis.entity.CreatorEpisodeInfo
 import com.kuaigeglobal.epnova.feature.works.ItemMultipleChoiceEventsViewModel
 import com.nhsd.basic.ext.showToast
 import kotlinx.coroutines.launch
@@ -18,8 +18,8 @@ import kotlinx.coroutines.launch
 class ItemSeriesEpisodeVM(
     private val eventVm: ItemMultipleChoiceEventsViewModel<SeriesEpisodeEvent, String>,
     val position: Int,
-    private val episodeInfo: EpisodeInfo?,
-) : AppItemViewModel<EpisodeInfo>(episodeInfo) {
+    private val episodeInfo: CreatorEpisodeInfo?,
+) : AppItemViewModel<CreatorEpisodeInfo>(episodeInfo) {
 
     //当前显示状态是查看(true)还是编辑(false)
     var isView = ObservableBoolean(true)

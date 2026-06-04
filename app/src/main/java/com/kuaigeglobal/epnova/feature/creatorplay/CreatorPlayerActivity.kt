@@ -47,13 +47,17 @@ class CreatorPlayerActivity :
         /**初始播放位置 extra。*/
         private const val EXTRA_POSITION = "creator_player_position"
 
+        /**当前作品内播放 source 的作品 ID。*/
+        private const val EXTRA_SOURCE_KEY = "creator_player_source_key"
+
         /**启动新创作播放器；阶段五会从 TopEarners item 点击入口调用。*/
-        fun start(source: CreatorPlaySource, position: Int = 0) {
+        fun start(source: CreatorPlaySource, position: Int = 0, sourceKey: String? = null) {
             val context = topActivity ?: return
             context.startActivity(
                 Intent(context, CreatorPlayerActivity::class.java).apply {
                     putExtra(EXTRA_SOURCE, source.name)
                     putExtra(EXTRA_POSITION, position)
+                    putExtra(EXTRA_SOURCE_KEY, sourceKey)
                 }
             )
         }
@@ -84,6 +88,7 @@ class CreatorPlayerActivity :
         super.onCreate(savedInstanceState)
         mRealVM.playSource = readPlaySource()
         mRealVM.initialPosition = intent.getIntExtra(EXTRA_POSITION, 0)
+        mRealVM.sourceKey = intent.getStringExtra(EXTRA_SOURCE_KEY)
         pendingInitialPosition = mRealVM.initialPosition
 
         initPlayerView()

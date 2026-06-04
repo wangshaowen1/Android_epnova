@@ -14,7 +14,7 @@ import com.kuaigeglobal.epnova.common.ext.showConfirmPrompt
 import com.kuaigeglobal.epnova.common.ext.startRefreshWithAdapter
 import com.kuaigeglobal.epnova.common.ext.topActivity
 import com.kuaigeglobal.epnova.core.Events
-import com.kuaigeglobal.epnova.core.network.apis.entity.EpisodeInfo
+import com.kuaigeglobal.epnova.core.network.apis.entity.CreatorEpisodeInfo
 import com.kuaigeglobal.epnova.databinding.ActivityWorksManagementBinding
 import com.kuaigeglobal.epnova.feature.series.EpisodeAdapter
 import com.kuaigeglobal.epnova.feature.series.SeriesEpisodeEvent
@@ -100,7 +100,7 @@ class WorksManagementActivity :
         lifecycleScope.launch {
             mRealVM.episodeList().collect {
                 episodeAdapter.submitData(it.filter {
-                    (it.stepProgress ?: 0) > EpisodeInfo.NOT_CREATED
+                    (it.stepProgress ?: 0) > CreatorEpisodeInfo.NOT_CREATED
                 })
             }
         }

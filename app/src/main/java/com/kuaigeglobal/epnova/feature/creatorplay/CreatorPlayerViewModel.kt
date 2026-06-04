@@ -19,12 +19,12 @@ import com.kuaigeglobal.epnova.core.network.apis.entity.CreatorPlaySource
 import com.kuaigeglobal.epnova.core.network.apis.entity.CreatorPlayableEpisode
 import com.kuaigeglobal.epnova.feature.download.DownloadingViewModel
 import com.kuaigeglobal.epnova.feature.creatorplay.data.TopEarnersCreatorFeedRepository
+import com.kuaigeglobal.epnova.feature.creatorplay.data.WorkSeriesCreatorFeedRepository
 import com.kuaigeglobal.epnova.feature.creatorplay.mapper.TopEarnersCreatorMapper
 import com.nhsd.basic.ext.showToast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -49,6 +49,9 @@ class CreatorPlayerViewModel : AppRepositoryViewModel<AppRepository>(), Download
     /**入口传入的初始位置，只用于播放器首次渲染后定位。*/
     var initialPosition: Int = 0
 
+    /**MyCreations/作品详情 source 的当前作品 ID；TopEarners 不需要。*/
+    var sourceKey: String? = null
+
     /**当前正在播放的 Creator 播放单元，供后续标题、埋点或调试状态使用。*/
     val currentPlayableEpisode = ObservableField<CreatorPlayableEpisode?>()
 
@@ -71,9 +74,8 @@ class CreatorPlayerViewModel : AppRepositoryViewModel<AppRepository>(), Download
     fun playableFeed(): Flow<PagingData<CreatorPlayableEpisode>> {
         return when (playSource) {
             CreatorPlaySource.TOP_EARNERS -> topEarnersPlayableFeed()
-            // MyCreations/作品详情后续会提交当前作品内的剧集 feed，阶段五先保持空 feed。
             CreatorPlaySource.MY_CREATIONS,
-            CreatorPlaySource.WORK_SERIES -> flowOf(PagingData.empty())
+            CreatorPlaySource.WORK_SERIES -> WorkSeriesCreatorFeedRepository.getPlayableFeed(playSource, sourceKey)
         }
     }
 

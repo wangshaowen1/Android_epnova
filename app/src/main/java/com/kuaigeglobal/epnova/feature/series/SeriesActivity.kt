@@ -16,19 +16,19 @@ import com.kuaigeglobal.epnova.common.ext.showConfirmPrompt
 import com.kuaigeglobal.epnova.common.ext.startRefreshWithAdapter
 import com.kuaigeglobal.epnova.common.ext.topActivity
 import com.kuaigeglobal.epnova.core.Events
-import com.kuaigeglobal.epnova.core.manager.AppEvent
-import com.kuaigeglobal.epnova.core.manager.EventManager
-import com.kuaigeglobal.epnova.core.network.apis.entity.EpisodeInfo
-import com.kuaigeglobal.epnova.core.network.apis.entity.WorkInfo
+import com.kuaigeglobal.epnova.core.network.apis.entity.CreatorEpisodeInfo
+import com.kuaigeglobal.epnova.core.network.apis.entity.CreatorPlaySource
+import com.kuaigeglobal.epnova.core.network.apis.entity.CreatorWorkInfo
 import com.kuaigeglobal.epnova.core.network.apis.response.WorkPublishStatusData
 import com.kuaigeglobal.epnova.databinding.ActivitySeriesBinding
 import com.kuaigeglobal.epnova.databinding.PopupSeriesReleaseFailTipsBinding
 import com.kuaigeglobal.epnova.feature.creator.continuewriting.ContinueWritingActivity
 import com.kuaigeglobal.epnova.feature.creator.data.DramaGenerateConstants
 import com.kuaigeglobal.epnova.feature.creator.generate.StoryEditorActivity
+import com.kuaigeglobal.epnova.feature.creatorplay.CreatorPlayerActivity
+import com.kuaigeglobal.epnova.feature.creatorplay.data.WorkSeriesCreatorFeedRepository
+import com.kuaigeglobal.epnova.feature.creatorplay.mapper.LegacyCreatorBridgeMapper
 import com.kuaigeglobal.epnova.feature.editor.info.DramaInfoEditActivity
-import com.kuaigeglobal.epnova.feature.play.DramasPlayPagerActivity
-import com.kuaigeglobal.epnova.feature.play.data.FeedRepository
 import com.kuaigeglobal.epnova.feature.series.management.WorksManagementActivity
 import com.kuaigeglobal.epnova.feature.web.SimpleBrowserActivity
 import com.kuaigeglobal.epnova.feature.works.ItemMultipleChoiceEventsViewModel
@@ -180,9 +180,9 @@ class SeriesActivity : BaseViewModelActivity<ActivitySeriesBinding, SeriesViewMo
 
     fun getModel(workType: Int?): Int? {
         return when (workType) {
-            WorkInfo.INSPIRATION_CREATION -> DramaGenerateConstants.MODEL_CONTINUE_INSPIRATION
-            WorkInfo.NOVEL_CREATION -> DramaGenerateConstants.MODEL_CONTINUE_STORY
-            WorkInfo.NOVEL_UPLOAD -> DramaGenerateConstants.MODE_CONTINUE_WRITING_NOVEL_DOCUMENTS
+            CreatorWorkInfo.INSPIRATION_CREATION -> DramaGenerateConstants.MODEL_CONTINUE_INSPIRATION
+            CreatorWorkInfo.NOVEL_CREATION -> DramaGenerateConstants.MODEL_CONTINUE_STORY
+            CreatorWorkInfo.NOVEL_UPLOAD -> DramaGenerateConstants.MODE_CONTINUE_WRITING_NOVEL_DOCUMENTS
             else -> null
         }
     }
@@ -190,11 +190,11 @@ class SeriesActivity : BaseViewModelActivity<ActivitySeriesBinding, SeriesViewMo
     /**
      * 点击查看
      */
-    private fun clickToView(episodeInfo: EpisodeInfo?, position: Int) {
+    private fun clickToView(episodeInfo: CreatorEpisodeInfo?, position: Int) {
         if (episodeInfo == null) return
         //[0未创建 10=剧本输入 15=剧本生成中 20=资产生成中 30=分镜生成中 32=分镜视频生成中 35=待合成 40=已完成]
         when (episodeInfo.stepProgress) {
-            EpisodeInfo.PROGRESS_COMPLETED -> {
+            CreatorEpisodeInfo.PROGRESS_COMPLETED -> {
                 //已经完成了，走播放
                 val snapshot = episodeAdapter.snapshot().items
                 onPlayEpisodeClicked(
@@ -204,7 +204,7 @@ class SeriesActivity : BaseViewModelActivity<ActivitySeriesBinding, SeriesViewMo
                 )
             }
 
-            EpisodeInfo.NOT_CREATED, EpisodeInfo.PROGRESS_SUMMARY_GENERATING -> {
+            CreatorEpisodeInfo.NOT_CREATED, CreatorEpisodeInfo.PROGRESS_SUMMARY_GENERATING -> {
                 val snapshot = episodeAdapter.snapshot().items
                 // 1. 寻找前置阻断点
                 val blocker = findFirstBlocker(snapshot, position)
@@ -221,7 +221,16 @@ class SeriesActivity : BaseViewModelActivity<ActivitySeriesBinding, SeriesViewMo
             }
 
             else -> {
-                AppRouter.startStory(mRealVM.workInfo.value, episodeInfo.storyId, from = StoryEditorActivity.FROM_SERIES)
+                val workInfo = mRealVM.workInfo.value
+                AppRouter.startStory(
+                    workId = workInfo?.workId,
+                    storyId = episodeInfo.storyId,
+                    workTitle = workInfo?.workTitle,
+                    workType = workInfo?.workType,
+                    totalEpisodeCnt = workInfo?.totalEpisodeCnt,
+                    workRatio = workInfo?.workRatio,
+                    from = StoryEditorActivity.FROM_SERIES
+                )
             }
         }
     }
@@ -229,14 +238,14 @@ class SeriesActivity : BaseViewModelActivity<ActivitySeriesBinding, SeriesViewMo
     /**
      * 寻找断档后的第一个故障点
      */
-    private fun findFirstBlocker(items: List<EpisodeInfo>, position: Int): EpisodeInfo? {
+    private fun findFirstBlocker(items: List<CreatorEpisodeInfo>, position: Int): CreatorEpisodeInfo? {
         if (position <= 0) return null
 
         // 在当前位置之前，找到最后一个“达标”的集数索引
         // 达标：已创建 且 进度 >= 32 (PROGRESS_STORYBOARD_GENERATING)
         val lastValidIndex = items.take(position).indexOfLast {
-            it.stepProgress != EpisodeInfo.NOT_CREATED &&
-                    (it.stepProgress ?: 0) >= EpisodeInfo.PROGRESS_STORYBOARD_GENERATING
+            it.stepProgress != CreatorEpisodeInfo.NOT_CREATED &&
+                    (it.stepProgress ?: 0) >= CreatorEpisodeInfo.PROGRESS_STORYBOARD_GENERATING
         }
 
         // 计算拦截点索引：
@@ -252,27 +261,29 @@ class SeriesActivity : BaseViewModelActivity<ActivitySeriesBinding, SeriesViewMo
         }
     }
 
-    fun onPlayEpisodeClicked(workInfo: WorkInfo?, episodes: List<EpisodeInfo>, clickPosition: Int) {
-        // 1. [核心步骤] 过滤未完成的数据 + 转换为 Adapter 需要的 WorkInfo
+    fun onPlayEpisodeClicked(workInfo: CreatorWorkInfo?, episodes: List<CreatorEpisodeInfo>, clickPosition: Int) {
+        // 1. [核心步骤] 过滤未完成的数据，保持 Creator 作品详情和播放器使用同一套模型
         val validPlayList = episodes
             .filter { !it.videoUrl.isNullOrEmpty() } // 过滤条件
             .map { episode ->
-                episode.workId = workInfo?.workId
-                episode
+                episode.copy(workId = episode.workId ?: workInfo?.workId)
             }
 
         // 2. 计算修正后的点击位置
         // 因为过滤了数据，原来的 position 可能变了，需要找到点击的那个 episode 在新列表里的位置
-        val clickedEpisodeId = episodes[clickPosition].storyId
+        val clickedEpisodeId = episodes.getOrNull(clickPosition)?.storyId
         val newPosition =
             validPlayList.indexOfFirst { it.storyId == clickedEpisodeId }.coerceAtLeast(0)
-        // 3. 存入 Repository
-        FeedRepository.setPreloadedSeries(workInfo?.workId, validPlayList)
-        // 4. 跳转播放页
-        DramasPlayPagerActivity.start(
-            workId = workInfo?.workId,
-            // 传入修正后的位置
-            position = newPosition
+        val creatorWork = workInfo?.copy(workStoryItemList = validPlayList)
+        val sourceKey = WorkSeriesCreatorFeedRepository.setPlayableFeed(
+            source = CreatorPlaySource.WORK_SERIES,
+            work = creatorWork,
+            episodes = validPlayList
+        ) ?: return
+        CreatorPlayerActivity.start(
+            source = CreatorPlaySource.WORK_SERIES,
+            position = newPosition,
+            sourceKey = sourceKey
         )
     }
 
@@ -286,10 +297,13 @@ class SeriesActivity : BaseViewModelActivity<ActivitySeriesBinding, SeriesViewMo
                 popupView.binding.btnEdit.setOnSingleClickListener {
                     popup.dismiss()
                     //编辑剧本信息
-                    DramaInfoEditActivity.start(this, mRealVM.workInfo.value)
+                    DramaInfoEditActivity.start(
+                        this,
+                        LegacyCreatorBridgeMapper.toLegacyWorkInfo(mRealVM.workInfo.value)
+                    )
                 }
                 //没有剧集
-                if (!episodeAdapter.snapshot().items.any { (it.stepProgress ?: 0) > EpisodeInfo.NOT_CREATED }) {
+                if (!episodeAdapter.snapshot().items.any { (it.stepProgress ?: 0) > CreatorEpisodeInfo.NOT_CREATED }) {
                     popupView.binding.btnManage.isEnabled = false
                     popupView.binding.btnManage.alpha = 0.5f
                 }
@@ -379,9 +393,9 @@ class SeriesActivity : BaseViewModelActivity<ActivitySeriesBinding, SeriesViewMo
         isShowPublishRejectReason = true
     }
 
-    private fun continueWriting(lastInfo: EpisodeInfo?, info: EpisodeInfo?) {
+    private fun continueWriting(lastInfo: CreatorEpisodeInfo?, info: CreatorEpisodeInfo?) {
         val workInfo = mRealVM.workInfo.value ?: return
-        if ((info?.sortNo ?: 0) > 1 && workInfo.workType == WorkInfo.NOVEL_CREATION) {
+        if ((info?.sortNo ?: 0) > 1 && workInfo.workType == CreatorWorkInfo.NOVEL_CREATION) {
             //小说改编续写
             ContinueWritingActivity.start(
                 this,

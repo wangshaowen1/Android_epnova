@@ -6,14 +6,13 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import com.kuaigeglobal.epnova.common.ext.getVm
 import com.kuaigeglobal.epnova.common.ext.putVm
-import com.kuaigeglobal.epnova.core.network.apis.entity.EpisodeInfo
-import com.kuaigeglobal.epnova.core.network.apis.entity.WorkInfo
+import com.kuaigeglobal.epnova.core.network.apis.entity.CreatorEpisodeInfo
 import com.kuaigeglobal.epnova.databinding.ItemMyEpisodeInfoBinding
 import com.kuaigeglobal.epnova.feature.works.ItemMultipleChoiceEventsViewModel
 import com.nhsd.basic.item.BindingViewHolder
 
 class EpisodeAdapter(private val eventVm: ItemMultipleChoiceEventsViewModel<SeriesEpisodeEvent, String>) :
-    PagingDataAdapter<EpisodeInfo, EpisodeAdapter.ViewHolder>(DIFF_CALLBACK) {
+    PagingDataAdapter<CreatorEpisodeInfo, EpisodeAdapter.ViewHolder>(DIFF_CALLBACK) {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -43,17 +42,17 @@ class EpisodeAdapter(private val eventVm: ItemMultipleChoiceEventsViewModel<Seri
     }
 
     companion object {
-        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<EpisodeInfo>() {
+        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<CreatorEpisodeInfo>() {
             override fun areItemsTheSame(
-                oldItem: EpisodeInfo,
-                newItem: EpisodeInfo
+                oldItem: CreatorEpisodeInfo,
+                newItem: CreatorEpisodeInfo
             ): Boolean {
                 return oldItem.storyId == newItem.storyId
             }
 
             override fun areContentsTheSame(
-                oldItem: EpisodeInfo,
-                newItem: EpisodeInfo
+                oldItem: CreatorEpisodeInfo,
+                newItem: CreatorEpisodeInfo
             ): Boolean {
                 return oldItem == newItem
             }

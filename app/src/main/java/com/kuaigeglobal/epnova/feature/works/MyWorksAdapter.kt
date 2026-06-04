@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.kuaigeglobal.epnova.common.ext.getVm
 import com.kuaigeglobal.epnova.core.db.entity.WorkInformationInfo
-import com.kuaigeglobal.epnova.core.network.apis.entity.WorkInfo
+import com.kuaigeglobal.epnova.core.network.apis.entity.CreatorWorkInfo
 import com.kuaigeglobal.epnova.databinding.ItemMyWorkBinding
 import com.nhsd.basic.item.BindingViewHolder
 
@@ -46,7 +46,7 @@ class MyWorksAdapter(
 
         override fun bind(position: Int) {
             getItem(position)?.let { item ->
-                val viewModel = binding.getVm<ItemMyWorkVM, WorkInfo>(
+                val viewModel = binding.getVm<ItemMyWorkVM, CreatorWorkInfo>(
                     key = item.workId,
                     item = item.work,
                     viewModelFactory = {

@@ -9,7 +9,7 @@ import androidx.paging.cachedIn
 import com.kuaigeglobal.epnova.base.viewmodel.AppRepositoryViewModel
 import com.kuaigeglobal.epnova.common.PagedProxy
 import com.kuaigeglobal.epnova.core.ext.launchWithLoading
-import com.kuaigeglobal.epnova.core.network.apis.entity.EpisodeInfo
+import com.kuaigeglobal.epnova.core.network.apis.entity.CreatorEpisodeInfo
 import com.kuaigeglobal.epnova.core.network.apis.request.DeleteWorkBody
 import com.kuaigeglobal.epnova.core.response
 import com.kuaigeglobal.epnova.feature.series.EpisodePagingSource
@@ -36,7 +36,7 @@ class WorksManagementViewModel : AppRepositoryViewModel<SeriesRepository>() {
      val deleteCompleted = MutableLiveData(false)
 
 
-    fun episodeList(): Flow<PagingData<EpisodeInfo>> {
+    fun episodeList(): Flow<PagingData<CreatorEpisodeInfo>> {
         return Pager(
             config = PagingConfig(
                 initialLoadSize = PagedProxy.DEFAULT_PAGE_SIZE * 3,

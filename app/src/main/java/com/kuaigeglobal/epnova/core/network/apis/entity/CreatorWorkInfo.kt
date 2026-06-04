@@ -6,7 +6,8 @@ import androidx.annotation.DrawableRes
 import androidx.room.TypeConverters
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.ext.toUnitText
-import com.kuaigeglobal.epnova.core.db.convert.Converters
+import com.kuaigeglobal.epnova.core.User
+import com.kuaigeglobal.epnova.core.db.convert.CreatorConverters
 import com.nhsd.basic.ext.getResString
 import kotlinx.parcelize.Parcelize
 
@@ -17,7 +18,7 @@ import kotlinx.parcelize.Parcelize
  * 不要放内容消费字段，例如锁集、金币解锁、点赞收藏等。
  */
 @Parcelize
-@TypeConverters(Converters::class)
+@TypeConverters(CreatorConverters::class)
 data class CreatorWorkInfo(
     /**作品 ID。*/
     val workId: String? = null,
@@ -194,6 +195,11 @@ data class CreatorWorkInfo(
     /**是否为灵感创作作品。*/
     fun isInspirationGenerated(): Boolean {
         return workType == INSPIRATION_CREATION
+    }
+
+    /**是否当前登录用户自己的创作作品。*/
+    fun isMine(): Boolean {
+        return User.get().isSameId(userId)
     }
 
     /**

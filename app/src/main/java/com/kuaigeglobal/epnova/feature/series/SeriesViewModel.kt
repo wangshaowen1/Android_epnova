@@ -19,12 +19,15 @@ import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.ext.launch
 import com.kuaigeglobal.epnova.core.ext.launchWithLoading
 import com.kuaigeglobal.epnova.core.ext.requestWithLoading
-import com.kuaigeglobal.epnova.core.network.apis.entity.EpisodeInfo
-import com.kuaigeglobal.epnova.core.network.apis.entity.WorkInfo
+import com.kuaigeglobal.epnova.core.network.apis.entity.CreatorCoverBadgeType
+import com.kuaigeglobal.epnova.core.network.apis.entity.CreatorEpisodeInfo
+import com.kuaigeglobal.epnova.core.network.apis.entity.CreatorPublishStatus
+import com.kuaigeglobal.epnova.core.network.apis.entity.CreatorWorkInfo
 import com.kuaigeglobal.epnova.core.network.apis.request.DeleteWorkBody
 import com.kuaigeglobal.epnova.core.network.apis.request.LatestEpisodeBody
 import com.kuaigeglobal.epnova.core.network.apis.response.WorkPublishStatusData
 import com.kuaigeglobal.epnova.core.response
+import com.kuaigeglobal.epnova.feature.creatorplay.mapper.LegacyCreatorBridgeMapper
 import com.kuaigeglobal.epnova.widget.LoadStateViewHolder
 import com.nhsd.basic.bus.FlowEventBus
 import com.nhsd.basic.ext.getResString
@@ -37,10 +40,10 @@ import kotlinx.coroutines.flow.Flow
 class SeriesViewModel : AppRepositoryViewModel<SeriesRepository>() {
     val workId by lazy { mBundle.getString(Constants.Extra.ID) }
     val loadState by lazy { ObservableInt(LoadStateViewHolder.CONTENT) }
-    val workInfo by lazy { MutableLiveData<WorkInfo?>() }
+    val workInfo by lazy { MutableLiveData<CreatorWorkInfo?>() }
 
     //创建续集信息
-    val episodeInfo = MutableLiveData<EpisodeInfo?>()
+    val episodeInfo = MutableLiveData<CreatorEpisodeInfo?>()
     val publishedPlatformAdapter by lazy { QuickAdapter<ItemStringVm>(R.layout.item_publish_platform, emptyList()) }
 
     override fun onResume() {
@@ -58,7 +61,8 @@ class SeriesViewModel : AppRepositoryViewModel<SeriesRepository>() {
                 mRepo.getWorkInfo(workId).data?.let {
                     it.userId = User.get().userId
                     workInfo.value = it
-                    it.publishPlatformImageList?.map { ItemStringVm(it) }.let { publishedPlatformAdapter.submitList(it) }
+                    it.publishPlatformImageList?.map { ItemStringVm(it) }
+                        .let { publishedPlatformAdapter.submitList(it) }
                 }
                 updateLoadState()
             },
@@ -77,7 +81,7 @@ class SeriesViewModel : AppRepositoryViewModel<SeriesRepository>() {
         }
     }
 
-    fun episodeList(): Flow<PagingData<EpisodeInfo>> {
+    fun episodeList(): Flow<PagingData<CreatorEpisodeInfo>> {
         return Pager(
             config = PagingConfig(
                 initialLoadSize = PagedProxy.DEFAULT_PAGE_SIZE * 3,
@@ -100,7 +104,7 @@ class SeriesViewModel : AppRepositoryViewModel<SeriesRepository>() {
                     )
                 )
             ) {
-                episodeInfo.value = data
+                episodeInfo.value = LegacyCreatorBridgeMapper.toCreatorEpisodeInfo(data, workId)
             }
         }
     }
@@ -124,30 +128,30 @@ class SeriesViewModel : AppRepositoryViewModel<SeriesRepository>() {
         }
     }
 
-    fun publishFailed(workInfo: WorkInfo?) = workInfo?.isPublishReviewFailed() == true
+    fun publishFailed(workInfo: CreatorWorkInfo?) = workInfo?.isPublishReviewFailed() == true
 
     @ColorRes
-    fun publishStatusColor(workInfo: WorkInfo?) = when {
+    fun publishStatusColor(workInfo: CreatorWorkInfo?) = when {
         workInfo?.isPublishReviewFailed() == true -> R.color.func_failure_dark
-        workInfo?.coverBadgeType == WorkInfo.COVER_BADGE_IN_REVIEW ||
-                workInfo?.globalPublishStatus == WorkInfo.GLOBAL_PUBLISH_STATUS_REVIEWING ||
-                workInfo?.publishStatus == WorkInfo.PUBLISH_STATUS_REVIEWING -> R.color.func_warning_dark
-        workInfo?.coverBadgeType == WorkInfo.COVER_BADGE_PUBLISHED ||
-                workInfo?.globalPublishStatus == WorkInfo.GLOBAL_PUBLISH_STATUS_PUBLISHED ||
-                workInfo?.publishStatus == WorkInfo.PUBLISH_STATUS_PASSED ||
+        workInfo?.coverBadgeType == CreatorCoverBadgeType.IN_REVIEW ||
+                workInfo?.globalPublishStatus == CreatorPublishStatus.REVIEWING ||
+                workInfo?.publishStatus == CreatorPublishStatus.REVIEWING -> R.color.func_warning_dark
+        workInfo?.coverBadgeType == CreatorCoverBadgeType.PUBLISHED ||
+                workInfo?.globalPublishStatus == CreatorPublishStatus.PUBLISHED ||
+                workInfo?.publishStatus == CreatorPublishStatus.PASSED ||
                 (workInfo?.publishedEpisodeCnt ?: 0) > 0 -> R.color.func_success_dark
         else -> R.color.text_color_3_dark
     }
 
-    fun publishStatusText(workInfo: WorkInfo?) = workInfo?.publishBadgeText().orEmpty()
+    fun publishStatusText(workInfo: CreatorWorkInfo?) = workInfo?.publishBadgeText().orEmpty()
 
-    fun showPublishStatus(workInfo: WorkInfo?) = !workInfo?.publishBadgeText().isNullOrEmpty()
+    fun showPublishStatus(workInfo: CreatorWorkInfo?) = !workInfo?.publishBadgeText().isNullOrEmpty()
 
-    fun showPublishButton(workInfo: WorkInfo?) = workInfo?.showPublishButton() == true
+    fun showPublishButton(workInfo: CreatorWorkInfo?) = workInfo?.showPublishButton() == true
 
-    fun enablePublishButton(workInfo: WorkInfo?) = workInfo?.isPublishButtonEnabled() == true
+    fun enablePublishButton(workInfo: CreatorWorkInfo?) = workInfo?.isPublishButtonEnabled() == true
 
-    fun publishButtonText(workInfo: WorkInfo?) = R.string.drama_detail_publish.getResString()
+    fun publishButtonText(workInfo: CreatorWorkInfo?) = R.string.drama_detail_publish.getResString()
 
     fun queryWorkPublishStatus(
         openPublishPage: (String?) -> Unit,

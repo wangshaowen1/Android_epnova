@@ -8,6 +8,7 @@ import com.kuaigeglobal.epnova.core.network.apis.entity.CharacterInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.CoinsAndWalletInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.ContentInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.CreationStyleInfo
+import com.kuaigeglobal.epnova.core.network.apis.entity.CreatorEpisodeInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.CreatorWorkInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.DubbingGenStatusInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.EpisodeInfo
@@ -617,7 +618,7 @@ interface ApiService {
      * 查询我的作品详情
      */
     @POST(ApiConstants.WORK_INFO)
-    suspend fun getWorkInfo(@Body body: WorkIdBody): ApiResponse<WorkInfo?>
+    suspend fun getWorkInfo(@Body body: WorkIdBody): ApiResponse<CreatorWorkInfo?>
 
     /**
      * 追剧或取消追剧
@@ -659,7 +660,7 @@ interface ApiService {
      *分页查看作品剧集列表
      */
     @POST(ApiConstants.EPISODE_LIST)
-    suspend fun episodeList(@Body body: WorkIdPagedBody): ApiResponse<PagedList<EpisodeInfo>?>
+    suspend fun episodeList(@Body body: WorkIdPagedBody): ApiResponse<PagedList<CreatorEpisodeInfo>?>
 
     /**
      * 预生成短剧剧本(流式输出完之后调)
@@ -951,7 +952,7 @@ interface ApiService {
      * 分页查询我的作品列表
      */
     @POST(ApiConstants.MY_WORK)
-    suspend fun getMyWork(@Body body: MyWorkBody): ApiResponse<PagedList<WorkInfo>>
+    suspend fun getMyWork(@Body body: MyWorkBody): ApiResponse<PagedList<CreatorWorkInfo>>
 
 
     /**
@@ -972,7 +973,7 @@ interface ApiService {
      * 轮询查询我的作品状态列表
      */
     @POST(ApiConstants.GET_WORK_STATUS_LIST)
-    suspend fun getWorkStatusList(@Body body: UserTokenBody): ApiResponse<List<WorkInfo>>
+    suspend fun getWorkStatusList(@Body body: UserTokenBody): ApiResponse<List<CreatorWorkInfo>>
 
     /**
      * 查看作品单个剧集详情
