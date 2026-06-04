@@ -41,7 +41,6 @@ class ResourceCenterAdapter : PagingDataAdapter<OfficialConsultationInfo, Recycl
                     viewModelFactory = {
                         ItemResourceCenterVm(item)
                     },
-                    initCallback = {}
                 ).apply {
                     onItemClick.value = {
                         AppRouter.jump(item.jumpUri)

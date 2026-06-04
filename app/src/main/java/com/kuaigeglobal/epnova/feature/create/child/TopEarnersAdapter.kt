@@ -44,7 +44,6 @@ class TopEarnersAdapter : PagingDataAdapter<TopEarnerWorkInfo, RecyclerView.View
                     viewModelFactory = {
                         ItemTopEarnersVm(item)
                     },
-                    initCallback = {}
                 ).apply {
                     onItemClick.value = {
                         DramasPlayPagerActivity.start(workId = item.workId, 0, false)
@@ -60,7 +59,6 @@ class TopEarnersAdapter : PagingDataAdapter<TopEarnerWorkInfo, RecyclerView.View
             binding.llPlatforms.removeAllViews()
             item.platformLinks.orEmpty()
                 .mapNotNull { it.platformLogoUrl }
-                .take(3)
                 .forEach { logoUrl ->
                     val imageView = ImageView(binding.root.context).apply {
                         scaleType = ImageView.ScaleType.CENTER_CROP
@@ -80,14 +78,14 @@ class TopEarnersAdapter : PagingDataAdapter<TopEarnerWorkInfo, RecyclerView.View
                 oldItem: TopEarnerWorkInfo,
                 newItem: TopEarnerWorkInfo
             ): Boolean {
-                return oldItem.workId == newItem.workId
+                return oldItem == newItem
             }
 
             override fun areContentsTheSame(
                 oldItem: TopEarnerWorkInfo,
                 newItem: TopEarnerWorkInfo
             ): Boolean {
-                return oldItem == newItem
+                return oldItem.hashCode() == newItem.hashCode()
             }
         }
     }
