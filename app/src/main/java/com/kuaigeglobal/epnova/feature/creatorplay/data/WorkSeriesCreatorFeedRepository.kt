@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.flowOf
  * 当前作品内的 Creator 播放 feed 仓库。
  *
  * MyCreations 和作品详情都只允许在当前作品内上下切换，因此这里按 source + workId
- * 缓存当前入口提交的剧集列表，不复用旧内容播放器 FeedRepository。
+ * 缓存当前入口提交的剧集列表，不复用旧内容播放器的预加载仓库。
  */
 object WorkSeriesCreatorFeedRepository {
 

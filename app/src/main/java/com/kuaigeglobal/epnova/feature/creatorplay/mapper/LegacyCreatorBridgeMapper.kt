@@ -50,7 +50,7 @@ object LegacyCreatorBridgeMapper {
         )
     }
 
-    /**桥接旧剧集模型，刻意不复制 liked、likeCount、lockStatus、costNums。*/
+    /**桥接旧剧集模型，只复制创作流程字段，不复制内容消费字段。*/
     fun toCreatorEpisodeInfo(episode: EpisodeInfo?, workIdFallback: String? = null): CreatorEpisodeInfo? {
         episode ?: return null
         return CreatorEpisodeInfo(
