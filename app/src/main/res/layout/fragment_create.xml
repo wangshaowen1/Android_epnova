@@ -13,84 +13,92 @@
         android:id="@+id/srl"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
-        android:overScrollMode="never"
-        app:srlAccentColor="@color/color_121212"
         app:srlEnableLoadMore="false"
-        app:srlEnableNestedScrolling="true"
-        app:srlEnableOverScrollBounce="false"
-        app:srlEnableOverScrollDrag="false"
-        app:srlEnablePreviewInEditMode="true"
-        app:srlEnableRefresh="true"
         app:srlPrimaryColor="@color/transparent">
 
-        <LinearLayout
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:descendantFocusability="blocksDescendants">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <com.zhpan.bannerview.BannerViewPager
-                    android:id="@+id/banner"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    app:bvp_can_loop="true"
-                    app:bvp_indicator_visibility="gone"
-                    app:bvp_interval="4000"
-                    app:bvp_scroll_duration="600"
-                    app:layout_constraintDimensionRatio="375:246"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <com.zhpan.indicator.IndicatorView
-                    android:id="@+id/iv_indicator"
-                    android:layout_width="wrap_content"
-                    android:layout_height="4dp"
-                    android:layout_marginEnd="@dimen/spacing_l"
-                    android:layout_marginBottom="30dp"
-                    app:layout_constraintBottom_toBottomOf="@id/banner"
-                    app:layout_constraintEnd_toEndOf="@id/banner" />
-
-                <Button
-                    android:id="@+id/btnCreation"
-                    style="@style/Button.Bold.Gradient"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_marginHorizontal="20dp"
-                    android:layout_marginTop="-12dp"
-                    app:layout_constraintDimensionRatio="325:48"
-                    app:layout_constraintTop_toBottomOf="@id/banner" />
-
-                <TextView
-                    style="@style/Text16"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:drawableStart="@drawable/icon_ai"
-                    android:drawablePadding="10dp"
-                    android:text="@string/create_page_short_dramas"
-                    android:textColor="@color/sel_common_button_txt"
-                    app:layout_constraintBottom_toBottomOf="@id/btnCreation"
-                    app:layout_constraintEnd_toEndOf="@id/btnCreation"
-                    app:layout_constraintStart_toStartOf="@id/btnCreation"
-                    app:layout_constraintTop_toTopOf="@id/btnCreation" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <com.nhsd.magicindicator.MagicIndicator
-                android:id="@+id/magic_indicator"
+            <com.google.android.material.appbar.AppBarLayout
+                android:id="@+id/appbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="15dp"
-                android:layout_marginTop="24dp"
-                android:layout_marginBottom="@dimen/spacing_l" />
+                android:background="@android:color/transparent"
+                android:elevation="0dp"
+                android:stateListAnimator="@drawable/appbar_elevation">
+
+                <com.google.android.material.appbar.CollapsingToolbarLayout
+                    android:id="@+id/llTop"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="24dp">
+
+                        <com.zhpan.bannerview.BannerViewPager
+                            android:id="@+id/banner"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            app:bvp_can_loop="true"
+                            app:bvp_indicator_visibility="gone"
+                            app:bvp_interval="4000"
+                            app:bvp_scroll_duration="600"
+                            app:layout_constraintDimensionRatio="375:246"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <com.zhpan.indicator.IndicatorView
+                            android:id="@+id/iv_indicator"
+                            android:layout_width="wrap_content"
+                            android:layout_height="4dp"
+                            android:layout_marginEnd="@dimen/spacing_l"
+                            android:layout_marginBottom="30dp"
+                            app:layout_constraintBottom_toBottomOf="@id/banner"
+                            app:layout_constraintEnd_toEndOf="@id/banner" />
+
+                        <Button
+                            android:id="@+id/btnCreation"
+                            style="@style/Button.Bold.Gradient"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_marginHorizontal="20dp"
+                            android:layout_marginTop="-12dp"
+                            app:layout_constraintDimensionRatio="325:48"
+                            app:layout_constraintTop_toBottomOf="@id/banner" />
+
+                        <TextView
+                            style="@style/Text16"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:drawableStart="@drawable/icon_ai"
+                            android:drawablePadding="10dp"
+                            android:text="@string/create_page_short_dramas"
+                            android:textColor="@color/sel_common_button_txt"
+                            app:layout_constraintBottom_toBottomOf="@id/btnCreation"
+                            app:layout_constraintEnd_toEndOf="@id/btnCreation"
+                            app:layout_constraintStart_toStartOf="@id/btnCreation"
+                            app:layout_constraintTop_toTopOf="@id/btnCreation" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+                <com.nhsd.magicindicator.MagicIndicator
+                    android:id="@+id/magic_indicator"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    app:layout_scrollFlags="enterAlways"
+                    android:layout_marginBottom="@dimen/spacing_l" />
+            </com.google.android.material.appbar.AppBarLayout>
 
             <androidx.viewpager2.widget.ViewPager2
                 android:id="@+id/view_pager2"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1" />
-        </LinearLayout>
+                android:layout_height="match_parent"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        </androidx.coordinatorlayout.widget.CoordinatorLayout>
     </com.scwang.smart.refresh.layout.SmartRefreshLayout>
 </layout>

@@ -25,6 +25,7 @@ import com.nhsd.basic.ext.getResColor
 import com.nhsd.basic.ext.getResDrawable
 import com.nhsd.basic.ext.getThemeColor
 import com.nhsd.basic.ext.setOnSingleClickListener
+import com.nhsd.crop.util.ViewUtils
 import com.nhsd.magicindicator.ViewPagerHelper
 import com.nhsd.magicindicator.buildins.commonnavigator.CommonNavigator
 import com.nhsd.magicindicator.buildins.commonnavigator.abs.CommonNavigatorAdapter
@@ -34,7 +35,10 @@ import com.nhsd.magicindicator.buildins.commonnavigator.titles.ColorTransitionPa
 import com.zhpan.bannerview.BaseBannerAdapter
 import com.zhpan.bannerview.BaseViewHolder
 import com.zhpan.indicator.enums.IndicatorStyle
+import kotlin.compareTo
+import kotlin.div
 import kotlin.math.abs
+import kotlin.text.toFloat
 
 class CreateFragment : BaseViewModelFragment<FragmentCreateBinding, CreateViewModel>() {
 
@@ -61,6 +65,14 @@ class CreateFragment : BaseViewModelFragment<FragmentCreateBinding, CreateViewMo
     }
 
     private fun initView() {
+        binding.llTop.minimumHeight = ViewUtils.getStatusBarHeight(activity)
+        binding.appbar.addOnOffsetChangedListener { appBarLayout, verticalOffset ->
+            val totalScrollRange = appBarLayout.totalScrollRange.toFloat()
+            val ratio = abs(verticalOffset) / totalScrollRange
+            val alpha = if (ratio < 0.95f) 1f - ratio / 0.95f else 0f
+            binding.llTop.alpha = alpha
+        }
+
         bannerAdapter = object : BaseBannerAdapter<BannerInfo>() {
             override fun bindData(
                 holder: BaseViewHolder<BannerInfo>?, data: BannerInfo, position: Int, pageSize: Int
@@ -96,7 +108,6 @@ class CreateFragment : BaseViewModelFragment<FragmentCreateBinding, CreateViewMo
 
 
         binding.btnCreation.setOnSingleClickListener {
-            if (Config.get().isInReview && AppNavigator.checkLoginIntercepted()) return@setOnSingleClickListener
             CreationRootActivity.start(activity)
         }
         binding.srl.setOnRefreshListener {
