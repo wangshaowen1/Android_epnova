@@ -156,6 +156,7 @@ class RewardsActivity : BaseViewModelActivity<ActivityRewardsBinding, RewardsVie
             R.id.btnCheckIn      -> mRealVM.doCheckIn()
             R.id.btnCheckInAd    -> mRealVM.prepareCheckInAd()
             R.id.btnRules        -> RewardRulesDialog.newInstance().show(supportFragmentManager)
+            R.id.ivBack          -> finish()
         }
     }
 }
