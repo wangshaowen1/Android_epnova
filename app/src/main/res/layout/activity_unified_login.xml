@@ -82,6 +82,7 @@
             android:layout_marginHorizontal="@dimen/spacing_xl"
             android:layout_marginBottom="@dimen/spacing_l"
             android:background="@drawable/bg_3a74e7_r50"
+            android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@id/btnGoogle">
 
             <ImageView
@@ -103,22 +104,6 @@
                 android:textColor="@color/white"
                 android:textSize="16sp" />
         </LinearLayout>
-
-        <TextView
-            setVisible="@{layout.loginRewardsValid}"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/bg_theme_color1_leaf_right"
-            android:drawableStart="@drawable/ic_coins"
-            android:drawablePadding="@dimen/spacing_xs"
-            android:paddingHorizontal="6dp"
-            android:paddingVertical="4dp"
-            android:text="@{@string/login_claim_coins(layout.loginRewards)}"
-            android:textColor="?attr/textColor1"
-            android:translationY="-20dp"
-            app:layout_constraintEnd_toEndOf="@id/btnFaceBook"
-            app:layout_constraintTop_toTopOf="@id/btnFaceBook"
-            tools:text="@string/login_claim_coins" />
 
         <LinearLayout
             android:id="@+id/btnGoogle"
@@ -150,6 +135,22 @@
                 android:textColor="@color/color_0d0d0d"
                 android:textSize="16sp" />
         </LinearLayout>
+
+        <TextView
+            setVisible="@{layout.loginRewardsValid}"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_theme_color1_leaf_right"
+            android:drawableStart="@drawable/ic_coins"
+            android:drawablePadding="@dimen/spacing_xs"
+            android:paddingHorizontal="6dp"
+            android:paddingVertical="4dp"
+            android:text="@{@string/login_claim_coins(layout.loginRewards)}"
+            android:textColor="?attr/textColor1"
+            android:translationY="-20dp"
+            app:layout_constraintEnd_toEndOf="@id/btnGoogle"
+            app:layout_constraintTop_toTopOf="@id/btnGoogle"
+            tools:text="@string/login_claim_coins" />
 
         <LinearLayout
             android:id="@+id/ll_describe"
