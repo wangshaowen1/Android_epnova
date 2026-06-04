@@ -130,7 +130,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/outfit_medium"
-                        android:text="@{@plurals/rewards_checked_days(layout.checkInDays)}"
+                        android:text="@{@plurals/rewards_checked_days(layout.checkInDays, layout.checkInDays)}"
                         android:textColor="?attr/textColor1"
                         android:textSize="18sp"
                         android:textStyle="bold"

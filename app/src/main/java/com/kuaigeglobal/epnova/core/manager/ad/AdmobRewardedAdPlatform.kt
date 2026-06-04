@@ -23,9 +23,10 @@ class AdmobRewardedAdPlatform : IRewardedAdPlatform {
 
     companion object {
         private const val TAG = "AdmobRewardedAd"
-        // 广告位 ID 属于平台细节，收敛在实现类中  测试广告id:ca-app-pub-3940256099942544/5224354917
+        // 广告位 ID 属于平台细节，收敛在实现类中  官方测试广告id:ca-app-pub-3940256099942544/5224354917
+        //后台测试环境广告id:ca-app-pub-4877725783211278/2714212680
         private val AD_UNIT_ID: String
-            get() = if (BuildConfig.DEBUG) "ca-app-pub-4877725783211278/4623557708"
+            get() = if (BuildConfig.DEBUG) "ca-app-pub-4877725783211278/2714212680"
                     else "ca-app-pub-4877725783211278/4623557708"
     }
 
