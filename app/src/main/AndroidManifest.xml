@@ -288,6 +288,9 @@
             android:name=".feature.play.DramasPlayPagerActivity"
             android:configChanges="orientation|screenSize|screenLayout|keyboardHidden|smallestScreenSize" />
         <activity
+            android:name=".feature.creatorplay.CreatorPlayerActivity"
+            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden|smallestScreenSize" />
+        <activity
             android:name=".feature.editor.info.DramaInfoEditActivity"
             android:screenOrientation="portrait" />
         <activity

@@ -28,7 +28,7 @@ object CreatorWorkSeriesMapper {
             episode = normalizedEpisode,
             workContext = work.toCreatorWorkContext(),
             source = source,
-            feedKey = feedKey ?: work.workId ?: normalizedEpisode.workId ?: normalizedEpisode.storyId,
+            feedKey = feedKey ?: buildEpisodeFeedKey(work, normalizedEpisode, feedIndex),
             feedIndex = feedIndex
         )
     }
@@ -89,5 +89,21 @@ object CreatorWorkSeriesMapper {
             workRatio = workRatio ?: work.workRatio,
             workCoverUrl = workCoverUrl ?: work.workCoverUrl
         )
+    }
+
+    /**同一作品下可能有多集，feedKey 必须精确到 episode，不能只用 workId。*/
+    private fun buildEpisodeFeedKey(
+        work: CreatorWorkInfo,
+        episode: CreatorEpisodeInfo,
+        feedIndex: Long
+    ): String {
+        val workId = work.workId ?: episode.workId
+        val storyId = episode.storyId
+        return when {
+            !workId.isNullOrEmpty() && !storyId.isNullOrEmpty() -> "$workId-$storyId"
+            !storyId.isNullOrEmpty() -> storyId
+            !workId.isNullOrEmpty() -> "$workId-$feedIndex"
+            else -> feedIndex.toString()
+        }
     }
 }

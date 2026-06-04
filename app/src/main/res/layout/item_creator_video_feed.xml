@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="item"
+            type="com.kuaigeglobal.epnova.feature.creatorplay.ItemCreatorVideoFeedVm" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/black">
+
+        <androidx.media3.ui.PlayerView
+            android:id="@+id/playerView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="@android:color/black"
+            android:saveEnabled="false"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="H,9:16"
+            app:layout_constraintTop_toTopOf="parent"
+            app:resize_mode="fit"
+            app:shutter_background_color="@android:color/black"
+            app:use_controller="false" />
+
+        <ImageView
+            android:id="@+id/coverImage"
+            loadUri="@{item.coverUrl()}"
+            setVisible="@{item.showCover}"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:scaleType="fitCenter"
+            app:layout_constraintBottom_toBottomOf="@id/playerView"
+            app:layout_constraintEnd_toEndOf="@id/playerView"
+            app:layout_constraintStart_toStartOf="@id/playerView"
+            app:layout_constraintTop_toTopOf="@id/playerView"
+            tools:background="@android:color/black"
+            tools:src="@drawable/img_default_cover_16_9" />
+
+        <ImageView
+            android:id="@+id/btnPause"
+            setVisible="@{item.showPauseButton}"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:padding="8dp"
+            android:src="@drawable/icon_play_off"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/animBuffering"
+            setVisible="@{item.showBuffering}"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:src="@drawable/loading"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tvError"
+            style="@style/Text14"
+            setVisible="@{item.showError}"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="8dp"
+            android:text="@{item.errorText}"
+            android:textColor="?attr/textColor1"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Video unavailable"
+            tools:visibility="visible" />
+
+        <TextView
+            android:id="@+id/tvTitle"
+            style="@style/Text18"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/spacing_l"
+            android:layout_marginBottom="18dp"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:shadowColor="@color/color_50_000000"
+            android:shadowRadius="2"
+            android:text="@{item.title()}"
+            android:textColor="?attr/textColor1"
+            app:layout_constraintBottom_toTopOf="@id/seekbar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:text="代码纪元：觉醒指令" />
+
+        <com.kuaigeglobal.epnova.widget.PlayerSeekbar
+            android:id="@+id/seekbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing_l"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

@@ -38,7 +38,7 @@ object TopEarnersCreatorMapper {
             episode = episode,
             workContext = normalizedWork.toCreatorWorkContext(),
             source = CreatorPlaySource.TOP_EARNERS,
-            feedKey = feedKey ?: normalizedWork.workId ?: episode.storyId,
+            feedKey = feedKey ?: buildTopEarnersFeedKey(normalizedWork, episode, feedIndex),
             feedIndex = feedIndex
         )
     }
@@ -76,5 +76,21 @@ object TopEarnersCreatorMapper {
             playCount = playCount ?: work.playCount,
             workCoverUrl = workCoverUrl ?: work.workCoverUrl
         )
+    }
+
+    /**TopEarners 当前一作品一集；这里仍保留 storyId 兜底，避免未来多集时 key 冲突。*/
+    private fun buildTopEarnersFeedKey(
+        work: CreatorWorkInfo,
+        episode: CreatorEpisodeInfo,
+        feedIndex: Long
+    ): String {
+        val workId = work.workId ?: episode.workId
+        val storyId = episode.storyId
+        return when {
+            !workId.isNullOrEmpty() && !storyId.isNullOrEmpty() -> "$workId-$storyId"
+            !workId.isNullOrEmpty() -> workId
+            !storyId.isNullOrEmpty() -> storyId
+            else -> feedIndex.toString()
+        }
     }
 }
