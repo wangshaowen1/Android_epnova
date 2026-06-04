@@ -5,7 +5,12 @@ import androidx.paging.LoadState
 import com.kuaigeglobal.epnova.widget.stateful.paging.MyMultiStatePagingFooterAdapter
 import com.kuaigeglobal.epnova.databinding.FragmentResourceCenterBinding
 import com.nhsd.basic.BaseViewModelFragment
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeoutOrNull
+
+private const val REFRESH_COMPLETE_TIMEOUT_MS = 30_000L
 
 class ResourceCenterFragment :
     BaseViewModelFragment<FragmentResourceCenterBinding, ResourceCenterViewModel>() {
@@ -13,29 +18,53 @@ class ResourceCenterFragment :
     private val resourceCenterAdapter by lazy {
         ResourceCenterAdapter()
     }
-    private var refreshComplete: (() -> Unit)? = null
-    private var prepared = false
+    private var viewPrepared = false
 
     override fun onPrepareView() {
         super.onPrepareView()
-        prepared = true
+        viewPrepared = true
         initView()
         dataUpdate()
     }
 
     override fun onDestroy() {
-        prepared = false
-        refreshComplete = null
+        viewPrepared = false
         super.onDestroy()
     }
 
     fun refresh(onComplete: (() -> Unit)? = null) {
-        if (!prepared) {
+        if (!viewPrepared) {
             onComplete?.invoke()
             return
         }
-        refreshComplete = onComplete
+
+        if (onComplete != null) {
+            viewLifecycleOwner.lifecycleScope.launch(start = CoroutineStart.UNDISPATCHED) {
+                try {
+                    withTimeoutOrNull(REFRESH_COMPLETE_TIMEOUT_MS) {
+                        awaitRefreshComplete()
+                    }
+                } finally {
+                    onComplete()
+                }
+            }
+        }
         resourceCenterAdapter.refresh()
+    }
+
+    private suspend fun awaitRefreshComplete() {
+        var loadingSeen = false
+        resourceCenterAdapter.loadStateFlow.first { loadStates ->
+            when (loadStates.refresh) {
+                is LoadState.Loading -> {
+                    loadingSeen = true
+                    false
+                }
+
+                is LoadState.Error,
+                is LoadState.NotLoading -> loadingSeen
+            }
+        }
     }
 
     private fun initView() {
@@ -47,17 +76,6 @@ class ResourceCenterFragment :
         }
         binding.rvNews.itemAnimator = null
         binding.rvNews.adapter = resourceCenterAdapter.withLoadStateFooter(footerAdapter)
-        resourceCenterAdapter.addLoadStateListener {
-            when (it.refresh) {
-                is LoadState.Error,
-                is LoadState.NotLoading -> {
-                    refreshComplete?.invoke()
-                    refreshComplete = null
-                }
-
-                else -> {}
-            }
-        }
     }
 
     private fun dataUpdate() {

@@ -6,36 +6,65 @@ import com.kuaigeglobal.epnova.common.ext.startRefreshWithAdapter
 import com.kuaigeglobal.epnova.databinding.FragmentTopEarnersBinding
 import com.kuaigeglobal.epnova.widget.stateful.paging.MyMultiStatePagingFooterAdapter
 import com.nhsd.basic.BaseViewModelFragment
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeoutOrNull
+
+private const val REFRESH_COMPLETE_TIMEOUT_MS = 30_000L
 
 class TopEarnersFragment : BaseViewModelFragment<FragmentTopEarnersBinding, TopEarnersViewModel>() {
 
     private val topEarnersAdapter by lazy {
         TopEarnersAdapter()
     }
-    private var refreshComplete: (() -> Unit)? = null
-    private var prepared = false
+    private var viewPrepared = false
 
     override fun onPrepareView() {
         super.onPrepareView()
-        prepared = true
+        viewPrepared = true
         initView()
         dataUpdate()
     }
 
     override fun onDestroy() {
-        prepared = false
-        refreshComplete = null
+        viewPrepared = false
         super.onDestroy()
     }
 
     fun refresh(onComplete: (() -> Unit)? = null) {
-        if (!prepared) {
+        if (!viewPrepared) {
             onComplete?.invoke()
             return
         }
-        refreshComplete = onComplete
+
+        if (onComplete != null) {
+            viewLifecycleOwner.lifecycleScope.launch(start = CoroutineStart.UNDISPATCHED) {
+                try {
+                    withTimeoutOrNull(REFRESH_COMPLETE_TIMEOUT_MS) {
+                        awaitRefreshComplete()
+                    }
+                } finally {
+                    onComplete()
+                }
+            }
+        }
         topEarnersAdapter.refresh()
+    }
+
+    private suspend fun awaitRefreshComplete() {
+        var loadingSeen = false
+        topEarnersAdapter.loadStateFlow.first { loadStates ->
+            when (loadStates.refresh) {
+                is LoadState.Loading -> {
+                    loadingSeen = true
+                    false
+                }
+
+                is LoadState.Error,
+                is LoadState.NotLoading -> loadingSeen
+            }
+        }
     }
 
     private fun initView() {
@@ -48,17 +77,6 @@ class TopEarnersFragment : BaseViewModelFragment<FragmentTopEarnersBinding, TopE
         binding.recyclerView.itemAnimator = null
         binding.recyclerView.adapter = topEarnersAdapter.withLoadStateFooter(footerAdapter)
         binding.lsv.startRefreshWithAdapter(topEarnersAdapter)
-        topEarnersAdapter.addLoadStateListener {
-            when (it.refresh) {
-                is LoadState.Error,
-                is LoadState.NotLoading -> {
-                    refreshComplete?.invoke()
-                    refreshComplete = null
-                }
-
-                else -> {}
-            }
-        }
     }
 
     private fun dataUpdate() {

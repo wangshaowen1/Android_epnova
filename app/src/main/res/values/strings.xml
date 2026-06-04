@@ -535,8 +535,8 @@
     <string name="profile_log_in">Log in</string>
     <string name="profile_title">Profile</string>
     <string name="profile_my_creations">My creations</string>
-    <string name="profile_history">history</string>
-    <string name="profile_collection">collection</string>
+    <string name="profile_history">History</string>
+    <string name="profile_collection">Collection</string>
     <string name="delete_success">Deleted successfully.</string>
     <string name="error_invalid_email">Please enter a valid email address.</string>
     <string name="agree_terms_privacy">By continuing, you agree to our Terms of Service &amp; Privacy Policy.</string>

@@ -118,26 +118,22 @@ class CreateFragment : BaseViewModelFragment<FragmentCreateBinding, CreateViewMo
     }
 
     private fun refreshPageData() {
-        var bannerDone = false
-        var topEarnersDone = false
-        var resourceCenterDone = false
-        fun finishIfAllDone() {
-            if (bannerDone && topEarnersDone && resourceCenterDone) {
+        var pendingCount = 3
+        fun finishOne() {
+            pendingCount--
+            if (pendingCount == 0) {
                 binding.srl.finishRefresh()
             }
         }
 
         mRealVM.getData {
-            bannerDone = true
-            finishIfAllDone()
+            finishOne()
         }
         topEarnersFragment.refresh {
-            topEarnersDone = true
-            finishIfAllDone()
+            finishOne()
         }
         resourceCenterFragment.refresh {
-            resourceCenterDone = true
-            finishIfAllDone()
+            finishOne()
         }
     }
 

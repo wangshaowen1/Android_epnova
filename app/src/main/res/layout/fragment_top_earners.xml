@@ -27,7 +27,6 @@
                 android:layout_height="match_parent"
                 android:layout_marginHorizontal="@dimen/spacing_m"
                 android:overScrollMode="never"
-                app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
                 tools:listitem="@layout/item_top_earners" />
         </com.kuaigeglobal.epnova.widget.LoadStateViewHolder>
     </FrameLayout>
