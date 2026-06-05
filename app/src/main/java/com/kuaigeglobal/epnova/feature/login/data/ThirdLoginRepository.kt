@@ -2,6 +2,7 @@ package com.kuaigeglobal.epnova.feature.login.data
 
 import com.kuaigeglobal.epnova.core.AppRepository
 import com.kuaigeglobal.epnova.core.Config
+import com.kuaigeglobal.epnova.core.Global
 import com.kuaigeglobal.epnova.core.network.apis.request.LoginByThirdBody
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -19,6 +20,7 @@ open class ThirdLoginRepository : AppRepository() {
 //            if (isNewRegister && Config.get().installFromOpenInstall()) {
 //                OpenInstall.reportRegister()
 //            }
+            Global.refreshCoinsAndPoints()
         }
     }
 }

@@ -43,9 +43,9 @@
 
             <ImageView
                 android:id="@+id/ivBack"
+                singleClick="@{layout.clickHandler::onClick}"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                singleClick="@{layout.clickHandler::onClick}"
                 android:paddingHorizontal="@dimen/spacing_m"
                 android:src="@drawable/icon_back_left" />
 
@@ -150,6 +150,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/spacing_m"
+                        android:minHeight="92dp"
                         android:nestedScrollingEnabled="false"
                         android:overScrollMode="never"
                         tools:itemCount="1"
