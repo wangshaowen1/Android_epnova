@@ -19,6 +19,7 @@ fun SmartRefreshLayout.startRefreshWithAdapter(
     pagingDataAdapter: PagingDataAdapter<*, *>,
     loadStateHolder: LoadStateViewHolder? = null,
     onRefreshListener: (() -> Unit)? = null,
+    isContentEmpty: () -> Boolean = { pagingDataAdapter.itemCount == 0 },
     addExtraLoadStateListener: ((CombinedLoadStates) -> Unit)? = null
 ) {
     val contentSwitcher = loadStateHolder ?: this.findLoadStateView()
@@ -36,12 +37,12 @@ fun SmartRefreshLayout.startRefreshWithAdapter(
         when (it.refresh) {
             is LoadState.Error -> {
                 val errorState = it.refresh as? LoadState.Error
-                contentSwitcher?.showErrorWithToast(errorState?.error,pagingDataAdapter.itemCount>0)
+                contentSwitcher?.showErrorWithToast(errorState?.error, !isContentEmpty())
                 finishRefresh()
             }
 
             is LoadState.NotLoading -> {
-                if (pagingDataAdapter.itemCount == 0) {
+                if (isContentEmpty()) {
                     contentSwitcher?.showEmpty()
                 } else {
                     contentSwitcher?.showContent()
@@ -53,7 +54,7 @@ fun SmartRefreshLayout.startRefreshWithAdapter(
             }
 
             is LoadState.Loading -> {
-                if (pagingDataAdapter.itemCount == 0) {
+                if (isContentEmpty()) {
                     if (!isRefreshing) {
                         //如果正在刷新中，就不需要显示加载的动画了
                         contentSwitcher?.showLoading()

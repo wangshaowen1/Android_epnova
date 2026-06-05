@@ -51,6 +51,8 @@ class MyMultiStatePagingFooterAdapter(
     noDataButtonText: String = R.string.refresh_to_retry.getResString(),
     //最小多少才显示没有更多了
     noMoreThreshold: Int = 5,
+    //是否在 footer 中显示首屏空态/异常态
+    displayEmptyState: Boolean = true,
     //空数据高度
     val displayedHeight: Int = -1,
     //刷新回调
@@ -72,6 +74,7 @@ class MyMultiStatePagingFooterAdapter(
         super.requestButtonText = requestButtonText
         super.noDataButtonText = noDataButtonText
         super.noMoreThreshold = noMoreThreshold
+        super.displayEmptyState = displayEmptyState
         super.requestButtonImg = requestButtonImg
         super.refresh = refresh
     }

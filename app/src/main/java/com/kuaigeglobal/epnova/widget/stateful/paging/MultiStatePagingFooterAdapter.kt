@@ -73,6 +73,9 @@ open class MultiStatePagingFooterAdapter(
     //设置低于多少的时候不显示没有更多了
     var noMoreThreshold: Int = 5
 
+    // 是否在 footer 中承接首屏空态/异常态。关闭后 footer 只展示已有数据后的尾部状态。
+    var displayEmptyState: Boolean = true
+
     //刷新回调
     var refresh: (() -> Unit)? = null
 
@@ -111,8 +114,12 @@ open class MultiStatePagingFooterAdapter(
         when (loadState) {
             is LoadState.NotLoading -> {
                 if (itemCount == 0) {
-                    //异常处理
-                    exceptionHandling(holder = holder, loadState = loadState)
+                    if (displayEmptyState) {
+                        //异常处理
+                        exceptionHandling(holder = holder, loadState = loadState)
+                    } else {
+                        hideFooter(holder)
+                    }
                     return
                 }
                 holder.multiStateAdapterViewBinding.apply {
@@ -132,7 +139,11 @@ open class MultiStatePagingFooterAdapter(
             is LoadState.Error -> {
                 //异常处理
                 if (itemCount == 0) {
-                    exceptionHandling(holder = holder, loadState = loadState, error = loadState.error)
+                    if (displayEmptyState) {
+                        exceptionHandling(holder = holder, loadState = loadState, error = loadState.error)
+                    } else {
+                        hideFooter(holder)
+                    }
                 }else{
                     holder.multiStateAdapterViewBinding.apply {
                         llLoadMoreLoading.visibility = View.GONE
@@ -144,6 +155,10 @@ open class MultiStatePagingFooterAdapter(
             }
 
             is LoadState.Loading -> {
+                if (itemCount == 0 && !displayEmptyState) {
+                    hideFooter(holder)
+                    return
+                }
                 holder.multiStateAdapterViewBinding.apply {
                     llLoadMoreLoading.visibility = View.VISIBLE
                     llLoadMoreLoadFailSmall.visibility = View.GONE
@@ -151,6 +166,15 @@ open class MultiStatePagingFooterAdapter(
                     llNullView.visibility = View.GONE
                 }
             }
+        }
+    }
+
+    private fun hideFooter(holder: MultiStateVH) {
+        holder.multiStateAdapterViewBinding.apply {
+            llLoadMoreLoading.visibility = View.GONE
+            llLoadMoreLoadFailSmall.visibility = View.GONE
+            loadMoreLoadEnd.visibility = View.GONE
+            llNullView.visibility = View.GONE
         }
     }
 
