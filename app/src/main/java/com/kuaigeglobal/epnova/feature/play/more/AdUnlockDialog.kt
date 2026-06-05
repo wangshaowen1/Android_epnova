@@ -7,6 +7,7 @@ import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.Constants
 import com.kuaigeglobal.epnova.core.network.apis.entity.EpisodeInfo
 import com.kuaigeglobal.epnova.databinding.DialogAdUnlockBinding
+import com.nhsd.basic.BaseActivity
 import com.nhsd.basic.BaseVMDialogFragment
 import com.nhsd.basic.ext.dp
 import com.nhsd.basic.ext.setOnSingleClickListener
@@ -46,6 +47,7 @@ class AdUnlockDialog : BaseVMDialogFragment<DialogAdUnlockBinding, AdUnlockViewM
     var onDismissWithoutWatch: (() -> Unit)? = null
 
     private var didWatch = false
+    private var pendingShowAdAfterLoad = false
 
     override fun onStart() {
         super.onStart()
@@ -82,7 +84,20 @@ class AdUnlockDialog : BaseVMDialogFragment<DialogAdUnlockBinding, AdUnlockViewM
         }
 
         mRealVM.onUnlockFailed = {
+            pendingShowAdAfterLoad = false
+            hideAdLoading()
             getString(R.string.episode_unlock_ad_not_ready).showToast()
+        }
+        mRealVM.adManager.onAdLoaded = {
+            hideAdLoading()
+            if (pendingShowAdAfterLoad) {
+                pendingShowAdAfterLoad = false
+                activity?.let { mRealVM.showAd(it) }
+            }
+        }
+        mRealVM.adManager.onAdLoadFailed = {
+            pendingShowAdAfterLoad = false
+            hideAdLoading()
         }
     }
 
@@ -91,19 +106,36 @@ class AdUnlockDialog : BaseVMDialogFragment<DialogAdUnlockBinding, AdUnlockViewM
             dismissAllowingStateLoss()
         }
 
-        binding.btnUnlockForFree.setOnSingleClickListener {
+        binding.btnAdUnlockContainer.setOnSingleClickListener {
             val activity = activity ?: return@setOnSingleClickListener
             when {
                 mRealVM.isPolling.get() -> Unit  // 验证中，忽略重复点击
                 mRealVM.isAdReady.get() -> mRealVM.showAd(activity)
-                mRealVM.isAdLoading.get() -> getString(R.string.episode_unlock_ad_loading).showToast()
-                else -> mRealVM.prepareAndLoadAd(requireContext())  // 重新触发加载
+                mRealVM.isAdLoading.get() -> {
+                    pendingShowAdAfterLoad = true
+                    showAdLoading()
+                }
+                else -> {
+                    pendingShowAdAfterLoad = true
+                    showAdLoading()
+                    mRealVM.prepareAndLoadAd(requireContext())  // 重新触发加载
+                }
             }
         }
     }
 
+    private fun showAdLoading() {
+        (activity as? BaseActivity)?.showLoadingDialog()
+    }
+
+    private fun hideAdLoading() {
+        (activity as? BaseActivity)?.hideLoadingDialog()
+    }
+
     override fun onDismiss(dialog: android.content.DialogInterface) {
         super.onDismiss(dialog)
+        pendingShowAdAfterLoad = false
+        hideAdLoading()
         if (!didWatch) {
             onDismissWithoutWatch?.invoke()
         }

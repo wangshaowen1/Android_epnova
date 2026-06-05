@@ -14,6 +14,7 @@ import com.kuaigeglobal.epnova.core.network.apis.entity.StoryUnlockInfoData
 import com.kuaigeglobal.epnova.core.network.apis.request.StoryUnlockCoinsBody
 import com.kuaigeglobal.epnova.core.network.apis.request.WorkBody
 import com.kuaigeglobal.epnova.core.response
+import com.nhsd.basic.BaseActivity
 import com.nhsd.basic.ext.getResString
 import com.nhsd.basic.ext.showToast
 import kotlinx.coroutines.CoroutineScope
@@ -55,6 +56,12 @@ class EpisodeUnlockController(
     /** 广告加载中标志（透传自 RewardedAdManager） */
     val isAdLoading get() = adManager.isAdLoading
 
+    /** 广告已加载完成标志（透传自 RewardedAdManager） */
+    val isAdReady get() = adManager.isAdReady
+
+    /** 广告观看完成后的服务端验证中标志（透传自 RewardedAdManager） */
+    val isPolling get() = adManager.isPolling
+
     /** 解锁成功回调（金币/广告共用） */
     var onUnlockSuccess: ((EpisodeInfo) -> Unit)? = null
 
@@ -66,16 +73,25 @@ class EpisodeUnlockController(
     private val AD_DAILY_MAX = 10
     private var unlockInfo: StoryUnlockInfoData? = null
     private var countdownJob: Job? = null
+    private var loadingActivity: BaseActivity? = null
 
     private val adManager: RewardedAdManager by lazy {
         RewardedAdManager(api, scope).also { mgr ->
+            mgr.onAdLoaded = {
+                hideAdLoading()
+            }
+            mgr.onAdLoadFailed = {
+                hideAdLoading()
+            }
             mgr.onUnlockSuccess = {
+                hideAdLoading()
                 episode?.let { ep ->
                     showToast(R.string.episode_unlock_success)
                     onUnlockSuccess?.invoke(ep)
                 }
             }
             mgr.onUnlockFailed = {
+                hideAdLoading()
                 showToast(R.string.episode_unlock_ad_not_ready)
             }
         }
@@ -138,11 +154,25 @@ class EpisodeUnlockController(
 
     /** 点击"看广告解锁"按钮 */
     fun onClickAdUnlock(context: Context, activity: Activity) {
-        if (isAdLoading.get()) {
-            showToast(R.string.episode_unlock_ad_loading)
-        } else {
-            adManager.prepareLoadAndShow(context, activity, workId, episode?.storyId)
+        when {
+            isPolling.get() -> Unit
+            isAdReady.get() -> adManager.showAd(activity)
+            isAdLoading.get() -> showAdLoading(activity)
+            else -> {
+                showAdLoading(activity)
+                adManager.prepareLoadAndShow(context, activity, workId, episode?.storyId)
+            }
         }
+    }
+
+    private fun showAdLoading(activity: Activity) {
+        loadingActivity = activity as? BaseActivity
+        loadingActivity?.showLoadingDialog()
+    }
+
+    private fun hideAdLoading() {
+        loadingActivity?.hideLoadingDialog()
+        loadingActivity = null
     }
 
     /** 切换自动解锁开关 */
@@ -174,6 +204,7 @@ class EpisodeUnlockController(
 
     /** 释放资源，在 ViewHolder 回收或覆盖层隐藏时调用 */
     fun release() {
+        hideAdLoading()
         countdownJob?.cancel()
         adManager.release()
         onUnlockSuccess = null

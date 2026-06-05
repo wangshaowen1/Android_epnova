@@ -74,10 +74,13 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <LinearLayout
+            android:id="@+id/btnAdUnlockContainer"
             android:layout_width="262dp"
             android:layout_height="wrap_content"
             android:layout_marginVertical="30dp"
             android:background="@drawable/bg_theme_color1_r12"
+            android:clickable="true"
+            android:focusable="true"
             android:gravity="center"
             android:orientation="vertical"
             android:paddingVertical="6dp"

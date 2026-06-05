@@ -63,6 +63,7 @@ class DramasPlayPagerActivity :
 
     private var downloadingDialog: DownloadingDialog? = null
     private var pendingJumpPosition = 0
+    private var pendingJumpAllowResumeState = true
 
     /** 当前集处于解锁流程中，阻止自动切集 */
     private var isEpisodeLocked = false
@@ -109,9 +110,10 @@ class DramasPlayPagerActivity :
                     listController.updateScrollLimit(list)
                     // 如果是从选集弹窗过来的，或者初始化指定了位置，可以在这里直接跳集！
                     if (pendingJumpPosition >= 0 && list.isNotEmpty()) {
-                        val (targetPosition, resumePositionMs) = resolveInitialPlayTarget(list)
+                        val (targetPosition, resumePositionMs) = resolveInitialPlayTarget(list, pendingJumpAllowResumeState)
                         listController.startInitialPlay(targetPosition, resumePositionMs)
                         pendingJumpPosition = -1 // [关键] 用完立刻失效，防止列表刷新时乱跳
+                        pendingJumpAllowResumeState = true
                     }
                 }
             }
@@ -159,7 +161,7 @@ class DramasPlayPagerActivity :
                                 // 避免 adapter.currentList 还是旧 lockStatus=2 时再次触发解锁弹窗
                                 isEpisodeLocked = false
                                 val pos = adapter.currentList.indexOfFirst { it.storyId == episode.storyId }
-                                if (pos >= 0) pendingJumpPosition = pos
+                                if (pos >= 0) requestPendingJump(pos, allowResumeState = false)
                                 mRealVM.onEpisodeManuallyUnlocked(episode)
                                 listController.reset()
                             },
@@ -267,7 +269,7 @@ class DramasPlayPagerActivity :
         val onRetryUnlock: () -> Unit = {
             isEpisodeLocked = false
             val pos = adapter.currentList.indexOfFirst { it.storyId == episode.storyId }
-            if (pos >= 0) pendingJumpPosition = pos
+            if (pos >= 0) requestPendingJump(pos, allowResumeState = false)
             mRealVM.onEpisodeManuallyUnlocked(episode)
             listController.reset()
         }
@@ -303,7 +305,7 @@ class DramasPlayPagerActivity :
             isEpisodeLocked = false
             val pos = adapter.currentList.indexOfFirst { it.storyId == unlockedEpisode.storyId }
             if (pos >= 0) {
-                pendingJumpPosition = pos
+                requestPendingJump(pos, allowResumeState = false)
                 // 立即隐藏覆盖层；submitList 回调完成后 startInitialPlay 再触发播放
                 val freshHolder = binding.recyclerView.findViewHolderForAdapterPosition(pos)
                         as? VideoFeedAdapter.VideoViewHolder
@@ -319,7 +321,7 @@ class DramasPlayPagerActivity :
                 onRechargeSuccess = {
                     isEpisodeLocked = false
                     val pos = adapter.currentList.indexOfFirst { it.storyId == episode.storyId }
-                    if (pos >= 0) pendingJumpPosition = pos
+                    if (pos >= 0) requestPendingJump(pos, allowResumeState = false)
                     mRealVM.onEpisodeManuallyUnlocked(episode)
                     listController.reset()
                 },
@@ -337,7 +339,7 @@ class DramasPlayPagerActivity :
         adDialog.onUnlockSuccess = {
             isEpisodeLocked = false
             val position = adapter.currentList.indexOfFirst { it.storyId == episode.storyId }
-            if (position >= 0) pendingJumpPosition = position
+            if (position >= 0) requestPendingJump(position, allowResumeState = false)
             mRealVM.onEpisodeManuallyUnlocked(episode)
             listController.reset()
         }
@@ -405,7 +407,18 @@ class DramasPlayPagerActivity :
         }
     }
 
-    private fun resolveInitialPlayTarget(list: List<EpisodeInfo>): Pair<Int, Long> {
+    private fun requestPendingJump(position: Int, allowResumeState: Boolean) {
+        pendingJumpPosition = position
+        pendingJumpAllowResumeState = allowResumeState
+    }
+
+    private fun resolveInitialPlayTarget(list: List<EpisodeInfo>, allowResumeState: Boolean): Pair<Int, Long> {
+        val fallbackPosition = pendingJumpPosition.coerceIn(0, list.lastIndex)
+        if (!allowResumeState) {
+            // 解锁/充值成功后的显式跳集必须播放刚解锁的剧集，不能再被旧续播记录覆盖。
+            return fallbackPosition to 0L
+        }
+
         val userPlayState = mRealVM.userPlayState.value
         val resumeStoryId = userPlayState?.resumeStoryId ?: userPlayState?.lastStoryId
         val resumeSortNo = userPlayState?.resumeSortNo ?: userPlayState?.lastSortNo
@@ -415,7 +428,6 @@ class DramasPlayPagerActivity :
             else -> -1
         }
 
-        val fallbackPosition = pendingJumpPosition.coerceIn(0, list.lastIndex)
         val targetPosition = if (resumePosition >= 0) resumePosition else fallbackPosition
 
         // finished=true 表示服务端已判定播到片尾，即使返回了最近集信息，也必须从 00:00 起播。
@@ -496,7 +508,7 @@ class DramasPlayPagerActivity :
             if (mRealVM.currentPlayMode == DramasPlayPagerViewModel.PlayMode.RECOMMEND) {
                 if (adapter.currentList.isNotEmpty()) {
                     showToast(R.string.drama_has_ended)
-                    pendingJumpPosition = 0
+                    requestPendingJump(0, allowResumeState = true)
                     mRealVM.loadNextRandomWork()
                 }
             } else {

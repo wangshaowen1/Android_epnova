@@ -71,6 +71,10 @@ class RewardedAdManager(
     /** 广告解锁失败回调 */
     var onUnlockFailed: (() -> Unit)? = null
 
+    /** 广告素材加载成功/失败回调，用于外部控制页面通用 loading。 */
+    var onAdLoaded: (() -> Unit)? = null
+    var onAdLoadFailed: (() -> Unit)? = null
+
     private var nonce: String? = null
     private var currentWorkId: String? = null
     private var currentStoryId: String? = null
@@ -139,6 +143,7 @@ class RewardedAdManager(
                 Logger.d(TAG, "loadAndShow: ad loaded")
                 isAdLoading.set(false)
                 isAdReady.set(true)
+                onAdLoaded?.invoke()
                 onLoaded?.invoke()
                 platform.show(
                     activity = activity,
@@ -154,6 +159,7 @@ class RewardedAdManager(
             onFailed = {
                 Logger.d(TAG, "loadAndShow: ad failed to load")
                 isAdLoading.set(false)
+                onAdLoadFailed?.invoke()
                 showAdNotReadyToast()
                 onFailed?.invoke()
             }
@@ -179,6 +185,7 @@ class RewardedAdManager(
             if (!prepareRes.isSuccess || prepareRes.data == null) {
                 isAdLoading.set(false)
                 statusText.set(null)
+                onAdLoadFailed?.invoke()
                 showAdNotReadyToast()
                 return@launch
             }
@@ -187,6 +194,7 @@ class RewardedAdManager(
             if (adNonce.isNullOrBlank()) {
                 isAdLoading.set(false)
                 statusText.set(null)
+                onAdLoadFailed?.invoke()
                 showAdNotReadyToast()
                 return@launch
             }
@@ -201,6 +209,7 @@ class RewardedAdManager(
                         isAdLoading.set(false)
                         isAdReady.set(true)
                         statusText.set(null)
+                        onAdLoaded?.invoke()
                         autoShowActivity?.let { showAd(it) }
                     },
                     onFailed = {
@@ -208,6 +217,7 @@ class RewardedAdManager(
                         isAdLoading.set(false)
                         isAdReady.set(false)
                         statusText.set(null)
+                        onAdLoadFailed?.invoke()
                         showAdNotReadyToast()
                     }
                 )
