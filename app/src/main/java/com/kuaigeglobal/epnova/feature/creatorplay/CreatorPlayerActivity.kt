@@ -10,6 +10,7 @@ import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.ext.showCommonDialog
 import com.kuaigeglobal.epnova.common.ext.topActivity
 import com.kuaigeglobal.epnova.common.permissions.requestRead2WritePermissions
+import com.kuaigeglobal.epnova.core.manager.EventManager
 import com.kuaigeglobal.epnova.core.network.apis.entity.CreatorPlaySource
 import com.kuaigeglobal.epnova.core.network.apis.entity.CreatorPlayableEpisode
 import com.kuaigeglobal.epnova.core.network.apis.response.PlayMenuInfo
@@ -142,6 +143,7 @@ class CreatorPlayerActivity :
         listController = CreatorFeedListController(binding.recyclerView, adapter, playerManager).apply {
             onPageChanged = { item, _ ->
                 mRealVM.updateCurrentPlayableEpisode(item)
+                EventManager.onPlayEvent(item)
             }
         }
 

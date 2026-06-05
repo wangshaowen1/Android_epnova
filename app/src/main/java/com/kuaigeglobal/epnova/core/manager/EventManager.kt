@@ -4,8 +4,10 @@ import com.google.firebase.messaging.FirebaseMessaging
 import com.kuaigeglobal.epnova.common.ext.ioScope
 import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.network.apis.ApiFactory
+import com.kuaigeglobal.epnova.core.network.apis.entity.CreatorPlayableEpisode
 import com.kuaigeglobal.epnova.core.network.apis.entity.EpisodeInfo
 import com.kuaigeglobal.epnova.core.network.apis.request.FcmTokenBody
+import com.kuaigeglobal.epnova.core.network.apis.request.PlayEventBody
 import com.kuaigeglobal.epnova.core.network.apis.request.UserPlayBody
 import com.kuaigeglobal.epnova.core.network.apis.request.WorkBody
 import com.nhsd.basic.ext.launchNoCrash
@@ -96,6 +98,20 @@ object EventManager {
     fun onPlayEvent(workId: String?, episodeId: String?) {
         ioScope.launchNoCrash {
             ApiFactory.apiService.playCountInc(WorkBody(workId, episodeId))
+        }
+    }
+
+    fun onPlayEvent(item: CreatorPlayableEpisode?) {
+        item ?: return
+        val workId = item.workContext.workId ?: item.episode.workId ?: return
+        ioScope.launchNoCrash {
+            ApiFactory.apiService.playEventReport(
+                PlayEventBody(
+                    workId = workId,
+                    userId = item.workContext.userId,
+                    storyId = item.episode.storyId
+                )
+            )
         }
     }
 
