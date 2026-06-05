@@ -133,9 +133,6 @@ class HomeFragment :
 
         mRealVM.bannerData.observe(this) { banners ->
             val data = banners.orEmpty()
-            if (data.isNotEmpty()) {
-                binding.lsv.showContent()
-            }
             updateBannerVisible(data.isNotEmpty())
             binding.banner.refreshData(data)
         }
@@ -143,9 +140,6 @@ class HomeFragment :
         mRealVM.bookShelfData.observe(viewLifecycleOwner) { data ->
             val sections = data?.sections.orEmpty()
             val horizontalSections = sections.filter { it.bookshelfType == 1 }
-            if (horizontalSections.isNotEmpty() || homeAdapter.itemCount > 0) {
-                binding.lsv.showContent()
-            }
             shelfContainerAdapter.submitList(horizontalSections)
             updateWaterfallSection(sections)
         }
@@ -159,6 +153,9 @@ class HomeFragment :
     }
 
     private fun updateBannerVisible(visible: Boolean) {
+        if (visible) {
+            binding.lsv.showContent()
+        }
         val visibility = if (visible) View.VISIBLE else View.GONE
         binding.banner.visibility = visibility
         binding.ivIndicator.visibility = visibility
@@ -182,28 +179,26 @@ class HomeFragment :
             addItemDecoration(StaggeredGridSpaceItemDecoration(2, 10.dp, 0, 0))
             adapter = concatAdapter
         }
-        binding.lsv.setGravityHorizontalTop(24.dp)
         binding.srl.startRefreshWithAdapter(
             pagingDataAdapter = homeAdapter,
             loadStateHolder = binding.lsv,
             isContentEmpty = {
                 shelfContainerAdapter.itemCount == 0 && homeAdapter.itemCount == 0
-            }
+            },
+            onRetryListener = {
+                retryLoadData()
+            },
+            extraContentAdapters = listOf(shelfContainerAdapter)
         )
-        binding.lsv.setRetryListener {
-            retryLoadData()
-        }
     }
 
     private fun retryLoadData() {
-        binding.lsv.showLoading()
         if (mRealVM.bannerData.value.isNullOrEmpty()) {
             mRealVM.getData()
         }
         if (mRealVM.bookShelfData.value == null) {
             mRealVM.loadData()
         }
-        homeAdapter.refresh()
     }
 
     private fun updateWaterfallSection(sections: List<Section>) {

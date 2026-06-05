@@ -1,5 +1,6 @@
 package com.kuaigeglobal.epnova.common.ext
 
+import android.view.View
 import android.view.ViewGroup
 import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
@@ -20,9 +21,44 @@ fun SmartRefreshLayout.startRefreshWithAdapter(
     loadStateHolder: LoadStateViewHolder? = null,
     onRefreshListener: (() -> Unit)? = null,
     isContentEmpty: () -> Boolean = { pagingDataAdapter.itemCount == 0 },
+    onRetryListener: (() -> Unit)? = null,
+    extraContentAdapters: List<RecyclerView.Adapter<*>> = emptyList(),
     addExtraLoadStateListener: ((CombinedLoadStates) -> Unit)? = null
 ) {
     val contentSwitcher = loadStateHolder ?: this.findLoadStateView()
+    fun showContentIfNotEmpty() {
+        if (!isContentEmpty()) {
+            contentSwitcher?.showContent()
+        }
+    }
+    if (extraContentAdapters.isNotEmpty()) {
+        val contentObserver = object : RecyclerView.AdapterDataObserver() {
+            override fun onChanged() {
+                showContentIfNotEmpty()
+            }
+
+            override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+                showContentIfNotEmpty()
+            }
+
+            override fun onItemRangeRemoved(positionStart: Int, itemCount: Int) {
+                showContentIfNotEmpty()
+            }
+        }
+        extraContentAdapters.forEach {
+            it.registerAdapterDataObserver(contentObserver)
+        }
+        addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
+            override fun onViewAttachedToWindow(v: View) = Unit
+
+            override fun onViewDetachedFromWindow(v: View) {
+                extraContentAdapters.forEach {
+                    runCatching { it.unregisterAdapterDataObserver(contentObserver) }
+                }
+                removeOnAttachStateChangeListener(this)
+            }
+        })
+    }
     setOnRefreshListener {
         onRefreshListener?.invoke()
         pagingDataAdapter.refresh()
@@ -66,6 +102,8 @@ fun SmartRefreshLayout.startRefreshWithAdapter(
         }
     }
     contentSwitcher?.setRetryListener {
+        contentSwitcher?.showLoading()
+        onRetryListener?.invoke()
         pagingDataAdapter.refresh()
     }
     contentSwitcher?.showLoading()
