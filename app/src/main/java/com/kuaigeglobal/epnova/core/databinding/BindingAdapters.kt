@@ -1008,7 +1008,12 @@ fun setLoadState(view: LoadStateViewHolder, state: LoadState?) {
 
 @BindingAdapter("setTopPaddingDp")
 fun setTopPadding(view: LoadStateViewHolder, topPaddingDp: Int) {
-    view.setGravityHorizontalTop(topPaddingDp.dp)
+    view.setStateViewTopPadding(topPaddingDp.dp)
+}
+
+@BindingAdapter("stateViewTopPaddingDp")
+fun setStateViewTopPaddingDp(view: LoadStateViewHolder, topPaddingDp: Int) {
+    view.setStateViewTopPadding(topPaddingDp.dp)
 }
 
 @BindingAdapter("setPaddingBottomDp")

@@ -614,6 +614,8 @@
         <attr name="scrollable" format="boolean" />
         <!--亮色-->
         <attr name="lightMode" format="boolean" />
+        <!--状态内容距离顶部的间距，不改变内容区本身高度-->
+        <attr name="stateViewTopPadding" format="dimension" />
     </declare-styleable>
 
     <!--普通的竖线-->

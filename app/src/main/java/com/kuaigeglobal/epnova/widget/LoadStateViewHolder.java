@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.ViewAnimator;
@@ -133,6 +134,10 @@ public class LoadStateViewHolder extends ViewAnimator {
             binding.noDataBtn.setTextColor(getResources().getColor(R.color.color_30_000000));
             binding.noDataBtn.setBackgroundResource(R.drawable.bg_empty_button_light);
         }
+        int stateViewTopPadding = typedArray.getDimensionPixelSize(R.styleable.LoadStateViewHolder_stateViewTopPadding, -1);
+        if (stateViewTopPadding >= 0) {
+            setStateViewTopPadding(stateViewTopPadding);
+        }
         typedArray.recycle();
         if (isInEditMode()) {
             setDisplayedChild(CONTENT);
@@ -166,6 +171,19 @@ public class LoadStateViewHolder extends ViewAnimator {
         setGravity(gravity, topPadding);
     }
 
+    public void setStateViewTopPadding(int topPadding) {
+        int gravity = Gravity.CENTER_HORIZONTAL | Gravity.TOP;
+        binding.loadingLayout.setGravity(gravity);
+        binding.retryLayout.setGravity(gravity);
+        binding.emptyLayout.setGravity(gravity);
+        setChildGravity(binding.loadingLayout, gravity);
+        setChildGravity(binding.retryLayout, gravity);
+        setChildGravity(binding.emptyLayout, gravity);
+        setFixedTopSpace(binding.loadingTopSpace, topPadding);
+        setFixedTopSpace(binding.retryTopSpace, topPadding);
+        setFixedTopSpace(binding.emptyTopSpace, topPadding);
+    }
+
     public void setGravity(int gravity, int topPadding) {
         binding.loadingLayout.setGravity(gravity);
         binding.retryLayout.setGravity(gravity);
@@ -179,6 +197,20 @@ public class LoadStateViewHolder extends ViewAnimator {
         LayoutParams emptyLayoutParams = (LayoutParams) binding.emptyLayout.getLayoutParams();
         emptyLayoutParams.gravity = gravity;
         binding.emptyLayout.setPadding(binding.loadingLayout.getPaddingLeft(), topPadding, binding.loadingLayout.getPaddingRight(), binding.loadingLayout.getPaddingBottom());
+    }
+
+    private void setChildGravity(View child, int gravity) {
+        LayoutParams layoutParams = (LayoutParams) child.getLayoutParams();
+        layoutParams.gravity = gravity;
+        child.setLayoutParams(layoutParams);
+        child.setPadding(child.getPaddingLeft(), 0, child.getPaddingRight(), child.getPaddingBottom());
+    }
+
+    private void setFixedTopSpace(View topSpace, int topPadding) {
+        LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) topSpace.getLayoutParams();
+        layoutParams.height = topPadding;
+        layoutParams.weight = 0f;
+        topSpace.setLayoutParams(layoutParams);
     }
 
     public void setContent(View content) {

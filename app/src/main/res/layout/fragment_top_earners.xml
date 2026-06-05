@@ -18,6 +18,7 @@
             android:id="@+id/lsv"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            app:stateViewTopPadding="144dp"
             app:noData="@string/empty_creation_history">
 
             <androidx.recyclerview.widget.RecyclerView
