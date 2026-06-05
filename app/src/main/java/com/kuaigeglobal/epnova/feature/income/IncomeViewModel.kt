@@ -6,7 +6,9 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.base.viewmodel.AppRepositoryViewModel
+import com.kuaigeglobal.epnova.base.viewmodel.ToolbarViewModel
 import com.kuaigeglobal.epnova.common.Constant
 import com.kuaigeglobal.epnova.common.utils.DateUtil
 import com.kuaigeglobal.epnova.core.AppRepository
@@ -14,6 +16,7 @@ import com.kuaigeglobal.epnova.core.ext.request
 import com.kuaigeglobal.epnova.core.network.apis.entity.IncomeDetailInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.IncomeSummaryInfo
 import com.kuaigeglobal.epnova.core.network.apis.request.UserTokenBody
+import com.nhsd.basic.ext.getResString
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -24,6 +27,11 @@ class IncomeViewModel : AppRepositoryViewModel<AppRepository>() {
         //默认金额文本
         private const val DEFAULT_AMOUNT_TEXT = "\$0.00"
     }
+
+    val mToolbarVM = ToolbarViewModel(
+        navigationAction = { back() },
+        title = R.string.profile_income.getResString()
+    )
 
     //------------------页面数据绑定参数------------------
     //可提现余额

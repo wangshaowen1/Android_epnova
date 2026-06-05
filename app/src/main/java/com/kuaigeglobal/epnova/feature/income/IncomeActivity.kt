@@ -64,9 +64,6 @@ class IncomeActivity : BaseViewModelActivity<ActivityIncomeBinding, IncomeViewMo
     override fun <Data> onClick(view: View?, data: Data?) {
         super.onClick(view, data)
         when (view?.id) {
-            //返回
-            R.id.ivBack -> finish()
-
             //年月选择
             R.id.tv_monthfilter -> {
                 BottomYearMonthPickerDialog.show(
