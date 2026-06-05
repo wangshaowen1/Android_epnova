@@ -59,6 +59,7 @@ class CreationFragment :
     }
 
     var dialog: GeneratingDialog? = null
+    private var pendingFirstRechargeContinuation: (() -> Unit)? = null
     override fun onPrepareView() {
         super.onPrepareView()
         initView()
@@ -128,7 +129,21 @@ class CreationFragment :
         mRealVM.firstRechargeCache.observe(this) { data ->
             data?.let {
                 EventManager.onAppTrack(AppEvent.SF_VIEW_HOME_NEWCOMER_GIFTPACK_PAGE)
-                FirstRechargeCreditsDialog.show(FirstRechargeCreditsDialog.SCENE_HOME, it)
+                val continueCreation = pendingFirstRechargeContinuation
+                pendingFirstRechargeContinuation = null
+                val firstRechargeDialog = FirstRechargeCreditsDialog.show(
+                    FirstRechargeCreditsDialog.SCENE_HOME,
+                    it
+                )
+                if (firstRechargeDialog == null) {
+                    continueCreation?.invoke()
+                    return@let
+                }
+                firstRechargeDialog.apply {
+                    onPaySuccess = {
+                        continueCreation?.invoke()
+                    }
+                }
                 Config.get().markFirstRechargeShown(FirstRechargeCreditsDialog.SCENE_HOME)
             }
         }
@@ -227,7 +242,9 @@ class CreationFragment :
                     val canShowFirstRecharge = !User.get().hasPaid() &&
                         !Config.get().isFirstRechargeShown(FirstRechargeCreditsDialog.SCENE_HOME)
                     if (canShowFirstRecharge) {
+                        pendingFirstRechargeContinuation = progressLogic
                         this@CreationFragment.mRealVM.getFirstRechargeInfo {
+                            pendingFirstRechargeContinuation = null
                             progressLogic()
                         }
                     } else {
