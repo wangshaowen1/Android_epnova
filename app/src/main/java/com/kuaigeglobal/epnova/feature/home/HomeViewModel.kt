@@ -51,22 +51,32 @@ class HomeViewModel : AppRepositoryViewModel<AppRepository>() {
         getRewardUserUncheck()
     }
 
-    fun getData() {
-        launch({
-            response(mRepo.api.getAppBanner(BannerBody(BannerBody.LOCATION_HOME)), {
-                bannerData.value = this.data
-                bannerCache.cache(this.data) // 更新缓存
-            })
-        })
+    fun getData(onComplete: (() -> Unit)? = null) {
+        launch(
+            block = {
+                response(mRepo.api.getAppBanner(BannerBody(BannerBody.LOCATION_HOME)), {
+                    bannerData.value = this.data
+                    bannerCache.cache(this.data) // 更新缓存
+                })
+            },
+            onComplete = {
+                onComplete?.invoke()
+            }
+        )
     }
 
-    fun loadData() {
-        launch({
-            response(mRepo.api.bookShelfHome(), {
-                bookShelfData.value = data
-                bookShelfCache.cache(data) // 更新缓存
-            })
-        })
+    fun loadData(onComplete: (() -> Unit)? = null) {
+        launch(
+            block = {
+                response(mRepo.api.bookShelfHome(), {
+                    bookShelfData.value = data
+                    bookShelfCache.cache(data) // 更新缓存
+                })
+            },
+            onComplete = {
+                onComplete?.invoke()
+            }
+        )
     }
 
     fun getRewardUserUncheck() {

@@ -22,11 +22,13 @@
             android:textColor="?attr/textColor1"
             tools:text="New Release" />
 
-        <androidx.recyclerview.widget.RecyclerView
+        <com.kuaigeglobal.epnova.widget.HorizontalRecyclerView
             android:id="@+id/rvInnerHorizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_m"
+            android:nestedScrollingEnabled="false"
+            android:overScrollMode="never"
             tools:itemCount="1"
             tools:listitem="@layout/item_book_shelf_child" />
     </LinearLayout>
