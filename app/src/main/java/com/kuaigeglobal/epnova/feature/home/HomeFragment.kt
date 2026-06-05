@@ -2,16 +2,22 @@ package com.kuaigeglobal.epnova.feature.home
 
 import android.view.View
 import android.widget.ImageView
-import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.paging.LoadState
+import androidx.recyclerview.widget.ConcatAdapter
 import com.kuaigeglobal.epnova.R
-import com.kuaigeglobal.epnova.common.adapter.FragmentStateCacheAdapter
-import com.kuaigeglobal.epnova.common.ext.removeTheRipples
+import com.kuaigeglobal.epnova.common.ext.startRefreshWithAdapter
 import com.kuaigeglobal.epnova.core.databinding.loadUri
 import com.kuaigeglobal.epnova.core.network.apis.entity.BannerInfo
+import com.kuaigeglobal.epnova.core.network.apis.response.Section
 import com.kuaigeglobal.epnova.databinding.FragmentHomeBinding
 import com.kuaigeglobal.epnova.feature.home.search.SearchActivity
 import com.kuaigeglobal.epnova.feature.rewards.RewardsActivity
 import com.kuaigeglobal.epnova.router.AppRouter
+import com.kuaigeglobal.epnova.widget.decoration.StaggeredGridSpaceItemDecoration
+import com.kuaigeglobal.epnova.widget.stateful.paging.MyMultiStatePagingFooterAdapter
 import com.nhsd.basic.BaseViewModelFragment
 import com.nhsd.basic.ext.dp
 import com.nhsd.basic.ext.getResColor
@@ -21,7 +27,14 @@ import com.nhsd.crop.util.ViewUtils
 import com.zhpan.bannerview.BaseBannerAdapter
 import com.zhpan.bannerview.BaseViewHolder
 import com.zhpan.indicator.enums.IndicatorStyle
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeoutOrNull
 import kotlin.math.abs
+
+private const val REFRESH_COMPLETE_TIMEOUT_MS = 30_000L
 
 class HomeFragment :
     BaseViewModelFragment<FragmentHomeBinding, HomeViewModel>() {
@@ -32,7 +45,15 @@ class HomeFragment :
         }
     }
 
-    private val homeContentFragment by lazy { HomeContentFragment() }
+    private val homeAdapter by lazy {
+        HomeAdapter()
+    }
+    private val titleAdapter by lazy {
+        WaterfallTitleAdapter()
+    }
+    private val shelfContainerAdapter by lazy {
+        ShelfContainerAdapter()
+    }
     private lateinit var bannerAdapter: BaseBannerAdapter<BannerInfo>
 
     override fun onPrepareView() {
@@ -106,43 +127,130 @@ class HomeFragment :
         binding.srl.setOnRefreshListener {
             refreshPageData()
         }
-        initViewPager()
+        initList()
     }
 
     private fun refreshPageData() {
-        var pendingCount = 2
-        fun finishOne() {
-            pendingCount--
-            if (pendingCount == 0) {
-                binding.srl.finishRefresh()
-            }
+        val refreshComplete = RefreshCompleteCounter(3) {
+            binding.srl.finishRefresh()
         }
 
         mRealVM.getData {
-            finishOne()
+            refreshComplete.finishOne()
         }
-        homeContentFragment.refresh {
-            finishOne()
+        mRealVM.loadData {
+            refreshComplete.finishOne()
+            if (mRealVM.currentWaterfallId.value.isEmpty()) {
+                refreshComplete.finishPaging()
+            }
+        }
+        viewLifecycleOwner.lifecycleScope.launch(start = CoroutineStart.UNDISPATCHED) {
+            try {
+                withTimeoutOrNull(REFRESH_COMPLETE_TIMEOUT_MS) {
+                    awaitRefreshComplete()
+                }
+            } finally {
+                refreshComplete.finishPaging()
+            }
+        }
+        homeAdapter.refresh()
+    }
+
+    private suspend fun awaitRefreshComplete() {
+        var loadingSeen = false
+        homeAdapter.loadStateFlow.first { loadStates ->
+            when (loadStates.refresh) {
+                is LoadState.Loading -> {
+                    loadingSeen = true
+                    false
+                }
+
+                is LoadState.Error,
+                is LoadState.NotLoading -> loadingSeen
+            }
         }
     }
 
     private fun dataUpdate() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                mRealVM.feedFlow.collectLatest { pagingData ->
+                    homeAdapter.submitData(pagingData)
+                }
+            }
+        }
+
         mRealVM.bannerData.observe(this) {
             binding.banner.refreshData(it)
         }
+
+        mRealVM.bookShelfData.observe(viewLifecycleOwner) { data ->
+            val sections = data?.sections.orEmpty()
+            shelfContainerAdapter.submitList(sections.filter { it.bookshelfType == 1 })
+            updateWaterfallSection(sections)
+        }
     }
 
-    private fun initViewPager() {
-        val fragmentList = arrayListOf<Fragment>(homeContentFragment)
-        val viewPagerAdapter = FragmentStateCacheAdapter(
-            childFragmentManager,
-            lifecycle
+    private fun initList() {
+        val waterfallWithFooter = homeAdapter.withLoadStateFooter(
+            MyMultiStatePagingFooterAdapter(
+                hostAdapter = homeAdapter,
+                noDataButtonDisplay = false,
+                requestButtonDisplay = false,
+                displayedHeight = 400.dp,
+                refresh = {
+                    homeAdapter.refresh()
+                },
+                requestButtonTextAndImg = false,
+            )
         )
-        viewPagerAdapter.setFragments(fragmentList)
-        binding.viewPager2.adapter = viewPagerAdapter
-        binding.viewPager2.offscreenPageLimit = fragmentList.size
-        binding.viewPager2.isUserInputEnabled = false
-        binding.viewPager2.setCurrentItem(0, false)
-        binding.viewPager2.removeTheRipples()
+        val concatAdapter = ConcatAdapter(shelfContainerAdapter, titleAdapter, waterfallWithFooter)
+
+        binding.recyclerView.apply {
+            isFocusable = false
+            itemAnimator = null
+            addItemDecoration(StaggeredGridSpaceItemDecoration(2, 10.dp, 0, 0))
+            adapter = concatAdapter
+        }
+        binding.lsv.startRefreshWithAdapter(homeAdapter)
+        binding.lsv.setRetryListener {
+            retryLoadData()
+        }
+    }
+
+    private fun retryLoadData() {
+        if (mRealVM.bannerData.value.isNullOrEmpty()) {
+            mRealVM.getData()
+        }
+        if (mRealVM.bookShelfData.value == null) {
+            mRealVM.loadData()
+        }
+        homeAdapter.refresh()
+    }
+
+    private fun updateWaterfallSection(sections: List<Section>) {
+        val waterfallSection = sections.find { it.bookshelfType == 2 }
+        titleAdapter.isVisible = waterfallSection != null
+        mRealVM.currentWaterfallId.value = waterfallSection?.bookshelfId ?: ""
+    }
+
+    private class RefreshCompleteCounter(
+        private var pendingCount: Int,
+        private val onComplete: () -> Unit
+    ) {
+        private var pagingComplete = false
+
+        fun finishOne() {
+            pendingCount--
+            if (pendingCount == 0) {
+                onComplete()
+            }
+        }
+
+        fun finishPaging() {
+            if (pagingComplete) return
+            pagingComplete = true
+            finishOne()
+        }
     }
 }
