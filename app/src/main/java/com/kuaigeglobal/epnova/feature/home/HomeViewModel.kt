@@ -38,6 +38,7 @@ class HomeViewModel : AppRepositoryViewModel<AppRepository>() {
     }
 
     val bookShelfData = MutableLiveData<HomeBookShelfData>()
+    val bookShelfError = MutableLiveData<Throwable?>()
     private val bookShelfCache: EntityCache<HomeBookShelfData> by lazy {
         object : EntityCache<HomeBookShelfData>("HomeBookShelfData") {}
     }
@@ -61,12 +62,20 @@ class HomeViewModel : AppRepositoryViewModel<AppRepository>() {
     }
 
     fun loadData() {
-        launch({
-            response(mRepo.api.bookShelfHome(), {
-                bookShelfData.value = data
-                bookShelfCache.cache(data) // 更新缓存
-            })
-        })
+        launch(
+            block = {
+                bookShelfError.value = null
+                response(mRepo.api.bookShelfHome(), {
+                    bookShelfData.value = data
+                    bookShelfCache.cache(data) // 更新缓存
+                }, {
+                    bookShelfError.value = this?.apiException ?: RuntimeException()
+                })
+            },
+            onError = {
+                bookShelfError.value = it
+            }
+        )
     }
 
     fun getRewardUserUncheck() {

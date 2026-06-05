@@ -117,6 +117,7 @@ class HomeFragment :
             .setIndicatorView(binding.ivIndicator)
             .setIndicatorVisibility(View.VISIBLE)
             .create()
+        updateBannerVisible(false)
 
         initList()
     }
@@ -130,8 +131,10 @@ class HomeFragment :
             }
         }
 
-        mRealVM.bannerData.observe(this) {
-            binding.banner.refreshData(it)
+        mRealVM.bannerData.observe(this) { banners ->
+            val data = banners.orEmpty()
+            updateBannerVisible(data.isNotEmpty())
+            binding.banner.refreshData(data)
         }
 
         mRealVM.bookShelfData.observe(viewLifecycleOwner) { data ->
@@ -139,6 +142,19 @@ class HomeFragment :
             shelfContainerAdapter.submitList(sections.filter { it.bookshelfType == 1 })
             updateWaterfallSection(sections)
         }
+
+        mRealVM.bookShelfError.observe(viewLifecycleOwner) { error ->
+            if (error != null && shelfContainerAdapter.itemCount == 0 && homeAdapter.itemCount == 0) {
+                updateBannerVisible(false)
+                binding.lsv.showRetry(error)
+            }
+        }
+    }
+
+    private fun updateBannerVisible(visible: Boolean) {
+        val visibility = if (visible) View.VISIBLE else View.GONE
+        binding.banner.visibility = visibility
+        binding.ivIndicator.visibility = visibility
     }
 
     private fun initList() {
@@ -162,6 +178,7 @@ class HomeFragment :
             addItemDecoration(StaggeredGridSpaceItemDecoration(2, 10.dp, 0, 0))
             adapter = concatAdapter
         }
+        binding.lsv.setGravityHorizontalTop(100.dp)
         binding.srl.startRefreshWithAdapter(homeAdapter)
         binding.lsv.setRetryListener {
             retryLoadData()
