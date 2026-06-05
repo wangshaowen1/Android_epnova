@@ -44,7 +44,7 @@ import kotlinx.coroutines.withContext
  * adManager.prepareLoadAndShow(context, activity, workId, storyId)
  *
  * // 方式3：外部已完成 prepare，直接加载并展示，nonce 会写入 AdMob customData
- * adManager.loadAndShow(context, activity, nonce, onRewarded = { ... })
+ * adManager.loadAndShow(context, activity, nonce, adUnitId, onRewarded = { ... })
  * ```
  */
 class RewardedAdManager(
@@ -130,6 +130,7 @@ class RewardedAdManager(
         context: Context,
         activity: Activity,
         nonce: String,
+        adUnitId: String? = null,
         onLoaded: (() -> Unit)? = null,
         onRewarded: () -> Unit,
         onFailed: (() -> Unit)? = null
@@ -138,6 +139,7 @@ class RewardedAdManager(
         isAdLoading.set(true)
         platform.load(
             context = context,
+            adUnitId = adUnitId,
             customData = nonce,
             onLoaded = {
                 Logger.d(TAG, "loadAndShow: ad loaded")
@@ -191,6 +193,7 @@ class RewardedAdManager(
             }
 
             val adNonce = prepareRes.data!!.nonce
+            val adUnitId = prepareRes.data!!.adUnitId
             if (adNonce.isNullOrBlank()) {
                 isAdLoading.set(false)
                 statusText.set(null)
@@ -203,6 +206,7 @@ class RewardedAdManager(
             withContext(Dispatchers.Main) {
                 platform.load(
                     context = context,
+                    adUnitId = adUnitId,
                     customData = adNonce,
                     onLoaded = {
                         Logger.d(TAG, "startPrepare: ad loaded")

@@ -5,7 +5,9 @@ package com.kuaigeglobal.epnova.core.network.apis.entity
  */
 data class RewardAdPrepareData(
     /** 本次广告的唯一标识，即 adFlowId */
-    val nonce: String?
+    val nonce: String?,
+    /** AdMob 激励广告单元 ID，空时客户端使用本地默认广告位 */
+    val adUnitId: String?
 )
 
 /**

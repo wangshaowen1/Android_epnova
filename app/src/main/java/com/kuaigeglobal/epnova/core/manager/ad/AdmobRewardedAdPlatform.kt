@@ -34,13 +34,15 @@ class AdmobRewardedAdPlatform : IRewardedAdPlatform {
 
     override fun load(
         context: Context,
+        adUnitId: String?,
         customData: String?,
         onLoaded: () -> Unit,
         onFailed: () -> Unit
     ) {
+        val resolvedAdUnitId = adUnitId?.takeIf { it.isNotBlank() } ?: AD_UNIT_ID
         RewardedAd.load(
             context,
-            AD_UNIT_ID,
+            resolvedAdUnitId,
             AdRequest.Builder().build(),
             object : RewardedAdLoadCallback() {
                 override fun onAdLoaded(ad: RewardedAd) {

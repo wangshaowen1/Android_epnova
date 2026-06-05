@@ -68,6 +68,7 @@ class RewardsActivity : BaseViewModelActivity<ActivityRewardsBinding, RewardsVie
                     context = this@RewardsActivity,
                     activity = this@RewardsActivity,
                     nonce = ctx.nonce,
+                    adUnitId = ctx.adUnitId,
                     onLoaded = { hideLoadingDialog() },
                     onRewarded = {
                         if (ctx.vm != null) mRealVM.onAdWatched(ctx.vm, ctx.nonce)

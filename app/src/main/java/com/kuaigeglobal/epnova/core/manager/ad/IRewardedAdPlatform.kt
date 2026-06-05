@@ -14,15 +14,17 @@ interface IRewardedAdPlatform {
     /**
      * 加载广告
      *
-     * 广告位 ID 由各平台实现类自行持有，Manager 无需关心具体格式。
+     * 广告位 ID 可由业务接口下发，未下发时由各平台实现类使用本地默认值。
      *
      * @param context    上下文
+     * @param adUnitId   后台下发的广告单元 ID，空时使用本地默认广告位
      * @param customData 写入广告 SDK SSV 的自定义数据，当前 AdMob 使用 prepare 返回的 nonce
      * @param onLoaded   加载成功回调（主线程）
      * @param onFailed   加载失败回调（主线程）
      */
     fun load(
         context: Context,
+        adUnitId: String?,
         customData: String?,
         onLoaded: () -> Unit,
         onFailed: () -> Unit

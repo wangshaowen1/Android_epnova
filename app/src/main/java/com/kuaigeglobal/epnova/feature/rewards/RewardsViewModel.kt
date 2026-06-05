@@ -58,7 +58,8 @@ class RewardsViewModel : AppRepositoryViewModel<AppRepository>() {
      */
     data class AdWatchContext(
         val vm: ItemEarnRewardVM?,
-        val nonce: String
+        val nonce: String,
+        val adUnitId: String?
     )
     private val _showAdEvent = MutableSharedFlow<AdWatchContext>(extraBufferCapacity = 1)
     val showAdEvent: SharedFlow<AdWatchContext> = _showAdEvent
@@ -176,7 +177,8 @@ class RewardsViewModel : AppRepositoryViewModel<AppRepository>() {
                 _showAdEvent.tryEmit(
                     AdWatchContext(
                         vm = vm,
-                        nonce = nonce
+                        nonce = nonce,
+                        adUnitId = d.adUnitId
                     )
                 )
             }
@@ -232,7 +234,8 @@ class RewardsViewModel : AppRepositoryViewModel<AppRepository>() {
                 _showAdEvent.tryEmit(
                     AdWatchContext(
                         vm = null,
-                        nonce = nonce
+                        nonce = nonce,
+                        adUnitId = d.adUnitId
                     )
                 )
             }
