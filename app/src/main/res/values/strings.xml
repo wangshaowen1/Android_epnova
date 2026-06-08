@@ -702,7 +702,7 @@
     <string name="profile_income">Income</string>
     <string name="profile_feedback_suggestions">Feedback &amp; Suggestions</string>
     <string name="credits_popup_instructions">Credits can be used to create your own short dramas.</string>
-    <string name="coins_popup_instructions">Coins can be used to unlock episodes in order.</string>
+    <string name="coins_popup_instructions">Coins can be used to unlock premium episodes in order.</string>
     <string name="income_available_balance">Available Balance</string>
     <string name="income_withdraw">Withdraw</string>
     <string name="income_withdraw_request_guide">Please submit your request with your email in Profile → Feedback &amp; Suggestions. We will reach you via the email you provided.</string>
