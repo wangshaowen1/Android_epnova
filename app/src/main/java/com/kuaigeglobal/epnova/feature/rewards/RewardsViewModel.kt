@@ -12,6 +12,8 @@ import com.kuaigeglobal.epnova.core.AppRepository
 import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.ext.request
 import com.kuaigeglobal.epnova.core.manager.RewardedAdManager
+import com.kuaigeglobal.epnova.core.network.apis.ApiException
+import com.kuaigeglobal.epnova.core.network.apis.ApiResponse
 import com.kuaigeglobal.epnova.core.network.apis.entity.AdTaskItem
 import com.kuaigeglobal.epnova.core.network.apis.entity.OnceTaskItem
 import com.kuaigeglobal.epnova.core.network.apis.request.RewardAdCompleteBody
@@ -129,6 +131,7 @@ class RewardsViewModel : AppRepositoryViewModel<AppRepository>() {
         if (hasCheckedIn.get() == true) return
         request(
             apiBlock = { mRepo.api.rewardCheckInReport(UserTokenBody()) },
+            onError = { showBackendMsg(it) },
             onSuccess = {
                 val d = data ?: return@request
                 checkInDays.set(d.checkinDays ?: 0)
@@ -175,6 +178,7 @@ class RewardsViewModel : AppRepositoryViewModel<AppRepository>() {
         val recordId = vm.data.get()?.taskRecordId ?: return
         request(
             apiBlock = { mRepo.api.rewardAdTaskPrepare(RewardAdTaskPrepareBody(taskRecordId = recordId)) },
+            onError = { showBackendMsg(it) },
             onSuccess = {
                 val d = data ?: return@request
                 val nonce = d.nonce ?: return@request
@@ -213,7 +217,7 @@ class RewardsViewModel : AppRepositoryViewModel<AppRepository>() {
                         return@launch
                     }
                     2 -> {
-                        showToast(R.string.network_error)
+                        showBackendMsg(res)
                         loadAdTaskList()
                         return@launch
                     }
@@ -233,6 +237,7 @@ class RewardsViewModel : AppRepositoryViewModel<AppRepository>() {
     fun prepareCheckInAd() {
         request(
             apiBlock = { mRepo.api.rewardAdCheckInPrepare(UserTokenBody()) },
+            onError = { showBackendMsg(it) },
             onSuccess = {
                 val d = data ?: return@request
                 val nonce = d.nonce ?: return@request
@@ -269,7 +274,7 @@ class RewardsViewModel : AppRepositoryViewModel<AppRepository>() {
                         return@launch
                     }
                     2 -> {
-                        showToast(R.string.network_error)
+                        showBackendMsg(res)
                         return@launch
                     }
                 }
@@ -322,6 +327,7 @@ class RewardsViewModel : AppRepositoryViewModel<AppRepository>() {
         pendingPushNotificationTask = null
         request(
             apiBlock = { mRepo.api.reportPushNotificationTask() },
+            onError = { showBackendMsg(it) },
             onSuccess = {
                 val rewardLabel = data?.rewardLabel?.takeIf { it.isNotBlank() }
                     ?: task.rewardLabel?.takeIf { it.isNotBlank() }
@@ -339,6 +345,15 @@ class RewardsViewModel : AppRepositoryViewModel<AppRepository>() {
     }
 
     // ─── 内部辅助 ────────────────────────────────────────────────────────────
+
+    private fun showBackendMsg(error: Throwable?) {
+        val message = (error as? ApiException)?.message
+        message?.takeIf { it.isNotBlank() }?.showToast()
+    }
+
+    private fun showBackendMsg(response: ApiResponse<*>?) {
+        response?.msg?.takeIf { it.isNotBlank() }?.showToast()
+    }
 
     /** 将服务端返回的毫秒时间戳格式化为 "Resets at HH:mm" */
     private fun formatNextRefreshText(timestampMs: Long?): String {
