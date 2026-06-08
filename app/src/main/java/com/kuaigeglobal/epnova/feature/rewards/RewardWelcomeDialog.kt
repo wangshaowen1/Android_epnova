@@ -2,10 +2,6 @@ package com.kuaigeglobal.epnova.feature.rewards
 
 import android.os.Bundle
 import android.view.Gravity
-import android.view.LayoutInflater
-import android.view.ViewGroup
-import android.widget.FrameLayout
-import android.widget.TextView
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.Constants
 import com.kuaigeglobal.epnova.core.ext.onUserSignIn
@@ -14,6 +10,7 @@ import com.kuaigeglobal.epnova.databinding.DialogRewardWelcomeBinding
 import com.kuaigeglobal.epnova.router.AppNavigator
 import com.nhsd.basic.BaseDialogFragment
 import com.nhsd.basic.bus.observeEvents
+import com.nhsd.basic.ext.dp
 import com.nhsd.basic.ext.getParcelableValue
 import com.nhsd.basic.ext.setOnSingleClickListener
 
@@ -32,6 +29,19 @@ class RewardWelcomeDialog : BaseDialogFragment<DialogRewardWelcomeBinding>() {
 
     val data by lazy {
         arguments?.getParcelableValue(Constants.Extra.DATA, LoginTaskData::class.java)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        dialog?.window?.let { dialogWindow ->
+            dialogWindow.attributes?.let { attr ->
+                attr.width = 280.dp
+                attr.height = 308.dp
+                attr.gravity = Gravity.CENTER
+                dialogWindow.attributes = attr
+            }
+        }
+        dialog?.setCanceledOnTouchOutside(false)
     }
 
     override fun onPrepareView() {
