@@ -114,7 +114,7 @@ class MineFragment : BaseViewModelFragment<FragmentMineBinding, MineViewModel>()
                 activity?.showConfirmDialog(
                     title = null,
                     tips = getString(R.string.coins_popup_instructions),
-                    positiveButtonText = getString(R.string.confirm_ok)
+                    positiveButtonText = getString(R.string.btn_ok)
                 )
             }
 
@@ -123,7 +123,7 @@ class MineFragment : BaseViewModelFragment<FragmentMineBinding, MineViewModel>()
                 activity?.showConfirmDialog(
                     title = null,
                     tips = getString(R.string.credits_popup_instructions),
-                    positiveButtonText = getString(R.string.confirm_ok)
+                    positiveButtonText = getString(R.string.btn_ok)
                 )
             }
 

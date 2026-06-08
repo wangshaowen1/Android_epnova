@@ -35,6 +35,7 @@
 
     <string name="customize">自定义</string>
     <string name="confirm_ok">确定</string>
+    <string name="btn_ok">确认</string>
     <string name="cancellation">取消</string>
     <string name="title_settings">设置</string>
     <string name="app_contact_customer_service">联系客服</string>

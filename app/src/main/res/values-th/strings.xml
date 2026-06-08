@@ -33,6 +33,7 @@
     <string name="creation">สร้าง</string>
     <string name="customize">ปรับแต่ง</string>
     <string name="confirm_ok">ยืนยัน</string>
+    <string name="btn_ok">โอเค</string>
     <string name="cancellation">ยกเลิก</string>
     <string name="title_settings">การตั้งค่า</string>
     <string name="app_contact_customer_service">ติดต่อฝ่ายสนับสนุน</string>
