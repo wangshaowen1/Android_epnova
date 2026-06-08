@@ -89,6 +89,11 @@ class RewardsActivity : BaseViewModelActivity<ActivityRewardsBinding, RewardsVie
             }
         }
         lifecycleScope.launch {
+            mRealVM.showAdTaskRewardEvent.collectLatest { rewardLabel ->
+                showRewardToast(getString(R.string.rewards_50_reward_coins, rewardLabel))
+            }
+        }
+        lifecycleScope.launch {
             mRealVM.checkPushNotificationEvent.collectLatest {
                 mRealVM.onPushNotificationPermissionChecked(IntentUtils.isNotificationEnabled(this@RewardsActivity))
             }

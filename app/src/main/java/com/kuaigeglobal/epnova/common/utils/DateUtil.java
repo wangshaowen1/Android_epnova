@@ -27,20 +27,19 @@ public class DateUtil {
     private static final long ONE_MONTH = 2592000;
     private static final long ONE_YEAR = 31104000;
 
+    public static final String FORMAT_DATETIME = "yyyy-MM-dd HH:mm:ss";//2016-11-20 16:08:43
+    public static final String FORMAT_DATETIME2 = "yyyy/MM/dd HH:mm:ss";//2016-11-20 16:08:43
+    public static final String FORMAT_DATETIME_BIAS = "yyyy-MM-dd HH:mm";//2016-11-20 16:08:43
+    public static final String FORMAT_DATE = "yyyy-MM-dd";
+    public static final String FORMAT_DATE2 = "yyyy.MM.dd";
+    public static final String FORMAT_DATE3 = "yyyy/MM/dd";
+    public static final String FORMAT_DATE4 = "yyyy/MM/dd HH:mm";
+    public static final String FORMAT_DATE5 = "yyyy.MM.dd HH:mm";
+
     public static final String FORMAT_EN_DATE = "MMM dd, HH:mm"; // Nov 20, 16:08
     public static final String FORMAT_EN_DATE2 = "MMMM dd, EEEE HH:mm"; // April 05, Friday 12:00
     public static final String FORMAT_EN_DATE4 = "MMM dd, E HH:mm"; // Apr 05, Fri 12:00
     public static final String FORMAT_EN_DATE3 = "yyyy MMM dd, E HH:mm"; // 2026 Apr 05, Fri 12:00
-
-    // 最推荐：带月份缩写，美英通用无歧义
-    public static final String FORMAT_DATETIME = "MMM dd, yyyy HH:mm:ss";    // Apr 01, 2026 10:21:28
-    public static final String FORMAT_DATETIME_BIAS = "MMM dd, yyyy HH:mm";
-
-    public static final String FORMAT_DATE = "MM/dd/yyyy";                // 11/20/2016
-    public static final String FORMAT_DATE2 = "MM.dd.yyyy";               // 11.20.2016
-    public static final String FORMAT_DATE3 = "MMM dd, yyyy";             // Nov 20, 2016
-    public static final String FORMAT_DATE4 = "MM/dd/yyyy HH:mm";         // 11/20/2016 16:08
-    public static final String FORMAT_DATE5 = "dd/MM/yyyy HH:mm";         // 20/11/2016 16:08
 
     public static final String FORMAT_MONTH_DAY = "MMM dd"; // Nov 20
     public static final String FORMAT_MONTH_DAY_TIME = "MMM dd, HH:mm"; // Nov 20, 16:08

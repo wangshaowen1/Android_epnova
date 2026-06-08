@@ -72,6 +72,10 @@ class RewardsViewModel : AppRepositoryViewModel<AppRepository>() {
     private val _showCheckInAdRewardEvent = MutableSharedFlow<Int>(extraBufferCapacity = 1)
     val showCheckInAdRewardEvent: SharedFlow<Int> = _showCheckInAdRewardEvent
 
+    /** 广告任务完成后通知 Activity 展示获得金币的 Toast。 */
+    private val _showAdTaskRewardEvent = MutableSharedFlow<String>(extraBufferCapacity = 1)
+    val showAdTaskRewardEvent: SharedFlow<String> = _showAdTaskRewardEvent
+
     /** 通知任务需要 Activity 判断系统通知权限；ViewModel 不直接持有界面 Context。 */
     private val _checkPushNotificationEvent = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
     val checkPushNotificationEvent: SharedFlow<Unit> = _checkPushNotificationEvent
@@ -204,6 +208,7 @@ class RewardsViewModel : AppRepositoryViewModel<AppRepository>() {
                         vm.isWatch.set(false)
                         balance.set(balance.get() + vm.coins)
                         User.get().storeCoins(balance.get())
+                        _showAdTaskRewardEvent.tryEmit(vm.coins.toString())
                         loadAdTaskList()
                         return@launch
                     }
