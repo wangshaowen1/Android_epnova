@@ -95,7 +95,7 @@
                     android:paddingVertical="@dimen/spacing_xs"
                     android:text="@string/upload_text"
                     android:textColor="?attr/funcColorSpecial"
-                    android:visibility="@{!layout.inspirationModel()?View.VISIBLE:View.GONE}"
+                    android:visibility="gone"
                     app:drawableStartCompat="@drawable/icon_copy_upload" />
 
                 <TextView
