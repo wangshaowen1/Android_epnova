@@ -402,7 +402,7 @@ class MainActivity : BaseViewModelActivity<ActivityMainBinding, MainViewModel>()
         mRealVM.loginTaskData.observe(this) {
             val todayDate = DateUtil.getDateTime()
             if (Config.get().loginRewardsDialog != todayDate) {
-                RewardWelcomeDialog.newInstance(it)
+                RewardWelcomeDialog.newInstance(it).show(supportFragmentManager)
                 Config.get().loginRewardsDialog = todayDate
             }
         }
