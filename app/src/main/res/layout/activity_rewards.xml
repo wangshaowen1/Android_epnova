@@ -224,6 +224,7 @@
                             android:textSize="12sp"
                             android:visibility="@{layout.nextRefreshText.isEmpty() ? View.GONE : View.VISIBLE}"
                             tools:text="Next refresh in 09:00:03"
+                            android:typeface="monospace"
                             tools:visibility="visible" />
                     </LinearLayout>
                 </LinearLayout>

@@ -23,6 +23,7 @@ import com.kuaigeglobal.epnova.router.AppNavigator
 import com.nhsd.basic.ext.getResString
 import com.nhsd.basic.ext.showToast
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -53,6 +54,7 @@ class RewardsViewModel : AppRepositoryViewModel<AppRepository>() {
     private var onceTaskItems: List<OnceTaskItem> = emptyList()
     private var adTaskItems: List<AdTaskItem> = emptyList()
     private var pendingPushNotificationTask: OnceTaskItem? = null
+    private var nextRefreshCountdownJob: Job? = null
 
     /**
      * Activity 收到后负责加载并展示激励广告。
@@ -97,6 +99,7 @@ class RewardsViewModel : AppRepositoryViewModel<AppRepository>() {
 
     override fun onCleared() {
         super.onCleared()
+        nextRefreshCountdownJob?.cancel()
         adManager.release()
     }
 
@@ -118,7 +121,7 @@ class RewardsViewModel : AppRepositoryViewModel<AppRepository>() {
                 hasCheckedIn.set((d.todayCheckedIn ?: 0) == 1)
                 todayAdWatched.set((d.todayAdWatched ?: 0) == 1)
                 adRewardCoins.set(d.adRewardCoins ?: 0)
-                nextRefreshText.set(formatNextRefreshText(d.nextRefreshTime))
+                startNextRefreshCountdown(d.nextRefreshTime)
                 checkInAdapter.submitList(d.taskList?.map { ItemCheckInDayVM(it) } ?: emptyList())
                 if (updateLoadState) loadState.set(LoadState.NotLoading(true))
             }
@@ -162,7 +165,7 @@ class RewardsViewModel : AppRepositoryViewModel<AppRepository>() {
             apiBlock = { mRepo.api.rewardAdTaskList(UserTokenBody()) },
             onSuccess = {
                 val d = data ?: return@request
-                rewardsResetTime.set(formatNextRefreshText(data?.nextRefreshTime))
+                rewardsResetTime.set(formatRefreshClockText(d.nextRefreshTime))
                 adTaskItems = d.taskList ?: emptyList()
                 submitEarnRewardList()
             }
@@ -355,8 +358,40 @@ class RewardsViewModel : AppRepositoryViewModel<AppRepository>() {
         response?.msg?.takeIf { it.isNotBlank() }?.showToast()
     }
 
+    private fun startNextRefreshCountdown(timestampMs: Long?) {
+        nextRefreshCountdownJob?.cancel()
+        if (timestampMs == null || timestampMs <= 0) {
+            nextRefreshText.set("")
+            return
+        }
+
+        val shouldReloadWhenFinished = timestampMs > System.currentTimeMillis()
+        nextRefreshCountdownJob = viewModelScope.launch {
+            while (true) {
+                val remainingMs = timestampMs - System.currentTimeMillis()
+                nextRefreshText.set(formatCountdownText(remainingMs))
+                if (remainingMs <= 0L) {
+                    nextRefreshCountdownJob = null
+                    if (shouldReloadWhenFinished) {
+                        loadCheckInList(updateLoadState = false)
+                    }
+                    break
+                }
+                delay(1_000L)
+            }
+        }
+    }
+
+    private fun formatCountdownText(remainingMs: Long): String {
+        val totalSeconds = ((remainingMs.coerceAtLeast(0L) + 999L) / 1_000L)
+        val hours = totalSeconds / 3_600L
+        val minutes = (totalSeconds % 3_600L) / 60L
+        val seconds = totalSeconds % 60L
+        return String.format(java.util.Locale.US, "%02d:%02d:%02d", hours, minutes, seconds)
+    }
+
     /** 将服务端返回的毫秒时间戳格式化为 "Resets at HH:mm" */
-    private fun formatNextRefreshText(timestampMs: Long?): String {
+    private fun formatRefreshClockText(timestampMs: Long?): String {
         if (timestampMs == null || timestampMs <= 0) return ""
         val timeStr = java.text.SimpleDateFormat("HH:mm", java.util.Locale.getDefault())
             .format(java.util.Date(timestampMs))
