@@ -108,7 +108,8 @@ object CommonNavigatorUtils {
         textSize: Float = 16f,
         indicatorWidth: Float = 30f,
         gravity: Int = Gravity.CENTER,
-        onTitleClick: ((index: Int) -> Unit)? = null
+        onTitleClick: ((index: Int) -> Unit)? = null,
+        titleHorizontalPaddingDp: Int = 12
     ): CommonNavigator? {
         if (context == null) return null
         val navigator = CommonNavigator(context)
@@ -122,7 +123,7 @@ object CommonNavigatorUtils {
             override fun getTitleView(context: Context, index: Int): IPagerTitleView {
                 val titleView = SimplePagerTitleView(context)
                 titleView.setIsSelectedBold(isBold)
-                titleView.setPadding(12.dp, 0, 12.dp, 0)
+                titleView.setPadding(titleHorizontalPaddingDp.dp, 0, titleHorizontalPaddingDp.dp, 0)
                 titleView.setLines(1)
                 titleView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, textSize)
                 titleView.gravity = gravity

@@ -62,7 +62,8 @@ class MyListFragment : BaseViewModelFragment<FragmentMyListBinding, MyListModel>
                     indicator?.lineWidth = (24).dp.toFloat()
                     indicator?.mode = LinePagerIndicator.MODE_EXACTLY
                     indicator?.yOffset = (1).dp.toFloat()
-                }
+                },
+            titleHorizontalPaddingDp = 2
         )
         val fragmentList = arrayListOf<Fragment>()
         fragmentList.add(MyCreationsFragment.newInstance())
