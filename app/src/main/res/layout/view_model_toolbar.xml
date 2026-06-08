@@ -59,11 +59,11 @@
                 android:alpha="@{toolbar.mTitleAlpha}"
                 android:ellipsize="end"
                 android:gravity="center"
-                android:maxWidth="180dp"
+                android:maxWidth="212dp"
                 android:maxLines="1"
                 android:text="@{toolbar.mTitle}"
                 android:textColor="@{toolbar.titleColor}"
-                tools:text="Title"
+                tools:text="TitleTitleTitleTitleTitleTitleTitle"
                 tools:textColor="?attr/textColor1" />
 
             <TextView
