@@ -78,11 +78,24 @@ class AdmobRewardedAdPlatform : IRewardedAdPlatform {
             onFailed()
             return
         }
+        var rewardEarned = false
+        var adDismissed = false
+        var rewardDispatched = false
+
+        fun dispatchRewardIfReady() {
+            if (rewardEarned && adDismissed && !rewardDispatched) {
+                rewardDispatched = true
+                onRewarded()
+            }
+        }
+
         ad.fullScreenContentCallback = object : FullScreenContentCallback() {
             override fun onAdDismissedFullScreenContent() {
                 Logger.d(TAG, "onAdDismissedFullScreenContent")
+                adDismissed = true
                 rewardedAd = null
                 onDismissed()
+                dispatchRewardIfReady()
             }
 
             override fun onAdFailedToShowFullScreenContent(error: AdError) {
@@ -91,7 +104,10 @@ class AdmobRewardedAdPlatform : IRewardedAdPlatform {
                 onFailed()
             }
         }
-        ad.show(activity, OnUserEarnedRewardListener { onRewarded() })
+        ad.show(activity, OnUserEarnedRewardListener {
+            rewardEarned = true
+            dispatchRewardIfReady()
+        })
     }
 
     override fun release() {

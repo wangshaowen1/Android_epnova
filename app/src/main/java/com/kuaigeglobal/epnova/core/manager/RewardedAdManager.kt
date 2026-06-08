@@ -119,11 +119,11 @@ class RewardedAdManager(
 
     /**
      * 加载并立即展示广告，nonce 由外部提供（调用方已完成 prepare 步骤）。
-     * nonce 会写入 AdMob SSV customData。广告看完后回调 [onRewarded]，
+     * nonce 会写入 AdMob SSV customData。广告看完并关闭广告页后回调 [onRewarded]，
      * 后续 complete 结果查询逻辑由调用方自行处理。
      *
      * @param onLoaded   广告加载成功、即将展示时回调（可用于隐藏 loading）
-     * @param onRewarded 用户看完广告获得奖励时回调
+     * @param onRewarded 用户看完广告并关闭广告页后回调
      * @param onFailed   加载或展示失败时回调
      */
     fun loadAndShow(
