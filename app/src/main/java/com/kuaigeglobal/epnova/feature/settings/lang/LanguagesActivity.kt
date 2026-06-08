@@ -21,7 +21,7 @@ class LanguagesActivity : BaseViewModelActivity<ActivityLanguagesBinding, Langua
         super.onCreate(savedInstanceState)
 
         adapter = LanguagesAdapter(languagesConfigs, mRealVM.selectedCode) { item ->
-            mRealVM.selectedCode = item.code
+            mRealVM.selectLanguage(item.code)
             adapter.updateSelected(item.code)
         }
         binding.recyclerView.adapter = adapter

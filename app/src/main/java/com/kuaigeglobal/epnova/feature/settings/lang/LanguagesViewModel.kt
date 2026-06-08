@@ -21,7 +21,11 @@ val languagesConfigs = listOf(
 
 class LanguagesViewModel : AppRepositoryViewModel<LanguagesRepository>() {
 
-    var selectedCode = Config.get().getSavedLanguage()
+    private val currentCode = Config.get().getSavedLanguage()
+    private val doneText = R.string.complete.getResString()
+
+    var selectedCode = currentCode
+        private set
 
     val doneEvent = MutableLiveData<Unit>()
 
@@ -29,12 +33,22 @@ class LanguagesViewModel : AppRepositoryViewModel<LanguagesRepository>() {
         navigationAction = { finish() },
         title = R.string.settings_language.getResString(),
         background = Color.TRANSPARENT,
-        menuText = R.string.complete.getResString(),
+        menuText = null,
         menuTextColorRes = R.color.color_ff2e55,
         menuAction = { onDone() }
     )
 
+    fun selectLanguage(code: String) {
+        selectedCode = LocaleHelper.normalizeLanguageCode(code)
+        updateDoneVisible()
+    }
+
+    private fun updateDoneVisible() {
+        mToolbarVM.mMenuText.set(if (selectedCode == currentCode) null else doneText)
+    }
+
     private fun onDone() {
+        if (selectedCode == currentCode) return
         Config.get().saveLanguage(selectedCode)
         //服务端语言必须保存成功后再执行doneEvent.value = Unit
         request(
