@@ -374,6 +374,18 @@ class Config : NetworkChangedListener {
         const val ONLINE: Int = 3
         const val DEVICE_TOKEN = "DEVICE_TOKEN"
 
+        /**
+         * Application.attachBaseContext 阶段 App.instance.config 还未初始化，
+         * BasicLocaleConfig 需要通过 Context 直接读取已保存语言。
+         */
+        fun readSavedLanguage(context: Context): String {
+            val mmkv = MMKV.mmkvWithID(PREF_ID, MMKV.MULTI_PROCESS_MODE)
+            val savedLanguage = mmkv.decodeString(APP_LANG, null)
+                ?: context.getSharedPreferences(PREF_ID, Context.MODE_PRIVATE)
+                    .getString(APP_LANG, null)
+            return LocaleHelper.normalizeLanguageCode(savedLanguage ?: LocaleHelper.resolveDefaultLanguage())
+        }
+
         @JvmStatic
         fun get(): Config {
             return App.instance.config

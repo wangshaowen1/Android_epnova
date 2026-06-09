@@ -1,8 +1,5 @@
 package com.kuaigeglobal.epnova.core.manager
 
-import android.content.Context
-import android.content.ContextWrapper
-import android.content.res.Configuration
 import java.util.Locale
 
 object LocaleHelper {
@@ -45,30 +42,5 @@ object LocaleHelper {
         val normalized = normalizeLanguageCode(langCode)
         val parts = normalized.split("-", limit = 2)
         return Locale(parts[0], parts.getOrElse(1) { "" })
-    }
-
-    fun overrideConfiguration(baseConfiguration: Configuration, language: String?): Configuration {
-        val locale = localeFromLanguageCode(language)
-        Locale.setDefault(locale)
-
-        return Configuration(baseConfiguration).apply {
-            setLocale(locale)
-            setLayoutDirection(locale)
-        }
-    }
-
-    fun wrap(context: Context, language: String): ContextWrapper {
-        val locale = localeFromLanguageCode(language)
-        Locale.setDefault(locale)
-        
-        val resources = context.resources
-        val configuration = resources.configuration
-        
-        // 核心：设置新语言
-        configuration.setLocale(locale)
-        configuration.setLayoutDirection(locale) // 支持从右往左的布局（虽然泰/印尼不需要）
-
-        val newContext = context.createConfigurationContext(configuration)
-        return ContextWrapper(newContext)
     }
 }
