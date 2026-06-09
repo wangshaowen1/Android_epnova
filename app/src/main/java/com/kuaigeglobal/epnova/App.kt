@@ -20,6 +20,7 @@ import com.kuaigeglobal.epnova.core.Config
 import com.kuaigeglobal.epnova.core.Global
 import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.manager.AdStrategyManager
+import com.kuaigeglobal.epnova.core.manager.AppLanguageManager
 import com.kuaigeglobal.epnova.core.manager.AppsFlyerManager
 import com.kuaigeglobal.epnova.core.manager.EventManager
 import com.kuaigeglobal.epnova.core.manager.LocaleHelper
@@ -106,13 +107,12 @@ class App : BaseApp() {
                     @NonNull positive: Runnable,
                     @NonNull negative: Runnable
                 ): Dialog {
-                    val namesString = permissionNameStr(permissions, context)
+//                    val namesString = permissionNameStr(permissions, context)
                     positiveCheck = false
                     val commonDialog = CommonDialog(
                         context,
                         context.getString(
-                            R.string.permissionx_default_denied_forever_rationale_message,
-                            namesString
+                            R.string.permissionx_default_denied_forever_rationale_message
                         )
                     )
                     commonDialog.setPositiveButtonText(context.getString(R.string.allow))
@@ -158,6 +158,7 @@ class App : BaseApp() {
         AppsFlyerManager.init(this)
         config = Config()
         config.init(this@App)
+        AppLanguageManager.applySavedLanguage()
         user = User()
         user.init(this@App)
         appStatusTracker = AppStatusTracker()
