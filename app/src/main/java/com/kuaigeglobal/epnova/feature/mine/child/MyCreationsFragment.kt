@@ -114,6 +114,7 @@ class MyCreationsFragment :
             val myMultiStatePagingFooterAdapter = MyMultiStatePagingFooterAdapter(
                 myWorksAdapter,
                 noMoreThreshold = noMoreThreshold,
+                loadMoreLoadEnd = "",
                 noData = getString(R.string.empty_creation_history)
             ) {
                 myWorksAdapter.retry()

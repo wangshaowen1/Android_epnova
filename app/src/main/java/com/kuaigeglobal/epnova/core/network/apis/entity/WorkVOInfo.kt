@@ -46,5 +46,12 @@ data class WorkVOInfo(
             ""
         }
     }
+
+    /**
+     * 判断最近是否有播放进度
+     */
+    fun isPlayProgress(): Boolean {
+        return playProgress != null && playProgress > 0
+    }
 }
 

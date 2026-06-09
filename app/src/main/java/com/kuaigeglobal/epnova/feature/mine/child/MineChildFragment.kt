@@ -83,6 +83,7 @@ class MineChildFragment :
             val myMultiStatePagingFooterAdapter = MyMultiStatePagingFooterAdapter(
                 mineAdapter,
                 noMoreThreshold = noMoreThreshold,
+                loadMoreLoadEnd = "",
                 noData = getString(R.string.empty_creation_history)
             ) {
                 mineAdapter.retry()

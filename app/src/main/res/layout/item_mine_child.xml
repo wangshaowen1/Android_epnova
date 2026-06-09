@@ -70,6 +70,7 @@
             tools:text="EP.1 / EP. 6" />
 
         <ProgressBar
+            setVisible="@{item.data.isPlayProgress()}"
             android:layout_width="0dp"
             android:layout_height="2dp"
             android:layout_marginHorizontal="@dimen/spacing_s"
