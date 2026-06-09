@@ -33,7 +33,7 @@ import kotlinx.coroutines.withContext
 class FeedbackViewModel : AppRepositoryViewModel<AppRepository>() {
     var mToolbarVM = ToolbarViewModel(
         navigationAction = { back() },
-        title = R.string.app_suggestion_and_feedback.getResString()
+        title = R.string.profile_feedback_suggestions.getResString()
     )
 
     val email = MutableLiveData<String>()

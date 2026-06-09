@@ -458,7 +458,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/spacing_m"
                         android:layout_weight="1"
-                        android:text="@string/suggest_and_feedback"
+                        android:text="@string/profile_feedback_suggestions"
                         android:textColor="?attr/textColor1" />
 
                     <ImageView
