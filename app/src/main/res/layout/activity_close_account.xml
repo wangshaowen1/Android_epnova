@@ -51,7 +51,7 @@
                     android:lineSpacingExtra="@dimen/lineSpacingExtra"
                     android:paddingHorizontal="@dimen/spacing_m"
                     android:paddingBottom="@dimen/spacing_m"
-                    android:text="@string/app_log_off"
+                    android:text="@string/settings_delete_account"
                     android:textAppearance="@style/Text14"
                     android:textColor="?attr/textColor3" />
             </androidx.core.widget.NestedScrollView>
@@ -64,6 +64,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="8dp"
+            android:layout_marginHorizontal="25dp"
             android:gravity="center"
             android:onClick="@{(v)->layout.checkPolicy()}"
             android:orientation="horizontal"
@@ -76,7 +77,7 @@
                 android:layout_marginEnd="4dp"
                 android:importantForAccessibility="no"
                 android:scaleType="fitCenter"
-                android:src="@{layout.checkedPolicy?@drawable/icon_choose_checked:@drawable/icon_choose_normal_dark}"
+                android:src="@{layout.checkedPolicy?@drawable/icon_selected_box_sel:@drawable/icon_choose_normal_dark}"
                 tools:src="@drawable/icon_choose_normal_dark" />
 
             <TextView
@@ -138,7 +139,7 @@
             android:layout_marginHorizontal="@dimen/spacing_l"
             android:layout_marginTop="18dp"
             android:layout_marginBottom="30dp"
-            android:enabled="@{layout.removeAccountState==LogoffViewModel.REMOVE_ACCOUNT_STATE_APPLY}"
+            android:enabled="@{layout.removeAccountState==LogoffViewModel.REMOVE_ACCOUNT_STATE_APPLY &amp;&amp; layout.checkedPolicy}"
             android:gravity="center"
             android:text="@{layout.submitApplyText}"
             tools:text="申请注销中"
