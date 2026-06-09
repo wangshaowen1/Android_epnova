@@ -179,7 +179,12 @@ class EpisodeUnlockController(
     fun toggleAutoUnlock() {
         val newVal = !autoUnlock.get()
         autoUnlock.set(newVal)
-        Config.get().saveEpisodeAutoUnlock(newVal)
+//        Config.get().saveEpisodeAutoUnlock(newVal)
+    }
+
+    /** 保存自动解锁开关状态 */
+    fun saveAutoUnlock(flag: Boolean) {
+        Config.get().saveEpisodeAutoUnlock(flag)
     }
 
     fun getAdRemainCount(): Int = unlockInfo?.adUnlockRemainCount ?: 0

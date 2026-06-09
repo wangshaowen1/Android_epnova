@@ -117,7 +117,6 @@
         <!-- 4. 自动解锁开关 -->
         <LinearLayout
             android:id="@+id/llAutoUnlock"
-            setVisible="@{!ctrl.autoUnlock}"
             android:layout_width="wrap_content"
             android:layout_height="44dp"
             android:layout_gravity="center_horizontal|bottom"

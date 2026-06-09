@@ -277,17 +277,22 @@ class VideoFeedAdapter(private val interactionListener: InteractionListener) :
             overlay.executePendingBindings()
             overlay.root.visibility = View.VISIBLE
 
+            // 自动解锁开关开启的时候不显示
+            overlay.llAutoUnlock.visibility = if (!controller.autoUnlock.get()) View.VISIBLE else View.GONE
+
             // 解锁层出现时隐藏收藏/点赞按钮
             binding.llInteractionSide.visibility = View.GONE
 
             val activity = binding.root.context as? Activity
             overlay.btnUnlockNow.setOnSingleClickListener {
                 controller.onClickUnlockNow()
+                controller.saveAutoUnlock(controller.autoUnlock.get())
             }
             overlay.llAdUnlock.setOnSingleClickListener {
                 if (activity != null) {
                     controller.onClickAdUnlock(binding.root.context, activity)
                 }
+                controller.saveAutoUnlock(controller.autoUnlock.get())
             }
             overlay.llAutoUnlock.setOnSingleClickListener {
                 controller.toggleAutoUnlock()
