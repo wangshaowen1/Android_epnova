@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.ext.getVm
+import com.kuaigeglobal.epnova.core.Config
 import com.kuaigeglobal.epnova.core.network.apis.entity.EpisodeInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.WorkVOInfo
 import com.kuaigeglobal.epnova.databinding.ItemVideoFeedBinding
@@ -276,9 +277,6 @@ class VideoFeedAdapter(private val interactionListener: InteractionListener) :
             overlay.ctrl = controller
             overlay.executePendingBindings()
             overlay.root.visibility = View.VISIBLE
-
-            // 自动解锁开关开启的时候不显示
-            overlay.llAutoUnlock.visibility = if (!controller.autoUnlock.get()) View.VISIBLE else View.GONE
 
             // 解锁层出现时隐藏收藏/点赞按钮
             binding.llInteractionSide.visibility = View.GONE

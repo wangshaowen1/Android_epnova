@@ -9,6 +9,8 @@
             type="com.kuaigeglobal.epnova.feature.play.more.EpisodeUnlockController" />
 
         <import type="android.view.View" />
+
+        <import type="com.kuaigeglobal.epnova.core.Config"/>
     </data>
 
     <!--
@@ -116,6 +118,7 @@
 
         <!-- 4. 自动解锁开关 -->
         <LinearLayout
+            setVisible="@{!Config.get().episodeAutoUnlock}"
             android:id="@+id/llAutoUnlock"
             android:layout_width="wrap_content"
             android:layout_height="44dp"
