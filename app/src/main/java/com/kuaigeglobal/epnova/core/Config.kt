@@ -54,8 +54,11 @@ class Config : NetworkChangedListener {
         private set
     var lang: String by MmkvDelegate(APP_LANG, LocaleHelper.resolveDefaultLanguage()) { mmkv }
         private set
-    var episodeAutoUnlock: Boolean by MmkvDelegate(EPISODE_AUTO_UNLOCK, true) { mmkv }
-        private set
+    var episodeAutoUnlock: Boolean
+        get() = episodeAutoUnlockKey()?.let { mmkv.decodeBool(it, true) } ?: true
+        private set(value) {
+            episodeAutoUnlockKey()?.let { mmkv.encode(it, value) }
+        }
     var isNotificationEnable: Boolean by MmkvDelegate(NOTIFICATION_ENABLE, true) { mmkv }
         private set
     var baseUrlCustom: String? by MmkvDelegate(Constants.BASE_URL_CUSTOM, BuildConfig.SERVER_URL) { mmkv }
@@ -236,6 +239,11 @@ class Config : NetworkChangedListener {
 
     fun isEpisodeAutoUnlock(): Boolean = this.episodeAutoUnlock
 
+    private fun episodeAutoUnlockKey(): String? {
+        val userId = User.get().userId?.takeIf { it.isNotBlank() } ?: return null
+        return "${EPISODE_AUTO_UNLOCK}_$userId"
+    }
+
     val isDebug: Boolean
         get() = if (this.isDevelopmentMode) true else BuildConfig.DEBUG_MODEL
 
@@ -338,7 +346,7 @@ class Config : NetworkChangedListener {
             FIRST_OPEN_APP,
             IN_REVIEW, ENVIRONMENT, DEVELOPMENT_MODE,
             INSTALL_DATA, OPID, SHOW_JUMP_POP,
-            EPISODE_AUTO_UNLOCK, TODAY_LOGIN_REWARDS_DIALOG, LOGIN_REWARDS
+            TODAY_LOGIN_REWARDS_DIALOG, LOGIN_REWARDS
         )
         mmkv.removeValuesForKeys(keysToRemove)
     }
