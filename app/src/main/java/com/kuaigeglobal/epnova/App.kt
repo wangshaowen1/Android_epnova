@@ -24,6 +24,7 @@ import com.kuaigeglobal.epnova.core.manager.AdStrategyManager
 import com.kuaigeglobal.epnova.core.manager.AppLanguageManager
 import com.kuaigeglobal.epnova.core.manager.AppsFlyerManager
 import com.kuaigeglobal.epnova.core.manager.EventManager
+import com.kuaigeglobal.epnova.core.manager.LocaleHelper
 import com.kuaigeglobal.epnova.core.manager.OssManager
 import com.kuaigeglobal.epnova.core.manager.PlaceManager
 import com.kuaigeglobal.epnova.feature.splash.SplashActivity
@@ -211,9 +212,22 @@ class App : BaseApp() {
         private var topActivityRef: WeakReference<Activity>? = null
         private val activityStacks = LinkedList<String>()
 
+        override fun onActivityPreCreated(activity: Activity, savedInstanceState: Bundle?) {
+            try {
+                activity.applyOverrideConfiguration(
+                    LocaleHelper.overrideConfiguration(
+                        instance.resources.configuration,
+                        instance.config.getSavedLanguage()
+                    )
+                )
+            } catch (e: Throwable) {
+                Logger.w("AppStatusTracker", "apply locale override failed: ${e.message}")
+            }
+        }
+
         override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
-            // App 语言由 AppCompatDelegate 统一应用；这里不要再直接改 Activity Resources。
-            // Android 12 系华为 ROM 上重复 updateConfiguration 会触发 SplashActivity 重建循环。
+            // 语言在 onActivityPreCreated 通过 overrideConfiguration 固定；
+            // 不在这里 updateConfiguration，避免 Android 12 系华为 ROM 触发启动页重建循环。
             topActivityRef?.clear()
             activityStacks.addLast(activity.javaClass.name)
             topActivityRef = WeakReference(activity)

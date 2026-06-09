@@ -2,7 +2,7 @@ package com.kuaigeglobal.epnova.core.manager
 
 import android.content.Context
 import android.content.ContextWrapper
-import android.content.res.Resources
+import android.content.res.Configuration
 import java.util.Locale
 
 object LocaleHelper {
@@ -47,13 +47,14 @@ object LocaleHelper {
         return Locale(parts[0], parts.getOrElse(1) { "" })
     }
 
-    fun updateResources(resources: Resources, language: String?) {
+    fun overrideConfiguration(baseConfiguration: Configuration, language: String?): Configuration {
         val locale = localeFromLanguageCode(language)
         Locale.setDefault(locale)
 
-        val configuration = resources.configuration
-        configuration.setLocale(locale)
-        resources.updateConfiguration(configuration, resources.displayMetrics)
+        return Configuration(baseConfiguration).apply {
+            setLocale(locale)
+            setLayoutDirection(locale)
+        }
     }
 
     fun wrap(context: Context, language: String): ContextWrapper {
