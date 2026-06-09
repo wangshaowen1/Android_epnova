@@ -6,6 +6,7 @@ import com.kuaigeglobal.epnova.widget.stateful.paging.MyMultiStatePagingFooterAd
 import com.kuaigeglobal.epnova.databinding.FragmentResourceCenterBinding
 import com.nhsd.basic.BaseViewModelFragment
 import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeoutOrNull
@@ -83,6 +84,13 @@ class ResourceCenterFragment :
             mRealVM.getResourceCenter().collect {
                 resourceCenterAdapter.submitData(it)
             }
+        }
+
+        // 首次数据加载完成后，确保从第一条开始显示
+        // loadStateFlow.first() 只触发一次：refresh 状态变为 NotLoading 且列表有数据时
+        lifecycleScope.launch {
+            resourceCenterAdapter.loadStateFlow.first { it.refresh is LoadState.NotLoading && resourceCenterAdapter.itemCount > 0 }
+            binding.rvNews.scrollToPosition(0)
         }
     }
 }
