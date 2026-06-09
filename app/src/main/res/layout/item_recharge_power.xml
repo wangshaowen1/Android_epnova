@@ -65,7 +65,7 @@
 
             <TextView
                 android:id="@+id/tvGivePower"
-                setVisible="@{item.data.discountValid}"
+                setVisible="@{item.showGiveCoins}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
@@ -102,7 +102,7 @@
                 android:orientation="horizontal"
                 android:paddingHorizontal="6dp"
                 android:paddingVertical="3dp"
-                android:visibility="@{item.data.discountValid?View.VISIBLE:View.INVISIBLE}"
+                android:visibility="@{item.showGiftInfo?View.VISIBLE:View.INVISIBLE}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 

@@ -33,17 +33,21 @@ data class CoinConfigInfo(
     val coinsMarketingTag: String?,//金币营销角标文案（如：赠30%）
 ) : Parcelable {
 
+    fun shouldShowGiftInfo(): Boolean {
+        return coinsType == 2
+    }
+
     fun isDiscountValid(): Boolean {
         return coinsMarketingTime != null && coinsMarketingTime > System.currentTimeMillis()
     }
 
     fun getCountDownText(): String {
         if (coinsMarketingTime == null) {
-            return ""
+            return "00:00:00"
         }
         val time = coinsMarketingTime - System.currentTimeMillis()
         if (time <= 0) {
-            return ""
+            return "00:00:00"
         }
         val hour = time / 1000 / 60 / 60
         val minute = time / 1000 / 60 % 60

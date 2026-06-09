@@ -12,17 +12,13 @@ class ItemRechargePowerVM(info: CoinConfigInfo) : AppItemViewModel<CoinConfigInf
 
     val isChecked by lazy { ObservableBoolean(false) }
     val discountText by lazy {
-        ObservableField<String>()
+        ObservableField(info.getCountDownText())
     }
+    val showGiftInfo by lazy { ObservableBoolean(info.shouldShowGiftInfo()) }
+    val showGiveCoins by lazy { ObservableBoolean(info.shouldShowGiftInfo() && (info.giveCoinsNum ?: 0L) > 0L) }
     val priceText  = ObservableField<String>(info.coinsPrice)
     fun updateTime() {
         val info = data.get() ?: return
-        val discountValid = info.isDiscountValid()
-        if (discountValid) {
-            val countDownText = info.getCountDownText()
-            if (countDownText.isNotEmpty()) {
-                discountText.set(countDownText)
-            }
-        }
+        discountText.set(info.getCountDownText())
     }
 }
