@@ -173,8 +173,19 @@ class DramasPlayPagerActivity :
                     }
                 }
             } else {
-                // 自动解锁未开启：直接展示手动解锁覆盖层
-                showUnlockOverlay(episode)
+                // 自动解锁未开启时也要先给新用户首充礼包，关闭礼包后再接续充值弹窗。
+                lifecycleScope.launch {
+                    val unlockInfo = mRealVM.fetchUnlockInfo(episode)
+                    if (adapter.currentList.getOrNull(listController.getCurrentPosition())?.storyId != episode.storyId) {
+                        return@launch
+                    }
+                    val adRemain = unlockInfo?.adUnlockRemainCount ?: 0
+                    val costNums = unlockInfo?.costNums ?: 0
+                    val shown = tryShowFirstRechargeDialog(episode, adRemain, costNums)
+                    if (!shown) {
+                        showUnlockOverlay(episode)
+                    }
+                }
             }
         }
         // 3. 事件流
@@ -315,21 +326,27 @@ class DramasPlayPagerActivity :
             listController.reset()
         }
         controller.onInsufficientCoins = { adRemainCount ->
-            // 弹充值弹窗，关闭后决定下一步（广告 or 继续停在手动解锁覆盖层）
-            PowerRechargeDialog.show(
-                episode.costNums,
-                onRechargeSuccess = {
-                    isEpisodeLocked = false
-                    val pos = adapter.currentList.indexOfFirst { it.storyId == episode.storyId }
-                    if (pos >= 0) requestPendingJump(pos, allowResumeState = false)
-                    mRealVM.onEpisodeManuallyUnlocked(episode)
-                    listController.reset()
-                },
-                onDismiss = {
-                    if (adRemainCount > 0) showAdUnlockDialog(episode, adRemainCount)
-                    // adRemainCount == 0：手动解锁覆盖层本身还在，无需额外操作
+            lifecycleScope.launch {
+                val costNums = episode.costNums ?: 0
+                val shown = tryShowFirstRechargeDialog(episode, adRemainCount, costNums)
+                if (!shown) {
+                    // 弹充值弹窗，关闭后决定下一步（广告 or 继续停在手动解锁覆盖层）
+                    PowerRechargeDialog.show(
+                        episode.costNums,
+                        onRechargeSuccess = {
+                            isEpisodeLocked = false
+                            val pos = adapter.currentList.indexOfFirst { it.storyId == episode.storyId }
+                            if (pos >= 0) requestPendingJump(pos, allowResumeState = false)
+                            mRealVM.onEpisodeManuallyUnlocked(episode)
+                            listController.reset()
+                        },
+                        onDismiss = {
+                            if (adRemainCount > 0) showAdUnlockDialog(episode, adRemainCount)
+                            // adRemainCount == 0：手动解锁覆盖层本身还在，无需额外操作
+                        }
+                    )
                 }
-            )
+            }
         }
         holder.showUnlockOverlay(controller)
     }
