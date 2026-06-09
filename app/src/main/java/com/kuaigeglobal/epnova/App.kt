@@ -19,11 +19,11 @@ import com.kuaigeglobal.epnova.common.ext.ioScope
 import com.kuaigeglobal.epnova.core.Config
 import com.kuaigeglobal.epnova.core.Global
 import com.kuaigeglobal.epnova.core.User
+import com.kuaigeglobal.epnova.core.google.GoogleServices
 import com.kuaigeglobal.epnova.core.manager.AdStrategyManager
 import com.kuaigeglobal.epnova.core.manager.AppLanguageManager
 import com.kuaigeglobal.epnova.core.manager.AppsFlyerManager
 import com.kuaigeglobal.epnova.core.manager.EventManager
-import com.kuaigeglobal.epnova.core.manager.LocaleHelper
 import com.kuaigeglobal.epnova.core.manager.OssManager
 import com.kuaigeglobal.epnova.core.manager.PlaceManager
 import com.kuaigeglobal.epnova.feature.splash.SplashActivity
@@ -74,6 +74,9 @@ class App : BaseApp() {
         private set
 
     private lateinit var appStatusTracker: AppStatusTracker
+
+    @Volatile
+    private var sdkAfterAgreeInitialized = false
 
     // 使用 object 表达式替代匿名内部类
     private val sdkConfigTask = object : Task("sdkConfigTask") {
@@ -209,7 +212,8 @@ class App : BaseApp() {
         private val activityStacks = LinkedList<String>()
 
         override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
-            instance.updateActivityLanguage(activity)
+            // App 语言由 AppCompatDelegate 统一应用；这里不要再直接改 Activity Resources。
+            // Android 12 系华为 ROM 上重复 updateConfiguration 会触发 SplashActivity 重建循环。
             topActivityRef?.clear()
             activityStacks.addLast(activity.javaClass.name)
             topActivityRef = WeakReference(activity)
@@ -255,10 +259,6 @@ class App : BaseApp() {
             get() = topActivityRef?.get()
     }
 
-    private fun updateActivityLanguage(activity: Activity) {
-        LocaleHelper.updateResources(activity.resources, config.getSavedLanguage())
-    }
-
     private fun isLocalServer(): Boolean {
         return DEV_ENV.contains(BuildConfig.FLAVOR_env)
     }
@@ -290,7 +290,10 @@ class App : BaseApp() {
     }
 
     fun initSdkAfterAgreeLicense() {
-        if (hasAgree()) {
+        if (!hasAgree() || sdkAfterAgreeInitialized) return
+
+        sdkAfterAgreeInitialized = true
+        try {
             if (!User.get().isLogin) {
                 Global.guestLogin({
                     User.get().updateFrom(it)
@@ -304,12 +307,15 @@ class App : BaseApp() {
             // AppsFlyer 开始数据采集（用户已同意隐私协议）
             AppsFlyerManager.start(this)
             // 初始化 AdMob SDK（在主进程中执行，异步不阻塞启动）
-            if (ProcessUtils.isMainProcess()) {
+            if (ProcessUtils.isMainProcess() && GoogleServices.isPlayServicesAvailable(this)) {
                 ioScope.launch {
                     MobileAds.initialize(instance) {
                     }
                 }
             }
+        } catch (e: Throwable) {
+            sdkAfterAgreeInitialized = false
+            Logger.e("App", "initSdkAfterAgreeLicense failed: ${e.message}")
         }
     }
 

@@ -1,7 +1,9 @@
 package com.kuaigeglobal.epnova.core.manager
 
 import com.google.firebase.messaging.FirebaseMessaging
+import com.kuaigeglobal.epnova.App
 import com.kuaigeglobal.epnova.common.ext.ioScope
+import com.kuaigeglobal.epnova.core.google.GoogleServices
 import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.network.apis.ApiFactory
 import com.kuaigeglobal.epnova.core.network.apis.entity.CreatorPlayableEpisode
@@ -79,6 +81,10 @@ object EventManager {
             return
         }
         if (fetchingFcmToken) return
+        if (!GoogleServices.isPlayServicesAvailable(App.instance)) {
+            Logger.w("EventManager", "Skip FCM token fetch: Google Play services unavailable")
+            return
+        }
 
         fetchingFcmToken = true
         FirebaseMessaging.getInstance().token
