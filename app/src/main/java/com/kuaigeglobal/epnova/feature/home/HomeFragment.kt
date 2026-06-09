@@ -5,6 +5,7 @@ import android.widget.ImageView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.ConcatAdapter
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.ext.startRefreshWithAdapter
@@ -27,6 +28,7 @@ import com.zhpan.bannerview.BaseBannerAdapter
 import com.zhpan.bannerview.BaseViewHolder
 import com.zhpan.indicator.enums.IndicatorStyle
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlin.math.abs
 
@@ -129,6 +131,13 @@ class HomeFragment :
                     homeAdapter.submitData(pagingData)
                 }
             }
+        }
+
+        // 首次数据加载完成后，确保从第一条开始显示
+        // loadStateFlow.first() 只触发一次：refresh 状态变为 NotLoading 且列表有数据时
+        lifecycleScope.launch {
+            homeAdapter.loadStateFlow.first { it.refresh is LoadState.NotLoading && homeAdapter.itemCount > 0 }
+            binding.recyclerView.scrollToPosition(0)
         }
 
         mRealVM.bannerData.observe(this) { banners ->
