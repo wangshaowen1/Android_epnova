@@ -196,6 +196,7 @@
                     android:maxLines="1"
                     android:text="@{layout.coins}"
                     android:textColor="?attr/textColor1"
+                    android:layout_marginEnd="@dimen/spacing_xs"
                     app:layout_constraintEnd_toStartOf="@+id/tv_credits_data"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/divider"
@@ -240,13 +241,12 @@
                     style="@style/Text20"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="40dp"
-                    android:layout_marginEnd="43dp"
+                    android:layout_marginEnd="@dimen/spacing_xs"
                     android:maxLines="1"
                     android:text="@{layout.credits}"
                     android:textColor="?attr/textColor1"
                     app:layout_constraintEnd_toStartOf="@id/tv_recharge"
-                    app:layout_constraintStart_toEndOf="@id/iv_coins_tooltip"
+                    app:layout_constraintStart_toStartOf="@id/iv_credits"
                     app:layout_constraintTop_toTopOf="@id/tv_coins_data"
                     tools:text="0" />
 
@@ -254,10 +254,11 @@
                     android:id="@+id/iv_credits"
                     android:layout_width="12dp"
                     android:layout_height="12dp"
+                    android:layout_marginStart="40dp"
                     android:importantForAccessibility="no"
                     android:src="@drawable/icon_power"
                     app:layout_constraintBottom_toBottomOf="@id/tv_credits"
-                    app:layout_constraintStart_toStartOf="@id/tv_credits_data"
+                    app:layout_constraintStart_toEndOf="@id/iv_coins_tooltip"
                     app:layout_constraintTop_toTopOf="@id/tv_credits" />
 
                 <TextView
@@ -368,12 +369,12 @@
                     <TextView
                         android:id="@+id/tv_rewards_data"
                         style="@style/Text12"
+                        setVisible="@{layout.unCheckNum>0}"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="8dp"
                         android:background="@drawable/bg_theme_color1_r50"
                         android:gravity="center"
-                        setVisible="@{layout.unCheckNum>0}"
                         android:minHeight="22dp"
                         android:paddingHorizontal="6dp"
                         android:text="@{`+`+layout.unCheckNum}"
