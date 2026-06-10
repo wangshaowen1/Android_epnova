@@ -105,7 +105,7 @@ public class LoadStateViewHolder extends ViewAnimator {
         //网络异常提示图片,无网络
         networkAnomalySrc = typedArray.getResourceId(
                 R.styleable.LoadStateViewHolder_requestExceptionSrc,
-                R.drawable.empty_default_network
+                R.drawable.icon_state_network_error
         );
         //请求异常提示图片，服务器异常
         requestExceptionSrc = typedArray.getResourceId(
@@ -283,7 +283,7 @@ public class LoadStateViewHolder extends ViewAnimator {
             }
             exceptionText = networkAnomaly;
             if (networkAnomalySrc == 0) {
-                networkAnomalySrc = R.drawable.empty_default_network;
+                networkAnomalySrc = R.drawable.icon_state_network_error;
             }
             exceptionPicture = networkAnomalySrc;
         }

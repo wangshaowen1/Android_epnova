@@ -63,7 +63,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:importantForAccessibility="no"
-            android:src="@drawable/empty_default_network" />
+            android:src="@drawable/icon_state_network_error" />
 
         <TextView
             style="@style/Text16"
@@ -120,7 +120,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:importantForAccessibility="no"
-            android:src="@drawable/ic_not_song" />
+            android:src="@drawable/icon_state_no_data" />
 
         <TextView
             android:id="@+id/no_data"

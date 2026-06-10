@@ -18,15 +18,16 @@
             android:id="@+id/lsv"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:stateViewTopPadding="144dp"
-            app:noData="@string/empty_creation_history">
+            app:stateViewTopPadding="60dp"
+            app:noData="@string/no_data"
+            app:noDataSrc="@drawable/icon_state_no_data">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_view"
                 setLinearLayoutManager="@{true}"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginHorizontal="@dimen/spacing_m"
+                android:layout_marginHorizontal="15dp"
                 android:overScrollMode="never"
                 tools:listitem="@layout/item_top_earners" />
         </com.kuaigeglobal.epnova.widget.LoadStateViewHolder>

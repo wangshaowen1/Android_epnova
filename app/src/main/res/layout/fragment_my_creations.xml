@@ -32,7 +32,7 @@
             <com.kuaigeglobal.epnova.widget.LoadStateViewHolder
                 android:id="@+id/lsv"
                 app:noData="@string/no_data"
-                app:noDataSrc="@drawable/img_browser_empty"
+                app:noDataSrc="@drawable/icon_state_no_data"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 

@@ -2,6 +2,8 @@ package com.kuaigeglobal.epnova.feature.create.child
 
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
+import com.kuaigeglobal.epnova.R
+import com.kuaigeglobal.epnova.common.ext.startRefreshWithAdapter
 import com.kuaigeglobal.epnova.widget.stateful.paging.MyMultiStatePagingFooterAdapter
 import com.kuaigeglobal.epnova.databinding.FragmentResourceCenterBinding
 import com.nhsd.basic.BaseViewModelFragment
@@ -77,6 +79,7 @@ class ResourceCenterFragment :
         }
         binding.rvNews.itemAnimator = null
         binding.rvNews.adapter = resourceCenterAdapter.withLoadStateFooter(footerAdapter)
+        binding.lsv.startRefreshWithAdapter(resourceCenterAdapter)
     }
 
     private fun dataUpdate() {
