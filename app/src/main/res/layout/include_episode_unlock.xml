@@ -50,71 +50,76 @@
             android:text="@string/episode_unlock_now"
             tools:visibility="visible" />
 
-        <!-- 3a. 看广告解锁（有广告次数时） -->
-        <LinearLayout
-            android:id="@+id/llAdUnlock"
+        <!-- 3. 广告解锁 / 次日刷新倒计时固定槽位，避免接口返回后整体居中高度跳变 -->
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="58dp"
-            android:layout_marginTop="@dimen/spacing_l"
-            android:background="@drawable/bg_60_000000_stroke_r12"
-            android:clickable="true"
-            android:focusable="true"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:visibility="@{ctrl.contentVisible &amp;&amp; ctrl.hasAdRemaining ? View.VISIBLE : View.GONE}"
-            tools:visibility="visible">
+            android:layout_marginTop="@dimen/spacing_l">
 
-            <TextView
-                style="@style/Text.Medium"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/outfit_medium"
-                android:text="@string/episode_unlock_free"
-                android:textColor="?attr/textColor1"
-                android:textSize="16sp" />
+            <!-- 3a. 看广告解锁（有广告次数时） -->
+            <LinearLayout
+                android:id="@+id/llAdUnlock"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/bg_60_000000_stroke_r12"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:visibility="@{ctrl.contentVisible &amp;&amp; ctrl.hasAdRemaining ? View.VISIBLE : View.GONE}"
+                tools:visibility="visible">
 
-            <TextView
-                style="@style/Text.Regular"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:fontFamily="@font/outfit_regular"
-                android:text="@{ctrl.adCountText}"
-                android:textColor="?attr/textColor2"
-                android:textSize="12sp"
-                tools:text="Watched today(0/10)" />
-        </LinearLayout>
+                <TextView
+                    style="@style/Text.Medium"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/outfit_medium"
+                    android:text="@string/episode_unlock_free"
+                    android:textColor="?attr/textColor1"
+                    android:textSize="16sp" />
 
-        <!-- 3b. 倒计时（无广告次数时） -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="58dp"
-            android:layout_marginTop="@dimen/spacing_l"
-            android:background="@drawable/bg_80_666666_r12"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:visibility="@{ctrl.contentVisible &amp;&amp; !ctrl.hasAdRemaining ? View.VISIBLE : View.GONE}"
-            tools:visibility="gone">
+                <TextView
+                    style="@style/Text.Regular"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:fontFamily="@font/outfit_regular"
+                    android:text="@{ctrl.adCountText}"
+                    android:textColor="?attr/textColor2"
+                    android:textSize="12sp"
+                    tools:text="Watched today(0/10)" />
+            </LinearLayout>
 
-            <TextView
-                style="@style/Text.Medium"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@{ctrl.countdownText}"
-                android:textColor="?attr/textColor3"
-                android:textSize="16sp"
-                tools:text="Come back in 09:31:29" />
+            <!-- 3b. 倒计时（无广告次数时） -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/bg_80_666666_r12"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:visibility="@{ctrl.contentVisible &amp;&amp; !ctrl.hasAdRemaining ? View.VISIBLE : View.GONE}"
+                tools:visibility="gone">
 
-            <TextView
-                style="@style/Text.Regular"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="@{ctrl.adCountText}"
-                android:textColor="?attr/textColor3"
-                android:textSize="12sp"
-                tools:text="Watched today(10/10)" />
-        </LinearLayout>
+                <TextView
+                    style="@style/Text.Medium"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{ctrl.countdownText}"
+                    android:textColor="?attr/textColor3"
+                    android:textSize="16sp"
+                    tools:text="Come back in 09:31:29" />
+
+                <TextView
+                    style="@style/Text.Regular"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="@{ctrl.adCountText}"
+                    android:textColor="?attr/textColor3"
+                    android:textSize="12sp"
+                    tools:text="Watched today(10/10)" />
+            </LinearLayout>
+        </FrameLayout>
 
         <!-- 4. 自动解锁开关 -->
         <LinearLayout
