@@ -174,9 +174,22 @@
                             tools:listitem="@layout/item_recharge_power" />
 
                         <TextView
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/rvRechargeAmount"
+                            android:id="@+id/tvTitle"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            android:layout_marginHorizontal="@dimen/spacing_l"
+                            android:textColor="?attr/textColor3"
+                            android:text="@string/store_tips_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+
+                        <TextView
                             android:id="@+id/tvTip"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/spacing_s"
                             android:layout_marginHorizontal="@dimen/spacing_l"
                             android:fontFamily="@font/outfit_regular"
                             android:lineSpacingExtra="@dimen/lineSpacingExtra"
@@ -185,7 +198,7 @@
                             android:textSize="12sp"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/rvRechargeAmount" />
+                            app:layout_constraintTop_toBottomOf="@id/tvTitle" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                 </androidx.core.widget.NestedScrollView>
