@@ -239,7 +239,7 @@ class CreationFragment :
                         }
                     }
 
-                    val canShowFirstRecharge = !User.get().hasPaid() &&
+                    val canShowFirstRecharge = !User.get().hasPurchasedPoints() &&
                         !Config.get().isFirstRechargeShown(FirstRechargeCreditsDialog.SCENE_HOME)
                     if (canShowFirstRecharge) {
                         pendingFirstRechargeContinuation = progressLogic

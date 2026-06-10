@@ -217,7 +217,12 @@ suspend fun showFirstRecharge(
     showToast: Boolean,
     rechargeTab: Int = PowerRechargeDialog.TAB_CREDITS
 ): Boolean {
-    val canShowFirstRecharge = !User.get().hasPaid() &&
+    val hasPurchased = if (rechargeTab == PowerRechargeDialog.TAB_CREDITS) {
+        User.get().hasPurchasedPoints()
+    } else {
+        User.get().hasPurchasedCoins()
+    }
+    val canShowFirstRecharge = !hasPurchased &&
             !Config.get().isFirstRechargeShown(FirstRechargeDialog.SCENE_OTHER)
     if (!canShowFirstRecharge) return false
     val isShown = if (rechargeTab == PowerRechargeDialog.TAB_CREDITS) {

@@ -59,7 +59,9 @@ class User : IUser {
         private set
     var purchaseCourseStatus: Int? by MmkvDelegate(PURCHASE_COURSE_STATUS, 0) { mmkv }
         private set
-    var isPaid: Int? by MmkvDelegate(IS_PAID, 0) { mmkv }
+    var pointUserTag: Int? by MmkvDelegate(POINT_USER_TAG, 0) { mmkv }
+        private set
+    var coinsUserTag: Int? by MmkvDelegate(COINS_USER_TAG, 0) { mmkv }
         private set
     var fcmToken: String? by MmkvDelegate(FCM_TOKEN, "") { mmkv }
         private set
@@ -121,7 +123,8 @@ class User : IUser {
         storeRegisterWay(userData.registerWay)
         storeLastLoginTime(userData.lastLoginTime)
         storePurchaseCourseStatus(userData.purchaseCourseStatus)
-        storePaid(userData.userTag)
+        storePointUserTag(userData.pointUserTag)
+        storeCoinsUserTag(userData.coinsUserTag)
         userData.registerStatus?.apply { storeRegisterStatus(this) }
         userData.token?.apply { id = this }
         loginRewardsValid = userData.rewardLoginStatus
@@ -211,12 +214,20 @@ class User : IUser {
         this.purchaseCourseStatus = purchaseCourseStatus ?: 0
     }
 
-    fun storePaid(isPaid: Int?) {
-        this.isPaid = isPaid ?: 0
+    fun storePointUserTag(pointUserTag: Int?) {
+        this.pointUserTag = pointUserTag ?: 0
     }
 
-    fun hasPaid(): Boolean {
-        return isPaid == 2
+    fun storeCoinsUserTag(coinsUserTag: Int?) {
+        this.coinsUserTag = coinsUserTag ?: 0
+    }
+
+    fun hasPurchasedPoints(): Boolean {
+        return pointUserTag == PURCHASED_USER_TAG
+    }
+
+    fun hasPurchasedCoins(): Boolean {
+        return coinsUserTag == PURCHASED_USER_TAG
     }
 
     fun isFemale(): Boolean {
@@ -242,7 +253,8 @@ class User : IUser {
         val keysToRemove = arrayOf(
             ID, LOGIN_REWARDS_VALID, USER_ID, PHONE_NUM, U_ID, NICK_NAME, GENDER, AVATAR_URL,
             USER_SOURCE, REGISTER_WAY, LAST_LOGIN_TIME, REGISTER_STATUS,
-            PURCHASE_COURSE_STATUS, IS_PAID, COINS, GIVE_COINS, POINTS, GIVE_POINTS, FIRST_RECHARGE_DIALOG
+            PURCHASE_COURSE_STATUS, POINT_USER_TAG, COINS_USER_TAG, COINS, GIVE_COINS, POINTS, GIVE_POINTS,
+            FIRST_RECHARGE_DIALOG
         )
         mmkv.removeValuesForKeys(keysToRemove)
     }
@@ -269,7 +281,9 @@ class User : IUser {
         const val GIVE_POINTS = "givePoints"
         const val PURCHASE_COURSE_STATUS = "purchaseCourseStatus"
         const val FIRST_RECHARGE_DIALOG = "firstRechargeDialog"
-        const val IS_PAID = "IS_PAID"
+        const val POINT_USER_TAG = "POINT_USER_TAG"
+        const val COINS_USER_TAG = "COINS_USER_TAG"
+        private const val PURCHASED_USER_TAG = 2
 
         const val MALE = 1
         const val FEMALE = 2

@@ -82,7 +82,7 @@ class FirstRechargeDialog : BaseVMDialogFragment<DialogFirstRechargeBinding, Fir
         }
         observeEvents {
             onUserSignIn {
-                if (User.get().hasPaid()) {
+                if (User.get().hasPurchasedCoins()) {
                     dismissAllowingStateLoss()
                 }
             }

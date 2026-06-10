@@ -97,7 +97,7 @@ class FirstRechargeCreditsDialog :
         }
         observeEvents {
             onUserSignIn {
-                if (User.get().hasPaid()) {
+                if (User.get().hasPurchasedPoints()) {
                     dismissAllowingStateLoss()
                 }
             }

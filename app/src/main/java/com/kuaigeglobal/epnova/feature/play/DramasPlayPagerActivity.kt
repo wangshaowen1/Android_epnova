@@ -271,7 +271,7 @@ class DramasPlayPagerActivity :
      * @return true=弹窗已展示（调用方不需要再弹 PowerRechargeDialog），false=未弹出
      */
     private suspend fun tryShowFirstRechargeDialog(episode: EpisodeInfo, adRemain: Int, costNums: Int): Boolean {
-        val canShow = !User.get().hasPaid() && !Config.get().isFirstRechargeShown(FirstRechargeDialog.SCENE_OTHER)
+        val canShow = !User.get().hasPurchasedCoins() && !Config.get().isFirstRechargeShown(FirstRechargeDialog.SCENE_OTHER)
         if (!canShow) return false
 
         val data = mRealVM.fetchFirstRechargeInfo() ?: return false
