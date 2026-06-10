@@ -240,11 +240,13 @@ class DramasPlayPagerActivity :
                 when (selectedItem.getItemId()) {
                     PlayMenuInfo.REPORT -> {
                         if (AppNavigator.checkLoginIntercepted(showToast = true, isFullScreen = false)) return
+                        // 举报接口需要作品维度 ID，EpisodeInfo.workId 依赖目录接口回填，推荐流下可能为空。
+                        val reportHomeId = workInfo.workId ?: mRealVM.workId ?: currentEpisode.workId
                         //举报
                         ReportDialog.newInstance(
                             supportFragmentManager,
                             workInfo.userId,
-                            if (mRealVM.currentPlayMode == DramasPlayPagerViewModel.PlayMode.SERIES) mRealVM.workId else currentEpisode.workId//剧集模式下workId是剧集id
+                            reportHomeId
                         )
                     }
 
