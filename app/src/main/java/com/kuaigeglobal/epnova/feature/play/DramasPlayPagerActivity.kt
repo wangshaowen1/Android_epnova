@@ -25,6 +25,8 @@ import com.kuaigeglobal.epnova.feature.play.more.AdUnlockDialog
 import com.kuaigeglobal.epnova.feature.play.more.EpisodeChooseDialog
 import com.kuaigeglobal.epnova.core.Config
 import com.kuaigeglobal.epnova.core.User
+import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
+import com.kuaigeglobal.epnova.core.manager.FirebaseEventParam
 import com.kuaigeglobal.epnova.feature.recharge.PowerRechargeDialog
 import com.kuaigeglobal.epnova.feature.settings.report.ReportDialog
 import com.kuaigeglobal.epnova.feature.splash.newer.FirstRechargeDialog
@@ -43,13 +45,24 @@ class DramasPlayPagerActivity :
     DownloadingViewModel.DownloadStatusHolderFactory {
 
     companion object {
+        private const val EXTRA_PLAYER_SOURCE = "extra_player_source"
+        private const val EXTRA_BANNER_ID = "extra_banner_id"
+
         @JvmStatic
-        fun start(workId: String?, position: Int? = 0, isSeriesMode: Boolean = true) {
+        fun start(
+            workId: String?,
+            position: Int? = 0,
+            isSeriesMode: Boolean = true,
+            source: String? = null,
+            bannerId: String? = null
+        ) {
             val context = topActivity ?: return
             val starter = Intent(context, DramasPlayPagerActivity::class.java).apply {
                 putExtra(Constants.Extra.WORK_ID, workId)
                 putExtra(Constants.Extra.POSITION, position)
                 putExtra(Constants.Extra.PLAY_MODE, isSeriesMode)
+                putExtra(EXTRA_PLAYER_SOURCE, source)
+                putExtra(EXTRA_BANNER_ID, bannerId)
             }
             context.startActivity(starter)
         }
@@ -76,6 +89,9 @@ class DramasPlayPagerActivity :
      */
     private var lastProgressReportStoryId: String? = null
     private var lastProgressReportNode = 0
+    private var lastFirebaseValidPlayStoryId: String? = null
+    private var lastFirebaseProcessStoryId: String? = null
+    private val lastFirebaseProcessNodes = mutableSetOf<Int>()
 
     /**
      * 播放器最近一次回调的位置。
@@ -85,10 +101,14 @@ class DramasPlayPagerActivity :
      */
     private var lastPlaybackProgressMs = 0L
     private var lastPlaybackDurationMs = 0L
+    private var playerSource: String? = null
+    private var playerBannerId: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mRealVM.workId = intent.getStringExtra(Constants.Extra.WORK_ID)
+        playerSource = intent.getStringExtra(EXTRA_PLAYER_SOURCE)
+        playerBannerId = intent.getStringExtra(EXTRA_BANNER_ID)
         pendingJumpPosition = intent.getIntExtra(Constants.Extra.POSITION, 0)
         val isSeriesMode = intent.getBooleanExtra(Constants.Extra.PLAY_MODE, true)
         initView()
@@ -140,6 +160,7 @@ class DramasPlayPagerActivity :
             mRealVM.getUserPlayStatus(episodeInfo)
             val realWorkId = mRealVM.workId
             EventManager.onPlayEvent(realWorkId, episodeInfo.storyId)
+            trackPlayerView(episodeInfo)
         }
 
         listController.onEpisodeLocked = { episode, isAutoUnlockFailed ->
@@ -195,6 +216,11 @@ class DramasPlayPagerActivity :
         binding.btnEdit.setOnSingleClickListener {
             val story = listController.getCurrentItem() ?: return@setOnSingleClickListener
             showCommonDialog(tip = getString(R.string.redraw_cover_confirm), confirmText = getString(R.string.confirm_ok)) {
+                EventManager.onFirebaseTrack(
+                    FirebaseEvent.WORK_REPLAY_REDRAW_CLICK,
+                    FirebaseEventParam.DRAMA_ID to (story.workId ?: mRealVM.workId),
+                    FirebaseEventParam.EPISODE_ID to story.storyId
+                )
                 EditStoryboardVideoActivity.start(mRealVM.currentWorkContext.value?.workTitle, story.workId, story.storyId, story.workRatio, story)
             }
         }
@@ -461,6 +487,9 @@ class DramasPlayPagerActivity :
         if (lastProgressReportStoryId == storyId) return
         lastProgressReportStoryId = storyId
         lastProgressReportNode = 0
+        lastFirebaseValidPlayStoryId = null
+        lastFirebaseProcessStoryId = storyId
+        lastFirebaseProcessNodes.clear()
         lastPlaybackProgressMs = 0L
         lastPlaybackDurationMs = 0L
     }
@@ -474,6 +503,7 @@ class DramasPlayPagerActivity :
 
         val progressPercent = ((current.coerceAtLeast(0L) * 100L) / total).toInt().coerceIn(0, 100)
         val currentNode = (progressPercent / 10) * 10
+        trackFirebasePlaybackProgress(episode, progressPercent)
 
         // 只处理 10%~90% 的过程节点：100% 由播放结束事件带 completed=true 上报。
         // 不补发跳过的节点，例如从 5% 拖到 60% 只会上报当前所在档位，避免把 seek 当成真实观看。
@@ -512,6 +542,13 @@ class DramasPlayPagerActivity :
             completed = completed,
             progressPercent = progressPercent,
         )
+        if (completed) {
+            EventManager.onFirebaseTrack(
+                FirebaseEvent.PLAYER_COMPLETE,
+                FirebaseEventParam.DRAMA_ID to (episode.workId ?: mRealVM.workId),
+                FirebaseEventParam.EPISODE_ID to episode.storyId
+            )
+        }
     }
 
     private fun handlePlayEnded() {
@@ -590,5 +627,44 @@ class DramasPlayPagerActivity :
 
     override fun getStatusHolder(): DownloadingViewModel.DownloadStatusHolder? {
         return mRealVM
+    }
+
+    private fun trackPlayerView(episodeInfo: EpisodeInfo) {
+        EventManager.onFirebaseTrack(
+            FirebaseEvent.PLAYER_VIEW,
+            FirebaseEventParam.DRAMA_ID to (episodeInfo.workId ?: mRealVM.workId),
+            FirebaseEventParam.EPISODE_ID to episodeInfo.storyId,
+            FirebaseEventParam.SOURCE to playerSource,
+            FirebaseEventParam.BANNER_ID to playerBannerId
+        )
+    }
+
+    private fun trackFirebasePlaybackProgress(episode: EpisodeInfo, progressPercent: Int) {
+        if (progressPercent >= 10 && lastFirebaseValidPlayStoryId != episode.storyId) {
+            lastFirebaseValidPlayStoryId = episode.storyId
+            EventManager.onFirebaseTrack(
+                FirebaseEvent.PLAYER_VALID_PLAY,
+                FirebaseEventParam.DRAMA_ID to (episode.workId ?: mRealVM.workId),
+                FirebaseEventParam.EPISODE_ID to episode.storyId
+            )
+        }
+        val processNode = when {
+            progressPercent >= 75 -> 75
+            progressPercent >= 50 -> 50
+            progressPercent >= 25 -> 25
+            else -> return
+        }
+        if (lastFirebaseProcessStoryId != episode.storyId) {
+            lastFirebaseProcessStoryId = episode.storyId
+            lastFirebaseProcessNodes.clear()
+        }
+        if (lastFirebaseProcessNodes.add(processNode)) {
+            EventManager.onFirebaseTrack(
+                FirebaseEvent.PLAYER_PROCESS,
+                FirebaseEventParam.DRAMA_ID to (episode.workId ?: mRealVM.workId),
+                FirebaseEventParam.EPISODE_ID to episode.storyId,
+                FirebaseEventParam.PROCESS to processNode
+            )
+        }
     }
 }

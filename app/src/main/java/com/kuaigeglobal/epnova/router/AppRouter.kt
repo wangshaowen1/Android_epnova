@@ -19,6 +19,7 @@ import com.kuaigeglobal.epnova.common.utils.IntentUtils
 import com.kuaigeglobal.epnova.common.utils.Utils
 import com.kuaigeglobal.epnova.core.Events
 import com.kuaigeglobal.epnova.core.manager.IRouter
+import com.kuaigeglobal.epnova.core.manager.FirebaseEventValue
 import com.kuaigeglobal.epnova.core.network.apis.ApiFactory
 import com.kuaigeglobal.epnova.core.network.apis.entity.CreatorWorkInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.EpisodeInfo
@@ -66,6 +67,15 @@ object AppRouter : IRouter {
 
     @JvmStatic
     fun jump(schemeUri: String?) {
+        jumpInternal(schemeUri, null, null)
+    }
+
+    @JvmStatic
+    fun jumpFromBanner(schemeUri: String?, bannerId: String?) {
+        jumpInternal(schemeUri, FirebaseEventValue.SOURCE_BANNER, bannerId)
+    }
+
+    private fun jumpInternal(schemeUri: String?, playerSource: String?, bannerId: String?) {
         if (TextUtils.isEmpty(schemeUri)) {
             return
         }
@@ -76,7 +86,7 @@ object AppRouter : IRouter {
                 context = ActivityUtils.getTopActivity()
             }
             if (Constants.APP_SCHEME == uri.scheme) {
-                jump(uri)
+                jump(uri, playerSource, bannerId)
             } else if (schemeUri!!.endsWith(".apk")) {
                 if (context is Activity) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU || Utils.hasPermission(
@@ -109,6 +119,10 @@ object AppRouter : IRouter {
 
     @JvmStatic
     fun jump(uri: Uri) {
+        jump(uri, null, null)
+    }
+
+    private fun jump(uri: Uri, playerSource: String?, bannerId: String?) {
         val host = uri.host
         Logger.i("host " + uri.host + ", uri=" + uri.toString())
         if (TextUtils.isEmpty(host)) {
@@ -165,10 +179,18 @@ object AppRouter : IRouter {
             "toTargetEpisode" -> {//epnovascheme://toTargetEpisode?workId=%s&storyId=%s
                 val workId = uri.getQueryParameter("workId")
                 val storyId = uri.getQueryParameter("storyId")
+                val source = uri.getQueryParameter("source") ?: playerSource
+                val routeBannerId = uri.getQueryParameter("bannerId") ?: bannerId
                 ioScope.launchNoCrash {
                     val unlockInfoData = ApiFactory.apiService.episodeUnlockLockStatus(WorkBody(workId, storyId))
                     withContext(Dispatchers.Main){
-                        DramasPlayPagerActivity.start(workId, if (unlockInfoData.data?.lockStatus == 2) 0 else unlockInfoData.data?.episodeNo, false)
+                        DramasPlayPagerActivity.start(
+                            workId = workId,
+                            position = if (unlockInfoData.data?.lockStatus == 2) 0 else unlockInfoData.data?.episodeNo,
+                            isSeriesMode = false,
+                            source = source,
+                            bannerId = routeBannerId
+                        )
                     }
                 }
             }

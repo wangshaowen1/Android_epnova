@@ -11,6 +11,10 @@ import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.Constants
 import com.kuaigeglobal.epnova.common.adapter.QuickAdapter
 import com.kuaigeglobal.epnova.common.ext.showConfirmPrompt
+import com.kuaigeglobal.epnova.core.manager.EventManager
+import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
+import com.kuaigeglobal.epnova.core.manager.FirebaseEventParam
+import com.kuaigeglobal.epnova.core.manager.FirebaseEventValue
 import com.kuaigeglobal.epnova.databinding.FragmentDramaGenerateStep1Binding
 import com.kuaigeglobal.epnova.feature.creator.CreationRootActivity
 import com.kuaigeglobal.epnova.feature.creator.StoryReuploadDialog
@@ -50,6 +54,10 @@ class DramaGenerateStep1Fragment :
         activity?.intent?.let {
             mRealVM.workId = it.getStringExtra(Constants.Extra.WORK_ID)
             mRealVM.model = it.getIntExtra(Constants.Extra.MODE, 0)
+            EventManager.onFirebaseTrack(
+                FirebaseEvent.STORY_OUTLINE_VIEW,
+                FirebaseEventParam.CREATION_SOURCE_TYPE to firebaseCreationSourceType()
+            )
             mRealVM.refreshDisplayContent()
             mRealVM.pollSummary()
             showBackToast = true
@@ -132,6 +140,7 @@ class DramaGenerateStep1Fragment :
             }
         }
         binding.btnNext.setOnSingleClickListener {
+            EventManager.onFirebaseTrack(FirebaseEvent.STORY_OUTLINE_NEXT_CLICK)
             mRealVM.saveTitle {
                 hostVm?.nextStep(2, mRealVM.workId, mRealVM.storySummaryResult.value?.result?.getFirstStoryId())
             }
@@ -191,6 +200,15 @@ class DramaGenerateStep1Fragment :
         )
 
         textView.text = spannable
+    }
+
+    private fun firebaseCreationSourceType(): String {
+        return when (mRealVM.model) {
+            DramaGenerateConstants.MODEL_INSPIRATION,
+            DramaGenerateConstants.MODEL_CONTINUE_INSPIRATION -> FirebaseEventValue.CREATION_SOURCE_INSPIRATION
+
+            else -> FirebaseEventValue.CREATION_SOURCE_NOVEL
+        }
     }
 
 

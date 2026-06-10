@@ -12,6 +12,8 @@ import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.Constants
 import com.kuaigeglobal.epnova.common.ext.applySmartFocusManager
 import com.kuaigeglobal.epnova.common.utils.KeyboardUtils
+import com.kuaigeglobal.epnova.core.manager.EventManager
+import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
 import com.kuaigeglobal.epnova.databinding.ActivityCreationRootBinding
 import com.nhsd.basic.BaseViewModelActivity
 
@@ -63,10 +65,16 @@ class CreationRootActivity :
             binding.viewPager.currentItem = it
         }
         binding.rbLeft.setOnClickListener {
+            if (binding.viewPager.currentItem != 0) {
+                EventManager.onFirebaseTrack(FirebaseEvent.STORY_INSPIRATION_TAB_CLICK)
+            }
             binding.viewPager.currentItem = 0
         }
 
         binding.rbRight.setOnClickListener {
+            if (binding.viewPager.currentItem != 1) {
+                EventManager.onFirebaseTrack(FirebaseEvent.NOVEL_ADAPTATION_TAB_CLICK)
+            }
             binding.viewPager.currentItem = 1
         }
     }

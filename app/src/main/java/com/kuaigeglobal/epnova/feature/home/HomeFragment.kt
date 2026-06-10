@@ -10,6 +10,9 @@ import androidx.recyclerview.widget.ConcatAdapter
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.ext.startRefreshWithAdapter
 import com.kuaigeglobal.epnova.core.databinding.loadUri
+import com.kuaigeglobal.epnova.core.manager.EventManager
+import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
+import com.kuaigeglobal.epnova.core.manager.FirebaseEventParam
 import com.kuaigeglobal.epnova.core.network.apis.entity.BannerInfo
 import com.kuaigeglobal.epnova.core.network.apis.response.Section
 import com.kuaigeglobal.epnova.databinding.FragmentHomeBinding
@@ -76,6 +79,7 @@ class HomeFragment :
             SearchActivity.start(mActivity)
         }
         binding.btnRewards.setOnSingleClickListener {
+            EventManager.onFirebaseTrack(FirebaseEvent.HOME_REWARDS_CENTER_BTN_CLICK)
             RewardsActivity.start(mActivity)
         }
     }
@@ -96,7 +100,11 @@ class HomeFragment :
                     val image = findViewById<ImageView>(R.id.image)
                     loadUri(image, data.imageUrl, R.drawable.img_default_cover_16_9.getResDrawable())
                     image.setOnSingleClickListener {
-                        AppRouter.jump(data.jumpUri)
+                        EventManager.onFirebaseTrack(
+                            FirebaseEvent.HOME_BANNER_CLICK,
+                            FirebaseEventParam.BANNER_ID to data.firebaseBannerId()
+                        )
+                        AppRouter.jumpFromBanner(data.jumpUri, data.firebaseBannerId())
                     }
                 }
             }
@@ -144,6 +152,12 @@ class HomeFragment :
             val data = banners.orEmpty()
             updateBannerVisible(data.isNotEmpty())
             binding.banner.refreshData(data)
+//            data.forEach { banner ->
+//                EventManager.onFirebaseTrack(
+//                    FirebaseEvent.HOME_BANNER_VIEW,
+//                    FirebaseEventParam.BANNER_ID to banner.firebaseBannerId()
+//                )
+//            }
         }
 
         mRealVM.bookShelfData.observe(viewLifecycleOwner) { data ->
@@ -214,5 +228,9 @@ class HomeFragment :
         val waterfallSection = sections.find { it.bookshelfType == 2 }
         titleAdapter.isVisible = waterfallSection != null
         mRealVM.currentWaterfallId.value = waterfallSection?.bookshelfId ?: ""
+    }
+
+    private fun BannerInfo.firebaseBannerId(): String? {
+        return jumpUri ?: title ?: sortNo?.toString()
     }
 }

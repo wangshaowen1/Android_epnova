@@ -11,6 +11,8 @@ import com.kuaigeglobal.epnova.common.ext.ioScope
 import com.kuaigeglobal.epnova.common.utils.DateUtil
 import com.kuaigeglobal.epnova.common.utils.MmkvDelegate
 import com.kuaigeglobal.epnova.core.manager.LocaleHelper
+import com.kuaigeglobal.epnova.core.manager.EventManager
+import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
 import com.kuaigeglobal.epnova.core.network.apis.ApiFactory.apiService
 import com.kuaigeglobal.epnova.core.network.apis.request.UserTokenBody
 import com.kuaigeglobal.epnova.core.network.apis.response.AppConfigData
@@ -183,6 +185,9 @@ class Config : NetworkChangedListener {
     }
 
     fun markAppOpenedWithNotify() {
+        if (this.isFirstOpenApp) {
+            EventManager.onFirebaseTrack(FirebaseEvent.APP_FIRST_OPEN)
+        }
         this.isFirstOpenApp = false
         notifyChange(FIRST_OPEN_APP)
     }

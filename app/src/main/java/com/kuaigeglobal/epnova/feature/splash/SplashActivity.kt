@@ -8,7 +8,8 @@ import com.blankj.utilcode.util.ActivityUtils
 import com.gyf.immersionbar.ImmersionBar
 import com.kuaigeglobal.epnova.App
 import com.kuaigeglobal.epnova.core.Config
-import com.kuaigeglobal.epnova.core.Global
+import com.kuaigeglobal.epnova.core.manager.EventManager
+import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
 import com.kuaigeglobal.epnova.databinding.ActivitySplashBinding
 import com.kuaigeglobal.epnova.feature.main.MainActivity
 import com.kuaigeglobal.epnova.router.AppNavigator
@@ -26,6 +27,7 @@ class SplashActivity : BaseViewModelActivity<ActivitySplashBinding, SplashViewMo
     companion object {
         private const val TAG = "SplashActivity"
         private const val EXTRA_SCHEME = "scheme"
+        private const val EXTRA_FROM_PUSH = "from_push"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -75,6 +77,9 @@ class SplashActivity : BaseViewModelActivity<ActivitySplashBinding, SplashViewMo
     }
 
     private fun jumpToTheHomepage() {
+        if (intent.getBooleanExtra(EXTRA_FROM_PUSH, false)) {
+            EventManager.onFirebaseTrack(FirebaseEvent.PUSH_CLICK)
+        }
         // 只将自定义 scheme URI 传给 MainActivity，HTTPS 链接（AppsFlyer OneLink）由 AF SDK 自行处理
         val schemeUri = intent.getStringExtra(EXTRA_SCHEME)
             ?.takeIf { !TextUtils.isEmpty(it) }

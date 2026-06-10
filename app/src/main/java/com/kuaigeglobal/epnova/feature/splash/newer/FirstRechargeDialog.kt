@@ -10,6 +10,8 @@ import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.ext.onUserSignIn
 import com.kuaigeglobal.epnova.core.google.billing.BillingManager
 import com.kuaigeglobal.epnova.core.google.billing.PurchaseResult
+import com.kuaigeglobal.epnova.core.manager.EventManager
+import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
 import com.kuaigeglobal.epnova.core.network.apis.response.FirstRechargeDialogData
 import com.kuaigeglobal.epnova.databinding.DialogFirstRechargeBinding
 import com.kuaigeglobal.epnova.feature.recharge.showGooglePaymentExceptionDialog
@@ -54,6 +56,7 @@ class FirstRechargeDialog : BaseVMDialogFragment<DialogFirstRechargeBinding, Fir
 
     override fun onPrepareView() {
         super.onPrepareView()
+        EventManager.onFirebaseTrack(FirebaseEvent.COINS_FIRST_PURCHASE_GIFT_POPUP_VIEW)
         val googleProductId = mRealVM.data?.googleProductId
         BillingManager.loadNewerGiftPrice(googleProductId) { map ->
             binding.btnBuy.text = map[googleProductId]?.first

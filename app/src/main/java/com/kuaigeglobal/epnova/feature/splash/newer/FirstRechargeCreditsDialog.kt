@@ -10,6 +10,10 @@ import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.ext.onUserSignIn
 import com.kuaigeglobal.epnova.core.google.billing.BillingManager
 import com.kuaigeglobal.epnova.core.google.billing.PurchaseResult
+import com.kuaigeglobal.epnova.core.manager.EventManager
+import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
+import com.kuaigeglobal.epnova.core.manager.FirebaseEventParam
+import com.kuaigeglobal.epnova.core.manager.FirebaseEventValue
 import com.kuaigeglobal.epnova.core.network.apis.response.FirstRechargeCreditsDialogData
 import com.kuaigeglobal.epnova.databinding.DialogFirstRechargeCreditsBinding
 import com.kuaigeglobal.epnova.feature.recharge.showGooglePaymentExceptionDialog
@@ -60,6 +64,17 @@ class FirstRechargeCreditsDialog :
 
     override fun onPrepareView() {
         super.onPrepareView()
+        val pointConfig = mRealVM.data?.pointConfigVO
+        EventManager.onFirebaseTrack(
+            FirebaseEvent.CREDITS_FIRST_PURCHASE_GIFT_POPUP_VIEW,
+            FirebaseEventParam.TRIGGER to if (mRealVM.isFromHome()) {
+                FirebaseEventValue.TRIGGER_CREATE_BTN
+            } else {
+                FirebaseEventValue.TRIGGER_INSUFFICIENT_BALANCE
+            },
+            FirebaseEventParam.PRODUCT_ID to (pointConfig?.pointConfigCode ?: mRealVM.payProductId),
+            FirebaseEventParam.PRICE to pointConfig?.pointPrice
+        )
         initPrice()
         initEvents()
     }

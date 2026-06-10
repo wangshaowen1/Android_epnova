@@ -9,6 +9,9 @@ import com.kuaigeglobal.epnova.common.Constants
 import com.kuaigeglobal.epnova.common.ext.applySmartFocusManager
 import com.kuaigeglobal.epnova.core.ext.sensitiveWordCheck
 import com.kuaigeglobal.epnova.core.network.apis.entity.VideoConfigData
+import com.kuaigeglobal.epnova.core.network.apis.entity.VideoConfigInfo
+import com.kuaigeglobal.epnova.core.manager.EventManager
+import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
 import com.kuaigeglobal.epnova.databinding.DialogVideoSetBinding
 import com.kuaigeglobal.epnova.feature.creator.set.allstyle.CreationStyleChooseDialog
 import com.nhsd.basic.BaseBottomPushVMDialogFragment
@@ -78,9 +81,20 @@ class VideoSetDialog : BaseBottomPushVMDialogFragment<DialogVideoSetBinding, Vid
             }
             lifecycleScope.launch {
                 sensitiveWordCheck(binding.nameInputer.text.toString(), {
+                    val episodeSet = mRealVM.checkedEpisodeSet?.data?.get()
+                    when {
+                        episodeSet?.configCode == VideoConfigInfo.MODE_SINGLE -> {
+                            EventManager.onFirebaseTrack(FirebaseEvent.SINGLE_EPISODE_CLICK)
+                        }
+
+                        episodeSet?.isCustomInput() == true -> {
+                            EventManager.onFirebaseTrack(FirebaseEvent.CUSTOM_EPISODE_INPUT)
+                        }
+                    }
+                    EventManager.onFirebaseTrack(FirebaseEvent.START_CREATION_CLICK)
                     onSuccess?.invoke(
                         this@VideoSetDialog,
-                        mRealVM.checkedEpisodeSet?.data?.get()?.configCode,
+                        episodeSet?.configCode,
                         mRealVM.checkedEpisodeSet?.input?.get(),
                         mRealVM.checkedRatio?.data?.get()?.configValue,
                         mRealVM.checkedStyle?.data?.get()?.styleCode,

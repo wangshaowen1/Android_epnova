@@ -7,6 +7,10 @@ import com.kuaigeglobal.epnova.core.Config
 import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.ext.launchWithLoading
 import com.kuaigeglobal.epnova.core.ext.loginToast
+import com.kuaigeglobal.epnova.core.manager.EventManager
+import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
+import com.kuaigeglobal.epnova.core.manager.FirebaseEventParam
+import com.kuaigeglobal.epnova.core.manager.FirebaseEventValue
 import com.kuaigeglobal.epnova.core.network.apis.request.LoginByThirdBody
 import com.kuaigeglobal.epnova.core.network.apis.response.UserHomeData
 import com.kuaigeglobal.epnova.core.response
@@ -37,12 +41,24 @@ class UnifiedLoginViewModel : AppRepositoryViewModel<ThirdLoginRepository>() {
             response(mRepo.loginByThird(body), result = {
                 User.get().updateFrom(data)
                 SignUtils.signIn()
+                EventManager.onFirebaseTrack(
+                    FirebaseEvent.LOGIN_SUCCESS,
+                    FirebaseEventParam.LOGIN_WAY to body.firebaseLoginWay()
+                )
                 data.loginToast()
                 onLogin?.invoke(data)
             }, error = { this?.msg?.showToast() })
         }, onError = { showToast(R.string.toast_sign_in_fail) })
     }
 
+    private fun LoginByThirdBody.firebaseLoginWay(): String? {
+        return when (loginType) {
+            5 -> FirebaseEventValue.LOGIN_WAY_APPLE
+            LoginByThirdBody.LOGIN_TYPE_GOOGLE -> FirebaseEventValue.LOGIN_WAY_GOOGLE
+            LoginByThirdBody.LOGIN_TYPE_FACEBOOK -> FirebaseEventValue.LOGIN_WAY_FACEBOOK
+            else -> null
+        }
+    }
 
 
 }

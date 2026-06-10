@@ -98,13 +98,15 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             notificationManager.createNotificationChannel(channel)
         }
 
+        val notificationId = System.currentTimeMillis().toInt()
         val intent = Intent(this, SplashActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            putExtra("from_push", true)
             putExtra("scheme", scheme)
         }
         val pendingIntent = PendingIntent.getActivity(
             this,
-            0,
+            notificationId,
             intent,
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
@@ -119,7 +121,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .build()
 
-        notificationManager.notify(System.currentTimeMillis().toInt(), notification)
+        notificationManager.notify(notificationId, notification)
     }
 
     override fun onNewToken(token: String) {

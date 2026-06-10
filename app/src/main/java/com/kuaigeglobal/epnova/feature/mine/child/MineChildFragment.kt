@@ -7,6 +7,7 @@ import com.kuaigeglobal.epnova.common.Constants
 import com.kuaigeglobal.epnova.common.ext.startRefreshWithAdapter
 import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.ext.onUserStatusChanged
+import com.kuaigeglobal.epnova.core.manager.FirebaseEventValue
 import com.kuaigeglobal.epnova.core.network.apis.entity.WorkVOInfo
 import com.kuaigeglobal.epnova.databinding.FragmentMineChildBinding
 import com.kuaigeglobal.epnova.feature.play.DramasPlayPagerActivity
@@ -137,7 +138,12 @@ class MineChildFragment :
         DramasPlayPagerActivity.start(
             workId = workInfo?.workId,
             position = maxOf(0, (workInfo?.lastSortNo ?: 0) - 1),
-            isSeriesMode = true
+            isSeriesMode = true,
+            source = if (mRealVM.isCollect()) {
+                FirebaseEventValue.SOURCE_COLLECTION
+            } else {
+                FirebaseEventValue.SOURCE_HISTORY
+            }
         )
     }
 }

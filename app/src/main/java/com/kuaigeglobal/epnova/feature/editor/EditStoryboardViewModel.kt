@@ -12,6 +12,9 @@ import com.kuaigeglobal.epnova.core.Events
 import com.kuaigeglobal.epnova.core.ext.launch
 import com.kuaigeglobal.epnova.core.ext.launchWithLoading
 import com.kuaigeglobal.epnova.core.ext.sensitiveWordCheck
+import com.kuaigeglobal.epnova.core.manager.EventManager
+import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
+import com.kuaigeglobal.epnova.core.manager.FirebaseEventParam
 import com.kuaigeglobal.epnova.core.network.apis.ApiFactory
 import com.kuaigeglobal.epnova.core.network.apis.entity.SimpleStoryboardInfo
 import com.kuaigeglobal.epnova.core.network.apis.request.GenerateStoryboardBody
@@ -196,6 +199,11 @@ class EditStoryboardViewModel : AppRepositoryViewModel<EditStoryboardRepository>
             getGenPrice()
             return
         }
+        EventManager.onFirebaseTrack(
+            if (finish) FirebaseEvent.REDRAW_NOW_CLICK else FirebaseEvent.REGENERATE_CLICK,
+            FirebaseEventParam.DRAMA_ID to storyboard.workId,
+            FirebaseEventParam.EPISODE_ID to storyboard.storyId
+        )
         generate(storyboard, prompt, cost, finish)
     }
 

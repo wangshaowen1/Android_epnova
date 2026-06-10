@@ -18,6 +18,9 @@ import com.kuaigeglobal.epnova.core.ext.launch
 import com.kuaigeglobal.epnova.core.ext.launchWithLoading
 import com.kuaigeglobal.epnova.core.ext.putAIGCMetadata
 import com.kuaigeglobal.epnova.core.ext.showRechargeDialog
+import com.kuaigeglobal.epnova.core.manager.EventManager
+import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
+import com.kuaigeglobal.epnova.core.manager.FirebaseEventParam
 import com.kuaigeglobal.epnova.core.network.RetrofitClient
 import com.kuaigeglobal.epnova.core.network.apis.ApiResponse
 import com.kuaigeglobal.epnova.core.network.apis.entity.EpisodeInfo
@@ -367,6 +370,11 @@ class EditStoryboardVideoViewModel : AppRepositoryViewModel<EditStoryboardReposi
     }
 
     private fun doSynthesis(storyboards: List<SimpleStoryboardInfo>) {
+        EventManager.onFirebaseTrack(
+            FirebaseEvent.COMBINE_VIDEO_CLICK,
+            FirebaseEventParam.DRAMA_ID to workId,
+            FirebaseEventParam.EPISODE_ID to storyId
+        )
         topActivity?.let {
             val dialog = GeneratingDialog(it, R.string.video_synthesizing.getResString(), R.string.do_not_exit_or_lock_screen.getResString())
             synthesisDialog = dialog

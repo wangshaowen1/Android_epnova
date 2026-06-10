@@ -16,6 +16,9 @@ import com.kuaigeglobal.epnova.common.ext.showConfirmPrompt
 import com.kuaigeglobal.epnova.common.ext.startRefreshWithAdapter
 import com.kuaigeglobal.epnova.common.ext.topActivity
 import com.kuaigeglobal.epnova.core.Events
+import com.kuaigeglobal.epnova.core.manager.EventManager
+import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
+import com.kuaigeglobal.epnova.core.manager.FirebaseEventParam
 import com.kuaigeglobal.epnova.core.network.apis.entity.CreatorEpisodeInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.CreatorPlaySource
 import com.kuaigeglobal.epnova.core.network.apis.entity.CreatorWorkInfo
@@ -68,6 +71,10 @@ class SeriesActivity : BaseViewModelActivity<ActivitySeriesBinding, SeriesViewMo
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        EventManager.onFirebaseTrack(
+            FirebaseEvent.UGC_DRAMA_DETAIL_VIEW,
+            FirebaseEventParam.DRAMA_ID to mRealVM.workId
+        )
         binding.toolbarLayout.minimumHeight = 32.dp
         initView()
         //数据更新
@@ -337,6 +344,10 @@ class SeriesActivity : BaseViewModelActivity<ActivitySeriesBinding, SeriesViewMo
             }
 
             R.id.btnPublish -> {
+                EventManager.onFirebaseTrack(
+                    FirebaseEvent.UGC_DRAMA_PUBLISH_CLICK,
+                    FirebaseEventParam.DRAMA_ID to mRealVM.workId
+                )
                 mRealVM.queryWorkPublishStatus(
                     openPublishPage = { openPublishPage(it) },
                     confirmNativePublish = { showPublishConfirm(it) }
@@ -350,6 +361,10 @@ class SeriesActivity : BaseViewModelActivity<ActivitySeriesBinding, SeriesViewMo
             showToast(R.string.work_publish_page_unavailable)
             return
         }
+        EventManager.onFirebaseTrack(
+            FirebaseEvent.PUBLISH_H5_PAGE_VIEW,
+            FirebaseEventParam.DRAMA_ID to mRealVM.workId
+        )
         SimpleBrowserActivity.launch(this, url)
     }
 
@@ -395,6 +410,11 @@ class SeriesActivity : BaseViewModelActivity<ActivitySeriesBinding, SeriesViewMo
 
     private fun continueWriting(lastInfo: CreatorEpisodeInfo?, info: CreatorEpisodeInfo?) {
         val workInfo = mRealVM.workInfo.value ?: return
+        EventManager.onFirebaseTrack(
+            FirebaseEvent.CREATE_SEQUEL_CLICK,
+            FirebaseEventParam.DRAMA_ID to mRealVM.workId,
+            FirebaseEventParam.EPISODE_ID to info?.storyId
+        )
         if ((info?.sortNo ?: 0) > 1 && workInfo.workType == CreatorWorkInfo.NOVEL_CREATION) {
             //小说改编续写
             ContinueWritingActivity.start(

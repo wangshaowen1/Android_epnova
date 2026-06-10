@@ -13,6 +13,8 @@ import com.kuaigeglobal.epnova.common.SimpleTextWatcher
 import com.kuaigeglobal.epnova.common.ext.applySmartFocusManager
 import com.kuaigeglobal.epnova.common.ext.showConfirmPrompt
 import com.kuaigeglobal.epnova.core.ext.sensitiveWordCheck
+import com.kuaigeglobal.epnova.core.manager.EventManager
+import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
 import com.kuaigeglobal.epnova.databinding.FragmentDramaGenerateStep2Binding
 import com.kuaigeglobal.epnova.feature.creator.data.DramaGenerateConstants
 import com.kuaigeglobal.epnova.feature.editor.info.InputDialog
@@ -63,6 +65,7 @@ class DramaGenerateStep2Fragment :
             mRealVM.continueInputContent = intent.getStringExtra(Constants.Extra.CONTENT)
             mRealVM.model = intent.getIntExtra(Constants.Extra.MODE, 0)
             mRealVM.chapterIndex = intent.getIntExtra(Constants.Extra.CHAPTER_INDEX, 1)
+            EventManager.onFirebaseTrack(FirebaseEvent.SCRIPT_VIEW)
 
             scriptGenerate()
         }
@@ -109,6 +112,7 @@ class DramaGenerateStep2Fragment :
     }
 
     private fun handleNextStep() {
+        EventManager.onFirebaseTrack(FirebaseEvent.SCRIPT_NEXT_CLICK)
         lifecycleScope.launch {
             sensitiveWordCheck(mRealVM.input.value, {
                 sensitiveHighlightedText = null

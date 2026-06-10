@@ -300,7 +300,7 @@ object FirebaseEvent {
      * 模块：Credits首充礼包
      * 事件类型：曝光
      * 事件名称：Credits的首充礼包曝光
-     * 说明：Credits的首充礼包曝光：Credits首充礼包弹窗成功展示时触发
+     * 说明：Credits的首充礼包曝光：Credits首充礼包弹窗成功展示，或商城/充值弹窗里的算力首充礼包卡片展示时触发
      * 参数：因有两个触发场景，需同时上报：
      * 1. 触发场景（trigger：create_btn / insufficient_balance)
      * 2. 礼包id（product_id）
@@ -315,7 +315,7 @@ object FirebaseEvent {
      * 模块：Credits首充礼包
      * 事件类型：点击
      * 事件名称：Credits的首充礼包点击
-     * 说明：Credits的首充礼包点击：用户点击Credits首充礼包套餐卡片时触发
+     * 说明：Credits的首充礼包点击：用户点击Credits首充礼包套餐卡片或弹窗购买按钮时触发
      */
     const val CREDITS_FIRST_PURCHASE_GIFT_POPUP_CLICK = "credits_first_purchase_gift_popup_click"
 
@@ -323,7 +323,7 @@ object FirebaseEvent {
      * 模块：Credits首充礼包
      * 事件类型：行为
      * 事件名称：Credits的首充礼包支付成功
-     * 说明：Credits的首充礼包支付成功：用户完成Credits首充礼包支付时触发
+     * 说明：Credits的首充礼包支付成功：用户在弹窗、商城或充值弹窗完成Credits首充礼包支付时触发
      */
     const val CREDITS_FIRST_PURCHASE_GIFT_POPUP_SUCCESS = "credits_first_purchase_gift_popup_success"
 
@@ -331,7 +331,7 @@ object FirebaseEvent {
      * 模块：Coins 首充礼包
      * 事件类型：曝光
      * 事件名称：Coins的首充礼包曝光
-     * 说明：Coins的首充礼包曝光：Coins首充礼包弹窗成功展示时触发
+     * 说明：Coins的首充礼包曝光：Coins首充礼包弹窗成功展示，或商城/充值弹窗里的首充礼包卡片展示时触发
      */
     const val COINS_FIRST_PURCHASE_GIFT_POPUP_VIEW = "coins_first_purchase_gift_popup_view"
 
@@ -339,7 +339,7 @@ object FirebaseEvent {
      * 模块：Coins 首充礼包
      * 事件类型：点击
      * 事件名称：Coins的首充礼包点击
-     * 说明：Coins的首充礼包点击：用户点击Coins首充礼包套餐卡片时触发
+     * 说明：Coins的首充礼包点击：用户点击Coins首充礼包套餐卡片或弹窗购买按钮时触发
      */
     const val COINS_FIRST_PURCHASE_GIFT_POPUP_CLICK = "coins_first_purchase_gift_popup_click"
 
@@ -347,7 +347,7 @@ object FirebaseEvent {
      * 模块：Coins 首充礼包
      * 事件类型：行为
      * 事件名称：Coins的首充礼包支付成功
-     * 说明：Coins的首充礼包支付成功：用户完成Coins首充礼包支付时触发
+     * 说明：Coins的首充礼包支付成功：用户在弹窗、商城或充值弹窗完成Coins首充礼包支付时触发
      */
     const val COINS_FIRST_PURCHASE_GIFT_POPUP_SUCCESS = "coins_first_purchase_gift_popup_success"
 
@@ -398,30 +398,6 @@ object FirebaseEvent {
     const val PUBLISH_H5_PAGE_VIEW = "publish_h5_page_view"
 
     /**
-     * 模块：作品发布
-     * 事件类型：点击
-     * 事件名称：作品发布h5页面点击发布按钮
-     * 说明：作品发布h5页面点击发布按钮：用户在H5发布页面点击Publish按钮时触发
-     */
-    const val PUBLISH_H5_PAGE_BTN_CLICK = "publish_h5_page_btn_click"
-
-    /**
-     * 模块：作品发布
-     * 事件类型：曝光
-     * 事件名称：作品发布个人资料填写弹窗曝光
-     * 说明：作品发布个人资料填写弹窗曝光：首次发布流程中个人资料填写弹窗成功展示时触发
-     */
-    const val PERSONAL_INFO_POPUP_VIEW = "personal_info_popup_view"
-
-    /**
-     * 模块：作品发布
-     * 事件类型：点击
-     * 事件名称：作品发布个人资料填写弹窗点击发布按钮
-     * 说明：作品发布个人资料填写弹窗点击提交按钮：用户点击个人资料填写弹窗中Submit按钮时触发，同时上报本次提交的集数
-     */
-    const val PERSONAL_INFO_POPUP_BTN_CLICK = "personal_info_popup_btn_click"
-
-    /**
      * 模块：my list
      * 事件类型：曝光
      * 事件名称：my_list页面曝光
@@ -448,25 +424,9 @@ object FirebaseEvent {
     /**
      * 模块：push
      * 事件类型：行为
-     * 事件名称：发送推送消息
-     * 说明：发送推送消息：服务端发出推送通知时触发，由服务端埋点
-     * 参数：需同时上报：
-     * 1. 推送类型（push_type: check_in / coins_gift / credits_gift / creation_process / publish_success)
-     * 参数说明：推送类型说明：check_in（签到） / coins_gift（金币礼包）
-     *  / credits_gift（积分礼包） / creation_process（创作流程）
-     *  / publish_success（发布成功）
-     */
-    const val PUSH_SEND = "push_send"
-
-    /**
-     * 模块：push
-     * 事件类型：行为
      * 事件名称：用户站外点击推送
      * 说明：用户站外点击推送：用户在App外点击推送通知打开App时触发
-     * 参数：需同时上报：
-     * 1. 推送类型（push_type: check_in / coins_gift / credits_gift / creation_process / publish_success)
-     * 参数说明：注：推送类型分别为： check_in（签到） / coins_gift（金币礼包） /
-     * credits_gift（积分礼包） / creation_process（创作流程） / publish_success（发布成功）
+     * 实现边界：点击来源用客户端写入的 from_push 标识判断；不从 FCM payload 读取非固定字段。
      */
     const val PUSH_CLICK = "push_click"
 
@@ -887,9 +847,6 @@ object FirebaseEventParam {
     /** 用户可提现金额 */
     const val AVAILABLE_BALANCE = "available_balance"
 
-    /** 推送类型：check_in / coins_gift / credits_gift / creation_process / publish_success */
-    const val PUSH_TYPE = "push_type"
-
     /** 奖励发放数量 */
     const val AMOUNT = "amount"
 
@@ -910,4 +867,68 @@ object FirebaseEventParam {
 
     /** 登录方式：facebook / apple / google */
     const val LOGIN_WAY = "login_way"
+}
+
+/**
+ * Firebase 埋点参数值。
+ *
+ * 来源：EpNova埋点文档_updated.xlsx / 新版。
+ */
+object FirebaseEventValue {
+    /** currency_type: coins */
+    const val CURRENCY_COINS = "coins"
+
+    /** currency_type: credits */
+    const val CURRENCY_CREDITS = "credits"
+
+    /** trigger: create_btn */
+    const val TRIGGER_CREATE_BTN = "create_btn"
+
+    /** trigger: insufficient_balance */
+    const val TRIGGER_INSUFFICIENT_BALANCE = "insufficient_balance"
+
+    /** granted_source: check_in */
+    const val GRANTED_SOURCE_CHECK_IN = "check_in"
+
+    /** granted_source: check_in_ad */
+    const val GRANTED_SOURCE_CHECK_IN_AD = "check_in_ad"
+
+    /** granted_source: task_done */
+    const val GRANTED_SOURCE_TASK_DONE = "task_done"
+
+    /** granted_source: login_popup */
+    const val GRANTED_SOURCE_LOGIN_POPUP = "login_popup"
+
+    /** source: home */
+    const val SOURCE_HOME = "home"
+
+    /** source: banner */
+    const val SOURCE_BANNER = "banner"
+
+    /** source: search_page */
+    const val SOURCE_SEARCH_PAGE = "search_page"
+
+    /** source: history */
+    const val SOURCE_HISTORY = "history"
+
+    /** source: collection */
+    const val SOURCE_COLLECTION = "collection"
+
+    /** source: top_earners */
+    const val SOURCE_TOP_EARNERS = "top_earners"
+
+    /** creation_source_type: novel */
+    const val CREATION_SOURCE_NOVEL = "novel"
+
+    /** creation_source_type: inspiration */
+    const val CREATION_SOURCE_INSPIRATION = "inspiration"
+
+    /** login_way: facebook */
+    const val LOGIN_WAY_FACEBOOK = "facebook"
+
+    /** login_way: google */
+    const val LOGIN_WAY_GOOGLE = "google"
+
+    /** login_way: apple */
+    const val LOGIN_WAY_APPLE = "apple"
 }

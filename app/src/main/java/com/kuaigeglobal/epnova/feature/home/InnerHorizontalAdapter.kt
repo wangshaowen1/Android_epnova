@@ -6,12 +6,17 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.kuaigeglobal.epnova.common.ext.getVm
+import com.kuaigeglobal.epnova.core.manager.EventManager
+import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
+import com.kuaigeglobal.epnova.core.manager.FirebaseEventParam
+import com.kuaigeglobal.epnova.core.manager.FirebaseEventValue
 import com.kuaigeglobal.epnova.core.network.apis.entity.WorkVOInfo
 import com.kuaigeglobal.epnova.databinding.ItemBookShelfChildBinding
 import com.kuaigeglobal.epnova.feature.play.DramasPlayPagerActivity
 import com.nhsd.basic.item.BindingViewHolder
 
 class InnerHorizontalAdapter : ListAdapter<WorkVOInfo, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
+    private val viewedDramaIds = mutableSetOf<String>()
 
     init {
         stateRestorationPolicy = StateRestorationPolicy.PREVENT_WHEN_EMPTY
@@ -46,6 +51,14 @@ class InnerHorizontalAdapter : ListAdapter<WorkVOInfo, RecyclerView.ViewHolder>(
                 null
             }
             item?.let { validItem ->
+//                validItem.workId?.let { workId ->
+//                    if (viewedDramaIds.add(workId)) {
+//                        EventManager.onFirebaseTrack(
+//                            FirebaseEvent.HOME_DRAMA_VIEW,
+//                            FirebaseEventParam.DRAMA_ID to workId
+//                        )
+//                    }
+//                }
                 val transVM = binding.getVm<ItemHomeDramaVm, WorkVOInfo>(
                     key = validItem.workId,
                     item = validItem,
@@ -55,7 +68,16 @@ class InnerHorizontalAdapter : ListAdapter<WorkVOInfo, RecyclerView.ViewHolder>(
                     initCallback = {}
                 ).apply {
                     onItemClick.value = {
-                        DramasPlayPagerActivity.start(workId = validItem.workId, 0, false)
+                        EventManager.onFirebaseTrack(
+                            FirebaseEvent.HOME_DRAMA_CLICK,
+                            FirebaseEventParam.DRAMA_ID to validItem.workId
+                        )
+                        DramasPlayPagerActivity.start(
+                            workId = validItem.workId,
+                            position = 0,
+                            isSeriesMode = false,
+                            source = FirebaseEventValue.SOURCE_HOME
+                        )
                     }
                 }
                 binding.item = transVM

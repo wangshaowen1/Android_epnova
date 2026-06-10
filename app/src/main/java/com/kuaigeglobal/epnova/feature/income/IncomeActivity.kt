@@ -8,6 +8,9 @@ import androidx.lifecycle.lifecycleScope
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.ext.startRefreshWithAdapter
 import com.kuaigeglobal.epnova.common.ext.showConfirmDialog
+import com.kuaigeglobal.epnova.core.manager.EventManager
+import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
+import com.kuaigeglobal.epnova.core.manager.FirebaseEventParam
 import com.kuaigeglobal.epnova.databinding.ActivityIncomeBinding
 import com.kuaigeglobal.epnova.widget.BottomYearMonthPickerDialog
 import com.kuaigeglobal.epnova.widget.stateful.paging.MyMultiStatePagingFooterAdapter
@@ -30,6 +33,7 @@ class IncomeActivity : BaseViewModelActivity<ActivityIncomeBinding, IncomeViewMo
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        EventManager.onFirebaseTrack(FirebaseEvent.INCOME_PAGE_VIEW)
         initView()
         dataUpdate()
     }
@@ -77,6 +81,10 @@ class IncomeActivity : BaseViewModelActivity<ActivityIncomeBinding, IncomeViewMo
             }
 
             R.id.tv_withdraw -> {
+                EventManager.onFirebaseTrack(
+                    FirebaseEvent.INCOME_WITHDRAW_CLICK,
+                    FirebaseEventParam.AVAILABLE_BALANCE to mRealVM.availableBalanceText.get()
+                )
                 //提现-tooltip
                 showConfirmDialog(
                     title = getString(R.string.income_withdraw),
