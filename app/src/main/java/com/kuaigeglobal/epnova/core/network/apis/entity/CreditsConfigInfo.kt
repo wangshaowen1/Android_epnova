@@ -18,12 +18,12 @@ data class PointConfigInfo(
 ) : Parcelable {
 
     fun isDiscountValid(): Boolean {
-        return pointMarketingTime != null && pointMarketingTime > System.currentTimeMillis()
+        return pointMarketingTime != null && pointMarketingTime > 0
     }
 
     fun getCountDownText(): String {
         if (pointMarketingTime == null) return ""
-        val time = pointMarketingTime - System.currentTimeMillis()
+        val time = pointMarketingTime
         if (time <= 0) return ""
         val hour = time / 1000 / 60 / 60
         val minute = time / 1000 / 60 % 60

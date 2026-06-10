@@ -45,7 +45,7 @@ data class CoinConfigInfo(
         if (coinsMarketingTime == null) {
             return "00:00:00"
         }
-        val time = coinsMarketingTime - System.currentTimeMillis()
+        val time = coinsMarketingTime
         if (time <= 0) {
             return "00:00:00"
         }
