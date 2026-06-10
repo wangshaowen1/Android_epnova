@@ -1,9 +1,6 @@
 package com.kuaigeglobal.epnova.feature.login.data
 
 import com.kuaigeglobal.epnova.core.Config
-import com.kuaigeglobal.epnova.core.manager.AppEvent
-import com.kuaigeglobal.epnova.core.manager.EventManager
-import com.kuaigeglobal.epnova.core.manager.GrowingIO
 import com.kuaigeglobal.epnova.core.network.apis.request.BindPhoneBody
 import com.kuaigeglobal.epnova.core.network.apis.request.LoginByFlashMobileBody
 import com.kuaigeglobal.epnova.core.network.apis.request.LoginByPhoneBody

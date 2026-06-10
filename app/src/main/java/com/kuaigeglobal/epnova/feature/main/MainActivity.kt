@@ -20,8 +20,6 @@ import com.kuaigeglobal.epnova.core.Config
 import com.kuaigeglobal.epnova.core.Events
 import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.google.billing.BillingManager
-import com.kuaigeglobal.epnova.core.manager.AppEvent
-import com.kuaigeglobal.epnova.core.manager.EventManager
 import com.kuaigeglobal.epnova.core.manager.UpgradeManager
 import com.kuaigeglobal.epnova.databinding.ActivityMainBinding
 import com.kuaigeglobal.epnova.feature.aicompose.generating.GeneratingViewModel
@@ -153,7 +151,6 @@ class MainActivity : BaseViewModelActivity<ActivityMainBinding, MainViewModel>()
             when (checkedId) {
                 R.id.rbHome -> {
                     //首页
-                    EventManager.onAppTrack(AppEvent.SF_VIEW_HOME_PAGE)
                     setKeepScreenOn(false)
                     mRealVM.showTab.set(0)
                     supportFragmentManager.switchFragment(
@@ -168,7 +165,6 @@ class MainActivity : BaseViewModelActivity<ActivityMainBinding, MainViewModel>()
 
                 R.id.rbCreate -> {
                     //创建
-                    EventManager.onAppTrack(AppEvent.SF_VIEW_CREATE_TAB_PAGE)
                     setKeepScreenOn(false)
                     mRealVM.showTab.set(1)
                     supportFragmentManager.switchFragment(
@@ -179,7 +175,6 @@ class MainActivity : BaseViewModelActivity<ActivityMainBinding, MainViewModel>()
 
                 R.id.rbWorks -> {
                     //热门
-                    EventManager.onAppTrack(AppEvent.SF_VIEW_WORKS_TAB_PAGE)
                     setKeepScreenOn(false)
                     mRealVM.showTab.set(2)
 //                    CreationRootActivity.start(this)
@@ -192,7 +187,6 @@ class MainActivity : BaseViewModelActivity<ActivityMainBinding, MainViewModel>()
 
                 R.id.rbMine -> {
                     //我的
-                    EventManager.onAppTrack(AppEvent.SF_VIEW_MINE_TAB_PAGE)
                     setKeepScreenOn(false)
                     mRealVM.showTab.set(3)
                     supportFragmentManager.switchFragment(R.id.fragment, MineFragment::class.java)

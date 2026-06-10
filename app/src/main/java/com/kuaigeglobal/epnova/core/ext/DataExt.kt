@@ -13,8 +13,6 @@ import com.kuaigeglobal.epnova.common.utils.WXUtils
 import com.kuaigeglobal.epnova.core.Config
 import com.kuaigeglobal.epnova.core.Global
 import com.kuaigeglobal.epnova.core.User
-import com.kuaigeglobal.epnova.core.manager.AppEvent
-import com.kuaigeglobal.epnova.core.manager.EventManager
 import com.kuaigeglobal.epnova.core.model.PhotoItem
 import com.kuaigeglobal.epnova.core.network.apis.ApiFactory
 import com.kuaigeglobal.epnova.core.network.apis.entity.SimpleStoryboardInfo
@@ -244,7 +242,6 @@ private suspend fun showCreditsFirstRecharge(
         ApiFactory.apiService.getFirstRechargeCreditsDialogInfo()
     }.data
     if (firstRechargeDialogData == null) return false
-    EventManager.onAppTrack(AppEvent.SF_VIEW_CREATE_NEWCOMER_GIFTPACK_PAGE)
     val dialog = FirstRechargeCreditsDialog.show(FirstRechargeCreditsDialog.SCENE_OTHER, firstRechargeDialogData)?.apply {
         onClose = {
             PowerRechargeDialog.show(0, showToast, rechargeTab = rechargeTab)
@@ -261,7 +258,6 @@ private suspend fun showCoinsFirstRecharge(
         ApiFactory.apiService.getFirstRechargeDialogInfo()
     }.data
     if (firstRechargeDialogData == null) return false
-    EventManager.onAppTrack(AppEvent.SF_VIEW_CREATE_NEWCOMER_GIFTPACK_PAGE)
     val dialog = FirstRechargeDialog.show(FirstRechargeDialog.SCENE_OTHER, firstRechargeDialogData)?.apply {
         onClose = {
             PowerRechargeDialog.show(0, showToast, rechargeTab = rechargeTab)

@@ -15,8 +15,6 @@ import com.kuaigeglobal.epnova.core.Global
 import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.ext.onUserSignOut
 import com.kuaigeglobal.epnova.core.ext.sensitiveWordCheck
-import com.kuaigeglobal.epnova.core.manager.AppEvent
-import com.kuaigeglobal.epnova.core.manager.EventManager
 import com.kuaigeglobal.epnova.core.network.apis.entity.VideoConfigInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.WorkInfo
 import com.kuaigeglobal.epnova.core.network.apis.request.CreateTaskBody
@@ -128,7 +126,6 @@ class CreationFragment :
         }
         mRealVM.firstRechargeCache.observe(this) { data ->
             data?.let {
-                EventManager.onAppTrack(AppEvent.SF_VIEW_HOME_NEWCOMER_GIFTPACK_PAGE)
                 val continueCreation = pendingFirstRechargeContinuation
                 pendingFirstRechargeContinuation = null
                 val firstRechargeDialog = FirstRechargeCreditsDialog.show(
@@ -333,9 +330,7 @@ class CreationFragment :
                     return
                 }
                 if (mRealVM.creationModel == MODEL_INSPIRATION) {
-                    EventManager.onAppTrack(AppEvent.SF_CLICK_STORY_INSPIRATION_NEXT_BUTTON)
                 } else {
-                    EventManager.onAppTrack(AppEvent.SF_CLICK_NOVEL_ADAPTATION_NEXT_BUTTON)
                 }
                 //检查敏感词
                 lifecycleScope.launch {

@@ -14,8 +14,6 @@ import com.kuaigeglobal.epnova.common.ext.showCommonDialog
 import com.kuaigeglobal.epnova.common.ext.topActivity
 import com.kuaigeglobal.epnova.common.permissions.requestRead2WritePermissions
 import com.kuaigeglobal.epnova.core.Events
-import com.kuaigeglobal.epnova.core.manager.AppEvent
-import com.kuaigeglobal.epnova.core.manager.EventManager
 import com.kuaigeglobal.epnova.core.network.apis.entity.EpisodeInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.SimpleStoryboardInfo
 import com.kuaigeglobal.epnova.databinding.ActivityEditStoryboardVideoBinding
@@ -146,7 +144,6 @@ class EditStoryboardVideoActivity : BaseViewModelActivity<ActivityEditStoryboard
                 mRealVM.getStoryboardList()
             }
         }
-        EventManager.onAppTrack(AppEvent.SF_VIEW_VIDEO_GENERATION_PAGE)
     }
 
     override fun <Data> onClick(view: View?, data: Data?) {
@@ -160,7 +157,6 @@ class EditStoryboardVideoActivity : BaseViewModelActivity<ActivityEditStoryboard
                     return
                 }
                 EditStoryboardActivity.start(current, mRealVM.workRatio.get(), mRealVM.storyInfo?.stepProgress)
-                EventManager.onAppTrack(AppEvent.SF_CLICK_REDRAW_STORYBOARD_BUTTON)
             }
 
             R.id.btnDownload -> {

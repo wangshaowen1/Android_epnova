@@ -15,8 +15,6 @@ import com.kuaigeglobal.epnova.common.utils.SensitiveHighlighter
 import com.kuaigeglobal.epnova.core.Events
 import com.kuaigeglobal.epnova.core.Global
 import com.kuaigeglobal.epnova.core.ext.sensitiveWordCheck
-import com.kuaigeglobal.epnova.core.manager.AppEvent
-import com.kuaigeglobal.epnova.core.manager.EventManager
 import com.kuaigeglobal.epnova.core.network.apis.entity.WorkInfo
 import com.kuaigeglobal.epnova.core.network.apis.request.SSEContentBody
 import com.kuaigeglobal.epnova.databinding.ActivityContinueWritingBinding

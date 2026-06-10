@@ -11,8 +11,6 @@ import com.kuaigeglobal.epnova.common.Constants
 import com.kuaigeglobal.epnova.common.ext.applySmartFocusManager
 import com.kuaigeglobal.epnova.core.Events
 import com.kuaigeglobal.epnova.core.Global
-import com.kuaigeglobal.epnova.core.manager.AppEvent
-import com.kuaigeglobal.epnova.core.manager.EventManager
 import com.kuaigeglobal.epnova.core.network.apis.entity.RoleImageInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.SimpleAsset
 import com.kuaigeglobal.epnova.core.network.apis.entity.SimpleRoleInfo
@@ -94,7 +92,6 @@ class AssetManagementFragment : BaseViewModelFragment<FragmentAssetManagementBin
                 }
             }
         })
-        EventManager.onAppTrack(AppEvent.SF_VIEW_ASSET_MANAGEMENT_PAGE)
         mRealVM.onAssetImageSelectEvent = { vm ->
             val asset = vm.data.get()
             val bizType = when (asset) {

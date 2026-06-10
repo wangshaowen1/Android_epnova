@@ -4,6 +4,7 @@ import com.google.firebase.messaging.FirebaseMessaging
 import com.kuaigeglobal.epnova.App
 import com.kuaigeglobal.epnova.common.ext.ioScope
 import com.kuaigeglobal.epnova.core.google.GoogleServices
+import com.kuaigeglobal.epnova.core.google.event.AnalyticsHelper
 import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.network.apis.ApiFactory
 import com.kuaigeglobal.epnova.core.network.apis.entity.CreatorPlayableEpisode
@@ -170,305 +171,743 @@ object EventManager {
         }
     }
 
+
     /**
-     * @param code GrowingIO上配置的Code
-     * @param paramsMap code附带的子属性 传参：mapOf("属性key" to "属性值")
+     * Firebase 埋点入口。
+     *
+     * 新版埋点文档里的事件统一走这里，后续按页面逐点接入。
      */
     @JvmStatic
-    fun onAppTrack(code: String, paramsMap: Map<String, String?>? = null) {
-        Logger.d("[onAppTrack] Tracking Event -> Code: $code, Params: $paramsMap")
-//        GrowingAutotracker.get().trackCustomEvent(code, paramsMap)
+    fun onFirebaseTrack(eventName: String, paramsMap: Map<String, Any?>? = null) {
+        Logger.d("[onFirebaseTrack] Firebase Event -> Code: $eventName, Params: $paramsMap")
+        AnalyticsHelper.logEvent(eventName, paramsMap)
     }
 
     /**
-     * @param code GrowingIO上配置的Code
-     * @param params code附带的子属性 传参："属性key" to "属性值"
+     * Firebase 埋点入口，便于调用处用 "key" to value 的形式传参。
      */
     @JvmStatic
-    fun onAppTrack(code: String, vararg params: Pair<String, String?>) {
-        if (params.isEmpty()) {
-            onAppTrack(code, null)
-        } else {
-            onAppTrack(code, params.toMap())
-        }
+    fun onFirebaseTrack(eventName: String, vararg params: Pair<String, Any?>) {
+        onFirebaseTrack(eventName, if (params.isEmpty()) null else params.toMap())
     }
 
 }
 
 /**
- * App功能使用数据
+ * Firebase 埋点事件。
+ *
+ * 来源：EpNova埋点文档_updated.xlsx / 新版。
  */
-object AppEvent {
+object FirebaseEvent {
     /**
-     * 访问首页｜用户进入App访问首页页面
+     * 模块：创作入口
+     * 事件类型：曝光
+     * 事件名称：创作入口页面曝光
+     * 说明：创作入口页面曝光：用户点击底部导航栏 Create tab，创作入口页面成功渲染展示时触发
      */
-    const val SF_VIEW_HOME_PAGE = "sf_view_home_page"
+    const val CREATE_HOME_VIEW = "create_home_view"
 
     /**
-     * 浏览首页推荐视频点击观看｜用户在首页浏览推荐视频内容并进行观看
+     * 模块：创作入口
+     * 事件类型：曝光
+     * 事件名称：创作入口顶部banner曝光
+     * 说明：创作入口顶部banner曝光：创作入口页面顶部banner图片成功渲染展示时触发
      */
-    const val SF_CLICK_HOME_RECOMMEND_VIDEO = "sf_click_home_recommend_video"
+    const val CREATE_BANNER_VIEW = "create_banner_view"
 
     /**
-     * 访问创作tab页｜用户点击底部导航栏创作Tab，进入创作页
+     * 模块：创作入口
+     * 事件类型：点击
+     * 事件名称：创作入口顶部banner点击
+     * 说明：创作入口顶部banner点击：用户点击顶部banner图片时触发
      */
-    const val SF_VIEW_CREATE_TAB_PAGE = "sf_view_create_tab_page"
+    const val CREATE_BANNER_CLICK = "create_banner_click"
 
     /**
-     * 访问作品tab页｜用户点击底部导航栏作品Tab，进入个人作品页
+     * 模块：创作入口
+     * 事件类型：点击
+     * 事件名称：点击Creating Short Dramas按钮
+     * 说明：点击Creating Short Dramas按钮：用户点击创作入口页面中部"Creating Short Dramas"按钮时触发
      */
-    const val SF_VIEW_WORKS_TAB_PAGE = "sf_view_works_tab_page"
+    const val CREATE_BTN_CLICK = "create_btn_click"
 
     /**
-     * 访问我的tab页｜用户点击底部导航栏我的Tab，进入个人页面
+     * 模块：创作入口
+     * 事件类型：点击
+     * 事件名称：点击Resource Center tab
+     * 说明：点击Resource Center tab：用户在创作入口页面主动切换至Resource Center tab时触发，默认选中Top Earners不触发
      */
-    const val SF_VIEW_MINE_TAB_PAGE = "sf_view_mine_tab_page"
+    const val CREATE_RESOURCE_CENTER_CLICK = "create_resource_center_click"
 
     /**
-     * 算力充值页面｜用户进入算力充值页面
+     * 模块：创作入口
+     * 事件类型：点击
+     * 事件名称：点击top earners展示的作品封面
+     * 说明：点击top earners展示的作品封面：用户点击Top Earners列表中任意作品卡片时触发
+     * 参数：需同时上报点击的对应的作品的id（drama_id)
      */
-    const val SF_VIEW_RECHARGE_PAGE = "sf_view_recharge_page"
+    const val CREATE_TOP_EARNERS_DRAMA_CLICK = "create_top_earners_drama_click"
 
     /**
-     * 用户进入故事灵感页面｜用户进入故事灵感页面
+     * 模块：商店
+     * 事件类型：曝光
+     * 事件名称：商店曝光
+     * 说明：商店曝光：用户进入商店页面时触发
      */
-    const val SF_VIEW_STORY_INSPIRATION_PAGE = "sf_view_story_inspiration_page"
+    const val STORE_VIEW = "store_view"
 
     /**
-     * 故事灵感tab｜用户进入故事灵感页面
+     * 模块：商店
+     * 事件类型：曝光
+     * 事件名称：交易历史记录明细页曝光
+     * 说明：交易历史记录明细页曝光：用户进入交易历史记录明细页面时触发
      */
-    const val SF_VIEW_STORY_INSPIRATION_TAB = "sf_view_story_inspiration_tab"
+    const val TRANSACTION_HISTORY_VIEW = "transaction_history_view"
 
     /**
-     * 故事灵感页面的下一步按钮｜用户在故事灵感tab页 输入文字后点击下一步按钮
+     * 模块：商店
+     * 事件类型：点击
+     * 事件名称：点击切换至credits购买页
+     * 说明：点击切换至credits购买页：用户在商店页面主动切换至Credits tab时触发，默认选中Coins不触发
      */
-    const val SF_CLICK_STORY_INSPIRATION_NEXT_BUTTON = "sf_click_story_inspiration_next_button"
+    const val STORE_CREDITS_CLICK = "store_credits_click"
 
     /**
-     * 小说改编tab页面｜用户进入小说改编
+     * 模块：商店
+     * 事件类型：点击
+     * 事件名称：商店内点击套餐卡片
+     * 说明：商店内点击套餐卡片：用户在商店页面点击任意充值套餐卡片时触发，同时上报套餐id和价格
+     * 参数：需同时上报:
+     * 1. 商品id（product_id)
+     * 2. 货币类型（currency_type: coins / credits)
+     * 3. 当时的商品价格（price）
      */
-    const val SF_VIEW_NOVEL_ADAPTATION_TAB = "sf_view_novel_adaptation_tab"
+    const val STORE_PRODUCT_CLICK = "store_product_click"
 
     /**
-     * 小说改编页面的下一步按钮｜用户在小说改编tab页 输入文字后点击下一步按钮
+     * 模块：商店
+     * 事件类型：行为
+     * 事件名称：商店内点击套餐卡片并支付成功
+     * 说明：商店内支付成功：用户在商店页面发起支付后，支付成功时触发
+     * 参数：需同时上报:
+     * 1. 商品id（product_id)
+     * 2. 货币类型（currency_type: coins / credits)
+     * 3. 当时的商品价格（price）
      */
-    const val SF_CLICK_NOVEL_ADAPTATION_NEXT_BUTTON = "sf_click_novel_adaptation_next_button"
+    const val STORE_PRODUCT_SUCCESS = "store_product_success"
 
     /**
-     * 故事梗概环节｜用户进入创作流程中的故事梗概环节页面
+     * 模块：Credits首充礼包
+     * 事件类型：曝光
+     * 事件名称：Credits的首充礼包曝光
+     * 说明：Credits的首充礼包曝光：Credits首充礼包弹窗成功展示时触发
+     * 参数：因有两个触发场景，需同时上报：
+     * 1. 触发场景（trigger：create_btn / insufficient_balance)
+     * 2. 礼包id（product_id）
+     * 3. 当时的礼包价格（price）
+     * 参数说明：注：create_btn为点击开始创作后弹出
+     * 的场景，insufficient_balance为创作
+     * 流程后余额不足的触发场景
      */
-    const val SF_VIEW_STORY_OUTLINE_PAGE = "sf_view_story_outline_page"
+    const val CREDITS_FIRST_PURCHASE_GIFT_POPUP_VIEW = "credits_first_purchase_gift_popup_view"
 
     /**
-     * 故事剧本环节｜用户进入创作流程中的故事剧本环节页面
+     * 模块：Credits首充礼包
+     * 事件类型：点击
+     * 事件名称：Credits的首充礼包点击
+     * 说明：Credits的首充礼包点击：用户点击Credits首充礼包套餐卡片时触发
      */
-    const val SF_VIEW_SCRIPT_PAGE = "sf_view_script_page"
+    const val CREDITS_FIRST_PURCHASE_GIFT_POPUP_CLICK = "credits_first_purchase_gift_popup_click"
 
     /**
-     * 资产管理环节｜用户进入资产管理页面（角色/场景/道具管理）
+     * 模块：Credits首充礼包
+     * 事件类型：行为
+     * 事件名称：Credits的首充礼包支付成功
+     * 说明：Credits的首充礼包支付成功：用户完成Credits首充礼包支付时触发
      */
-    const val SF_VIEW_ASSET_MANAGEMENT_PAGE = "sf_view_asset_management_page"
+    const val CREDITS_FIRST_PURCHASE_GIFT_POPUP_SUCCESS = "credits_first_purchase_gift_popup_success"
 
     /**
-     * 资产管理页的一键生成｜用户在资产管理页面点击“一键生成”按钮进行资产生成
+     * 模块：Coins 首充礼包
+     * 事件类型：曝光
+     * 事件名称：Coins的首充礼包曝光
+     * 说明：Coins的首充礼包曝光：Coins首充礼包弹窗成功展示时触发
      */
-    const val SF_CLICK_ASSET_GENERATE_BUTTON = "sf_click_asset_generate_button"
+    const val COINS_FIRST_PURCHASE_GIFT_POPUP_VIEW = "coins_first_purchase_gift_popup_view"
 
     /**
-     * 分镜设计环节｜用户进入创作流程中的分镜设计环节页面
+     * 模块：Coins 首充礼包
+     * 事件类型：点击
+     * 事件名称：Coins的首充礼包点击
+     * 说明：Coins的首充礼包点击：用户点击Coins首充礼包套餐卡片时触发
      */
-    const val SF_VIEW_STORYBOARD_DESIGN_PAGE = "sf_view_storyboard_design_page"
+    const val COINS_FIRST_PURCHASE_GIFT_POPUP_CLICK = "coins_first_purchase_gift_popup_click"
 
     /**
-     * 分镜视频生成环节｜用户进入创作流程中的分镜视频生成环节页面
+     * 模块：Coins 首充礼包
+     * 事件类型：行为
+     * 事件名称：Coins的首充礼包支付成功
+     * 说明：Coins的首充礼包支付成功：用户完成Coins首充礼包支付时触发
      */
-    const val SF_VIEW_VIDEO_GENERATION_PAGE = "sf_view_video_generation_page"
+    const val COINS_FIRST_PURCHASE_GIFT_POPUP_SUCCESS = "coins_first_purchase_gift_popup_success"
 
     /**
-     * 重绘分镜按钮｜在重绘已合成视频页面 或新集创作的分镜视频合成页面，用户点击左下角“重绘分镜”按钮
+     * 模块：提现
+     * 事件类型：曝光
+     * 事件名称：提现页面曝光
+     * 说明：提现页面曝光：用户进入收益提现页面时触发
      */
-    const val SF_CLICK_REDRAW_STORYBOARD_BUTTON = "sf_click_redraw_storyboard_button"
+    const val INCOME_PAGE_VIEW = "Income_page_view"
 
     /**
-     * 合成按钮｜在分镜视频生成页面 和重绘视频页面的 右上角的用户点击“合成”按钮开始视频生成
+     * 模块：提现
+     * 事件类型：点击
+     * 事件名称：提现按钮点击
+     * 说明：提现按钮点击：用户点击提现页面Withdraw按钮时触发，同时上报当前可提现余额
+     * 参数：需同时上报：
+     * 用户可提现金额（available_balance)
      */
-    const val SF_CLICK_COMBINE_VIDEO_BUTTON = "sf_click_combine_video_button"
+    const val INCOME_WITHDRAW_CLICK = "Income_withdraw_click"
 
     /**
-     * 用户作品播放页重绘视频按钮｜在用户作品播放页中，用户点击“重绘视频”按钮进行视频重绘
+     * 模块：作品发布
+     * 事件类型：曝光
+     * 事件名称：ugc剧集详情页曝光
+     * 说明：剧集详情页曝光：用户进入ugc剧集详情页时触发
+     * 参数：需同时上报：
+     * 剧id（drama_id)
      */
-    const val SF_CLICK_WORK_REPLAY_REDRAW_BUTTON = "sf_click_work_replay_redraw_button"
+    const val UGC_DRAMA_DETAIL_VIEW = "ugc_drama_detail_view"
 
     /**
-     * 算力充值支付弹窗｜在创作各流程（如生成资产、分镜或合成视频）算力不足或需付费时，系统弹出支付弹窗
+     * 模块：作品发布
+     * 事件类型：点击
+     * 事件名称：ugc剧集详情页点击发布按钮
+     * 说明：剧集详情页点击发布按钮：用户点击剧集详情页Publish按钮时触发，包含余额不足等被拦截情况
+     * 参数：需同时上报：
+     * 1. 剧id（drama_id)
      */
-    const val SF_SHOW_COMPUTE_RECHARGE_PAYMENT_POPUP = "sf_show_compute_recharge_payment_popup"
+    const val UGC_DRAMA_PUBLISH_CLICK = "ugc_drama_publish_click"
 
     /**
-     * 算力充值支付弹窗购买按钮｜用户在购买弹窗点击了购买按钮
+     * 模块：作品发布
+     * 事件类型：曝光
+     * 事件名称：作品发布h5页面曝光
+     * 说明：作品发布h5页面曝光：用户首次发布时进入H5发布页面时触发
      */
-    const val SF_CLICK_COMPUTE_RECHARGE_PAYMENT_BUTTON = "sf_click_compute_recharge_payment_button"
+    const val PUBLISH_H5_PAGE_VIEW = "publish_h5_page_view"
 
     /**
-     * 首页课程报名弹窗｜首页的课程弹窗
+     * 模块：作品发布
+     * 事件类型：点击
+     * 事件名称：作品发布h5页面点击发布按钮
+     * 说明：作品发布h5页面点击发布按钮：用户在H5发布页面点击Publish按钮时触发
      */
-    const val SF_SHOW_COURSE_ENROLL_POPUP = "sf_show_course_enroll_popup"
+    const val PUBLISH_H5_PAGE_BTN_CLICK = "publish_h5_page_btn_click"
 
     /**
-     * 悬浮窗课程报名｜用户点击页面悬浮窗中的“课程报名”按钮
+     * 模块：作品发布
+     * 事件类型：曝光
+     * 事件名称：作品发布个人资料填写弹窗曝光
+     * 说明：作品发布个人资料填写弹窗曝光：首次发布流程中个人资料填写弹窗成功展示时触发
      */
-    const val SF_CLICK_FLOATING_COURSE_ENROLL = "sf_click_floating_course_enroll"
+    const val PERSONAL_INFO_POPUP_VIEW = "personal_info_popup_view"
 
     /**
-     * H5的课程页面｜用户通过课程入口进入访问H5课程页面
+     * 模块：作品发布
+     * 事件类型：点击
+     * 事件名称：作品发布个人资料填写弹窗点击发布按钮
+     * 说明：作品发布个人资料填写弹窗点击提交按钮：用户点击个人资料填写弹窗中Submit按钮时触发，同时上报本次提交的集数
      */
-    const val SF_VIEW_H5_COURSE_PAGE = "sf_view_h5_course_page"
+    const val PERSONAL_INFO_POPUP_BTN_CLICK = "personal_info_popup_btn_click"
 
     /**
-     * 课程报名支付弹窗｜用户在课程报名流程中触发并看到课程支付弹窗
+     * 模块：my list
+     * 事件类型：曝光
+     * 事件名称：my_list页面曝光
+     * 说明：my_list页面曝光：用户进入My List页面时触发
      */
-    const val SF_SHOW_COURSE_PAYMENT_POPUP = "sf_show_course_payment_popup"
+    const val MY_LIST_VIEW = "my_list_view"
 
     /**
-     * 课程报名支付弹窗购买按钮｜用户点击课程购买按钮
+     * 模块：my list
+     * 事件类型：点击
+     * 事件名称：my_list页面内切换至History tab
+     * 说明：my_list页面内切换至History tab：用户在My List页面主动切换至History tab时触发
      */
-    const val SF_CLICK_COURSE_PAYMENT_BUTTON = "sf_click_course_payment_button"
+    const val MY_LIST_HISTORY_CLICK = "my_list_history_click"
 
     /**
-     * 去发行按钮｜在作品完成页或签约入口页，用户点击“去发行”按钮
+     * 模块：my list
+     * 事件类型：点击
+     * 事件名称：my_list页面内切换至Collection tab
+     * 说明：my_list页面内切换至Collection tab：用户在My List页面主动切换至Collection tab时触发
      */
-    const val SF_CLICK_GO_PUBLISH_BUTTON = "sf_click_go_publish_button"
+    const val MY_LIST_COLLECTION_CLICK = "my_list_collection_click"
 
     /**
-     * 提交申请按钮｜在签约/发行申请填写完成后，用户点击“提交申请”按钮
+     * 模块：push
+     * 事件类型：行为
+     * 事件名称：发送推送消息
+     * 说明：发送推送消息：服务端发出推送通知时触发，由服务端埋点
+     * 参数：需同时上报：
+     * 1. 推送类型（push_type: check_in / coins_gift / credits_gift / creation_process / publish_success)
+     * 参数说明：推送类型说明：check_in（签到） / coins_gift（金币礼包）
+     *  / credits_gift（积分礼包） / creation_process（创作流程）
+     *  / publish_success（发布成功）
      */
-    const val SF_CLICK_SUBMIT_APPLY_BUTTON = "sf_click_submit_apply_button"
+    const val PUSH_SEND = "push_send"
 
     /**
-     * 申请签约按钮｜在签约/发行页面中，用户点击“申请签约”按钮
+     * 模块：push
+     * 事件类型：行为
+     * 事件名称：用户站外点击推送
+     * 说明：用户站外点击推送：用户在App外点击推送通知打开App时触发
+     * 参数：需同时上报：
+     * 1. 推送类型（push_type: check_in / coins_gift / credits_gift / creation_process / publish_success)
+     * 参数说明：注：推送类型分别为： check_in（签到） / coins_gift（金币礼包） /
+     * credits_gift（积分礼包） / creation_process（创作流程） / publish_success（发布成功）
      */
-    const val SF_CLICK_SIGN_CONTRACT_BUTTON = "sf_click_sign_contract_button"
+    const val PUSH_CLICK = "push_click"
 
     /**
-     * 签约/发行主页面｜用户进入签约/发行主页面
+     * 模块：福利中心
+     * 事件类型：曝光
+     * 事件名称：福利中心页面曝光
+     * 说明：福利中心页面曝光：用户进入福利中心页面时触发
      */
-    const val SF_VIEW_SIGN_PUBLISH_MAIN_PAGE = "sf_view_sign_publish_main_page"
+    const val REWARDS_CENTER_PAGE_VIEW = "rewards_center_page_view"
 
     /**
-     *快出片｜课程页面支付成功
+     * 模块：福利中心
+     * 事件类型：点击
+     * 事件名称：福利中心首页入口点击
+     * 说明：福利中心首页入口点击：用户点击首页福利中心入口时触发
      */
-    const val SF_CLICK_COURSE_PAYMENT_BUTTON_PAYSUCCESS = "sf_click_course_payment_button_paysuccess"
+    const val HOME_REWARDS_CENTER_BTN_CLICK = "home_rewards_center_btn_click"
 
     /**
-     *快出片｜算力商城页面支付成功
+     * 模块：福利中心
+     * 事件类型：点击
+     * 事件名称：福利中心个人中心入口点击
+     * 说明：福利中心个人中心入口点击：用户点击个人中心页面福利中心入口时触发
      */
-    const val SF_CLICK_RECHARGE_PAGE_PAYSUCCESS = "sf_click_recharge_page_paysuccess"
+    const val PROFILE_REWARDS_CENTER_BTN_CLICK = "profile_rewards_center_btn_click"
 
     /**
-     *快出片｜算力充值支付弹窗支付成功
+     * 模块：福利中心
+     * 事件类型：行为
+     * 事件名称：金币奖励发放
+     * 说明：金币奖励发放：用户通过签到、看广告、完成任务等方式获得虚拟货币奖励时触发，同时上报奖励类型、数量及触发来源
+     * 参数：需同时上报：
+     * 1. 发放数量（amount）
+     * 2. 奖励来源（granted_source: check_in / check_in_ad / task_done / login_popup )
+     * 3. 任务id（task_id)     // 仅granted_source = task_done时上报
+     * 参数说明：奖励来源（granted_source: check_in（签到）/
+     * check_in_ad （签到后的一次激励广告机会）/ task_done（完成任务，
+     * 这里包含登录奖励、开启消息通知权限任务、广告任务等) / login_popup（登录弹窗）
      */
-    const val SF_CLICK_COMPUTE_RECHARGE_PAYMENT_POPUP_PAYSUCCESS = "sf_click_compute_recharge_payment_popup_paysuccess"
+    const val REWARD_COINS_GRANTED = "reward_coins_granted"
 
     /**
-     *
-     * 快出片｜分镜视频字幕生成失败点击“重试按钮”
+     * 模块：首页
+     * 事件类型：曝光
+     * 事件名称：首页曝光
+     * 说明：首页曝光：用户进入首页时触发
      */
-    const val SF_CLICK_SUBTITLE_FAIL_PROMT_BUTTON = "sf_click_subtitle_fail_promt_button"
+    const val HOME_PAGE_VIEW = "home_page_view"
 
     /**
-     *快出片｜分镜视频字幕生成失败
+     * 模块：首页
+     * 事件类型：曝光
+     * 事件名称：首页banner曝光
+     * 说明：首页banner曝光：首页顶部banner图片成功渲染展示时触发
+     * 参数：需同时上报：
+     * banner_id
      */
-    const val SF_VIEW_SUBTITLE_FAIL_PROMT = "sf_view_subtitle_fail_promt"
+    const val HOME_BANNER_VIEW = "home_banner_view"
 
     /**
-     *快出片｜创作流程新人礼包支付成功
+     * 模块：首页
+     * 事件类型：点击
+     * 事件名称：首页banner点击
+     * 说明：首页banner点击：用户点击首页banner时触发
+     * 参数：需同时上报：
+     * banner_id
      */
-    const val SF_CLICK_CREATE_NEWCOMER_GIFTPACK_PAYSUCCESS = "sf_click_create_newcomer_giftpack_paysuccess"
+    const val HOME_BANNER_CLICK = "home_banner_click"
 
     /**
-     *
-     * 快出片｜创作流程新人礼包点击“立即支付”按钮
+     * 模块：首页
+     * 事件类型：曝光
+     * 事件名称：首页剧封面曝光
+     * 说明：首页剧封面曝光：首页剧集卡片出现在用户可视区域内时触发，需客户端做可见性检测
+     * 参数：需同时上报：
+     * 剧id（drama_id)
      */
-    const val SF_CLICK_CREATE_NEWCOMER_GIFTPACK_PAGE = "sf_click_create_newcomer_giftpack_page"
+    const val HOME_DRAMA_VIEW = "home_drama_view"
 
     /**
-     *快出片｜创作流程新人礼包曝光
+     * 模块：首页
+     * 事件类型：点击
+     * 事件名称：首页剧封面点击
+     * 说明：首页剧封面点击：用户点击首页任意剧集封面卡片时触发
+     * 参数：需同时上报：
+     * 剧id（drama_id）
      */
-    const val SF_VIEW_CREATE_NEWCOMER_GIFTPACK_PAGE = "sf_view_create_newcomer_giftpack_page"
+    const val HOME_DRAMA_CLICK = "home_drama_click"
 
     /**
-     *快出片｜首页新人礼包支付成功
+     * 模块：播放器
+     * 事件类型：行为
+     * 事件名称：进入播放器
+     * 说明：进入播放器：用户进入视频播放器页面，视频开始自动播放时触发，同时上报剧id、集id及进入来源
+     * 参数：需同时上报：
+     * 1. 剧id（drama_id）
+     * 2. 集id（episode_id)
+     * 3. 从哪里进入播放器（source: home / banner / search_page / history / collection / top_earners)
+     * 4. banner_id（仅source = banner时传）
+     * 参数说明：从哪里进入播放器页面说明
+     * source: home（主页） / banner（任意banner） / search_page（搜索页，指的是输入文本点击搜索后出现的作品封面） / history（历史记录） / collection（收藏） / top_earners（创作入口页的top_earners处）)
      */
-    const val SF_CLICK_HOME_NEWCOMER_GIFTPACK_PAYSUCCESS = "sf_click_home_newcomer_giftpack_paysuccess"
+    const val PLAYER_VIEW = "player_view"
 
     /**
-     *快出片｜首页新人礼包点击 "立即支付"
+     * 模块：播放器
+     * 事件类型：行为
+     * 事件名称：有效播放
+     * 说明：有效播放：视频播放进度达到10%时触发，标记为一次有效播放
+     * 参数：触发时机：当播放进度>10%的时候
+     * 需同时上报：
+     * 1. 剧id（drama_id)
+     * 2. 集id（episode_id)
+     * 3.（文档未补充字段名）
      */
-    const val SF_CLICK_HOME_NEWCOMER_GIFTPACK_PAGE = "sf_click_home_newcomer_giftpack_page"
+    const val PLAYER_VALID_PLAY = "player_valid_play"
 
     /**
-     *
-     * 快出片｜新手创作营引导首页"立即体验"按钮
+     * 模块：播放器
+     * 事件类型：行为
+     * 事件名称：播放进度
+     * 说明：播放进度：视频播放进度分别达到25%、50%、75%时各触发一次，用于分析用户在各阶段的流失情况
+     * 参数：触发时机：当播放进度分别等于25%, 50%和75%的时候
+     * 需同时上报：
+     * 1. 剧id（drama_id)
+     * 2. 集id（episode_id)
+     * 3. 播放进度（process: 25/ 50/ 75)
      */
-    const val SF_CLICK_BEGINNER_CREATION_GUIDE_PAGE_BUTTON = "sf_click_beginner_creation_guide_page_button"
+    const val PLAYER_PROCESS = "player_process"
 
     /**
-     *快出片｜新手创作营故事选择页曝光
+     * 模块：播放器
+     * 事件类型：行为
+     * 事件名称：完播
+     * 说明：完播：视频播放进度达到90%及以上时触发，标记为一次完播
+     * 参数：触发时机：当播放进度>10%的时候
+     * 需同时上报：
+     * 1. 剧id（drama_id)
+     * 2. 集id（episode_id)
      */
-    const val SF_VIEW_BEGINNER_CREATION_STORY_PAGE = "sf_view_beginner_creation_story_page"
+    const val PLAYER_COMPLETE = "player_complete"
 
     /**
-     *
-     * 快出片｜新手创作营故事选择页点击 “跳过”按钮
+     * 模块：创作流程
+     * 事件类型：曝光
+     * 事件名称：用户进入故事灵感页面
+     * 说明：用户进入故事灵感页面，显示的时候上报
      */
-    const val SF_CLICK_BEGINNER_CREATION_STORY_PAGE_SKIP = "sf_click_beginner_creation_story_page_skip"
+    const val STORY_INSPIRATION_VIEW = "story_inspiration_view"
 
     /**
-     *快出片｜新手创作营故事选择页“立即生成”按钮
+     * 模块：创作流程
+     * 事件类型：点击
+     * 事件名称：故事灵感tab
+     * 说明：用户点击故事灵感tab
      */
-    const val SF_CLICK_BEGINNER_CREATION_STORY_PAGE_BUTTON = "sf_click_beginner_creation_story_page_button"
+    const val STORY_INSPIRATION_TAB_CLICK = "story_inspiration_tab_click"
 
     /**
-     *
-     * 快出片｜新手创作营故事生成页曝光
+     * 模块：创作流程
+     * 事件类型：点击
+     * 事件名称：故事灵感页面的下一步按钮
+     * 说明：用户在故事灵感tab页 输入文字后点击下一步按钮
      */
-    const val SF_VIEW_BEGINNER_CREATION_GENERATE_PAGE = "sf_view_beginner_creation_generate_page"
+    const val STORY_INSPIRATION_NEXT_CLICK = "story_inspiration_next_click"
 
     /**
-     *快出片｜新手创作营成片结果页曝光
+     * 模块：创作流程
+     * 事件类型：点击
+     * 事件名称：小说改编tab页面
+     * 说明：用户点击小说改编tab
      */
-    const val SF_VIEW_BEGINNER_CREATION_RESULT_PAGE = "sf_view_beginner_creation_result_page"
+    const val NOVEL_ADAPTATION_TAB_CLICK = "novel_adaptation_tab_click"
 
     /**
-     *快出片 | 新手创作营成片结果页点击“开启我的创作变现”按钮
+     * 模块：创作流程
+     * 事件类型：点击
+     * 事件名称：小说改编页面的下一步按钮
+     * 说明：用户在小说改编tab页 输入文字后点击下一步按钮
      */
-    const val SF_CLICK_BEGINNER_CREATION_RESULT_PAGE_BUTTON = "sf_click_beginner_creation_result_page_button"
+    const val NOVEL_ADAPTATION_NEXT_CLICK = "novel_adaptation_next_click"
 
     /**
-     *快出片 | 首页新人礼包曝光
+     * 模块：创作流程
+     * 事件类型：曝光
+     * 事件名称：故事梗概环节
+     * 说明：用户进入创作流程中的故事梗概环节页面
+     * 参数：需同时上报：
+     * 1. 创作来源类型：creation_source_type: novel / inspiration
+     * 参数说明：创作来源类型：小说 / 灵感
      */
-    const val SF_VIEW_HOME_NEWCOMER_GIFTPACK_PAGE = "sf_view_home_newcomer_giftpack_page"
+    const val STORY_OUTLINE_VIEW = "story_outline_view"
 
     /**
-     *
-     * 快出片 | 新手创作营首页曝光
+     * 模块：创作流程
+     * 事件类型：点击
+     * 事件名称：故事梗概环节的下一步按钮
+     * 说明：用户在故事梗概环节想要进入下一步，点击下一步按钮时上报
      */
-    const val SF_VIEW_BEGINNER_CREATION_GUIDE_PAGE = "sf_view_beginner_creation_guide_page"
+    const val STORY_OUTLINE_NEXT_CLICK = "story_outline_next_click"
+
+    /**
+     * 模块：创作流程
+     * 事件类型：点击
+     * 事件名称：创建作品页选择“单集短片”
+     * 说明：用户点击单集短片按钮时上报
+     */
+    const val SINGLE_EPISODE_CLICK = "single_episode_click"
+
+    /**
+     * 模块：创作流程
+     * 事件类型：点击
+     * 事件名称：创建作品页 输入“自定义”集数
+     * 说明：用户点击自定义输入集数时上报
+     */
+    const val CUSTOM_EPISODE_INPUT = "custom_episode_input"
+
+    /**
+     * 模块：创作流程
+     * 事件类型：点击
+     * 事件名称：创建作品页“开始创作”按钮
+     * 说明：用户填完作品信息，点击开始创作按钮
+     */
+    const val START_CREATION_CLICK = "start_creation_click"
+
+    /**
+     * 模块：创作流程
+     * 事件类型：曝光
+     * 事件名称：故事剧本环节
+     * 说明：用户进入创作流程中的故事剧本环节页面
+     */
+    const val SCRIPT_VIEW = "script_view"
+
+    /**
+     * 模块：创作流程
+     * 事件类型：点击
+     * 事件名称：故事剧本环节的下一步按钮
+     * 说明：用户在故事剧本环节想要进入下一步，点击下一步按钮时上报
+     */
+    const val SCRIPT_NEXT_CLICK = "script_next_click"
+
+    /**
+     * 模块：创作流程
+     * 事件类型：曝光
+     * 事件名称：资产管理环节
+     * 说明：用户进入资产管理页面（角色/场景/道具管理）
+     */
+    const val ASSET_MANAGEMENT_VIEW = "asset_management_view"
+
+    /**
+     * 模块：创作流程
+     * 事件类型：点击
+     * 事件名称：资产管理环节的下一步按钮
+     * 说明：用户在资产管理环节想要进入下一步，点击下一步按钮时上报
+     */
+    const val ASSET_MANAGEMENT_NEXT_CLICK = "asset_management_next_click"
+
+    /**
+     * 模块：创作流程
+     * 事件类型：点击
+     * 事件名称：资产管理页的一键生成按钮
+     * 说明：用户在资产管理页面点击“一键生成”按钮进行资产生成
+     */
+    const val ASSET_GENERATE_CLICK = "asset_generate_click"
+
+    /**
+     * 模块：创作流程
+     * 事件类型：曝光
+     * 事件名称：分镜设计环节
+     * 说明：用户进入分镜设计环节页面
+     */
+    const val STORYBOARD_VIEW = "storyboard_view"
+
+    /**
+     * 模块：创作流程
+     * 事件类型：点击
+     * 事件名称：分镜设计环节“生成分镜”按钮
+     * 说明：用户在分镜设计环节想要进入下一步，点击 生成分镜 按钮时上报
+     */
+    const val STORYBOARD_GENERATE_CLICK = "storyboard_generate_click"
+
+    /**
+     * 模块：创作流程
+     * 事件类型：曝光
+     * 事件名称：分镜视频生成环节
+     * 说明：用户进入创作流程中的分镜视频生成环节页面
+     */
+    const val VIDEO_GENERATION_VIEW = "video_generation_view"
+
+    /**
+     * 模块：创作流程
+     * 事件类型：点击
+     * 事件名称：分镜预览页面的“下载视频”按钮
+     * 说明：在分镜预览页面，用户点击“下载视频”按钮
+     */
+    const val VIDEO_DOWNLOAD_CLICK = "video_download_click"
+
+    /**
+     * 模块：创作流程
+     * 事件类型：点击
+     * 事件名称：分镜预览页面的重绘分镜按钮
+     * 说明：在重绘已合成视频页面 或新集创作的分镜视频合成页面，用户点击左下角“重绘分镜”按钮
+     */
+    const val STORYBOARD_REDRAW_CLICK = "storyboard_redraw_click"
+
+    /**
+     * 模块：创作流程
+     * 事件类型：点击
+     * 事件名称：重绘分镜页面的“立即重绘”按钮
+     * 说明：在单个分镜视频设计页面，用户点击“立即重绘”按钮
+     */
+    const val REDRAW_NOW_CLICK = "redraw_now_click"
+
+    /**
+     * 模块：创作流程
+     * 事件类型：点击
+     * 事件名称：重绘分镜页面的“重新生成”按钮
+     * 说明：在单个分镜视频设计页面，用户点击“重新生成”按钮
+     */
+    const val REGENERATE_CLICK = "regenerate_click"
+
+    /**
+     * 模块：创作流程
+     * 事件类型：点击
+     * 事件名称：合成按钮
+     * 说明：在分镜视频生成页面 和重绘视频页面的 右上角的用户点击“合成”按钮开始视频生成
+     */
+    const val COMBINE_VIDEO_CLICK = "combine_video_click"
+
+    /**
+     * 模块：创作流程
+     * 事件类型：点击
+     * 事件名称：创建续集按钮
+     * 说明：在作品续集页，用户点击创建续集按钮
+     */
+    const val CREATE_SEQUEL_CLICK = "create_sequel_click"
+
+    /**
+     * 模块：创作流程
+     * 事件类型：点击
+     * 事件名称：用户作品播放页重绘视频按钮
+     * 说明：在用户作品播放页中，用户点击“重绘视频”按钮进行视频重绘
+     */
+    const val WORK_REPLAY_REDRAW_CLICK = "work_replay_redraw_click"
+
+    /**
+     * 模块：通用
+     * 事件类型：行为
+     * 事件名称：新用户首次打开app
+     * 说明：新用户首次打开app
+     * 参数：设备首次安装打开app时触发
+     */
+    const val APP_FIRST_OPEN = "app_first_open"
+
+    /**
+     * 模块：登录弹窗
+     * 事件类型：曝光
+     * 事件名称：登录弹窗曝光
+     * 说明：登录弹窗曝光
+     */
+    const val LOGIN_POPUP_VIEW = "login_popup_view"
+
+    /**
+     * 模块：登录弹窗
+     * 事件类型：点击
+     * 事件名称：登录弹窗点击Claim按钮
+     * 说明：登录弹窗
+     */
+    const val LOGIN_POPUP_CLAIM_CLICK = "login_popup_claim_click"
+
+    /**
+     * 模块：登录弹窗
+     * 事件类型：点击
+     * 事件名称：登录弹窗点击关闭
+     * 说明：登录弹窗点击关闭
+     */
+    const val LOGIN_POPUP_CLOSE_CLICK = "login_popup_close_click"
+
+    /**
+     * 模块：登录弹窗
+     * 事件类型：行为
+     * 事件名称：登录成功
+     * 说明：登录成功
+     * 参数：需要同时上报：
+     * 登录方式（login_way: facebook / apple / google）
+     */
+    const val LOGIN_SUCCESS = "login_success"
 }
 
+/**
+ * Firebase 埋点参数 key。
+ *
+ * 来源：EpNova埋点文档_updated.xlsx / 新版。
+ */
+object FirebaseEventParam {
+    /** 剧 id */
+    const val DRAMA_ID = "drama_id"
 
-object GrowingIO {
+    /** 集 id */
+    const val EPISODE_ID = "episode_id"
 
-    /**
-     * 通用｜是否为新用户
-     * 用户登录时候是否为首次注册账号，如果是="yes"，如果是老用户登录非首次注册="no"
-     */
-    const val KEY_ALL_IS_NEW_USER = "all_is_new_user"
+    /** banner id */
+    const val BANNER_ID = "banner_id"
 
+    /** 商品或礼包 id */
+    const val PRODUCT_ID = "product_id"
 
-    /**
-     * 通用｜用户登录类型
-     * 用户登录类型： unknown = 其他或未知 phone = 手机号 wechat = 微信 AppleID = AppleID
-     */
-    const val KEY_ALL_LOGIN_TYPE = "all_login_type"
+    /** 货币类型：coins / credits */
+    const val CURRENCY_TYPE = "currency_type"
+
+    /** 商品或礼包价格 */
+    const val PRICE = "price"
+
+    /** 触发场景：create_btn / insufficient_balance */
+    const val TRIGGER = "trigger"
+
+    /** 用户可提现金额 */
+    const val AVAILABLE_BALANCE = "available_balance"
+
+    /** 推送类型：check_in / coins_gift / credits_gift / creation_process / publish_success */
+    const val PUSH_TYPE = "push_type"
+
+    /** 奖励发放数量 */
+    const val AMOUNT = "amount"
+
+    /** 奖励来源：check_in / check_in_ad / task_done / login_popup */
+    const val GRANTED_SOURCE = "granted_source"
+
+    /** 任务 id，仅 granted_source = task_done 时上报 */
+    const val TASK_ID = "task_id"
+
+    /** 播放器进入来源：home / banner / search_page / history / collection / top_earners */
+    const val SOURCE = "source"
+
+    /** 播放进度：25 / 50 / 75 */
+    const val PROCESS = "process"
+
+    /** 创作来源类型：novel / inspiration */
+    const val CREATION_SOURCE_TYPE = "creation_source_type"
+
+    /** 登录方式：facebook / apple / google */
+    const val LOGIN_WAY = "login_way"
 }

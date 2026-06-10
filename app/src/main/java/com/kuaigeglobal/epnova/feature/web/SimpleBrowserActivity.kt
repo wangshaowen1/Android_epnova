@@ -548,11 +548,6 @@ class SimpleBrowserActivity : BaseViewModelActivity<ActivityBrowserBinding, Brow
 //                    SHARE_MEDIA.WEIXIN,
 //                    this@SimpleBrowserActivity
 //                )
-//                EventManager.onAppEvent(
-//                    AppEvent.INVITE_FRIEND_INVITE_BUTTON_CLICK,
-//                    null,
-//                    "{\"isWeb\":true}"
-//                )
 //            }
             registerHandler("webPay") { data, jsCallback ->
                 try {
@@ -588,7 +583,8 @@ class SimpleBrowserActivity : BaseViewModelActivity<ActivityBrowserBinding, Brow
             registerHandler("showCustomerGuideDialog") { data, _ ->
                 PaySuccessDialog.checkAndShow(PaySuccessDialog.SCENE_OTHER)
             }
-            //埋点上报
+
+            // H5 Firebase 埋点上报：
             // {
             //  "event_name": 埋点名称,
             //  "params": 埋点参数（json）
@@ -602,7 +598,7 @@ class SimpleBrowserActivity : BaseViewModelActivity<ActivityBrowserBinding, Brow
                         it.keys().forEach { key -> map[key] = it.optString(key) }
                         map
                     }
-                    EventManager.onAppTrack(code, params)
+                    EventManager.onFirebaseTrack(code, params)
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }

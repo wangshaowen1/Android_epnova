@@ -10,7 +10,6 @@ import com.kuaigeglobal.epnova.common.Constants
 import com.kuaigeglobal.epnova.common.ext.showCommonDialog
 import com.kuaigeglobal.epnova.common.ext.topActivity
 import com.kuaigeglobal.epnova.common.permissions.requestRead2WritePermissions
-import com.kuaigeglobal.epnova.core.manager.AppEvent
 import com.kuaigeglobal.epnova.core.manager.EventManager
 import com.kuaigeglobal.epnova.core.network.apis.entity.EpisodeInfo
 import com.kuaigeglobal.epnova.core.network.apis.response.PlayMenuInfo
@@ -198,7 +197,6 @@ class DramasPlayPagerActivity :
             showCommonDialog(tip = getString(R.string.redraw_cover_confirm), confirmText = getString(R.string.confirm_ok)) {
                 EditStoryboardVideoActivity.start(mRealVM.currentWorkContext.value?.workTitle, story.workId, story.storyId, story.workRatio, story)
             }
-            EventManager.onAppTrack(AppEvent.SF_CLICK_WORK_REPLAY_REDRAW_BUTTON)
         }
         binding.btnMenu.setOnSingleClickListener {
             showPopupWindow()
@@ -290,7 +288,6 @@ class DramasPlayPagerActivity :
         // 确认弹窗成功展示后再标记，避免 show() 失败时 flag 被永久占用
         val dialog = FirstRechargeDialog.show(FirstRechargeDialog.SCENE_OTHER, data) ?: return false
         Config.get().markFirstRechargeShown(FirstRechargeDialog.SCENE_OTHER)
-        EventManager.onAppTrack(AppEvent.SF_VIEW_CREATE_NEWCOMER_GIFTPACK_PAGE)
         dialog.onPaySuccess = onRetryUnlock
         dialog.onClose = {
             // 关闭礼包弹窗 → 弹普通充值面板，接续原有充值/解锁流程

@@ -9,8 +9,6 @@ import androidx.viewpager2.widget.ViewPager2
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.adapter.QuickAdapter
 import com.kuaigeglobal.epnova.common.ext.setGalleryEffect
-import com.kuaigeglobal.epnova.core.manager.AppEvent
-import com.kuaigeglobal.epnova.core.manager.EventManager
 import com.kuaigeglobal.epnova.databinding.ActivityGuideStep2StorySelectBinding
 import com.kuaigeglobal.epnova.feature.main.MainActivity
 import com.nhsd.basic.BaseViewModelActivity
@@ -33,7 +31,6 @@ class GuideStep2StorySelectActivity : BaseViewModelActivity<ActivityGuideStep2St
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding.banner.setGalleryEffect(20, 20, 0.9f, 0.5f)
-        EventManager.onAppTrack(AppEvent.SF_VIEW_BEGINNER_CREATION_STORY_PAGE)
         mRealVM.examples.observe(this) {
             if (binding.banner.adapter == null && !it.isNullOrEmpty()) {
                 binding.banner.adapter = QuickAdapter(R.layout.item_guide_step2_vp, it.map { info ->
@@ -58,14 +55,12 @@ class GuideStep2StorySelectActivity : BaseViewModelActivity<ActivityGuideStep2St
         })
 
         binding.btnConfirm.setOnSingleClickListener {
-            EventManager.onAppTrack(AppEvent.SF_CLICK_BEGINNER_CREATION_STORY_PAGE_BUTTON)
             val exampleWorkInfo = mRealVM.examples.value?.getOrNull(binding.banner.currentItem)
             GuideStep3GeneratingActivity.start(this, exampleWorkInfo)
             finish()
         }
 
         binding.btnIgnore.setOnSingleClickListener {
-            EventManager.onAppTrack(AppEvent.SF_CLICK_BEGINNER_CREATION_STORY_PAGE_SKIP)
             MainActivity.start(this, null)
             finish()
         }

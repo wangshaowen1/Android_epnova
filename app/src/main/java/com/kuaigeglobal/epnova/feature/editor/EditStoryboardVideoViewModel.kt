@@ -18,8 +18,6 @@ import com.kuaigeglobal.epnova.core.ext.launch
 import com.kuaigeglobal.epnova.core.ext.launchWithLoading
 import com.kuaigeglobal.epnova.core.ext.putAIGCMetadata
 import com.kuaigeglobal.epnova.core.ext.showRechargeDialog
-import com.kuaigeglobal.epnova.core.manager.AppEvent
-import com.kuaigeglobal.epnova.core.manager.EventManager
 import com.kuaigeglobal.epnova.core.network.RetrofitClient
 import com.kuaigeglobal.epnova.core.network.apis.ApiResponse
 import com.kuaigeglobal.epnova.core.network.apis.entity.EpisodeInfo
@@ -378,7 +376,6 @@ class EditStoryboardVideoViewModel : AppRepositoryViewModel<EditStoryboardReposi
         synthesisTask = task
         VideoSynthesisManager.synthesis(task)
         loopSynthesisStatus()
-        EventManager.onAppTrack(AppEvent.SF_CLICK_COMBINE_VIDEO_BUTTON)
     }
 
     fun updateStoryboard(storyboardInfo: SimpleStoryboardInfo) {

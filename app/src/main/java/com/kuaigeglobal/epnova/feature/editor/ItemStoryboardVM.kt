@@ -5,8 +5,6 @@ import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.base.item.AppItemViewModel
 import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.ext.launch
-import com.kuaigeglobal.epnova.core.manager.AppEvent
-import com.kuaigeglobal.epnova.core.manager.EventManager
 import com.kuaigeglobal.epnova.core.network.apis.ApiFactory
 import com.kuaigeglobal.epnova.core.network.apis.entity.EpisodeInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.SimpleStoryboardInfo
@@ -155,7 +153,6 @@ class ItemStoryboardVM(
                     data.notifyChange()
                 })
         }
-        EventManager.onAppTrack(AppEvent.SF_CLICK_SUBTITLE_FAIL_PROMT_BUTTON)
     }
 
     private fun loopGenSubtitleStatus() {
@@ -172,7 +169,6 @@ class ItemStoryboardVM(
                 storyboard.subtitle = subtitleInfo
                 data.notifyChange()
                 if (subtitleInfo?.generateFailed == true) {
-                    EventManager.onAppTrack(AppEvent.SF_VIEW_SUBTITLE_FAIL_PROMT)
                 }
             }
             if (storyboard.subtitleGenerating) {

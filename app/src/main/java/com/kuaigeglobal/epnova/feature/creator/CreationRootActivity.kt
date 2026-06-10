@@ -12,8 +12,6 @@ import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.Constants
 import com.kuaigeglobal.epnova.common.ext.applySmartFocusManager
 import com.kuaigeglobal.epnova.common.utils.KeyboardUtils
-import com.kuaigeglobal.epnova.core.manager.AppEvent
-import com.kuaigeglobal.epnova.core.manager.EventManager
 import com.kuaigeglobal.epnova.databinding.ActivityCreationRootBinding
 import com.nhsd.basic.BaseViewModelActivity
 
@@ -36,7 +34,6 @@ class CreationRootActivity :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding.root.applySmartFocusManager()
-        EventManager.onAppTrack(AppEvent.SF_VIEW_STORY_INSPIRATION_PAGE)
         binding.viewPager.adapter = object : FragmentPagerAdapter(supportFragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
             override fun getItem(position: Int): Fragment {
                 return when (position) {
@@ -67,11 +64,9 @@ class CreationRootActivity :
         }
         binding.rbLeft.setOnClickListener {
             binding.viewPager.currentItem = 0
-            EventManager.onAppTrack(AppEvent.SF_VIEW_STORY_INSPIRATION_TAB)
         }
 
         binding.rbRight.setOnClickListener {
-            EventManager.onAppTrack(AppEvent.SF_VIEW_NOVEL_ADAPTATION_TAB)
             binding.viewPager.currentItem = 1
         }
     }

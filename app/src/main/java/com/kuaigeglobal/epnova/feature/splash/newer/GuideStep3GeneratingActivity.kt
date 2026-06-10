@@ -6,8 +6,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.animation.LinearInterpolator
 import com.kuaigeglobal.epnova.common.Constants
-import com.kuaigeglobal.epnova.core.manager.AppEvent
-import com.kuaigeglobal.epnova.core.manager.EventManager
 import com.kuaigeglobal.epnova.core.network.apis.entity.ExampleWorkInfo
 import com.kuaigeglobal.epnova.databinding.ActivityGuideStep3GeneratingBinding
 import com.nhsd.basic.BaseViewModelActivity
@@ -31,7 +29,6 @@ class GuideStep3GeneratingActivity : BaseViewModelActivity<ActivityGuideStep3Gen
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        EventManager.onAppTrack(AppEvent.SF_VIEW_BEGINNER_CREATION_GENERATE_PAGE)
         mRealVM.progressEvent.observe(this) { targetPercent ->
             val trackBg = binding.viewTrackBg
             val progressBar = binding.viewProgressBar

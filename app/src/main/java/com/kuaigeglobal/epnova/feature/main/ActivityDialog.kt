@@ -9,8 +9,6 @@ import com.kuaigeglobal.epnova.common.Constants
 import com.kuaigeglobal.epnova.common.ext.getScreenWidth
 import com.kuaigeglobal.epnova.common.ext.topActivity
 import com.kuaigeglobal.epnova.core.databinding.loadGifUrl
-import com.kuaigeglobal.epnova.core.manager.AppEvent
-import com.kuaigeglobal.epnova.core.manager.EventManager
 import com.kuaigeglobal.epnova.core.network.apis.response.PopupInfo
 import com.kuaigeglobal.epnova.databinding.DialogActivityBinding
 import com.kuaigeglobal.epnova.router.AppRouter
@@ -51,7 +49,6 @@ class ActivityDialog : BaseDialogFragment<DialogActivityBinding>() {
         loadGifUrl(binding.image, popup?.imageUrl, R.drawable.img_default_cover_1_1.getResDrawable())
         binding.image.setOnSingleClickListener {
             if (popup?.businessType == 1) {
-                EventManager.onAppTrack(AppEvent.SF_CLICK_FLOATING_COURSE_ENROLL)
             }
             AppRouter.jump(popup?.jumpUri)
             dismissAllowingStateLoss()

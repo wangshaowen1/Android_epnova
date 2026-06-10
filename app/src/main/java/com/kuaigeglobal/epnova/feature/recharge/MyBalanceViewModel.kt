@@ -17,8 +17,6 @@ import com.kuaigeglobal.epnova.core.ext.launch
 import com.kuaigeglobal.epnova.core.ext.launchWithLoading
 import com.kuaigeglobal.epnova.core.google.billing.BillingManager
 import com.kuaigeglobal.epnova.core.google.billing.PurchaseResult
-import com.kuaigeglobal.epnova.core.manager.AppEvent
-import com.kuaigeglobal.epnova.core.manager.EventManager
 import com.kuaigeglobal.epnova.core.network.apis.response.SimpleBannerInfo
 import com.kuaigeglobal.epnova.core.response
 import com.kuaigeglobal.epnova.feature.details.ComputingPowerDetailsActivity
@@ -235,7 +233,6 @@ class MyBalanceViewModel(
             purchaseJob?.cancel()
             return
         }
-        if (isDialog) EventManager.onAppTrack(AppEvent.SF_CLICK_COMPUTE_RECHARGE_PAYMENT_BUTTON)
         launchWithLoading(
             block = {
                 response(mRepo.createGoogleOrder(item.coinsConfigCode)) {
@@ -253,7 +250,6 @@ class MyBalanceViewModel(
             purchaseJob?.cancel()
             return
         }
-        if (isDialog) EventManager.onAppTrack(AppEvent.SF_CLICK_COMPUTE_RECHARGE_PAYMENT_BUTTON)
         launchWithLoading(
             block = {
                 response(mRepo.createGoogleCreditsPreOrder(item.pointConfigCode)) {

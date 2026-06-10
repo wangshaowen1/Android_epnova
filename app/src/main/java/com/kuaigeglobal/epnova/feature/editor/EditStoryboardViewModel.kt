@@ -12,8 +12,6 @@ import com.kuaigeglobal.epnova.core.Events
 import com.kuaigeglobal.epnova.core.ext.launch
 import com.kuaigeglobal.epnova.core.ext.launchWithLoading
 import com.kuaigeglobal.epnova.core.ext.sensitiveWordCheck
-import com.kuaigeglobal.epnova.core.manager.AppEvent
-import com.kuaigeglobal.epnova.core.manager.EventManager
 import com.kuaigeglobal.epnova.core.network.apis.ApiFactory
 import com.kuaigeglobal.epnova.core.network.apis.entity.SimpleStoryboardInfo
 import com.kuaigeglobal.epnova.core.network.apis.request.GenerateStoryboardBody
@@ -298,7 +296,6 @@ class EditStoryboardViewModel : AppRepositoryViewModel<EditStoryboardRepository>
                 storyboard.subtitle = subtitleInfo
                 this@EditStoryboardViewModel.storyboard.notifyChange()
                 if (subtitleInfo?.generateFailed == true) {
-                    EventManager.onAppTrack(AppEvent.SF_VIEW_SUBTITLE_FAIL_PROMT)
                 }
             }
             if (storyboard.subtitleGenerating) {

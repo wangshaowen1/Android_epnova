@@ -21,8 +21,6 @@ import com.kuaigeglobal.epnova.core.Events
 import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.ext.showRechargeDialog
 import com.kuaigeglobal.epnova.core.google.billing.PurchaseResult
-import com.kuaigeglobal.epnova.core.manager.AppEvent
-import com.kuaigeglobal.epnova.core.manager.EventManager
 import com.kuaigeglobal.epnova.databinding.DialogRechargePowerBinding
 import com.kuaigeglobal.epnova.feature.web.SimpleBrowserActivity
 import com.nhsd.basic.BaseBottomPushVMDialogFragment
@@ -117,7 +115,6 @@ class PowerRechargeDialog : BaseBottomPushVMDialogFragment<DialogRechargePowerBi
                 mRealVM.updateBalance()
             }
         }
-        EventManager.onAppTrack(AppEvent.SF_SHOW_COMPUTE_RECHARGE_PAYMENT_POPUP)
     }
 
     override fun createViewModel(): MyBalanceViewModel {

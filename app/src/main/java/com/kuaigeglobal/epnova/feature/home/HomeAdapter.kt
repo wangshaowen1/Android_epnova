@@ -6,8 +6,6 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.kuaigeglobal.epnova.common.ext.getVm
-import com.kuaigeglobal.epnova.core.manager.AppEvent
-import com.kuaigeglobal.epnova.core.manager.EventManager
 import com.kuaigeglobal.epnova.core.network.apis.entity.WorkVOInfo
 import com.kuaigeglobal.epnova.databinding.ItemHomeDramaBinding
 import com.kuaigeglobal.epnova.feature.play.DramasPlayPagerActivity
@@ -39,7 +37,6 @@ class HomeAdapter() : PagingDataAdapter<WorkVOInfo, RecyclerView.ViewHolder>(DIF
             getItem(position)?.let { item ->
                 val transVM = binding.getVm(position, item, ItemHomeDramaVm::class.java).apply {
                     onItemClick.value = {
-                        EventManager.onAppTrack(AppEvent.SF_CLICK_HOME_RECOMMEND_VIDEO)
                         DramasPlayPagerActivity.start(workId = item.workId, 0,false)
                     }
                 }

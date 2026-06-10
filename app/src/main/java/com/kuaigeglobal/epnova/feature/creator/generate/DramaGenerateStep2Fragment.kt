@@ -13,8 +13,6 @@ import com.kuaigeglobal.epnova.common.SimpleTextWatcher
 import com.kuaigeglobal.epnova.common.ext.applySmartFocusManager
 import com.kuaigeglobal.epnova.common.ext.showConfirmPrompt
 import com.kuaigeglobal.epnova.core.ext.sensitiveWordCheck
-import com.kuaigeglobal.epnova.core.manager.AppEvent
-import com.kuaigeglobal.epnova.core.manager.EventManager
 import com.kuaigeglobal.epnova.databinding.FragmentDramaGenerateStep2Binding
 import com.kuaigeglobal.epnova.feature.creator.data.DramaGenerateConstants
 import com.kuaigeglobal.epnova.feature.editor.info.InputDialog
@@ -50,7 +48,6 @@ class DramaGenerateStep2Fragment :
     override fun onPrepareView() {
         super.onPrepareView()
         binding.root.applySmartFocusManager()
-        EventManager.onAppTrack(AppEvent.SF_VIEW_SCRIPT_PAGE)
         parseIntentData()
         initView()
         //数据更新

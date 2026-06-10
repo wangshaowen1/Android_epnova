@@ -7,8 +7,6 @@ import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.ext.applySmartFocusManager
 import com.kuaigeglobal.epnova.common.ext.showCommonDialog
 import com.kuaigeglobal.epnova.core.Global
-import com.kuaigeglobal.epnova.core.manager.AppEvent
-import com.kuaigeglobal.epnova.core.manager.EventManager
 import com.kuaigeglobal.epnova.databinding.FragmentStoryboardDesignBinding
 import com.kuaigeglobal.epnova.feature.creator.data.DramaGenerateConstants
 import com.kuaigeglobal.epnova.feature.creator.generate.OnBackPressedHandler
@@ -48,7 +46,6 @@ class StoryboardDesignFragment :
                 "分镜描述生成中，请稍候".showToast()
                 return@observe
             }
-//            EventManager.onAppTrack(AppEvent.SF_CLICK_STORYBOARD_TOPRIGHT_SWITCH_BTN)
             ModelChooseDialog.newInstance(mRealVM.currentCreationModel.value?.configCode, mRealVM.creationModels.value).apply {
                 onSuccess = { model ->
                     this@StoryboardDesignFragment.mRealVM.let { vm ->
@@ -75,7 +72,6 @@ class StoryboardDesignFragment :
             mRealVM.getModels()
         }
         mRealVM.retry()
-        EventManager.onAppTrack(AppEvent.SF_VIEW_STORYBOARD_DESIGN_PAGE)
     }
 
     override fun <Data> onClick(view: View, data: Data?) {

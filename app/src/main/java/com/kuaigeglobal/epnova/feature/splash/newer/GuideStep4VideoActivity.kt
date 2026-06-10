@@ -4,8 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import com.kuaigeglobal.epnova.common.Constants
-import com.kuaigeglobal.epnova.core.manager.AppEvent
-import com.kuaigeglobal.epnova.core.manager.EventManager
 import com.kuaigeglobal.epnova.core.network.apis.entity.ExampleWorkInfo
 import com.kuaigeglobal.epnova.databinding.ActivityGuideStep4VideoBinding
 import com.kuaigeglobal.epnova.feature.main.MainActivity
@@ -30,9 +28,7 @@ class GuideStep4VideoActivity : BaseViewModelActivity<ActivityGuideStep4VideoBin
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        EventManager.onAppTrack(AppEvent.SF_VIEW_BEGINNER_CREATION_RESULT_PAGE)
         binding.btnNext.setOnSingleClickListener {
-            EventManager.onAppTrack(AppEvent.SF_CLICK_BEGINNER_CREATION_RESULT_PAGE_BUTTON)
             MainActivity.startFromNewer(this)
             finish()
         }
