@@ -80,7 +80,7 @@
             android:layout_height="45dp"
             android:layout_marginTop="@dimen/spacing_m"
             android:background="@drawable/bg_06_ffffff_r8"
-            android:hint="@string/wechat_qq_phone_email"
+            android:hint="email@example.com"
             android:maxLength="50"
             android:paddingHorizontal="@dimen/spacing_m"
             android:textColor="?attr/textColor2"
