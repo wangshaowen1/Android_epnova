@@ -5,10 +5,13 @@ import android.content.Context
 import android.net.Uri
 import android.os.Handler
 import android.os.Looper
+import com.appsflyer.AFInAppEventParameterName
+import com.appsflyer.AFInAppEventType
 import com.appsflyer.AppsFlyerConversionListener
 import com.appsflyer.AppsFlyerLib
 import com.appsflyer.deeplink.DeepLinkResult
 import com.kuaigeglobal.epnova.common.Constants
+import com.kuaigeglobal.epnova.core.Config
 import com.kuaigeglobal.epnova.router.AppRouter
 import com.nhsd.basic.utils.Logger
 import org.json.JSONObject
@@ -30,6 +33,7 @@ object AppsFlyerManager {
     private const val TAG = "AppsFlyerManager"
 
     private const val AF_DEV_KEY = "xzV4xPhHz7PUq8Ng69BDzW"
+    private const val REG_CHANNEL_SOURCE = "appsflyer"
 
     // AppsFlyer 内部保留字段，构建业务 URI 时过滤掉，避免干扰 AppRouter 的参数解析
     private val AF_RESERVED_KEYS = setOf(
@@ -46,6 +50,7 @@ object AppsFlyerManager {
         "af_deeplink"
     )
 
+    private var appContext: Context? = null
     private val mainHandler = Handler(Looper.getMainLooper())
 
     /**
@@ -53,6 +58,8 @@ object AppsFlyerManager {
      * 必须在 start() 之前调用。
      */
     fun init(app: Application) {
+        appContext = app.applicationContext
+
         // 订阅 Unified Deep Link，必须在 start 之前注册
         AppsFlyerLib.getInstance().subscribeForDeepLink { result ->
             when (result.status) {
@@ -80,6 +87,10 @@ object AppsFlyerManager {
                 override fun onConversionDataSuccess(data: MutableMap<String, Any>?) {
                     // 安装归因数据（媒体来源、广告系列等），可在此上报
                     Logger.i(TAG, "Conversion data success: $data")
+                    buildRegChannelCode(data)?.let {
+                        Config.get().storeRegChannelCode(it)
+                        Logger.i(TAG, "Reg channel code stored: $it")
+                    }
                 }
 
                 override fun onConversionDataFail(error: String?) {
@@ -106,6 +117,62 @@ object AppsFlyerManager {
     fun start(context: Context) {
         AppsFlyerLib.getInstance().start(context)
         Logger.i(TAG, "AppsFlyer started")
+    }
+
+    fun logCompleteRegistration() {
+        logEvent(AFInAppEventType.COMPLETE_REGISTRATION)
+    }
+
+    fun logPurchase(
+        productId: String?,
+        orderId: String?,
+        priceAmountMicros: Long?,
+        currency: String?
+    ) {
+        val params = hashMapOf<String, Any>()
+        productId?.takeIf { it.isNotBlank() }?.let { params[AFInAppEventParameterName.CONTENT_ID] = it }
+        orderId?.takeIf { it.isNotBlank() }?.let { params[AFInAppEventParameterName.ORDER_ID] = it }
+        priceAmountMicros?.takeIf { it > 0 }?.let { params[AFInAppEventParameterName.REVENUE] = it / 1_000_000.0 }
+        currency?.takeIf { it.isNotBlank() }?.let { params[AFInAppEventParameterName.CURRENCY] = it }
+
+        logEvent(AFInAppEventType.PURCHASE, params)
+    }
+
+    private fun logEvent(eventName: String, params: Map<String, Any>? = null) {
+        val context = appContext
+        if (context == null) {
+            Logger.w(TAG, "Skip AppsFlyer event, context is null: $eventName")
+            return
+        }
+        val safeParams = params?.takeIf { it.isNotEmpty() }
+        runCatching {
+            AppsFlyerLib.getInstance().logEvent(context, eventName, safeParams)
+        }.onSuccess {
+            Logger.i(TAG, "AppsFlyer event logged: $eventName params=$safeParams")
+        }.onFailure {
+            Logger.w(TAG, "AppsFlyer event log failed: $eventName error=${it.message}")
+        }
+    }
+
+    /**
+     * 只透传后台需要的注册渠道信息，明细归因和素材分析仍以 AppsFlyer 后台为准。
+     */
+    private fun buildRegChannelCode(data: Map<String, Any>?): String? {
+        data ?: return null
+
+        val params = mutableListOf("source" to REG_CHANNEL_SOURCE)
+        data.optString("af_status")?.let { params.add("af_status" to it) }
+        data.optString("media_source")?.let { params.add("media_source" to it) }
+        (data.optString("campaign") ?: data.optString("c"))?.let { params.add("campaign" to it) }
+
+        if (params.size == 1) return null
+        return params.joinToString("&") { (key, value) ->
+            "${Uri.encode(key)}=${Uri.encode(value)}"
+        }
+    }
+
+    private fun Map<String, Any>.optString(key: String): String? {
+        return this[key]?.toString()?.trim()?.takeIf { it.isNotEmpty() }
     }
 
     /**

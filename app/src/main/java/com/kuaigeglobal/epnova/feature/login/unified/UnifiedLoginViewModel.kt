@@ -7,6 +7,7 @@ import com.kuaigeglobal.epnova.core.Config
 import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.ext.launchWithLoading
 import com.kuaigeglobal.epnova.core.ext.loginToast
+import com.kuaigeglobal.epnova.core.manager.AppsFlyerManager
 import com.kuaigeglobal.epnova.core.manager.EventManager
 import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
 import com.kuaigeglobal.epnova.core.manager.FirebaseEventParam
@@ -41,6 +42,9 @@ class UnifiedLoginViewModel : AppRepositoryViewModel<ThirdLoginRepository>() {
             response(mRepo.loginByThird(body), result = {
                 User.get().updateFrom(data)
                 SignUtils.signIn()
+                if (data?.isNewRegistration() == true) {
+                    AppsFlyerManager.logCompleteRegistration()
+                }
                 EventManager.onFirebaseTrack(
                     FirebaseEvent.LOGIN_SUCCESS,
                     FirebaseEventParam.LOGIN_WAY to body.firebaseLoginWay()

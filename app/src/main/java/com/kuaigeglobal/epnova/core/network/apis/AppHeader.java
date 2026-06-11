@@ -39,6 +39,8 @@ public class AppHeader {
     //oaid
     private String oaidCode;
     private String mobileDeviceId;
+    //AppsFlyer 投放渠道标记
+    private String regChannelCode;
     //bd_did
     private String bdDid;
     /**
@@ -66,6 +68,7 @@ public class AppHeader {
             this.mobileCtSys = Session.getInstance().getDeviceBrand();
             this.mobileSys = Session.getInstance().getOsVersion();
             this.opid = Config.get().getOpid();
+            this.regChannelCode = Config.get().getRegChannelCode();
 
 
             String mac = Session.getInstance().getMac();

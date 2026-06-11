@@ -13,6 +13,7 @@ import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.ext.getInstall
 import com.kuaigeglobal.epnova.core.ext.launchWithLoading
 import com.kuaigeglobal.epnova.core.ext.loginToast
+import com.kuaigeglobal.epnova.core.manager.AppsFlyerManager
 import com.kuaigeglobal.epnova.core.network.apis.request.LoginByThirdBody
 import com.kuaigeglobal.epnova.core.network.apis.response.UserHomeData
 import com.kuaigeglobal.epnova.core.response
@@ -66,6 +67,9 @@ class LoginViewModel : AppRepositoryViewModel<ThirdLoginRepository>() {
                 response(mRepo.loginByThird(body), result = {
                     User.get().updateFrom(data)
                     SignUtils.signIn()
+                    if (data?.isNewRegistration() == true) {
+                        AppsFlyerManager.logCompleteRegistration()
+                    }
                     data.loginToast()
                     onLogin?.invoke(data)
                 }, error = { this?.msg?.showToast() })

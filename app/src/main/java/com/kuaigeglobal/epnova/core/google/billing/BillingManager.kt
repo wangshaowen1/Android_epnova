@@ -16,6 +16,7 @@ import com.kuaigeglobal.epnova.App
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.ext.ioScope
 import com.kuaigeglobal.epnova.core.User
+import com.kuaigeglobal.epnova.core.manager.AppsFlyerManager
 import com.kuaigeglobal.epnova.core.network.apis.ApiFactory
 import com.kuaigeglobal.epnova.core.network.apis.request.VerifyPurchasedBody
 import com.nhsd.basic.ext.launchNoCrash
@@ -537,13 +538,24 @@ object BillingManager {
                     if (!it.isAcknowledged) {
                         Logger.d(TAG, "验券调用：${it.purchaseState}======>${it}")
                         try {
-                            ApiFactory.apiService.verifyPurchased(
+                            val orderNo = it.accountIdentifiers?.obfuscatedAccountId
+                            val productId = it.products.firstOrNull()
+                            val response = ApiFactory.apiService.verifyPurchased(
                                 VerifyPurchasedBody(
                                     it.purchaseToken,
-                                    it.accountIdentifiers?.obfuscatedAccountId,
-                                    it.products.firstOrNull()
+                                    orderNo,
+                                    productId
                                 )
                             )
+                            if (response.isSuccess) {
+                                val priceParameters = productId?.let { id -> getPriceParameters(productCache[id]) }
+                                AppsFlyerManager.logPurchase(
+                                    productId = productId,
+                                    orderId = orderNo,
+                                    priceAmountMicros = priceParameters?.second,
+                                    currency = priceParameters?.third
+                                )
+                            }
                             newlyVerified.add(it)
                         } catch (e: Exception) {
                             allVerified = false
@@ -605,4 +617,3 @@ object BillingManager {
         }
     }
 }
-

@@ -17,6 +17,7 @@ import com.kuaigeglobal.epnova.core.ext.launch
 import com.kuaigeglobal.epnova.core.ext.launchWithLoading
 import com.kuaigeglobal.epnova.core.ext.loginToast
 import com.kuaigeglobal.epnova.core.ext.parseMessage
+import com.kuaigeglobal.epnova.core.manager.AppsFlyerManager
 import com.kuaigeglobal.epnova.core.network.apis.entity.FlashTestPreFetchNumberInfo
 import com.kuaigeglobal.epnova.core.network.apis.request.LoginByThirdBody
 import com.kuaigeglobal.epnova.core.network.apis.request.SendSmsValidateCodeBody
@@ -112,6 +113,9 @@ class PhoneLoginViewModel : AppRepositoryViewModel<FlashLoginRepository>() {
                 response(mRepo.loginByThird(body), result = {
                     User.get().updateFrom(data)
                     SignUtils.signIn()
+                    if (data?.isNewRegistration() == true) {
+                        AppsFlyerManager.logCompleteRegistration()
+                    }
                     onLogin?.invoke(data)
                 }, error = { this?.msg?.showToast() })
             }, onError = { showToast(R.string.toast_sign_in_fail) })

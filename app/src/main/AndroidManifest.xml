@@ -170,7 +170,7 @@
 
                 <data
                     android:scheme="https"
-                    android:host="epnovaapp.onelink.me" />
+                    android:host="epnova.onelink.me" />
             </intent-filter>
         </activity>
         <activity

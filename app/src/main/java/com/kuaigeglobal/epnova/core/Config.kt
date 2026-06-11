@@ -71,6 +71,8 @@ class Config : NetworkChangedListener {
         private set
     var opid: String? by MmkvDelegate(OPID, null) { mmkv }
         private set
+    var regChannelCode: String? by MmkvDelegate(REG_CHANNEL_CODE, null) { mmkv }
+        private set
     var referrer: String? by MmkvDelegate(GOOGLE_INSTALL_REFERRER, null) { mmkv }
         private set
 
@@ -214,6 +216,10 @@ class Config : NetworkChangedListener {
         this.opid = opid
     }
 
+    fun storeRegChannelCode(regChannelCode: String?) {
+        this.regChannelCode = regChannelCode
+    }
+
     fun storeDevelopmentMode(developMode: Boolean) {
         this.isDevelopmentMode = developMode
     }
@@ -350,7 +356,7 @@ class Config : NetworkChangedListener {
         val keysToRemove = arrayOf(
             FIRST_OPEN_APP,
             IN_REVIEW, ENVIRONMENT, DEVELOPMENT_MODE,
-            INSTALL_DATA, OPID, SHOW_JUMP_POP,
+            INSTALL_DATA, OPID, REG_CHANNEL_CODE, SHOW_JUMP_POP,
             TODAY_LOGIN_REWARDS_DIALOG, LOGIN_REWARDS
         )
         mmkv.removeValuesForKeys(keysToRemove)
@@ -366,6 +372,7 @@ class Config : NetworkChangedListener {
         private const val APP_CONFIG = "app_config"
         private const val INSTALL_DATA = "install_data"
         private const val OPID = "opid"
+        private const val REG_CHANNEL_CODE = "reg_channel_code"
         private val DEFAULT_APP_CONFIG: AppConfigData = AppConfigData()
         private const val NOTIFICATION_ENABLE = "NOTIFICATION_ENABLE"
         private const val SHOW_JUMP_POP = "showJumpPop"
