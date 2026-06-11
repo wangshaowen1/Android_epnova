@@ -25,6 +25,8 @@ class ItemVideoFeedVm(info: EpisodeInfo?) : AppItemViewModel<EpisodeInfo>(info) 
 
     // --- 播放器 UI 状态 ---
     val showBuffering = ObservableBoolean(false)
+    val coverUrl = ObservableField<String?>()
+    val showLockedCover = ObservableBoolean(false)
 
     // 【新增】是否正在播放（用于切换中心按钮的 Icon：播放/暂停）
     val isPlaying = ObservableBoolean(true)
@@ -52,9 +54,12 @@ class ItemVideoFeedVm(info: EpisodeInfo?) : AppItemViewModel<EpisodeInfo>(info) 
 
     /** 同步全局作品状态 */
     fun syncWorkInfo(work: WorkVOInfo?) {
+        val item = data.get()
         workInfo.set(work)
         isCollected.set(work?.collected == true)
         collectCount.set(work?.collectCount?.toUnitText())
+        showLockedCover.set(item?.lockStatus == 2)
+        coverUrl.set(resolveCoverUrl(item, work))
     }
 
     fun onClickBlankArea() {
@@ -67,4 +72,10 @@ class ItemVideoFeedVm(info: EpisodeInfo?) : AppItemViewModel<EpisodeInfo>(info) 
     fun onClickCollect() = actionListener?.onToggleCollect(positionProvider())
     fun onClickLike() = actionListener?.onToggleLike(positionProvider())
     fun onClickEpisodeSelect() = actionListener?.showEpisodeSelectDialog(positionProvider())
+
+    private fun resolveCoverUrl(item: EpisodeInfo?, work: WorkVOInfo?): String? {
+        if (item?.lockStatus != 2) return null
+        return item?.workCoverUrl?.takeIf { it.isNotBlank() }
+            ?: work?.workCoverUrl?.takeIf { it.isNotBlank() }
+    }
 }

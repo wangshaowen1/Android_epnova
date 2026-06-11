@@ -31,6 +31,8 @@
                 android:background="?attr/bgColor1"
                 android:onClick="@{() -> item.onClickBlankArea()}"
                 android:saveEnabled="false"
+                setCoverUrl="@{item.coverUrl}"
+                placeHolder="@{item.showLockedCover ? @drawable/ic_play_default_cover : null}"
                 app:coverScaleType="fitCenter"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintDimensionRatio="H,9:16"
