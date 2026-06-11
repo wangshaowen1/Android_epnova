@@ -247,15 +247,19 @@ class CreationViewModel : AppRepositoryViewModel<CreationRepository>() {
 
     fun extractStoryName(input: String?): String? {
         if (input.isNullOrBlank()) return null
-        // 正则表达式解释：
-        // 故事名称\s*[:：]\s* -> 匹配“故事名称”后跟可选空格，以及中英文冒号，再跟可选空格
-        // 《(.*?)》            -> 匹配书名号，并捕获其中的内容（懒惰匹配）
-        val regex = """故事名称\s*[:：]\s*《(.*?)》""".toRegex()
+        // 兼容中英文标题标签和常见包裹符号；无包裹符号时取标题行剩余内容。
+        val titleLabel = """(?:故事名称|故事标题|作品名称|作品标题|Story\s*Title|Title)"""
+        val regex = """$titleLabel\s*[:：]\s*([^\r\n]+)""".toRegex(RegexOption.IGNORE_CASE)
+        val title = regex.find(input)?.groups?.get(1)?.value?.trim() ?: return null
 
-        val matchResult = regex.find(input)
-
-        // 如果匹配成功，返回第一个捕获组的内容
-        return matchResult?.groups?.get(1)?.value
+        return title.removeSurrounding("《", "》")
+            .removeSurrounding("“", "”")
+            .removeSurrounding("\"", "\"")
+            .removeSurrounding("'", "'")
+            .removePrefix("//")
+            .removeSuffix("//")
+            .trim()
+            .takeIf { it.isNotEmpty() }
     }
 
     fun getFirstRechargeInfo(callback: () -> Unit) {
