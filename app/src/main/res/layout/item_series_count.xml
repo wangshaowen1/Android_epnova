@@ -58,7 +58,7 @@
                 android:imeOptions="actionDone"
                 android:inputType="number"
                 android:maxLength="2"
-                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
                 android:text="@={item.input}"
                 android:textColor="?attr/textColor2"
                 android:textColorHint="@color/transparent"
@@ -69,9 +69,8 @@
                 style="@style/Text14"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginStart="10dp"
-                android:text="@string/vol_number"
+                android:layout_gravity="center_vertical|end"
+                android:text="@string/vol_unit"
                 android:textColor="?attr/textColor2" />
         </FrameLayout>
     </com.kuaigeglobal.epnova.widget.BorderConstraintLayout>

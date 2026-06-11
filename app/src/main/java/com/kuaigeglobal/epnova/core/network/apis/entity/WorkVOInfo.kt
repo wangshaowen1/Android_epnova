@@ -1,7 +1,9 @@
 package com.kuaigeglobal.epnova.core.network.apis.entity
 
+import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.ext.toUnitText
 import com.kuaigeglobal.epnova.core.User
+import com.nhsd.basic.ext.getResString
 
 /**
  * {
@@ -41,7 +43,7 @@ data class WorkVOInfo(
 
     fun getFormatEp(): String {
         return if (lastSortNo != null && totalEpisodeCnt != null) {
-            "EP.${lastSortNo}/EP.${totalEpisodeCnt}"
+            "${R.string.vol_number.getResString()}${lastSortNo} / ${R.string.vol_number.getResString()}${totalEpisodeCnt}"
         } else {
             ""
         }
