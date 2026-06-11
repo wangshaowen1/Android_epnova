@@ -60,11 +60,12 @@ class VideoStoryboardResource(private val url: String, private val storyboard: S
         var finalV = ""
         run {
             val idx = builder.addInput(videoFile.absolutePath)
-            mapV = "$idx:v"
+            // 服务端返回的视频可能包含多条 video track，分镜合成只消费主视频轨。
+            mapV = "$idx:v:0"
             finalV = mapV
         }
         if (subtitleFile?.exists() == true) {
-            builder.addFilter("[0:v]subtitles='${subtitleFile.absolutePath}':force_style='Outline=1,Shadow=0,PrimaryColour=&H00FFFFFF,SecondaryColour=&H80000000'[v_subtitle]")
+            builder.addFilter("[$mapV]subtitles='${subtitleFile.absolutePath}':force_style='Outline=1,Shadow=0,PrimaryColour=&H00FFFFFF,SecondaryColour=&H80000000'[v_subtitle]")
             mapV = "v_subtitle"
             finalV = "[$mapV]"
         }
@@ -83,7 +84,7 @@ class VideoStoryboardResource(private val url: String, private val storyboard: S
                 finalV = "[$mapV]"
             }
         }
-        val extra = "-map $finalV -map 0:a? -c:v libx264 -preset veryfast -r 30 -pix_fmt yuv420p"
+        val extra = "-map $finalV -map 0:a? -c:v libopenh264 -b:v 4000k -r 30 -pix_fmt yuv420p"
         val command = builder.build(cacheFile.absolutePath, extra)
         val videoDuration = FFmpegHelper.parseDuration(videoFile.absolutePath) / 1000
         FFmpegHelper.execute(command, videoDuration) { ffmpegProgress ->

@@ -140,7 +140,11 @@ class EditStoryboardVideoViewModel : AppRepositoryViewModel<EditStoryboardReposi
                     loopSynthesisStatus()
                 } else if (task.isFailed()) {
                     synthesisDialog?.dismiss()
-                    task.reason?.showToast()
+                    if (task.status == VideoSynthesisTask.STATUS_VIDEO_GENERATE_FAIL) {
+                        showToast(R.string.video_composition_failed)
+                    } else {
+                        task.reason?.showToast()
+                    }
                 }
             }
         }
