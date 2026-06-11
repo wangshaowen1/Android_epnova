@@ -83,7 +83,9 @@ class StoryboardDesignFragment :
             R.id.btnNext -> {
                 mRealVM.clickNext { workId, storyId, taskId ->
                     EditStoryboardVideoActivity.start(
-                        hostVm?.title?.value?.let { "$it：第${hostVm?.chapterIndex ?: 1}集" },
+                        hostVm?.title?.value?.let {
+                            "$it：${R.string.episode_number_format.getResString(hostVm?.chapterIndex ?: 1)}"
+                        },
                         workId,
                         storyId,
                         hostVm?.videoRatio,

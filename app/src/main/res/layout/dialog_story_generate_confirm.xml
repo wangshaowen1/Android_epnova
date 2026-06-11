@@ -34,7 +34,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/spacing_l"
-            android:onClick="@{()->layout.dismiss()}"
             android:padding="3dp"
             android:src="@drawable/icon_close"
             app:layout_constraintBottom_toBottomOf="@id/title"

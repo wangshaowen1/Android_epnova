@@ -232,7 +232,7 @@
     <string name="generate_short_video_now">สร้างวิดีโอเดี๋ยวนี้</string>
     <string name="generating_short_video">กำลังสร้างวิดีโอของคุณ…</string>
     <string name="estimated_wait_time">โดยปกติใช้เวลา 10–30 วินาที กรุณารอสักครู่</string>
-    <string name="time_15_30_sec">15 ถึง 30 วินาที</string>
+    <string name="time_15_30_sec"> 15 ถึง 30 วินาที</string>
     <string name="start_creation_monetization">เริ่มสร้างรายได้จากงานสร้างของฉัน</string>
     <string name="works">งานสร้าง</string>
     <string name="my_balance">ยอดเงินของฉัน</string>

@@ -224,7 +224,7 @@
     <string name="generate_short_video_now">立即生成短片</string>
     <string name="generating_short_video">正在为你生成短片…</string>
     <string name="estimated_wait_time">大约花费10–30秒左右，请稍候</string>
-    <string name="time_15_30_sec">15 – 30秒</string>
+    <string name="time_15_30_sec"> 15 – 30秒</string>
     <string name="start_creation_monetization">开启我的创作变现</string>
     <string name="works">作品</string>
     <string name="my_balance">我的余额</string>

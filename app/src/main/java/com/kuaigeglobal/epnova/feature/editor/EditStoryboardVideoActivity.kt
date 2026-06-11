@@ -199,7 +199,7 @@ class EditStoryboardVideoActivity : BaseViewModelActivity<ActivityEditStoryboard
 
             R.id.btnDelete -> {
                 if (mRealVM.showPublishLockedToast()) return
-                showCommonDialog(tip = getString(R.string.confirm_delete_scene_warning), confirmText = getString(R.string.confirm_del)) {
+                showCommonDialog(tip = getString(R.string.confirm_delete_scene_warning), confirmText = getString(R.string.confirm)) {
                     mRealVM.deleteCurrentStoryboard()
                 }
             }
