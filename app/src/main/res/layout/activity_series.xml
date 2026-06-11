@@ -191,7 +191,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="24dp"
-                                    android:text="@string/work_description"
+                                    android:text="@string/story_summary"
                                     android:textAppearance="@style/Text14"
                                     android:textColor="?attr/textColor1"
                                     app:layout_constraintStart_toStartOf="@+id/ivCover"
