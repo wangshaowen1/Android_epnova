@@ -300,9 +300,10 @@ class MyBalanceViewModel(
         User.get().apply {
             userPurchasedCoins.set((coins - giveCoins).coerceAtLeast(0).toString())
             balance.set(coins.toString())
+            creditsBalance.set(points.toString())
             userGiveCoins.set(User.get().giveCoins.toString())
         }
-        if (currentTab == TAB_COINS) displayBalance.set(balance.get())
+        displayBalance.set(if (currentTab == TAB_COINS) balance.get() else creditsBalance.get())
     }
 
     private fun refreshCoinsAndPoints() {

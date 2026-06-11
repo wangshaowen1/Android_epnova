@@ -43,7 +43,8 @@ class PowerRechargeDialog : BaseBottomPushVMDialogFragment<DialogRechargePowerBi
          * 检查是否余额不足，并弹出充值弹窗
          */
         fun checkLowBalance(cost: Int, rechargeTab: Int = MyBalanceViewModel.TAB_COINS): Boolean {
-            if (cost > User.get().coins) {
+            val balance = if (rechargeTab == TAB_CREDITS) User.get().points else User.get().coins
+            if (cost.toLong() > balance) {
                 ioScope.launch(Dispatchers.Main) {
                     showRechargeDialog(true, rechargeTab)
                 }
@@ -134,7 +135,6 @@ class PowerRechargeDialog : BaseBottomPushVMDialogFragment<DialogRechargePowerBi
         binding.ivTopBg.setBackgroundResource(
             if (isCredits) R.drawable.bg_credits_recharge_top else R.drawable.bg_coin_recharge_top
         )
-        binding.ivCostIcon.setImageResource(iconRes)
         binding.ivBalanceIcon.setImageResource(iconRes)
         binding.rvRechargeAmount.adapter = if (isCredits) mRealVM.creditsAdapter else mRealVM.coinsAdapter
         binding.tvPolicy.setText(if (isCredits) R.string.store_tips_content_credits else R.string.store_tips_content_coins)

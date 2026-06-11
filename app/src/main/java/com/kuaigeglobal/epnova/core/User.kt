@@ -208,6 +208,7 @@ class User : IUser {
         this.points = info?.pointsTotalNum ?: 0
         //赠送算力数量
         this.givePoints = info?.givePointsNum ?: 0
+        notifyChange(COINS, GIVE_COINS, POINTS, GIVE_POINTS)
     }
 
     fun storePurchaseCourseStatus(purchaseCourseStatus: Int?) {

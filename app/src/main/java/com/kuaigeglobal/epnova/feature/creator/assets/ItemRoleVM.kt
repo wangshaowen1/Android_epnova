@@ -43,7 +43,7 @@ class ItemRoleVM(
     override val assetType: String = R.string.roles.getResString()
     override val assetDescHint: String = R.string.role_description.getResString()
     override val assetNameHint: String = R.string.role_name.getResString()
-    override val generateButtonText: String = R.string.generate_role.getResString()
+    override val generateButtonText: String = R.string.generate.getResString()
 
     override fun clickGenerate() {
         if (status.get() == 1) return

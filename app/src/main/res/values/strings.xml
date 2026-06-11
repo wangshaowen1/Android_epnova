@@ -229,6 +229,7 @@
     <string name="generate_short_video_now">Generate Video Now</string>
     <string name="generating_short_video">Generating your video…</string>
     <string name="estimated_wait_time">This usually takes 10–30 seconds. Please wait.</string>
+    <string name="time_15_30_sec">15 – 30 seconds</string>
     <string name="start_creation_monetization">Start Monetizing My Creations</string>
     <string name="works">Works</string>
     <string name="my_balance">My Balance</string>

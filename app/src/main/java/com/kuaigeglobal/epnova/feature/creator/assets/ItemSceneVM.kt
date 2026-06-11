@@ -39,7 +39,7 @@ class ItemSceneVM(
     override val assetType: String = R.string.scenes.getResString()
     override val assetDescHint: String = R.string.scene_description.getResString()
     override val assetNameHint: String = R.string.scene_name.getResString()
-    override val generateButtonText: String = R.string.generate_scene.getResString()
+    override val generateButtonText: String = R.string.generate.getResString()
 
     override fun clickGenerate() {
         if (status.get() == 1) return

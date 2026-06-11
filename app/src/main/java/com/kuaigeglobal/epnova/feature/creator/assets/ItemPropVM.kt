@@ -39,7 +39,7 @@ class ItemPropVM(
     override val assetType: String = R.string.props.getResString()
     override val assetDescHint: String = R.string.prop_description.getResString()
     override val assetNameHint: String = R.string.prop_name.getResString()
-    override val generateButtonText: String = R.string.generate_prop.getResString()
+    override val generateButtonText: String = R.string.generate.getResString()
 
     override fun clickGenerate() {
         if (status.get() == 1) return

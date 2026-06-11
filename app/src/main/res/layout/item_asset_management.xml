@@ -93,12 +93,14 @@
 
         <TextView
             setVisible="@{item.status &lt; 1||item.status==10}"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:drawableTop="@drawable/icon_ai_image_text4"
             android:drawablePadding="@dimen/spacing_m"
             android:gravity="center"
             android:text="@{item.hint}"
+            tools:text="@string/set_character_appearance"
+            android:layout_marginHorizontal="@dimen/spacing_xs"
             android:textColor="?attr/textColor4"
             android:textSize="12sp"
             android:tintMode="src_in"

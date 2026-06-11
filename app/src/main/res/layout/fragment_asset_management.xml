@@ -128,9 +128,9 @@
             android:focusable="true">
 
             <include
-                duration="@{`15-30秒`}"
+                duration="@{@string/time_15_30_sec}"
                 layout="@layout/layout_description_generating"
-                tips="@{`正在生成资产信息...`}"
+                tips="@{@string/generate_story_create_asset_info}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintBottom_toBottomOf="parent"

@@ -232,6 +232,7 @@
     <string name="generate_short_video_now">สร้างวิดีโอเดี๋ยวนี้</string>
     <string name="generating_short_video">กำลังสร้างวิดีโอของคุณ…</string>
     <string name="estimated_wait_time">โดยปกติใช้เวลา 10–30 วินาที กรุณารอสักครู่</string>
+    <string name="time_15_30_sec">15 ถึง 30 วินาที</string>
     <string name="start_creation_monetization">เริ่มสร้างรายได้จากงานสร้างของฉัน</string>
     <string name="works">งานสร้าง</string>
     <string name="my_balance">ยอดเงินของฉัน</string>
@@ -361,7 +362,7 @@
     <string name="file_picker_click">แตะเพื่อเลือกไฟล์</string>
     <string name="reselect">เลือกใหม่</string>
     <string name="upload_photo_limit">อัปโหลดรูปภาพ</string>
-    <string name="episode_number_format">ตอนที่d</string>
+    <string name="episode_number_format">ตอนที่ %1$d</string>
     <string name="account_deletion_title">ประกาศการลบบัญชี</string>
     <string name="creation_progress_format">สร้าง %1จากd ตอนแล้ว</string>
     <string name="image_description_limit">คำอธิบายรูปภาพ</string>
