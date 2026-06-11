@@ -4,6 +4,7 @@
     <dimen name="action_bar_size">44dp</dimen>
     <dimen name="lineSpacingExtraShort">3dp</dimen>
     <dimen name="lineSpacingExtra">5dp</dimen>
+    <dimen name="lineSpacingExtraLarge">8dp</dimen>
     <!--佩戴的勋章最大尺寸-->
     <!--佩戴的勋章最大尺寸（小号的）-->
 

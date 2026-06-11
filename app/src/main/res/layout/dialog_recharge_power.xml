@@ -169,6 +169,7 @@
                         android:id="@+id/tvPolicy"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:lineSpacingExtra="@dimen/lineSpacingExtraLarge"
                         tools:text="@string/store_tips_content_coins"
                         android:textAppearance="@style/Text12"
                         android:textColor="?attr/textColor4" />
