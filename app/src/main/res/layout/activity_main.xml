@@ -51,7 +51,7 @@
                     android:gravity="center"
                     android:text="@string/tab_explore"
                     android:textColor="@color/cb_main_tab_txt"
-                    android:textSize="10sp"
+                    android:textSize="11sp"
                     tools:checked="true" />
 
                 <View
@@ -78,7 +78,7 @@
                     android:gravity="center"
                     android:text="@string/creation"
                     android:textColor="@color/cb_main_tab_txt"
-                    android:textSize="10sp"
+                    android:textSize="11sp"
                     tools:checked="false" />
 
                 <View
@@ -105,7 +105,7 @@
                     android:gravity="center"
                     android:text="@string/tab_my_list"
                     android:textColor="@color/cb_main_tab_txt"
-                    android:textSize="10sp"
+                    android:textSize="11sp"
                     tools:checked="false" />
 
                 <View
@@ -131,7 +131,7 @@
                     android:gravity="center"
                     android:text="@string/tab_profile"
                     android:textColor="@color/cb_main_tab_txt"
-                    android:textSize="10sp"
+                    android:textSize="11sp"
                     tools:checked="false" />
 
                 <View
