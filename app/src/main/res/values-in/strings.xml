@@ -714,6 +714,7 @@ Jika Anda memilih \"Tidak Setuju\", Anda tidak akan dapat menggunakan produk dan
     <string name="download_watermark_free">Unduh versi tanpa watermark</string>
     <string name="download_video_considered_as_agreement">Mengunduh video berarti Anda menyetujui Perjanjian Pengunduhan</string>
     <string name="download_agreement">Perjanjian Pengunduhan</string>
+    <string name="edit_story_synopsis">sinopsis cerita</string>
     <string name="edit_episode_content">Edit Naskah</string>
     <string name="edit_asset_desc">Edit Deskripsi Aset</string>
     <string name="edit_storyboard_desc">Edit Deskripsi Storyboard</string>

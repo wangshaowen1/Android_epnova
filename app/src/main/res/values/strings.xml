@@ -258,7 +258,7 @@
     <string name="network_error">Network Error</string>
     <string name="all_styles">All Styles</string>
     <string name="saving_to_local">Saving to device…</string>
-    <string name="edit_story_summary">Edit Synopsis</string>
+    <string name="edit_story_summary">Synopsis</string>
     <string name="edit_title">Edit Title</string>
     <string name="story_title">Story Title</string>
     <string name="share_to">Share to</string>
@@ -651,15 +651,15 @@
     <string name="click_button_to_watch_full_episodes">Tap the platform buttons below to watch full episodes.</string>
     <string name="confirm_exit_without_saving">Current content has not been saved. Changes will be lost after exiting. Confirm exit?</string>
     <string name="exit_directly">Exit Directly</string>
-    <string name="edit_story_synopsis">Edit Story Synopsis</string>
+    <string name="edit_story_synopsis">Story Synopsis</string>
     <string name="download_method_select">Please select video download method</string>
     <string name="download_watermarked">Download watermarked version</string>
     <string name="download_watermark_free">Download watermark‑free version</string>
     <string name="download_video_considered_as_agreement">Downloading videos constitutes acceptance of the Download Agreement</string>
     <string name="download_agreement">Download Agreement</string>
     <string name="edit_episode_content">Edit Script</string>
-    <string name="edit_asset_desc">Edit Asset Description</string>
-    <string name="edit_storyboard_desc">Edit Storyboard Description</string>
+    <string name="edit_asset_desc">Asset Description</string>
+    <string name="edit_storyboard_desc">Storyboard Description</string>
     <string name="role_desc">Character Description</string>
     <string name="prop_desc">Prop Description</string>
     <string name="scene_desc">Scene Description</string>
