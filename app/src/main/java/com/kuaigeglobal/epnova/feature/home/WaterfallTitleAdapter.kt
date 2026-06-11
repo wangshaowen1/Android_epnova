@@ -4,9 +4,12 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.databinding.ItemWaterfallTitleBinding
 
 class WaterfallTitleAdapter : RecyclerView.Adapter<WaterfallTitleAdapter.TitleViewHolder>() {
+
+    private var title: String? = null
 
     var isVisible: Boolean = false
         set(value) {
@@ -15,6 +18,16 @@ class WaterfallTitleAdapter : RecyclerView.Adapter<WaterfallTitleAdapter.TitleVi
                 if (value) notifyItemInserted(0) else notifyItemRemoved(0)
             }
         }
+
+    fun setTitle(title: String?) {
+        val newTitle = title?.takeIf { it.isNotBlank() }
+        if (this.title != newTitle) {
+            this.title = newTitle
+            if (isVisible) {
+                notifyItemChanged(0)
+            }
+        }
+    }
 
     // 只需要显示一个标题
     override fun getItemCount(): Int = if (isVisible) 1 else 0
@@ -32,7 +45,12 @@ class WaterfallTitleAdapter : RecyclerView.Adapter<WaterfallTitleAdapter.TitleVi
         if (layoutParams is StaggeredGridLayoutManager.LayoutParams) {
             layoutParams.isFullSpan = true
         }
+        holder.bind(title)
     }
 
-    inner class TitleViewHolder(val binding: ItemWaterfallTitleBinding) : RecyclerView.ViewHolder(binding.root)
+    inner class TitleViewHolder(val binding: ItemWaterfallTitleBinding) : RecyclerView.ViewHolder(binding.root) {
+        fun bind(title: String?) {
+            binding.tvTitle.text = title ?: binding.root.context.getString(R.string.home_search_tab_recommended_for_u)
+        }
+    }
 }

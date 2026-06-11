@@ -226,6 +226,9 @@ class HomeFragment :
 
     private fun updateWaterfallSection(sections: List<Section>) {
         val waterfallSection = sections.find { it.bookshelfType == 2 }
+        waterfallSection?.let { title ->
+            titleAdapter.setTitle(title.bookshelfName)
+        }
         titleAdapter.isVisible = waterfallSection != null
         mRealVM.currentWaterfallId.value = waterfallSection?.bookshelfId ?: ""
     }
