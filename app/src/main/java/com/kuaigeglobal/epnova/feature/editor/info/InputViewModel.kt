@@ -37,15 +37,16 @@ class InputViewModel : AppRepositoryViewModel<AppRepository>() {
             subTitle.set(formatEpisodeTitle(it, "#80ffffff".toColorInt()))
         }
         setTitle()
+        // 海外版
         maxLength.set(
-            when (type) {
+            (when (type) {
                 InputDialog.TYPE_WORK_DESC -> 500
                 InputDialog.TYPE_EPISODE_SUMMARY -> 300
                 InputDialog.TYPE_EPISODE_CONTENT -> 5000
                 InputDialog.TYPE_ASSET_DESC -> 200
                 InputDialog.TYPE_STORYBOARD_DESC -> 1000
                 else -> 500
-            }
+            } * 5)
         )
     }
 
