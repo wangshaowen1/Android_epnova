@@ -44,8 +44,9 @@ class CreationViewModel : AppRepositoryViewModel<CreationRepository>() {
     var fileUrl: String? = null
     var analysisResult: TextEncodingUtil.AnalysisResult? = null
     val minInputLength = 10
+    // 海外统一20000
     val maxInputLength by lazy {
-        ObservableInt(1000)
+        ObservableInt(20000)
     }
     val promptGenerating = MutableLiveData<Pair<Boolean, String>>()
 
@@ -67,7 +68,7 @@ class CreationViewModel : AppRepositoryViewModel<CreationRepository>() {
     override fun onCreate() {
         super.onCreate()
         hint.set(if (inspirationModel()) R.string.story_inspiration_hint.getResString() else R.string.paste_novel_hint.getResString())
-        maxInputLength.set(if (inspirationModel()) 1000 else 5000)
+//        maxInputLength.set(if (inspirationModel()) 1000 else 5000)
         input.value =
             if (inspirationModel()) Global.inspirationContent else Global.customizedContent
         if (inspirationModel()) {
