@@ -394,7 +394,7 @@
     <string name="asset_generation_partial_failure">สินทรัพย์บางอย่างสร้างไม่สำเร็จ กรุณาสร้างใหม่</string>
     <string name="confirm_edit">ยืนยันการแก้ไขหรือไม่?</string>
     <string name="edit_text_warning">การแก้ไขข้อความอาจส่งผลต่อคุณภาพการสร้างวิดีโอโดย AI</string>
-    <string name="continue_editing">ดำเนินการแก้ไขต่อ</string>
+    <string name="continue_editing">ดำเนินต่อ</string>
     <string name="confirm_deletion">ลบรายการนี้หรือไม่?</string>
     <string name="delete_impact_warning">การลบรายการนี้อาจส่งผลต่อการสร้างวิดีโอ</string>
     <string name="missing_asset_description">สินทรัพย์บางอย่างไม่มีคำอธิบาย กรุณากรอกก่อนดำเนินต่อ</string>

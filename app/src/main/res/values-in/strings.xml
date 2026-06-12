@@ -394,7 +394,7 @@ Untuk mengkonfirmasi, ketuk [Minta Penghapusan].</string>
     <string name="asset_generation_partial_failure">Beberapa aset gagal dibuat. Harap buat ulang.</string>
     <string name="confirm_edit">Konfirmasi pengeditan?</string>
     <string name="edit_text_warning">Mengedit teks dapat memengaruhi kualitas pembuatan video AI.</string>
-    <string name="continue_editing">Lanjutkan Mengedit</string>
+    <string name="continue_editing">Lanjutkan</string>
     <string name="confirm_deletion">Hapus ini?</string>
     <string name="delete_impact_warning">Menghapus ini dapat memengaruhi pembuatan video</string>
     <string name="missing_asset_description">Beberapa aset tidak memiliki deskripsi. Harap isi sebelum melanjutkan.</string>

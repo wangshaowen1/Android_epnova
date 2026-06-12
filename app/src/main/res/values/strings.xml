@@ -391,7 +391,7 @@
     <string name="asset_generation_partial_failure">Some assets failed to generate. Please regenerate.</string>
     <string name="confirm_edit">Confirm edits?</string>
     <string name="edit_text_warning">Editing the text may affect the quality of AI video generation.</string>
-    <string name="continue_editing">Continue Editing</string>
+    <string name="continue_editing">Continue</string>
     <string name="confirm_deletion">Delete this?</string>
     <string name="delete_impact_warning">Deleting this may affect video generation</string>
     <string name="missing_asset_description">Some assets are missing descriptions. Please fill them in before continuing.</string>
