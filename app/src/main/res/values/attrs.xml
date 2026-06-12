@@ -1047,4 +1047,26 @@
         <attr name="pi_activeWidth" format="dimension" />
         <attr name="pi_indicatorSpacing" format="dimension" />
     </declare-styleable>
+
+    <declare-styleable name="ShimmerView">
+        <!--自动还是手动-->
+        <attr name="svAnimMode" format="enum">
+            <enum name="auto" value="0" />
+            <enum name="manual" value="1" />
+        </attr>
+        <!--光影宽度-->
+        <attr name="svWidth" format="dimension" />
+        <!--光影斜率 范围【-1 ~ 1】-->
+        <attr name="svSlope" format="float" />
+        <!-- -1:无限循环，其他代表重复执行几次-->
+        <attr name="svRepeat" format="integer" />
+        <!--动画时长 单位ms-->
+        <attr name="svDuration" format="integer" />
+        <!--颜色值 举例：{0x00FFFFFF, 0x88FFFFFF, 0x00FFFFFF}-->
+        <attr name="svColors" format="string" />
+        <!--颜色值对应的位置数组  (值范围0~1) 举例：[0f,0.5f,1f]  与csAngle数组大小必须一致-->
+        <attr name="svPositions" format="string" />
+        <!--控件的圆角大小-->
+        <attr name="svRadius" format="dimension" />
+    </declare-styleable>
 </resources>

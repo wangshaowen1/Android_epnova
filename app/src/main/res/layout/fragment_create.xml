@@ -70,6 +70,21 @@
                             app:layout_constraintDimensionRatio="325:48"
                             app:layout_constraintTop_toBottomOf="@id/banner" />
 
+                        <com.kuaigeglobal.epnova.widget.ShimmerView
+                            app:layout_constraintBottom_toBottomOf="@id/btnCreation"
+                            app:layout_constraintEnd_toEndOf="@id/btnCreation"
+                            app:layout_constraintStart_toStartOf="@id/btnCreation"
+                            app:layout_constraintTop_toTopOf="@id/btnCreation"
+                            app:svAnimMode="auto"
+                            app:svRadius="90dp"
+                            app:svRepeat="-1"
+                            app:svSlope="-1"
+                            app:svPositions="0,0.5,1"
+                            app:svColors="#00FFFFFF,#5AFFFFFF,#00FFFFFF"
+                            app:svDuration="2000"
+                            android:layout_width="0dp"
+                            android:layout_height="0dp"/>
+
                         <TextView
                             style="@style/Text16"
                             android:layout_width="wrap_content"
