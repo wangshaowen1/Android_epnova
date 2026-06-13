@@ -508,47 +508,47 @@ object ApiConstants {
     /**
      * 场景列表
      */
-    const val WORK_ASSET_SCENE_LIST = "work/asset/scene/list"
+    const val WORK_ASSET_SCENE_LIST = "v2/work/asset/scene/list/story"
 
     /**
      * 场景保存
      */
-    const val WORK_ASSET_SCENE_SAVE = "work/asset/scene/save"
+    const val WORK_ASSET_SCENE_SAVE = "v2/work/asset/scene/save"
 
     /**
      * 场景单个删除
      */
-    const val WORK_ASSET_SCENE_DELETE = "work/asset/scene/delete"
+    const val WORK_ASSET_SCENE_DELETE = "v2/work/asset/scene/unlink/story"
 
     /**
      * 角色列表
      */
-    const val WORK_ASSET_ROLE_LIST = "work/asset/role/list"
+    const val WORK_ASSET_ROLE_LIST = "v2/work/asset/role/list/story"
 
     /**
      * 角色保存
      */
-    const val WORK_ASSET_ROLE_SAVE = "work/asset/role/save"
+    const val WORK_ASSET_ROLE_SAVE = "v2/work/asset/role/save"
 
     /**
      * 角色单个删除
      */
-    const val WORK_ASSET_ROLE_DELETE = "work/asset/role/delete"
+    const val WORK_ASSET_ROLE_DELETE = "v2/work/asset/role/unlink/story"
 
     /**
      * 道具列表
      */
-    const val WORK_ASSET_PROP_LIST = "work/asset/prop/list"
+    const val WORK_ASSET_PROP_LIST = "v2/work/asset/prop/list/story"
 
     /**
      * 道具保存
      */
-    const val WORK_ASSET_PROP_SAVE = "work/asset/prop/save"
+    const val WORK_ASSET_PROP_SAVE = "v2/work/asset/prop/save"
 
     /**
      * 道具单个删除
      */
-    const val WORK_ASSET_PROP_DELETE = "work/asset/prop/delete"
+    const val WORK_ASSET_PROP_DELETE = "v2/work/asset/prop/unlink/story"
 
     /**
      * 生成单个资产图片（重新生成/生成）
