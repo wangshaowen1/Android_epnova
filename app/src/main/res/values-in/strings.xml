@@ -365,9 +365,9 @@ Untuk mengkonfirmasi, ketuk [Minta Penghapusan].</string>
     <string name="upload_photo_limit">Unggah Gambar</string>
     <string name="episode_number_format">Episode %1$d</string>
     <string name="account_deletion_title">Pemberitahuan Penghapusan Akun</string>
-    <string name="creation_progress_format">%1ddarid dari %2ddarid Episode Dibuat</string>
+    <string name="creation_progress_format">%1$d darid dari %2$d darid Episode Dibuat</string>
     <string name="image_description_limit">Deskripsi Gambar</string>
-    <string name="episode_progress_format">Ep.</string>
+    <string name="episode_progress_format">Telah membuat %1$d dari %2$d episode</string>
     <string name="auto_saved_as_draft">Tersimpan otomatis sebagai draf</string>
     <string name="ai_generating_auto_saved">AI sedang membuat. Tersimpan otomatis sebagai draf.</string>
     <string name="ai_generating_auto_saved_2">AI sedang membuat. Tersimpan otomatis.</string>

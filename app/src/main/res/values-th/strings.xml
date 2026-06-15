@@ -365,9 +365,9 @@
     <string name="upload_photo_limit">อัปโหลดรูปภาพ</string>
     <string name="episode_number_format">ตอนที่ %1$d</string>
     <string name="account_deletion_title">ประกาศการลบบัญชี</string>
-    <string name="creation_progress_format">สร้าง %1จากd ตอนแล้ว</string>
+    <string name="creation_progress_format">สร้างตอนแล้ว %1$d จาก %2$d ตอน</string>
     <string name="image_description_limit">คำอธิบายรูปภาพ</string>
-    <string name="episode_progress_format">ตอนที่ %1d</string>
+    <string name="episode_progress_format">ตอนที่ %1$d</string>
     <string name="auto_saved_as_draft">บันทึกเป็นร่างอัตโนมัติ</string>
     <string name="ai_generating_auto_saved">AI กำลังสร้าง บันทึกเป็นร่างอัตโนมัติ</string>
     <string name="ai_generating_auto_saved_2">AI กำลังสร้าง บันทึกอัตโนมัติ</string>
