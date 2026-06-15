@@ -20,6 +20,7 @@ class CoverPlayerView : PlayerView, Player.Listener {
     private var restorePlayer: Player? = null
     private var alphaAnimator: ObjectAnimator? = null
     private var coverImage: AppCompatImageView? = null
+    private var forceHideCover = false
     val scaleTypeArray: Array<ImageView.ScaleType> = arrayOf(
         ImageView.ScaleType.MATRIX,
         ImageView.ScaleType.FIT_XY,
@@ -101,6 +102,10 @@ class CoverPlayerView : PlayerView, Player.Listener {
 
 
     private fun resetCoverImageVisible() {
+        if (forceHideCover) {
+            hideCoverImage()
+            return
+        }
         Logger.i("CoverPlayerView reset cover visible.................")
         showCoverImage()
         alphaAnimator?.cancel()
@@ -108,8 +113,21 @@ class CoverPlayerView : PlayerView, Player.Listener {
     }
 
     private fun showCoverImage() {
+        if (forceHideCover) {
+            hideCoverImage()
+            return
+        }
         coverImage?.apply {
             visibility = VISIBLE
+            alpha = 1f
+        }
+    }
+
+    private fun hideCoverImage() {
+        alphaAnimator?.cancel()
+        alphaAnimator = null
+        coverImage?.apply {
+            visibility = GONE
             alpha = 1f
         }
     }
@@ -128,6 +146,15 @@ class CoverPlayerView : PlayerView, Player.Listener {
 
     fun setTrack(track: EpisodeInfo?) {
         episodeInfo = track
+    }
+
+    fun setPlayerFrameOnly(enabled: Boolean) {
+        forceHideCover = enabled
+        if (enabled) {
+            hideCoverImage()
+        } else {
+            resetCoverImageVisible()
+        }
     }
 
 

@@ -45,6 +45,7 @@ class FeedPlayerManager(
 
     // [新] 记录用户是否主动暂停
     private var isUserPaused = false
+    private var isPreviewMode = false
 
     // 状态流
     private val _progressFlow = MutableStateFlow(Pair(0L, 0L))
@@ -69,9 +70,14 @@ class FeedPlayerManager(
             override fun onPlaybackStateChanged(state: Int) {
                 when (state) {
                     Player.STATE_BUFFERING -> {
-                        _playerState.value = FeedPlayerState.Buffering
+                        if (!isPreviewMode) {
+                            _playerState.value = FeedPlayerState.Buffering
+                        }
                     }
                     Player.STATE_READY -> {
+                        if (isPreviewMode) {
+                            return
+                        }
                         // [关键修改]：只要准备好了，且用户没点暂停，就立刻设为 Playing
                         if (exoPlayer.playWhenReady) {
                             _playerState.value = FeedPlayerState.Playing
@@ -96,6 +102,12 @@ class FeedPlayerManager(
             }
 
             override fun onIsPlayingChanged(isPlaying: Boolean) {
+                if (isPreviewMode) {
+                    if (!isPlaying) {
+                        _playerState.value = FeedPlayerState.Idle
+                    }
+                    return
+                }
                 if (isPlaying) {
                     // 只要 isPlaying 为 true，说明视频已经在动了，必须隐藏 loading
                     // 这能解决缓存命中时，STATE_READY 没能及时更新 UI 的问题
@@ -113,12 +125,17 @@ class FeedPlayerManager(
             // [修复2] 改用 playWhenReady 驱动 UI。
             // 只要 playWhenReady=true，就认为应该显示"播放中"状态(隐藏暂停图标)，忽略 Buffering 导致的 isPlaying=false
             override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
+                if (isPreviewMode) return
                 if (exoPlayer.playbackState == Player.STATE_READY) {
                     _playerState.value = if (playWhenReady) FeedPlayerState.Playing else FeedPlayerState.Pause
                 }
             }
 
             override fun onPlayerError(error: PlaybackException) {
+                if (isPreviewMode) {
+                    _playerState.value = FeedPlayerState.Idle
+                    return
+                }
                 val currentPos = exoPlayer.currentPosition
                 val duration = exoPlayer.duration
 
@@ -136,10 +153,12 @@ class FeedPlayerManager(
                     _playerState.value = FeedPlayerState.Error(isNoCache = false, msg = R.string.toast_empty_network.getResString())
                 }
             }
+
         })
     }
 
     fun attachAndPlay(track: EpisodeInfo, coverPlayerView: CoverPlayerView, startPositionMs: Long = 0L) {
+        isPreviewMode = false
         currentPlayingId = track.storyId
         // 乐观更新状态，防止切视频闪烁
         _playerState.value = FeedPlayerState.Idle
@@ -148,10 +167,12 @@ class FeedPlayerManager(
         // 同一个视频重复 attach 时也要支持 seek，覆盖“页面恢复但播放器已绑定”的场景。
         // 防止重复 attach 同一个视频导致画面闪烁
         if (exoPlayer.currentMediaItem?.mediaId == track.storyId && currentCoverPlayerView == coverPlayerView) {
+            isUserPaused = false
+            coverPlayerView.setPlayerFrameOnly(false)
             if (startPositionMs > 0) {
                 exoPlayer.seekTo(startPositionMs)
             }
-            if (!exoPlayer.isPlaying && !isUserPaused) {
+            if (!exoPlayer.isPlaying) {
                 exoPlayer.play()
             }
             return
@@ -168,6 +189,7 @@ class FeedPlayerManager(
 
         // 绑定新 View
         coverPlayerView.setTrack(track)
+        coverPlayerView.setPlayerFrameOnly(false)
         coverPlayerView.setPlayer(exoPlayer)
 
         val videoUrl = track.videoUrl ?: return
@@ -205,6 +227,40 @@ class FeedPlayerManager(
         // 这样可以确保之前的任何回调（如 stop 触发的）拿到的都是旧 ID
         currentPlayingId = track.storyId
         exoPlayer.play()
+    }
+
+    fun attachAndShowFirstFrame(track: EpisodeInfo, coverPlayerView: CoverPlayerView) {
+        val videoUrl = track.videoUrl ?: return
+        currentPlayingId = track.storyId
+        _playerState.value = FeedPlayerState.Buffering
+        progressJob?.cancel()
+        isPreviewMode = true
+        isSeeking = false
+        isUserPaused = true
+
+        if (currentCoverPlayerView != null && currentCoverPlayerView != coverPlayerView) {
+            currentCoverPlayerView?.setPlayer(null)
+        }
+        currentCoverPlayerView = coverPlayerView
+        coverPlayerView.setTrack(track)
+        coverPlayerView.setPlayerFrameOnly(true)
+        coverPlayerView.setPlayer(exoPlayer)
+
+        val mediaItem = buildMediaItem(track, videoUrl)
+        val currentUri = exoPlayer.currentMediaItem?.localConfiguration?.uri.toString()
+        val currentMediaId = exoPlayer.currentMediaItem?.mediaId
+        exoPlayer.playWhenReady = false
+        if (currentUri != videoUrl || currentMediaId != track.storyId || exoPlayer.playerError != null) {
+            exoPlayer.setMediaItem(mediaItem)
+            exoPlayer.seekTo(1L)
+            exoPlayer.prepare()
+        } else if (exoPlayer.playbackState == Player.STATE_IDLE || exoPlayer.playbackState == Player.STATE_ENDED) {
+            exoPlayer.seekTo(1L)
+            exoPlayer.prepare()
+        } else {
+            exoPlayer.pause()
+            exoPlayer.seekTo(1L)
+        }
     }
 
     /**

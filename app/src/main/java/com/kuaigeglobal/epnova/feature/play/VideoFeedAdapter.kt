@@ -63,7 +63,10 @@ class VideoFeedAdapter(private val interactionListener: InteractionListener) :
             val currentItem = getItem(position) // 获取最新数据
 
             if (activePayloads.contains(PAYLOAD_URL)) {
-                holder.binding.seekbar.duration = (getItem(position).duration ?: 0) * 1000L
+                holder.binding.item?.updateData(currentItem)
+                holder.binding.item?.syncWorkInfo(globalWorkInfo)
+                holder.binding.seekbar.duration = (currentItem.duration ?: 0) * 1000L
+                holder.binding.executePendingBindings()
             }
             if (activePayloads.contains(PAYLOAD_LIKE)) {
                 holder.binding.item?.syncLike(getItem(position))
@@ -273,9 +276,14 @@ class VideoFeedAdapter(private val interactionListener: InteractionListener) :
             activeUnlockController?.release()
             activeUnlockController = controller
 
+            controller.episode?.let { episode ->
+                binding.item?.updateData(episode)
+                binding.item?.syncWorkInfo(globalWorkInfo)
+            }
             val overlay = binding.episodeUnlockOverlay
             overlay.ctrl = controller
             overlay.executePendingBindings()
+            binding.executePendingBindings()
             overlay.root.visibility = View.VISIBLE
 
             // 解锁层出现时隐藏收藏/点赞按钮

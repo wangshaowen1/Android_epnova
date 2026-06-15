@@ -58,8 +58,8 @@ class ItemVideoFeedVm(info: EpisodeInfo?) : AppItemViewModel<EpisodeInfo>(info) 
         workInfo.set(work)
         isCollected.set(work?.collected == true)
         collectCount.set(work?.collectCount?.toUnitText())
-        showLockedCover.set(item?.lockStatus == 2)
-        coverUrl.set(resolveCoverUrl(item, work))
+        showLockedCover.set(false)
+        coverUrl.set(null)
     }
 
     fun onClickBlankArea() {
@@ -73,9 +73,4 @@ class ItemVideoFeedVm(info: EpisodeInfo?) : AppItemViewModel<EpisodeInfo>(info) 
     fun onClickLike() = actionListener?.onToggleLike(positionProvider())
     fun onClickEpisodeSelect() = actionListener?.showEpisodeSelectDialog(positionProvider())
 
-    private fun resolveCoverUrl(item: EpisodeInfo?, work: WorkVOInfo?): String? {
-        if (item?.lockStatus != 2) return null
-        return item?.workCoverUrl?.takeIf { it.isNotBlank() }
-            ?: work?.workCoverUrl?.takeIf { it.isNotBlank() }
-    }
 }

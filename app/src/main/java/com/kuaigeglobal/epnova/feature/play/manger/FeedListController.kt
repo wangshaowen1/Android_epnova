@@ -124,8 +124,9 @@ class FeedListController(
         val initialHolder = recyclerView.findViewHolderForAdapterPosition(position) as? VideoFeedAdapter.VideoViewHolder ?: return
         onPageChanged?.invoke(item, position)
 
-        // 锁定 + 自动解锁关闭 → 直接回调弹窗，不发起网络请求（isAutoUnlockFailed=false）
-        if (item.lockStatus == 2 && !Config.get().isEpisodeAutoUnlock()) {
+        val isManualLocked = item.lockStatus == 2 && !Config.get().isEpisodeAutoUnlock()
+        if (isManualLocked && !item.videoUrl.isNullOrEmpty()) {
+            playerManager.attachAndShowFirstFrame(item, initialHolder.binding.playerView)
             onEpisodeLocked?.invoke(item, false)
             return
         }
@@ -143,6 +144,11 @@ class FeedListController(
                     if (getCurrentPosition() == position) {
                         val currentHolder = recyclerView.findViewHolderForAdapterPosition(position) as? VideoFeedAdapter.VideoViewHolder
                         if (currentHolder != null) {
+                            if (readyItem.lockStatus == 2 && !Config.get().isEpisodeAutoUnlock()) {
+                                playerManager.attachAndShowFirstFrame(readyItem, currentHolder.binding.playerView)
+                                onEpisodeLocked?.invoke(readyItem, false)
+                                return@launch
+                            }
                             playerManager.attachAndPlay(readyItem, currentHolder.binding.playerView, startPositionMs)
                         }
                     }
@@ -155,7 +161,15 @@ class FeedListController(
                     onEpisodeLocked?.invoke(e.episode, Config.get().isEpisodeAutoUnlock())
                 } catch (e: kotlinx.coroutines.CancellationException) {
                     throw e  // 必须重新抛出，让协程框架正确处理 Job 取消
-                } catch (e: Exception) { e.printStackTrace() }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    if (isManualLocked && getCurrentPosition() == position) {
+                        val freshHolder = recyclerView.findViewHolderForAdapterPosition(position)
+                            as? VideoFeedAdapter.VideoViewHolder
+                        freshHolder?.updatePlayerUiState(FeedPlayerManager.FeedPlayerState.Idle)
+                        onEpisodeLocked?.invoke(item, false)
+                    }
+                }
             }
         } else {
             fetchUrlJob?.cancel()
