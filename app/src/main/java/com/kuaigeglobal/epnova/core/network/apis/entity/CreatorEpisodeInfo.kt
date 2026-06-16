@@ -138,22 +138,17 @@ data class CreatorEpisodeInfo(
 
     /**剧集已发布或审核中时，剧集列表删除需要限制。*/
     fun isPublishedOrUnderReview(): Boolean {
-        return publishStatus in listOf(CreatorPublishStatus.REVIEWING, CreatorPublishStatus.PASSED) ||
-                coverBadgeType in listOf(CreatorCoverBadgeType.IN_REVIEW, CreatorCoverBadgeType.PUBLISHED)
+        return publishStatus in listOf(CreatorPublishStatus.REVIEWING, CreatorPublishStatus.PASSED)
     }
 
     /**剧集发布角标文案。*/
     fun publishBadgeText(): String? {
         return when {
-            coverBadgeType == CreatorCoverBadgeType.DRAFT || isDraft() -> R.string.drama_detail_draft.getResString()
-            coverBadgeType in listOf(CreatorCoverBadgeType.UNPUBLISHED, CreatorCoverBadgeType.REVIEW_FAILED) ||
-                    (isCompleted() && publishStatus in listOf(CreatorPublishStatus.UNPUBLISHED, CreatorPublishStatus.FAILED)) -> {
-                R.string.drama_detail_unpublished.getResString()
-            }
-            coverBadgeType == CreatorCoverBadgeType.IN_REVIEW ||
-                    publishStatus == CreatorPublishStatus.REVIEWING -> R.string.drama_detail_in_review.getResString()
-            coverBadgeType == CreatorCoverBadgeType.PUBLISHED ||
-                    publishStatus == CreatorPublishStatus.PASSED -> R.string.drama_detail_published.getResString()
+            isDraft() -> R.string.drama_detail_draft.getResString()
+            publishStatus == CreatorPublishStatus.UNPUBLISHED -> R.string.drama_detail_unpublished.getResString()
+            publishStatus == CreatorPublishStatus.REVIEWING -> R.string.drama_detail_in_review.getResString()
+            publishStatus == CreatorPublishStatus.PASSED -> R.string.drama_detail_live.getResString()
+            publishStatus == CreatorPublishStatus.FAILED -> R.string.drama_detail_review_failed.getResString()
             else -> null
         }
     }
@@ -162,11 +157,10 @@ data class CreatorEpisodeInfo(
     @ColorRes
     fun publishBadgeTextColor(): Int {
         return when {
-            coverBadgeType == CreatorCoverBadgeType.DRAFT || isDraft() -> R.color.fixed_black_1
-            coverBadgeType == CreatorCoverBadgeType.IN_REVIEW ||
-                    publishStatus == CreatorPublishStatus.REVIEWING -> R.color.func_warning_dark
-            coverBadgeType == CreatorCoverBadgeType.PUBLISHED ||
-                    publishStatus == CreatorPublishStatus.PASSED -> R.color.func_success_dark
+            isDraft() -> R.color.fixed_black_1
+            publishStatus == CreatorPublishStatus.REVIEWING -> R.color.func_warning_dark
+            publishStatus == CreatorPublishStatus.PASSED -> R.color.func_success_dark
+            publishStatus == CreatorPublishStatus.FAILED -> R.color.func_failure_dark
             else -> R.color.fixed_white_1
         }
     }
@@ -174,7 +168,7 @@ data class CreatorEpisodeInfo(
     /**剧集发布角标背景；草稿态使用浅底，其它发布态使用深色半透明底。*/
     @DrawableRes
     fun publishBadgeBackground(): Int {
-        return if (coverBadgeType == CreatorCoverBadgeType.DRAFT || isDraft()) {
+        return if (isDraft()) {
             R.drawable.bg_fixed_white_1_round
         } else {
             R.drawable.bg_60_000000_round
@@ -207,11 +201,7 @@ data class CreatorEpisodeInfo(
 
     /**剧本、资产、分镜描述生成阶段在 UI 上按草稿态展示。*/
     fun isDraft(): Boolean {
-        return stepProgress in listOf(
-            PROGRESS_STORY_GENERATING,
-            PROGRESS_ASSET_GENERATING,
-            PROGRESS_STORYBOARD_GENERATING_ASSET
-        )
+        return stepStatus != 2
     }
 
     /**是否首次创建。*/

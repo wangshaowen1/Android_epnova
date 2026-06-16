@@ -5,6 +5,7 @@ import android.text.TextUtils
 import com.google.gson.Gson
 import com.kuaigeglobal.epnova.App
 import com.kuaigeglobal.epnova.common.utils.MmkvDelegate
+import com.kuaigeglobal.epnova.core.google.event.AnalyticsHelper
 import com.kuaigeglobal.epnova.core.network.apis.entity.CoinsAndWalletInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.CookieUserInfo
 import com.kuaigeglobal.epnova.core.network.apis.request.CompleteUserDataInfoBody
@@ -113,7 +114,10 @@ class User : IUser {
 
     fun updateFrom(userData: UserHomeData?) {
         if (userData == null) return
-        userData.userId?.apply { storeUserId(this) }
+        userData.userId?.apply {
+            storeUserId(this)
+            AnalyticsHelper.setUserId(id)
+        }
         storePhoneNum(userData.phoneNum)
         storeUid(userData.userUid)
         storeNickname(userData.nickName)
@@ -195,7 +199,7 @@ class User : IUser {
     }
 
     fun storeCoins(coins: Long?) {
-        this.coins = coins?:0L
+        this.coins = coins ?: 0L
         notifyChange(COINS)
     }
 
