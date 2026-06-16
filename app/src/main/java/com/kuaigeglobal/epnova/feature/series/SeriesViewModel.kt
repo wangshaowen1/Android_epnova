@@ -21,7 +21,6 @@ import com.kuaigeglobal.epnova.core.ext.launchWithLoading
 import com.kuaigeglobal.epnova.core.ext.requestWithLoading
 import com.kuaigeglobal.epnova.core.network.apis.entity.CreatorCoverBadgeType
 import com.kuaigeglobal.epnova.core.network.apis.entity.CreatorEpisodeInfo
-import com.kuaigeglobal.epnova.core.network.apis.entity.CreatorPublishStatus
 import com.kuaigeglobal.epnova.core.network.apis.entity.CreatorWorkInfo
 import com.kuaigeglobal.epnova.core.network.apis.request.DeleteWorkBody
 import com.kuaigeglobal.epnova.core.network.apis.request.LatestEpisodeBody
@@ -131,15 +130,10 @@ class SeriesViewModel : AppRepositoryViewModel<SeriesRepository>() {
     fun publishFailed(workInfo: CreatorWorkInfo?) = workInfo?.isPublishReviewFailed() == true
 
     @ColorRes
-    fun publishStatusColor(workInfo: CreatorWorkInfo?) = when {
-        workInfo?.isPublishReviewFailed() == true -> R.color.func_failure_dark
-        workInfo?.coverBadgeType == CreatorCoverBadgeType.IN_REVIEW ||
-                workInfo?.globalPublishStatus == CreatorPublishStatus.REVIEWING ||
-                workInfo?.publishStatus == CreatorPublishStatus.REVIEWING -> R.color.func_warning_dark
-        workInfo?.coverBadgeType == CreatorCoverBadgeType.PUBLISHED ||
-                workInfo?.globalPublishStatus == CreatorPublishStatus.PUBLISHED ||
-                workInfo?.publishStatus == CreatorPublishStatus.PASSED ||
-                (workInfo?.publishedEpisodeCnt ?: 0) > 0 -> R.color.func_success_dark
+    fun publishStatusColor(workInfo: CreatorWorkInfo?) = when (workInfo?.coverBadgeType) {
+        CreatorCoverBadgeType.IN_REVIEW -> R.color.func_warning_dark
+        CreatorCoverBadgeType.REVIEW_FAILED -> R.color.func_failure_dark
+        CreatorCoverBadgeType.PUBLISHED -> R.color.func_success_dark
         else -> R.color.text_color_3_dark
     }
 

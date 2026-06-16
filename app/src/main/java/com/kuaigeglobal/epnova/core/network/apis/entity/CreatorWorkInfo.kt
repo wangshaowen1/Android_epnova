@@ -237,54 +237,31 @@ data class CreatorWorkInfo(
         return showPublishButton() && !isAllEpisodesPublished()
     }
 
-    /**审核失败优先展示失败态，用于角标颜色、文案和驳回原因入口。*/
+    /**作品详情/MyCreations 审核失败角标，用于颜色、文案和驳回原因入口。*/
     fun isPublishReviewFailed(): Boolean {
-        return coverBadgeType == CreatorCoverBadgeType.REVIEW_FAILED ||
-                globalPublishStatus == CreatorPublishStatus.FAILED ||
-                publishStatus == CreatorPublishStatus.FAILED
+        return coverBadgeType == CreatorCoverBadgeType.REVIEW_FAILED
     }
 
-    /**发布角标文案，兼容作品全局状态和封面角标状态。*/
+    /**发布角标文案，作品详情和 MyCreations 按 coverBadgeType 展示。*/
     fun publishBadgeText(): String? {
-        return when {
-            isPublishReviewFailed() -> R.string.drama_detail_review_failed.getResString()
-            coverBadgeType == CreatorCoverBadgeType.DRAFT -> R.string.drama_detail_draft.getResString()
-            coverBadgeType == CreatorCoverBadgeType.UNPUBLISHED -> R.string.drama_detail_unpublished.getResString()
-            isDraftStatus() -> R.string.drama_detail_draft.getResString()
-            globalPublishStatus == CreatorPublishStatus.UNPUBLISHED -> R.string.drama_detail_unpublished.getResString()
-            coverBadgeType == CreatorCoverBadgeType.IN_REVIEW || globalPublishStatus == CreatorPublishStatus.REVIEWING ||
-                    publishStatus == CreatorPublishStatus.REVIEWING -> R.string.drama_detail_in_review.getResString()
-            coverBadgeType == CreatorCoverBadgeType.PUBLISHED || globalPublishStatus == CreatorPublishStatus.PUBLISHED ||
-                    publishStatus == CreatorPublishStatus.PASSED || (publishedEpisodeCnt ?: 0) > 0 -> publishPublishedText()
+        return when (coverBadgeType) {
+            CreatorCoverBadgeType.DRAFT -> R.string.drama_detail_draft.getResString()
+            CreatorCoverBadgeType.UNPUBLISHED -> R.string.drama_detail_unpublished.getResString()
+            CreatorCoverBadgeType.IN_REVIEW -> R.string.drama_detail_in_review.getResString()
+            CreatorCoverBadgeType.REVIEW_FAILED -> R.string.drama_detail_review_failed.getResString()
+            CreatorCoverBadgeType.PUBLISHED -> R.string.drama_detail_published.getResString()
             else -> null
         }
-    }
-
-    /**已发布文案需要拼上已发布集数，例如 Published · 2 eps。*/
-    private fun publishPublishedText(): String {
-        val prefix = R.string.drama_detail_published.getResString()
-        val suffix = when {
-            isAllEpisodesPublished() -> R.string.drama_detail_all_eps.getResString()
-            (publishedEpisodeCnt ?: 0) > 0 -> {
-                val count = publishedEpisodeCnt ?: 0
-                val resId = if (count == 1) R.string.drama_detail_ep_1 else R.string.drama_detail_ep_2
-                resId.getResString(count.toString())
-            }
-            else -> return prefix
-        }
-        return "$prefix · $suffix"
     }
 
     /**发布角标文字颜色。*/
     @ColorRes
     fun publishBadgeTextColor(): Int {
-        return when {
-            isPublishReviewFailed() -> R.color.func_failure_dark
-            coverBadgeType == CreatorCoverBadgeType.DRAFT || isDraftStatus() -> R.color.fixed_black_1
-            coverBadgeType == CreatorCoverBadgeType.IN_REVIEW || globalPublishStatus == CreatorPublishStatus.REVIEWING ||
-                    publishStatus == CreatorPublishStatus.REVIEWING -> R.color.func_warning_dark
-            coverBadgeType == CreatorCoverBadgeType.PUBLISHED || globalPublishStatus == CreatorPublishStatus.PUBLISHED ||
-                    publishStatus == CreatorPublishStatus.PASSED || (publishedEpisodeCnt ?: 0) > 0 -> R.color.func_success_dark
+        return when (coverBadgeType) {
+            CreatorCoverBadgeType.DRAFT -> R.color.fixed_black_1
+            CreatorCoverBadgeType.IN_REVIEW -> R.color.func_warning_dark
+            CreatorCoverBadgeType.REVIEW_FAILED -> R.color.func_failure_dark
+            CreatorCoverBadgeType.PUBLISHED -> R.color.func_success_dark
             else -> R.color.fixed_white_1
         }
     }
@@ -292,7 +269,7 @@ data class CreatorWorkInfo(
     /**发布角标背景；草稿态使用浅底，其它发布态使用深色半透明底。*/
     @DrawableRes
     fun publishBadgeBackground(): Int {
-        return if (coverBadgeType == CreatorCoverBadgeType.DRAFT || isDraftStatus()) {
+        return if (coverBadgeType == CreatorCoverBadgeType.DRAFT) {
             R.drawable.bg_fixed_white_1_round
         } else {
             R.drawable.bg_60_000000_round
