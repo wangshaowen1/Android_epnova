@@ -712,7 +712,7 @@
     <string name="confirm_exit_without_saving">当前内容尚未保存，退出后修改将无法恢复，是否确认退出？</string>
     <string name="exit_directly">直接退出</string>
     <string name="edit_story_synopsis">编辑故事梗概</string>
-    <string name="download_video_considered_as_agreement">下载视频即视为同意</string>
+    <string name="download_video_considered_as_agreement">下载视频即视为同意《下载协议》</string>
     <string name="download_agreement">《下载协议》</string>
     <string name="edit_episode_content">编辑剧本</string>
     <string name="edit_asset_desc">编辑资产描述</string>
