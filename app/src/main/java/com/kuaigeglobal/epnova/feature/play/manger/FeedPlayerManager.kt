@@ -103,9 +103,6 @@ class FeedPlayerManager(
 
             override fun onIsPlayingChanged(isPlaying: Boolean) {
                 if (isPreviewMode) {
-                    if (!isPlaying) {
-                        _playerState.value = FeedPlayerState.Idle
-                    }
                     return
                 }
                 if (isPlaying) {
@@ -128,6 +125,12 @@ class FeedPlayerManager(
                 if (isPreviewMode) return
                 if (exoPlayer.playbackState == Player.STATE_READY) {
                     _playerState.value = if (playWhenReady) FeedPlayerState.Playing else FeedPlayerState.Pause
+                }
+            }
+
+            override fun onRenderedFirstFrame() {
+                if (isPreviewMode) {
+                    _playerState.value = FeedPlayerState.Idle
                 }
             }
 
@@ -266,15 +269,14 @@ class FeedPlayerManager(
         val currentMediaId = exoPlayer.currentMediaItem?.mediaId
         exoPlayer.playWhenReady = false
         if (currentUri != videoUrl || currentMediaId != track.storyId || exoPlayer.playerError != null) {
-            exoPlayer.setMediaItem(mediaItem)
-            exoPlayer.seekTo(1L)
+            exoPlayer.setMediaItem(mediaItem, 0L)
             exoPlayer.prepare()
         } else if (exoPlayer.playbackState == Player.STATE_IDLE || exoPlayer.playbackState == Player.STATE_ENDED) {
-            exoPlayer.seekTo(1L)
+            exoPlayer.seekTo(0L)
             exoPlayer.prepare()
         } else {
             exoPlayer.pause()
-            exoPlayer.seekTo(1L)
+            exoPlayer.seekTo(0L)
         }
     }
 

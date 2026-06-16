@@ -157,8 +157,12 @@ class FeedListController(
                     if (getCurrentPosition() != position) return@launch
                     val freshHolder = recyclerView.findViewHolderForAdapterPosition(position)
                         as? VideoFeedAdapter.VideoViewHolder
-                    freshHolder?.updatePlayerUiState(FeedPlayerManager.FeedPlayerState.Idle)
-                    onEpisodeLocked?.invoke(e.episode, Config.get().isEpisodeAutoUnlock())
+                    if (!e.episode.videoUrl.isNullOrEmpty() && freshHolder != null) {
+                        playerManager.attachAndShowFirstFrame(e.episode, freshHolder.binding.playerView)
+                    } else {
+                        freshHolder?.updatePlayerUiState(FeedPlayerManager.FeedPlayerState.Idle)
+                    }
+                    onEpisodeLocked?.invoke(e.episode, e.isAutoUnlockFailed)
                 } catch (e: kotlinx.coroutines.CancellationException) {
                     throw e  // 必须重新抛出，让协程框架正确处理 Job 取消
                 } catch (e: Exception) {
