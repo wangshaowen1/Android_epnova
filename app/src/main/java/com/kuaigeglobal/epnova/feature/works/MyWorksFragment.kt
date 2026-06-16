@@ -260,13 +260,19 @@ class MyWorksFragment : BaseViewModelFragment<FragmentMyWorksBinding, MyWorksVie
                 binding.tvSelectCount.text = getString(R.string.selected_items_format, "0")
                 return@observe
             }
-            val spannableString = SpannableString(getString(R.string.selected_items_format, count.toString()))
-            spannableString.setSpan(
-                ForegroundColorSpan(
-                    Color.WHITE
-                ), 3, spannableString.length - 1,
-                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
+            val countText = count.toString()
+            val selectedCountText = getString(R.string.selected_items_format, countText)
+            val spannableString = SpannableString(selectedCountText)
+            val countStart = selectedCountText.indexOf(countText)
+            if (countStart >= 0) {
+                val countEnd = countStart + countText.length
+                spannableString.setSpan(
+                    ForegroundColorSpan(Color.WHITE),
+                    countStart,
+                    countEnd,
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+            }
             binding.tvSelectCount.text = spannableString
         }
 
