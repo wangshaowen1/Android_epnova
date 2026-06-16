@@ -596,8 +596,14 @@ class DramasPlayPagerActivity :
     override fun showEpisodeSelectDialog(position: Int) {
         val dialog = EpisodeChooseDialog.newInstance(mRealVM.workId, mRealVM.episodeList.value, listController.getCurrentItem())
         dialog.onEpisodeSelected = { episodeInfo ->
-            val position = adapter.currentList.indexOf(episodeInfo)
-            listController.startInitialPlay(position)
+            val position = episodeInfo?.storyId?.takeIf { it.isNotBlank() }?.let { storyId ->
+                adapter.currentList.indexOfFirst { it.storyId == storyId }
+            }?.takeIf { it >= 0 } ?: episodeInfo?.sortNo?.let { sortNo ->
+                adapter.currentList.indexOfFirst { it.sortNo == sortNo }
+            } ?: -1
+            if (position >= 0) {
+                listController.startInitialPlay(position)
+            }
         }
         dialog.show(supportFragmentManager)
     }

@@ -163,6 +163,19 @@ class FeedPlayerManager(
         // 乐观更新状态，防止切视频闪烁
         _playerState.value = FeedPlayerState.Idle
 
+        val videoUrl = track.videoUrl
+        if (videoUrl.isNullOrEmpty()) {
+            clearCurrentPlayback(
+                track = track,
+                coverPlayerView = coverPlayerView,
+                state = FeedPlayerState.Error(
+                    isNoCache = false,
+                    msg = R.string.loading_failed.getResString()
+                )
+            )
+            return
+        }
+
         // startPositionMs 只用于用户续播。必须在 mediaItem prepare 后 seek，确保 ExoPlayer 已持有正确媒体源；
         // 同一个视频重复 attach 时也要支持 seek，覆盖“页面恢复但播放器已绑定”的场景。
         // 防止重复 attach 同一个视频导致画面闪烁
@@ -191,8 +204,6 @@ class FeedPlayerManager(
         coverPlayerView.setTrack(track)
         coverPlayerView.setPlayerFrameOnly(false)
         coverPlayerView.setPlayer(exoPlayer)
-
-        val videoUrl = track.videoUrl ?: return
 
         // [拓展] 构建带字幕的 MediaItem
         val mediaItem = buildMediaItem(track, videoUrl)
@@ -230,7 +241,11 @@ class FeedPlayerManager(
     }
 
     fun attachAndShowFirstFrame(track: EpisodeInfo, coverPlayerView: CoverPlayerView) {
-        val videoUrl = track.videoUrl ?: return
+        val videoUrl = track.videoUrl
+        if (videoUrl.isNullOrEmpty()) {
+            clearCurrentPlayback(track, coverPlayerView, FeedPlayerState.Idle)
+            return
+        }
         currentPlayingId = track.storyId
         _playerState.value = FeedPlayerState.Buffering
         progressJob?.cancel()
@@ -261,6 +276,31 @@ class FeedPlayerManager(
             exoPlayer.pause()
             exoPlayer.seekTo(1L)
         }
+    }
+
+    private fun clearCurrentPlayback(
+        track: EpisodeInfo,
+        coverPlayerView: CoverPlayerView,
+        state: FeedPlayerState
+    ) {
+        progressJob?.cancel()
+        isPreviewMode = false
+        isSeeking = false
+        isUserPaused = true
+        currentPlayingId = track.storyId
+
+        if (currentCoverPlayerView != null && currentCoverPlayerView != coverPlayerView) {
+            currentCoverPlayerView?.setPlayer(null)
+        }
+        currentCoverPlayerView = coverPlayerView
+        coverPlayerView.setTrack(track)
+        coverPlayerView.setPlayerFrameOnly(false)
+        coverPlayerView.setPlayer(null)
+
+        exoPlayer.stop()
+        exoPlayer.clearMediaItems()
+        _progressFlow.value = 0L to 0L
+        _playerState.value = state
     }
 
     /**
