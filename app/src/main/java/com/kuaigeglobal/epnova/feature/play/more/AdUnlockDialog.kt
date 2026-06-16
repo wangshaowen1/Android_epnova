@@ -96,8 +96,12 @@ class AdUnlockDialog : BaseVMDialogFragment<DialogAdUnlockBinding, AdUnlockViewM
             }
         }
         mRealVM.adManager.onAdLoadFailed = {
+            val shouldShowToast = pendingShowAdAfterLoad
             pendingShowAdAfterLoad = false
             hideAdLoading()
+            if (shouldShowToast) {
+                getString(R.string.episode_unlock_ad_not_ready).showToast()
+            }
         }
     }
 

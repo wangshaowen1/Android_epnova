@@ -88,7 +88,7 @@ class RewardedAdManager(
         if (isAdLoading.get() || isAdReady.get()) return
         currentWorkId = workId
         currentStoryId = storyId
-        startPrepare(context, autoShowActivity = null)
+        startPrepare(context, autoShowActivity = null, showFailureToast = false)
     }
 
     /**
@@ -98,7 +98,7 @@ class RewardedAdManager(
         if (isAdLoading.get() || isAdReady.get()) return
         currentWorkId = workId
         currentStoryId = storyId
-        startPrepare(context, autoShowActivity = activity)
+        startPrepare(context, autoShowActivity = activity, showFailureToast = true)
     }
 
     /**
@@ -175,7 +175,7 @@ class RewardedAdManager(
 
     // ── 内部流程 ──────────────────────────────────────────────────────────────
 
-    private fun startPrepare(context: Context, autoShowActivity: Activity?) {
+    private fun startPrepare(context: Context, autoShowActivity: Activity?, showFailureToast: Boolean) {
         isAdLoading.set(true)
         statusText.set(R.string.episode_unlock_ad_loading.getResString())
 
@@ -188,7 +188,7 @@ class RewardedAdManager(
                 isAdLoading.set(false)
                 statusText.set(null)
                 onAdLoadFailed?.invoke()
-                showAdNotReadyToast()
+                if (showFailureToast) showAdNotReadyToast()
                 return@launch
             }
 
@@ -198,7 +198,7 @@ class RewardedAdManager(
                 isAdLoading.set(false)
                 statusText.set(null)
                 onAdLoadFailed?.invoke()
-                showAdNotReadyToast()
+                if (showFailureToast) showAdNotReadyToast()
                 return@launch
             }
             nonce = adNonce
@@ -222,7 +222,7 @@ class RewardedAdManager(
                         isAdReady.set(false)
                         statusText.set(null)
                         onAdLoadFailed?.invoke()
-                        showAdNotReadyToast()
+                        if (showFailureToast) showAdNotReadyToast()
                     }
                 )
             }
