@@ -21,6 +21,8 @@ import com.nhsd.basic.ext.showToast
  */
 class ReportDialog : BaseBottomPushVMDialogFragment<DialogReportBinding, ReportDialogViewModel>() {
     companion object {
+        // 举报内容字数最低要求
+        private const val REPORT_CONTENT_MIN_SIZE = 50
         //被举报的作品用户 ID
         const val USER_ID = "userId"
 
@@ -65,7 +67,7 @@ class ReportDialog : BaseBottomPushVMDialogFragment<DialogReportBinding, ReportD
             }
 
             override fun afterTextChanged(s: Editable?) {
-                if ((s?.length ?: 0) < 10) {
+                if ((s?.length ?: 0) < REPORT_CONTENT_MIN_SIZE) {
                     binding.commit.alpha = 0.5f
                 } else {
                     binding.commit.alpha = 1f
@@ -76,8 +78,8 @@ class ReportDialog : BaseBottomPushVMDialogFragment<DialogReportBinding, ReportD
         binding.commit.setOnSingleClickListener {
             //提交
             val content = binding.xet.text.toString()
-            if (content.length < 10) {
-                getString(R.string.toast_inspiration_input,10).showToast()
+            if (content.length < REPORT_CONTENT_MIN_SIZE) {
+                getString(R.string.toast_inspiration_input,REPORT_CONTENT_MIN_SIZE).showToast()
                 return@setOnSingleClickListener
             }
             //联系人
