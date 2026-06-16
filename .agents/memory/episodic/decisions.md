@@ -36,3 +36,15 @@ metadata:
 
 ### 验证结论
 PENDING：已静态核实 `com.kuaigeglobal.epnova`、`EpNova`、`epnovascheme`、`epnova.onelink.me`、`themeColor1/textColor1/bgColor1/fillColor1`、`Text28/Text16` 等当前事实；旧本地化目录删除需等待用户确认清单后执行。
+
+## 本轮 Figma/XML UI 还原资源回溯
+
+### 变更了什么
+Android Figma/XML UI 还原口径 → 补充执行记忆：纯文字区域默认自适应高度；新增颜色和纯背景资源按项目资源规则落地并引用；项目没有字体资源时不写 `fontFamily` / `Typeface` 模拟设计字体。
+
+### 为什么
+同源 Android 项目 UI 还原中出现过一次执行偏差：过度按 Figma 固定 frame 硬还原，导致纯文字在 Android 实际渲染中存在被遮挡风险；同时先用了业务语义色名、局部裸色值和字体引用，未第一时间按项目 XML/资源/命名规则收敛。
+后续确认的决策是：Figma 固定尺寸不等于 Android 文本固定高度；纯文字用 `wrap_content`，选择卡片可用 `wrap_content` / `minHeight` 保持同内容自然同高；新增颜色进 `colors.xml` 后通过 `@color` / `R.color` 引用；纯背景、描边、渐变 drawable 优先按色值/形态命名。
+
+### 验证结论
+SYNCED：该条为跨项目 agent 执行记忆同步，用于 EPnova 后续 Figma/XML UI 还原前置检查；具体页面实现仍以 EPnova 当前分支代码、资源和 `.agents` 规则为准。
