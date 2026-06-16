@@ -125,7 +125,6 @@
             android:text="@{item.data.totalEpisodeCnt == 1 ? @string/single_episode_short : @string/episode_progress_format(item.data.finishedEpisodeCnt, item.data.totalEpisodeCnt)}"
             android:textColor="?attr/textColor1"
             android:textStyle="bold"
-            android:visibility="@{(item.data.finishedEpisodeCnt>0)?View.VISIBLE:View.GONE}"
             app:layout_constraintBottom_toBottomOf="@id/ivCover"
             app:layout_constraintEnd_toEndOf="@+id/ivCover"
             tools:text="1/30集" />
