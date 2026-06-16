@@ -63,8 +63,7 @@ class ItemVideoFeedVm(info: EpisodeInfo?) : AppItemViewModel<EpisodeInfo>(info) 
     }
 
     fun onClickBlankArea() {
-//        onBlankAreaClicked?.invoke()
-        actionListener?.onTogglePlay(positionProvider())
+        onBlankAreaClicked?.invoke() ?: actionListener?.onTogglePlay(positionProvider())
     }
 
     // --- 供 XML 直接绑定的点击事件 ---

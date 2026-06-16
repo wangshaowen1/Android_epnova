@@ -144,20 +144,16 @@ class VideoFeedAdapter(private val interactionListener: InteractionListener) :
                 transVM.onBlankAreaClicked = {
                     val isCurrentlyHidden = transVM.isHideViews.get()
                     if (isCurrentlyHidden) {
-                        // 规则3：点击空白区，呼出控制栏，展示播放暂停icon
                         transVM.isHideViews.set(false)
-                        transVM.showCenterPlayBtn.set(true)
+                        transVM.showCenterPlayBtn.set(!transVM.isPlaying.get())
 
                         // 呼出后，如果正在播放，重新开始3秒倒计时 (PRD说等待3秒自动消失)
                         if (transVM.isPlaying.get()) {
                             startAutoHideTimer()
                         }
                     } else {
-                        // 如果已经显示了，再次点击空白区（通常是隐藏，或者根据你的PRD也可以不做操作）
-                        // 按照PRD第2条“点击播放器空白区...控制栏自动消失”
-                        transVM.isHideViews.set(true)
-                        transVM.showCenterPlayBtn.set(false)
                         cancelAutoHideTimer()
+                        interactionListener.onTogglePlay(bindingAdapterPosition)
                     }
                 }
                 // 塞数据
