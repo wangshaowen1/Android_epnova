@@ -1,6 +1,7 @@
 package com.kuaigeglobal.epnova.feature.recharge
 
 import androidx.annotation.LayoutRes
+import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableInt
 import androidx.lifecycle.viewModelScope
@@ -54,6 +55,7 @@ class MyBalanceViewModel(
 
     var isDialog = false
     val cost by lazy { mBundle.getInt(Constants.Extra.COST, 0) }
+    val showEpisodeCost by lazy { ObservableBoolean(cost > 0) }
 
     private val _purchaseEvent = MutableSharedFlow<PurchaseResult>(extraBufferCapacity = 1)
     val purchaseEvent: SharedFlow<PurchaseResult> = _purchaseEvent.asSharedFlow()
