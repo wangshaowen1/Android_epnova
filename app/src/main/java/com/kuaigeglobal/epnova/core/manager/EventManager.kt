@@ -325,7 +325,7 @@ object FirebaseEvent {
      * 事件名称：Credits的首充礼包支付成功
      * 说明：Credits的首充礼包支付成功：用户在弹窗、商城或充值弹窗完成Credits首充礼包支付时触发
      */
-    const val CREDITS_FIRST_PURCHASE_GIFT_POPUP_SUCCESS = "credits_first_purchase_gift_popup_success"
+    const val CREDITS_FIRST_PURCHASE_POPUP_SUCCESS = "credits_first_purchase_popup_success"
 
     /**
      * 模块：Coins 首充礼包

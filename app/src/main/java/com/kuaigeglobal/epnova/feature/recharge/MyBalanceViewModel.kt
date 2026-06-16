@@ -370,7 +370,7 @@ class MyBalanceViewModel(
     private fun trackCreditsFirstPurchaseGiftSuccessIfNeeded() {
         if (currentTab != TAB_CREDITS) return
         if (currentCreditsItem?.data?.get()?.isDiscountValid() != true) return
-        EventManager.onFirebaseTrack(FirebaseEvent.CREDITS_FIRST_PURCHASE_GIFT_POPUP_SUCCESS)
+        EventManager.onFirebaseTrack(FirebaseEvent.CREDITS_FIRST_PURCHASE_POPUP_SUCCESS)
     }
 
     private var countDownJob: Job? = null

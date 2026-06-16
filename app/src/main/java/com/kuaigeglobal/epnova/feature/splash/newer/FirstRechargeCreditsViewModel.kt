@@ -3,7 +3,6 @@ package com.kuaigeglobal.epnova.feature.splash.newer
 import androidx.databinding.ObservableField
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.base.viewmodel.AppRepositoryViewModel
 import com.kuaigeglobal.epnova.common.Constants
 import com.kuaigeglobal.epnova.common.ext.topActivity
@@ -18,7 +17,6 @@ import com.kuaigeglobal.epnova.core.response
 import com.kuaigeglobal.epnova.feature.recharge.CoinRepository
 import com.kuaigeglobal.epnova.router.AppNavigator
 import com.nhsd.basic.ext.getParcelableValue
-import com.nhsd.basic.ext.showToast
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -97,7 +95,7 @@ class FirstRechargeCreditsViewModel : AppRepositoryViewModel<CoinRepository>() {
         purchaseJob = viewModelScope.launch {
             BillingManager.purchaseResultFlow.take(1).collect { result ->
                 if (result is PurchaseResult.Success) {
-                    EventManager.onFirebaseTrack(FirebaseEvent.CREDITS_FIRST_PURCHASE_GIFT_POPUP_SUCCESS)
+                    EventManager.onFirebaseTrack(FirebaseEvent.CREDITS_FIRST_PURCHASE_POPUP_SUCCESS)
                     refreshCoinsAndPoints()
                 }
                 _purchaseEvent.emit(result)
