@@ -7,6 +7,7 @@ import com.kuaigeglobal.epnova.core.network.apis.request.SavePropBody
 import com.kuaigeglobal.epnova.core.network.apis.request.SaveRoleBody
 import com.kuaigeglobal.epnova.core.network.apis.request.SaveSceneBody
 import com.kuaigeglobal.epnova.core.network.apis.request.TaskIdBody
+import com.kuaigeglobal.epnova.core.network.apis.request.WorkBody
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -31,6 +32,13 @@ class AssetManagementRepository : AppRepository() {
      */
     suspend fun workAssetSingleStatus(taskId: String?, bizType: Int?) = withContext(Dispatchers.IO) {
         api.workAssetSingleStatus(TaskIdBody(taskId, bizType))
+    }
+
+    /**
+     * 当前集资产列表
+     */
+    suspend fun workAssetStoryList(workId: String?, storyId: String?) = withContext(Dispatchers.IO) {
+        api.workAssetStoryList(WorkBody(workId, storyId))
     }
 
     /**

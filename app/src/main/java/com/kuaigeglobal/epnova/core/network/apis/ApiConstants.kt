@@ -506,6 +506,11 @@ object ApiConstants {
     const val WORK_ASSET_SINGLE_STATUS = "ai/task/query/asset/single"
 
     /**
+     * 当前集资产列表
+     */
+    const val WORK_ASSET_STORY_LIST = "new/work/asset/story/list"
+
+    /**
      * 场景列表
      */
     const val WORK_ASSET_SCENE_LIST = "v2/work/asset/scene/list/story"
@@ -1051,6 +1056,11 @@ object ApiConstants {
      * 取消道具形象选用
      */
     const val CANCEL_PROP_IMAGE = "v2/work/asset/prop/appearance/unset"
+
+    /**
+     * 移除当前集资产图片
+     */
+    const val WORK_ASSET_STORY_REMOVE_IMAGE = "new/work/asset/story/remove-image"
 
     /**
      * 作品角色列表

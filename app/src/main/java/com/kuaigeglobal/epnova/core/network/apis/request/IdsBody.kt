@@ -21,3 +21,17 @@ data class AssetUnlinkBody(
     val storyId: String? = null,
     val assetId: String? = null,
 )
+
+/**
+ * 当前集资产图片操作请求体
+ */
+data class AssetStoryImageBody(
+    //作品 ID
+    val workId: String? = null,
+    //剧集 ID
+    val storyId: String? = null,
+    //资产 ID
+    val assetId: String? = null,
+    //资产图片 ID
+    val assetImageId: String? = null,
+)

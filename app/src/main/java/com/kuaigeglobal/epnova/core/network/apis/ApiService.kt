@@ -57,6 +57,7 @@ import com.kuaigeglobal.epnova.core.network.apis.entity.WorkVOInfo
 import com.kuaigeglobal.epnova.core.network.apis.request.AIExpandBody
 import com.kuaigeglobal.epnova.core.network.apis.request.AISynopsisBody
 import com.kuaigeglobal.epnova.core.network.apis.request.AppearanceIdBody
+import com.kuaigeglobal.epnova.core.network.apis.request.AssetStoryImageBody
 import com.kuaigeglobal.epnova.core.network.apis.request.AssetUnlinkBody
 import com.kuaigeglobal.epnova.core.network.apis.request.BannerBody
 import com.kuaigeglobal.epnova.core.network.apis.request.BindPhoneBody
@@ -159,6 +160,7 @@ import com.kuaigeglobal.epnova.core.network.apis.request.WorkTaskData
 import com.kuaigeglobal.epnova.core.network.apis.response.ActivityConfigData
 import com.kuaigeglobal.epnova.core.network.apis.response.LoginTaskData
 import com.kuaigeglobal.epnova.core.network.apis.response.AppConfigData
+import com.kuaigeglobal.epnova.core.network.apis.response.AssetStoryListInfo
 import com.kuaigeglobal.epnova.core.network.apis.response.BalanceData
 import com.kuaigeglobal.epnova.core.network.apis.response.CharacterListData
 import com.kuaigeglobal.epnova.core.network.apis.response.CollectData
@@ -808,6 +810,12 @@ interface ApiService {
      */
     @POST(ApiConstants.WORK_ASSET_SINGLE_STATUS)
     suspend fun workAssetSingleStatus(@Body body: TaskIdBody): ApiResponse<TaskStatusInfo?>
+
+    /**
+     * 当前集资产列表
+     */
+    @POST(ApiConstants.WORK_ASSET_STORY_LIST)
+    suspend fun workAssetStoryList(@Body body: WorkBody): ApiResponse<AssetStoryListInfo?>
 
     /**
      * 场景列表
@@ -1478,6 +1486,12 @@ interface ApiService {
      */
     @POST(ApiConstants.CANCEL_PROP_IMAGE)
     suspend fun cancelPropImage(@Body body: AppearanceIdBody): ApiResponse<Any?>
+
+    /**
+     * 移除当前集资产图片
+     */
+    @POST(ApiConstants.WORK_ASSET_STORY_REMOVE_IMAGE)
+    suspend fun workAssetStoryRemoveImage(@Body body: AssetStoryImageBody): ApiResponse<Any?>
 
     /**
      * 作品角色列表

@@ -21,14 +21,16 @@ import com.kuaigeglobal.epnova.core.ext.showRechargeDialog
 import com.kuaigeglobal.epnova.core.manager.EventManager
 import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
 import com.kuaigeglobal.epnova.core.network.apis.ApiResponse
+import com.kuaigeglobal.epnova.core.network.apis.entity.AssetInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.RoleImageInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.SimpleAsset
 import com.kuaigeglobal.epnova.core.network.apis.entity.SimplePropInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.SimpleRoleInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.SimpleSceneInfo
-import com.kuaigeglobal.epnova.core.network.apis.request.AppearanceIdBody
+import com.kuaigeglobal.epnova.core.network.apis.request.AssetStoryImageBody
 import com.kuaigeglobal.epnova.core.network.apis.request.StrategyTypeBody
 import com.kuaigeglobal.epnova.core.network.apis.request.WorkBody
+import com.kuaigeglobal.epnova.core.network.apis.response.AssetStoryListInfo
 import com.kuaigeglobal.epnova.core.response
 import com.kuaigeglobal.epnova.feature.PhotoPagerActivity
 import com.kuaigeglobal.epnova.feature.recharge.PowerRechargeDialog
@@ -38,7 +40,6 @@ import com.nhsd.basic.ext.getResString
 import com.nhsd.basic.ext.showToast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 
@@ -218,50 +219,13 @@ class AssetManagementViewModel : AppRepositoryViewModel<AssetManagementRepositor
         generating = true
         launch(
             block = {
-                val rolesDeferred = async { mRepo.workAssetRoleList(null, null, null, storyId, workId) }
-                val scenesDeferred = async { mRepo.workAssetSceneList(null, null, null, storyId, workId) }
-                val propsDeferred = async { mRepo.workAssetPropList(null, null, null, storyId, workId) }
-                val rolesResponse = rolesDeferred.await()
-                val scenesResponse = scenesDeferred.await()
-                val propsResponse = propsDeferred.await()
-                if (arrayOf(rolesResponse, scenesResponse, propsResponse).any { !it.isSuccess }) {
+                val response = mRepo.workAssetStoryList(workId, storyId)
+                if (!response.isSuccess) {
                     loadState.set(LoadStateViewHolder.RETRY)
                     generating = false
                     return@launch
                 }
-                val items = mutableListOf<AppItemViewModel<*>>()
-                val roles = rolesResponse.data?.map { info -> info.toItemAssetVM() }
-                if (roles.isNullOrEmpty()) {
-                    hasRole.set(false)
-                } else {
-                    hasRole.set(true)
-                    items.add(ItemTitleVM(R.string.roles.getResString()))
-                    items.addAll(roles)
-//                    items.add(addRoleItem)
-                }
-                val scenes = scenesResponse.data?.map { info -> info.toItemAssetVM() }
-                if (scenes.isNullOrEmpty()) {
-                    hasScene.set(false)
-                } else {
-                    hasScene.set(true)
-                    items.add(ItemTitleVM(R.string.scenes.getResString()))
-                    items.addAll(scenes)
-//                    items.add(addSceneItem)
-                }
-                val props = propsResponse.data?.map { info -> info.toItemAssetVM() }
-                if (props.isNullOrEmpty()) {
-                    hasProp.set(false)
-                } else {
-                    hasProp.set(true)
-                    items.add(ItemTitleVM(R.string.props.getResString()))
-                    items.addAll(props)
-//                    items.add(addPropItem)
-                }
-                adapter.items.forEach { if (it is ItemAssetVM<*>) it.clear() }
-                adapter.submitList(items)
-                onItemChanged()
-                loadState.set(LoadStateViewHolder.CONTENT)
-                generating = false
+                submitAssetStoryList(response.data)
             },
             onError = {
                 loadState.set(LoadStateViewHolder.RETRY)
@@ -269,6 +233,106 @@ class AssetManagementViewModel : AppRepositoryViewModel<AssetManagementRepositor
             }
         )
     }
+
+    private fun submitAssetStoryList(data: AssetStoryListInfo?) {
+        val items = mutableListOf<AppItemViewModel<*>>()
+        val roles = data?.roles?.map { info -> info.toSimpleRoleInfo().toItemAssetVM() }
+        if (roles.isNullOrEmpty()) {
+            hasRole.set(false)
+        } else {
+            hasRole.set(true)
+            items.add(ItemTitleVM(R.string.roles.getResString()))
+            items.addAll(roles)
+//                    items.add(addRoleItem)
+        }
+        val scenes = data?.scenes?.map { info -> info.toSimpleSceneInfo().toItemAssetVM() }
+        if (scenes.isNullOrEmpty()) {
+            hasScene.set(false)
+        } else {
+            hasScene.set(true)
+            items.add(ItemTitleVM(R.string.scenes.getResString()))
+            items.addAll(scenes)
+//                    items.add(addSceneItem)
+        }
+        val props = data?.props?.map { info -> info.toSimplePropInfo().toItemAssetVM() }
+        if (props.isNullOrEmpty()) {
+            hasProp.set(false)
+        } else {
+            hasProp.set(true)
+            items.add(ItemTitleVM(R.string.props.getResString()))
+            items.addAll(props)
+//                    items.add(addPropItem)
+        }
+        adapter.items.forEach { if (it is ItemAssetVM<*>) it.clear() }
+        adapter.submitList(items)
+        onItemChanged()
+        loadState.set(LoadStateViewHolder.CONTENT)
+        generating = false
+    }
+
+    private fun updateAssetStoryList(assetList: AssetStoryListInfo?) {
+        assetList?.roles?.forEach { info ->
+            val role = info.toSimpleRoleInfo()
+            adapter.items.find { it is ItemRoleVM && it.data.get()?.roleId == role.roleId }?.let {
+                (it as? ItemRoleVM)?.apply {
+                    data.set(role)
+                    loopGenStatus()
+                }
+            }
+        }
+        assetList?.scenes?.forEach { info ->
+            val scene = info.toSimpleSceneInfo()
+            adapter.items.find { it is ItemSceneVM && it.data.get()?.sceneId == scene.sceneId }?.let {
+                (it as? ItemSceneVM)?.apply {
+                    data.set(scene)
+                    loopGenStatus()
+                }
+            }
+        }
+        assetList?.props?.forEach { info ->
+            val prop = info.toSimplePropInfo()
+            adapter.items.find { it is ItemPropVM && it.data.get()?.propId == prop.propId }?.let {
+                (it as? ItemPropVM)?.apply {
+                    data.set(prop)
+                    loopGenStatus()
+                }
+            }
+        }
+        onItemChanged()
+    }
+
+    private fun AssetInfo.toSimpleRoleInfo() = SimpleRoleInfo(
+        roleId = assetId,
+        appearanceId = assetImageId,
+        roleName = assetName,
+        rolePrompt = assetPrompt,
+        imageUrl = imageUrl,
+        genStatus = genStatus,
+        taskId = taskId,
+        hasHistory = hasHistory
+    )
+
+    private fun AssetInfo.toSimpleSceneInfo() = SimpleSceneInfo(
+        sceneId = assetId,
+        appearanceId = assetImageId,
+        sceneName = assetName,
+        scenePrompt = assetPrompt,
+        imageUrl = imageUrl,
+        genStatus = genStatus,
+        taskId = taskId,
+        hasHistory = hasHistory
+    )
+
+    private fun AssetInfo.toSimplePropInfo() = SimplePropInfo(
+        propId = assetId,
+        appearanceId = assetImageId,
+        propName = assetName,
+        propPrompt = assetPrompt,
+        imageUrl = imageUrl,
+        genStatus = genStatus,
+        taskId = taskId,
+        hasHistory = hasHistory
+    )
 
     private fun SimpleRoleInfo.toItemAssetVM() =
         ItemRoleVM(workId, storyId, ::onItemChanged, this, getAiPriceProvider = { getOrRequestAiPrice() }).applyConfig()
@@ -319,12 +383,12 @@ class AssetManagementViewModel : AppRepositoryViewModel<AssetManagementRepositor
         var failedNum = 0
         adapter.items.forEachIndexed { index, item ->
             if (item is ItemAssetVM<*>) {
-                //-1=新创建 0=待生成 1=生成中 2=成功 3=失败
+                //-1=新创建 0=待生成 1=生成中 2=成功 3=失败 4=算力不足
                 when (item.status.get()) {
                     -1, 0, 10 -> newNum++
                     1 -> generatingNum++
                     2 -> generatedNum++
-                    3 -> failedNum++
+                    3, 4 -> failedNum++
                 }
             }
         }
@@ -453,7 +517,7 @@ class AssetManagementViewModel : AppRepositoryViewModel<AssetManagementRepositor
         val notGenerateItems = arrayListOf<Triple<ItemAssetVM<*>, String, String>>()
         adapter.items.forEachIndexed { index, item ->
             if (item is ItemAssetVM<*>) {
-                if (item.status.get() < 1 || item.status.get() == 3 || item.status.get() == 10) {
+                if (item.status.get() < 1 || item.status.get() == 3 || item.status.get() == 4 || item.status.get() == 10) {
                     val assetDesc = item.assetDesc.get()
                     val assetName = if (item.editingAssetName.get()) item.editingAssetNameText else item.assetName.get()
                     if (assetDesc.isNullOrEmpty() || assetName.isNullOrEmpty()) {
@@ -479,37 +543,12 @@ class AssetManagementViewModel : AppRepositoryViewModel<AssetManagementRepositor
                     }
                     return@launchWithLoading
                 }
-                val rolesDeferred = async { mRepo.workAssetRoleList(null, null, null, storyId, workId).data }
-                val scenesDeferred = async { mRepo.workAssetSceneList(null, null, null, storyId, workId).data }
-                val propsDeferred = async { mRepo.workAssetPropList(null, null, null, storyId, workId).data }
-                val roles = rolesDeferred.await()
-                val scenes = scenesDeferred.await()
-                val props = propsDeferred.await()
-                roles?.forEach { role ->
-                    adapter.items.find { it is ItemRoleVM && it.data.get()?.roleId == role.roleId }?.let {
-                        (it as? ItemRoleVM)?.apply {
-                            data.set(role)
-                            loopGenStatus()
-                        }
-                    }
+                val assetsResponse = mRepo.workAssetStoryList(workId, storyId)
+                if (!assetsResponse.isSuccess) {
+                    assetsResponse.msg?.showToast()
+                    return@launchWithLoading
                 }
-                scenes?.forEach { scene ->
-                    adapter.items.find { it is ItemSceneVM && it.data.get()?.sceneId == scene.sceneId }?.let {
-                        (it as? ItemSceneVM)?.apply {
-                            data.set(scene)
-                            loopGenStatus()
-                        }
-                    }
-                }
-                props?.forEach { prop ->
-                    adapter.items.find { it is ItemPropVM && it.data.get()?.propId == prop.propId }?.let {
-                        (it as? ItemPropVM)?.apply {
-                            data.set(prop)
-                            loopGenStatus()
-                        }
-                    }
-                }
-                onItemChanged()
+                updateAssetStoryList(assetsResponse.data)
             }
         }
     }
@@ -519,7 +558,7 @@ class AssetManagementViewModel : AppRepositoryViewModel<AssetManagementRepositor
         launch {
             getOrRequestAiPrice()
             if (aiPrice > 0) {
-                val num = adapter.items.count { it is ItemAssetVM<*> && it.status.get().let { status -> status < 1 || status == 3 || status == 10 } }
+                val num = adapter.items.count { it is ItemAssetVM<*> && it.status.get().let { status -> status < 1 || status == 3 || status == 4 || status == 10 } }
                 cost.set(aiPrice * num)
             }
         }
@@ -552,11 +591,13 @@ class AssetManagementViewModel : AppRepositoryViewModel<AssetManagementRepositor
         launchWithLoading {
             val asset = vm?.data?.get()
             val response = withContext(Dispatchers.IO) {
-                when (asset) {
-                    is SimpleRoleInfo -> mRepo.api.cancelRoleImage(AppearanceIdBody(asset.assetAppearanceId))
-                    is SimpleSceneInfo -> mRepo.api.cancelSceneImage(AppearanceIdBody(asset.assetAppearanceId))
-                    else -> mRepo.api.cancelPropImage(AppearanceIdBody(asset?.assetAppearanceId))
-                }
+                mRepo.api.workAssetStoryRemoveImage(
+                    AssetStoryImageBody(
+                        workId = workId,
+                        storyId = storyId,
+                        assetId = asset?.assetId
+                    )
+                )
             }
             if (!response.isSuccess) {
                 response.msg?.showToast()
