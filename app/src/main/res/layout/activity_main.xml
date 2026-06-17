@@ -49,7 +49,7 @@
                     android:drawableTop="@drawable/cb_main_tab_home"
                     android:drawablePadding="4dp"
                     android:gravity="center"
-                    android:text="@string/tab_explore"
+                    android:text="@string/tab_home"
                     android:textColor="@color/cb_main_tab_txt"
                     android:textSize="11sp"
                     tools:checked="true" />
