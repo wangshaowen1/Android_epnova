@@ -561,7 +561,13 @@ class DramasPlayPagerActivity :
                 if (adapter.currentList.isNotEmpty()) {
                     showToast(R.string.drama_has_ended)
                     requestPendingJump(0, allowResumeState = true)
-                    mRealVM.loadNextRandomWork()
+                    val endedStoryId = playerManager.currentPlayingId
+                    mRealVM.loadNextRandomWork(onFailure = {
+                        pendingJumpPosition = -1
+                        pendingJumpAllowResumeState = true
+                        if (playerManager.currentPlayingId != endedStoryId) return@loadNextRandomWork
+                        playerManager.pauseAtFirstFrame()
+                    })
                 }
             } else {
                 // 剧集模式：不自动跳新剧，提示最后一集

@@ -11,6 +11,7 @@ import com.kuaigeglobal.epnova.base.viewmodel.AppRepositoryViewModel
 import com.kuaigeglobal.epnova.core.Config
 import com.kuaigeglobal.epnova.core.ext.launch
 import com.kuaigeglobal.epnova.core.ext.launchWithLoading
+import com.kuaigeglobal.epnova.core.ext.parseMessage
 import com.kuaigeglobal.epnova.core.manager.EventManager
 import com.kuaigeglobal.epnova.core.network.RetrofitClient
 import com.kuaigeglobal.epnova.core.network.apis.entity.EpisodeInfo
@@ -127,20 +128,25 @@ class DramasPlayPagerViewModel : AppRepositoryViewModel<CreationRepository>(), D
     }
 
     // --- 自动切剧逻辑 ---
-    fun loadNextRandomWork() {
-        launchWithLoading {
+    fun loadNextRandomWork(onFailure: (() -> Unit)? = null) {
+        launchWithLoading(block = {
             // 1. 调接口拿下一个随机作品 ID
             val res = withContext(Dispatchers.IO) { mRepo.api.nextWorkRecommend(CurrentWorkIdBody(workId)) }
-            if (res.isSuccess) {
-                workId = res.data?.workId
+            val nextWorkId = res.data?.workId
+            if (res.isSuccess && !nextWorkId.isNullOrEmpty()) {
+                workId = nextWorkId
                 // 2. 清理旧状态，使用推荐模式加载新剧
                 _currentWorkContext.value = res.data
                 _episodeList.value = emptyList()
                 loadDrama(workId, PlayMode.RECOMMEND)
             } else {
                 res.msg?.showToast()
+                onFailure?.invoke()
             }
-        }
+        }, onError = {
+            parseMessage(it)?.showToast()
+            onFailure?.invoke()
+        })
     }
 
     // 懒加载播放地址（已替换为 storyUnlockPreload，兼顾自动解锁）

@@ -359,6 +359,13 @@ class FeedPlayerManager(
         exoPlayer.pause()
     }
 
+    fun pauseAtFirstFrame() {
+        isUserPaused = true
+        pause()
+        exoPlayer.seekTo(0L)
+        _progressFlow.value = 0L to if (exoPlayer.duration > 0) exoPlayer.duration else 0L
+    }
+
     fun resume() {
         // 1. 如果是播放结束，从头播
         if (exoPlayer.playbackState == Player.STATE_ENDED) {
