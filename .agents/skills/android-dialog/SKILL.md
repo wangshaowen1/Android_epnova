@@ -30,6 +30,8 @@ description: "Android 弹窗实现规范。新增弹窗、复杂重构、基类�
 
 不要为了“规范完整”给简单确认弹窗新增 Fragment + ViewModel。也不要在需要接口、倒计时、支付、列表状态的弹窗里硬塞无 VM 基类。
 
+简单业务弹窗不为了 DataBinding 表达式把接口实体或 Dialog 本身塞进 XML；优先在 Dialog 内直接设置文案、选中态、显隐和点击监听。业务复杂不只按接口/长任务判断：只要存在多处派生展示状态、样式分支、选中态、参数规整或复用状态，就改用 VM 弹窗基类，并让 XML 绑定 `layout`，不要把接口实体作为主要展示状态直接暴露给 XML。
+
 ## 参数传递
 
 Fragment 弹窗参数优先通过 `arguments` 传递。Key 优先使用 `Constants.Extra.*`，弹窗私有参数可以在 companion object 内定义 `ARG_XXX`。
