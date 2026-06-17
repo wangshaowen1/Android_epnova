@@ -150,6 +150,7 @@ class FeedListController(
                                 return@launch
                             }
                             playerManager.attachAndPlay(readyItem, currentHolder.binding.playerView, startPositionMs)
+                            preloadNextItem(position)
                         }
                     }
                 } catch (e: EpisodeLockedEx) {
@@ -178,8 +179,8 @@ class FeedListController(
         } else {
             fetchUrlJob?.cancel()
             playerManager.attachAndPlay(item, initialHolder.binding.playerView, startPositionMs)
+            preloadNextItem(position)
         }
-        preloadNextItem(position)
     }
     private fun preloadNextItem(currentPosition: Int) {
         if (currentPosition + 1 < adapter.itemCount) {
@@ -187,7 +188,7 @@ class FeedListController(
             if (nextItem.videoUrl.isNullOrEmpty()) {
                 recyclerView.findViewTreeLifecycleOwner()?.lifecycleScope?.launch(Dispatchers.IO) {
                     try {
-                        // 锁定集不预加载
+                        // 只在当前集播放地址加载完成并 attach 后预加载下一集，避免自动解锁并发扣费。
                         val readyItem = viewModel.fetchPlayUrlIfNeeded(nextItem)
                         if (!readyItem.videoUrl.isNullOrEmpty()) {
                             playerManager.preload(readyItem.videoUrl)
