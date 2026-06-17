@@ -3,6 +3,7 @@ package com.kuaigeglobal.epnova.core.network.apis
 import com.kuaigeglobal.epnova.core.model.H5PayInfo
 import com.kuaigeglobal.epnova.core.network.SSEvent
 import com.kuaigeglobal.epnova.core.network.apis.entity.AIPriceInfo
+import com.kuaigeglobal.epnova.core.network.apis.entity.AssetInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.BannerInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.CharacterInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.CoinsAndWalletInfo
@@ -57,6 +58,7 @@ import com.kuaigeglobal.epnova.core.network.apis.entity.WorkVOInfo
 import com.kuaigeglobal.epnova.core.network.apis.request.AIExpandBody
 import com.kuaigeglobal.epnova.core.network.apis.request.AISynopsisBody
 import com.kuaigeglobal.epnova.core.network.apis.request.AppearanceIdBody
+import com.kuaigeglobal.epnova.core.network.apis.request.AssetSaveBody
 import com.kuaigeglobal.epnova.core.network.apis.request.AssetStoryImageBody
 import com.kuaigeglobal.epnova.core.network.apis.request.AssetUnlinkBody
 import com.kuaigeglobal.epnova.core.network.apis.request.BannerBody
@@ -822,6 +824,12 @@ interface ApiService {
      */
     @POST(ApiConstants.WORK_ASSET_STORY_LIST)
     suspend fun workAssetStoryList(@Body body: WorkBody): ApiResponse<AssetStoryListInfo?>
+
+    /**
+     * 保存资产
+     */
+    @POST(ApiConstants.WORK_ASSET_SAVE)
+    suspend fun workAssetSave(@Body body: AssetSaveBody): ApiResponse<AssetInfo?>
 
     /**
      * 场景列表

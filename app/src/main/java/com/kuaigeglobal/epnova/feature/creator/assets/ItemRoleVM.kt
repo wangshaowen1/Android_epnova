@@ -11,12 +11,13 @@ import com.kuaigeglobal.epnova.core.ext.sensitiveWordCheck
 import com.kuaigeglobal.epnova.core.ext.showRechargeDialog
 import com.kuaigeglobal.epnova.core.network.apis.ApiFactory
 import com.kuaigeglobal.epnova.core.network.apis.ApiResponse
+import com.kuaigeglobal.epnova.core.network.apis.entity.AssetInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.ReferenceImageInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.SimpleRoleInfo
+import com.kuaigeglobal.epnova.core.network.apis.request.AssetSaveBody
 import com.kuaigeglobal.epnova.core.network.apis.request.AssetUnlinkBody
 import com.kuaigeglobal.epnova.core.network.apis.request.GenerateAssetBody
 import com.kuaigeglobal.epnova.core.network.apis.request.IdsBody
-import com.kuaigeglobal.epnova.core.network.apis.request.SaveRoleBody
 import com.kuaigeglobal.epnova.core.network.apis.request.TaskIdBody
 import com.kuaigeglobal.epnova.core.response
 import com.kuaigeglobal.epnova.feature.creator.assets.edit.ReferenceHistoricalImageryDialog
@@ -111,19 +112,20 @@ class ItemRoleVM(
                         }
                     }
                     val response = withContext(Dispatchers.IO) {
-                        val body = SaveRoleBody(
+                        val body = AssetSaveBody(
                             workId = workId,
                             storyId = storyId,
-                            roleId = role?.roleId,
-                            appearanceId = role?.appearanceId,
-                            rolePrompt = rolePrompt,
-                            roleName = roleName,
+                            assetId = role?.roleId,
+                            assetType = 1,
+                            assetName = roleName,
+                            assetPrompt = rolePrompt,
                         )
-                        ApiFactory.apiService.workAssetRoleSave(body)
+                        ApiFactory.apiService.workAssetSave(body)
                     }
                     if (response.isSuccess && response.data != null) {
-                        role = response.data
-                        data.set(response.data)
+                        val savedRole = response.data.toSimpleRoleInfo(role, rolePrompt, roleName)
+                        role = savedRole
+                        data.set(savedRole)
                     } else {
                         response.msg?.showToast()
                         updateStatus(preStatus)
@@ -186,24 +188,36 @@ class ItemRoleVM(
             }
         }
         val response = withContext(Dispatchers.IO) {
-            val body = SaveRoleBody(
+            val body = AssetSaveBody(
                 workId = workId,
                 storyId = storyId,
-                roleId = role?.roleId,
-                appearanceId = role?.appearanceId,
-                rolePrompt = rolePrompt,
-                roleName = roleName,
+                assetId = role?.roleId,
+                assetType = 1,
+                assetName = roleName,
+                assetPrompt = rolePrompt,
             )
-            ApiFactory.apiService.workAssetRoleSave(body)
+            ApiFactory.apiService.workAssetSave(body)
         }
         if (response.isSuccess && response.data != null) {
-            data.set(response.data)
+            data.set(response.data.toSimpleRoleInfo(role, rolePrompt, roleName))
         } else {
             response.msg?.showToast()
             return false
         }
         return true
     }
+
+    private fun AssetInfo.toSimpleRoleInfo(oldRole: SimpleRoleInfo?, rolePrompt: String?, roleName: String?) = SimpleRoleInfo(
+        roleId = assetId ?: oldRole?.roleId,
+        appearanceId = oldRole?.appearanceId,
+        assetImageId = assetImageId ?: oldRole?.assetImageId,
+        roleName = assetName ?: roleName ?: oldRole?.roleName,
+        rolePrompt = assetPrompt ?: rolePrompt ?: oldRole?.rolePrompt,
+        imageUrl = imageUrl ?: oldRole?.imageUrl,
+        genStatus = genStatus ?: oldRole?.genStatus,
+        taskId = taskId ?: oldRole?.taskId,
+        hasHistory = hasHistory ?: oldRole?.hasHistory
+    )
 
     override suspend fun delete(): ApiResponse<Any> {
         return withContext(Dispatchers.IO) { ApiFactory.apiService.workAssetRoleDelete(AssetUnlinkBody(workId, storyId, data.get()?.assetId)) }

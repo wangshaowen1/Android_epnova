@@ -498,7 +498,7 @@ object ApiConstants {
     /**
      * 生成所有对应资产描述
      */
-    const val GENERATE_ALL_ASSET_DESCRIPTION = "ai/asset/generation/description"
+    const val GENERATE_ALL_ASSET_DESCRIPTION = "ai/new/work/asset/description/generate"
 
     /**
      * 轮询查询全部资产描述
@@ -514,6 +514,11 @@ object ApiConstants {
      * 当前集资产列表
      */
     const val WORK_ASSET_STORY_LIST = "new/work/asset/story/list"
+
+    /**
+     * 保存资产
+     */
+    const val WORK_ASSET_SAVE = "new/work/asset/save"
 
     /**
      * 场景列表

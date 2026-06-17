@@ -11,11 +11,12 @@ import com.kuaigeglobal.epnova.core.ext.sensitiveWordCheck
 import com.kuaigeglobal.epnova.core.ext.showRechargeDialog
 import com.kuaigeglobal.epnova.core.network.apis.ApiFactory
 import com.kuaigeglobal.epnova.core.network.apis.ApiResponse
+import com.kuaigeglobal.epnova.core.network.apis.entity.AssetInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.ReferenceImageInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.SimpleSceneInfo
+import com.kuaigeglobal.epnova.core.network.apis.request.AssetSaveBody
 import com.kuaigeglobal.epnova.core.network.apis.request.AssetUnlinkBody
 import com.kuaigeglobal.epnova.core.network.apis.request.GenerateAssetBody
-import com.kuaigeglobal.epnova.core.network.apis.request.SaveSceneBody
 import com.kuaigeglobal.epnova.core.network.apis.request.TaskIdBody
 import com.kuaigeglobal.epnova.core.response
 import com.kuaigeglobal.epnova.feature.creator.assets.edit.ReferenceHistoricalImageryDialog
@@ -106,19 +107,20 @@ class ItemSceneVM(
                         }
                     }
                     val response = withContext(Dispatchers.IO) {
-                        val body = SaveSceneBody(
+                        val body = AssetSaveBody(
                             workId = workId,
                             storyId = storyId,
-                            sceneId = scene?.sceneId,
-                            appearanceId = scene?.appearanceId,
-                            scenePrompt = scenePrompt,
-                            sceneName = sceneName,
+                            assetId = scene?.sceneId,
+                            assetType = 2,
+                            assetName = sceneName,
+                            assetPrompt = scenePrompt,
                         )
-                        ApiFactory.apiService.workAssetSceneSave(body)
+                        ApiFactory.apiService.workAssetSave(body)
                     }
                     if (response.isSuccess && response.data != null) {
-                        scene = response.data
-                        data.set(response.data)
+                        val savedScene = response.data.toSimpleSceneInfo(scene, scenePrompt, sceneName)
+                        scene = savedScene
+                        data.set(savedScene)
                     } else {
                         response.msg?.showToast()
                         updateStatus(preStatus)
@@ -181,24 +183,36 @@ class ItemSceneVM(
             }
         }
         val response = withContext(Dispatchers.IO) {
-            val body = SaveSceneBody(
+            val body = AssetSaveBody(
                 workId = workId,
                 storyId = storyId,
-                sceneId = scene?.sceneId,
-                appearanceId = scene?.appearanceId,
-                scenePrompt = scenePrompt,
-                sceneName = sceneName,
+                assetId = scene?.sceneId,
+                assetType = 2,
+                assetName = sceneName,
+                assetPrompt = scenePrompt,
             )
-            ApiFactory.apiService.workAssetSceneSave(body)
+            ApiFactory.apiService.workAssetSave(body)
         }
         if (response.isSuccess && response.data != null) {
-            data.set(response.data)
+            data.set(response.data.toSimpleSceneInfo(scene, scenePrompt, sceneName))
         } else {
             response.msg?.showToast()
             return false
         }
         return true
     }
+
+    private fun AssetInfo.toSimpleSceneInfo(oldScene: SimpleSceneInfo?, scenePrompt: String?, sceneName: String?) = SimpleSceneInfo(
+        sceneId = assetId ?: oldScene?.sceneId,
+        appearanceId = oldScene?.appearanceId,
+        assetImageId = assetImageId ?: oldScene?.assetImageId,
+        sceneName = assetName ?: sceneName ?: oldScene?.sceneName,
+        scenePrompt = assetPrompt ?: scenePrompt ?: oldScene?.scenePrompt,
+        imageUrl = imageUrl ?: oldScene?.imageUrl,
+        genStatus = genStatus ?: oldScene?.genStatus,
+        taskId = taskId ?: oldScene?.taskId,
+        hasHistory = hasHistory ?: oldScene?.hasHistory
+    )
 
     override suspend fun delete(): ApiResponse<Any> {
         return withContext(Dispatchers.IO) { ApiFactory.apiService.workAssetSceneDelete(AssetUnlinkBody(workId, storyId, data.get()?.assetId)) }

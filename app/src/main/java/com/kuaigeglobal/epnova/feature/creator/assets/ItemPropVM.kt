@@ -11,11 +11,12 @@ import com.kuaigeglobal.epnova.core.ext.sensitiveWordCheck
 import com.kuaigeglobal.epnova.core.ext.showRechargeDialog
 import com.kuaigeglobal.epnova.core.network.apis.ApiFactory
 import com.kuaigeglobal.epnova.core.network.apis.ApiResponse
+import com.kuaigeglobal.epnova.core.network.apis.entity.AssetInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.ReferenceImageInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.SimplePropInfo
+import com.kuaigeglobal.epnova.core.network.apis.request.AssetSaveBody
 import com.kuaigeglobal.epnova.core.network.apis.request.AssetUnlinkBody
 import com.kuaigeglobal.epnova.core.network.apis.request.GenerateAssetBody
-import com.kuaigeglobal.epnova.core.network.apis.request.SavePropBody
 import com.kuaigeglobal.epnova.core.network.apis.request.TaskIdBody
 import com.kuaigeglobal.epnova.core.response
 import com.kuaigeglobal.epnova.feature.creator.assets.edit.ReferenceHistoricalImageryDialog
@@ -109,19 +110,20 @@ class ItemPropVM(
                         }
                     }
                     val response = withContext(Dispatchers.IO) {
-                        val body = SavePropBody(
+                        val body = AssetSaveBody(
                             workId = workId,
                             storyId = storyId,
-                            propId = prop?.propId,
-                            appearanceId = prop?.appearanceId,
-                            propPrompt = propPrompt,
-                            propName = propName,
+                            assetId = prop?.propId,
+                            assetType = 3,
+                            assetName = propName,
+                            assetPrompt = propPrompt,
                         )
-                        ApiFactory.apiService.workAssetPropSave(body)
+                        ApiFactory.apiService.workAssetSave(body)
                     }
                     if (response.isSuccess && response.data != null) {
-                        prop = response.data
-                        data.set(response.data)
+                        val savedProp = response.data?.toSimplePropInfo(prop, propPrompt, propName)
+                        prop = savedProp
+                        data.set(savedProp)
                     } else {
                         response.msg?.showToast()
                         updateStatus(preStatus)
@@ -184,24 +186,36 @@ class ItemPropVM(
             }
         }
         val response = withContext(Dispatchers.IO) {
-            val body = SavePropBody(
+            val body = AssetSaveBody(
                 workId = workId,
                 storyId = storyId,
-                propId = prop?.propId,
-                appearanceId = prop?.appearanceId,
-                propPrompt = propPrompt,
-                propName = propName,
+                assetId = prop?.propId,
+                assetType = 3,
+                assetName = propName,
+                assetPrompt = propPrompt,
             )
-            ApiFactory.apiService.workAssetPropSave(body)
+            ApiFactory.apiService.workAssetSave(body)
         }
         if (response.isSuccess && response.data != null) {
-            data.set(response.data)
+            data.set(response.data.toSimplePropInfo(prop, propPrompt, propName))
         } else {
             response.msg?.showToast()
             return false
         }
         return true
     }
+
+    private fun AssetInfo.toSimplePropInfo(oldProp: SimplePropInfo?, propPrompt: String?, propName: String?) = SimplePropInfo(
+        propId = assetId ?: oldProp?.propId,
+        appearanceId = oldProp?.appearanceId,
+        assetImageId = assetImageId ?: oldProp?.assetImageId,
+        propName = assetName ?: propName ?: oldProp?.propName,
+        propPrompt = assetPrompt ?: propPrompt ?: oldProp?.propPrompt,
+        imageUrl = imageUrl ?: oldProp?.imageUrl,
+        genStatus = genStatus ?: oldProp?.genStatus,
+        taskId = taskId ?: oldProp?.taskId,
+        hasHistory = hasHistory ?: oldProp?.hasHistory
+    )
 
     override suspend fun delete(): ApiResponse<Any> {
         return withContext(Dispatchers.IO) { ApiFactory.apiService.workAssetPropDelete(AssetUnlinkBody(workId, storyId, data.get()?.assetId)) }
