@@ -168,6 +168,7 @@ public class Constants {
         String NEWLY_PUBLISH = "newlyPublish";
         String RESTORE = "restore";
         String ASSET_ID = "ASSET_ID";
+        String ASSET_IMAGE_ID = "ASSET_IMAGE_ID";
         String ROLE_IMAGE = "ROLE_IMAGE";
         String APPEARANCE_ID = "APPEARANCE_ID";
     }

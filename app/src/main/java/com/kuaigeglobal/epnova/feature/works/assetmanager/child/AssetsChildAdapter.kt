@@ -19,7 +19,7 @@ import com.nhsd.basic.item.BindingViewHolder
 class AssetsChildAdapter(
     val model: Boolean = false,
     val itemClickVm: BaseItemEventsViewModel<AssetsEvent, SimpleAsset>,
-    val appearanceId: String? = null
+    val selectedImageId: String? = null
 ) :
     PagingDataAdapter<SimpleAsset, RecyclerView.ViewHolder>(ITEM_DIFF_CALLBACK) {
 
@@ -31,12 +31,13 @@ class AssetsChildAdapter(
 
         private val ITEM_DIFF_CALLBACK = object : DiffUtil.ItemCallback<SimpleAsset>() {
             override fun areItemsTheSame(oldItem: SimpleAsset, newItem: SimpleAsset): Boolean {
-                return oldItem.assetId == newItem.assetId
+                return oldItem.assetImageId == newItem.assetImageId
             }
 
             override fun areContentsTheSame(oldItem: SimpleAsset, newItem: SimpleAsset): Boolean {
                 return oldItem.assetId == newItem.assetId
                         && oldItem.assetAppearanceId == newItem.assetAppearanceId
+                        && oldItem.assetImageId == newItem.assetImageId
                         && oldItem.assetName == newItem.assetName
                         && oldItem.assetImage == newItem.assetImage
                         && oldItem.assetDesc == newItem.assetDesc
@@ -80,9 +81,9 @@ class AssetsChildAdapter(
         override fun bind(position: Int) {
             getItem(position)?.let { item ->
                 // 使用 getVm 维护状态
-                val vm = binding.getVm<ItemAssetsChildVm, SimpleAsset>(key = item.assetId, item, {
+                val vm = binding.getVm<ItemAssetsChildVm, SimpleAsset>(key = item.assetImageId, item, {
                     ItemAssetsChildVm(item, model, itemClickVm).apply {
-                        if (model && appearanceId == item.assetAppearanceId) {
+                        if (model && selectedImageId == item.assetImageId) {
                             selectModel.set(true)
                             itemClickVm.postEvent(AssetsEvent.Select(this))
                         }
@@ -98,9 +99,9 @@ class AssetsChildAdapter(
     inner class SceneViewHolder(binding: ItemAssetSceneBinding) : BaseAssetViewHolder<ItemAssetSceneBinding>(binding) {
         override fun bind(position: Int) {
             getItem(position)?.let { item ->
-                val vm = binding.getVm<ItemAssetsChildVm, SimpleAsset>(key = item.assetId, item, viewModelFactory = {
+                val vm = binding.getVm<ItemAssetsChildVm, SimpleAsset>(key = item.assetImageId, item, viewModelFactory = {
                     ItemAssetsChildVm(item, model, itemClickVm).apply {
-                        if (model && appearanceId == item.assetAppearanceId) {
+                        if (model && selectedImageId == item.assetImageId) {
                             selectModel.set(true)
                             itemClickVm.postEvent(AssetsEvent.Select(this))
                         }
@@ -116,9 +117,9 @@ class AssetsChildAdapter(
     inner class PropViewHolder(binding: ItemAssetPropBinding) : BaseAssetViewHolder<ItemAssetPropBinding>(binding) {
         override fun bind(position: Int) {
             getItem(position)?.let { item ->
-                val vm = binding.getVm<ItemAssetsChildVm, SimpleAsset>(key = item.assetId, item, viewModelFactory = {
+                val vm = binding.getVm<ItemAssetsChildVm, SimpleAsset>(key = item.assetImageId, item, viewModelFactory = {
                     ItemAssetsChildVm(item, model, itemClickVm).apply {
-                        if (model && appearanceId == item.assetAppearanceId) {
+                        if (model && selectedImageId == item.assetImageId) {
                             selectModel.set(true)
                             itemClickVm.postEvent(AssetsEvent.Select(this))
                         }

@@ -303,7 +303,7 @@ class AssetManagementViewModel : AppRepositoryViewModel<AssetManagementRepositor
 
     private fun AssetInfo.toSimpleRoleInfo() = SimpleRoleInfo(
         roleId = assetId,
-        appearanceId = assetImageId,
+        assetImageId = assetImageId,
         roleName = assetName,
         rolePrompt = assetPrompt,
         imageUrl = imageUrl,
@@ -314,7 +314,7 @@ class AssetManagementViewModel : AppRepositoryViewModel<AssetManagementRepositor
 
     private fun AssetInfo.toSimpleSceneInfo() = SimpleSceneInfo(
         sceneId = assetId,
-        appearanceId = assetImageId,
+        assetImageId = assetImageId,
         sceneName = assetName,
         scenePrompt = assetPrompt,
         imageUrl = imageUrl,
@@ -325,7 +325,7 @@ class AssetManagementViewModel : AppRepositoryViewModel<AssetManagementRepositor
 
     private fun AssetInfo.toSimplePropInfo() = SimplePropInfo(
         propId = assetId,
-        appearanceId = assetImageId,
+        assetImageId = assetImageId,
         propName = assetName,
         propPrompt = assetPrompt,
         imageUrl = imageUrl,
@@ -611,46 +611,47 @@ class AssetManagementViewModel : AppRepositoryViewModel<AssetManagementRepositor
 
     fun saveImage(simpleAsset: SimpleAsset?, roleImageInfo: RoleImageInfo?, assetId: String? = null) {
         launchWithLoading {
+            val selectedAssetId = assetId ?: simpleAsset?.assetId
+            val selectedImageId = roleImageInfo?.assetImageId ?: simpleAsset?.assetImageId ?: return@launchWithLoading
+            val selectedImageUrl = roleImageInfo?.imageUrl ?: simpleAsset?.assetImage
             val response = withContext(Dispatchers.IO) {
-                when (simpleAsset) {
-                    is SimpleSceneInfo -> mRepo.workAssetSceneSave(
-                        assetId,
-                        simpleAsset?.assetAppearanceId,
+                mRepo.api.workAssetStorySelectImage(
+                    AssetStoryImageBody(
                         workId,
                         storyId,
-                        null,
-                        null,
-                        imageUrl = simpleAsset?.assetImage
+                        selectedAssetId,
+                        selectedImageId
                     )
-
-                    is SimplePropInfo -> mRepo.workAssetPropSave(
-                        assetId,
-                        simpleAsset?.assetAppearanceId,
-                        workId,
-                        storyId,
-                        null,
-                        null,
-                        simpleAsset?.assetImage
-                    )
-
-                    else -> mRepo.workAssetRoleSave(
-                        simpleAsset?.assetId,
-                        roleImageInfo?.appearanceId,
-                        workId,
-                        storyId,
-                        null,
-                        null,
-                        roleImageInfo?.sourceAppearanceId,
-                        roleImageInfo?.imageUrl
-                    )
-                }
+                )
             }
             if (response.isSuccess) {
                 adapter.items.find {
-                    it is ItemAssetVM<*> && it.data.get()?.assetId == (assetId ?: simpleAsset?.assetId)
+                    it is ItemAssetVM<*> && it.data.get()?.assetId == selectedAssetId
                 }?.let {
+                    when (it) {
+                        is ItemRoleVM -> it.data.get()?.copy(
+                            assetImageId = selectedImageId,
+                            imageUrl = selectedImageUrl,
+                            genStatus = 2,
+                            hasHistory = true
+                        )?.let { data -> it.data.set(data) }
+
+                        is ItemSceneVM -> it.data.get()?.copy(
+                            assetImageId = selectedImageId,
+                            imageUrl = selectedImageUrl,
+                            genStatus = 2,
+                            hasHistory = true
+                        )?.let { data -> it.data.set(data) }
+
+                        is ItemPropVM -> it.data.get()?.copy(
+                            assetImageId = selectedImageId,
+                            imageUrl = selectedImageUrl,
+                            genStatus = 2,
+                            hasHistory = true
+                        )?.let { data -> it.data.set(data) }
+                    }
                     (it as? ItemAssetVM<*>)?.apply {
-                        updateStatus(2, response.data?.assetImage)
+                        updateStatus(2, selectedImageUrl)
                     }
                     calcCost()
                 }

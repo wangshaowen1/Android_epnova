@@ -481,6 +481,11 @@ object ApiConstants {
     const val WORK_ASSET_REFERENCE_IMAGE_LIST = "new/work/asset/reference/image/list"
 
     /**
+     * 历史形象图列表
+     */
+    const val WORK_ASSET_HISTORY_IMAGE_LIST = "new/work/asset/history/image/list"
+
+    /**
      * 编辑我的作品信息
      */
     const val UPDATE_WORK_INFO = "work/update"
@@ -1061,6 +1066,11 @@ object ApiConstants {
      * 移除当前集资产图片
      */
     const val WORK_ASSET_STORY_REMOVE_IMAGE = "new/work/asset/story/remove-image"
+
+    /**
+     * 选择当前集资产图片
+     */
+    const val WORK_ASSET_STORY_SELECT_IMAGE = "new/work/asset/story/select-image"
 
     /**
      * 作品角色列表

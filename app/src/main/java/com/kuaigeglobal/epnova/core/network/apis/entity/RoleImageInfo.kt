@@ -18,10 +18,16 @@ import kotlinx.parcelize.Parcelize
  */
 @Parcelize
 data class RoleImageInfo(
+    val assetImageId: String? = null,
+    val assetId: String? = null,
     val acted: Boolean? = null,
     val appearanceId: String? = null,
     val genStatus: Int? = null,
     val imageUrl: String? = null,
+    val referenceAssetImageId: String? = null,
+    val referenceImageUrl: String? = null,
+    val referenceImageInStatus: Int? = null,
+    val currentSelected: Boolean? = null,
     val rolePrompt: String? = null,
     val sourceAppearanceId: String? = null,
     val taskId: String? = null

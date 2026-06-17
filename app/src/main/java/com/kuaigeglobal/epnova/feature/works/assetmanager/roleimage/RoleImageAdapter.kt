@@ -14,7 +14,7 @@ import com.nhsd.basic.item.BindingViewHolder
 class RoleImageAdapter(
     val model: Boolean = false,
     val itemClickVm: BaseItemEventsViewModel<RoleImageEvent, RoleImageInfo>,
-    val appearanceId: String? = null
+    val selectedImageId: String? = null
 ) :
     PagingDataAdapter<RoleImageInfo, RecyclerView.ViewHolder>(ITEM_DIFF_CALLBACK) {
 
@@ -22,7 +22,7 @@ class RoleImageAdapter(
 
         private val ITEM_DIFF_CALLBACK = object : DiffUtil.ItemCallback<RoleImageInfo>() {
             override fun areItemsTheSame(oldItem: RoleImageInfo, newItem: RoleImageInfo): Boolean {
-                return oldItem.appearanceId == newItem.appearanceId
+                return oldItem.assetImageId == newItem.assetImageId
             }
 
             override fun areContentsTheSame(oldItem: RoleImageInfo, newItem: RoleImageInfo): Boolean {
@@ -51,9 +51,9 @@ class RoleImageAdapter(
         override fun bind(position: Int) {
             getItem(position)?.let { item ->
                 // 使用 getVm 维护状态
-                val vm = binding.getVm<ItemRoleImageVm, RoleImageInfo>(key = item.appearanceId, item, viewModelFactory = {
+                val vm = binding.getVm<ItemRoleImageVm, RoleImageInfo>(key = item.assetImageId, item, viewModelFactory = {
                     ItemRoleImageVm(item, model, itemClickVm).apply {
-                        if (model && appearanceId == item.appearanceId) {
+                        if (model && (item.currentSelected == true || selectedImageId == item.assetImageId)) {
                             selectModel.set(true)
                             itemClickVm.postEvent(RoleImageEvent.Select(this))
                         }

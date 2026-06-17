@@ -65,9 +65,9 @@ class AssetManagementFragment : BaseViewModelFragment<FragmentAssetManagementBin
 
     val roleImageSelectLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
-            val roleInfo = result.data?.getParcelableValue(Constants.Extra.DATA, SimpleRoleInfo::class.java)
+            val asset = result.data?.getParcelableValue(Constants.Extra.DATA, SimpleRoleInfo::class.java)
             val roleImageInfo = result.data?.getParcelableValue(Constants.Extra.ROLE_IMAGE, RoleImageInfo::class.java)
-            mRealVM.saveImage(roleInfo, roleImageInfo)
+            mRealVM.saveImage(asset, roleImageInfo)
         }
     }
 
@@ -103,9 +103,9 @@ class AssetManagementFragment : BaseViewModelFragment<FragmentAssetManagementBin
                 else -> QueryAssetBody.BIZ_TYPE_PROP
             }
             if (bizType == QueryAssetBody.BIZ_TYPE_ROLE) {
-                roleImageSelectLauncher.launch(RoleImageSelectActivity.getIntent(activity, mRealVM.workId, asset as? SimpleRoleInfo, true))
+                roleImageSelectLauncher.launch(RoleImageSelectActivity.getIntent(activity, mRealVM.workId, mRealVM.storyId, asset as? SimpleRoleInfo, true))
             } else {
-                imageSelectLauncher.launch(AssetSelectActivity.getIntent(activity, bizType, mRealVM.workId, asset?.assetAppearanceId, asset?.assetId))
+                imageSelectLauncher.launch(AssetSelectActivity.getIntent(activity, bizType, mRealVM.workId, mRealVM.storyId, asset?.assetImageId, asset?.assetId))
             }
         }
         observeEvents {

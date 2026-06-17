@@ -27,6 +27,8 @@ class AssetSelectViewModel : AppRepositoryViewModel<AppRepository>() {
 
     val bizType by lazy { mBundle.getInt(Constants.Extra.TYPE) }
     val workId by lazy { mBundle.getString(Constants.Extra.WORK_ID) }
+    val storyId by lazy { mBundle.getString(Constants.Extra.STORY_ID) }
+    val assetId by lazy { mBundle.getString(Constants.Extra.ASSET_ID) }
     var selectedItem: SimpleAsset? = null
 
     val isDataEmpty = ObservableBoolean(true)
@@ -49,7 +51,7 @@ class AssetSelectViewModel : AppRepositoryViewModel<AppRepository>() {
                 prefetchDistance = Constant.Paged.PREFETCH_DISTANCE,
             ),
             pagingSourceFactory = {
-                AssetChildPagingSource(bizType, workId) {
+                AssetChildPagingSource(bizType, workId, storyId, assetId) {
                     totalCountBack.invoke(it)
                     isDataEmpty.set(it == 0)
                 }

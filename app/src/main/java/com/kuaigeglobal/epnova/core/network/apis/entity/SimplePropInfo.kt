@@ -25,6 +25,10 @@ data class SimplePropInfo(
      */
     val appearanceId: String? = null,
     /**
+     * 当前集选中的资产图片ID
+     */
+    override val assetImageId: String? = null,
+    /**
      * 道具名称
      */
     val propName: String? = null,

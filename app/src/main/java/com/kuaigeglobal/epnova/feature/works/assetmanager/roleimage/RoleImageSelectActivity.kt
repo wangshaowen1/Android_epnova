@@ -31,24 +31,25 @@ class RoleImageSelectActivity : BaseViewModelActivity<ActivityRoleImageSelectBin
         const val TAG = "RoleImageSelectActivity"
 
         @JvmStatic
-        fun getIntent(context: Context?, workId: String?, info: SimpleRoleInfo?, selectModel: Boolean = false): Intent? {
+        fun getIntent(context: Context?, workId: String?, storyId: String?, info: SimpleRoleInfo?, selectModel: Boolean = false): Intent? {
             if (context == null) return null
             val starter = Intent(context, RoleImageSelectActivity::class.java)
             starter.putExtra(Constants.Extra.DATA, info)
             starter.putExtra(Constants.Extra.WORK_ID, workId)
+            starter.putExtra(Constants.Extra.STORY_ID, storyId)
             starter.putExtra(Constants.Extra.SELECT_MODE, selectModel)
             return starter
         }
 
         @JvmStatic
-        fun start(context: Context?, workId: String?, info: SimpleRoleInfo?) {
-            context?.startActivity(getIntent(context, workId, info))
+        fun start(context: Context?, workId: String?, storyId: String?, info: SimpleRoleInfo?) {
+            context?.startActivity(getIntent(context, workId, storyId, info))
         }
     }
 
 
     val itemClickVm by lazy { BaseItemEventsViewModel<RoleImageEvent, RoleImageInfo>() }
-    val imageAdapter by lazy { RoleImageAdapter(mRealVM.selectModel, itemClickVm, mRealVM.roleInfo?.appearanceId) }
+    val imageAdapter by lazy { RoleImageAdapter(mRealVM.selectModel, itemClickVm, mRealVM.roleInfo?.assetImageId) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

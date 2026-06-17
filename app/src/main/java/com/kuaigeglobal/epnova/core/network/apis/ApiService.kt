@@ -782,6 +782,12 @@ interface ApiService {
     suspend fun workAssetReferenceImageList(@Body body: ReferenceImageBody): ApiResponse<List<ReferenceImageInfo>?>
 
     /**
+     * 历史形象图列表
+     */
+    @POST(ApiConstants.WORK_ASSET_HISTORY_IMAGE_LIST)
+    suspend fun workAssetHistoryImageList(@Body body: AssetStoryImageBody): ApiResponse<List<RoleImageInfo>?>
+
+    /**
      * 编辑我的作品信息
      */
     @POST(ApiConstants.UPDATE_WORK_INFO)
@@ -1492,6 +1498,12 @@ interface ApiService {
      */
     @POST(ApiConstants.WORK_ASSET_STORY_REMOVE_IMAGE)
     suspend fun workAssetStoryRemoveImage(@Body body: AssetStoryImageBody): ApiResponse<Any?>
+
+    /**
+     * 选择当前集资产图片
+     */
+    @POST(ApiConstants.WORK_ASSET_STORY_SELECT_IMAGE)
+    suspend fun workAssetStorySelectImage(@Body body: AssetStoryImageBody): ApiResponse<Any?>
 
     /**
      * 作品角色列表

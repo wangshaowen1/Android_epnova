@@ -28,6 +28,7 @@ class RoleImageSelectViewModel : AppRepositoryViewModel<AppRepository>() {
     val selectModel by lazy { mBundle.getBoolean(Constants.Extra.SELECT_MODE, false) }
     val roleInfo by lazy { mBundle.getParcelableValue(Constants.Extra.DATA, SimpleRoleInfo::class.java) }
     val workId by lazy { mBundle.getString(Constants.Extra.WORK_ID) }
+    val storyId by lazy { mBundle.getString(Constants.Extra.STORY_ID) }
     var mSelectedItem: RoleImageInfo? = null
 
     val isDataEmpty = ObservableBoolean(true)
@@ -45,7 +46,7 @@ class RoleImageSelectViewModel : AppRepositoryViewModel<AppRepository>() {
                 prefetchDistance = Constant.Paged.PREFETCH_DISTANCE,
             ),
             pagingSourceFactory = {
-                RoleImagePagingSource(roleInfo?.roleId) {
+                RoleImagePagingSource(workId, storyId, roleInfo?.assetId) {
                     isDataEmpty.set(it == 0)
                 }
             }).flow.cachedIn(viewModelScope)

@@ -25,6 +25,10 @@ data class SimpleSceneInfo(
      */
     val appearanceId: String? = null,
     /**
+     * 当前集选中的资产图片ID
+     */
+    override val assetImageId: String? = null,
+    /**
      * 场景名称
      */
     val sceneName: String? = null,

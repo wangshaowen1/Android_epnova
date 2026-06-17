@@ -25,7 +25,7 @@ class ItemAssetsChildVm(
                         }
 
                         is AssetsEvent.Select -> {
-                            checked.set(it.item?.data?.get()?.assetId == data?.assetId)
+                            checked.set(it.item?.data?.get()?.assetImageId == data?.assetImageId)
                         }
                     }
                 }

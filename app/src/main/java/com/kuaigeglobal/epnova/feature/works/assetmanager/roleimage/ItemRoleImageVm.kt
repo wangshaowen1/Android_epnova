@@ -26,7 +26,7 @@ class ItemRoleImageVm(
                         }
 
                         is RoleImageEvent.Select -> {
-                            checked.set(it.item?.data?.get()?.appearanceId == data?.appearanceId)
+                            checked.set(it.item?.data?.get()?.assetImageId == data?.assetImageId)
                         }
                     }
                 }

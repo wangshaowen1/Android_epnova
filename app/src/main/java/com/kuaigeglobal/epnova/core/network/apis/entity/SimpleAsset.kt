@@ -4,6 +4,7 @@ import android.os.Parcelable
 
 interface SimpleAsset : Parcelable {
     val assetId: String?
+    val assetImageId: String?
     val assetAppearanceId: String?
     val status: Int?
     val assetDesc: String?
