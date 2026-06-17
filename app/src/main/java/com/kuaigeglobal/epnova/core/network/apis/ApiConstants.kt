@@ -478,7 +478,7 @@ object ApiConstants {
     /**
      * 查询资产参考图列表
      */
-    const val GET_HISTORY_REFERENCE_IMAGE = "work/asset/getReferenceImage"
+    const val WORK_ASSET_REFERENCE_IMAGE_LIST = "new/work/asset/reference/image/list"
 
     /**
      * 编辑我的作品信息

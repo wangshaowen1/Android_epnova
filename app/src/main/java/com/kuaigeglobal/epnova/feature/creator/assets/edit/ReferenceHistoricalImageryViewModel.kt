@@ -27,10 +27,6 @@ class ReferenceHistoricalImageryViewModel : AppRepositoryViewModel<AppRepository
     //作品id
     private val workId by lazy { mBundle.getString(ReferenceHistoricalImageryDialog.WORK_ID) }
 
-    //资产类型
-    private val bizType by lazy { mBundle.getInt(ReferenceHistoricalImageryDialog.BIZ_TYPE) }
-
-
     val mAdapterVm =
         RecyclerViewVM().Builder()
             .setQuickAdapter(R.layout.item_reference_historical_imagery, imagesVms).build()
@@ -59,12 +55,11 @@ class ReferenceHistoricalImageryViewModel : AppRepositoryViewModel<AppRepository
 
     fun getReferenceHistoricalImagery() {
         request({
-            mRepo.api.getHistoryReferenceImage(
+            mRepo.api.workAssetReferenceImageList(
                 ReferenceImageBody(
-                    assetId = assetId,
                     workId = workId,
-                    bizType = bizType,
-                    storyId = dramaID
+                    storyId = dramaID,
+                    assetId = assetId
                 )
             )
         }) {

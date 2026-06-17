@@ -2,7 +2,6 @@ package com.kuaigeglobal.epnova.feature.creator.assets.edit
 
 import android.os.Bundle
 import com.kuaigeglobal.epnova.core.network.apis.entity.ReferenceImageInfo
-import com.kuaigeglobal.epnova.core.network.apis.request.ReferenceImageBody
 import com.kuaigeglobal.epnova.databinding.DialogReferenceHistoricalImageryBinding
 import com.nhsd.basic.BaseBottomPushVMDialogFragment
 
@@ -24,13 +23,13 @@ class ReferenceHistoricalImageryDialog :
         const val BIZ_TYPE = "bizType"
 
         //角色图片
-        const val BIZ_TYPE_ROLE_IMAGE = ReferenceImageBody.BIZ_TYPE_ROLE_IMAGE
+        const val BIZ_TYPE_ROLE_IMAGE = 41
 
         //道具图片
-        const val BIZ_TYPE_PROP_IMAGE = ReferenceImageBody.BIZ_TYPE_PROP_IMAGE
+        const val BIZ_TYPE_PROP_IMAGE = 51
 
         //场景图片
-        const val BIZ_TYPE_SCENE_IMAGE = ReferenceImageBody.BIZ_TYPE_SCENE_IMAGE
+        const val BIZ_TYPE_SCENE_IMAGE = 61
 
 
         /**
@@ -38,7 +37,7 @@ class ReferenceHistoricalImageryDialog :
          * @param assetId 资产id
          * @param dramaID 剧集id
          * @param workId 作品id
-         * @param bizType 资产类型
+         * @param bizType 兼容旧调用，新参考图接口不再使用资产类型
          */
         fun newInstance(
             assetId: String? = null,

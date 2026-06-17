@@ -776,8 +776,8 @@ interface ApiService {
     /**
      * 查询资产参考图列表
      */
-    @POST(ApiConstants.GET_HISTORY_REFERENCE_IMAGE)
-    suspend fun getHistoryReferenceImage(@Body body: ReferenceImageBody): ApiResponse<List<ReferenceImageInfo>?>
+    @POST(ApiConstants.WORK_ASSET_REFERENCE_IMAGE_LIST)
+    suspend fun workAssetReferenceImageList(@Body body: ReferenceImageBody): ApiResponse<List<ReferenceImageInfo>?>
 
     /**
      * 编辑我的作品信息
