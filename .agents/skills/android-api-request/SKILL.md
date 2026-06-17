@@ -1,6 +1,6 @@
 ---
 name: android-api-request
-description: "Android Retrofit 接口请求接入规范。仅在本次实际新增或修改 ApiConstants、ApiService、request body、response/entity model、Repository 方法、ViewModel 接口调用链路、response/request/requestWithLoading 错误处理时使用。只加 Toast、只改 loading 文案、只改普通 UI 状态或不触达接口链路时不要使用。"
+description: "Android Retrofit 接口请求接入规范。仅在本次实际新增或修改 ApiConstants、ApiService、request body、response/entity model、Repository 方法、ViewModel 接口调用链路、response/request/requestWithLoading 错误处理，且 quick rules 的局部接口快路径无法覆盖时使用。若用户已给接口截图、字段表或明确路径，且只是给现有页面或点击流程补局部接口，优先走 quick rules，不读取完整 API skill。"
 ---
 
 # Android 接口请求

@@ -1,6 +1,6 @@
 ---
 name: android-dialog
-description: "Android 弹窗实现规范。仅在本次实际新增、重构或审查 Dialog/DialogFragment 的基类选择、参数传递、show/newInstance、按钮事件、回调结果、生命周期、键盘处理或关闭逻辑时使用。只改已有弹窗文案、Toast、字段展示、简单样式或局部绑定时，不触发完整弹窗 skill。"
+description: "Android 弹窗实现规范。新增弹窗、复杂重构、基类选择、参数传递、show/newInstance、按钮事件、回调结果、生命周期、键盘处理或关闭逻辑不清晰时使用。已有弹窗的局部改造、DataBinding 绑定、简单选择态、按钮回调、文案/样式调整，优先读目标 Dialog、XML、调用点和 quick rules，不读取完整弹窗 skill。"
 ---
 
 # Android 弹窗
