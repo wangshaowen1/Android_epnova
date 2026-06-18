@@ -6,7 +6,7 @@
 
 - 新增页面 DataBinding XML 默认使用 `<layout>` 根节点，页面 ViewModel 变量名默认 `layout`。
 - 新增列表 item DataBinding XML 默认变量名 `item`。
-- 简单业务弹窗不为了 DataBinding 表达式新增 `dialog`、接口实体等变量；优先在 Dialog 内直接更新视图和点击事件。若存在多处派生展示状态、样式分支、选中态、参数规整或复用状态，使用 VM 弹窗基类，XML 绑定 `layout`。
+- 简单业务弹窗不为了 DataBinding 表达式新增 `dialog`、接口实体等变量；优先在 Dialog 内直接更新视图和点击事件。若存在多处派生展示状态、样式分支、选中态、参数规整或复用状态，使用 VM 弹窗基类，XML 只绑定 `layout`。VM 可以暴露源对象和少量选择状态；简单颜色、背景、显隐用 XML 三元表达式表达，不要把每个样式值都拆成 Observable，也不要在 XML `<data>` 里单独声明接口实体或 Dialog 变量来承载展示。
 - 编辑历史 XML、include、纯 ViewBinding 或无绑定 layout 时，跟随当前文件和同类文件，不强行改结构。
 - 页面初始化优先放在 Fragment 的 `onPrepareView()` 中，并拆成 `initView()`、`initListener()`、`initObservers()` 或现有相近命名。
 - 与 `onPrepareView()` 成对的手动回调清理默认放在 Fragment 的 `onDestroy()`，例如 ViewPager2 callback、AdapterDataObserver、键盘监听和事件监听；不要默认生成 `onDestroyView()` 清理，除非正在修改的同类页面或基类已经这样做。
