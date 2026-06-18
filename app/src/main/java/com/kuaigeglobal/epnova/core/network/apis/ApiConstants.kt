@@ -568,7 +568,7 @@ object ApiConstants {
     /**
      * 生成单个资产图片（重新生成/生成）
      */
-    const val WORK_ASSET_SINGLE_GENERATE = "ai/asset/generation/single/image"
+    const val WORK_ASSET_SINGLE_GENERATE = "ai/new/work/asset/image/generate"
 
     /**
      * 一键生成所有资产图片

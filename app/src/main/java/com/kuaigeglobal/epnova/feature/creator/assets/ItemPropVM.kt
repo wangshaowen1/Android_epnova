@@ -11,12 +11,13 @@ import com.kuaigeglobal.epnova.core.ext.sensitiveWordCheck
 import com.kuaigeglobal.epnova.core.ext.showRechargeDialog
 import com.kuaigeglobal.epnova.core.network.apis.ApiFactory
 import com.kuaigeglobal.epnova.core.network.apis.ApiResponse
+import com.kuaigeglobal.epnova.core.network.apis.entity.AssetGenerateInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.AssetInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.ReferenceImageInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.SimplePropInfo
+import com.kuaigeglobal.epnova.core.network.apis.request.AssetGenerateBody
 import com.kuaigeglobal.epnova.core.network.apis.request.AssetSaveBody
 import com.kuaigeglobal.epnova.core.network.apis.request.AssetUnlinkBody
-import com.kuaigeglobal.epnova.core.network.apis.request.GenerateAssetBody
 import com.kuaigeglobal.epnova.core.network.apis.request.TaskIdBody
 import com.kuaigeglobal.epnova.core.response
 import com.kuaigeglobal.epnova.feature.creator.assets.edit.ReferenceHistoricalImageryDialog
@@ -94,7 +95,7 @@ class ItemPropVM(
         launch(
             block = {
                 var prop = data.get()
-                if (propPrompt != prop?.propPrompt || propName != prop.propName) {
+                if (prop?.propId.isNullOrEmpty() || propPrompt != prop?.propPrompt || propName != prop.propName) {
                     sensitiveWordCheck(propPrompt).let { (isPass, highlightText) ->
                         if (!isPass) {
                             highlightText?.let { assetDesc.set(it) }
@@ -130,26 +131,33 @@ class ItemPropVM(
                         return@launch
                     }
                 }
-                val body = GenerateAssetBody(
+                val assetId = prop?.propId
+                if (assetId.isNullOrEmpty()) {
+                    R.string.toast_save_fail.getResString().showToast()
+                    updateStatus(preStatus)
+                    return@launch
+                }
+                val body = AssetGenerateBody(
                     workId = workId,
                     storyId = storyId,
-                    assetId = prop?.propId,
-                    appearanceId = prop?.appearanceId,
-                    referenceImageId = reference?.appearanceId,
-                    referenceImageUrl = reference?.imageUrl,
+                    assetId = assetId,
+                    prompt = propPrompt,
+                    referenceAssetImageId = reference?.assetImageId,
                     referenceImageInStatus = if (reference != null) 1 else 0,
-                    bizType = if (reference != null) 52 else 51,
                 )
                 response(
                     bean = ApiFactory.apiService.workAssetSingleGenerate(body),
                     result = {
-                        val prop = this@ItemPropVM.data.get() ?: SimplePropInfo()
-                        prop.taskId = data?.taskId
-                        prop.genStatus = data?.genStatus
-                        data?.genStatus?.let { updateStatus(it) }
-                        this@ItemPropVM.data.set(prop)
-                        FlowEventBus.postSync(Events.PropGenerateEvent(workId, storyId, prop))
-                        loopGenStatus()
+                        val info = data
+                        if (info == null) {
+                            updateStatus(preStatus)
+                        } else {
+                            val prop = (this@ItemPropVM.data.get() ?: SimplePropInfo()).withGenerateInfo(info)
+                            this@ItemPropVM.data.set(prop)
+                            info.genStatus?.let { updateStatus(it) }
+                            FlowEventBus.postSync(Events.PropGenerateEvent(workId, storyId, prop))
+                            if (info.genStatus == 1) loopGenStatus()
+                        }
                     },
                     error = {
                         if (this?.code == ApiResponse.RESPONSE_CODE_POWER_NOT_ENOUGH) {
@@ -165,6 +173,13 @@ class ItemPropVM(
             onError = { updateStatus(preStatus) }
         )
     }
+
+    private fun SimplePropInfo.withGenerateInfo(info: AssetGenerateInfo?) = copy(
+        propId = info?.assetId ?: propId,
+        assetImageId = info?.assetImageId ?: assetImageId,
+        genStatus = info?.genStatus ?: genStatus,
+        taskId = info?.taskId ?: taskId
+    )
 
     override suspend fun save(propPrompt: String, propName: String): Boolean {
         val prop = data.get()
@@ -197,7 +212,7 @@ class ItemPropVM(
             ApiFactory.apiService.workAssetSave(body)
         }
         if (response.isSuccess && response.data != null) {
-            data.set(response.data.toSimplePropInfo(prop, propPrompt, propName))
+            data.set(response.data?.toSimplePropInfo(prop, propPrompt, propName))
         } else {
             response.msg?.showToast()
             return false

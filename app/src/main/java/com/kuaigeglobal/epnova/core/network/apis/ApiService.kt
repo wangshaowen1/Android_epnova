@@ -3,6 +3,7 @@ package com.kuaigeglobal.epnova.core.network.apis
 import com.kuaigeglobal.epnova.core.model.H5PayInfo
 import com.kuaigeglobal.epnova.core.network.SSEvent
 import com.kuaigeglobal.epnova.core.network.apis.entity.AIPriceInfo
+import com.kuaigeglobal.epnova.core.network.apis.entity.AssetGenerateInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.AssetInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.BannerInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.CharacterInfo
@@ -58,6 +59,7 @@ import com.kuaigeglobal.epnova.core.network.apis.entity.WorkVOInfo
 import com.kuaigeglobal.epnova.core.network.apis.request.AIExpandBody
 import com.kuaigeglobal.epnova.core.network.apis.request.AISynopsisBody
 import com.kuaigeglobal.epnova.core.network.apis.request.AppearanceIdBody
+import com.kuaigeglobal.epnova.core.network.apis.request.AssetGenerateBody
 import com.kuaigeglobal.epnova.core.network.apis.request.AssetSaveBody
 import com.kuaigeglobal.epnova.core.network.apis.request.AssetStoryImageBody
 import com.kuaigeglobal.epnova.core.network.apis.request.AssetUnlinkBody
@@ -84,7 +86,6 @@ import com.kuaigeglobal.epnova.core.network.apis.request.DramasSeriesId
 import com.kuaigeglobal.epnova.core.network.apis.request.DramasTimbreBody
 import com.kuaigeglobal.epnova.core.network.apis.request.FeedbackBody
 import com.kuaigeglobal.epnova.core.network.apis.request.FcmTokenBody
-import com.kuaigeglobal.epnova.core.network.apis.request.GenerateAssetBody
 import com.kuaigeglobal.epnova.core.network.apis.request.GenerateStoryboardBody
 import com.kuaigeglobal.epnova.core.network.apis.request.GenerateSubtitleBody
 import com.kuaigeglobal.epnova.core.network.apis.request.IdsBody
@@ -889,7 +890,7 @@ interface ApiService {
      * 生成单个资产图片（重新生成/生成）
      */
     @POST(ApiConstants.WORK_ASSET_SINGLE_GENERATE)
-    suspend fun workAssetSingleGenerate(@Body body: GenerateAssetBody): ApiResponse<TaskStatusInfo?>
+    suspend fun workAssetSingleGenerate(@Body body: AssetGenerateBody): ApiResponse<AssetGenerateInfo?>
 
     /**
      * 一键生成所有资产图片
