@@ -53,7 +53,7 @@ class InputViewModel : AppRepositoryViewModel<AppRepository>() {
     fun setTitle() {
         when (type) {
             InputDialog.TYPE_WORK_DESC -> {
-                title.set(getString(R.string.edit_story_summary))
+                title.set(getString(R.string.edit_story_synopsis))
             }
 
             InputDialog.TYPE_EPISODE_SUMMARY -> {
