@@ -573,7 +573,7 @@ object ApiConstants {
     /**
      * 一键生成所有资产图片
      */
-    const val WORK_ASSET_ONE_KEY_GENERATE = "ai/asset/oneClickGeneration"
+    const val WORK_ASSET_ONE_KEY_GENERATE = "ai/new/work/asset/image/generate/batch"
 
     /**
      * 生成全部分镜描述

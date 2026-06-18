@@ -163,6 +163,7 @@ import com.kuaigeglobal.epnova.core.network.apis.request.WorkTaskData
 import com.kuaigeglobal.epnova.core.network.apis.response.ActivityConfigData
 import com.kuaigeglobal.epnova.core.network.apis.response.LoginTaskData
 import com.kuaigeglobal.epnova.core.network.apis.response.AppConfigData
+import com.kuaigeglobal.epnova.core.network.apis.response.AssetBatchGenerateResult
 import com.kuaigeglobal.epnova.core.network.apis.response.AssetStoryListInfo
 import com.kuaigeglobal.epnova.core.network.apis.response.BalanceData
 import com.kuaigeglobal.epnova.core.network.apis.response.CharacterListData
@@ -896,7 +897,7 @@ interface ApiService {
      * 一键生成所有资产图片
      */
     @POST(ApiConstants.WORK_ASSET_ONE_KEY_GENERATE)
-    suspend fun workAssetOneKeyGenerate(@Body body: WorkBody): ApiResponse<TaskStatusInfo?>
+    suspend fun workAssetOneKeyGenerate(@Body body: WorkBody): ApiResponse<AssetBatchGenerateResult?>
 
     /**
      * 生成全部分镜描述
