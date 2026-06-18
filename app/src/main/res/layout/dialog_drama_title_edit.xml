@@ -51,7 +51,7 @@
             app:inputTextSize="14sp"
             app:inputVerticalPadding="@dimen/spacing_m"
             app:layout_constraintTop_toBottomOf="@id/tvSubtitle"
-            app:inputMaxLength="20" />
+            app:inputMaxLength="70" />
 
         <ImageView
             android:id="@+id/close"

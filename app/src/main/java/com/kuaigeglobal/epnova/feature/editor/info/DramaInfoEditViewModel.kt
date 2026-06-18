@@ -3,6 +3,7 @@ package com.kuaigeglobal.epnova.feature.editor.info
 import android.graphics.Color
 import android.util.Log
 import androidx.databinding.ObservableField
+import androidx.databinding.ObservableInt
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.kuaigeglobal.epnova.App
@@ -55,6 +56,10 @@ class DramaInfoEditViewModel : AppRepositoryViewModel<AppRepository>() {
             title = R.string.edit_work.getResString(),
             background = Color.TRANSPARENT
         )
+    }
+
+    val maxInputLength by lazy {
+        ObservableInt(200 * Constants.INTERNATIONALIZATION_RATIO)
     }
 
     val workInfo by lazy { mBundle.getParcelableValue(Constants.Extra.DATA, WorkInfo::class.java) }

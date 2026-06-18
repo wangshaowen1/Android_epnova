@@ -46,14 +46,14 @@ class InputViewModel : AppRepositoryViewModel<AppRepository>() {
                 InputDialog.TYPE_ASSET_DESC -> 200
                 InputDialog.TYPE_STORYBOARD_DESC -> 1000
                 else -> 500
-            } * 5)
+            } * Constants.INTERNATIONALIZATION_RATIO)
         )
     }
 
     fun setTitle() {
         when (type) {
             InputDialog.TYPE_WORK_DESC -> {
-                title.set(getString(R.string.edit_story_synopsis))
+                title.set(getString(R.string.edit_story_summary))
             }
 
             InputDialog.TYPE_EPISODE_SUMMARY -> {

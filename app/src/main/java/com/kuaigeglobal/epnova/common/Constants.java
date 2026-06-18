@@ -42,6 +42,7 @@ public class Constants {
     public static final int SMS_CODE_LENGTH = 4;
     public static final long PAGE_BEFORE_DELAY_MS = 0;
     public static final long PAGE_AFTER_DELAY_MS = 0;
+    public static final int INTERNATIONALIZATION_RATIO = 5;
     /**
      * 视频单张图片时长
      */

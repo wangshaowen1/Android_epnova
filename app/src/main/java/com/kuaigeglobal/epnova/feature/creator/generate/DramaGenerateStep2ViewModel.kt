@@ -8,6 +8,7 @@ import androidx.databinding.ObservableInt
 import androidx.lifecycle.MutableLiveData
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.base.viewmodel.AppRepositoryViewModel
+import com.kuaigeglobal.epnova.common.Constants
 import com.kuaigeglobal.epnova.common.ext.topActivity
 import com.kuaigeglobal.epnova.core.ext.PollingState
 import com.kuaigeglobal.epnova.core.ext.launchPolling
@@ -36,7 +37,7 @@ class DramaGenerateStep2ViewModel : AppRepositoryViewModel<CreationRepository>()
 
     val minInputLength = 10
     val maxInputLength by lazy {
-        ObservableInt(5000)
+        ObservableInt(5000 * Constants.INTERNATIONALIZATION_RATIO)
     }
     val input by lazy { MutableLiveData<String?>() }
 

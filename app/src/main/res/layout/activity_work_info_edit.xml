@@ -85,7 +85,7 @@
             app:inputCounterTextSize="12sp"
             app:inputCounterVisible="true"
             app:inputHorizontalPadding="@dimen/spacing_m"
-            app:inputMaxLength="20"
+            app:inputMaxLength="70"
             app:inputTextColor="?attr/textColor2"
             app:inputTextColorHint="?attr/textColor4"
             app:inputTextSize="14sp"
@@ -185,8 +185,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/spacing_m"
-                    android:maxLength="200"
-                    android:text="@{layout.desc.length()+`/200`}"
+                    android:maxLength="@{layout.maxInputLength}"
+                    android:text="@{layout.desc.length()+`/`+layout.maxInputLength}"
                     android:textColor="?attr/textColor4"
                     tools:text="0/200" />
             </LinearLayout>
