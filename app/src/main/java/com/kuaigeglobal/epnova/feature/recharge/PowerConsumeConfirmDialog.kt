@@ -53,5 +53,8 @@ class PowerConsumeConfirmDialog : BaseBottomPushVMDialogFragment<DialogPowerCons
             onConfirm.invoke()
             dismissAllowingStateLoss()
         }
+        binding.close.setOnSingleClickListener {
+            dismissAllowingStateLoss()
+        }
     }
 }

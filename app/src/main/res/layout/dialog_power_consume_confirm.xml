@@ -130,9 +130,9 @@
         </LinearLayout>
 
         <ImageView
+            android:id="@+id/close"
             android:layout_width="54dp"
             android:layout_height="54dp"
-            android:onClick="@{(v)->layout.dismiss()}"
             android:paddingHorizontal="15dp"
             android:src="@drawable/icon_close"
             app:layout_constraintBottom_toBottomOf="@+id/tvTitle"
