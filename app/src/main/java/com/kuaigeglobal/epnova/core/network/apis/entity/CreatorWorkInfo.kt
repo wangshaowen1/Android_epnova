@@ -254,11 +254,23 @@ data class CreatorWorkInfo(
         }
     }
 
+    fun publishSeriesStatusText(): String? {
+        return when (coverBadgeType) {
+            CreatorCoverBadgeType.DRAFT -> R.string.drama_detail_draft.getResString()
+            CreatorCoverBadgeType.UNPUBLISHED -> R.string.drama_detail_unpublished.getResString()
+            CreatorCoverBadgeType.IN_REVIEW -> R.string.drama_detail_in_review.getResString()
+            CreatorCoverBadgeType.REVIEW_FAILED -> R.string.drama_detail_review_failed.getResString()
+            CreatorCoverBadgeType.PUBLISHED -> R.string.drama_detail_published.getResString()
+            else -> null
+        }
+    }
+
     /**发布角标文字颜色。*/
     @ColorRes
     fun publishBadgeTextColor(): Int {
         return when (coverBadgeType) {
             CreatorCoverBadgeType.DRAFT -> R.color.fixed_black_1
+            CreatorPublishStatus.UNPUBLISHED -> R.color.func_special_dark
             CreatorCoverBadgeType.IN_REVIEW -> R.color.func_warning_dark
             CreatorCoverBadgeType.REVIEW_FAILED -> R.color.func_failure_dark
             CreatorCoverBadgeType.PUBLISHED -> R.color.func_success_dark
@@ -309,4 +321,11 @@ data class CreatorWorkInfo(
     fun getEpisodeId(index: Int = 0): String? {
         return workStoryItemList?.getOrNull(index)?.storyId
     }
+
+    fun isPassed(): Boolean {
+        return publishStatus == CreatorPublishStatus.PASSED ||
+                globalPublishStatus == CreatorPublishStatus.PUBLISHED ||
+                coverBadgeType == CreatorPublishStatus.PUBLISHED
+    }
+
 }

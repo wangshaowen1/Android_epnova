@@ -33,6 +33,9 @@ import com.nhsd.basic.bus.observeEvents
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
+/**
+ * My List - My Creations 我的作品
+ */
 class MyCreationsFragment :
     BaseViewModelFragment<FragmentMyCreationsBinding, MyWorksViewModel>() {
 

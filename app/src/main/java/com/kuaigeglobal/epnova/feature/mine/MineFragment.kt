@@ -27,6 +27,9 @@ import com.nhsd.basic.ext.getViewModelOfActivity
 import com.nhsd.basic.ext.showToast
 import kotlin.Boolean
 
+/**
+ * 主页 - Profile
+ */
 class MineFragment : BaseViewModelFragment<FragmentMineBinding, MineViewModel>() {
 
     private var userId: String? = null

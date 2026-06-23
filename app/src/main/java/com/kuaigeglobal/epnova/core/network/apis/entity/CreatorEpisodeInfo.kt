@@ -161,6 +161,7 @@ data class CreatorEpisodeInfo(
             publishStatus == CreatorPublishStatus.REVIEWING -> R.color.func_warning_dark
             publishStatus == CreatorPublishStatus.PASSED -> R.color.func_success_dark
             publishStatus == CreatorPublishStatus.FAILED -> R.color.func_failure_dark
+            publishStatus == CreatorPublishStatus.UNPUBLISHED -> R.color.func_special_dark
             else -> R.color.fixed_white_1
         }
     }
@@ -212,6 +213,10 @@ data class CreatorEpisodeInfo(
     /**未创建包含真正未创建和梗概生成阶段。*/
     fun isNotCreated(): Boolean {
         return stepProgress == NOT_CREATED || stepProgress == PROGRESS_SUMMARY_GENERATING
+    }
+
+    fun isPassed(): Boolean {
+        return publishStatus == CreatorPublishStatus.PASSED
     }
 
     /**已合成或重绘相关状态，旧 UI 用于判断是否已有可展示视频。*/

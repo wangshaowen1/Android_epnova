@@ -25,6 +25,9 @@ import com.nhsd.basic.ext.getViewModelOfActivity
 import com.nhsd.magicindicator.ViewPagerHelper
 import com.nhsd.magicindicator.buildins.commonnavigator.indicators.LinePagerIndicator
 
+/**
+ * 主页 - My List
+ */
 class MyListFragment : BaseViewModelFragment<FragmentMyListBinding, MyListModel>() {
 
 

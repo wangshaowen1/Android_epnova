@@ -43,6 +43,9 @@ import kotlin.div
 import kotlin.math.abs
 import kotlin.text.toFloat
 
+/**
+ * 主页 - Create
+ */
 class CreateFragment : BaseViewModelFragment<FragmentCreateBinding, CreateViewModel>() {
 
     companion object {

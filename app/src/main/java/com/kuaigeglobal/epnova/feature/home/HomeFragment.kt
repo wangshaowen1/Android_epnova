@@ -35,6 +35,9 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlin.math.abs
 
+/**
+ * 主页 - Home
+ */
 class HomeFragment :
     BaseViewModelFragment<FragmentHomeBinding, HomeViewModel>() {
     companion object {

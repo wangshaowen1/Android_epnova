@@ -490,6 +490,11 @@
         <item name="cornerSizeTopRight">8dp</item>
     </style>
 
+    <style name="roundStyle_tl_r8">
+        <item name="cornerFamilyTopLeft">rounded</item>
+        <item name="cornerSizeTopLeft">8dp</item>
+    </style>
+
     <style name="roundStyle_tr12">
         <item name="cornerFamilyTopLeft">rounded</item>
         <item name="cornerSizeTopLeft">12dp</item>

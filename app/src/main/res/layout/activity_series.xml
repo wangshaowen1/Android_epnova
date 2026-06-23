@@ -154,23 +154,34 @@
                                     app:layout_constraintStart_toStartOf="@+id/tvEpisodeCnt"
                                     app:layout_constraintTop_toBottomOf="@+id/tvEpisodeCnt">
 
-                                    <ImageView
-                                        setVisible="@{layout.publishFailed(layout.workInfo)}"
-                                        android:layout_width="16dp"
-                                        android:layout_height="16dp"
-                                        android:layout_marginEnd="4dp"
-                                        android:src="@drawable/icon_attention_fail" />
-
-                                    <TextView
-                                        android:id="@+id/tvPublishStatus"
-                                        setVisible="@{layout.showPublishStatus(layout.workInfo)}"
-                                        textColorRes="@{layout.publishStatusColor(layout.workInfo)}"
+                                    <LinearLayout
+                                        backgroundRes="@{layout.publishBadgeBackground(layout.workInfo)}"
+                                        android:paddingVertical="4dp"
+                                        android:paddingHorizontal="10dp"
+                                        android:gravity="center_vertical"
+                                        android:orientation="horizontal"
                                         android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:text="@{layout.publishStatusText(layout.workInfo)}"
-                                        android:textAppearance="@style/Text13"
-                                        tools:text="已发行"
-                                        tools:textColor="@color/func_success_dark" />
+                                        android:layout_height="wrap_content">
+
+                                        <ImageView
+                                            setVisible="@{layout.publishFailed(layout.workInfo)}"
+                                            android:layout_width="16dp"
+                                            android:layout_height="16dp"
+                                            android:layout_marginEnd="4dp"
+                                            android:src="@drawable/icon_attention_fail" />
+
+                                        <TextView
+                                            android:id="@+id/tvPublishStatus"
+                                            setVisible="@{layout.showPublishStatus(layout.workInfo)}"
+                                            textColorRes="@{layout.publishStatusColor(layout.workInfo)}"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="@{layout.publishStatusText(layout.workInfo)}"
+                                            android:textAppearance="@style/Text13"
+                                            tools:text="已发行"
+                                            tools:textColor="@color/func_success_dark" />
+
+                                    </LinearLayout>
 
                                     <androidx.recyclerview.widget.RecyclerView
                                         android:layout_width="0dp"

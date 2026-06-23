@@ -137,7 +137,16 @@ class SeriesViewModel : AppRepositoryViewModel<SeriesRepository>() {
         else -> R.color.text_color_3_dark
     }
 
-    fun publishStatusText(workInfo: CreatorWorkInfo?) = workInfo?.publishBadgeText().orEmpty()
+    @DrawableRes
+    fun publishBadgeBackground(workInfo: CreatorWorkInfo?) = when(workInfo?.coverBadgeType) {
+        CreatorCoverBadgeType.IN_REVIEW -> R.drawable.bg_func_warning_r27
+        CreatorCoverBadgeType.REVIEW_FAILED -> R.drawable.bg_func_failure_r27
+        CreatorCoverBadgeType.PUBLISHED -> R.drawable.bg_func_success_r27
+        CreatorCoverBadgeType.UNPUBLISHED -> R.drawable.bg_func_normal_r27
+        else -> R.drawable.bg_func_draft_r27
+    }
+
+    fun publishStatusText(workInfo: CreatorWorkInfo?) = workInfo?.publishSeriesStatusText().orEmpty()
 
     fun showPublishStatus(workInfo: CreatorWorkInfo?) = !workInfo?.publishBadgeText().isNullOrEmpty()
 

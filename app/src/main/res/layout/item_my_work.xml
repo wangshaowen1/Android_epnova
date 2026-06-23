@@ -33,6 +33,17 @@
             app:shapeAppearanceOverlay="@style/roundStyle_r8"
             tools:src="@drawable/img_default_cover_3_4" />
 
+        <!--   已发布展示这个角标     -->
+        <com.google.android.material.imageview.ShapeableImageView
+            setVisible="@{item.data.isPassed()}"
+            android:layout_width="32dp"
+            android:layout_height="0dp"
+            android:src="@drawable/ic_my_creation_status"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:shapeAppearanceOverlay="@style/roundStyle_tl_r8" />
+
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="0dp"
@@ -111,7 +122,7 @@
             android:text="@string/waiting_to_synthesize"
             android:textAppearance="@style/Text10"
             android:textColor="@color/func_special_dark"
-            android:visibility="@{(item.data.workStatus==WorkInfo.WAIT_STATE&amp;&amp;item.isView()&amp;&amp;!item.hasPublishBadge())?View.VISIBLE:View.GONE}"
+            android:visibility="@{(item.data.workStatus==WorkInfo.WAIT_STATE&amp;&amp;item.isView()&amp;&amp;!item.hasPublishBadge()&amp;&amp;!item.data.isPassed())?View.VISIBLE:View.GONE}"
             app:layout_constraintEnd_toEndOf="@+id/ivCover"
             app:layout_constraintTop_toTopOf="@+id/ivCover" />
 

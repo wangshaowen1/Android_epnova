@@ -21,6 +21,9 @@ import com.nhsd.basic.bus.observeEvents
 import com.nhsd.basic.ext.dp
 import kotlinx.coroutines.launch
 
+/**
+ * My List - History or Collection 观看历史或收藏列表
+ */
 class MineChildFragment :
     BaseViewModelFragment<FragmentMineChildBinding, MineChildViewModel>() {
 
