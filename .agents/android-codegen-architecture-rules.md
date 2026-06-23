@@ -9,7 +9,8 @@
 - 简单网络请求可以沿用现有项目风格，通过 `mRepo.api.xxx(...)` 配合 `response(...)`、`request(...)` 或 `requestWithLoading(...)` 调用。
 - 当同一业务存在多处复用、包含 IO 切换、数据库组合、缓存策略或多接口组合时，在对应 feature 下新增 Repository 方法，由 ViewModel 调用 `mRepo.xxx(...)`。
 - 不直接创建 `ApiService` 或 `AppDatabase`，统一通过 `mRepo.api` 和 `mRepo.appDatabase`。
-- 页面状态优先使用 `MutableLiveData`、`ObservableField`、`ObservableBoolean`、`ObservableInt`，和现有 XML DataBinding 风格保持一致。
+- 页面状态优先使用 `MutableLiveData`、`ObservableField`、`ObservableBoolean`、`ObservableInt`，和现有 XML DataBinding 风格保持一致；但只有 XML/观察者真正需要自动刷新的字段才用 Observable/LiveData，VM 内部列表、当前选中对象、临时计算结果优先用普通 `val/var`。
+- ViewModel 对外只暴露 XML、Dialog/Fragment 或调用方实际消费的状态和事件方法；不要为了简单展示兜底生成一堆 `getXxxText()`、`titleText()`、`subtitleText()`、`isXxxVisible()`、`isXxxSelected()` 透传函数。若只在 VM 内部使用，保持 `private`。
 - 已有 Paging、SSE、播放器状态等 Flow 场景可以使用 `StateFlow` / `Flow`。
 - Paging 使用 `Pager(...).flow.cachedIn(viewModelScope)`。
 - 轮询、SSE、下载、支付监听等长任务必须保存 `Job` 或 handler，并在 `onCleared()` 中取消。
@@ -35,7 +36,7 @@
 - Room Entity 写在 `core/db/entity/`。
 - Room Dao 写在 `core/db/dao/`，并在 `AppDatabase` 中注册。
 - 数据库模型和接口/UI 模型有差异时，在 `core/db/mapper/` 或 feature 内新增 mapper。
-- 接口实体可以直接用于简单 UI 展示，但禁止加入 UI 专用状态字段，例如 `isSelected`、`isExpanded`、`isEditing`、`localProgress`、`displayText`、`errorMessage`、`isChecked`。
+- 接口实体可以直接用于简单 UI 展示，后端已给的 `displayTitle`、`displayDesc`、`coverUrl` 等展示字段可直接绑定；不要再包一层同名展示函数或 UI model。禁止给接口实体加入 UI 专用状态字段，例如 `isSelected`、`isExpanded`、`isEditing`、`localProgress`、`displayText`、`errorMessage`、`isChecked`。
 - 列表 item 需要本地 UI 状态时，优先使用 `ItemXxxVM` 包装接口实体，或新增 `XxxUiModel`。
 
 ViewModel 默认可以通过 `mRepo.api.xxx(...)` 配合 `response(...)`、`request(...)` 或 `requestWithLoading(...)` 处理简单请求，并优先沿用当前 feature 附近同类写法。

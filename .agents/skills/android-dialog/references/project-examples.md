@@ -78,6 +78,8 @@
 - `DownloadMethodDialog` 通过宿主实现接口 `DownloadTypeLauncher` 返回选择结果。
 - `DramaTitleEditDialog` 用 `onSave: ((String) -> Unit)?` 返回输入结果。
 - 输入弹窗关闭时注意隐藏软键盘。
+- 简单输入弹窗只做本地校验和 callback 返回结果，不需要新增 ViewModel。
+- 无 VM 弹窗的 XML 不强制声明 `layout` 变量；需要动态文案、显隐和点击时，Dialog 内直接设置即可。
 
 ## BaseBottomPushVMDialogFragment 示例
 
@@ -98,6 +100,10 @@
 - `EpisodeChooseDialog` 通过 `onEpisodeSelected` 返回选择结果。
 - `ReportDialog` 点击提交后调用 `mRealVM.submit(...)`，观察 `isSubmit` 成功后 toast 并关闭。
 - `PowerConsumeConfirmDialog` 点击确认前先做余额校验，再触发 `onConfirm`。
+- `InputDialog` 使用 VM 的原因是多类型标题/长度规整、敏感词检查、接口保存、未保存退出确认；不要把这个模式套到所有输入框。
+- `EpisodeChooseDialog` / 其他列表选择弹窗只有在需要 adapter VM、ItemVM 或复杂选择状态时才使用 VM；固定少量选项优先参考无 VM 选择弹窗。
+- `PowerConsumeConfirmDialog` / `PowerRechargeDialog` 使用 VM 的原因是复用算力、充值、协议、余额或接口状态，不是因为单纯展示一个字段。
+- 新代码中避免“XML click binding + Kotlin listener”混用扩大化；能在 Kotlin 清晰处理的简单点击，不必为了 DataBinding 额外造方法。
 
 ## 通用确认弹窗示例
 

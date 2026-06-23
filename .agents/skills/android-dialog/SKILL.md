@@ -17,20 +17,78 @@ description: "Android 弹窗实现规范。新增弹窗、复杂重构、基类�
 
 如果弹窗是可见 UI 且本次确实按 Figma/截图实现或校准，再读取 Figma XML 规则。弹窗内部只有本次实际新增或修改列表代码时，才按非分页/分页情况读取列表相关 skill。
 
+## 生成决策
+
+先按当前 feature 或同类弹窗实现判断，不要先套模板。决策顺序固定为：
+
+1. 先定展示形态：中心弹窗、底部弹窗、通用确认。
+2. 再判断是否真的需要 ViewModel。
+3. 再决定 XML 是否绑定 `layout`。
+4. 最后才决定是否拆函数。
+
+不要为了“规范完整”给简单弹窗新增 Fragment + ViewModel + 一堆初始化函数。
+
 ## 基类选择
 
-优先按内容复杂度和展示位置选择基类：
+优先按展示位置和真实业务复杂度选择基类：
 
-- 简单中心弹窗，无页面状态/接口/复杂业务：`BaseDialogFragment<VB>`。
-- 中心弹窗，带倒计时、支付、下载、接口、复杂状态：`BaseVMDialogFragment<VB, VM>`。
-- 简单底部弹窗，无 ViewModel，只做选项选择/输入回调：`BaseBottomPushDialogFragment<VB>`。
-- 底部弹窗，带 ViewModel、接口提交、列表状态、复杂选择：`BaseBottomPushVMDialogFragment<VB, VM>`。
+- 简单中心弹窗，无接口、无长任务、无复用状态：`BaseDialogFragment<VB>`。
+- 中心弹窗，带倒计时、支付、下载、接口请求、长任务或复用页面状态：`BaseVMDialogFragment<VB, VM>`。
+- 简单底部弹窗，只做选项选择、本地输入校验或一次性回调：`BaseBottomPushDialogFragment<VB>`。
+- 底部弹窗，带接口提交、长任务、复杂输入流程、列表/adapter VM、余额/登录/支付等复用状态：`BaseBottomPushVMDialogFragment<VB, VM>`。
 - 只是通用确认/提示，不需要自定义布局：优先使用 `showCommonDialog(...)`、`showConfirmDialog(...)` 或 `showConfirmPrompt(...)`。
 - 极小的 ViewBinding-only 非 Fragment 弹窗可以使用 `CommonDialog` / `Dialog(context, style)`，但不要作为复杂弹窗默认方案。
 
-不要为了“规范完整”给简单确认弹窗新增 Fragment + ViewModel。也不要在需要接口、倒计时、支付、列表状态的弹窗里硬塞无 VM 基类。
+不要在需要接口、倒计时、支付、下载、轮询、adapter VM 或复用全局/页面状态的弹窗里硬塞无 VM 基类。
 
-简单业务弹窗不为了 DataBinding 表达式把接口实体或 Dialog 本身塞进 XML；优先在 Dialog 内直接设置文案、选中态、显隐和点击监听。业务复杂不只按接口/长任务判断：只要存在多处派生展示状态、样式分支、选中态、参数规整或复用状态，就改用 VM 弹窗基类，并让 XML 只绑定 `layout`。VM 可以暴露源对象和少量选择状态，简单颜色、背景、显隐用 XML 三元表达式表达；不要把每个颜色/背景/显隐都拆成一堆 Observable，也不要在 XML `<data>` 里单独声明接口实体或 Dialog 变量来承载展示。
+## ViewModel 边界
+
+以下情况不要新增 ViewModel：
+
+- 普通确认、提示、规则说明、活动弹窗、纯展示弹窗。
+- 简单选项选择、日期/时间/地区 picker、支付方式选择等，只返回一次性结果。
+- 简单输入弹窗，只做本地非空/长度校验，然后 callback 返回结果。
+- 只有 1-2 个字段展示、简单显隐或按钮点击，Dialog 内直接设置更清楚。
+
+以下情况才使用 VM 弹窗基类：
+
+- 弹窗内发起接口请求、支付、下载、倒计时、轮询、SSE 或其他长任务。
+- 存在多类型参数规整、保存流程、敏感词检查、未保存退出确认等可复用输入流程。
+- 需要 `RecyclerViewVM`、ItemVM、adapter 状态或复杂选择状态。
+- 需要复用当前项目已有 VM 能力，例如 `clickHandler`、`dismiss()`、协议勾选、客服/充值/算力配置、跳转协议页等。
+- 同一状态需要被 XML、Dialog 点击逻辑和异步结果共同消费。
+
+“有输入框”“有列表”“有 DataBinding 表达式”本身都不是新增 ViewModel 的理由。
+
+## DataBinding 边界
+
+无 VM 弹窗：
+
+- 可以使用普通 XML，或仅因 BindingAdapter 常量表达式保留 `<layout>` 根节点。
+- 不为了绑定而新增 `layout`、`dialog`、接口实体等 `<variable>`。
+- 文案、显隐、选中态、点击监听优先在 Dialog 内直接设置。
+
+有 VM 弹窗：
+
+- XML `<data>` 默认只声明 `layout`，不要额外声明 `dialog` 或接口实体变量承载展示。
+- VM 可以暴露源对象、少量选择状态和确实复用的展示状态。
+- XML 可以直接写简单属性和三元表达式，例如 `@{layout.data.title}`、`@{layout.checked ? View.VISIBLE : View.GONE}`。
+- 不要把每个颜色、背景、显隐、文案都拆成 Observable 或 `getXxxText()` / `isXxxVisible()` 透传函数。
+
+列表 item XML 仍按列表规则绑定 `item` / `ItemXxxVM`；不要把列表 item 的写法套到 Dialog 根布局。
+
+## 函数拆分
+
+简单弹窗优先把初始化、点击和一次性赋值直接写在 `onPrepareView()`，不要为了模板拆 `initView()`、`initListener()`、`initObservers()`。
+
+只有代码已经明显超过一个职责时才拆一级函数，例如：
+
+- 初始化 adapter / decoration。
+- 注册多个 observer。
+- 输入弹窗的键盘、返回拦截、保存流程较长。
+- 长任务状态展示或结果处理分支较多。
+
+拆分后函数必须有独立职责，禁止继续拆出 `setupXxx()`、`bindXxx()`、`updateXxx()` 这类只包一两行代码的深层嵌套。
 
 ## 参数传递
 

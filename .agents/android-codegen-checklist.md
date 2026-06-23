@@ -38,25 +38,26 @@ Checklist 按任务范围裁剪执行，不要求每次全量跑完；只有完�
 1. Activity/Fragment 只做 View 初始化、事件绑定、观察 ViewModel、跳转、Toast/Dialog/Loading 展示；Fragment 中 `onPrepareView()` 注册的 ViewPager/adapter/键盘/事件等手动回调默认在 `onDestroy()` 解除，不套用 `onDestroyView()`，除非同类或基类已有明确模式。
 2. ViewModel 不直接依赖 Activity、Fragment、View，不直接创建 `ApiService` 或 `AppDatabase`。
 3. Repository 不随意吞异常，不把 Retrofit `Response` 暴露给 UI。
-4. XML 只写简单 DataBinding 表达式，复杂判断已放到 ViewModel 或 BindingAdapter。
-5. Adapter 只负责展示和转发点击，没有直接发网络请求。
-6. 新增 API、request、response、entity、dao、mapper 的目录符合总规范。
-7. 新增完整接口、request/response/entity 模型时已有来自接口文档或业务说明的中文注释；局部小改沿用当前文件风格，没有编造注释。
-8. 列表 item 的 UI 临时状态没有写进接口实体；DataBinding item XML 优先绑定 `ItemXxxVM`，自定义 Adapter/PagingDataAdapter 优先使用 `BindingViewHolder` 和 `binding.getVm(...)`。复杂列表、多选、批量操作、跨页面刷新或分页业务动作优先使用 `BaseItemEventsViewModel` 或同类事件 VM；简单选择、弹窗列表、静态配置项、局部 item 操作可沿用 item VM callback / `onItemClick` / 同类 `setOnItemClickListener`。
-9. 长任务有重复启动保护，并在成功、失败、异常、取消后复位 UI 状态。
-10. `CancellationException` 没有被当成普通异常吞掉。
-11. 特殊渠道/审核模式/SDK 差异、登录/支付/授权/广告奖励、轮询/SSE/下载/生成状态映射、历史兼容和 UI 避让等非显而易见逻辑已有 1-2 行中文原因注释；没有为简单赋值、普通点击、显而易见代码堆模板注释。
-12. 新增资源命名符合命名 skill，尤其是不透明纯色 `bg_颜色值_r/tr/br_radius值`、透明色 `bg_透明百分比_颜色值_r/tr/br_radius值`、描边和渐变命名。
-13. 新增 drawable 前已查询本地是否有同色值、同圆角、同描边资源；纯色/圆角/描边背景已复用已有资源或按颜色值命名，没有使用 `bg_<页面>_<模块>.xml` 这类页面语义命名。
-14. 新增文案已同步当前分支实际维护的 `values*/strings.xml`，没有照搬不存在或不需要的语言目录。
-15. Figma/截图 UI 已优先映射项目 `style`、`theme`、`attr`、`color`、`dimen`、`drawable`、`selector`。
-16. 新增或修改的 XML 中，可映射的 `4dp/8dp/12dp/16dp/24dp` 间距已使用 `@dimen/spacing_xs/s/m/l/xl`，可映射的 `4dp/8dp/12dp/16dp` 圆角已使用 `@dimen/radius_s/m/l/xl`。
-17. 新增或修改的 XML 中，Figma `Text1` 到 `Text5`、主题色、背景色、填充色、功能色语义已使用 `?attr/textColor*`、`?attr/themeColor*`、`?attr/bgColor*`、`?attr/fillColor*` 或项目已有 `@color/@drawable`，没有无理由裸写 `#` 色值。
-18. 新增或修改的 XML 中，已扫描裸 `dp`、裸 `#` 色值、`android:fontFamily`、`android:textStyle`、`android:textSize`、`android:letterSpacing`、`android:lineHeight`；能映射项目资源的已替换，非特殊需要的字距/行高已移除，`sans-serif-medium`、`sans-serif`、`PingFang SC` 等本地未定义字体兜底已移除，不能映射或必须保留的在输出中说明原因。
-19. 文案控件未因写死宽高导致多语言截断风险。
-20. 支付、登录、授权、广告奖励发放等没有只依赖客户端状态作为最终结果。
-21. SDK 差异按当前分支实现隔离，没有把海外版/大陆版专属 SDK 调用散落到业务页面。
-22. 未查看或修改 `OssManager.kt`，除非用户明确要求。
+4. XML 只写简单 DataBinding 表达式；接口实体已有展示字段时可直接绑定。复杂业务判断放到 ViewModel 或 BindingAdapter，但不要为了空判断、简单兜底、颜色/显隐三元表达式生成 `getXxxText()`、`titleText()`、`subtitleText()`、`isXxxVisible()` 等透传函数。
+5. ViewModel public 状态/方法都被 XML、Fragment/Dialog 或外部调用方实际消费；只在 VM 内部使用的 helper 保持 `private`，未使用的展示属性/函数已清理。
+6. Adapter 只负责展示和转发点击，没有直接发网络请求。
+7. 新增 API、request、response、entity、dao、mapper 的目录符合总规范。
+8. 新增完整接口、request/response/entity 模型时已有来自接口文档或业务说明的中文注释；局部小改沿用当前文件风格，没有编造注释。
+9. 列表 item 的 UI 临时状态没有写进接口实体；DataBinding item XML 优先绑定 `ItemXxxVM`，自定义 Adapter/PagingDataAdapter 优先使用 `BindingViewHolder` 和 `binding.getVm(...)`。复杂列表、多选、批量操作、跨页面刷新或分页业务动作优先使用 `BaseItemEventsViewModel` 或同类事件 VM；简单选择、弹窗列表、静态配置项、局部 item 操作可沿用 item VM callback / `onItemClick` / 同类 `setOnItemClickListener`。
+10. 长任务有重复启动保护，并在成功、失败、异常、取消后复位 UI 状态。
+11. `CancellationException` 没有被当成普通异常吞掉。
+12. 特殊渠道/审核模式/SDK 差异、登录/支付/授权/广告奖励、轮询/SSE/下载/生成状态映射、历史兼容和 UI 避让等非显而易见逻辑已有 1-2 行中文原因注释；没有为简单赋值、普通点击、显而易见代码堆模板注释。
+13. 新增资源命名符合命名 skill，尤其是不透明纯色 `bg_颜色值_r/tr/br_radius值`、透明色 `bg_透明百分比_颜色值_r/tr/br_radius值`、描边和渐变命名。
+14. 新增 drawable 前已查询本地是否有同色值、同圆角、同描边资源；纯色/圆角/描边背景已复用已有资源或按颜色值命名，没有使用 `bg_<页面>_<模块>.xml` 这类页面语义命名。
+15. 新增文案已同步当前分支实际维护的 `values*/strings.xml`，没有照搬不存在或不需要的语言目录。
+16. Figma/截图 UI 已优先映射项目 `style`、`theme`、`attr`、`color`、`dimen`、`drawable`、`selector`。
+17. 新增或修改的 XML 中，可映射的 `4dp/8dp/12dp/16dp/24dp` 间距已使用 `@dimen/spacing_xs/s/m/l/xl`，可映射的 `4dp/8dp/12dp/16dp` 圆角已使用 `@dimen/radius_s/m/l/xl`。
+18. 新增或修改的 XML 中，Figma `Text1` 到 `Text5`、主题色、背景色、填充色、功能色语义已使用 `?attr/textColor*`、`?attr/themeColor*`、`?attr/bgColor*`、`?attr/fillColor*` 或项目已有 `@color/@drawable`，没有无理由裸写 `#` 色值。
+19. 新增或修改的 XML 中，已扫描裸 `dp`、裸 `#` 色值、`android:fontFamily`、`android:textStyle`、`android:textSize`、`android:letterSpacing`、`android:lineHeight`；能映射项目资源的已替换，非特殊需要的字距/行高已移除，`sans-serif-medium`、`sans-serif`、`PingFang SC` 等本地未定义字体兜底已移除，不能映射或必须保留的在输出中说明原因。
+20. 文案控件未因写死宽高导致多语言截断风险。
+21. 支付、登录、授权、广告奖励发放等没有只依赖客户端状态作为最终结果。
+22. SDK 差异按当前分支实现隔离，没有把海外版/大陆版专属 SDK 调用散落到业务页面。
+23. 未查看或修改 `OssManager.kt`，除非用户明确要求。
 
 ## 禁止误引入项
 
