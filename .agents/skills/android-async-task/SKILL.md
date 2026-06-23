@@ -83,7 +83,7 @@ override fun onCleared() {
 - 使用 `viewModelScope` 作为 `SSEStreamHandler` 的 scope。
 - 文本拼接、节流、字段解析放到 `PlainTextSseProcessor`、`StorySseProcessor`、`EpisodeSseProcessor` 或新增 processor。
 - `onStart` 清空旧内容并设置生成中状态。
-- `onUpdate` 增量更新 `LiveData` / `ObservableField`。
+- `onUpdate` 只更新已被 XML 或观察者消费的 `LiveData` / `ObservableField`；内部拼接、状态机、临时结果优先用普通字段，必要时再一次性写回 UI 状态。
 - `onComplete` 关闭生成中状态并开放后续按钮。
 - `onErrorCallback` 关闭生成中状态，使用 `parseMessage(e)?.showToast()` 或页面错误态。
 - `onCleared()` 中调用 `sseHandler?.cancel()`。
@@ -124,7 +124,7 @@ override fun cancelDownload() {
 
 ## 状态与错误
 
-- loading/error/content 走项目已有 `ObservableBoolean`、`ObservableInt`、`LoadStateViewHolder`、`MutableLiveData` 或轻量状态对象。
+- loading/error/content 走项目已有 `ObservableBoolean`、`ObservableInt`、`LoadStateViewHolder`、`MutableLiveData` 或轻量状态对象；只有 UI 需要自动刷新时才新增 Observable/LiveData。
 - 每个长任务至少明确这几种状态：未开始、进行中、成功、失败、取消。
 - 失败时保留重试入口，重试前重置失败状态和旧 `Job`。
 - 需要扣算力的生成任务，余额不足走项目已有 `PowerRechargeDialog` / `showRechargeDialog(...)`。

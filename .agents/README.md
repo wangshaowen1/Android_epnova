@@ -35,7 +35,7 @@
 | `android-figma-xml-ui` | Figma/截图到 XML 的完整精确还原 |
 | `android-naming` | 包名、类名、资源、id、常量、layout、drawable 命名 |
 
-每个 skill 文件夹的构成:`SKILL.md`(主体,所有工具都读)、`references/`(项目示例,命中后按需读)、`agents/openai.yaml`(**仅 Codex/OpenAI 用的 agent 配置;Claude Code 与 Android Studio 跳过,不读**)。
+每个 skill 文件夹的构成:`SKILL.md`(主体,所有工具都读)、`references/`(项目示例,命中后按需读)、`agents/openai.yaml`(**仅 Codex/OpenAI 用的触发摘要;不承载生成细则;Claude Code 与 Android Studio 跳过,不读**)。如果 `agents/openai.yaml` 与 `SKILL.md` 不一致，以 `SKILL.md` 为准。
 
 ## 项目记忆(`memory/`)
 

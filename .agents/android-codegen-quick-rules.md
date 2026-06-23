@@ -16,6 +16,7 @@
 - 先用 `rg -n` 定位符号、id、资源名、字符串 key 和调用点;不要先整文件读取。
 - 只在命中行不足以判断时读取附近片段。
 - 同类实现搜索先限定当前 feature、目标 layout、直接资源目录;找不到再扩大范围。
+- 扫描规则文档时默认排除 `.agents/project/**`、`.agents/memory/**` 和历史扫描摘要；这些只作需求或导航资料，不作为通用生成规则。
 - 资源检查先按明确路径、候选资源名、颜色值、圆角值、描边值精确查询;不要默认扫描整个 `res`。
 - 文档和当前代码不一致时,当前代码同类实现优先。
 - Windows PowerShell 读取含中文文件易乱码:用 `[Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false)`、`$OutputEncoding = [System.Text.UTF8Encoding]::new($false)` 和 `Get-Content -Encoding UTF8`;不要把终端乱码误判为文件损坏。

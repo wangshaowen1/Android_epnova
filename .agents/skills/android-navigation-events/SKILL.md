@@ -65,7 +65,7 @@ ActivityUtils.finishToActivity(MainActivity::class.java, false)
 
 - 新事件定义放在 `core/Events.java`，实现 `AppEvent`，命名为 `XxxEvent`。
 - 事件字段要带足过滤条件，例如 `workId`、`storyId`、`seriesId`、`eventType`，避免所有页面无差别刷新。
-- 发送方使用 `FlowEventBus.postSync(Events.XxxEvent(...))` 作为默认选择；确实需要异步投递时才用 `post(...)`。
+- 确认需要全局事件后，发送方优先使用 `FlowEventBus.postSync(Events.XxxEvent(...))`；确实需要异步投递时才用 `post(...)`。
 - 接收方在 `observeEvents { ... }` 内处理，Activity/Fragment 中优先放在 `initObservers()`、`onPrepareView()` 后的观察区。
 - 接收方必须按页面生命周期和业务 id 过滤，例如 `if (isActive && event.workId == mRealVM.workId) refresh()`。
 - 多个页面都需要响应的刷新、删除、生成完成、配置变化、主 tab 双击，可以用全局事件；Dialog 关闭结果、Adapter item 点击、单页面按钮反馈不要用全局事件。

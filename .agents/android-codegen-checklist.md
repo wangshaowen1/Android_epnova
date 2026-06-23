@@ -128,26 +128,14 @@ Checklist 按任务范围裁剪执行，不要求每次全量跑完；只有完�
 9. 是否涉及 SDK 差异或版本差异处理。
 10. 是否存在需要人工确认的点。
 
-## 推荐生成模式
+## 模式选择边界
 
-简单页面：
+生成代码时先按目标文件和同类实现判断，不从固定模板倒推文件：
 
-- `FeatureActivity/Fragment`
-- `FeatureViewModel : AppRepositoryViewModel<AppRepository>()`
-- XML `<layout>` + `layout` 变量
-- 必要时新增 request body / response model / entity
-
-中等复杂页面：
-
-- `FeatureActivity/Fragment`
-- `FeatureViewModel : AppRepositoryViewModel<FeatureRepository>()`
-- `FeatureRepository : AppRepository()` 或 `CommonRepository()`
-- ItemVM + QuickAdapter 或 Paging3
-- 必要时增加轻量 UiState
-
-复杂异步页面：
-
-- 保持 MVVM
-- 明确拆分 Repository、状态对象、轮询/SSE handler、进度模拟器
-- Job 和 handler 在 `onCleared()` 统一释放
-- 只在复用或业务规则复杂时增加 UseCase
+- 简单页面不默认使用仓库型 ViewModel；只有页面确实请求 API、数据库或仓库能力时，才使用 `AppRepositoryViewModel`。
+- XML 是否使用 `<layout>`、变量是否为 `layout` / `item`，以当前页面和同类实现为准；不要为了模板改写历史 ViewBinding 或无绑定 layout。
+- 只有接口字段、请求体或响应模型无法复用时才新增 request / response / entity。
+- 只有复用、组合请求、缓存、复杂错误策略或 SDK/数据层隔离需要时才新增 Repository。
+- 只有 UI 展示结构明显独立、状态交叉复杂或多处共享时才新增 UiModel / UiState。
+- 只有轮询、SSE、下载、生成任务等长任务才拆 Job / handler，并在 `onCleared()` 统一释放。
+- UseCase 只在复用或业务规则复杂到需要独立测试时增加。

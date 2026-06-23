@@ -219,7 +219,7 @@ Footer 状态通过 `withLoadStateFooter(...)` 由 `append` 驱动。
 - 存储 page key 或 remote key，保证 `APPEND` 可靠。
 - `ApiResponse` 失败时返回 `MediatorResult.Error(ApiException(...))`。
 - 重新抛出 `CancellationException`。
-- 在 Adapter 外把 Room entity 转成 API/domain 模型，通常放在 `Pager.flow.map { pagingData.map { it.toDomain() } }`。
+- 在 Adapter 外把 Room entity 转成当前列表/页面实际消费的模型，通常放在 `Pager.flow.map { pagingData.map { it.toXxxInfo() } }` 或已有 mapper 中；不要为了分页缓存默认新增 domain 层。
 
 不要为了让普通网络列表看起来更“架构化”而新增 Room entity、DAO、mapper 或 `RemoteMediator`。
 

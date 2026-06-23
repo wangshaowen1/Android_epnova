@@ -95,7 +95,7 @@ description: "Android Kotlin 命名规范。仅在用户明确要求命名/资�
 - 聚合响应模型：`XxxData`，例如 `HomeBookShelfData`。
 - API 实体：`XxxInfo`，例如 `WorkInfo`、`EpisodeInfo`、`PaymentInfo`。
 - Room 实体：`XxxEntity`。
-- Mapper 函数：`toXxx()`，例如 `toDomain()`、`toEntity()`、`toUiModel()`。
+- Mapper 函数：`toXxx()`，例如 `toEntity()`、`toUiModel()`、`toXxxInfo()`；不要为了命名示例默认新增 domain 层。
 - 只有 UI 展示结构明显不同于接口实体、需要跨层复用或多处共享同一展示模型时，才新增 `XxxUiModel`。
 
 ## 资源文件
