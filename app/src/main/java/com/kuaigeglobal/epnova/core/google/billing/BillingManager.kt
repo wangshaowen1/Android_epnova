@@ -154,6 +154,7 @@ object BillingManager {
                             "Purchases failed: $billingResult ,purchase:${purchases?.getOrNull(0)?.toString()}"
                         )
                         reportOrderStatus(currentOrderId, 3)
+                        showToast(R.string.system_payment_cancel)
                         _purchaseResult.tryEmit(PurchaseResult.Cancelled)
                         tryDisconnectAfterPurchase()
                     }
