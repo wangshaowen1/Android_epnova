@@ -138,7 +138,7 @@ class MicroAnimSegmentSourceMaterialItem(
                 } else "v"
                 filter.append("[2:a]adelay=$adelay|$adelay[a];")
                 command.append(" -filter_complex \"${filter}\"")
-                command.append(" -map '[$finalVideo]' -map '[a]' -c:a aac -b:a 128k -c:v libx264 -preset veryfast -r ${fps} -pix_fmt yuv420p -y '${file.absolutePath}'")
+                command.append(" -map '[$finalVideo]' -map '[a]' -c:a aac -b:a 128k -c:v libopenh264 -b:v 4000k -r ${fps} -pix_fmt yuv420p -y '${file.absolutePath}'")
                 Logger.i("$filename ffmpeg command:$command")
                 this@MicroAnimSegmentSourceMaterialItem.session = FFmpegKit.executeAsync(
                     command.toString(),

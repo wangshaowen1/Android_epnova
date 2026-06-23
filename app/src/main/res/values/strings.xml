@@ -769,4 +769,5 @@
     <string name="generate_story_intro_dynamic">Dynamic comics + multi‑character voiceover + background sound effects + transition effects for stronger plot immersion.</string>
     <string name="generate_story_content_review_failed">Input content verification failed, unable to generate.</string>
     <string name="settings_delete_account">Warning: Please confirm the following information before deleting your account.\n\nDeleting your account is irreversible, and all information will be permanently deleted. Please make sure to back up all data related to your account before proceeding, and ensure that all relevant services have been properly handled. Subsequent re-registration will only create a brand-new account. Please confirm that the following information will be cleared:\n\n· Personal Data Your personal data, including your email address and nickname, will be removed.\n\n· Third-Party Account Information Consumption history, recharge history, chapter unlock records, and series in My List.\n\n· Account Balance Your coin and credit balance will be cleared to zero.</string>
+    <string name="video_download_watermark">AI generation</string>
 </resources>

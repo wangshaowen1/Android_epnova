@@ -754,4 +754,5 @@ Jika Anda memilih \"Tidak Setuju\", Anda tidak akan dapat menggunakan produk dan
     <string name="balance_fail_hint">AI akan melanjutkan pembuatan otomatis setelah isi ulang tanpa mulai dari awal.</string>
     <string name="balance_fail_title">Kredit tidak cukup untuk lanjut pembuatan</string>
     <string name="settings_delete_account">Peringatan: Harap konfirmasi informasi berikut sebelum menghapus akun Anda.\n\nMenghapus akun tidak dapat dikembalikan, dan semua informasi akan terhapus secara permanen. Pastikan Anda telah mencadangkan semua data terkait akun sebelum melanjutkan, serta pastikan semua layanan terkait telah ditangani dengan benar. Pendaftaran ulang di kemudian hari hanya akan membuat akun baru sepenuhnya. Harap konfirmasi bahwa informasi berikut akan dihapus:\n\n· Data Pribadi Data pribadi Anda, termasuk alamat email dan nama panggilan, akan dihapus.\n\n· Informasi Akun Pihak Ketiga Riwayat konsumsi, riwayat isi ulang saldo, catatan pembukaan bab, serta serial dalam Daftar Saya.\n\n· Saldo Akun Saldo koin dan kredit Anda akan dihapus menjadi nol.</string>
+    <string name="video_download_watermark">Dihasilkan AI</string>
 </resources>

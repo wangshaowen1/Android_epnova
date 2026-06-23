@@ -42,7 +42,7 @@ class ListPopupWindow<T : SelectableItem>(
 
     init {
         // 设置PopupWindow基本属性
-        width = 100.dp
+        width = 120.dp
         height = ViewGroup.LayoutParams.WRAP_CONTENT
         isFocusable = true
         isOutsideTouchable = true
