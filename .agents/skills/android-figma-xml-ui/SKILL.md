@@ -51,7 +51,7 @@ Figma 到 XML 的首轮动作最多覆盖以下内容；只有发现缺口才继
 ## XML 基础
 
 - 页面 XML 默认使用 `<layout>`，页面 ViewModel 变量固定为 `layout`；item XML 变量固定为 `item`。
-- 可见 UI 仍按项目 MVVM：Activity/Fragment 初始化 View、监听点击、观察 ViewModel；复杂业务表达式不要写进 XML。
+- 可见 UI 仍按项目 MVVM：Activity/Fragment 初始化 View、监听点击、观察 ViewModel；复杂业务表达式不要写进 XML。简单属性展示、空判断、颜色/显隐三元表达式可以直接写 XML，不要为了还原 UI 额外生成 ViewModel 透传函数或 Observable 字段。
 - 图片加载优先使用项目 BindingAdapter：`loadUri`、`loadThumbnailUri`、`loadHQThumbnailUri`、`loadVideoUrl`。
 - 点击优先使用项目已有 click binding 或 `setOnSingleClickListener`，不要在 Adapter 里写业务请求。
 - Figma 的 Auto Layout 映射到 Android 时，优先用 `ConstraintLayout`、`LinearLayout`、`RecyclerView`、`0dp` 约束、`wrap_content`、`padding/margin`，不要用一堆绝对位置堆出来。
@@ -154,7 +154,7 @@ Figma 标注为 `Text1`、`Text2`、`Text3`、`Text4`、`Text5` 时，优先映�
 - 不用 CSS/SCSS/Web token 术语实现 Android XML；遇到类似 CSS token 的设计变量，要翻译成项目 `style/theme/attr/color/dimen/drawable`。
 - 不把设计说明、标注文案、开发备注写进页面 UI。
 - 不为了像素值完全一致而绕开项目 style/theme，除非项目没有对应资源。
-- 不在 XML 中写复杂业务判断；复杂逻辑放 ViewModel 或 BindingAdapter。
+- 不在 XML 中写复杂业务判断；复杂逻辑放 ViewModel 或 BindingAdapter。简单展示兜底、实体展示字段、颜色/显隐三元表达式不算复杂逻辑，不要因此新增 `getXxxText()`、`isXxxVisible()`、`titleText()` 等透传方法。
 - 不因为截图里文字短就写死文案控件宽度，多语言会放大这个问题。
 
 ## 完成前检查

@@ -9,11 +9,11 @@
 - Dialog XML 先跟随当前文件和同类弹窗：无 VM 弹窗不要为了 DataBinding 表达式新增 `layout`、`dialog`、接口实体等变量，优先在 Dialog 内直接更新文案、显隐、选中态和点击事件。
 - VM 弹窗 XML 默认只绑定 `layout`；VM 可暴露源对象和少量复用状态，XML 可直接写简单属性或三元表达式。不要把每个颜色、背景、显隐、文案都拆成 Observable 或 `getXxxText()` / `isXxxVisible()` 透传函数，也不要在 Dialog 根 XML `<data>` 里单独声明接口实体变量承载展示。
 - 编辑历史 XML、include、纯 ViewBinding 或无绑定 layout 时，跟随当前文件和同类文件，不强行改结构。
-- 页面/复杂 Fragment 初始化优先放在 `onPrepareView()` 中，并按职责拆成 `initView()`、`initListener()`、`initObservers()` 或现有相近命名；简单 Dialog 不套这个模板，直接写在 `onPrepareView()` 更符合项目习惯。
+- Fragment 初始化优先放在 `onPrepareView()` 中；只有页面逻辑已经较多时，才按职责拆成 `initView()`、`initListener()`、`initObservers()` 或现有相近命名。简单页面/弹窗不要套空模板，少量赋值和点击可直接写在 `onCreate()` / `onPrepareView()`。
 - 与 `onPrepareView()` 成对的手动回调清理默认放在 Fragment 的 `onDestroy()`，例如 ViewPager2 callback、AdapterDataObserver、键盘监听和事件监听；不要默认生成 `onDestroyView()` 清理，除非正在修改的同类页面或基类已经这样做。
 - Activity 可以在 `onCreate()` 做启动初始化，但网络和业务动作仍应委托给 ViewModel。
 - 保存、提交、支付、生成、跳转、登录等用户高频动作优先使用 `setOnSingleClickListener` 或 XML 中 `layout.clickHandler::onClick`。简单关闭、toggle、播放器点击、adapter retry、widget 内部回调、Java 旧控件或同类代码已采用的简单监听，可以沿用 `setOnClickListener`。
-- XML 可以写简单可读的 DataBinding 表达式，复杂业务判断放到 ViewModel 方法或 BindingAdapter。
+- XML 可以写简单可读的 DataBinding 表达式，简单属性、空判断、兜底和颜色/显隐三元表达式不需要新增 ViewModel 透传方法或 BindingAdapter；复杂业务判断才放到 ViewModel 方法或 BindingAdapter。
 - 图片加载优先使用项目已有 `loadUri`、`loadHQThumbnailUri`、`loadThumbnailUri`、`loadVideoUrl` 等 BindingAdapter。
 - 文案必须走字符串资源；新增 key 前先检查重复，并同步当前仓库已有且业务要求覆盖的 `values*/strings.xml`。
 

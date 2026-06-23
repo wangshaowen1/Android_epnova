@@ -185,6 +185,7 @@ Adapter 只负责展示：
 - `areItemsTheSame` 使用稳定业务 id。
 - `areContentsTheSame` 默认使用 `oldItem == newItem`，除非有明确理由只比较特定字段。
 - 现有 item layout 使用 DataBinding 时，XML `item` 变量优先绑定 `ItemXxxVM`，通过 `binding.getVm(...)` 获取或复用 item VM，不直接绑定接口实体或临时 UI data class。
+- ItemVM 只承载接口实体、本地 UI 状态和点击回调；接口实体已有展示字段时，XML 可直接绑定 `item.data.xxx`，不要为了普通字段展示生成 `getXxxText()`、`displayXxx`、`isXxxVisible()` 透传属性/函数。
 - 分页 item 的复杂点击/选择/操作、多选、跨页面刷新或批量操作优先通过 `BaseItemEventsViewModel` 或当前 feature 已有事件 VM 转发，由 Fragment/Activity/ViewModel 收事件处理业务；简单局部 item 操作可以沿用当前 feature 的 item VM callback 或同类 `onItemClick` 写法。Adapter 不直接请求网络、跳转或执行业务。
 
 ## 状态 UI 规则
@@ -234,6 +235,7 @@ Footer 状态通过 `withLoadStateFooter(...)` 由 `append` 驱动。
 - API 失败转成 `LoadResult.Error(ApiException(...))`。
 - 全页列表中的 `RecyclerView` 没有误用 `wrap_content`。
 - DataBinding item XML 绑定的是 `ItemXxxVM`，Adapter ViewHolder 使用 `BindingViewHolder` 和 `binding.getVm(...)`。
+- ItemVM 没有无意义透传接口实体展示字段；只在需要本地 UI 状态、点击回调或复用业务展示规则时新增字段/方法。
 - 复杂 item 点击/选择/操作没有直接落在 Adapter lambda 中；多选、跨页面刷新、批量操作或分页业务动作优先通过 `BaseItemEventsViewModel` 或同类事件 VM 转发，简单局部 item 操作可沿用当前 feature 的 callback / `onItemClick` 写法。
 - Footer 重试使用 `adapter.retry()`，页面重试使用 `adapter.refresh()`。
 - 网格/瀑布流 footer 横跨全宽。

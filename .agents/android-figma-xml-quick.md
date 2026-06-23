@@ -28,6 +28,7 @@
 - `Text1` 到 `Text5` 优先映射 `?attr/textColor1` 到 `?attr/textColor5`。
 - 不写本地没有的字体兜底，例如 `sans-serif-medium`、`sans-serif`、`PingFang SC`。
 - 普通 `letterSpacing` / `lineHeight` 不落 XML；只有特殊视觉需求且无项目 style 对应时才局部保留。
+- 简单属性展示、空判断、颜色/显隐三元表达式可直接写 XML；不要为了 UI 还原新增 ViewModel 透传函数或 Observable 字段。
 
 ## Drawable
 

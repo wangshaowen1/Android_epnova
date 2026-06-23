@@ -66,7 +66,7 @@ description: "Android Kotlin 命名规范。仅在用户明确要求命名/资�
 
 - 函数名以动词开头：`loadData()`、`fetchUserInfo()`、`submitFeedback()`、`updateLoadState()`。
 - 回调使用 `onXxx`：`onPaySuccess()`、`onItemSelected()`。
-- 初始化使用项目常见命名：`initView()`、`initListener()`、`initObservers()`、`initData()`。
+- 确实需要拆初始化函数时，使用项目常见命名：`initView()`、`initListener()`、`initObservers()`、`initData()`。简单页面或弹窗只有少量赋值/点击时不要为了命名模板生成空函数或一两行函数。
 - 主动远程刷新使用 `fetchXxx()`。
 - 页面数据加载使用 `loadXxx()`，可以包含缓存。
 - 轻量读取或沿用已有 API 命名时使用 `getXxx()`。
@@ -96,7 +96,7 @@ description: "Android Kotlin 命名规范。仅在用户明确要求命名/资�
 - API 实体：`XxxInfo`，例如 `WorkInfo`、`EpisodeInfo`、`PaymentInfo`。
 - Room 实体：`XxxEntity`。
 - Mapper 函数：`toXxx()`，例如 `toDomain()`、`toEntity()`、`toUiModel()`。
-- 只有 UI 需要单独展示模型时，才新增 `XxxUiModel`。
+- 只有 UI 展示结构明显不同于接口实体、需要跨层复用或多处共享同一展示模型时，才新增 `XxxUiModel`。
 
 ## 资源文件
 

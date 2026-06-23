@@ -43,6 +43,7 @@ description: "Android 页面骨架生成规范。仅在本次实际新增页面�
 3. 判断页面是否需要仓库访问。需要时使用 `AppRepositoryViewModel<AppRepository>` 或已有 feature Repository；仅有 `mBundle` 参数不算仓库访问。
 4. 只新增当前确实需要的文件。除非功能已经需要，否则不要创建 Repository、UseCase、Adapter、UiState 或 mapper。
 5. 命名优先沿用当前 feature 和同类文件；只有命名冲突、不确定命名、批量新增资源或用户要求命名审查时，才读取 `android-naming`。
+6. 初始化函数按实际代码量拆分。简单页面只有少量赋值/点击时可以直接写在 `onCreate()` / `onPrepareView()`；不要生成空的 `initView()`、`initListener()`、`dataUpdate()` 模板函数。
 
 ## 文件放置
 
@@ -80,18 +81,7 @@ class XxxActivity : BaseViewModelActivity<ActivityXxxBinding, XxxViewModel>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        initView()
-        initListener()
-        dataUpdate()
-    }
-
-    private fun initView() {
-    }
-
-    private fun initListener() {
-    }
-
-    private fun dataUpdate() {
+        // 简单页面可直接写初始化；逻辑变多时再按职责拆 initView/initListener/dataUpdate。
     }
 }
 ```
@@ -117,18 +107,7 @@ class XxxFragment : BaseViewModelFragment<FragmentXxxBinding, XxxViewModel>() {
 
     override fun onPrepareView() {
         super.onPrepareView()
-        initView()
-        initListener()
-        dataUpdate()
-    }
-
-    private fun initView() {
-    }
-
-    private fun initListener() {
-    }
-
-    private fun dataUpdate() {
+        // 简单页面可直接写初始化；逻辑变多时再按职责拆 initView/initListener/dataUpdate。
     }
 }
 ```
@@ -172,7 +151,7 @@ class XxxViewModel : AppRepositoryViewModel<AppRepository>() {
 }
 ```
 
-使用与附近代码一致的项目状态类型：`MutableLiveData`、`ObservableField`、`ObservableBoolean`、`ObservableInt`。只有功能已经需要分页、SSE、轮询或连续流时，才使用 `Flow`。
+使用与附近代码一致的项目状态类型：`MutableLiveData`、`ObservableField`、`ObservableBoolean`、`ObservableInt`。只有 XML/观察者需要自动刷新时才用 Observable/LiveData；VM 内部临时状态、当前选中对象、普通列表优先用 `val/var`。只有功能已经需要分页、SSE、轮询或连续流时，才使用 `Flow`。
 
 Long-running jobs, polling, SSE handlers, downloads, and media tasks must be stored and cancelled in `onCleared()`.
 
@@ -240,5 +219,6 @@ mRealVM.xxxData.observe(viewLifecycleOwner) { data ->
 - Cross-page arguments preferably use `Constants.Extra.*` or local `private const val KEY_XXX`; read from `mBundle` in ViewModel when practical. Do not refactor unrelated legacy keys just for style.
 - Activity/Fragment 只初始化 View、监听、观察者、导航、Toast/Dialog/loading，不直接请求网络或访问数据库。
 - ViewModel owns page state and request calls.
+- 没有生成空的初始化函数；简单初始化没有被拆成多层 `init/setup/bind/update`。
 - 没有在缺乏真实需要时新增 Base 类、Hilt、AppContainer、ViewModelFactory、UseCase、AppResult/AppError 或完整 MVI。
 - Long tasks are cancelled in `onCleared()`.

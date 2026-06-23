@@ -37,7 +37,7 @@
 - Room Dao 写在 `core/db/dao/`，并在 `AppDatabase` 中注册。
 - 数据库模型和接口/UI 模型有差异时，在 `core/db/mapper/` 或 feature 内新增 mapper。
 - 接口实体可以直接用于简单 UI 展示，后端已给的 `displayTitle`、`displayDesc`、`coverUrl` 等展示字段可直接绑定；不要再包一层同名展示函数或 UI model。禁止给接口实体加入 UI 专用状态字段，例如 `isSelected`、`isExpanded`、`isEditing`、`localProgress`、`displayText`、`errorMessage`、`isChecked`。
-- 列表 item 需要本地 UI 状态时，优先使用 `ItemXxxVM` 包装接口实体，或新增 `XxxUiModel`。
+- 列表 item 需要本地 UI 状态时，优先使用 `ItemXxxVM` 包装接口实体。只有 UI 展示结构明显不同于接口实体、需要跨层复用或多处共享同一展示模型时，才新增 `XxxUiModel`。
 
 ViewModel 默认可以通过 `mRepo.api.xxx(...)` 配合 `response(...)`、`request(...)` 或 `requestWithLoading(...)` 处理简单请求，并优先沿用当前 feature 附近同类写法。
 

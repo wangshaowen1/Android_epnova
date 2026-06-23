@@ -61,7 +61,7 @@
 可复制点：
 
 - 后台加载列表/状态时用 `request(apiBlock = { ... }, onSuccess = { ... })`。
-- API 成功后更新 `ObservableField`、adapter 数据、事件流。
+- API 成功后更新真正被 XML/观察者消费的 `ObservableField`、adapter 数据或事件流；不要为了接口成功结果默认新增可观察字段。
 - 用户触发但不需要全屏 loading 的操作，也可以使用 `request(...)`。
 
 注意：

@@ -79,7 +79,7 @@
 
 - `BaseViewModelFragment<FragmentCreateBinding, CreateViewModel>`.
 - `companion object newInstance()`.
-- `onPrepareView()` for `initView()`.
+- `onPrepareView()` 承载页面初始化；只有逻辑较多时才拆 `initView()` 和观察区。
 - `setOnSingleClickListener` for click actions.
 - 页面是 Tab 结构时，子 Fragment 通过现有 adapter 模式承载。
 

@@ -24,6 +24,7 @@ description: "Android 非分页 DataBinding 列表实现规范。仅在本次实
 - 单类型普通列表：`QuickAdapter<ItemXxxVM>(R.layout.item_xxx, emptyList())`。
 - item VM：继承 `AppItemViewModel<T>`，命名为 `ItemXxxVM`。
 - item XML：使用 `<layout>`，DataBinding 变量名固定为 `item`，类型优先绑定 `ItemXxxVM`。
+- item VM 只承载接口实体、本地 UI 状态和点击回调；接口实体已有展示字段时，XML 可直接绑定 `item.data.xxx`，不要在 ItemVM 里为每个字段生成 `getXxxText()`、`displayXxx`、`isXxxVisible()` 透传属性/函数。
 - 列表更新：优先 `adapter.submitList(newItems)`。
 - 自定义 Adapter 或 PagingDataAdapter 的 ViewHolder 优先继承 `BindingViewHolder<VB>`，并通过 `binding.getVm(...)` 获取或复用 item VM。
 - 复杂列表、多选、批量操作、跨页面刷新或需要统一收敛的 item 点击/选择/操作，优先通过 `BaseItemEventsViewModel` 或当前 feature 已有事件 VM 转发；简单选择、弹窗列表、静态配置项、局部 item 操作可以使用 item VM callback、`onItemClick.value`、ViewModel 方法或同类 `setOnItemClickListener`。
@@ -55,13 +56,15 @@ fun loadList() {
 }
 ```
 
-item VM 保持轻量，持有展示状态和回调入口：
+item VM 保持轻量，只持有必要本地 UI 状态和回调入口：
 
 ```kotlin
 class ItemSearchResultVM(data: WorkVOInfo?) : AppItemViewModel<WorkVOInfo>(data) {
     var keyWord: String? = null
 }
 ```
+
+如果只是展示接口字段，优先在 XML 使用 `@{item.data.title}`、`@{item.data.coverUrl}` 等直接绑定，不要在 ItemVM 中包一层同名展示函数。
 
 item XML 变量固定为 `item`：
 
@@ -172,6 +175,7 @@ val mStyleAdapterVm = RecyclerViewVM()
 - 单类型列表使用 `QuickAdapter<ItemXxxVM>`，多类型列表才使用 `BaseMultiItemAdapter<AppItemViewModel<*>>`。
 - item VM 继承 `AppItemViewModel<T>`，命名符合 `ItemXxxVM`。
 - item XML 使用 `<layout>`，变量名是 `item`，类型是 `ItemXxxVM`。
+- item VM 没有无意义透传接口实体展示字段；只在需要本地 UI 状态、点击回调或复用业务展示规则时新增字段/方法。
 - 自定义 Adapter / PagingDataAdapter 的 ViewHolder 使用 `BindingViewHolder`，并通过 `binding.getVm(...)` 复用 item VM。
 - 列表更新优先使用 `submitList(newItems)`。
 - Adapter 没有网络、数据库、跳转和复杂业务逻辑。
