@@ -14,8 +14,7 @@ import com.kuaigeglobal.epnova.base.viewmodel.ToolbarViewModel
 import com.kuaigeglobal.epnova.common.Constant
 import com.kuaigeglobal.epnova.common.Constants
 import com.kuaigeglobal.epnova.core.AppRepository
-import com.kuaigeglobal.epnova.core.network.apis.entity.SimpleAsset
-import com.kuaigeglobal.epnova.core.network.apis.request.QueryAssetBody
+import com.kuaigeglobal.epnova.core.network.apis.entity.AssetInfo
 import kotlinx.coroutines.flow.Flow
 
 class AssetSelectViewModel : AppRepositoryViewModel<AppRepository>() {
@@ -29,7 +28,7 @@ class AssetSelectViewModel : AppRepositoryViewModel<AppRepository>() {
     val workId by lazy { mBundle.getString(Constants.Extra.WORK_ID) }
     val storyId by lazy { mBundle.getString(Constants.Extra.STORY_ID) }
     val assetId by lazy { mBundle.getString(Constants.Extra.ASSET_ID) }
-    var selectedItem: SimpleAsset? = null
+    var selectedItem: AssetInfo? = null
 
     val isDataEmpty = ObservableBoolean(true)
 
@@ -38,12 +37,12 @@ class AssetSelectViewModel : AppRepositoryViewModel<AppRepository>() {
     override fun onCreate() {
         super.onCreate()
         when (bizType) {
-            QueryAssetBody.BIZ_TYPE_PROP -> mToolbarVM.mTitle.set(getString(R.string.select_prop))
-            QueryAssetBody.BIZ_TYPE_SCENE -> mToolbarVM.mTitle.set(getString(R.string.select_scene))
+            AssetInfo.IMAGE_BIZ_TYPE_PROP -> mToolbarVM.mTitle.set(getString(R.string.select_prop))
+            AssetInfo.IMAGE_BIZ_TYPE_SCENE -> mToolbarVM.mTitle.set(getString(R.string.select_scene))
         }
     }
 
-    fun getAssetsPage(): Flow<PagingData<SimpleAsset>> {
+    fun getAssetsPage(): Flow<PagingData<AssetInfo>> {
         return Pager(
             config = PagingConfig(
                 initialLoadSize = Constant.Paged.PAGE_SIZE,

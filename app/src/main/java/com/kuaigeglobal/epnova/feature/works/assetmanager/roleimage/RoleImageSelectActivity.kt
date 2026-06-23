@@ -8,8 +8,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.kuaigeglobal.epnova.common.Constants
 import com.kuaigeglobal.epnova.common.ext.startRefreshWithAdapter
+import com.kuaigeglobal.epnova.core.network.apis.entity.AssetInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.RoleImageInfo
-import com.kuaigeglobal.epnova.core.network.apis.entity.SimpleRoleInfo
 import com.kuaigeglobal.epnova.databinding.ActivityRoleImageSelectBinding
 import com.kuaigeglobal.epnova.widget.decoration.GridSpacingItemDecoration
 import com.kuaigeglobal.epnova.widget.decoration.SpaceDecoration
@@ -31,7 +31,7 @@ class RoleImageSelectActivity : BaseViewModelActivity<ActivityRoleImageSelectBin
         const val TAG = "RoleImageSelectActivity"
 
         @JvmStatic
-        fun getIntent(context: Context?, workId: String?, storyId: String?, info: SimpleRoleInfo?, selectModel: Boolean = false): Intent? {
+        fun getIntent(context: Context?, workId: String?, storyId: String?, info: AssetInfo?, selectModel: Boolean = false): Intent? {
             if (context == null) return null
             val starter = Intent(context, RoleImageSelectActivity::class.java)
             starter.putExtra(Constants.Extra.DATA, info)
@@ -42,7 +42,7 @@ class RoleImageSelectActivity : BaseViewModelActivity<ActivityRoleImageSelectBin
         }
 
         @JvmStatic
-        fun start(context: Context?, workId: String?, storyId: String?, info: SimpleRoleInfo?) {
+        fun start(context: Context?, workId: String?, storyId: String?, info: AssetInfo?) {
             context?.startActivity(getIntent(context, workId, storyId, info))
         }
     }

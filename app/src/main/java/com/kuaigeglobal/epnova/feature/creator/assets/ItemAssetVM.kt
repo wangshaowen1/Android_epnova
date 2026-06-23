@@ -7,16 +7,13 @@ import com.blankj.utilcode.util.StringUtils.getString
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.base.item.AppItemViewModel
 import com.kuaigeglobal.epnova.core.network.apis.ApiResponse
+import com.kuaigeglobal.epnova.core.network.apis.entity.AssetInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.ReferenceImageInfo
-import com.kuaigeglobal.epnova.core.network.apis.entity.SimpleAsset
-import com.kuaigeglobal.epnova.core.network.apis.entity.SimplePropInfo
-import com.kuaigeglobal.epnova.core.network.apis.entity.SimpleRoleInfo
-import com.kuaigeglobal.epnova.core.network.apis.entity.SimpleSceneInfo
 import com.kuaigeglobal.epnova.feature.editor.info.InputDialog
 import com.kuaigeglobal.epnova.widget.RecyclerEditText
 import kotlinx.coroutines.Job
 
-abstract class ItemAssetVM<Item : SimpleAsset>(
+abstract class ItemAssetVM(
     /**
      * 作品 ID
      */
@@ -26,8 +23,8 @@ abstract class ItemAssetVM<Item : SimpleAsset>(
      */
     val storyId: String?,
     protected val onItemChanged: () -> Unit,
-    data: Item?
-) : AppItemViewModel<Item>(data) {
+    data: AssetInfo?
+) : AppItemViewModel<AssetInfo>(data) {
 
     /**
      * -1=新创建 0=待生成 1=生成中 2=成功 3=失败 10=取消设置（和待生成0一样处理）
@@ -73,10 +70,10 @@ abstract class ItemAssetVM<Item : SimpleAsset>(
             loopGenStatus()
         }
         hint.set(
-            when (data) {
-                is SimpleRoleInfo -> getString(R.string.set_character_appearance)
-                is SimpleSceneInfo -> getString(R.string.set_scene)
-                is SimplePropInfo -> getString(R.string.set_prop)
+            when (data?.assetType) {
+                AssetInfo.TYPE_ROLE -> getString(R.string.set_character_appearance)
+                AssetInfo.TYPE_SCENE -> getString(R.string.set_scene)
+                AssetInfo.TYPE_PROP -> getString(R.string.set_prop)
                 else -> ""
             }
         )

@@ -13,8 +13,8 @@ import com.kuaigeglobal.epnova.base.viewmodel.ToolbarViewModel
 import com.kuaigeglobal.epnova.common.Constant
 import com.kuaigeglobal.epnova.common.Constants
 import com.kuaigeglobal.epnova.core.AppRepository
+import com.kuaigeglobal.epnova.core.network.apis.entity.AssetInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.RoleImageInfo
-import com.kuaigeglobal.epnova.core.network.apis.entity.SimpleRoleInfo
 import com.kuaigeglobal.epnova.feature.works.data.RoleImagePagingSource
 import com.nhsd.basic.ext.getParcelableValue
 import kotlinx.coroutines.flow.Flow
@@ -26,7 +26,7 @@ class RoleImageSelectViewModel : AppRepositoryViewModel<AppRepository>() {
         title = ""
     )
     val selectModel by lazy { mBundle.getBoolean(Constants.Extra.SELECT_MODE, false) }
-    val roleInfo by lazy { mBundle.getParcelableValue(Constants.Extra.DATA, SimpleRoleInfo::class.java) }
+    val roleInfo by lazy { mBundle.getParcelableValue(Constants.Extra.DATA, AssetInfo::class.java) }
     val workId by lazy { mBundle.getString(Constants.Extra.WORK_ID) }
     val storyId by lazy { mBundle.getString(Constants.Extra.STORY_ID) }
     var mSelectedItem: RoleImageInfo? = null

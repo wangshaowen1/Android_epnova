@@ -521,44 +521,14 @@ object ApiConstants {
     const val WORK_ASSET_SAVE = "new/work/asset/save"
 
     /**
-     * 场景列表
-     */
-    const val WORK_ASSET_SCENE_LIST = "v2/work/asset/scene/list/story"
-
-    /**
-     * 场景保存
-     */
-    const val WORK_ASSET_SCENE_SAVE = "v2/work/asset/scene/save"
-
-    /**
      * 场景单个删除
      */
     const val WORK_ASSET_SCENE_DELETE = "v2/work/asset/scene/unlink/story"
 
     /**
-     * 角色列表
-     */
-    const val WORK_ASSET_ROLE_LIST = "v2/work/asset/role/list/story"
-
-    /**
-     * 角色保存
-     */
-    const val WORK_ASSET_ROLE_SAVE = "v2/work/asset/role/save"
-
-    /**
      * 角色单个删除
      */
     const val WORK_ASSET_ROLE_DELETE = "v2/work/asset/role/unlink/story"
-
-    /**
-     * 道具列表
-     */
-    const val WORK_ASSET_PROP_LIST = "v2/work/asset/prop/list/story"
-
-    /**
-     * 道具保存
-     */
-    const val WORK_ASSET_PROP_SAVE = "v2/work/asset/prop/save"
 
     /**
      * 道具单个删除
@@ -1078,22 +1048,7 @@ object ApiConstants {
     const val WORK_ASSET_STORY_SELECT_IMAGE = "new/work/asset/story/select-image"
 
     /**
-     * 作品角色列表
-     */
-    const val WORK_ASSET_ROLE_PAGE = "v2/work/asset/role/list"
-
-    /**
      * 角色形象列表
      */
     const val WORK_ASSET_ROLE_IMAGE_PAGE = "v2/work/asset/role/appearance/list"
-
-    /**
-     * 作品道具列表
-     */
-    const val WORK_ASSET_PROP_PAGE = "v2/work/asset/prop/list"
-
-    /**
-     * 作品场景列表
-     */
-    const val WORK_ASSET_SCENE_PAGE = "v2/work/asset/scene/list"
 }

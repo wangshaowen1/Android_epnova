@@ -1,8 +1,12 @@
 package com.kuaigeglobal.epnova.core.network.apis.entity
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
 /**
  * 当前集资产项
  */
+@Parcelize
 data class AssetInfo(
     // 当前集资产使用记录 ID
     val usageId: String? = null,
@@ -42,4 +46,29 @@ data class AssetInfo(
     val sourceUsageId: String? = null,
     // 是否存在历史图片
     val hasHistory: Boolean? = null
-)
+) : Parcelable {
+    val assetDesc: String?
+        get() = assetPrompt
+
+    val assetImage: String?
+        get() = imageUrl
+
+    val status: Int?
+        get() = genStatus
+
+    val showReference: Boolean
+        get() = hasHistory == true || !imageUrl.isNullOrEmpty()
+
+    val assetTaskId: String?
+        get() = taskId
+
+    companion object {
+        const val TYPE_ROLE = 1
+        const val TYPE_SCENE = 2
+        const val TYPE_PROP = 3
+
+        const val IMAGE_BIZ_TYPE_ROLE = 41
+        const val IMAGE_BIZ_TYPE_PROP = 51
+        const val IMAGE_BIZ_TYPE_SCENE = 61
+    }
+}

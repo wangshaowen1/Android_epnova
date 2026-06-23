@@ -3,9 +3,7 @@ package com.kuaigeglobal.epnova.core;
 
 import androidx.annotation.NonNull;
 
-import com.kuaigeglobal.epnova.core.network.apis.entity.SimplePropInfo;
-import com.kuaigeglobal.epnova.core.network.apis.entity.SimpleRoleInfo;
-import com.kuaigeglobal.epnova.core.network.apis.entity.SimpleSceneInfo;
+import com.kuaigeglobal.epnova.core.network.apis.entity.AssetInfo;
 import com.kuaigeglobal.epnova.core.network.apis.entity.SimpleStoryboardInfo;
 import com.nhsd.basic.bus.AppEvent;
 
@@ -363,9 +361,9 @@ public class Events {
     public static class RoleGenerateEvent implements AppEvent {
         public final String workId;
         public final String storyId;
-        public final SimpleRoleInfo role;
+        public final AssetInfo role;
 
-        public RoleGenerateEvent(String workId, String storyId, SimpleRoleInfo role) {
+        public RoleGenerateEvent(String workId, String storyId, AssetInfo role) {
             this.workId = workId;
             this.storyId = storyId;
             this.role = role;
@@ -378,9 +376,9 @@ public class Events {
     public static class SceneGenerateEvent implements AppEvent {
         public final String workId;
         public final String storyId;
-        public final SimpleSceneInfo scene;
+        public final AssetInfo scene;
 
-        public SceneGenerateEvent(String workId, String storyId, SimpleSceneInfo scene) {
+        public SceneGenerateEvent(String workId, String storyId, AssetInfo scene) {
             this.workId = workId;
             this.storyId = storyId;
             this.scene = scene;
@@ -393,9 +391,9 @@ public class Events {
     public static class PropGenerateEvent implements AppEvent {
         public final String workId;
         public final String storyId;
-        public final SimplePropInfo prop;
+        public final AssetInfo prop;
 
-        public PropGenerateEvent(String workId, String storyId, SimplePropInfo prop) {
+        public PropGenerateEvent(String workId, String storyId, AssetInfo prop) {
             this.workId = workId;
             this.storyId = storyId;
             this.prop = prop;

@@ -14,7 +14,6 @@ import com.kuaigeglobal.epnova.core.network.apis.ApiResponse
 import com.kuaigeglobal.epnova.core.network.apis.entity.AssetGenerateInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.AssetInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.ReferenceImageInfo
-import com.kuaigeglobal.epnova.core.network.apis.entity.SimplePropInfo
 import com.kuaigeglobal.epnova.core.network.apis.request.AssetGenerateBody
 import com.kuaigeglobal.epnova.core.network.apis.request.AssetSaveBody
 import com.kuaigeglobal.epnova.core.network.apis.request.AssetUnlinkBody
@@ -34,9 +33,9 @@ class ItemPropVM(
     workId: String?,
     storyId: String?,
     onItemChanged: () -> Unit,
-    data: SimplePropInfo?,
+    data: AssetInfo?,
     private val getAiPriceProvider: suspend () -> Int
-) : ItemAssetVM<SimplePropInfo>(workId, storyId, onItemChanged, data) {
+) : ItemAssetVM(workId, storyId, onItemChanged, data) {
 
     override val assetType: String = R.string.props.getResString()
     override val assetDescHint: String = R.string.prop_description.getResString()
@@ -59,7 +58,7 @@ class ItemPropVM(
         val fragmentManager = (topActivity as? FragmentActivity)?.supportFragmentManager
         if (data.get()?.hasHistory == true && fragmentManager != null) {
             ReferenceHistoricalImageryDialog.newInstance(
-                data.get()?.propId,
+                data.get()?.assetId,
                 storyId,
                 workId,
                 ReferenceHistoricalImageryDialog.BIZ_TYPE_PROP_IMAGE
@@ -95,7 +94,7 @@ class ItemPropVM(
         launch(
             block = {
                 var prop = data.get()
-                if (prop?.propId.isNullOrEmpty() || propPrompt != prop?.propPrompt || propName != prop.propName) {
+                if (prop?.assetId.isNullOrEmpty() || propPrompt != prop?.assetPrompt || propName != prop.assetName) {
                     sensitiveWordCheck(propPrompt).let { (isPass, highlightText) ->
                         if (!isPass) {
                             highlightText?.let { assetDesc.set(it) }
@@ -114,15 +113,15 @@ class ItemPropVM(
                         val body = AssetSaveBody(
                             workId = workId,
                             storyId = storyId,
-                            assetId = prop?.propId,
-                            assetType = 3,
+                            assetId = prop?.assetId,
+                            assetType = AssetInfo.TYPE_PROP,
                             assetName = propName,
                             assetPrompt = propPrompt,
                         )
                         ApiFactory.apiService.workAssetSave(body)
                     }
                     if (response.isSuccess && response.data != null) {
-                        val savedProp = response.data?.toSimplePropInfo(prop, propPrompt, propName)
+                        val savedProp = response.data?.mergeSavedProp(prop, propPrompt, propName)
                         prop = savedProp
                         data.set(savedProp)
                     } else {
@@ -131,7 +130,7 @@ class ItemPropVM(
                         return@launch
                     }
                 }
-                val assetId = prop?.propId
+                val assetId = prop?.assetId
                 if (assetId.isNullOrEmpty()) {
                     R.string.toast_save_fail.getResString().showToast()
                     updateStatus(preStatus)
@@ -152,7 +151,7 @@ class ItemPropVM(
                         if (info == null) {
                             updateStatus(preStatus)
                         } else {
-                            val prop = (this@ItemPropVM.data.get() ?: SimplePropInfo()).withGenerateInfo(info)
+                            val prop = (this@ItemPropVM.data.get() ?: AssetInfo(assetType = AssetInfo.TYPE_PROP)).withGenerateInfo(info)
                             this@ItemPropVM.data.set(prop)
                             info.genStatus?.let { updateStatus(it) }
                             FlowEventBus.postSync(Events.PropGenerateEvent(workId, storyId, prop))
@@ -174,8 +173,9 @@ class ItemPropVM(
         )
     }
 
-    private fun SimplePropInfo.withGenerateInfo(info: AssetGenerateInfo?) = copy(
-        propId = info?.assetId ?: propId,
+    private fun AssetInfo.withGenerateInfo(info: AssetGenerateInfo?) = copy(
+        assetId = info?.assetId ?: assetId,
+        assetType = assetType ?: AssetInfo.TYPE_PROP,
         assetImageId = info?.assetImageId ?: assetImageId,
         genStatus = info?.genStatus ?: genStatus,
         taskId = info?.taskId ?: taskId
@@ -183,8 +183,8 @@ class ItemPropVM(
 
     override suspend fun save(propPrompt: String, propName: String): Boolean {
         val prop = data.get()
-        if (propPrompt == prop?.propPrompt && propName == prop.propName) return true
-        if (propPrompt != prop?.propPrompt) {
+        if (propPrompt == prop?.assetPrompt && propName == prop.assetName) return true
+        if (propPrompt != prop?.assetPrompt) {
             sensitiveWordCheck(propPrompt).let { (isPass, highlightText) ->
                 if (!isPass) {
                     highlightText?.let { assetDesc.set(it) }
@@ -192,7 +192,7 @@ class ItemPropVM(
                 }
             }
         }
-        if (propName != prop?.propName) {
+        if (propName != prop?.assetName) {
             sensitiveWordCheck(propName).let { (isPass, highlightText) ->
                 if (!isPass) {
                     highlightText?.let { assetName.set(it) }
@@ -204,15 +204,15 @@ class ItemPropVM(
             val body = AssetSaveBody(
                 workId = workId,
                 storyId = storyId,
-                assetId = prop?.propId,
-                assetType = 3,
+                assetId = prop?.assetId,
+                assetType = AssetInfo.TYPE_PROP,
                 assetName = propName,
                 assetPrompt = propPrompt,
             )
             ApiFactory.apiService.workAssetSave(body)
         }
         if (response.isSuccess && response.data != null) {
-            data.set(response.data?.toSimplePropInfo(prop, propPrompt, propName))
+            data.set(response.data?.mergeSavedProp(prop, propPrompt, propName))
         } else {
             response.msg?.showToast()
             return false
@@ -220,12 +220,12 @@ class ItemPropVM(
         return true
     }
 
-    private fun AssetInfo.toSimplePropInfo(oldProp: SimplePropInfo?, propPrompt: String?, propName: String?) = SimplePropInfo(
-        propId = assetId ?: oldProp?.propId,
-        appearanceId = oldProp?.appearanceId,
+    private fun AssetInfo.mergeSavedProp(oldProp: AssetInfo?, propPrompt: String?, propName: String?) = copy(
+        assetId = assetId ?: oldProp?.assetId,
+        assetType = assetType ?: oldProp?.assetType ?: AssetInfo.TYPE_PROP,
         assetImageId = assetImageId ?: oldProp?.assetImageId,
-        propName = assetName ?: propName ?: oldProp?.propName,
-        propPrompt = assetPrompt ?: propPrompt ?: oldProp?.propPrompt,
+        assetName = assetName ?: propName ?: oldProp?.assetName,
+        assetPrompt = assetPrompt ?: propPrompt ?: oldProp?.assetPrompt,
         imageUrl = imageUrl ?: oldProp?.imageUrl,
         genStatus = genStatus ?: oldProp?.genStatus,
         taskId = taskId ?: oldProp?.taskId,
@@ -243,10 +243,14 @@ class ItemPropVM(
         if (taskId.isNullOrEmpty()) return
         loopGenStatusJob = launch {
             runCatching {
-                val taskStatus = withContext(Dispatchers.IO) { ApiFactory.apiService.workAssetSingleStatus(TaskIdBody(taskId, 51)).data }
+                val taskStatus = withContext(Dispatchers.IO) { ApiFactory.apiService.workAssetSingleStatus(TaskIdBody(taskId, AssetInfo.IMAGE_BIZ_TYPE_PROP)).data }
                 data.get()?.let {
-                    it.genStatus = taskStatus?.genStatus
-                    it.imageUrl = taskStatus?.result
+                    data.set(
+                        it.copy(
+                            genStatus = taskStatus?.genStatus,
+                            imageUrl = taskStatus?.result
+                        )
+                    )
                     assetImage.set(taskStatus?.result)
                 }
                 data.notifyChange()

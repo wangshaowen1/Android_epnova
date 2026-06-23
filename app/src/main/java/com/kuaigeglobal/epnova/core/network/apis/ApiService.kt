@@ -44,9 +44,6 @@ import com.kuaigeglobal.epnova.core.network.apis.entity.SegmentImageHistoryInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.SensitiveWordCheckData
 import com.kuaigeglobal.epnova.core.network.apis.entity.SeriesPriceConfigInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.ShortDramaInfo
-import com.kuaigeglobal.epnova.core.network.apis.entity.SimplePropInfo
-import com.kuaigeglobal.epnova.core.network.apis.entity.SimpleRoleInfo
-import com.kuaigeglobal.epnova.core.network.apis.entity.SimpleSceneInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.SimpleStoryboardInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.StoryUnlockStatusData
 import com.kuaigeglobal.epnova.core.network.apis.entity.SubtitleTaskStatusInfo
@@ -109,7 +106,6 @@ import com.kuaigeglobal.epnova.core.network.apis.request.PollSummaryData
 import com.kuaigeglobal.epnova.core.network.apis.request.PopularRecommendDramasIdBody
 import com.kuaigeglobal.epnova.core.network.apis.request.PowerCalculateBody
 import com.kuaigeglobal.epnova.core.network.apis.request.PowerCalculateData
-import com.kuaigeglobal.epnova.core.network.apis.request.QueryAssetBody
 import com.kuaigeglobal.epnova.core.network.apis.request.ReferenceImageBody
 import com.kuaigeglobal.epnova.core.network.apis.request.ReportSubmissionBody
 import com.kuaigeglobal.epnova.core.network.apis.request.RoleIdBody
@@ -117,9 +113,6 @@ import com.kuaigeglobal.epnova.core.network.apis.request.RoleImageRegenerateBody
 import com.kuaigeglobal.epnova.core.network.apis.request.RoleSwitchBody
 import com.kuaigeglobal.epnova.core.network.apis.request.SSEContentBody
 import com.kuaigeglobal.epnova.core.network.apis.request.SaveEpisodeScriptBody
-import com.kuaigeglobal.epnova.core.network.apis.request.SavePropBody
-import com.kuaigeglobal.epnova.core.network.apis.request.SaveRoleBody
-import com.kuaigeglobal.epnova.core.network.apis.request.SaveSceneBody
 import com.kuaigeglobal.epnova.core.network.apis.request.SaveScriptBody
 import com.kuaigeglobal.epnova.core.network.apis.request.SaveSequelNovelStoryBody
 import com.kuaigeglobal.epnova.core.network.apis.request.SaveStoryboardBody
@@ -834,52 +827,16 @@ interface ApiService {
     suspend fun workAssetSave(@Body body: AssetSaveBody): ApiResponse<AssetInfo?>
 
     /**
-     * 场景列表
-     */
-    @POST(ApiConstants.WORK_ASSET_SCENE_LIST)
-    suspend fun workAssetSceneList(@Body body: QueryAssetBody): ApiResponse<List<SimpleSceneInfo>?>
-
-    /**
-     * 场景保存
-     */
-    @POST(ApiConstants.WORK_ASSET_SCENE_SAVE)
-    suspend fun workAssetSceneSave(@Body body: SaveSceneBody): ApiResponse<SimpleSceneInfo?>
-
-    /**
      * 场景单个删除
      */
     @POST(ApiConstants.WORK_ASSET_SCENE_DELETE)
     suspend fun workAssetSceneDelete(@Body body: AssetUnlinkBody): ApiResponse<Any>
 
     /**
-     * 角色列表
-     */
-    @POST(ApiConstants.WORK_ASSET_ROLE_LIST)
-    suspend fun workAssetRoleList(@Body body: QueryAssetBody): ApiResponse<List<SimpleRoleInfo>?>
-
-    /**
-     * 角色保存
-     */
-    @POST(ApiConstants.WORK_ASSET_ROLE_SAVE)
-    suspend fun workAssetRoleSave(@Body body: SaveRoleBody): ApiResponse<SimpleRoleInfo?>
-
-    /**
      * 角色单个删除
      */
     @POST(ApiConstants.WORK_ASSET_ROLE_DELETE)
     suspend fun workAssetRoleDelete(@Body body: AssetUnlinkBody): ApiResponse<Any>
-
-    /**
-     * 道具列表
-     */
-    @POST(ApiConstants.WORK_ASSET_PROP_LIST)
-    suspend fun workAssetPropList(@Body body: QueryAssetBody): ApiResponse<List<SimplePropInfo>?>
-
-    /**
-     * 道具保存
-     */
-    @POST(ApiConstants.WORK_ASSET_PROP_SAVE)
-    suspend fun workAssetPropSave(@Body body: SavePropBody): ApiResponse<SimplePropInfo?>
 
     /**
      * 道具单个删除
@@ -1516,26 +1473,9 @@ interface ApiService {
     suspend fun workAssetStorySelectImage(@Body body: AssetStoryImageBody): ApiResponse<Any?>
 
     /**
-     * 作品角色列表
-     */
-    @POST(ApiConstants.WORK_ASSET_ROLE_PAGE)
-    suspend fun workAssetRolePage(@Body body: WorkIdPagedBody): ApiResponse<PagedList<SimpleRoleInfo>?>
-
-    /**
      * 作品角色形象列表
      */
     @POST(ApiConstants.WORK_ASSET_ROLE_IMAGE_PAGE)
     suspend fun workAssetRoleImagePage(@Body body: RoleIdPagedBody): ApiResponse<PagedList<RoleImageInfo>?>
 
-    /**
-     * 作品道具列表
-     */
-    @POST(ApiConstants.WORK_ASSET_PROP_PAGE)
-    suspend fun workAssetPropPage(@Body body: WorkIdPagedBody): ApiResponse<PagedList<SimplePropInfo>?>
-
-    /**
-     * 作品场景列表
-     */
-    @POST(ApiConstants.WORK_ASSET_SCENE_PAGE)
-    suspend fun workAssetScenePage(@Body body: WorkIdPagedBody): ApiResponse<PagedList<SimpleSceneInfo>?>
 }

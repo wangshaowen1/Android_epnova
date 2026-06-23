@@ -14,11 +14,9 @@ import com.kuaigeglobal.epnova.core.network.apis.ApiResponse
 import com.kuaigeglobal.epnova.core.network.apis.entity.AssetGenerateInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.AssetInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.ReferenceImageInfo
-import com.kuaigeglobal.epnova.core.network.apis.entity.SimpleRoleInfo
 import com.kuaigeglobal.epnova.core.network.apis.request.AssetGenerateBody
 import com.kuaigeglobal.epnova.core.network.apis.request.AssetSaveBody
 import com.kuaigeglobal.epnova.core.network.apis.request.AssetUnlinkBody
-import com.kuaigeglobal.epnova.core.network.apis.request.IdsBody
 import com.kuaigeglobal.epnova.core.network.apis.request.TaskIdBody
 import com.kuaigeglobal.epnova.core.response
 import com.kuaigeglobal.epnova.feature.creator.assets.edit.ReferenceHistoricalImageryDialog
@@ -30,17 +28,14 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import kotlin.text.get
-import kotlin.text.set
-import kotlin.toString
 
 class ItemRoleVM(
     workId: String?,
     storyId: String?,
     onItemChanged: () -> Unit,
-    data: SimpleRoleInfo?,
+    data: AssetInfo?,
     private val getAiPriceProvider: suspend () -> Int
-) : ItemAssetVM<SimpleRoleInfo>(workId, storyId, onItemChanged, data) {
+) : ItemAssetVM(workId, storyId, onItemChanged, data) {
 
     override val assetType: String = R.string.roles.getResString()
     override val assetDescHint: String = R.string.role_description.getResString()
@@ -63,7 +58,7 @@ class ItemRoleVM(
         val fragmentManager = (topActivity as? FragmentActivity)?.supportFragmentManager
         if (data.get()?.hasHistory == true && fragmentManager != null) {
             ReferenceHistoricalImageryDialog.newInstance(
-                data.get()?.roleId,
+                data.get()?.assetId,
                 storyId,
                 workId,
                 ReferenceHistoricalImageryDialog.BIZ_TYPE_ROLE_IMAGE
@@ -97,7 +92,7 @@ class ItemRoleVM(
         launch(
             block = {
                 var role = data.get()
-                if (role?.roleId.isNullOrEmpty() || rolePrompt != role?.rolePrompt || roleName != role.roleName) {
+                if (role?.assetId.isNullOrEmpty() || rolePrompt != role?.assetPrompt || roleName != role.assetName) {
                     sensitiveWordCheck(rolePrompt).let { (isPass, highlightText) ->
                         if (!isPass) {
                             highlightText?.let { assetDesc.set(it) }
@@ -116,15 +111,15 @@ class ItemRoleVM(
                         val body = AssetSaveBody(
                             workId = workId,
                             storyId = storyId,
-                            assetId = role?.roleId,
-                            assetType = 1,
+                            assetId = role?.assetId,
+                            assetType = AssetInfo.TYPE_ROLE,
                             assetName = roleName,
                             assetPrompt = rolePrompt,
                         )
                         ApiFactory.apiService.workAssetSave(body)
                     }
                     if (response.isSuccess && response.data != null) {
-                        val savedRole = response.data?.toSimpleRoleInfo(role, rolePrompt, roleName)
+                        val savedRole = response.data?.mergeSavedRole(role, rolePrompt, roleName)
                         role = savedRole
                         data.set(savedRole)
                     } else {
@@ -133,7 +128,7 @@ class ItemRoleVM(
                         return@launch
                     }
                 }
-                val assetId = role?.roleId
+                val assetId = role?.assetId
                 if (assetId.isNullOrEmpty()) {
                     R.string.toast_save_fail.getResString().showToast()
                     updateStatus(preStatus)
@@ -154,7 +149,7 @@ class ItemRoleVM(
                         if (info == null) {
                             updateStatus(preStatus)
                         } else {
-                            val role = (this@ItemRoleVM.data.get() ?: SimpleRoleInfo()).withGenerateInfo(info)
+                            val role = (this@ItemRoleVM.data.get() ?: AssetInfo(assetType = AssetInfo.TYPE_ROLE)).withGenerateInfo(info)
                             this@ItemRoleVM.data.set(role)
                             info.genStatus?.let { updateStatus(it) }
                             FlowEventBus.postSync(Events.RoleGenerateEvent(workId, storyId, role))
@@ -176,8 +171,9 @@ class ItemRoleVM(
         )
     }
 
-    private fun SimpleRoleInfo.withGenerateInfo(info: AssetGenerateInfo?) = copy(
-        roleId = info?.assetId ?: roleId,
+    private fun AssetInfo.withGenerateInfo(info: AssetGenerateInfo?) = copy(
+        assetId = info?.assetId ?: assetId,
+        assetType = assetType ?: AssetInfo.TYPE_ROLE,
         assetImageId = info?.assetImageId ?: assetImageId,
         genStatus = info?.genStatus ?: genStatus,
         taskId = info?.taskId ?: taskId
@@ -185,8 +181,8 @@ class ItemRoleVM(
 
     override suspend fun save(rolePrompt: String, roleName: String): Boolean {
         val role = data.get()
-        if (rolePrompt == role?.rolePrompt && roleName == role.roleName) return true
-        if (rolePrompt != role?.rolePrompt) {
+        if (rolePrompt == role?.assetPrompt && roleName == role.assetName) return true
+        if (rolePrompt != role?.assetPrompt) {
             sensitiveWordCheck(rolePrompt).let { (isPass, highlightText) ->
                 if (!isPass) {
                     highlightText?.let { assetDesc.set(it) }
@@ -194,7 +190,7 @@ class ItemRoleVM(
                 }
             }
         }
-        if (roleName != role?.roleName) {
+        if (roleName != role?.assetName) {
             sensitiveWordCheck(roleName).let { (isPass, highlightText) ->
                 if (!isPass) {
                     highlightText?.let { assetName.set(it) }
@@ -206,15 +202,15 @@ class ItemRoleVM(
             val body = AssetSaveBody(
                 workId = workId,
                 storyId = storyId,
-                assetId = role?.roleId,
-                assetType = 1,
+                assetId = role?.assetId,
+                assetType = AssetInfo.TYPE_ROLE,
                 assetName = roleName,
                 assetPrompt = rolePrompt,
             )
             ApiFactory.apiService.workAssetSave(body)
         }
         if (response.isSuccess && response.data != null) {
-            data.set(response.data?.toSimpleRoleInfo(role, rolePrompt, roleName))
+            data.set(response.data?.mergeSavedRole(role, rolePrompt, roleName))
         } else {
             response.msg?.showToast()
             return false
@@ -222,12 +218,12 @@ class ItemRoleVM(
         return true
     }
 
-    private fun AssetInfo.toSimpleRoleInfo(oldRole: SimpleRoleInfo?, rolePrompt: String?, roleName: String?) = SimpleRoleInfo(
-        roleId = assetId ?: oldRole?.roleId,
-        appearanceId = oldRole?.appearanceId,
+    private fun AssetInfo.mergeSavedRole(oldRole: AssetInfo?, rolePrompt: String?, roleName: String?) = copy(
+        assetId = assetId ?: oldRole?.assetId,
+        assetType = assetType ?: oldRole?.assetType ?: AssetInfo.TYPE_ROLE,
         assetImageId = assetImageId ?: oldRole?.assetImageId,
-        roleName = assetName ?: roleName ?: oldRole?.roleName,
-        rolePrompt = assetPrompt ?: rolePrompt ?: oldRole?.rolePrompt,
+        assetName = assetName ?: roleName ?: oldRole?.assetName,
+        assetPrompt = assetPrompt ?: rolePrompt ?: oldRole?.assetPrompt,
         imageUrl = imageUrl ?: oldRole?.imageUrl,
         genStatus = genStatus ?: oldRole?.genStatus,
         taskId = taskId ?: oldRole?.taskId,
@@ -245,10 +241,14 @@ class ItemRoleVM(
         if (taskId.isNullOrEmpty()) return
         loopGenStatusJob = launch {
             runCatching {
-                val taskStatus = withContext(Dispatchers.IO) { ApiFactory.apiService.workAssetSingleStatus(TaskIdBody(taskId, 41)).data }
+                val taskStatus = withContext(Dispatchers.IO) { ApiFactory.apiService.workAssetSingleStatus(TaskIdBody(taskId, AssetInfo.IMAGE_BIZ_TYPE_ROLE)).data }
                 data.get()?.let {
-                    it.genStatus = taskStatus?.genStatus
-                    it.imageUrl = taskStatus?.result
+                    data.set(
+                        it.copy(
+                            genStatus = taskStatus?.genStatus,
+                            imageUrl = taskStatus?.result
+                        )
+                    )
                     assetImage.set(taskStatus?.result)
                 }
                 data.notifyChange()

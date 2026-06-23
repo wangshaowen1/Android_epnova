@@ -205,7 +205,7 @@ class StoryboardDesignViewModel : AppRepositoryViewModel<AppRepository>() {
                 val items = mutableListOf<AppItemViewModel<*>>()
                 storyboards?.map { it.toItemStoryboardVM() }?.let { items.addAll(it) }
                 addOrRemoveStoryboardItem(items)
-                adapter.items.forEach { if (it is ItemAssetVM<*>) it.clear() }
+                adapter.items.forEach { if (it is ItemAssetVM) it.clear() }
                 adapter.submitList(items)
                 updateItemNo()
                 loadState.set(LoadStateViewHolder.CONTENT)

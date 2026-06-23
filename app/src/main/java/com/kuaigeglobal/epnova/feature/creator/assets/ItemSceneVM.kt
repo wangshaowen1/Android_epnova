@@ -14,7 +14,6 @@ import com.kuaigeglobal.epnova.core.network.apis.ApiResponse
 import com.kuaigeglobal.epnova.core.network.apis.entity.AssetGenerateInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.AssetInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.ReferenceImageInfo
-import com.kuaigeglobal.epnova.core.network.apis.entity.SimpleSceneInfo
 import com.kuaigeglobal.epnova.core.network.apis.request.AssetGenerateBody
 import com.kuaigeglobal.epnova.core.network.apis.request.AssetSaveBody
 import com.kuaigeglobal.epnova.core.network.apis.request.AssetUnlinkBody
@@ -34,9 +33,9 @@ class ItemSceneVM(
     workId: String?,
     storyId: String?,
     onItemChanged: () -> Unit,
-    data: SimpleSceneInfo?,
+    data: AssetInfo?,
     private val getAiPriceProvider: suspend () -> Int
-) : ItemAssetVM<SimpleSceneInfo>(workId, storyId, onItemChanged, data) {
+) : ItemAssetVM(workId, storyId, onItemChanged, data) {
 
     override val assetType: String = R.string.scenes.getResString()
     override val assetDescHint: String = R.string.scene_description.getResString()
@@ -58,7 +57,7 @@ class ItemSceneVM(
         val fragmentManager = (topActivity as? FragmentActivity)?.supportFragmentManager
         if (data.get()?.hasHistory == true && fragmentManager != null) {
             ReferenceHistoricalImageryDialog.newInstance(
-                data.get()?.sceneId,
+                data.get()?.assetId,
                 storyId,
                 workId,
                 ReferenceHistoricalImageryDialog.BIZ_TYPE_SCENE_IMAGE
@@ -92,7 +91,7 @@ class ItemSceneVM(
         launch(
             block = {
                 var scene = data.get()
-                if (scene?.sceneId.isNullOrEmpty() || scenePrompt != scene?.scenePrompt || sceneName != scene.sceneName) {
+                if (scene?.assetId.isNullOrEmpty() || scenePrompt != scene?.assetPrompt || sceneName != scene.assetName) {
                     sensitiveWordCheck(scenePrompt).let { (isPass, highlightText) ->
                         if (!isPass) {
                             highlightText?.let { assetDesc.set(it) }
@@ -111,15 +110,15 @@ class ItemSceneVM(
                         val body = AssetSaveBody(
                             workId = workId,
                             storyId = storyId,
-                            assetId = scene?.sceneId,
-                            assetType = 2,
+                            assetId = scene?.assetId,
+                            assetType = AssetInfo.TYPE_SCENE,
                             assetName = sceneName,
                             assetPrompt = scenePrompt,
                         )
                         ApiFactory.apiService.workAssetSave(body)
                     }
                     if (response.isSuccess && response.data != null) {
-                        val savedScene = response.data?.toSimpleSceneInfo(scene, scenePrompt, sceneName)
+                        val savedScene = response.data?.mergeSavedScene(scene, scenePrompt, sceneName)
                         scene = savedScene
                         data.set(savedScene)
                     } else {
@@ -128,7 +127,7 @@ class ItemSceneVM(
                         return@launch
                     }
                 }
-                val assetId = scene?.sceneId
+                val assetId = scene?.assetId
                 if (assetId.isNullOrEmpty()) {
                     R.string.toast_save_fail.getResString().showToast()
                     updateStatus(preStatus)
@@ -149,7 +148,7 @@ class ItemSceneVM(
                         if (info == null) {
                             updateStatus(preStatus)
                         } else {
-                            val scene = (this@ItemSceneVM.data.get() ?: SimpleSceneInfo()).withGenerateInfo(info)
+                            val scene = (this@ItemSceneVM.data.get() ?: AssetInfo(assetType = AssetInfo.TYPE_SCENE)).withGenerateInfo(info)
                             this@ItemSceneVM.data.set(scene)
                             info.genStatus?.let { updateStatus(it) }
                             FlowEventBus.postSync(Events.SceneGenerateEvent(workId, storyId, scene))
@@ -171,8 +170,9 @@ class ItemSceneVM(
         )
     }
 
-    private fun SimpleSceneInfo.withGenerateInfo(info: AssetGenerateInfo?) = copy(
-        sceneId = info?.assetId ?: sceneId,
+    private fun AssetInfo.withGenerateInfo(info: AssetGenerateInfo?) = copy(
+        assetId = info?.assetId ?: assetId,
+        assetType = assetType ?: AssetInfo.TYPE_SCENE,
         assetImageId = info?.assetImageId ?: assetImageId,
         genStatus = info?.genStatus ?: genStatus,
         taskId = info?.taskId ?: taskId
@@ -180,8 +180,8 @@ class ItemSceneVM(
 
     override suspend fun save(scenePrompt: String, sceneName: String): Boolean {
         val scene = data.get()
-        if (scenePrompt == scene?.scenePrompt && sceneName == scene.sceneName) return true
-        if (scenePrompt != scene?.scenePrompt) {
+        if (scenePrompt == scene?.assetPrompt && sceneName == scene.assetName) return true
+        if (scenePrompt != scene?.assetPrompt) {
             sensitiveWordCheck(scenePrompt).let { (isPass, highlightText) ->
                 if (!isPass) {
                     highlightText?.let { assetDesc.set(it) }
@@ -189,7 +189,7 @@ class ItemSceneVM(
                 }
             }
         }
-        if (sceneName != scene?.sceneName) {
+        if (sceneName != scene?.assetName) {
             sensitiveWordCheck(sceneName).let { (isPass, highlightText) ->
                 if (!isPass) {
                     highlightText?.let { assetName.set(it) }
@@ -201,15 +201,15 @@ class ItemSceneVM(
             val body = AssetSaveBody(
                 workId = workId,
                 storyId = storyId,
-                assetId = scene?.sceneId,
-                assetType = 2,
+                assetId = scene?.assetId,
+                assetType = AssetInfo.TYPE_SCENE,
                 assetName = sceneName,
                 assetPrompt = scenePrompt,
             )
             ApiFactory.apiService.workAssetSave(body)
         }
         if (response.isSuccess && response.data != null) {
-            data.set(response.data?.toSimpleSceneInfo(scene, scenePrompt, sceneName))
+            data.set(response.data?.mergeSavedScene(scene, scenePrompt, sceneName))
         } else {
             response.msg?.showToast()
             return false
@@ -217,12 +217,12 @@ class ItemSceneVM(
         return true
     }
 
-    private fun AssetInfo.toSimpleSceneInfo(oldScene: SimpleSceneInfo?, scenePrompt: String?, sceneName: String?) = SimpleSceneInfo(
-        sceneId = assetId ?: oldScene?.sceneId,
-        appearanceId = oldScene?.appearanceId,
+    private fun AssetInfo.mergeSavedScene(oldScene: AssetInfo?, scenePrompt: String?, sceneName: String?) = copy(
+        assetId = assetId ?: oldScene?.assetId,
+        assetType = assetType ?: oldScene?.assetType ?: AssetInfo.TYPE_SCENE,
         assetImageId = assetImageId ?: oldScene?.assetImageId,
-        sceneName = assetName ?: sceneName ?: oldScene?.sceneName,
-        scenePrompt = assetPrompt ?: scenePrompt ?: oldScene?.scenePrompt,
+        assetName = assetName ?: sceneName ?: oldScene?.assetName,
+        assetPrompt = assetPrompt ?: scenePrompt ?: oldScene?.assetPrompt,
         imageUrl = imageUrl ?: oldScene?.imageUrl,
         genStatus = genStatus ?: oldScene?.genStatus,
         taskId = taskId ?: oldScene?.taskId,
@@ -240,10 +240,14 @@ class ItemSceneVM(
         if (taskId.isNullOrEmpty()) return
         loopGenStatusJob = launch {
             runCatching {
-                val taskStatus = withContext(Dispatchers.IO) { ApiFactory.apiService.workAssetSingleStatus(TaskIdBody(taskId, 61)).data }
+                val taskStatus = withContext(Dispatchers.IO) { ApiFactory.apiService.workAssetSingleStatus(TaskIdBody(taskId, AssetInfo.IMAGE_BIZ_TYPE_SCENE)).data }
                 data.get()?.let {
-                    it.genStatus = taskStatus?.genStatus
-                    it.imageUrl = taskStatus?.result
+                    data.set(
+                        it.copy(
+                            genStatus = taskStatus?.genStatus,
+                            imageUrl = taskStatus?.result
+                        )
+                    )
                     assetImage.set(taskStatus?.result)
                 }
                 data.notifyChange()

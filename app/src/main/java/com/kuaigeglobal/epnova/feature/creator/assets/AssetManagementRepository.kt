@@ -1,11 +1,6 @@
 package com.kuaigeglobal.epnova.feature.creator.assets
 
 import com.kuaigeglobal.epnova.core.AppRepository
-import com.kuaigeglobal.epnova.core.network.apis.request.IdsBody
-import com.kuaigeglobal.epnova.core.network.apis.request.QueryAssetBody
-import com.kuaigeglobal.epnova.core.network.apis.request.SavePropBody
-import com.kuaigeglobal.epnova.core.network.apis.request.SaveRoleBody
-import com.kuaigeglobal.epnova.core.network.apis.request.SaveSceneBody
 import com.kuaigeglobal.epnova.core.network.apis.request.TaskIdBody
 import com.kuaigeglobal.epnova.core.network.apis.request.WorkBody
 import kotlinx.coroutines.Dispatchers
@@ -39,88 +34,5 @@ class AssetManagementRepository : AppRepository() {
      */
     suspend fun workAssetStoryList(workId: String?, storyId: String?) = withContext(Dispatchers.IO) {
         api.workAssetStoryList(WorkBody(workId, storyId))
-    }
-
-    /**
-     * 场景列表
-     * @param assetId 资产 ID （角色、道具、场景 id）根据业务类型判断，查询单个时入参
-     * @param appearanceId 当前资产形象ID 查询单个时入参
-     * @param bizType 查询单个资产必须要入参业务类型，不入参默认查全部业务类型枚举 [41=角色图片 51=道具图片 61=场景图片]
-     * @param storyId 剧集 id
-     * @param workId 作品 ID
-     */
-    suspend fun workAssetSceneList(assetId: String?, appearanceId: String?, bizType: Int?, storyId: String?, workId: String?) = withContext(Dispatchers.IO) {
-        api.workAssetSceneList(QueryAssetBody(assetId, appearanceId, bizType, storyId, workId))
-    }
-
-    /**
-     * 场景保存
-     * @param sceneId 场景主键id
-     * @param appearanceId 当前资产形象ID 查询单个时入参
-     * @param workId 作品 ID
-     * @param storyId 剧集 id
-     * @param sceneName 场景名称
-     * @param scenePrompt 场景图片描述提示词
-     */
-    suspend fun workAssetSceneSave(
-        sceneId: String?,
-        appearanceId: String?,
-        workId: String?,
-        storyId: String?,
-        sceneName: String?,
-        scenePrompt: String?, imageUrl: String? = null
-    ) = withContext(Dispatchers.IO) {
-        api.workAssetSceneSave(SaveSceneBody(sceneId, appearanceId, workId, storyId, sceneName, scenePrompt, imageUrl = imageUrl))
-    }
-
-    /**
-     * 角色列表
-     * @param assetId 资产 ID （角色、道具、场景 id）根据业务类型判断，查询单个时入参
-     * @param appearanceId 当前资产形象ID 查询单个时入参
-     * @param bizType 查询单个资产必须要入参业务类型，不入参默认查全部业务类型枚举 [41=角色图片 51=道具图片 61=场景图片]
-     * @param storyId 剧集 id
-     * @param workId 作品 ID
-     */
-    suspend fun workAssetRoleList(assetId: String?, appearanceId: String?, bizType: Int?, storyId: String?, workId: String?) = withContext(Dispatchers.IO) {
-        api.workAssetRoleList(QueryAssetBody(assetId, appearanceId, bizType, storyId, workId))
-    }
-
-    /**
-     * 角色保存
-     * @param roleId 角色主键id
-     * @param appearanceId 当前资产形象ID 查询单个时入参
-     * @param workId 作品 ID
-     * @param storyId 剧集 id
-     * @param roleName 角色名称
-     * @param rolePrompt 角色图片描述提示词
-     */
-    suspend fun workAssetRoleSave(roleId: String?, appearanceId: String?, workId: String?, storyId: String?, roleName: String?, rolePrompt: String?, parentAppearanceId: String? = null,//基于某个形象重新生成时传入，为空则视为原始生成
-                                  imageUrl: String? = null) = withContext(Dispatchers.IO) {
-        api.workAssetRoleSave(SaveRoleBody(roleId, appearanceId, workId, storyId, roleName, rolePrompt, parentAppearanceId = parentAppearanceId, imageUrl = imageUrl))
-    }
-
-    /**
-     * 道具列表
-     * @param assetId 资产 ID （角色、道具、场景 id）根据业务类型判断，查询单个时入参
-     * @param appearanceId 当前资产形象ID 查询单个时入参
-     * @param bizType 查询单个资产必须要入参业务类型，不入参默认查全部业务类型枚举 [41=角色图片 51=道具图片 61=场景图片]
-     * @param storyId 剧集 id
-     * @param workId 作品 ID
-     */
-    suspend fun workAssetPropList(assetId: String?, appearanceId: String?, bizType: Int?, storyId: String?, workId: String?) = withContext(Dispatchers.IO) {
-        api.workAssetPropList(QueryAssetBody(assetId, appearanceId, bizType, storyId, workId))
-    }
-
-    /**
-     * 道具保存
-     * @param propId 道具主键id
-     * @param appearanceId 当前资产形象ID 查询单个时入参
-     * @param workId 作品 ID
-     * @param storyId 剧集 id
-     * @param propName 道具名称
-     * @param propPrompt 道具图片描述提示词
-     */
-    suspend fun workAssetPropSave(propId: String?, appearanceId: String?, workId: String?, storyId: String?, propName: String?, propPrompt: String?, imageUrl: String? = null) = withContext(Dispatchers.IO) {
-        api.workAssetPropSave(SavePropBody(propId, appearanceId, workId, storyId, propName, propPrompt, imageUrl = imageUrl))
     }
 }

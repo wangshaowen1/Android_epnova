@@ -10,8 +10,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.kuaigeglobal.epnova.common.Constants
 import com.kuaigeglobal.epnova.common.ext.startRefreshWithAdapter
-import com.kuaigeglobal.epnova.core.network.apis.entity.SimpleAsset
-import com.kuaigeglobal.epnova.core.network.apis.request.QueryAssetBody
+import com.kuaigeglobal.epnova.core.network.apis.entity.AssetInfo
 import com.kuaigeglobal.epnova.databinding.ActivityAssetSelectBinding
 import com.kuaigeglobal.epnova.widget.decoration.GridSpacingItemDecoration
 import com.kuaigeglobal.epnova.widget.decoration.SpaceDecoration
@@ -47,7 +46,7 @@ class AssetSelectActivity : BaseViewModelActivity<ActivityAssetSelectBinding, As
 
     val assetImageId by lazy { intent.getStringExtra(Constants.Extra.ASSET_IMAGE_ID) }
     val assetId by lazy { intent.getStringExtra(Constants.Extra.ASSET_ID) }
-    val itemClickVm by lazy { BaseItemEventsViewModel<AssetsEvent, SimpleAsset>() }
+    val itemClickVm by lazy { BaseItemEventsViewModel<AssetsEvent, AssetInfo>() }
     val assetsChildAdapter by lazy { AssetsChildAdapter(true, itemClickVm, assetImageId) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -77,7 +76,7 @@ class AssetSelectActivity : BaseViewModelActivity<ActivityAssetSelectBinding, As
             addItemDecoration(SpaceDecoration(14.dp))
             itemAnimator = null
             isFocusable = false
-            if (mRealVM.bizType == QueryAssetBody.BIZ_TYPE_SCENE) {
+            if (mRealVM.bizType == AssetInfo.IMAGE_BIZ_TYPE_SCENE) {
                 layoutManager = GridLayoutManager(this@AssetSelectActivity, 2)
                 addItemDecoration(GridSpacingItemDecoration(2, 12.dp, 0))
             } else {

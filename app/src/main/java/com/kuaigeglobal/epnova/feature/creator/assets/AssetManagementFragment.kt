@@ -13,11 +13,8 @@ import com.kuaigeglobal.epnova.core.Events
 import com.kuaigeglobal.epnova.core.Global
 import com.kuaigeglobal.epnova.core.manager.EventManager
 import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
+import com.kuaigeglobal.epnova.core.network.apis.entity.AssetInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.RoleImageInfo
-import com.kuaigeglobal.epnova.core.network.apis.entity.SimpleAsset
-import com.kuaigeglobal.epnova.core.network.apis.entity.SimpleRoleInfo
-import com.kuaigeglobal.epnova.core.network.apis.entity.SimpleSceneInfo
-import com.kuaigeglobal.epnova.core.network.apis.request.QueryAssetBody
 import com.kuaigeglobal.epnova.databinding.FragmentAssetManagementBinding
 import com.kuaigeglobal.epnova.feature.creator.data.DramaGenerateConstants
 import com.kuaigeglobal.epnova.feature.creator.generate.OnBackPressedHandler
@@ -57,15 +54,15 @@ class AssetManagementFragment : BaseViewModelFragment<FragmentAssetManagementBin
     val from by lazy { hostVm?.from }
     val imageSelectLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
-            val simpleAsset = result.data?.getParcelableValue(Constants.Extra.DATA, SimpleAsset::class.java)
+            val asset = result.data?.getParcelableValue(Constants.Extra.DATA, AssetInfo::class.java)
             val assetId = result.data?.getStringExtra(Constants.Extra.ASSET_ID)
-            mRealVM.saveImage(simpleAsset, null, assetId)
+            mRealVM.saveImage(asset, null, assetId)
         }
     }
 
     val roleImageSelectLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
-            val asset = result.data?.getParcelableValue(Constants.Extra.DATA, SimpleRoleInfo::class.java)
+            val asset = result.data?.getParcelableValue(Constants.Extra.DATA, AssetInfo::class.java)
             val roleImageInfo = result.data?.getParcelableValue(Constants.Extra.ROLE_IMAGE, RoleImageInfo::class.java)
             mRealVM.saveImage(asset, roleImageInfo)
         }
@@ -97,13 +94,13 @@ class AssetManagementFragment : BaseViewModelFragment<FragmentAssetManagementBin
         })
         mRealVM.onAssetImageSelectEvent = { vm ->
             val asset = vm.data.get()
-            val bizType = when (asset) {
-                is SimpleRoleInfo -> QueryAssetBody.BIZ_TYPE_ROLE
-                is SimpleSceneInfo -> QueryAssetBody.BIZ_TYPE_SCENE
-                else -> QueryAssetBody.BIZ_TYPE_PROP
+            val bizType = when (asset?.assetType) {
+                AssetInfo.TYPE_ROLE -> AssetInfo.IMAGE_BIZ_TYPE_ROLE
+                AssetInfo.TYPE_SCENE -> AssetInfo.IMAGE_BIZ_TYPE_SCENE
+                else -> AssetInfo.IMAGE_BIZ_TYPE_PROP
             }
-            if (bizType == QueryAssetBody.BIZ_TYPE_ROLE) {
-                roleImageSelectLauncher.launch(RoleImageSelectActivity.getIntent(activity, mRealVM.workId, mRealVM.storyId, asset as? SimpleRoleInfo, true))
+            if (bizType == AssetInfo.IMAGE_BIZ_TYPE_ROLE) {
+                roleImageSelectLauncher.launch(RoleImageSelectActivity.getIntent(activity, mRealVM.workId, mRealVM.storyId, asset, true))
             } else {
                 imageSelectLauncher.launch(AssetSelectActivity.getIntent(activity, bizType, mRealVM.workId, mRealVM.storyId, asset?.assetImageId, asset?.assetId))
             }
