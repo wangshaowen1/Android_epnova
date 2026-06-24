@@ -375,7 +375,7 @@ class StoryboardDesignViewModel : AppRepositoryViewModel<AppRepository>() {
 
     fun buttonText(step: Int, cost: Int): CharSequence? {
         return when (step) {
-            STEP_DESCRIPTION_GENERATED -> if (cost > 0) "生成分镜视频  $POWER $cost".replaceSpan(POWER) { powerSpan } else R.string.generate_storyboard_video.getResString()
+            STEP_DESCRIPTION_GENERATED -> if (cost > 0) "${R.string.generate_storyboard_video.getResString()} $POWER $cost".replaceSpan(POWER) { powerSpan } else R.string.generate_storyboard_video.getResString()
             else -> null
         }
     }
