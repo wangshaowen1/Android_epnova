@@ -260,7 +260,13 @@ data class CreatorWorkInfo(
             CreatorCoverBadgeType.UNPUBLISHED -> R.string.drama_detail_unpublished.getResString()
             CreatorCoverBadgeType.IN_REVIEW -> R.string.drama_detail_in_review.getResString()
             CreatorCoverBadgeType.REVIEW_FAILED -> R.string.drama_detail_review_failed.getResString()
-            CreatorCoverBadgeType.PUBLISHED -> R.string.drama_detail_published.getResString()
+            CreatorCoverBadgeType.PUBLISHED -> {
+                if (totalEpisodeCnt == publishedEpisodeCnt) {
+                    "${R.string.drama_detail_published.getResString()} · ${R.string.drama_detail_all_eps.getResString()}"
+                } else {
+                    "${R.string.drama_detail_published.getResString()} · ${R.string.drama_detail_ep_2.getResString(publishedEpisodeCnt ?: 0)}"
+                }
+            }
             else -> null
         }
     }
