@@ -270,7 +270,7 @@ data class CreatorWorkInfo(
     fun publishBadgeTextColor(): Int {
         return when (coverBadgeType) {
             CreatorCoverBadgeType.DRAFT -> R.color.fixed_black_1
-            CreatorPublishStatus.UNPUBLISHED -> R.color.func_special_dark
+            CreatorCoverBadgeType.UNPUBLISHED -> R.color.func_special_dark
             CreatorCoverBadgeType.IN_REVIEW -> R.color.func_warning_dark
             CreatorCoverBadgeType.REVIEW_FAILED -> R.color.func_failure_dark
             CreatorCoverBadgeType.PUBLISHED -> R.color.func_success_dark

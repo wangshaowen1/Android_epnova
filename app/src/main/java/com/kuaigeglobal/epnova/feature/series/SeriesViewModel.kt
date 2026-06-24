@@ -158,7 +158,8 @@ class SeriesViewModel : AppRepositoryViewModel<SeriesRepository>() {
 
     fun queryWorkPublishStatus(
         openPublishPage: (String?) -> Unit,
-        confirmNativePublish: (WorkPublishStatusData) -> Unit
+        confirmNativePublish: (WorkPublishStatusData) -> Unit,
+        confirmRejectionPublish: (WorkPublishStatusData) -> Unit
     ) {
         val info = workInfo.value ?: return
         if (!info.isPublishButtonEnabled()) return
@@ -176,7 +177,11 @@ class SeriesViewModel : AppRepositoryViewModel<SeriesRepository>() {
                     openPublishPage(info.workContractPublishPageUrl)
                 } else if (status.shouldNativePublish()) {
                     if (status.hasValidEpisodeRange()) {
-                        confirmNativePublish(status)
+                        if (status.exisRejectionEpisode()) {
+                            confirmRejectionPublish(status)
+                        } else {
+                            confirmNativePublish(status)
+                        }
                     } else {
                         R.string.tip_publish_no_episode_available.getResString().showToast()
                     }

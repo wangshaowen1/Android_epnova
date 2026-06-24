@@ -350,7 +350,8 @@ class SeriesActivity : BaseViewModelActivity<ActivitySeriesBinding, SeriesViewMo
                 )
                 mRealVM.queryWorkPublishStatus(
                     openPublishPage = { openPublishPage(it) },
-                    confirmNativePublish = { showPublishConfirm(it) }
+                    confirmNativePublish = { showPublishConfirm(it) },
+                    confirmRejectionPublish = { showRejectionPublishConfirm(it) }
                 )
             }
         }
@@ -376,6 +377,22 @@ class SeriesActivity : BaseViewModelActivity<ActivitySeriesBinding, SeriesViewMo
                 status.endEpisode?.toString().orEmpty()
             ),
             tip = getString(R.string.tip_publish_submit_review_notice),
+            cancelText = getString(R.string.cancel),
+            confirmText = getString(R.string.drama_detail_publish),
+            confirm = { _ ->
+                mRealVM.submitWorkPublish(status)
+            }
+        )
+    }
+
+    private fun showRejectionPublishConfirm(status: WorkPublishStatusData) {
+        showConfirmPrompt(
+            title = getString(
+                R.string.tip_publish_ep_number_confirm,
+                status.startEpisode?.toString().orEmpty(),
+                status.endEpisode?.toString().orEmpty()
+            ),
+            tip = getString(R.string.tip_publish_has_rejected_ep),
             cancelText = getString(R.string.cancel),
             confirmText = getString(R.string.drama_detail_publish),
             confirm = { _ ->

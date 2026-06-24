@@ -37,6 +37,10 @@ data class WorkPublishStatusData(
      */
     val publishEntryType: Int? = null,
     /**
+     * 本次可提交区间内是否包含曾被驳回剧集：0=否，1=是
+     */
+    val containsRejectedEpisodeFlag: Int? = null,
+    /**
      * 是否首次发行（0-否，1-是）
      */
     val firstPublishFlag: Int? = null
@@ -69,6 +73,10 @@ data class WorkPublishStatusData(
         val start = startEpisode ?: return false
         val end = endEpisode ?: return false
         return start > 0 && end >= start
+    }
+
+    fun exisRejectionEpisode(): Boolean {
+        return containsRejectedEpisodeFlag == 1
     }
 
     fun episodeRangeText(): String {
