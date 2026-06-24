@@ -169,24 +169,23 @@ class SeriesViewModel : AppRepositoryViewModel<SeriesRepository>() {
                 val status = data
                 if (status == null) {
                     R.string.tip_publish_no_episode_available.getResString().showToast()
-                } else if (status.unavailable()) {
-                    val message = status.reasonMsg?.takeIf { it.isNotBlank() }
-                        ?: R.string.tip_publish_no_episode_available.getResString()
-                    message.showToast()
-                } else if (status.shouldOpenH5()) {
-                    openPublishPage(info.workContractPublishPageUrl)
-                } else if (status.shouldNativePublish()) {
-                    if (status.hasValidEpisodeRange()) {
-                        if (status.exisRejectionEpisode()) {
-                            confirmRejectionPublish(status)
-                        } else {
-                            confirmNativePublish(status)
-                        }
-                    } else {
-                        R.string.tip_publish_no_episode_available.getResString().showToast()
-                    }
                 } else {
-                    R.string.tip_publish_no_episode_available.getResString().showToast()
+                    // 作品发布流程
+                    if (status.shouldOpenH5()) {
+                        openPublishPage(info.workContractPublishPageUrl)
+                    } else {
+                        if (status.canApply()) {
+                            if (status.exisRejectionEpisode()) {
+                                confirmRejectionPublish(status)
+                            } else {
+                                confirmNativePublish(status)
+                            }
+                        } else {
+                            val message = status.reasonMsg?.takeIf { it.isNotBlank() }
+                                ?: R.string.tip_publish_no_episode_available.getResString()
+                            message.showToast()
+                        }
+                    }
                 }
             }
         )
