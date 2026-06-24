@@ -239,7 +239,10 @@ class MyCreationsFragment :
         val clickedEpisodeId = episodes[clickPosition].storyId
         val newPosition =
             validPlayList.indexOfFirst { it.storyId == clickedEpisodeId }.coerceAtLeast(0)
-        val creatorWork = workInfo?.copy(workStoryItemList = validPlayList)
+        val creatorWork = workInfo?.copy(
+            userId = workInfo.userId ?: User.get().userId,
+            workStoryItemList = validPlayList
+        )
         val sourceKey = WorkSeriesCreatorFeedRepository.setPlayableFeed(
             source = CreatorPlaySource.MY_CREATIONS,
             work = creatorWork,
