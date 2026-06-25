@@ -2,6 +2,7 @@ package com.kuaigeglobal.epnova.feature.creator.assets
 
 import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableInt
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.StringUtils.getString
@@ -27,6 +28,7 @@ import com.kuaigeglobal.epnova.core.network.apis.request.AssetStoryImageBody
 import com.kuaigeglobal.epnova.core.network.apis.request.StrategyTypeBody
 import com.kuaigeglobal.epnova.core.network.apis.request.WorkBody
 import com.kuaigeglobal.epnova.core.network.apis.response.AssetStoryListInfo
+import com.kuaigeglobal.epnova.core.network.apis.response.FirstRechargeCreditsDialogData
 import com.kuaigeglobal.epnova.core.response
 import com.kuaigeglobal.epnova.feature.PhotoPagerActivity
 import com.kuaigeglobal.epnova.feature.recharge.PowerRechargeDialog
@@ -120,6 +122,7 @@ class AssetManagementViewModel : AppRepositoryViewModel<AssetManagementRepositor
     val hasProp by lazy { ObservableBoolean(false) }
 
     var onAssetImageSelectEvent: ((ItemAssetVM) -> Unit)? = null
+    val firstRechargeCache = MutableLiveData<FirstRechargeCreditsDialogData>()
 
     override fun onResume() {
         super.onResume()
@@ -711,5 +714,18 @@ class AssetManagementViewModel : AppRepositoryViewModel<AssetManagementRepositor
             data.set(updatedProp)
             loopGenStatus()
         }
+    }
+
+    fun getFirstRechargeInfo(callback: () -> Unit) {
+        launch(block = {
+            val firstRechargeResponse = mRepo.api.getFirstRechargeCreditsDialogInfo()
+            if (firstRechargeResponse.data != null && firstRechargeResponse.data?.isNeedShow() == true) {
+                firstRechargeCache.value = firstRechargeResponse.data
+            } else {
+                callback.invoke()
+            }
+        }, onError = {
+            callback.invoke()
+        })
     }
 }

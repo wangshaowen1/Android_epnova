@@ -9,8 +9,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.Constants
 import com.kuaigeglobal.epnova.common.ext.applySmartFocusManager
+import com.kuaigeglobal.epnova.core.Config
 import com.kuaigeglobal.epnova.core.Events
 import com.kuaigeglobal.epnova.core.Global
+import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.manager.EventManager
 import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
 import com.kuaigeglobal.epnova.core.network.apis.entity.AssetInfo
@@ -22,6 +24,7 @@ import com.kuaigeglobal.epnova.feature.creator.generate.StoryEditorActivity
 import com.kuaigeglobal.epnova.feature.creator.generate.StoryEditorViewModel
 import com.kuaigeglobal.epnova.feature.mine.child.MyCreationsFragment
 import com.kuaigeglobal.epnova.feature.series.SeriesActivity
+import com.kuaigeglobal.epnova.feature.splash.newer.FirstRechargeCreditsDialog
 import com.kuaigeglobal.epnova.feature.works.assetmanager.child.AssetSelectActivity
 import com.kuaigeglobal.epnova.feature.works.assetmanager.roleimage.RoleImageSelectActivity
 import com.nhsd.basic.BaseViewModelFragment
@@ -51,6 +54,7 @@ class AssetManagementFragment : BaseViewModelFragment<FragmentAssetManagementBin
         }
     private val layoutManager get() = bindingNullable?.rvAssets?.layoutManager as? LinearLayoutManager
     private val hostVm by lazy { getParentViewModel<StoryEditorViewModel>() }
+    private var pendingFirstRechargeContinuation: (() -> Unit)? = null
     val from by lazy { hostVm?.from }
     val imageSelectLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
@@ -105,6 +109,21 @@ class AssetManagementFragment : BaseViewModelFragment<FragmentAssetManagementBin
                 imageSelectLauncher.launch(AssetSelectActivity.getIntent(activity, bizType, mRealVM.workId, mRealVM.storyId, asset?.assetImageId, asset?.assetId))
             }
         }
+        mRealVM.firstRechargeCache.observe(this) { data ->
+            val continueNext = pendingFirstRechargeContinuation ?: return@observe
+            pendingFirstRechargeContinuation = null
+            val firstRechargeDialog = FirstRechargeCreditsDialog.show(
+                FirstRechargeCreditsDialog.SCENE_OTHER,
+                data
+            )
+            if (firstRechargeDialog == null) {
+                continueNext()
+                return@observe
+            }
+            firstRechargeDialog.onPaySuccess = { continueNext() }
+            firstRechargeDialog.onClose = { continueNext() }
+            Config.get().markFirstRechargeShown(FirstRechargeCreditsDialog.SCENE_OTHER)
+        }
         observeEvents {
             on<Events.RoleGenerateEvent> { if (isActive) mRealVM.onRoleGenerate(it) }
             on<Events.SceneGenerateEvent> { if (isActive) mRealVM.onSceneGenerate(it) }
@@ -128,10 +147,28 @@ class AssetManagementFragment : BaseViewModelFragment<FragmentAssetManagementBin
             }
 
             R.id.btnNext -> {
-                mRealVM.clickNext { workId, storyId, taskId ->
-                    hostVm?.nextStep(4, workId, storyId, taskId)
-                }
+                handleNextClick()
             }
+        }
+    }
+
+    private fun handleNextClick() {
+        if (pendingFirstRechargeContinuation != null) return
+        val continueNext = {
+            mRealVM.clickNext { workId, storyId, taskId ->
+                hostVm?.nextStep(4, workId, storyId, taskId)
+            }
+        }
+        val canShowFirstRecharge = !User.get().hasPurchasedPoints() &&
+                !Config.get().isFirstRechargeShown(FirstRechargeCreditsDialog.SCENE_OTHER)
+        if (canShowFirstRecharge) {
+            pendingFirstRechargeContinuation = continueNext
+            mRealVM.getFirstRechargeInfo {
+                pendingFirstRechargeContinuation = null
+                continueNext()
+            }
+        } else {
+            continueNext()
         }
     }
 
