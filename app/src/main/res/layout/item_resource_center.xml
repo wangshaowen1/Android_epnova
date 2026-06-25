@@ -28,6 +28,7 @@
             <ImageView
                 android:id="@+id/ivNewsCover"
                 loadThumbnailUri="@{item.data.coverImageUrl}"
+                placeHolder="@{@drawable/img_default_cover_16_9}"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:scaleType="centerCrop"
