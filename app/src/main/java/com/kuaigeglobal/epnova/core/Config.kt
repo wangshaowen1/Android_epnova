@@ -120,6 +120,7 @@ class Config : NetworkChangedListener {
                 }
                 val shelfStatusData = apiService.getAppShelfStatus().data
                 storeInReview(shelfStatusData?.shelfStatus == 2)
+                storeSwitchModelEnable(shelfStatusData?.dramaCategorySwitch == 1)
                 isRequesting = false
             }, onError = {
                 isRequesting = false
