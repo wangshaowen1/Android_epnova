@@ -229,7 +229,6 @@ class App : BaseApp() {
             activityStacks.addLast(activity.javaClass.name)
             topActivityRef = WeakReference(activity)
             Logger.i("activities=$activityStacks")
-            CrashlyticsHelper.logScreen(activity.javaClass.simpleName, "created")
         }
 
         override fun onActivityStarted(activity: Activity) {
@@ -242,7 +241,7 @@ class App : BaseApp() {
 
         override fun onActivityResumed(activity: Activity) {
             isBackground = false
-            CrashlyticsHelper.logScreen(activity.javaClass.simpleName, "resumed")
+            CrashlyticsHelper.setTopActivity(activity.javaClass.simpleName)
         }
 
         override fun onActivityPaused(activity: Activity) {
@@ -266,7 +265,6 @@ class App : BaseApp() {
                 activityStacks.remove(activity.javaClass.name)
             }
             Logger.i("activities=$activityStacks")
-            CrashlyticsHelper.logScreen(activity.javaClass.simpleName, "destroyed")
         }
 
         val topActivity: Activity?

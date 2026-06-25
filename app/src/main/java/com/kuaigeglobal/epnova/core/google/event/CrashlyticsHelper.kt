@@ -32,10 +32,9 @@ object CrashlyticsHelper {
         }
     }
 
-    fun logScreen(screenName: String, state: String) {
+    fun setTopActivity(screenName: String) {
         runCatching {
             crashlytics.setCustomKey("top_activity", screenName)
-            log("screen_$state name=$screenName")
         }
     }
 
