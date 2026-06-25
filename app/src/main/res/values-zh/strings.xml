@@ -330,6 +330,7 @@
     <string name="waiting_to_synthesize">待合成</string>
     <string name="vol_number">集</string>
     <string name="vol_unit">集</string>
+    <string name="single_series_unit">集</string>
     <string name="storyboard_prompt">分镜描述词</string>
     <string name="admin">管理员</string>
     <string name="loading">正在载入</string>

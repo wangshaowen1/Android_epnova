@@ -338,6 +338,7 @@
     <string name="waiting_to_synthesize">รอการแต่งวิดีโอ</string>
     <string name="vol_number">ตอนที่&#160;</string>
     <string name="vol_unit">ตอน</string>
+    <string name="single_series_unit">ตอน</string>
     <string name="storyboard_prompt">คำสั่งสร้างสตอรี่บอร์ด</string>
     <string name="admin">ผู้ดูแลระบบ</string>
     <string name="loading">กำลังโหลด</string>

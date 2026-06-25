@@ -335,6 +335,7 @@
     <string name="waiting_to_synthesize">Pending Composition</string>
     <string name="vol_number">Ep.</string>
     <string name="vol_unit">Eps</string>
+    <string name="single_series_unit">Ep</string>
     <string name="storyboard_prompt">Storyboard Prompt</string>
     <string name="admin">Admin</string>
     <string name="loading">Loading</string>

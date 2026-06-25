@@ -338,6 +338,7 @@ Untuk mengkonfirmasi, ketuk [Minta Penghapusan].</string>
     <string name="waiting_to_synthesize">Menunggu Komposisi</string>
     <string name="vol_number">Ep.</string>
     <string name="vol_unit">Eps</string>
+    <string name="single_series_unit">Ep</string>
     <string name="storyboard_prompt">Prompt Storyboard</string>
     <string name="admin">Admin</string>
     <string name="loading">Memuat</string>

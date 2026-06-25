@@ -9,4 +9,6 @@ class ItemVideoConfigVm(ratio: VideoConfigInfo) : AppItemViewModel<VideoConfigIn
     val checked = ObservableBoolean()
 
     val input = ObservableField<String>()
+
+    val hasSingle = ObservableBoolean(true)
 }

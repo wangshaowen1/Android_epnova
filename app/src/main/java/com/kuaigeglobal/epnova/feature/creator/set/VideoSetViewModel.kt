@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import androidx.appcompat.widget.AppCompatEditText
+import androidx.core.widget.doAfterTextChanged
 import com.blankj.utilcode.util.KeyboardUtils
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.base.RecyclerViewVM
@@ -89,6 +90,11 @@ class VideoSetViewModel : AppRepositoryViewModel<AppRepository>() {
                     ) as? EditText
 
                     editText?.apply {
+                        // 若为单集要改变单位，不让统一用复数形式
+                        hasSingle.set(text.toString().toIntOrNull() == 1)
+                        doAfterTextChanged {
+                            hasSingle.set(it?.toString()?.toIntOrNull() == 1)
+                        }
                         onFocusChangeListener = View.OnFocusChangeListener { v, hasFocus ->
                             if (!hasFocus) {
                                 val num = text.toString().toIntOrNull() ?: 0
