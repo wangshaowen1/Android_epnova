@@ -52,7 +52,7 @@
             android:hint="@string/storyboard_prompt"
             android:lineSpacingExtra="@dimen/lineSpacingExtraShort"
             android:maxHeight="@{item.maxHeight}"
-            android:maxLength="1000"
+            android:maxLength="5000"
             android:scrollbars="vertical"
             android:minHeight="100dp"
             android:onClick="@{(v)->item.onItemClick.invoke(v)}"
