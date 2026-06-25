@@ -13,8 +13,10 @@ import com.kuaigeglobal.epnova.core.network.apis.request.WorkBody
 import com.nhsd.basic.ext.getResString
 import com.nhsd.basic.ext.showToast
 import com.nhsd.basic.utils.Logger
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -78,6 +80,8 @@ class RewardedAdManager(
     private var nonce: String? = null
     private var currentWorkId: String? = null
     private var currentStoryId: String? = null
+    private var prepareJob: Job? = null
+    private var completeJob: Job? = null
 
     // ── 公开方法 ─────────────────────────────────────────────────────────────
 
@@ -170,6 +174,14 @@ class RewardedAdManager(
 
     /** ViewModel.onCleared() 时调用，释放广告对象 */
     fun release() {
+        prepareJob?.cancel()
+        prepareJob = null
+        completeJob?.cancel()
+        completeJob = null
+        isAdLoading.set(false)
+        isAdReady.set(false)
+        isPolling.set(false)
+        statusText.set(null)
         platform.release()
     }
 
@@ -179,52 +191,51 @@ class RewardedAdManager(
         isAdLoading.set(true)
         statusText.set(R.string.episode_unlock_ad_loading.getResString())
 
-        scope.launch {
-            val prepareRes = withContext(Dispatchers.IO) {
-                api.storyUnlockAdPrepare(WorkBody(currentWorkId, currentStoryId))
-            }
+        prepareJob = scope.launch {
+            try {
+                val prepareRes = withContext(Dispatchers.IO) {
+                    api.storyUnlockAdPrepare(WorkBody(currentWorkId, currentStoryId))
+                }
 
-            if (!prepareRes.isSuccess || prepareRes.data == null) {
-                isAdLoading.set(false)
-                statusText.set(null)
-                onAdLoadFailed?.invoke()
-                if (showFailureToast) showAdNotReadyToast()
-                return@launch
-            }
+                if (!prepareRes.isSuccess || prepareRes.data == null) {
+                    handlePrepareFailed(showFailureToast)
+                    return@launch
+                }
 
-            val adNonce = prepareRes.data!!.nonce
-            val adUnitId = prepareRes.data!!.adUnitId
-            if (adNonce.isNullOrBlank()) {
-                isAdLoading.set(false)
-                statusText.set(null)
-                onAdLoadFailed?.invoke()
-                if (showFailureToast) showAdNotReadyToast()
-                return@launch
-            }
-            nonce = adNonce
+                val adNonce = prepareRes.data!!.nonce
+                val adUnitId = prepareRes.data!!.adUnitId
+                if (adNonce.isNullOrBlank()) {
+                    handlePrepareFailed(showFailureToast)
+                    return@launch
+                }
+                nonce = adNonce
 
-            withContext(Dispatchers.Main) {
-                platform.load(
-                    context = context,
-                    adUnitId = adUnitId,
-                    customData = adNonce,
-                    onLoaded = {
-                        Logger.d(TAG, "startPrepare: ad loaded")
-                        isAdLoading.set(false)
-                        isAdReady.set(true)
-                        statusText.set(null)
-                        onAdLoaded?.invoke()
-                        autoShowActivity?.let { showAd(it) }
-                    },
-                    onFailed = {
-                        Logger.d(TAG, "startPrepare: ad failed to load")
-                        isAdLoading.set(false)
-                        isAdReady.set(false)
-                        statusText.set(null)
-                        onAdLoadFailed?.invoke()
-                        if (showFailureToast) showAdNotReadyToast()
-                    }
-                )
+                withContext(Dispatchers.Main) {
+                    platform.load(
+                        context = context,
+                        adUnitId = adUnitId,
+                        customData = adNonce,
+                        onLoaded = {
+                            Logger.d(TAG, "startPrepare: ad loaded")
+                            isAdLoading.set(false)
+                            isAdReady.set(true)
+                            statusText.set(null)
+                            onAdLoaded?.invoke()
+                            autoShowActivity?.let { showAd(it) }
+                        },
+                        onFailed = {
+                            Logger.d(TAG, "startPrepare: ad failed to load")
+                            handlePrepareFailed(showFailureToast)
+                        }
+                    )
+                }
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Throwable) {
+                Logger.w(TAG, "startPrepare failed: ${e.javaClass.simpleName}")
+                handlePrepareFailed(showFailureToast)
+            } finally {
+                prepareJob = null
             }
         }
     }
@@ -234,43 +245,59 @@ class RewardedAdManager(
         val sId = currentStoryId ?: return
         val n = nonce ?: return
 
+        if (completeJob?.isActive == true) return
         isPolling.set(true)
         statusText.set(R.string.episode_unlock_ad_verifying.getResString())
 
-        scope.launch {
-            repeat(POLL_MAX_RETRY) { attempt ->
-                val res = withContext(Dispatchers.IO) {
-                    api.storyUnlockAdComplete(
-                        StoryUnlockAdCompleteBody(workId = wId, storyId = sId, nonce = n)
-                    )
-                }
-
-                if (res.isSuccess) {
-                    when (res.data?.adFlowStatus) {
-                        1 -> {
-                            Logger.d(TAG, "completeAdResult: success")
-                            isPolling.set(false)
-                            statusText.set(null)
-                            onUnlockSuccess?.invoke()
-                            return@launch
+        completeJob = scope.launch {
+            try {
+                repeat(POLL_MAX_RETRY) { attempt ->
+                    val res = try {
+                        withContext(Dispatchers.IO) {
+                            api.storyUnlockAdComplete(
+                                StoryUnlockAdCompleteBody(workId = wId, storyId = sId, nonce = n)
+                            )
                         }
-                        2 -> {
-                            Logger.d(TAG, "completeAdResult: failed")
-                            isPolling.set(false)
-                            statusText.set(null)
-                            onUnlockFailed?.invoke()
-                            return@launch
+                    } catch (e: CancellationException) {
+                        throw e
+                    } catch (e: Throwable) {
+                        Logger.w(TAG, "completeAdResult attempt ${attempt + 1} failed: ${e.javaClass.simpleName}")
+                        null
+                    }
+
+                    if (res?.isSuccess == true) {
+                        when (res.data?.adFlowStatus) {
+                            1 -> {
+                                Logger.d(TAG, "completeAdResult: success")
+                                onUnlockSuccess?.invoke()
+                                return@launch
+                            }
+                            2 -> {
+                                Logger.d(TAG, "completeAdResult: failed")
+                                onUnlockFailed?.invoke()
+                                return@launch
+                            }
                         }
                     }
+
+                    if (attempt < POLL_MAX_RETRY - 1) delay(POLL_INTERVAL_MS)
                 }
 
-                if (attempt < POLL_MAX_RETRY - 1) delay(POLL_INTERVAL_MS)
+                onUnlockFailed?.invoke()
+            } finally {
+                isPolling.set(false)
+                statusText.set(null)
+                completeJob = null
             }
-
-            isPolling.set(false)
-            statusText.set(null)
-            onUnlockFailed?.invoke()
         }
+    }
+
+    private fun handlePrepareFailed(showFailureToast: Boolean) {
+        isAdLoading.set(false)
+        isAdReady.set(false)
+        statusText.set(null)
+        onAdLoadFailed?.invoke()
+        if (showFailureToast) showAdNotReadyToast()
     }
 
     private fun showAdNotReadyToast() {
