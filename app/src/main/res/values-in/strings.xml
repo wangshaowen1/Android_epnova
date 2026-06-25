@@ -710,6 +710,7 @@ Jika Anda memilih \"Tidak Setuju\", Anda tidak akan dapat menggunakan produk dan
     <string name="generate_story_model_dynamic">Model Komik Dinamis</string>
     <string name="generate_story_switch_model">Ganti Model</string>
     <string name="generate_story_switch_reset_tip">Mengganti model akan mereset konten naskah saat ini</string>
+    <string name="model_temp_unavailable">Model tidak tersedia untuk sementara waktu</string>
     <string name="generate_story_price">(%1$d Kredit/detik)</string>
     <string name="generate_story_intro_narration">Storyboard komik AI + pengisi suara narasi cerdas, cocok untuk produksi cepat dan narasi cerita</string>
     <string name="generate_story_intro_dynamic">Komik dinamis + pengisi suara multi‑karakter + efek suara latar + efek transisi, meningkatkan imersi alur cerita</string>

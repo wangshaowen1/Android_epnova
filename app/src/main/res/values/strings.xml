@@ -769,6 +769,7 @@
     <string name="generate_story_model_dynamic">Dynamic Comic Model</string>
     <string name="generate_story_switch_model">Switch Model</string>
     <string name="generate_story_switch_reset_tip">Switching models will reset current script content.</string>
+    <string name="model_temp_unavailable">The model is temporarily unavailable.</string>
     <string name="generate_story_price">( %1$d Credits / sec)</string>
     <string name="generate_story_intro_narration">AI comic storyboard + intelligent narration voiceover, ideal for fast video production and story‑style commentary.</string>
     <string name="generate_story_intro_dynamic">Dynamic comics + multi‑character voiceover + background sound effects + transition effects for stronger plot immersion.</string>

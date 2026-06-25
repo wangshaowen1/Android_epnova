@@ -711,6 +711,7 @@
     <string name="generate_story_model_dynamic">โมเดลการ์ตูนเคลื่อนไหว</string>
     <string name="generate_story_switch_model">สลับโมเดล</string>
     <string name="generate_story_switch_reset_tip">การสลับโมเดลจะรีเซ็ตเนื้อหาบทละครปัจจุบัน</string>
+    <string name="model_temp_unavailable">โมเดลไม่สามารถใช้งานได้ชั่วคราว</string>
     <string name="generate_story_price">(%1$d เครดิต/วินาที)</string>
     <string name="generate_story_intro_narration">การวาดช็อตการ์ตูนด้วย AI + พากย์เสียงอธิบายอัจฉริยะ เหมาะสำหรับสร้างวิดีโอเร็วและอธิบายเนื้อหาเรื่องราว</string>
     <string name="generate_story_intro_dynamic">การ์ตูนเคลื่อนไหว + พากย์เสียงหลายตัวละคร + เสียงประกอบพื้นหลัง + เอฟเฟกต์เปลี่ยนฉาก ให้ประสบการณ์ดื่มด่ำกับเนื้อหามากขึ้น</string>

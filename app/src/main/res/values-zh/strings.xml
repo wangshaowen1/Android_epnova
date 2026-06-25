@@ -705,6 +705,7 @@
     <string name="generate_story_model_dynamic">动态漫模型</string>
     <string name="generate_story_switch_model">模型切换</string>
     <string name="generate_story_switch_reset_tip">切换模型将重置当前剧本内容</string>
+    <string name="model_temp_unavailable">该模型暂不可用。</string>
     <string name="generate_story_price">（%1$d Credits / 秒）</string>
     <string name="generate_story_intro_narration">AI漫画分镜+智能解说配音，适合快速出片、故事类解说。</string>
     <string name="generate_story_intro_dynamic">动态漫画+多角色配音+背景音效+转场特效，剧情沉浸感更强，转场特效。</string>

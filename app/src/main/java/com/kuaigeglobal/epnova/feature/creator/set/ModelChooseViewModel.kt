@@ -7,6 +7,7 @@ import com.kuaigeglobal.epnova.common.Constants
 import com.kuaigeglobal.epnova.core.AppRepository
 import com.kuaigeglobal.epnova.core.network.apis.entity.CreationModelInfo
 import com.nhsd.basic.ext.getParcelableArrayListValue
+import com.nhsd.basic.ext.showToast
 
 class ModelChooseViewModel : AppRepositoryViewModel<AppRepository>() {
 
@@ -33,7 +34,11 @@ class ModelChooseViewModel : AppRepositoryViewModel<AppRepository>() {
                     checked.set(true)
                     checkedModel = this
                 }
-                onItemClick.value = {
+                onItemClick.value = click@{
+                    if (!info.isValid()) {
+                        showToast(R.string.model_temp_unavailable)
+                        return@click
+                    }
                     if (checkedModel != this) {
                         checkedModel?.checked?.set(false)
                         this.checked.set(true)
