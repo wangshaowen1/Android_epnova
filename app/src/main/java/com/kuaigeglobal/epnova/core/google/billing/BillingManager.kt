@@ -19,8 +19,10 @@ import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.manager.AppsFlyerManager
 import com.kuaigeglobal.epnova.core.network.apis.ApiFactory
 import com.kuaigeglobal.epnova.core.network.apis.request.VerifyPurchasedBody
+import com.nhsd.basic.ext.getResString
 import com.nhsd.basic.ext.launchNoCrash
 import com.nhsd.basic.ext.showToast
+import com.nhsd.basic.ext.showToastDelay
 import com.nhsd.basic.utils.Logger
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.BufferOverflow
@@ -136,11 +138,11 @@ object BillingManager {
                                 if (isCurrentVerifyFailed) {
                                     _purchaseResult.tryEmit(PurchaseResult.Failed.BenefitFailed)
                                 } else {
-                                    showToast(R.string.system_payment_success)
+                                    R.string.system_payment_success.getResString().showToastDelay(500L)
                                     _purchaseResult.tryEmit(PurchaseResult.Success(purchase))
                                 }
                             } else {
-                                showToast(R.string.system_payment_failed)
+                                R.string.system_payment_failed.getResString().showToastDelay(500L)
                                 _purchaseResult.tryEmit(PurchaseResult.Failed.PaymentFailed)
                                 reportOrderStatus(currentOrderId, 2, reason)
                             }
@@ -154,7 +156,7 @@ object BillingManager {
                             "Purchases failed: $billingResult ,purchase:${purchases?.getOrNull(0)?.toString()}"
                         )
                         reportOrderStatus(currentOrderId, 3)
-                        showToast(R.string.system_payment_cancel)
+                        R.string.system_payment_cancel.getResString().showToastDelay(500L)
                         _purchaseResult.tryEmit(PurchaseResult.Cancelled)
                         tryDisconnectAfterPurchase()
                     }

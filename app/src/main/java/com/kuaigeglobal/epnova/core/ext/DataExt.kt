@@ -25,7 +25,6 @@ import com.kuaigeglobal.epnova.feature.web.SimpleBrowserActivity
 import com.nhsd.basic.ext.getResColor
 import com.nhsd.basic.ext.getResString
 import com.nhsd.basic.ext.showToast
-import com.nhsd.basic.ext.showToastDelay
 import com.nhsd.basic.utils.Logger
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
