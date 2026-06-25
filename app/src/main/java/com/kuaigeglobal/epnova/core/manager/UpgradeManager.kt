@@ -8,6 +8,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.blankj.utilcode.util.NetworkUtils
+import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.ext.ioScope
 import com.kuaigeglobal.epnova.common.permissions.PermissionsUtils
 import com.kuaigeglobal.epnova.common.permissions.requestRxPermissions
@@ -21,6 +22,7 @@ import com.kuaigeglobal.epnova.service.DownloadService
 import com.nhsd.basic.BaseActivity
 import com.nhsd.basic.Session
 import com.nhsd.basic.bus.FlowEventBus
+import com.nhsd.basic.ext.getResString
 import com.nhsd.basic.ext.isActive
 import com.nhsd.basic.ext.launchNoCrash
 import com.nhsd.basic.ext.showToast
@@ -110,7 +112,7 @@ class UpgradeManager(private val context: BaseActivity) {
 
                     if (!data.isNeedUpdate()) {
                         if (showProgress) {
-                            "当前已经是最新版本".showToast()
+                            R.string.already_latest_version.getResString().showToast()
                         }
                     } else {
                         needForceUpdate = data.isNeedForceUpdate()
@@ -170,7 +172,7 @@ class UpgradeManager(private val context: BaseActivity) {
                 intent.putExtra(DownloadService.MD5_HASH, md5)
 
                 if (autoUpdate) {
-                    ("当前为WIFI环境,将自动为你下载更新" + Session.getInstance().appName + "。").showToast()
+                    R.string.wifi_auto_download_update.getResString(Session.getInstance().appName).showToast()
                     intent.putExtra(DownloadService.DOWNLOAD_WITH_NOTIFY, true)
                 }
                 context.startService(intent)

@@ -5,9 +5,11 @@ package com.kuaigeglobal.epnova.core.ext
 import android.content.Intent
 import android.net.Uri
 import com.kuaigeglobal.epnova.App
+import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.core.Config
 import com.kuaigeglobal.epnova.core.network.apis.ApiException
 import com.kuaigeglobal.epnova.core.network.apis.ApiResponse
+import com.nhsd.basic.ext.getResString
 import com.nhsd.basic.ext.showToast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -26,7 +28,7 @@ fun String.openWithBrowser() {
         App.instance.startActivity(intent)
     } catch (e: Exception) {
         e.printStackTrace()
-        "未找到浏览器应用".showToast()
+        R.string.error_no_browser_found.getResString().showToast()
     }
 }
 
@@ -85,5 +87,4 @@ fun getInstall(delay: Int = 0, callback: ((installData: String?) -> Unit)? = nul
         callback?.invoke(installData)
     }
 }
-
 

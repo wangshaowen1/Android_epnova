@@ -79,6 +79,8 @@
     <string name="toast_sign_in_fail">Login Failed</string>
     <string name="update_now">Update Now</string>
     <string name="update_cancel">Not Now</string>
+    <string name="already_latest_version">You already have the latest version</string>
+    <string name="wifi_auto_download_update">You are on Wi-Fi. The %1$s update will download automatically.</string>
     <string name="toast_del_account_success">Account Deleted</string>
     <string name="today">Today</string>
     <string name="tomorrow">Tomorrow</string>
@@ -454,6 +456,7 @@
     <string name="video_generating">Generating Video</string>
     <string name="video_generation_failed">Video Generation Failed</string>
     <string name="please_enter_storyboard_description">Please fill in the storyboard description first</string>
+    <string name="storyboard_description_generating_please_wait">Generating storyboard description. Please wait…</string>
     <string name="storyboard_generating">Generating storyboard…</string>
     <string name="video_redrawing">Redrawing video…</string>
     <string name="feedback_success">Feedback Submitted</string>
@@ -526,6 +529,7 @@
     <string name="policy_content">Welcome to EpNova!\nBefore using this product or service, please carefully read and fully understand all terms of this application\'s Terms of Service and Privacy Policy, to learn about our service content and the rules governing how we collect and use your relevant personal information.\nWe provide services and protect your personal information in strict accordance with the Terms of Service and Privacy Policy.\nIf you select \"Disagree\", you will not be able to use our products and services.</string>
     <string name="please_set_total_episodes">Set the total number of episodes</string>
     <string name="please_enter_custom_episodes">Please enter a custom number of episodes</string>
+    <string name="episode_count_limit_60">The number of episodes cannot exceed 60</string>
     <string name="please_select_video_aspect_ratio">Please select video size</string>
     <string name="please_select_video_style">Please select video style</string>
 

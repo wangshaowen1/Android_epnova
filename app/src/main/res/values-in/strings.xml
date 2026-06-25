@@ -68,6 +68,8 @@
     <string name="toast_sign_in_fail">Gagal Masuk</string>
     <string name="update_now">Perbarui Sekarang</string>
     <string name="update_cancel">Bukan Sekarang</string>
+    <string name="already_latest_version">Anda sudah menggunakan versi terbaru</string>
+    <string name="wifi_auto_download_update">Anda terhubung ke Wi-Fi. Pembaruan %1$s akan diunduh secara otomatis.</string>
     <string name="toast_del_account_success">Akun Dihapus</string>
     <string name="today">Hari Ini</string>
     <string name="tomorrow">Besok</string>
@@ -457,6 +459,7 @@ Untuk mengkonfirmasi, ketuk [Minta Penghapusan].</string>
     <string name="video_generating">Membuat Video</string>
     <string name="video_generation_failed">Pembuatan Video Gagal</string>
     <string name="please_enter_storyboard_description">Harap isi deskripsi storyboard terlebih dahulu</string>
+    <string name="storyboard_description_generating_please_wait">Sedang membuat deskripsi storyboard. Mohon tunggu…</string>
     <string name="storyboard_generating">Membuat storyboard…</string>
     <string name="video_redrawing">Menggambar ulang video…</string>
     <string name="feedback_success">Masukan Terkirim</string>
@@ -542,6 +545,7 @@ Kami menyediakan layanan dan melindungi informasi pribadi Anda sesuai dengan Sya
 Jika Anda memilih \"Tidak Setuju\", Anda tidak akan dapat menggunakan produk dan layanan kami.</string>
     <string name="please_set_total_episodes">Atur jumlah total episode</string>
     <string name="please_enter_custom_episodes">Silakan masukkan jumlah episode khusus</string>
+    <string name="episode_count_limit_60">Jumlah episode tidak boleh melebihi 60</string>
     <string name="please_select_video_aspect_ratio">Silakan pilih ukuran video</string>
     <string name="please_select_video_style">Silakan pilih gaya video</string>
     <string name="network_error_fetch_products">Gagal mendapatkan produk. Silakan periksa koneksi jaringan Anda dan coba lagi nanti.</string>

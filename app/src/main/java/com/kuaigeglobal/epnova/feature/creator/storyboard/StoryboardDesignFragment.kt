@@ -46,7 +46,7 @@ class StoryboardDesignFragment :
         hostVm?.switchModelEvent?.observe(this) {
             if (it == null || it == 0L) return@observe
             if (mRealVM.generating) {
-                "分镜描述生成中，请稍候".showToast()
+                R.string.storyboard_description_generating_please_wait.getResString().showToast()
                 return@observe
             }
             ModelChooseDialog.newInstance(mRealVM.currentCreationModel.value?.configCode, mRealVM.creationModels.value).apply {

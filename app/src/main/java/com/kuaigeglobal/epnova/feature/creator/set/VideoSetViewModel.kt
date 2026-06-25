@@ -20,6 +20,7 @@ import com.kuaigeglobal.epnova.feature.creator.set.allstyle.ItemCreationStyleVm
 import com.kuaigeglobal.epnova.widget.decoration.GridSpacingItemDecoration
 import com.nhsd.basic.ext.dp
 import com.nhsd.basic.ext.getParcelableValue
+import com.nhsd.basic.ext.getResString
 import com.nhsd.basic.ext.showToast
 
 /**
@@ -99,7 +100,7 @@ class VideoSetViewModel : AppRepositoryViewModel<AppRepository>() {
                             if (!hasFocus) {
                                 val num = text.toString().toIntOrNull() ?: 0
                                 if (num > 60) {
-                                    "剧集数不可超过60集".showToast()
+                                    R.string.episode_count_limit_60.getResString().showToast()
                                     input.set("60")
                                 }
                             }
@@ -108,7 +109,7 @@ class VideoSetViewModel : AppRepositoryViewModel<AppRepository>() {
                             if (actionId == EditorInfo.IME_ACTION_DONE) {
                                 val num = text.toString().toIntOrNull() ?: 0
                                 if (num > 60) {
-                                    "剧集数不可超过60集".showToast()
+                                    R.string.episode_count_limit_60.getResString().showToast()
                                     input.set("60")
                                 }
                                 clearFocus()

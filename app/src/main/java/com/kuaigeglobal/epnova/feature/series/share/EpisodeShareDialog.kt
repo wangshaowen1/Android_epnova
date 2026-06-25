@@ -12,6 +12,7 @@ import com.kuaigeglobal.epnova.feature.play.more.DownloadMethodDialog
 import com.kuaigeglobal.epnova.feature.settings.report.ReportActivity
 import com.nhsd.basic.BaseBottomPushVMDialogFragment
 import com.nhsd.basic.ext.getParcelableValue
+import com.nhsd.basic.ext.getResString
 import com.nhsd.basic.ext.showToast
 
 /**
@@ -82,7 +83,7 @@ class EpisodeShareDialog : BaseBottomPushVMDialogFragment<DialogEpisodeShareBind
     private fun copyUrl(url: String) {
         val copyText = "$pyqShareTitle\n$url"
         ClipboardUtils.copyText(copyText)
-        "复制成功".showToast()
+        R.string.copy_success.getResString().showToast()
     }
 
 //    private fun doShare(shareMedia: SHARE_MEDIA) {

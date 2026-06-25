@@ -68,6 +68,8 @@
     <string name="toast_sign_in_fail">เข้าสู่ระบบล้มเหลว</string>
     <string name="update_now">อัปเดตเดี๋ยวนี้</string>
     <string name="update_cancel">ไม่ใช่เดี๋ยวนี้</string>
+    <string name="already_latest_version">คุณใช้เวอร์ชันล่าสุดแล้ว</string>
+    <string name="wifi_auto_download_update">คุณกำลังใช้ Wi-Fi ระบบจะดาวน์โหลดอัปเดต %1$s โดยอัตโนมัติ</string>
     <string name="toast_del_account_success">ลบบัญชีแล้ว</string>
     <string name="today">วันนี้</string>
     <string name="tomorrow">พรุ่งนี้</string>
@@ -457,6 +459,7 @@
     <string name="video_generating">กำลังสร้างวิดีโอ</string>
     <string name="video_generation_failed">การสร้างวิดีโอล้มเหลว</string>
     <string name="please_enter_storyboard_description">กรุณากรอกคำอธิบายสตอรี่บอร์ดก่อน</string>
+    <string name="storyboard_description_generating_please_wait">กำลังสร้างคำอธิบายสตอรี่บอร์ด โปรดรอสักครู่…</string>
     <string name="storyboard_generating">กำลังสร้างสตอรี่บอร์ด…</string>
     <string name="video_redrawing">กำลังวาดวิดีโอใหม่…</string>
     <string name="feedback_success">ส่งข้อเสนอแนะเรียบร้อย</string>
@@ -542,6 +545,7 @@
 หากคุณเลือก \"ไม่ยอมรับ\" คุณจะไม่สามารถใช้ผลิตภัณฑ์และบริการของเราได้</string>
     <string name="please_set_total_episodes">ตั้งจำนวนตอนทั้งหมด</string>
     <string name="please_enter_custom_episodes">โปรดป้อนจำนวนตอนที่กำหนดเอง</string>
+    <string name="episode_count_limit_60">จำนวนตอนต้องไม่เกิน 60 ตอน</string>
     <string name="please_select_video_aspect_ratio">โปรดเลือกขนาดวิดีโอ</string>
     <string name="please_select_video_style">โปรดเลือกรูปแบบวิดีโอ</string>
     <string name="network_error_fetch_products">ไม่สามารถดึงข้อมูลสินค้าได้ กรุณาตรวจสอบการเชื่อมต่อเครือข่ายแล้วลองอีกครั้งภายหลัง</string>
