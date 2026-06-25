@@ -535,7 +535,7 @@ class AssetManagementViewModel : AppRepositoryViewModel<AssetManagementRepositor
     suspend fun getOrRequestAiPrice(): Int {
         if (aiPrice <= 0) {
             return withContext(Dispatchers.IO) {
-                val response = mRepo.api.queryAiPrice(StrategyTypeBody(1))
+                val response = mRepo.api.queryAiPrice(StrategyTypeBody(1, workId = workId, storyId = storyId))
                 val price = response.data?.pointNum ?: 0
                 aiPrice = price
                 price
