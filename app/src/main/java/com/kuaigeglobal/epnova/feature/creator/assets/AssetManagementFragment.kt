@@ -54,7 +54,6 @@ class AssetManagementFragment : BaseViewModelFragment<FragmentAssetManagementBin
         }
     private val layoutManager get() = bindingNullable?.rvAssets?.layoutManager as? LinearLayoutManager
     private val hostVm by lazy { getParentViewModel<StoryEditorViewModel>() }
-    private var pendingFirstRechargeContinuation: (() -> Unit)? = null
     val from by lazy { hostVm?.from }
     val imageSelectLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
@@ -109,21 +108,6 @@ class AssetManagementFragment : BaseViewModelFragment<FragmentAssetManagementBin
                 imageSelectLauncher.launch(AssetSelectActivity.getIntent(activity, bizType, mRealVM.workId, mRealVM.storyId, asset?.assetImageId, asset?.assetId))
             }
         }
-        mRealVM.firstRechargeCache.observe(this) { data ->
-            val continueNext = pendingFirstRechargeContinuation ?: return@observe
-            pendingFirstRechargeContinuation = null
-            val firstRechargeDialog = FirstRechargeCreditsDialog.show(
-                FirstRechargeCreditsDialog.SCENE_OTHER,
-                data
-            )
-            if (firstRechargeDialog == null) {
-                continueNext()
-                return@observe
-            }
-            firstRechargeDialog.onPaySuccess = { continueNext() }
-            firstRechargeDialog.onClose = { continueNext() }
-            Config.get().markFirstRechargeShown(FirstRechargeCreditsDialog.SCENE_OTHER)
-        }
         observeEvents {
             on<Events.RoleGenerateEvent> { if (isActive) mRealVM.onRoleGenerate(it) }
             on<Events.SceneGenerateEvent> { if (isActive) mRealVM.onSceneGenerate(it) }
@@ -147,28 +131,10 @@ class AssetManagementFragment : BaseViewModelFragment<FragmentAssetManagementBin
             }
 
             R.id.btnNext -> {
-                handleNextClick()
+                mRealVM.clickNext { workId, storyId, taskId ->
+                    hostVm?.nextStep(4, workId, storyId, taskId)
+                }
             }
-        }
-    }
-
-    private fun handleNextClick() {
-        if (pendingFirstRechargeContinuation != null) return
-        val continueNext = {
-            mRealVM.clickNext { workId, storyId, taskId ->
-                hostVm?.nextStep(4, workId, storyId, taskId)
-            }
-        }
-        val canShowFirstRecharge = !User.get().hasPurchasedPoints() &&
-                !Config.get().isFirstRechargeShown(FirstRechargeCreditsDialog.SCENE_OTHER)
-        if (canShowFirstRecharge) {
-            pendingFirstRechargeContinuation = continueNext
-            mRealVM.getFirstRechargeInfo {
-                pendingFirstRechargeContinuation = null
-                continueNext()
-            }
-        } else {
-            continueNext()
         }
     }
 

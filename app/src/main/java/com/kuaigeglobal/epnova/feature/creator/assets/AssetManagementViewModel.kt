@@ -122,7 +122,6 @@ class AssetManagementViewModel : AppRepositoryViewModel<AssetManagementRepositor
     val hasProp by lazy { ObservableBoolean(false) }
 
     var onAssetImageSelectEvent: ((ItemAssetVM) -> Unit)? = null
-    val firstRechargeCache = MutableLiveData<FirstRechargeCreditsDialogData>()
 
     override fun onResume() {
         super.onResume()
@@ -716,16 +715,4 @@ class AssetManagementViewModel : AppRepositoryViewModel<AssetManagementRepositor
         }
     }
 
-    fun getFirstRechargeInfo(callback: () -> Unit) {
-        launch(block = {
-            val firstRechargeResponse = mRepo.api.getFirstRechargeCreditsDialogInfo()
-            if (firstRechargeResponse.data != null && firstRechargeResponse.data?.isNeedShow() == true) {
-                firstRechargeCache.value = firstRechargeResponse.data
-            } else {
-                callback.invoke()
-            }
-        }, onError = {
-            callback.invoke()
-        })
-    }
 }
