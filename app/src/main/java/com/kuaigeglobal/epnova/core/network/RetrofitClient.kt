@@ -13,10 +13,9 @@ import com.google.gson.stream.JsonReader
 import com.google.gson.stream.JsonToken
 import com.google.gson.stream.JsonWriter
 import com.kuaigeglobal.epnova.App
-import com.kuaigeglobal.epnova.common.utils.EncryptUtils
 import com.kuaigeglobal.epnova.core.Config
 import com.kuaigeglobal.epnova.core.User
-import com.kuaigeglobal.epnova.core.network.apis.ApiConstants
+import com.kuaigeglobal.epnova.core.google.event.CrashlyticsHelper
 import com.kuaigeglobal.epnova.core.network.apis.AppHeader
 import okhttp3.Cache
 import okhttp3.ConnectionPool
@@ -26,6 +25,7 @@ import okhttp3.Protocol
 import okhttp3.Request
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
 import okhttp3.sse.EventSource
 import okhttp3.sse.EventSources
@@ -68,7 +68,7 @@ object RetrofitClient {
             .addInterceptor { chain ->
                 val original = chain.request()
                 if ("GET" == original.method) {
-                    return@addInterceptor chain.proceed(original)
+                    return@addInterceptor proceedWithNetworkExceptionLog(chain, original)
                 }
 
                 val userToken = User.get().id ?: ""
@@ -80,7 +80,7 @@ object RetrofitClient {
                     .header("appHeader", gson.toJson(AppHeader()))
 
                 val request = requestBuilder.build()
-                chain.proceed(request)
+                proceedWithNetworkExceptionLog(chain, request)
             }
             .protocols(protocols)
             .readTimeout(0, TimeUnit.SECONDS) // SSE需要长连接，不设置读取超时
@@ -98,7 +98,7 @@ object RetrofitClient {
             .addInterceptor { chain ->
                 val original = chain.request()
                 if ("GET" == original.method) {
-                    return@addInterceptor chain.proceed(original)
+                    return@addInterceptor proceedWithNetworkExceptionLog(chain, original)
                 }
 
                 val userToken = User.get().id ?: ""
@@ -119,7 +119,7 @@ object RetrofitClient {
                 }
 
                 val request = requestBuilder.build()
-                chain.proceed(request)
+                proceedWithNetworkExceptionLog(chain, request)
             }
             .apply {
                 // 调试模式下添加日志拦截器
@@ -149,6 +149,23 @@ object RetrofitClient {
             .readTimeout(30, TimeUnit.SECONDS)
             .writeTimeout(30, TimeUnit.SECONDS)
             .build()
+    }
+
+    private fun proceedWithNetworkExceptionLog(
+        chain: okhttp3.Interceptor.Chain,
+        request: Request
+    ): Response {
+        val startTime = System.currentTimeMillis()
+        return try {
+            chain.proceed(request)
+        } catch (e: IOException) {
+            CrashlyticsHelper.logNetworkFailure(
+                request = request,
+                throwable = e,
+                durationMs = System.currentTimeMillis() - startTime
+            )
+            throw e
+        }
     }
 
     private fun createSSLContext(): SSLContext {

@@ -6,6 +6,7 @@ import com.google.gson.Gson
 import com.kuaigeglobal.epnova.App
 import com.kuaigeglobal.epnova.common.utils.MmkvDelegate
 import com.kuaigeglobal.epnova.core.google.event.AnalyticsHelper
+import com.kuaigeglobal.epnova.core.google.event.CrashlyticsHelper
 import com.kuaigeglobal.epnova.core.network.apis.entity.CoinsAndWalletInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.CookieUserInfo
 import com.kuaigeglobal.epnova.core.network.apis.request.CompleteUserDataInfoBody
@@ -116,7 +117,8 @@ class User : IUser {
         if (userData == null) return
         userData.userId?.apply {
             storeUserId(this)
-            AnalyticsHelper.setUserId(id)
+            AnalyticsHelper.setUserId(this)
+            CrashlyticsHelper.setUserId(this)
         }
         storePhoneNum(userData.phoneNum)
         storeUid(userData.userUid)
@@ -255,6 +257,8 @@ class User : IUser {
     }
 
     private fun clear() {
+        AnalyticsHelper.setUserId(null)
+        CrashlyticsHelper.setUserId(null)
         val keysToRemove = arrayOf(
             ID, LOGIN_REWARDS_VALID, USER_ID, PHONE_NUM, U_ID, NICK_NAME, GENDER, AVATAR_URL,
             USER_SOURCE, REGISTER_WAY, LAST_LOGIN_TIME, REGISTER_STATUS,

@@ -20,6 +20,8 @@ import com.kuaigeglobal.epnova.core.Config
 import com.kuaigeglobal.epnova.core.Global
 import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.google.GoogleServices
+import com.kuaigeglobal.epnova.core.google.event.AnalyticsHelper
+import com.kuaigeglobal.epnova.core.google.event.CrashlyticsHelper
 import com.kuaigeglobal.epnova.core.manager.AdStrategyManager
 import com.kuaigeglobal.epnova.core.manager.AppLanguageManager
 import com.kuaigeglobal.epnova.core.manager.AppsFlyerManager
@@ -171,6 +173,9 @@ class App : BaseApp() {
         AppLanguageManager.applySavedLanguage()
         user = User()
         user.init(this@App)
+        CrashlyticsHelper.init()
+        AnalyticsHelper.setUserId(user.userId)
+        CrashlyticsHelper.setUserId(user.userId)
         appStatusTracker = AppStatusTracker()
         registerActivityLifecycleCallbacks(appStatusTracker)
 
@@ -224,6 +229,7 @@ class App : BaseApp() {
             activityStacks.addLast(activity.javaClass.name)
             topActivityRef = WeakReference(activity)
             Logger.i("activities=$activityStacks")
+            CrashlyticsHelper.logScreen(activity.javaClass.simpleName, "created")
         }
 
         override fun onActivityStarted(activity: Activity) {
@@ -236,6 +242,7 @@ class App : BaseApp() {
 
         override fun onActivityResumed(activity: Activity) {
             isBackground = false
+            CrashlyticsHelper.logScreen(activity.javaClass.simpleName, "resumed")
         }
 
         override fun onActivityPaused(activity: Activity) {
@@ -259,6 +266,7 @@ class App : BaseApp() {
                 activityStacks.remove(activity.javaClass.name)
             }
             Logger.i("activities=$activityStacks")
+            CrashlyticsHelper.logScreen(activity.javaClass.simpleName, "destroyed")
         }
 
         val topActivity: Activity?
