@@ -2,6 +2,7 @@ package com.kuaigeglobal.epnova.core.network.apis.entity
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
+import java.util.Locale
 
 /**
  * {
@@ -28,7 +29,7 @@ data class CoinConfigInfo(
      * 是否默认选中（0-非默认、1-默认）
      */
     val selectedStatus: Int?,//是否默认选中（0-非默认、1-默认），与库表对应；列表内至多一条为 1。
-    val coinsMarketingTime: Long?,//金币营销倒计时截止时间.空则代表不需要受限制精确到毫秒
+    val coinsMarketingTime: Long?,//金币营销倒计时剩余毫秒数.空则代表不需要受限制
     val coinsMarketingText: String?,//金币营销倒计时文本
     val coinsMarketingTag: String?,//金币营销角标文案（如：赠30%）
 ) : Parcelable {
@@ -38,22 +39,19 @@ data class CoinConfigInfo(
     }
 
     fun isDiscountValid(): Boolean {
-        return coinsMarketingTime != null && coinsMarketingTime > System.currentTimeMillis()
+        return (coinsMarketingTime ?: 0L) > 0
     }
 
-    fun getCountDownText(): String {
-        if (coinsMarketingTime == null) {
-            return "00:00:00"
-        }
-        val time = coinsMarketingTime
+    fun getCountDownText(remainingTime: Long = coinsMarketingTime ?: 0L): String {
+        val time = remainingTime.coerceAtLeast(0L)
         if (time <= 0) {
             return "00:00:00"
         }
-        val hour = time / 1000 / 60 / 60
-        val minute = time / 1000 / 60 % 60
-        val second = time / 1000 % 60
+        val totalSeconds = time / 1000
+        val hour = totalSeconds / 60 / 60
+        val minute = totalSeconds / 60 % 60
+        val second = totalSeconds % 60
 
-        // 将 tag 作为第一个参数传入，这样它包含什么特殊字符都不会报错
-        return String.format("%02d:%02d:%02d", hour, minute, second)
+        return String.format(Locale.US, "%02d:%02d:%02d", hour, minute, second)
     }
 }

@@ -7,15 +7,15 @@ import com.kuaigeglobal.epnova.core.network.apis.entity.PointConfigInfo
 
 class ItemRechargeCreditsVM(info: PointConfigInfo) : AppItemViewModel<PointConfigInfo>(info) {
 
+    private var remainingTime = info.pointMarketingTime ?: 0L
+
     val isChecked by lazy { ObservableBoolean(false) }
-    val discountText by lazy { ObservableField<String>() }
+    val discountText by lazy { ObservableField(info.getCountDownText(remainingTime)) }
     val priceText = ObservableField<String>(info.pointPrice)
 
     fun updateTime() {
         val info = data.get() ?: return
-        if (info.isDiscountValid()) {
-            val text = info.getCountDownText()
-            if (text.isNotEmpty()) discountText.set(text)
-        }
+        discountText.set(info.getCountDownText(remainingTime))
+        remainingTime = (remainingTime - 1000L).coerceAtLeast(0L)
     }
 }

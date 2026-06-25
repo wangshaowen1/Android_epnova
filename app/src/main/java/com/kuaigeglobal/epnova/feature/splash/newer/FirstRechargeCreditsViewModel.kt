@@ -61,7 +61,8 @@ class FirstRechargeCreditsViewModel : AppRepositoryViewModel<CoinRepository>() {
     override fun onCreate() {
         super.onCreate()
         refreshDisplayData()
-        val remainingTime = getRemainingTime(data?.popupInvalidTime ?: pointConfig?.pointMarketingTime)
+        val remainingTime = data?.popupInvalidTime?.let { getRemainingTime(it) }
+            ?: (pointConfig?.pointMarketingTime ?: 0L)
         if (remainingTime > 0) {
             startCountDown(remainingTime)
         }

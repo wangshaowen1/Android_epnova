@@ -2,6 +2,7 @@ package com.kuaigeglobal.epnova.core.network.apis.entity
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
+import java.util.Locale
 
 @Parcelize
 data class PointConfigInfo(
@@ -18,16 +19,16 @@ data class PointConfigInfo(
 ) : Parcelable {
 
     fun isDiscountValid(): Boolean {
-        return pointMarketingTime != null && pointMarketingTime > 0
+        return (pointMarketingTime ?: 0L) > 0
     }
 
-    fun getCountDownText(): String {
-        if (pointMarketingTime == null) return ""
-        val time = pointMarketingTime
-        if (time <= 0) return ""
-        val hour = time / 1000 / 60 / 60
-        val minute = time / 1000 / 60 % 60
-        val second = time / 1000 % 60
-        return String.format("%02d:%02d:%02d", hour, minute, second)
+    fun getCountDownText(remainingTime: Long = pointMarketingTime ?: 0L): String {
+        val time = remainingTime.coerceAtLeast(0L)
+        if (time <= 0) return "00:00:00"
+        val totalSeconds = time / 1000
+        val hour = totalSeconds / 60 / 60
+        val minute = totalSeconds / 60 % 60
+        val second = totalSeconds % 60
+        return String.format(Locale.US, "%02d:%02d:%02d", hour, minute, second)
     }
 }
