@@ -35,6 +35,7 @@ import com.nhsd.basic.BaseViewModelActivity
 import com.nhsd.basic.ext.dp
 import com.nhsd.basic.ext.getResColor
 import com.nhsd.basic.ext.setOnSingleClickListener
+import com.nhsd.basic.ext.showAllowingStateLoss
 import com.nhsd.basic.ext.showToast
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -387,7 +388,7 @@ class DramasPlayPagerActivity :
         adDialog.onDismissWithoutWatch = {
             showUnlockOverlay(episode)
         }
-        adDialog.show(supportFragmentManager, "ad_unlock")
+        adDialog.showAllowingStateLoss(supportFragmentManager, "ad_unlock")
     }
 
     private fun setupPlayerEvents() {
