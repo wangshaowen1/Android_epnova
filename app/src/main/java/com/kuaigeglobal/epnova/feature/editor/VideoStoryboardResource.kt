@@ -12,14 +12,16 @@ import com.kuaige.videoedit.ffmpeg.FFmpegHelper
 import com.kuaige.videoedit.resource.Resource
 import com.kuaige.videoedit.resource.UrlResource
 import com.kuaigeglobal.epnova.R
-import com.kuaigeglobal.epnova.common.ext.toCache
 import com.nhsd.basic.BaseApp
-import com.nhsd.basic.ext.getBitmap
+import com.nhsd.basic.ext.getResString
 import okhttp3.OkHttpClient
 import java.io.File
 import java.io.IOException
 import kotlin.text.toInt
 
+/**
+ * 分镜下载
+ */
 class VideoStoryboardResource(private val url: String, private val storyboard: SimpleStoryboardInfo, private val watermark: Boolean, private val httpClient: OkHttpClient) : Resource() {
     init {
         // 配置字体目录，防止添加字幕时出错
@@ -70,19 +72,22 @@ class VideoStoryboardResource(private val url: String, private val storyboard: S
             finalV = "[$mapV]"
         }
         if (watermark){
-            val watermarkFile = R.drawable.icon_ai_watermark.getBitmap().toCache()
-            if (watermarkFile?.exists() == true) {
-                val videoSize = getVideoSize(videoFile.absolutePath)
-                val videoWidth = videoSize?.width?.takeIf { it > 0 } ?: 1280
-                val overlayX = (videoWidth * 0.864f).toInt()
-                val overlayY = (videoWidth * 0.036f).toInt()
-                val idx = builder.addInput(watermarkFile.absolutePath)
-                // 缩放并叠加
-                builder.addFilter("[$idx:v]scale=${videoWidth / 10}:-1[content]")
-                builder.addFilter("[$mapV][content]overlay=$overlayX:$overlayY[v_watermark]")
-                mapV = "v_watermark"
-                finalV = "[$mapV]"
-            }
+            val watermarkText = R.string.video_download_watermark.getResString()
+            val videoSize = getVideoSize(videoFile.absolutePath)
+            val videoWidth = videoSize?.width?.takeIf { it > 0 } ?: 1280
+            val margin = maxOf((videoWidth * 0.036f).toInt(), 12)
+            val fontSize = maxOf((videoWidth * 0.032f).toInt(), 18)
+            val borderWidth = maxOf((videoWidth * 0.0016f).toInt(), 1)
+            val fontOption = getWatermarkFontFile()?.let {
+                "fontfile='${escapeDrawTextValue(it.absolutePath)}':"
+            }.orEmpty()
+            builder.addFilter(
+                "[$mapV]drawtext=${fontOption}text='${escapeDrawTextValue(watermarkText)}':" +
+                    "fontcolor=white:fontsize=$fontSize:x=w-tw-$margin:y=$margin:" +
+                    "borderw=$borderWidth:bordercolor=black@0.55[v_watermark]"
+            )
+            mapV = "v_watermark"
+            finalV = "[$mapV]"
         }
         val extra = "-map $finalV -map 0:a? -c:v libopenh264 -b:v 4000k -r 30 -pix_fmt yuv420p"
         val command = builder.build(cacheFile.absolutePath, extra)
@@ -95,6 +100,21 @@ class VideoStoryboardResource(private val url: String, private val storyboard: S
         } else {
             throw IOException("Copy cache file to target failed")
         }
+    }
+
+    private fun getWatermarkFontFile(): File? {
+        return WATERMARK_FONT_PATHS
+            .map { File(it) }
+            .firstOrNull { it.exists() }
+    }
+
+    private fun escapeDrawTextValue(value: String): String {
+        return value
+            .replace("\\", "\\\\")
+            .replace(":", "\\:")
+            .replace("'", "\\'")
+            .replace(",", "\\,")
+            .replace("%", "\\%")
     }
 
     fun getVideoSize(path: String): Size? {
@@ -120,5 +140,14 @@ class VideoStoryboardResource(private val url: String, private val storyboard: S
         } finally {
             retriever.release()
         }
+    }
+
+    companion object {
+        private val WATERMARK_FONT_PATHS = listOf(
+            "/system/fonts/NotoSansCJK-Regular.ttc",
+            "/system/fonts/NotoSansCJK-Regular.otf",
+            "/system/fonts/DroidSansFallback.ttf",
+            "/system/fonts/Roboto-Regular.ttf"
+        )
     }
 }

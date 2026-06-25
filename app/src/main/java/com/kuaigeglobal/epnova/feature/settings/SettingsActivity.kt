@@ -56,11 +56,13 @@ class SettingsActivity : BaseViewModelActivity<ActivitySettingsBinding, Settings
             }
             binding.btnIPSelect.setOnSingleClickListener {
                 ActionSheetHelper.createDialog(DebugUtils.ipsName) { _, position ->
-                    val ip = DebugUtils.ips[position]
-                    Config.get().storeBaseUrlCustom(ip)
-                    binding.etIp.setText(ip)
-                    binding.etIp.setSelection(binding.etIp.length())
-                    "设置好了，自己杀掉app重启一下！".showToast()
+                    if (position >= 0) {
+                        val ip = DebugUtils.ips[position]
+                        Config.get().storeBaseUrlCustom(ip)
+                        binding.etIp.setText(ip)
+                        binding.etIp.setSelection(binding.etIp.length())
+                        "设置好了，自己杀掉app重启一下！".showToast()
+                    }
                 }.show(supportFragmentManager)
             }
         }
