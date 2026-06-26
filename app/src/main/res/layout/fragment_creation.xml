@@ -218,7 +218,7 @@
 
         <Button
             android:id="@+id/btnNext"
-            style="@style/Button.Bold"
+            style="@style/Button.CreationBold"
             singleClick="@{layout.clickHandler::onClick}"
             android:alpha="@{layout.input.length()>0?1.0f:0.6f}"
             android:layout_width="match_parent"

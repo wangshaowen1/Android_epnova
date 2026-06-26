@@ -403,7 +403,7 @@
                     android:layout_height="30dp"
                     android:layout_marginEnd="13dp"
                     android:alpha="@{layout.publishLocked ? 0.5f : 1f}"
-                    android:background="@drawable/selector_common_button"
+                    android:background="@drawable/selector_creation_button"
                     android:drawableStart="@drawable/icon_synthesis"
                     android:drawablePadding="4dp"
                     android:gravity="center"

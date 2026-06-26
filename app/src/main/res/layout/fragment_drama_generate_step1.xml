@@ -224,7 +224,7 @@
 
             <Button
                 android:id="@+id/btnNext"
-                style="@style/Button.Bold"
+                style="@style/Button.CreationBold"
                 android:layout_width="match_parent"
                 android:enabled="@{layout.nextStepEnabled}"
                 android:text="@string/next_create_script"
@@ -232,7 +232,7 @@
 
             <Button
                 android:id="@+id/btnNextDisable"
-                style="@style/Button.Bold"
+                style="@style/Button.CreationBold"
                 android:layout_width="match_parent"
                 android:background="@color/transparent"
                 android:visibility="@{layout.nextStepEnabled?View.GONE:View.VISIBLE}" />

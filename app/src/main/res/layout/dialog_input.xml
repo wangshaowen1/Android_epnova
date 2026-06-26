@@ -27,6 +27,7 @@
             android:layout_marginTop="@dimen/spacing_l"
             android:text="@{layout.title}"
             android:textColor="?attr/textColor1"
+            android:maxWidth="200dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"

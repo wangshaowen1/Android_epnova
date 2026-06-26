@@ -53,7 +53,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
                         android:layout_marginHorizontal="15dp"
-                        android:background="@drawable/selector_common_button"
+                        android:background="@drawable/selector_creation_button"
                         android:gravity="center"
                         android:text="@{layout.buttonText(layout.step,layout.cost)}"
                         android:textAppearance="@style/Text16"
