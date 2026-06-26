@@ -8,6 +8,7 @@ import com.blankj.utilcode.util.ActivityUtils
 import com.gyf.immersionbar.ImmersionBar
 import com.kuaigeglobal.epnova.App
 import com.kuaigeglobal.epnova.core.Config
+import com.kuaigeglobal.epnova.core.google.messaging.MyFirebaseMessagingService.Companion.KEY_PUSH_MSG_JUMP_URI
 import com.kuaigeglobal.epnova.core.manager.EventManager
 import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
 import com.kuaigeglobal.epnova.databinding.ActivitySplashBinding
@@ -37,20 +38,17 @@ class SplashActivity : BaseViewModelActivity<ActivitySplashBinding, SplashViewMo
             super.onCreate(savedInstanceState)
 
             if (!isTaskRoot) {
-                intent.data?.takeIf { !TextUtils.isEmpty(it.host) }?.let { uri ->
-                    // HTTPS 链接（AppsFlyer OneLink / Universal Link）不在此手动路由，
-                    // 由 AppsFlyerManager.subscribeForDeepLink 回调统一处理
-                    if (uri.scheme == "https" || uri.scheme == "http") {
-                        finish()
-                        return
-                    }
+                val schemeUri = getSchemeUriFromIntent()
+                if (!schemeUri.isNullOrEmpty()) {
                     if (ActivityUtils.getActivityList().find { activity -> activity.javaClass == MainActivity::class.java } != null) {
-                        AppRouter.jump(uri.toString())
+                        AppRouter.jump(schemeUri)
                         finish()
                     } else {
                         jumpToTheHomepage()
                     }
-                } ?: run { finish() }
+                } else {
+                    finish()
+                }
                 return
             }
             next()
@@ -80,14 +78,22 @@ class SplashActivity : BaseViewModelActivity<ActivitySplashBinding, SplashViewMo
         if (intent.getBooleanExtra(EXTRA_FROM_PUSH, false)) {
             EventManager.onFirebaseTrack(FirebaseEvent.PUSH_CLICK)
         }
-        // 只将自定义 scheme URI 传给 MainActivity，HTTPS 链接（AppsFlyer OneLink）由 AF SDK 自行处理
-        val schemeUri = intent.getStringExtra(EXTRA_SCHEME)
-            ?.takeIf { !TextUtils.isEmpty(it) }
-            ?: intent.data
-            ?.takeIf { !TextUtils.isEmpty(it.host) && it.scheme != "https" && it.scheme != "http" }
-            ?.toString()
+        val schemeUri = getSchemeUriFromIntent()
         MainActivity.start(this@SplashActivity, schemeUri)
         finish()
+    }
+
+    private fun getSchemeUriFromIntent(): String? {
+        return intent.getStringExtra(EXTRA_SCHEME)
+            ?.takeIf { !TextUtils.isEmpty(it) }
+            // FCM notification + data 后台自动展示时，点击会把 data 放到 launcher extra。
+            ?: intent.getStringExtra(KEY_PUSH_MSG_JUMP_URI)
+                ?.takeIf { !TextUtils.isEmpty(it) }
+            // HTTPS 链接（AppsFlyer OneLink / Universal Link）不在此手动路由，
+            // 由 AppsFlyerManager.subscribeForDeepLink 回调统一处理。
+            ?: intent.data
+                ?.takeIf { !TextUtils.isEmpty(it.host) && it.scheme != "https" && it.scheme != "http" }
+                ?.toString()
     }
 
 

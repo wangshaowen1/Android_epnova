@@ -21,7 +21,7 @@ import com.nhsd.basic.utils.Logger
 class MyFirebaseMessagingService : FirebaseMessagingService() {
 
     companion object {
-        private const val KEY_PUSH_MSG_JUMP_URI = "pushMsgJumpUri"
+        const val KEY_PUSH_MSG_JUMP_URI = "pushMsgJumpUri"
         private const val KEY_PUSH_MSG_TYPE = "pushMsgType"
     }
 
@@ -29,6 +29,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         super.onMessageReceived(message)
         // onMessageReceived: {pushMsgJumpUri=epnovascheme://restoreCreator?workId=59938533556225&storyId=59938533556229&workTitle=The+Last+Shopkeeper&workType=1&workRatio=9%3A16&totalEpisodeCnt=5, pushMsgType=1, notifyId=861}
         Logger.d("MyFirebaseMessagingService", "onMessageReceived: ${message.data}")
+        // todo: 和后台沟通切换为data-only 模式要和iOS沟通是否可行
         val notification: RemoteMessage.Notification? = message.getNotification()
         val title = notification?.title ?: ""
         val body = notification?.body ?: ""
