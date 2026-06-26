@@ -185,7 +185,7 @@ char *getSignatureKey(JNIEnv *env,jobject context,jstring userId) {
         char *c_userid = (char *) env->GetStringUTFChars(userId, 0);
 
         if (strlen(c_userid) > 0) {
-            long id = std::stol(c_userid);
+            long long id = std::stoll(c_userid);
             int sum = 0;
             while (id > 9) {
                 sum += ~(id % 10);
