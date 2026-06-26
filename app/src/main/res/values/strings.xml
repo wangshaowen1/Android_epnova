@@ -365,7 +365,7 @@
     <string name="upload_photo_limit">Upload Images (%1$d/%2$d): </string>
     <string name="episode_number_format">Episode %1$d</string>
     <string name="account_deletion_title">Account Deletion Notice</string>
-    <string name="creation_progress_format">Done %1$d/%2$d EP</string>
+    <string name="creation_progress_format">%1$d of %2$d Episodes Created</string>
     <string name="image_description_limit">Image Description (%1$d/%2$d): </string>
     <string name="episode_progress_format">Ep. %1$d / %2$d</string>
     <string name="auto_saved_as_draft">Auto-saved as draft</string>
@@ -727,9 +727,9 @@
     <string name="transaction_text_parsing">Text Parsing</string>
     <string name="transaction_limit_90days">Only transactions from the past 90 days are shown.</string>
     <string name="drama_detail_episode_list">Episodes</string>
-    <string name="drama_created_ep_singular">%1$s  EP created</string>
+    <string name="drama_created_ep_singular">%1$s EP created</string>
     <string name="drama_created_ep_plural">%1$s EPs created</string>
-    <string name="drama_total_ep_singular">%1$s  EP in total</string>
+    <string name="drama_total_ep_singular">%1$s EP in total</string>
     <string name="drama_total_ep_plural">%1$s EPs in total</string>
     <string name="income_views_singular">%1$s views</string>
     <string name="drama_detail_ep_1">%1$s Ep</string>

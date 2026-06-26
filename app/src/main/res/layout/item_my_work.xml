@@ -136,7 +136,7 @@
             android:layout_marginHorizontal="@dimen/spacing_s"
             android:layout_marginBottom="@dimen/spacing_m"
             android:fontFamily="monospace"
-            android:text="@{item.data.getCreationProgressFormat()}"
+            android:text="@{item.data.getDoneProgressFormat()}"
             android:textColor="?attr/textColor1"
             android:textStyle="bold"
             app:layout_constrainedWidth="true"

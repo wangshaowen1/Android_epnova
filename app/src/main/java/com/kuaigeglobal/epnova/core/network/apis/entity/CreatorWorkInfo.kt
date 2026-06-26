@@ -294,12 +294,30 @@ data class CreatorWorkInfo(
         }
     }
 
-    fun getCreationProgressFormat(): String {
+    fun getDoneProgressFormat(): String {
         return if (totalEpisodeCnt == 1) {
             R.string.single_episode_short.getResString()
         } else {
-            R.string.creation_progress_format.getResString(finishedEpisodeCnt, totalEpisodeCnt)
+            R.string.my_list_ep_done_ratio.getResString(finishedEpisodeCnt, totalEpisodeCnt)
         }
+    }
+
+    fun getCreationFormat(): String {
+        val finish = finishedEpisodeCnt ?: 0
+        val total = totalEpisodeCnt ?: 0
+
+        val n = if (finish < 2) {
+            R.string.drama_created_ep_singular.getResString(finish)
+        } else {
+            R.string.drama_created_ep_plural.getResString(finish)
+        }
+
+        val m = if (total < 2) {
+            R.string.drama_total_ep_singular.getResString(total)
+        } else {
+            R.string.drama_total_ep_plural.getResString(total)
+        }
+        return "$n / $m"
     }
 
     /**去除标题中的换行，适配列表单行或双行展示。*/

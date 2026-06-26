@@ -135,7 +135,7 @@
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="8dp"
-                                    android:text="@{@string/creation_progress_format(layout.workInfo.finishedEpisodeCnt, layout.workInfo.totalEpisodeCnt)}"
+                                    android:text="@{layout.workInfo.getCreationFormat()}"
                                     android:textAppearance="@style/Text12"
                                     android:textColor="?attr/textColor3"
                                     app:layout_constraintEnd_toEndOf="@+id/tvTitle"
