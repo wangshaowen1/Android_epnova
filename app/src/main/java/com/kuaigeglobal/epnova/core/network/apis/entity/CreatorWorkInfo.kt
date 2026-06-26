@@ -294,6 +294,14 @@ data class CreatorWorkInfo(
         }
     }
 
+    fun getCreationProgressFormat(): String {
+        return if (totalEpisodeCnt == 1) {
+            R.string.single_episode_short.getResString()
+        } else {
+            R.string.creation_progress_format.getResString(finishedEpisodeCnt, totalEpisodeCnt)
+        }
+    }
+
     /**去除标题中的换行，适配列表单行或双行展示。*/
     val stripedTrickTitle: String?
         get() = workTitle?.replace("\n", "")?.replace("\r", "")

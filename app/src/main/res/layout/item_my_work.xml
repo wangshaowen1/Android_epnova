@@ -83,7 +83,7 @@
 
         <TextView
             android:layout_width="wrap_content"
-            android:layout_height="16dp"
+            android:layout_height="wrap_content"
             android:layout_margin="4dp"
             backgroundRes="@{item.publishBadgeBackground()}"
             textColorRes="@{item.publishBadgeTextColor()}"
@@ -94,6 +94,9 @@
             android:visibility="@{(item.hasPublishBadge()&amp;&amp;item.isView())?View.VISIBLE:View.GONE}"
             app:layout_constraintEnd_toEndOf="@+id/ivCover"
             app:layout_constraintTop_toTopOf="@+id/ivCover"
+            app:layout_constraintStart_toStartOf="@id/ivCover"
+            app:layout_constraintHorizontal_bias="1"
+            app:layout_constrainedWidth="true"
             tools:text="Published · All Eps" />
 
         <TextView
@@ -130,14 +133,17 @@
             style="@style/Text10"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/spacing_s"
+            android:layout_marginHorizontal="@dimen/spacing_s"
             android:layout_marginBottom="@dimen/spacing_m"
             android:fontFamily="monospace"
-            android:text="@{item.data.totalEpisodeCnt == 1 ? @string/single_episode_short : @string/episode_progress_format(item.data.finishedEpisodeCnt, item.data.totalEpisodeCnt)}"
+            android:text="@{item.data.getCreationProgressFormat()}"
             android:textColor="?attr/textColor1"
             android:textStyle="bold"
+            app:layout_constrainedWidth="true"
             app:layout_constraintBottom_toBottomOf="@id/ivCover"
             app:layout_constraintEnd_toEndOf="@+id/ivCover"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintHorizontal_bias="1"
             tools:text="1/30集" />
 
         <TextView
