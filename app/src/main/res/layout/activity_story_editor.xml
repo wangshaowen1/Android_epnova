@@ -50,7 +50,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
-                android:maxWidth="120dp"
                 android:maxLines="1"
                 android:text="@{layout.title}"
                 android:textColor="?attr/textColor3"
