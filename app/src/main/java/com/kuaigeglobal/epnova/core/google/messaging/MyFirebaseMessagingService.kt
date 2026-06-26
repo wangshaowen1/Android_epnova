@@ -21,21 +21,29 @@ import com.nhsd.basic.utils.Logger
 
 class MyFirebaseMessagingService : FirebaseMessagingService() {
 
+    companion object {
+        private const val KEY_PUSH_MSG_JUMP_URI = "pushMsgJumpUri"
+        private const val KEY_PUSH_MSG_TYPE = "pushMsgType"
+    }
+
     override fun onMessageReceived(message: RemoteMessage) {
         super.onMessageReceived(message)
+        // onMessageReceived: {pushMsgJumpUri=epnovascheme://restoreCreator?workId=59938533556225&storyId=59938533556229&workTitle=The+Last+Shopkeeper&workType=1&workRatio=9%3A16&totalEpisodeCnt=5, pushMsgType=1, notifyId=861}
         Logger.d("MyFirebaseMessagingService", "onMessageReceived: ${message.data}")
         val notification: RemoteMessage.Notification? = message.getNotification()
         val title = notification?.title ?: ""
         val body = notification?.body ?: ""
-        val data: MutableMap<String?, String?>? = message.getData()
-        val custom = data?.get("custom")
-        Logger.d("MyFirebaseMessagingService", "onMessageReceived custom: $custom")
-        val messageInfo = BridgeDataUtils.parseJson(custom, PushMessageInfo::class.java)
-        Logger.d("MyFirebaseMessagingService", "onMessageReceived messageInfo: $messageInfo")
-        messageInfo?.let {
-            getNotification(it)
-        }
-        showNotification(title, body, messageInfo?.pushMsgJumpUri)
+        val type = message.data[KEY_PUSH_MSG_TYPE] ?: -1
+        val pushMsgJumpUri = message.data[KEY_PUSH_MSG_JUMP_URI] ?: ""
+//        val data = message.data
+//        val custom = data["custom"]
+//        Logger.d("MyFirebaseMessagingService", "onMessageReceived custom: $custom")
+//        val messageInfo = BridgeDataUtils.parseJson(custom, PushMessageInfo::class.java)
+//        Logger.d("MyFirebaseMessagingService", "onMessageReceived messageInfo: $messageInfo")
+//        messageInfo?.let {
+//            getNotification(it)
+//        }
+        showNotification(title, body, pushMsgJumpUri)
     }
 
     fun getNotification(messageInfo: PushMessageInfo?) {
