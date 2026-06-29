@@ -100,7 +100,7 @@ class VideoSetDialog : BaseBottomPushVMDialogFragment<DialogVideoSetBinding, Vid
                         mRealVM.checkedStyle?.data?.get()?.styleCode,
                         binding.nameInputer.text
                     )
-                    dismissAllowingStateLoss()
+//                    dismissAllowingStateLoss()
                 }, {
                     it?.let {
                         binding.nameInputer.setText(it)
