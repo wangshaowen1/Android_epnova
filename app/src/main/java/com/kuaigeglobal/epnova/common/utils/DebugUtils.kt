@@ -11,7 +11,8 @@ object DebugUtils {
             "刘子帆：192.168.11.91",
             "测试外网：epnova-test.kwaige.cn",
             "预发布：120.24.240.28:9010",
-            "正式环境：api.epnovai.com"
+//            "正式环境：api.epnovai.com"
+            "正式环境：epnova-aw-api.epnovai.com"
         )
     }
     val ips by lazy {
@@ -22,7 +23,8 @@ object DebugUtils {
             "http://192.168.11.91:8088",
             "https://epnova-test.kwaige.cn",
             "http://120.24.240.28:7010",
-            "https://api.epnovai.com"
+//            "https://api.epnovai.com"
+            "https://epnova-aw-api.epnovai.com"
         )
     }
 
