@@ -18,8 +18,8 @@ import com.kuaigeglobal.epnova.common.permissions.requestRead2WritePermissions
 import com.kuaigeglobal.epnova.common.utils.IntentUtils
 import com.kuaigeglobal.epnova.common.utils.Utils
 import com.kuaigeglobal.epnova.core.Events
-import com.kuaigeglobal.epnova.core.manager.IRouter
 import com.kuaigeglobal.epnova.core.manager.FirebaseEventValue
+import com.kuaigeglobal.epnova.core.manager.IRouter
 import com.kuaigeglobal.epnova.core.network.apis.ApiFactory
 import com.kuaigeglobal.epnova.core.network.apis.entity.CreatorWorkInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.EpisodeInfo
@@ -186,7 +186,7 @@ object AppRouter : IRouter {
                     withContext(Dispatchers.Main){
                         DramasPlayPagerActivity.start(
                             workId = workId,
-                            position = if (unlockInfoData.data?.lockStatus == 2) 0 else unlockInfoData.data?.episodeNo,
+                            position = if (unlockInfoData.data?.lockStatus == 2) 0 else ((unlockInfoData.data?.episodeNo ?: 0) - 1).coerceAtLeast(0),
                             isSeriesMode = false,
                             source = source,
                             bannerId = routeBannerId
