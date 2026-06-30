@@ -599,8 +599,7 @@ class AssetManagementViewModel : AppRepositoryViewModel<AssetManagementRepositor
                         data.get()?.copy(
                             assetImageId = selectedImageId,
                             imageUrl = selectedImageUrl,
-                            genStatus = 2,
-                            hasHistory = true
+                            genStatus = 2
                         )?.let { data -> this.data.set(data) }
                         updateStatus(2, selectedImageUrl)
                     }

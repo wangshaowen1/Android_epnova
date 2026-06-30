@@ -55,8 +55,7 @@ class AssetChildPagingSource(
             assetType = assetType,
             assetImageId = assetImageId,
             imageUrl = imageUrl,
-            genStatus = 2,
-            hasHistory = true
+            genStatus = 2
         )
     }
 }
