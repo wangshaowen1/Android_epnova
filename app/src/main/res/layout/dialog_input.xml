@@ -30,7 +30,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="修改故事简介" />
+            tools:text="@string/storyboard_desc" />
 
         <TextView
             android:id="@+id/tvSubTitle"
@@ -115,7 +115,7 @@
             android:layout_marginEnd="@dimen/spacing_l"
             android:background="@drawable/bg_theme_color1_r50"
             android:gravity="center"
-            android:paddingHorizontal="18dp"
+            android:paddingHorizontal="10dp"
             android:paddingVertical="4dp"
             android:text="@string/confirm_ok"
             android:textColor="?attr/textColor1"
