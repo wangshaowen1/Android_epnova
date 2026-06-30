@@ -958,6 +958,12 @@ fun setTextBold(view: TextView, bold: Boolean) {
     }
 }
 
+@BindingAdapter("checkedDaysText")
+fun setCheckedDaysText(view: TextView, days: Int) {
+    val quantity = if (days <= 1) 1 else days
+    view.text = view.resources.getQuantityString(R.plurals.rewards_checked_days, quantity, days)
+}
+
 @BindingAdapter("setTextSizeSp")
 fun setTextSizeSp(view: TextView, sp: Float) {
     view.setTextSize(TypedValue.COMPLEX_UNIT_SP, sp)
