@@ -8,6 +8,7 @@ import com.kuaigeglobal.epnova.common.Constants
 import com.kuaigeglobal.epnova.common.ext.topActivity
 import com.kuaigeglobal.epnova.core.Global
 import com.kuaigeglobal.epnova.core.ext.launchWithLoading
+import com.kuaigeglobal.epnova.core.ext.parseMessage
 import com.kuaigeglobal.epnova.core.google.billing.BillingManager
 import com.kuaigeglobal.epnova.core.google.billing.PurchaseResult
 import com.kuaigeglobal.epnova.core.manager.EventManager
@@ -121,20 +122,9 @@ class FirstRechargeViewModel : AppRepositoryViewModel<CoinRepository>() {
             },
             onError = { e ->
                 purchaseJob?.cancel()
-                if (e.isPaymentNetworkException()) {
-                    R.string.first_recharge_payment_network_error.getResString().showToast()
-                } else {
-                    R.string.first_recharge_payment_failed_retry.getResString().showToast()
-                }
+                parseMessage(e)?.showToast()
             }
         )
-    }
-
-    private fun Throwable.isPaymentNetworkException(): Boolean {
-        return this is java.net.SocketTimeoutException ||
-                this is java.io.InterruptedIOException ||
-                this is java.net.UnknownHostException ||
-                this is javax.net.ssl.SSLHandshakeException
     }
 
     private fun refreshCoinsAndPoints() {
