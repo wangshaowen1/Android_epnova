@@ -45,6 +45,7 @@
             android:shadowRadius="1.5"
             android:textColor="?attr/textColor2"
             android:textSize="9sp"
+            style="@style/Text.Regular"
             app:layout_constraintStart_toStartOf="@id/ivCover"
             app:layout_constraintTop_toTopOf="@id/ivCover"
             tools:background="@drawable/bg_90_ffffff_stroke_r3"
@@ -57,14 +58,14 @@
             app:layout_constraintBottom_toBottomOf="@id/ivCover" />
 
         <TextView
-            style="@style/Text10"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/spacing_s"
             android:layout_marginBottom="@dimen/spacing_m"
             android:text="@{item.data.getFormatEp()}"
             android:textColor="?attr/textColor1"
-            android:textStyle="bold"
+            android:textSize="10sp"
+            style="@style/Text.Bold"
             app:layout_constraintBottom_toBottomOf="@id/ivCover"
             app:layout_constraintEnd_toEndOf="@id/ivCover"
             tools:text="EP.1 / EP. 6" />
@@ -84,7 +85,8 @@
 
         <TextView
             android:id="@+id/tv_name"
-            style="@style/Text12"
+            android:textSize="12sp"
+            style="@style/Text.Regular"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/spacing_s"

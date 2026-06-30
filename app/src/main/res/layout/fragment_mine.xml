@@ -59,7 +59,8 @@
 
                 <TextView
                     android:id="@+id/tv_name"
-                    style="@style/Text18"
+                    android:textSize="18sp"
+                    style="@style/Text.SemiBold"
                     singleClick="@{layout.clickHandler::onClick}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -92,6 +93,7 @@
                         android:drawablePadding="@dimen/spacing_xs"
                         android:paddingHorizontal="6dp"
                         android:paddingVertical="4dp"
+                        style="@style/Text.Regular"
                         android:text="@{@string/login_claim_coins(layout.loginRewards)}"
                         android:textColor="?attr/textColor1"
                         tools:text="@string/login_claim_coins" />
@@ -117,7 +119,8 @@
 
                 <TextView
                     android:id="@+id/tv_id"
-                    style="@style/Text12"
+                    android:textSize="12sp"
+                    style="@style/Text.Regular"
                     singleClick="@{layout.clickHandler::onClick}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -162,7 +165,8 @@
                     app:layout_constraintTop_toTopOf="parent">
 
                     <TextView
-                        style="@style/Text16"
+                        android:textSize="16sp"
+                        style="@style/Text.Medium"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -188,7 +192,8 @@
 
                 <TextView
                     android:id="@+id/tv_coins_data"
-                    style="@style/Text20"
+                    style="@style/Text.Medium"
+                    android:textSize="20sp"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="15dp"
@@ -214,7 +219,8 @@
 
                 <TextView
                     android:id="@+id/tv_coins"
-                    style="@style/Text12"
+                    style="@style/Text.Regular"
+                    android:textSize="12sp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="2dp"
@@ -238,7 +244,8 @@
 
                 <TextView
                     android:id="@+id/tv_credits_data"
-                    style="@style/Text20"
+                    style="@style/Text.Medium"
+                    android:textSize="20sp"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/spacing_xs"
@@ -263,7 +270,8 @@
 
                 <TextView
                     android:id="@+id/tv_credits"
-                    style="@style/Text12"
+                    style="@style/Text.Regular"
+                    android:textSize="12sp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="2dp"
@@ -287,7 +295,8 @@
 
                 <TextView
                     android:id="@+id/tv_recharge"
-                    style="@style/Text14"
+                    style="@style/Text.Medium"
+                    android:textSize="14sp"
                     singleClick="@{layout.clickHandler::onClick}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -327,7 +336,8 @@
                         android:src="@drawable/icon_mine_income" />
 
                     <TextView
-                        style="@style/Text14"
+                        style="@style/Text.Regular"
+                        android:textSize="14sp"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/spacing_m"
@@ -358,7 +368,8 @@
                         android:src="@drawable/icon_mine_rewards" />
 
                     <TextView
-                        style="@style/Text14"
+                        style="@style/Text.Regular"
+                        android:textSize="14sp"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/spacing_m"
@@ -368,7 +379,8 @@
 
                     <TextView
                         android:id="@+id/tv_rewards_data"
-                        style="@style/Text12"
+                        style="@style/Text.Regular"
+                        android:textSize="12sp"
                         setVisible="@{layout.unCheckNum>0}"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -413,7 +425,8 @@
                         android:src="@drawable/icon_mine_language" />
 
                     <TextView
-                        style="@style/Text14"
+                        style="@style/Text.Regular"
+                        android:textSize="14sp"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/spacing_m"
@@ -422,7 +435,8 @@
                         android:textColor="?attr/textColor1" />
 
                     <TextView
-                        style="@style/Text14"
+                        style="@style/Text.Regular"
+                        android:textSize="14sp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="8dp"
@@ -453,7 +467,8 @@
                         android:src="@drawable/icon_mine_feedback" />
 
                     <TextView
-                        style="@style/Text14"
+                        style="@style/Text.Regular"
+                        android:textSize="14sp"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/spacing_m"
@@ -484,7 +499,8 @@
                         android:src="@drawable/icon_mine_set" />
 
                     <TextView
-                        style="@style/Text14"
+                        style="@style/Text.Regular"
+                        android:textSize="14sp"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/spacing_m"

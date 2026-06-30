@@ -41,7 +41,8 @@
 
             <TextView
                 android:id="@+id/tv_views"
-                style="@style/Text11"
+                style="@style/Text.Medium"
+                android:textSize="11sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:drawableStart="@drawable/icon_play_small"
@@ -64,14 +65,14 @@
             <!-- 标题 -->
             <TextView
                 android:id="@+id/tv_title"
-                style="@style/Text14"
+                style="@style/Text.Bold"
+                android:textSize="14sp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:maxLines="2"
                 android:text="@{item.workTitle()}"
                 android:textColor="?attr/textColor1"
-                android:textStyle="bold"
                 tools:text="疯批傅爷宠她成瘾" />
 
             <!-- 上架平台 -->
@@ -91,11 +92,12 @@
                     android:orientation="horizontal" />
 
                 <TextView
-                    style="@style/Text12"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:text="@string/create_page_published"
+                    style="@style/Text.Regular"
+                    android:textSize="12sp"
                     android:textColor="@color/fill_color_4_dark" />
             </LinearLayout>
         </LinearLayout>
@@ -114,7 +116,8 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    style="@style/Text11"
+                    style="@style/Text.Regular"
+                    android:textSize="11sp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="$"
@@ -122,7 +125,8 @@
 
                 <TextView
                     android:id="@+id/tv_income"
-                    style="@style/Text18"
+                    style="@style/Text.Bold"
+                    android:textSize="18sp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/color_f59e0b"
@@ -131,7 +135,8 @@
             </LinearLayout>
 
             <TextView
-                style="@style/Text12"
+                style="@style/Text.Regular"
+                android:textSize="12sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"

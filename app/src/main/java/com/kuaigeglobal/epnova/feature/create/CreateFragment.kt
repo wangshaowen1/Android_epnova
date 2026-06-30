@@ -188,7 +188,6 @@ class CreateFragment : BaseViewModelFragment<FragmentCreateBinding, CreateViewMo
                 titleView.setLines(1)
                 titleView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16f)
                 titleView.gravity = Gravity.CENTER
-
                 titleView.text = titles.getOrNull(index)
                 titleView.normalColor = topActivity?.getThemeColor(R.attr.textColor4) ?: 0
                 titleView.selectedColor = topActivity?.getThemeColor(R.attr.textColor1) ?: 0

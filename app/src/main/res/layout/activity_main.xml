@@ -50,6 +50,7 @@
                     android:drawablePadding="4dp"
                     android:gravity="center"
                     android:text="@string/tab_home"
+                    style="@style/Text.Regular"
                     android:textColor="@color/cb_main_tab_txt"
                     android:textSize="11sp"
                     tools:checked="true" />
@@ -77,6 +78,7 @@
                     android:drawablePadding="4dp"
                     android:gravity="center"
                     android:text="@string/creation"
+                    style="@style/Text.Regular"
                     android:textColor="@color/cb_main_tab_txt"
                     android:textSize="11sp"
                     tools:checked="false" />
@@ -103,6 +105,7 @@
                     android:drawableTop="@drawable/cb_main_tab_works"
                     android:drawablePadding="4dp"
                     android:gravity="center"
+                    style="@style/Text.Regular"
                     android:text="@string/tab_my_list"
                     android:textColor="@color/cb_main_tab_txt"
                     android:textSize="11sp"
@@ -130,6 +133,7 @@
                     android:drawablePadding="4dp"
                     android:gravity="center"
                     android:text="@string/tab_profile"
+                    style="@style/Text.Regular"
                     android:textColor="@color/cb_main_tab_txt"
                     android:textSize="11sp"
                     tools:checked="false" />
