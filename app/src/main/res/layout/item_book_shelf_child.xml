@@ -58,7 +58,8 @@
             app:layout_constraintStart_toStartOf="@id/ivCover" />
 
         <TextView
-            style="@style/Text12"
+            android:textSize="12sp"
+            style="@style/Text.Medium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/spacing_s"
@@ -73,7 +74,8 @@
 
         <TextView
             android:id="@+id/tv_name"
-            style="@style/Text13"
+            android:textSize="13sp"
+            style="@style/Text.Regular"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_s"

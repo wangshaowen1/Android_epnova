@@ -16,7 +16,8 @@
 
         <TextView
             android:id="@+id/tvShelfTitle"
-            style="@style/Text16"
+            android:textSize="16sp"
+            style="@style/Text.Bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="?attr/textColor1"

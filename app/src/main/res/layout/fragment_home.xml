@@ -63,6 +63,7 @@
                             android:text="@string/home_search_placeholder"
                             android:textColor="@color/color_30_ffffff"
                             android:textSize="14sp"
+                            style="@style/Text.Regular"
                             app:layout_constraintEnd_toStartOf="@id/btnRewards"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@id/statusBar" />
@@ -88,6 +89,7 @@
                             android:text="@{`+`+layout.unCheckNum}"
                             android:textColor="@color/white"
                             android:textSize="10sp"
+                            style="@style/Text.Regular"
                             android:translationX="8dp"
                             android:translationY="-4dp"
                             app:layout_constraintEnd_toEndOf="@id/btnRewards"
