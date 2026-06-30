@@ -143,7 +143,7 @@ class CreationFragment :
                 }
                 firstRechargeDialog.apply {
                     onPaySuccess = {
-                        continueCreation?.invoke()
+//                        continueCreation?.invoke()
                     }
                 }
                 Config.get().markFirstRechargeShown(FirstRechargeCreditsDialog.SCENE_HOME)
