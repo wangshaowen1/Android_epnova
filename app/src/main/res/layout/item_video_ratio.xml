@@ -40,7 +40,7 @@
 
         <TextView
             android:id="@+id/tvName"
-            style="@style/Text14"
+            style="@style/Text14.Outfit.Medium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_m"
@@ -56,7 +56,7 @@
 
         <TextView
             android:id="@+id/tvValue"
-            style="@style/Text14"
+            style="@style/Text14.Outfit.Regular"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"

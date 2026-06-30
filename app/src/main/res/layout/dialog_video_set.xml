@@ -26,7 +26,7 @@
 
             <TextView
                 android:id="@+id/title"
-                style="@style/Text16"
+                style="@style/Text16.Outfit.Medium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -44,7 +44,7 @@
         </FrameLayout>
 
         <TextView
-            style="@style/Text12"
+            style="@style/Text12.Outfit.Regular"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
@@ -54,7 +54,7 @@
 
         <TextView
             android:id="@+id/tvSubtitle"
-            style="@style/Text14"
+            style="@style/Text14.Outfit.Medium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_xl"
@@ -84,7 +84,7 @@
             app:layout_constraintTop_toBottomOf="@id/tvSubtitle" />
 
         <TextView
-            style="@style/Text14"
+            style="@style/Text14.Outfit.Medium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
@@ -102,7 +102,7 @@
             tools:listitem="@layout/item_series_count" />
 
         <TextView
-            style="@style/Text14"
+            style="@style/Text14.Outfit.Medium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
@@ -127,7 +127,7 @@
             android:layout_marginTop="20dp">
 
             <TextView
-                style="@style/Text14"
+                style="@style/Text14.Outfit.Medium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
@@ -137,7 +137,7 @@
 
             <TextView
                 android:id="@+id/btnAllStyle"
-                style="@style/Text12"
+                style="@style/Text12.Outfit.Regular"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end|center_vertical"
@@ -164,6 +164,7 @@
             android:layout_marginTop="37dp"
             android:layout_marginBottom="30dp"
             android:text="@string/start_creating"
+            android:textStyle="normal"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
