@@ -35,7 +35,7 @@
             android:id="@+id/inputLength"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/color_80_ffffff"
+            android:textColor="@color/color_50_ffffff"
             android:textSize="15sp"
             android:fontFamily="@font/outfit_medium"
             tools:text="8" />
@@ -44,7 +44,7 @@
             android:id="@+id/inputLengthHint"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/color_80_ffffff"
+            android:textColor="@color/color_50_ffffff"
             android:textSize="15sp"
             android:fontFamily="@font/outfit_medium"
             tools:text="/20" />

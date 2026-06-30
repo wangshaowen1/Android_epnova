@@ -1,12 +1,27 @@
+<!--
+  ~ Copyright (C) 2026 The Android Open Source Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="24dp"
-    android:height="24dp"
-    android:viewportWidth="24"
-    android:viewportHeight="24">
+    android:width="14dp"
+    android:height="14dp"
+    android:viewportWidth="14"
+    android:viewportHeight="14">
   <path
-      android:pathData="M5.072,8C5.809,6.723 6.886,5.674 8.183,4.97C9.479,4.266 10.945,3.934 12.419,4.011C13.892,4.089 15.315,4.572 16.531,5.407C17.747,6.243 18.708,7.399 19.308,8.746M3.232,5.516L3.961,8.675C4.085,9.213 4.622,9.549 5.16,9.425L8.32,8.695M18.928,16C18.19,17.278 17.114,18.327 15.817,19.031C14.521,19.735 13.055,20.066 11.581,19.989C10.108,19.912 8.685,19.429 7.469,18.593C6.253,17.758 5.292,16.602 4.692,15.254M20.768,18.485L20.039,15.325C19.914,14.787 19.378,14.452 18.839,14.576L15.68,15.305"
-      android:strokeAlpha="0.96"
-      android:strokeWidth="2"
+      android:pathData="M2.958,4.667C3.389,3.921 4.017,3.31 4.773,2.899C5.53,2.488 6.385,2.295 7.244,2.34C8.104,2.385 8.934,2.667 9.643,3.154C10.352,3.642 10.913,4.316 11.263,5.102M1.885,3.217L2.311,5.061C2.383,5.374 2.696,5.57 3.01,5.498L4.853,5.072M11.041,9.333C10.611,10.079 9.983,10.691 9.227,11.101C8.47,11.512 7.615,11.705 6.756,11.66C5.896,11.615 5.066,11.333 4.357,10.846C3.647,10.359 3.087,9.684 2.737,8.898M12.115,10.783L11.689,8.94C11.617,8.626 11.304,8.43 10.99,8.503L9.147,8.928"
+      android:strokeAlpha="0.7"
+      android:strokeWidth="1.16667"
       android:fillColor="#00000000"
       android:strokeColor="#ffffff"
       android:strokeLineCap="round"/>

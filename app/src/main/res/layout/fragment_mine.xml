@@ -70,7 +70,7 @@
                     android:maxWidth="240dp"
                     android:maxLines="1"
                     android:text="@{layout.userInfo[`nickname`]}"
-                    android:textColor="?attr/textColor1"
+                    android:textColor="@color/color_96_ffffff"
                     app:layout_constraintBottom_toTopOf="@id/tv_id"
                     app:layout_constraintStart_toEndOf="@id/siv_avatar"
                     app:layout_constraintTop_toTopOf="@id/siv_avatar"
@@ -84,19 +84,30 @@
                     app:layout_constraintBottom_toTopOf="@id/tv_name"
                     app:layout_constraintStart_toStartOf="@id/tv_name">
 
-                    <TextView
-                        android:id="@+id/tv_floating_tip"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/bg_theme_color1_r50"
-                        android:drawableStart="@drawable/ic_coins"
-                        android:drawablePadding="@dimen/spacing_xs"
+                    <LinearLayout
+                        android:gravity="center"
                         android:paddingHorizontal="6dp"
                         android:paddingVertical="4dp"
-                        style="@style/Text.Regular"
-                        android:text="@{@string/login_claim_coins(layout.loginRewards)}"
-                        android:textColor="?attr/textColor1"
-                        tools:text="@string/login_claim_coins" />
+                        android:background="@drawable/bg_theme_color1_r50"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:importantForAccessibility="no"
+                            android:src="@drawable/ic_coins"
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"/>
+
+                        <TextView
+                            android:id="@+id/tv_floating_tip"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="4dp"
+                            style="@style/Text.Regular"
+                            android:text="@{@string/login_claim_coins(layout.loginRewards)}"
+                            android:textColor="?attr/textColor1"
+                            tools:text="@string/login_claim_coins" />
+                    </LinearLayout>
 
                     <ImageView
                         android:layout_width="wrap_content"
@@ -171,7 +182,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="@string/store_store"
-                        android:textColor="?attr/textColor2" />
+                        android:textColor="@color/color_96_ffffff" />
 
                     <ImageView
                         android:layout_width="16dp"
@@ -200,7 +211,7 @@
                     android:layout_marginTop="13dp"
                     android:maxLines="1"
                     android:text="@{layout.coins}"
-                    android:textColor="?attr/textColor1"
+                    android:textColor="@color/color_96_ffffff"
                     android:layout_marginEnd="@dimen/spacing_xs"
                     app:layout_constraintEnd_toStartOf="@+id/tv_credits_data"
                     app:layout_constraintStart_toStartOf="parent"
@@ -251,7 +262,7 @@
                     android:layout_marginEnd="@dimen/spacing_xs"
                     android:maxLines="1"
                     android:text="@{layout.credits}"
-                    android:textColor="?attr/textColor1"
+                    android:textColor="@color/color_96_ffffff"
                     app:layout_constraintEnd_toStartOf="@id/tv_recharge"
                     app:layout_constraintStart_toStartOf="@id/iv_credits"
                     app:layout_constraintTop_toTopOf="@id/tv_coins_data"
@@ -343,7 +354,7 @@
                         android:layout_marginStart="@dimen/spacing_m"
                         android:layout_weight="1"
                         android:text="@string/profile_income"
-                        android:textColor="?attr/textColor1" />
+                        android:textColor="@color/color_96_ffffff" />
 
                     <ImageView
                         android:layout_width="16dp"
@@ -375,7 +386,7 @@
                         android:layout_marginStart="@dimen/spacing_m"
                         android:layout_weight="1"
                         android:text="@string/rewards_title"
-                        android:textColor="?attr/textColor1" />
+                        android:textColor="@color/color_96_ffffff" />
 
                     <TextView
                         android:id="@+id/tv_rewards_data"
@@ -432,7 +443,7 @@
                         android:layout_marginStart="@dimen/spacing_m"
                         android:layout_weight="1"
                         android:text="@string/settings_language"
-                        android:textColor="?attr/textColor1" />
+                        android:textColor="@color/color_96_ffffff" />
 
                     <TextView
                         style="@style/Text.Regular"
@@ -474,7 +485,7 @@
                         android:layout_marginStart="@dimen/spacing_m"
                         android:layout_weight="1"
                         android:text="@string/profile_feedback_suggestions"
-                        android:textColor="?attr/textColor1" />
+                        android:textColor="@color/color_96_ffffff" />
 
                     <ImageView
                         android:layout_width="16dp"
@@ -506,7 +517,7 @@
                         android:layout_marginStart="@dimen/spacing_m"
                         android:layout_weight="1"
                         android:text="@string/title_settings"
-                        android:textColor="?attr/textColor1" />
+                        android:textColor="@color/color_96_ffffff" />
 
                     <ImageView
                         android:layout_width="16dp"

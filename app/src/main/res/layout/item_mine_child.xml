@@ -65,7 +65,7 @@
             android:text="@{item.data.getFormatEp()}"
             android:textColor="?attr/textColor1"
             android:textSize="10sp"
-            style="@style/Text.Bold"
+            android:fontFamily="@font/outfit_regular"
             app:layout_constraintBottom_toBottomOf="@id/ivCover"
             app:layout_constraintEnd_toEndOf="@id/ivCover"
             tools:text="EP.1 / EP. 6" />

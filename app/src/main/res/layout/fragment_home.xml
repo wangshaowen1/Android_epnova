@@ -59,7 +59,7 @@
                             android:drawableStart="@drawable/icon_search"
                             android:drawablePadding="@dimen/spacing_s"
                             android:paddingHorizontal="@dimen/spacing_l"
-                            android:paddingVertical="10dp"
+                            android:paddingVertical="9dp"
                             android:text="@string/home_search_placeholder"
                             android:textColor="@color/color_30_ffffff"
                             android:textSize="14sp"

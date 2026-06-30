@@ -1,3 +1,18 @@
+<!--
+  ~ Copyright (C) 2026 The Android Open Source Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="24dp"
     android:height="24dp"
@@ -7,12 +22,10 @@
     <clip-path
         android:pathData="M0,0h24v24h-24z"/>
     <path
-        android:pathData="M12,11.796C14.719,11.796 16.923,9.603 16.923,6.898C16.923,4.193 14.719,2 12,2C9.281,2 7.077,4.193 7.077,6.898C7.077,9.603 9.281,11.796 12,11.796Z"
-        android:fillColor="#ffffff"
-        android:fillAlpha="0.5"/>
-    <path
-        android:pathData="M14.564,13.837H9.436C6.462,13.837 4,16.286 4,19.245C4,19.959 4.308,20.572 4.923,20.878C5.846,21.388 7.898,22 12,22C16.103,22 18.154,21.388 19.077,20.878C19.59,20.572 20,19.959 20,19.245C20,16.184 17.538,13.837 14.564,13.837Z"
-        android:fillColor="#ffffff"
-        android:fillAlpha="0.5"/>
+        android:pathData="M9.436,14.662H14.564C17.097,14.662 19.175,16.654 19.175,19.245C19.175,19.64 18.943,19.991 18.662,20.163C17.907,20.574 16.018,21.175 12,21.175C7.954,21.175 6.067,20.567 5.322,20.155L5.307,20.146L5.29,20.139C5.014,20.001 4.825,19.718 4.825,19.245C4.825,16.746 6.913,14.662 9.436,14.662ZM12,2.825C14.267,2.825 16.098,4.653 16.098,6.898C16.097,9.144 14.267,10.971 12,10.971C9.733,10.971 7.903,9.144 7.902,6.898C7.902,4.653 9.733,2.825 12,2.825Z"
+        android:strokeAlpha="0.5"
+        android:strokeWidth="1.65"
+        android:fillColor="#00000000"
+        android:strokeColor="#ffffff"/>
   </group>
 </vector>

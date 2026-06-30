@@ -10,8 +10,7 @@
 
         <TextView
             android:id="@+id/tvTitle"
-            style="@style/Text16"
-            setTextBold="@{true}"
+            style="@style/Text16.Outfit.Medium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_l"
@@ -23,7 +22,7 @@
 
         <TextView
             android:id="@+id/tvSubtitle"
-            style="@style/Text14"
+            style="@style/Text14.Outfit.Medium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_l"
@@ -79,6 +78,7 @@
             app:layout_constraintTop_toBottomOf="@id/nameInputer">
 
             <Button
+                android:fontFamily="@font/outfit_medium"
                 android:id="@+id/btnCancel"
                 style="@style/Button.Bold.Cancel"
                 android:layout_width="0dp"
@@ -87,6 +87,7 @@
 
             <!-- 保存按钮 -->
             <Button
+                android:fontFamily="@font/outfit_medium"
                 android:id="@+id/btnConfirm"
                 style="@style/Button.Bold"
                 android:layout_width="0dp"

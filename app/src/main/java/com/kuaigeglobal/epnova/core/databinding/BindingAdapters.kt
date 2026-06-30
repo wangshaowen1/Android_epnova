@@ -41,10 +41,12 @@ import android.widget.ViewFlipper
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.annotation.FloatRange
+import androidx.annotation.FontRes
 import androidx.annotation.RawRes
 import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.animation.addListener
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.widget.NestedScrollView
@@ -949,7 +951,11 @@ fun playOnce(view: LottieAnimationView, visible: Boolean) {
 
 @BindingAdapter("setTextBold")
 fun setTextBold(view: TextView, bold: Boolean) {
-    view.typeface = if (bold) Typeface.DEFAULT_BOLD else Typeface.DEFAULT
+    view.typeface = if (bold) {
+        ResourcesCompat.getFont(view.context, R.font.outfit_semibold)
+    } else {
+        ResourcesCompat.getFont(view.context, R.font.outfit_regular)
+    }
 }
 
 @BindingAdapter("setTextSizeSp")

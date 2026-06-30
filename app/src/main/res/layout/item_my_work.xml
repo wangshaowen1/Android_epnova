@@ -135,15 +135,13 @@
 
         <TextView
             android:textSize="10sp"
-            style="@style/Text.Regular"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/spacing_s"
             android:layout_marginBottom="@dimen/spacing_m"
-            android:fontFamily="monospace"
+            android:fontFamily="@font/outfit_regular"
             android:text="@{item.data.getDoneProgressFormat()}"
             android:textColor="?attr/textColor1"
-            android:textStyle="bold"
             app:layout_constrainedWidth="true"
             app:layout_constraintBottom_toBottomOf="@id/ivCover"
             app:layout_constraintEnd_toEndOf="@+id/ivCover"
