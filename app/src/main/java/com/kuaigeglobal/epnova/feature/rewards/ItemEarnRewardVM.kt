@@ -62,7 +62,7 @@ class ItemEarnRewardVM(
         // 奖励文案统一走客户端多语言模板，避免出现“+ 150 Reward coins”等格式不一致的问题。
         isOnceTask  -> topActivity?.getString(R.string.rewards_50_reward_coins, rewardLabel) ?: ""
         isLoginTask -> topActivity?.getString(R.string.rewards_50_reward_coins, rewardNum.toString()) ?: ""
-        else        -> topActivity?.getString(R.string.rewards_watch_video_earn_50, rewardNum.toString()) ?: ""
+        else        -> topActivity?.getString(R.string.rewards_50_reward_coins, rewardNum.toString()) ?: ""
     }
 
     var onWatchAction: (() -> Unit)? = null

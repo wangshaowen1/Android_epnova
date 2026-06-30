@@ -32,8 +32,7 @@
 
         <TextView
             android:id="@+id/loadingText"
-            style="@style/Text.Regular"
-            android:textSize="14sp"
+            style="@style/Text14.Outfit.Regular"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
@@ -67,8 +66,7 @@
             android:src="@drawable/icon_state_network_error" />
 
         <TextView
-            style="@style/Text.Medium"
-            android:textSize="16sp"
+            style="@style/Text16.Outfit.Regular"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -77,8 +75,7 @@
 
         <TextView
             android:id="@+id/error_prompt_view"
-            style="@style/Text.Regular"
-            android:textSize="14sp"
+            style="@style/Text14.Outfit.Regular"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -127,8 +124,7 @@
 
         <TextView
             android:id="@+id/no_data"
-            style="@style/Text.Regular"
-            android:textSize="14sp"
+            style="@style/Text14.Outfit.Regular"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
@@ -139,8 +135,7 @@
 
         <TextView
             android:id="@+id/no_data_btn"
-            style="@style/Text.Regular"
-            android:textSize="14sp"
+            style="@style/Text14.Outfit.Regular"
             android:layout_width="wrap_content"
             android:layout_height="32dp"
             android:layout_marginTop="20dp"

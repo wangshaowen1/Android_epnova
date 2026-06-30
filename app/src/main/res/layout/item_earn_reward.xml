@@ -116,6 +116,7 @@
                 android:paddingVertical="4dp"
                 android:text="@string/home_login_reward_claim"
                 android:textSize="14sp"
+                android:textStyle="normal"
                 android:visibility="@{(item.isLoginTask || item.onceTask != null) ? View.VISIBLE : View.GONE}"
                 tools:visibility="gone" />
 
@@ -130,7 +131,7 @@
                 android:paddingHorizontal="12dp"
                 android:paddingVertical="4dp"
                 android:text="@string/rewards_watch"
-                android:textSize="14sp"
+                android:textStyle="normal"
                 android:visibility="@{!item.isLoginTask &amp;&amp; (item.isWatch || item.isLocked) ? View.VISIBLE : View.GONE}"
                 tools:visibility="visible" />
         </FrameLayout>

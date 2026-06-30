@@ -44,6 +44,7 @@
                 android:paddingStart="@dimen/spacing_l">
 
                 <EditText
+                    style="@style/Text.Regular"
                     android:id="@+id/btnSearch"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"

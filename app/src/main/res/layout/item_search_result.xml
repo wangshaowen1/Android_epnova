@@ -33,6 +33,7 @@
             tools:src="@drawable/img_default_cover_3_4" />
 
         <TextView
+            style="@style/Text.Regular"
             android:id="@+id/tvTitle"
             titleText="@{item.data.workTitle}"
             highlightKeyword="@{item.keyWord}"
@@ -51,6 +52,7 @@
 
         <!-- authorName 字段需在 WorkVOInfo 中补充 -->
         <TextView
+            style="@style/Text.Regular"
             android:id="@+id/tvAuthor"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -67,6 +69,7 @@
             tools:text="Sarah" />
 
         <TextView
+            style="@style/Text.Regular"
             android:id="@+id/tvDesc"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

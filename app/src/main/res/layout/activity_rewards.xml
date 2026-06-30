@@ -50,11 +50,10 @@
                 android:src="@drawable/icon_back_left" />
 
             <TextView
-                style="@style/Text18"
+                style="@style/Text18.Outfit.Medium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:fontFamily="@font/outfit_semibold"
                 android:text="@string/rewards_title"
                 android:textColor="?attr/textColor1" />
 
@@ -108,7 +107,6 @@
                         android:text="@{String.valueOf(layout.balance)}"
                         android:textColor="?attr/textColor1"
                         android:textSize="28sp"
-                        android:textStyle="bold"
                         tools:text="60" />
                 </LinearLayout>
 
@@ -141,7 +139,6 @@
                         android:text="@{@plurals/rewards_checked_days(layout.checkInDays, layout.checkInDays)}"
                         android:textColor="?attr/textColor1"
                         android:textSize="18sp"
-                        android:textStyle="bold"
                         tools:text="@plurals/rewards_checked_days" />
 
                     <!-- 7 天格子 -->
@@ -167,6 +164,7 @@
                         android:layout_marginTop="20dp"
                         android:gravity="center"
                         android:text="@string/rewards_check_in"
+                        android:textStyle="normal"
                         android:visibility="@{layout.hasCheckedIn == true ? View.GONE : View.VISIBLE}" />
 
                     <!-- 状态2：已签到且今日广告未看 → Watch Ad -->
@@ -231,12 +229,11 @@
 
                 <!-- ── Earn Rewards 区域 ─────────────────────── -->
                 <TextView
-                    style="@style/Text18"
+                    style="@style/Text18.Outfit.Medium"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/spacing_l"
                     android:layout_marginTop="@dimen/spacing_xl"
-                    android:fontFamily="@font/outfit_medium"
                     android:text="@string/rewards_earn_rewards"
                     android:textColor="?attr/textColor1" />
 
