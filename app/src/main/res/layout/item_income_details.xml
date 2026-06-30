@@ -47,7 +47,7 @@
             app:layout_constraintVertical_bias="0.5">
 
             <TextView
-                style="@style/Text14"
+                style="@style/Text14.Outfit.Medium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
@@ -57,7 +57,7 @@
                 tools:text="Code Era: Awakening Command" />
 
             <TextView
-                style="@style/Text12"
+                style="@style/Text12.Outfit.Regular"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
@@ -71,7 +71,7 @@
         <!-- 收益 -->
         <TextView
             android:id="@+id/tv_income_details"
-            style="@style/Text16"
+            style="@style/Text16.Outfit.Medium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@{item.incomeAmountText()}"

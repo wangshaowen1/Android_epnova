@@ -37,6 +37,7 @@
                 android:layout_height="wrap_content"
                 android:padding="@dimen/spacing_m"
                 android:text="@string/user_notice"
+                android:fontFamily="@font/outfit_semibold"
                 android:textAppearance="@style/Text16"
                 android:textColor="?attr/textColor2" />
 
@@ -46,6 +47,7 @@
                 android:layout_weight="1">
 
                 <TextView
+                    android:fontFamily="@font/outfit_regular"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:lineSpacingExtra="@dimen/lineSpacingExtra"
@@ -82,7 +84,7 @@
 
             <TextView
                 android:id="@+id/tv_purchase_instructions"
-                style="@style/Text12"
+                style="@style/Text12.Outfit.Regular"
                 setSpanText="@{@string/app_purchase_instructions}"
                 singleClick="@{layout.clickHandler::onClick}"
                 spanColor="@{@color/func_failure_dark}"
@@ -133,6 +135,7 @@
         <Button
             android:id="@+id/btnCancel"
             style="@style/Button.Bold.Gray"
+            android:fontFamily="@font/outfit_medium"
             singleClick="@{layout.clickHandler::onClick}"
             android:layout_width="match_parent"
             android:layout_height="44dp"
@@ -142,7 +145,7 @@
             android:enabled="@{layout.removeAccountState==LogoffViewModel.REMOVE_ACCOUNT_STATE_APPLY &amp;&amp; layout.checkedPolicy}"
             android:gravity="center"
             android:text="@{layout.submitApplyText}"
-            tools:text="申请注销中"
+            tools:text="Apply for Cancellation"
             tools:visibility="visible" />
     </LinearLayout>
 </layout>

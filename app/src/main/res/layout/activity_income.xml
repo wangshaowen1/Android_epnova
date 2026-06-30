@@ -53,7 +53,7 @@
 
                 <TextView
                     android:id="@+id/tv_available_balance"
-                    style="@style/Text14"
+                    style="@style/Text14.Outfit.Regular"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/dp20"
@@ -64,7 +64,7 @@
 
                 <TextView
                     android:id="@+id/tv_available_balance_data"
-                    style="@style/Text28"
+                    style="@style/Text28.Outfit.Medium"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/spacing_s"
@@ -80,7 +80,7 @@
                 <!-- 右侧：提现按钮 -->
                 <TextView
                     android:id="@+id/tv_withdraw"
-                    style="@style/Text13"
+                    style="@style/Text13.Outfit.Medium"
                     singleClick="@{layout.clickHandler::onClick}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -107,7 +107,7 @@
 
                 <TextView
                     android:id="@+id/tv_total_earned"
-                    style="@style/Text12"
+                    style="@style/Text12.Outfit.Regular"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="44dp"
@@ -130,7 +130,7 @@
                     app:layout_constraintTop_toTopOf="@+id/tv_total_earned" />
 
                 <TextView
-                    style="@style/Text16"
+                    style="@style/Text16.Outfit.Medium"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/spacing_xs"
@@ -143,7 +143,7 @@
 
                 <TextView
                     android:id="@+id/tv_pending_amount"
-                    style="@style/Text12"
+                    style="@style/Text12.Outfit.Regular"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="50dp"
@@ -165,7 +165,7 @@
                     app:layout_constraintTop_toTopOf="@+id/tv_pending_amount" />
 
                 <TextView
-                    style="@style/Text16"
+                    style="@style/Text16.Outfit.Medium"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/spacing_xs"
@@ -184,7 +184,7 @@
 
                 <TextView
                     android:id="@+id/tv_income_details"
-                    style="@style/Text16"
+                    style="@style/Text16.Outfit.Medium"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/income_details"
@@ -194,7 +194,7 @@
 
                 <TextView
                     android:id="@+id/tv_exchange_rate"
-                    style="@style/Text12"
+                    style="@style/Text12.Outfit.Regular"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/income_exchange_rate"
@@ -204,7 +204,7 @@
 
                 <TextView
                     android:id="@+id/tv_monthfilter"
-                    style="@style/Text12"
+                    style="@style/Text12.Outfit.Regular"
                     singleClick="@{layout.clickHandler::onClick}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

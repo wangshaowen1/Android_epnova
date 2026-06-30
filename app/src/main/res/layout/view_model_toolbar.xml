@@ -52,7 +52,7 @@
 
             <TextView
                 android:id="@+id/toolbarTitle"
-                style="@style/Text16"
+                style="@style/Text16.Outfit.Medium"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/action_bar_size"
                 android:layout_gravity="center"
@@ -69,6 +69,7 @@
             <TextView
                 android:id="@+id/menuText"
                 style="@style/Text.Medium"
+                android:fontFamily="@font/outfit_medium"
                 textColorRes="@{toolbar.MMenuTextColor}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -103,6 +104,7 @@
             <Button
                 android:id="@+id/menuButton"
                 style="@style/Button.Menu"
+                android:fontFamily="@font/outfit_medium"
                 android:layout_gravity="end|center_vertical"
                 android:background="@{toolbar.mMenuButtonBackground}"
                 android:drawableStart="@{toolbar.MMenuButtonDrawableStart}"

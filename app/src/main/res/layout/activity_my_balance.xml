@@ -155,6 +155,7 @@
                             android:textAppearance="@style/Text14"
                             android:textColor="?attr/textColor3"
                             android:textStyle="normal"
+                            android:fontFamily="@font/outfit_medium"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/banner" />
 
@@ -180,6 +181,7 @@
                             android:textSize="14sp"
                             android:textStyle="bold"
                             android:layout_marginHorizontal="@dimen/spacing_l"
+                            android:fontFamily="@font/outfit_medium"
                             android:textColor="?attr/textColor3"
                             android:text="@string/store_tips_title"
                             android:layout_width="wrap_content"

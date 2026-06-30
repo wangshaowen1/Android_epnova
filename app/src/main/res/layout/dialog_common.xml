@@ -33,7 +33,7 @@
                 android:paddingHorizontal="26dp"
                 tools:text="title"
                 android:textColor="?attr/textColor1"
-                style="@style/Text16"
+                style="@style/Text16.Outfit.Medium"
                 android:visibility="gone"
                 tools:visibility="visible" />
 
@@ -47,7 +47,7 @@
                 android:lineSpacingExtra="@dimen/lineSpacingExtra"
                 android:paddingHorizontal="26dp"
                 android:textColor="?attr/textColor2"
-                style="@style/Text14"
+                style="@style/Text14.Outfit.Regular"
                 android:visibility="gone"
                 tools:text="this is testing"
                 tools:visibility="visible" />
@@ -76,7 +76,7 @@
 
             <Button
                 android:id="@+id/cancel"
-                style="@style/Text16"
+                style="@style/Text16.Outfit.Medium"
                 android:textAllCaps="false"
                 android:background="@drawable/btn_common_cancel"
                 tools:textColor="?attr/textColor3"
@@ -89,7 +89,7 @@
 
             <Button
                 android:id="@+id/confirm"
-                style="@style/Text16"
+                style="@style/Text16.Outfit.Medium"
                 android:layout_width="0dp"
                 android:textAllCaps="false"
                 android:layout_height="match_parent"
@@ -108,7 +108,7 @@
             android:layout_marginTop="8dp"
             android:text="@string/view_download_path"
             android:textColor="?attr/textColor4"
-            style="@style/Text14"
+            style="@style/Text14.Outfit.Regular"
             android:visibility="gone"
             tools:visibility="visible" />
     </LinearLayout>

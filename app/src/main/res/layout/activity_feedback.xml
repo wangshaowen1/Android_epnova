@@ -52,7 +52,7 @@
                     android:paddingHorizontal="14dp">
 
                     <TextView
-                        style="@style/Text14"
+                        style="@style/Text14.Outfit.Regular"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/select_type"
@@ -60,7 +60,7 @@
 
                     <TextView
                         android:id="@+id/feedbackTypeName"
-                        style="@style/Text14"
+                        style="@style/Text14.Outfit.Medium"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -99,7 +99,7 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        style="@style/Text14"
+                        style="@style/Text14.Outfit.Medium"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start"
@@ -131,7 +131,7 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        style="@style/Text14"
+                        style="@style/Text14.Outfit.Medium"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start"
@@ -142,7 +142,7 @@
 
                 <com.kuaigeglobal.epnova.widget.XEditText
                     android:id="@+id/contact"
-                    style="@style/Text14"
+                    style="@style/Text14.Outfit.Regular"
                     android:layout_width="match_parent"
                     android:layout_height="45dp"
                     android:layout_marginTop="@dimen/spacing_m"
@@ -158,7 +158,7 @@
 
                 <Button
                     android:id="@+id/commit"
-                    style="@style/Text16"
+                    style="@style/Text16.Outfit.Medium"
                     singleClick="@{layout.clickHandler::onClick}"
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
@@ -166,6 +166,8 @@
                     android:layout_marginTop="84dp"
                     android:alpha="0.5"
                     android:background="@drawable/bg_theme_color1_r50"
+                    android:textColor="?attr/textColor1"
+                    android:textAllCaps="false"
                     android:text="@string/submit_feedback" />
 
                 <LinearLayout
@@ -181,7 +183,7 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        style="@style/Text12"
+                        style="@style/Text12.Outfit.Regular"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/tap_customer_service"
