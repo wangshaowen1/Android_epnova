@@ -12,7 +12,9 @@ import com.kuaige.oss.OnUploadListener
 import com.kuaige.oss.OssClient
 import com.kuaige.videoedit.core.TransformListener
 import com.kuaige.videoedit.ffmpeg.FFmpegHelper
+import com.kuaigeglobal.epnova.R
 import com.nhsd.basic.bus.FlowEventBus
+import com.nhsd.basic.ext.getResString
 import com.nhsd.basic.ext.launchNoCrash
 import com.nhsd.basic.utils.Logger
 import kotlinx.parcelize.IgnoredOnParcel
@@ -93,7 +95,7 @@ data class VideoSynthesisTask(
 
             override fun onUploadFail(uploadFail: MutableList<String>?) {
                 super.onUploadFail(uploadFail)
-                fail(STATUS_UPLOAD_FAIL, "上传失败")
+                fail(STATUS_UPLOAD_FAIL, R.string.upload_failed.getResString())
             }
 
             override fun onUploadProgress(totalLength: Long, currentLength: Long) {
@@ -114,11 +116,11 @@ data class VideoSynthesisTask(
                     VideoSynthesisManager.delete(this@VideoSynthesisTask)
                     FlowEventBus.postSync(Events.VideoSynthesisSuccessEvent(workId, storyId))
                 } else {
-                    fail(STATUS_SAVE_FAIL, response.msg ?: "调用保存接口失败")
+                    fail(STATUS_SAVE_FAIL, response.msg ?: R.string.video_synthesis_save_failed.getResString())
                 }
             },
             onError = {
-                fail(STATUS_SAVE_FAIL, "调用保存接口失败")
+                fail(STATUS_SAVE_FAIL, R.string.video_synthesis_save_failed.getResString())
             }
         )
     }
