@@ -52,6 +52,45 @@ object CrashlyticsHelper {
         }
     }
 
+    fun recordVideoSynthesisFailure(
+        workId: String?,
+        storyId: String?,
+        stage: String,
+        status: Int,
+        reason: String?,
+        storyboardCount: Int,
+        missingVideoCount: Int,
+        firstMissingStoryboardId: String?,
+        firstMissingStoryboardSortNo: Int?,
+        apiCode: Int? = null,
+        apiErrorCode: Int? = null,
+        apiRespId: String? = null,
+        apiMsg: String? = null
+    ) {
+        runCatching {
+            val safeReason = reason.safeCrashlyticsValue()
+            crashlytics.setCustomKey("video_synthesis_work_id", workId.safeCrashlyticsValue(120))
+            crashlytics.setCustomKey("video_synthesis_story_id", storyId.safeCrashlyticsValue(120))
+            crashlytics.setCustomKey("video_synthesis_stage", stage)
+            crashlytics.setCustomKey("video_synthesis_status", status)
+            crashlytics.setCustomKey("video_synthesis_reason", safeReason)
+            crashlytics.setCustomKey("video_synthesis_storyboard_count", storyboardCount)
+            crashlytics.setCustomKey("video_synthesis_missing_video_count", missingVideoCount)
+            crashlytics.setCustomKey("video_synthesis_first_missing_storyboard_id", firstMissingStoryboardId.safeCrashlyticsValue(120))
+            crashlytics.setCustomKey("video_synthesis_first_missing_storyboard_sort_no", firstMissingStoryboardSortNo ?: 0)
+            crashlytics.setCustomKey("video_synthesis_api_code", apiCode ?: 0)
+            crashlytics.setCustomKey("video_synthesis_api_error_code", apiErrorCode ?: 0)
+            crashlytics.setCustomKey("video_synthesis_api_resp_id", apiRespId.safeCrashlyticsValue(120))
+            crashlytics.setCustomKey("video_synthesis_api_msg", apiMsg.safeCrashlyticsValue())
+
+            val message = "video_synthesis_failure stage=$stage status=$status"
+            val logMessage = "$message reason=$safeReason"
+            log(logMessage)
+            logLocal(logMessage)
+            crashlytics.recordException(VideoSynthesisFailureException(message))
+        }
+    }
+
     private fun log(message: String) {
         runCatching {
             crashlytics.log(message)
@@ -76,4 +115,13 @@ object CrashlyticsHelper {
         if (length < 12) return false
         return any { it.isDigit() } || contains("-") || contains("_")
     }
+
+    private fun String?.safeCrashlyticsValue(maxLength: Int = 500): String {
+        val value = orEmpty()
+            .replace(Regex("\\s+"), " ")
+            .trim()
+        return if (value.length > maxLength) value.take(maxLength) else value
+    }
+
+    private class VideoSynthesisFailureException(message: String) : RuntimeException(message)
 }

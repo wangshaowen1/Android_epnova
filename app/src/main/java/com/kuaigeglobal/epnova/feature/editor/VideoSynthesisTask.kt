@@ -5,6 +5,7 @@ import androidx.databinding.ObservableInt
 import com.kuaigeglobal.epnova.App
 import com.kuaigeglobal.epnova.common.ext.ioScope
 import com.kuaigeglobal.epnova.core.Events
+import com.kuaigeglobal.epnova.core.google.event.CrashlyticsHelper
 import com.kuaigeglobal.epnova.core.network.apis.ApiFactory
 import com.kuaigeglobal.epnova.core.network.apis.entity.SimpleStoryboardInfo
 import com.kuaigeglobal.epnova.core.network.apis.request.VideoSynthesisBody
@@ -40,6 +41,10 @@ data class VideoSynthesisTask(
         const val STATUS_SAVING = 5
         const val STATUS_SAVE_FAIL = 6
         const val STATUS_SUCCESS = 7
+
+        private const val STAGE_VIDEO_GENERATE = "video_generate"
+        private const val STAGE_UPLOAD = "upload"
+        private const val STAGE_SAVE = "save"
     }
 
     @IgnoredOnParcel
@@ -116,20 +121,79 @@ data class VideoSynthesisTask(
                     VideoSynthesisManager.delete(this@VideoSynthesisTask)
                     FlowEventBus.postSync(Events.VideoSynthesisSuccessEvent(workId, storyId))
                 } else {
-                    fail(STATUS_SAVE_FAIL, response.msg ?: R.string.video_synthesis_save_failed.getResString())
+                    val displayReason = response.msg ?: R.string.video_synthesis_save_failed.getResString()
+                    fail(
+                        status = STATUS_SAVE_FAIL,
+                        reason = displayReason,
+                        reportReason = response.errorMsg ?: displayReason,
+                        apiCode = response.code,
+                        apiErrorCode = response.errorCode,
+                        apiRespId = response.respId,
+                        apiMsg = response.errorMsg ?: response.msg
+                    )
                 }
             },
-            onError = {
-                fail(STATUS_SAVE_FAIL, R.string.video_synthesis_save_failed.getResString())
+            onError = { e ->
+                fail(
+                    status = STATUS_SAVE_FAIL,
+                    reason = R.string.video_synthesis_save_failed.getResString(),
+                    reportReason = e.message ?: e.javaClass.simpleName,
+                    apiMsg = e.message
+                )
             }
         )
     }
 
-    private fun fail(status: Int, reason: String) {
+    private fun fail(
+        status: Int,
+        reason: String,
+        reportReason: String? = reason,
+        apiCode: Int? = null,
+        apiErrorCode: Int? = null,
+        apiRespId: String? = null,
+        apiMsg: String? = null
+    ) {
         this.reason = reason
         changeStatus(status)
         progress.set(0f)
+        reportFailure(status, reportReason ?: reason, apiCode, apiErrorCode, apiRespId, apiMsg)
         Logger.i("$this fail($status, $reason)")
+    }
+
+    private fun reportFailure(
+        status: Int,
+        reason: String,
+        apiCode: Int?,
+        apiErrorCode: Int?,
+        apiRespId: String?,
+        apiMsg: String?
+    ) {
+        val missingStoryboards = storyboards.filter { it.videoUrl.isNullOrEmpty() }
+        val firstMissingStoryboard = missingStoryboards.firstOrNull()
+        CrashlyticsHelper.recordVideoSynthesisFailure(
+            workId = workId,
+            storyId = storyId,
+            stage = status.failureStage(),
+            status = status,
+            reason = reason,
+            storyboardCount = storyboards.size,
+            missingVideoCount = missingStoryboards.size,
+            firstMissingStoryboardId = firstMissingStoryboard?.storyboardId,
+            firstMissingStoryboardSortNo = firstMissingStoryboard?.sortNo,
+            apiCode = apiCode,
+            apiErrorCode = apiErrorCode,
+            apiRespId = apiRespId,
+            apiMsg = apiMsg
+        )
+    }
+
+    private fun Int.failureStage(): String {
+        return when (this) {
+            STATUS_VIDEO_GENERATE_FAIL -> STAGE_VIDEO_GENERATE
+            STATUS_UPLOAD_FAIL -> STAGE_UPLOAD
+            STATUS_SAVE_FAIL -> STAGE_SAVE
+            else -> "unknown"
+        }
     }
 
     fun isFailed() = arrayOf(STATUS_VIDEO_GENERATE_FAIL, STATUS_UPLOAD_FAIL, STATUS_SAVE_FAIL).contains(status)
