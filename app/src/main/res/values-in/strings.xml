@@ -84,6 +84,8 @@
     <string name="system_payment_success">Pembayaran Berhasil</string>
     <string name="system_payment_cancel">Batalkan Pembayaran</string>
     <string name="system_payment_failed">Pembayaran Gagal</string>
+    <string name="first_recharge_payment_failed_retry">Pembayaran gagal, silakan coba lagi</string>
+    <string name="first_recharge_payment_network_error">Kesalahan jaringan, silakan periksa koneksi Anda</string>
     <string name="google_payment_unsuccessful_title">Pembayaran Tidak Berhasil</string>
     <string name="google_payment_unsuccessful_content">Pembayaran Anda telah diproses, tetapi kami belum dapat memverifikasi pesanan Anda. Silakan hubungi dukungan dan kami akan segera membantu menyelesaikannya.</string>
     <string name="close">Tutup</string>

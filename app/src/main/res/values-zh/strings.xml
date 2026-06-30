@@ -93,6 +93,8 @@
     <string name="system_payment_success">支付成功</string>
     <string name="system_payment_cancel">取消支付</string>
     <string name="system_payment_failed">支付失败</string>
+    <string name="first_recharge_payment_failed_retry">支付失败，请重试</string>
+    <string name="first_recharge_payment_network_error">网络错误，请检查网络连接</string>
     <string name="google_payment_unsuccessful_title">支付未成功</string>
     <string name="google_payment_unsuccessful_content">您的付款已处理，但我们未能验证您的订单。请联系客服，我们将尽快为您解决。</string>
     <string name="close">关闭</string>

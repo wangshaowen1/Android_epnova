@@ -84,6 +84,8 @@
     <string name="system_payment_success">ชำระเงินสำเร็จ</string>
     <string name="system_payment_cancel">ยกเลิกการชำระเงิน</string>
     <string name="system_payment_failed">ชำระเงินไม่สำเร็จ</string>
+    <string name="first_recharge_payment_failed_retry">ชำระเงินไม่สำเร็จ โปรดลองอีกครั้ง</string>
+    <string name="first_recharge_payment_network_error">เครือข่ายผิดพลาด โปรดตรวจสอบการเชื่อมต่อของคุณ</string>
     <string name="google_payment_unsuccessful_title">การชำระเงินไม่สำเร็จ</string>
     <string name="google_payment_unsuccessful_content">ระบบดำเนินการชำระเงินของคุณแล้ว แต่เราไม่สามารถยืนยันคำสั่งซื้อได้ โปรดติดต่อฝ่ายสนับสนุน แล้วเราจะช่วยแก้ไขโดยเร็ว</string>
     <string name="close">ปิด</string>

@@ -2,6 +2,7 @@ package com.kuaigeglobal.epnova.feature.splash.newer
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.base.viewmodel.AppRepositoryViewModel
 import com.kuaigeglobal.epnova.common.Constants
 import com.kuaigeglobal.epnova.common.ext.topActivity
@@ -16,6 +17,8 @@ import com.kuaigeglobal.epnova.core.response
 import com.kuaigeglobal.epnova.feature.recharge.CoinRepository
 import com.kuaigeglobal.epnova.router.AppNavigator
 import com.nhsd.basic.ext.getParcelableValue
+import com.nhsd.basic.ext.getResString
+import com.nhsd.basic.ext.showToast
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -103,6 +106,8 @@ class FirstRechargeViewModel : AppRepositoryViewModel<CoinRepository>() {
                 if (result is PurchaseResult.Success) {
                     EventManager.onFirebaseTrack(FirebaseEvent.COINS_FIRST_PURCHASE_GIFT_POPUP_SUCCESS)
                     refreshCoinsAndPoints()
+                } else if (result is PurchaseResult.Failed) {
+                    R.string.first_recharge_payment_failed_retry.getResString().showToast()
                 }
                 _purchaseEvent.emit(result)
             }
@@ -114,10 +119,22 @@ class FirstRechargeViewModel : AppRepositoryViewModel<CoinRepository>() {
                     BillingManager.launchPurchase(topActivity, rechargeData.googleProductId ?: "", data?.orderNo ?: "")
                 }
             },
-            onError = {
+            onError = { e ->
                 purchaseJob?.cancel()
+                if (e.isPaymentNetworkException()) {
+                    R.string.first_recharge_payment_network_error.getResString().showToast()
+                } else {
+                    R.string.first_recharge_payment_failed_retry.getResString().showToast()
+                }
             }
         )
+    }
+
+    private fun Throwable.isPaymentNetworkException(): Boolean {
+        return this is java.net.SocketTimeoutException ||
+                this is java.io.InterruptedIOException ||
+                this is java.net.UnknownHostException ||
+                this is javax.net.ssl.SSLHandshakeException
     }
 
     private fun refreshCoinsAndPoints() {

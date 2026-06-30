@@ -98,6 +98,8 @@
     <string name="system_payment_success">Payment Successful</string>
     <string name="system_payment_cancel">Payment Cancelled</string>
     <string name="system_payment_failed">Payment Failed</string>
+    <string name="first_recharge_payment_failed_retry">Payment failed, please try again</string>
+    <string name="first_recharge_payment_network_error">Network error, please check your connection</string>
     <string name="google_payment_unsuccessful_title">Payment Unsuccessful</string>
     <string name="google_payment_unsuccessful_content">Your payment was processed but we couldn\'t verify your order. Please contact support and we\'ll resolve it promptly.</string>
     <string name="close">Close</string>
