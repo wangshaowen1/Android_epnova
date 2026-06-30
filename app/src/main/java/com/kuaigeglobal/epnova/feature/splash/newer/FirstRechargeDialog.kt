@@ -28,6 +28,7 @@ class FirstRechargeDialog : BaseVMDialogFragment<DialogFirstRechargeBinding, Fir
 
         const val SCENE_HOME = 0
         const val SCENE_OTHER = 1
+        const val SCENE_PLAYER = 2
 
         fun show(scene: Int = SCENE_OTHER, firstRechargeDialogData: FirstRechargeDialogData?): FirstRechargeDialog? {
             if (firstRechargeDialogData?.isNeedShow() == false) return null
