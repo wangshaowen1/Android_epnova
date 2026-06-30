@@ -89,7 +89,7 @@ class VideoStoryboardResource(private val url: String, private val storyboard: S
             mapV = "v_watermark"
             finalV = "[$mapV]"
         }
-        val extra = "-map $finalV -map 0:a? -c:v libopenh264 -b:v 4000k -r 30 -pix_fmt yuv420p"
+        val extra = "-map $finalV -map 0:a? -c:v libx264 -preset veryfast -r 30 -pix_fmt yuv420p"
         val command = builder.build(cacheFile.absolutePath, extra)
         val videoDuration = FFmpegHelper.parseDuration(videoFile.absolutePath) / 1000
         FFmpegHelper.execute(command, videoDuration) { ffmpegProgress ->

@@ -78,7 +78,7 @@ class MicroAnimShortDramaTransform(
             videoName = "video_with_overlay"
             command.append(" -filter_complex \"${filter}\" -map \"[$videoName]\" -map 0:a")
         }
-        command.append(" -c:v libopenh264 -b:v 4000k -r $fps -pix_fmt yuv420p")
+        command.append(" -c:v libx264 -preset veryfast -r $fps -pix_fmt yuv420p")
         command.append(" -y '${outputFile.absolutePath}'")
         return command.toString() to duration
     }

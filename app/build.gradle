@@ -317,7 +317,7 @@ dependencies {
     implementation 'com.github.Dimezis:BlurView:version-3.2.0'
     implementation libs.jsoup
     //implementation libs.face.detection
-    implementation 'com.moizhassan.ffmpeg:ffmpeg-kit-16kb:6.1.1'
+//    implementation 'com.moizhassan.ffmpeg:ffmpeg-kit-16kb:6.1.1'
 
     implementation 'org.jcodec:jcodec:0.2.5'        // 基础库
     implementation 'com.tencent:mmkv:2.4.0'

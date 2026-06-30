@@ -45,7 +45,7 @@ class JsonToAssResource(
 
         // 遍历生成字幕行
         subtitleList.forEachIndexed { index, item ->
-            subtitle.appendLine("Dialogue: 0,${item.startTime?.toAssTime()},${item.endTime?.toAssTime()},Karaoke,${item.text}")
+            subtitle.appendLine("Dialogue: 0,${item.startTime?.toAssTime()},${item.endTime?.toAssTime()},Default,${item.text}")
             // 简单的进度计算
             if (index % 5 == 0) {
                 onProgress?.invoke((index * 100f / subtitleList.size).toInt())

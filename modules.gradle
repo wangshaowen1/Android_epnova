@@ -30,8 +30,8 @@ ext {
             videoedit  : [
                     groupId   : 'com.kuaige',
                     artifactId: 'videoedit',
-                    version   : '1.0.1',
-                    gav       : 'com.kuaige:videoedit:1.0.1'
+                    version   : '1.0.3',
+                    gav       : 'com.kuaige:videoedit:1.0.3'
             ],
             luban      : [
                     groupId   : 'com.kuaige.thirdparty',

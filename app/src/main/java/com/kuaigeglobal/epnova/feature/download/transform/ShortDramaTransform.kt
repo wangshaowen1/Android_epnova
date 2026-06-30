@@ -144,7 +144,7 @@ class ShortDramaTransform(
         //归途如虹 143556ms 6.85M  -c:v libx264 -r $fps -pix_fmt yuv420p
         //归途如虹 107927ms 6.13M  -c:v libx264 -r $fps -pix_fmt yuv420p -preset veryfast
         //归途如虹 101274ms 6.13M  -c:v libx264 -preset veryfast -r $fps -pix_fmt yuv420p
-        command.append(" -c:v libopenh264 -b:v 4000k -r $fps -pix_fmt yuv420p")
+        command.append(" -c:v libx264 -preset veryfast -r $fps -pix_fmt yuv420p")
         command.append(" -y '${outputFile.absolutePath}'")
         return command.toString() to outputDuration
     }

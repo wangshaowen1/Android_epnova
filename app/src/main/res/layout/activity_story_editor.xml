@@ -25,7 +25,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
@@ -41,16 +41,26 @@
                 android:padding="14dp"
                 android:scaleType="fitCenter"
                 android:src="@drawable/icon_close"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/statusBar" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
 
             <TextView
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@id/btnClose"
+                app:layout_constraintEnd_toStartOf="@id/btnModify"
+                app:layout_constraintHorizontal_bias="0"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constrainedWidth="true"
+                app:layout_goneMarginEnd="@dimen/spacing_s"
                 android:id="@+id/tvWorkName"
                 singleClick="@{layout.clickHandler::onClick}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:maxLines="1"
+                android:singleLine="true"
                 android:text="@{layout.title}"
                 android:textColor="?attr/textColor3"
                 android:textColorHint="?attr/textColor4"
@@ -58,6 +68,10 @@
                 tools:text="代码纪元：觉醒指令..." />
 
             <ImageView
+                app:layout_constraintStart_toEndOf="@id/tvWorkName"
+                app:layout_constraintTop_toTopOf="@id/tvWorkName"
+                app:layout_constraintBottom_toBottomOf="@id/tvWorkName"
+                app:layout_constraintEnd_toStartOf="@id/btnModels"
                 android:id="@+id/btnModify"
                 singleClick="@{layout.clickHandler::onClick}"
                 android:layout_width="wrap_content"
@@ -67,12 +81,16 @@
                 android:src="@drawable/icon_edit_full_gray"
                 android:visibility="@{(layout.step&lt;=1||(layout.step==2&amp;&amp;layout.model==DramaGenerateConstants.MODEL_STORY))?View.VISIBLE:View.GONE}" />
 
-            <androidx.legacy.widget.Space
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1" />
+<!--            <androidx.legacy.widget.Space-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_weight="1" />-->
 
             <TextView
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constrainedWidth="true"
                 android:id="@+id/btnModels"
                 setVisible="@{layout.showModels(layout.step)&amp;&amp;layout.currentCreationModel!=null&amp;&amp;layout.dramaCategoryPopupEnabled}"
                 singleClick="@{layout.clickHandler::onClick}"
@@ -93,7 +111,7 @@
                 android:textColor="?attr/textColor1"
                 android:textSize="14sp"
                 tools:text="解说漫模型" />
-        </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <include
             layout="@layout/layout_story_board_header"
