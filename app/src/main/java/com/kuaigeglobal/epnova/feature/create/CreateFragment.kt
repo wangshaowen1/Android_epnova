@@ -5,6 +5,7 @@ import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
+import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import com.kuaigeglobal.epnova.core.Config
 import com.kuaigeglobal.epnova.databinding.FragmentCreateBinding
@@ -182,8 +183,20 @@ class CreateFragment : BaseViewModelFragment<FragmentCreateBinding, CreateViewMo
             }
 
             override fun getTitleView(context: Context, index: Int): IPagerTitleView {
-                val titleView = ColorTransitionPagerTitleView(context)
-                titleView.setIsSelectedBold(true)
+                val titleView = object : ColorTransitionPagerTitleView(context) {
+                    private val normalTypeface = ResourcesCompat.getFont(context, R.font.outfit_regular)
+                    private val selectedTypeface = ResourcesCompat.getFont(context, R.font.outfit_medium)
+
+                    override fun onSelected(index: Int, totalCount: Int) {
+                        super.onSelected(index, totalCount)
+                        typeface = selectedTypeface
+                    }
+
+                    override fun onDeselected(index: Int, totalCount: Int) {
+                        super.onDeselected(index, totalCount)
+                        typeface = normalTypeface
+                    }
+                }
                 titleView.setPadding(0, 0, 40.dp, 0)
                 titleView.setLines(1)
                 titleView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16f)

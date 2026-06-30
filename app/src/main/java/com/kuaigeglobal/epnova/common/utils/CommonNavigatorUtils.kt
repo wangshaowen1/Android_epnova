@@ -6,6 +6,7 @@ import android.util.TypedValue
 import android.view.Gravity
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
+import androidx.core.content.res.ResourcesCompat
 import androidx.viewpager.widget.ViewPager
 import androidx.viewpager2.widget.ViewPager2
 import com.kuaigeglobal.epnova.R
@@ -17,6 +18,7 @@ import com.nhsd.magicindicator.buildins.commonnavigator.abs.IPagerIndicator
 import com.nhsd.magicindicator.buildins.commonnavigator.abs.IPagerTitleView
 import com.nhsd.magicindicator.buildins.commonnavigator.indicators.LinePagerIndicator
 import com.nhsd.magicindicator.buildins.commonnavigator.indicators.WrapPagerIndicator
+import com.nhsd.magicindicator.buildins.commonnavigator.titles.ColorTransitionPagerTitleView
 import com.nhsd.magicindicator.buildins.commonnavigator.titles.SimplePagerTitleView
 
 /**
@@ -81,7 +83,20 @@ object CommonNavigatorUtils {
         textSize: Float,
         gravity: Int
     ): SimplePagerTitleView {
-        val titleView = SimplePagerTitleView(context)
+        val titleView = object : SimplePagerTitleView(context) {
+            private val normalTypeface = ResourcesCompat.getFont(context, R.font.outfit_regular)
+            private val selectedTypeface = ResourcesCompat.getFont(context, R.font.outfit_medium)
+
+            override fun onSelected(index: Int, totalCount: Int) {
+                super.onSelected(index, totalCount)
+                typeface = selectedTypeface
+            }
+
+            override fun onDeselected(index: Int, totalCount: Int) {
+                super.onDeselected(index, totalCount)
+                typeface = normalTypeface
+            }
+        }
         titleView.setIsSelectedBold(isBold)
         titleView.setPadding(12.dp, 0, 12.dp, 0)
         titleView.setLines(1)
@@ -121,13 +136,25 @@ object CommonNavigatorUtils {
             }
 
             override fun getTitleView(context: Context, index: Int): IPagerTitleView {
-                val titleView = SimplePagerTitleView(context)
+                val titleView = object : SimplePagerTitleView(context) {
+                    private val normalTypeface = ResourcesCompat.getFont(context, R.font.outfit_regular)
+                    private val selectedTypeface = ResourcesCompat.getFont(context, R.font.outfit_medium)
+
+                    override fun onSelected(index: Int, totalCount: Int) {
+                        super.onSelected(index, totalCount)
+                        typeface = selectedTypeface
+                    }
+
+                    override fun onDeselected(index: Int, totalCount: Int) {
+                        super.onDeselected(index, totalCount)
+                        typeface = normalTypeface
+                    }
+                }
                 titleView.setIsSelectedBold(isBold)
                 titleView.setPadding(titleHorizontalPaddingDp.dp, 0, titleHorizontalPaddingDp.dp, 0)
                 titleView.setLines(1)
                 titleView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, textSize)
                 titleView.gravity = gravity
-
                 titleView.text = data?.getOrNull(index)
                 titleView.normalColor = normalColor
                 titleView.selectedColor = selectedColor

@@ -87,11 +87,12 @@
 
                         <TextView
                             android:textSize="16sp"
-                            style="@style/Text.Bold"
+                            style="@style/Text.Medium"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:drawableStart="@drawable/icon_ai"
                             android:drawablePadding="10dp"
+                            android:gravity="center"
                             android:text="@string/create_page_short_dramas"
                             android:textColor="@color/sel_common_button_txt"
                             app:layout_constraintBottom_toBottomOf="@id/btnCreation"
