@@ -2,15 +2,13 @@ package com.kuaigeglobal.epnova.feature.settings.feedback
 
 import android.app.Activity
 import android.content.Intent
-import android.content.pm.ActivityInfo
 import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import com.kuaigeglobal.epnova.R
-import com.kuaigeglobal.epnova.common.Constants
-import com.kuaigeglobal.epnova.common.permissions.requestImages2VideosPermissions
+import com.kuaigeglobal.epnova.common.picker.AppImagePicker
 import com.kuaigeglobal.epnova.common.utils.Utils
 import com.kuaigeglobal.epnova.databinding.ActivityFeedbackBinding
 import com.kuaigeglobal.epnova.feature.settings.customerservice.CustomerServiceDialog
@@ -19,11 +17,6 @@ import com.kuaigeglobal.epnova.widget.actionsheet.ActionSheetDialog
 import com.kuaigeglobal.epnova.widget.actionsheet.ActionSheetHelper
 import com.nhsd.basic.BaseViewModelActivity
 import com.nhsd.basic.ext.showToast
-import com.nhsd.basic.manager.FileManager
-import com.nhsd.mattise.Matisse
-import com.nhsd.mattise.MimeType
-import com.nhsd.mattise.engine.impl.GlideEngine
-import com.nhsd.mattise.internal.entity.CaptureStrategy
 
 
 /**
@@ -38,7 +31,8 @@ import com.nhsd.mattise.internal.entity.CaptureStrategy
 class FeedbackActivity :
     BaseViewModelActivity<ActivityFeedbackBinding, FeedbackViewModel>(), TextWatcher {
     companion object {
-        const val REQUEST_CODE_CHOOSE: Int = 0x110
+        private const val REQUEST_CODE_CHOOSE = 0x110
+        private const val MAX_PHOTO_COUNT = 4
 
         fun start(
             activity: Activity?
@@ -48,6 +42,13 @@ class FeedbackActivity :
             activity.startActivity(intent)
         }
     }
+
+    private val imagePicker = AppImagePicker(
+        activity = this,
+        requestCode = REQUEST_CODE_CHOOSE,
+        maxSelectable = MAX_PHOTO_COUNT,
+        onResult = ::handleSelectedImages
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -68,10 +69,7 @@ class FeedbackActivity :
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_CODE_CHOOSE && resultCode == RESULT_OK) {
-            val result = Matisse.obtainResult(data)
-            binding.photoGrid.setAll(result as ArrayList<Uri?>, false)
-        }
+        imagePicker.onActivityResult(requestCode, resultCode, data)
     }
 
     // 只要包含 @ 且 @ 前后都有字符，且有点号即可
@@ -124,35 +122,12 @@ class FeedbackActivity :
 
 
     private fun requestAlbumsPermission() {
-        requestImages2VideosPermissions {
-            if (it) {
-                //权限申请成功
-                requestAlbums()
-            } else {
-                //权限申请失败
-            }
-        }
+        imagePicker.pick(binding.photoGrid.copiedPhotos)
     }
 
-    fun requestAlbums() {
-        Matisse.from(this)
-            .choose(MimeType.ofImage(), false)
-            .countable(false)
-            .capture(true)
-            .captureStrategy(
-                CaptureStrategy(true, FileManager.getInstance().fileProvider, "album")
-            )
-            .maxSelectable(4)
-            .setSelectedUris(binding.photoGrid.copiedPhotos)
-            .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
-            .thumbnailScale(0.85f)
-            .imageEngine(GlideEngine())
-            .showSingleMediaType(true)
-            .originalEnable(Constants.ORIGINAL_ENABLE)
-            .autoHideToolbarOnSingleTap(true)
-            .forResult(REQUEST_CODE_CHOOSE)
+    private fun handleSelectedImages(uris: List<Uri>) {
+        binding.photoGrid.setAll(ArrayList(uris.distinct().take(MAX_PHOTO_COUNT)), false)
     }
-
 
     override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
 

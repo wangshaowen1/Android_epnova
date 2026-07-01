@@ -40,6 +40,7 @@ import com.bumptech.glide.request.target.Target;
 import com.kuaigeglobal.epnova.App;
 import com.kuaigeglobal.epnova.R;
 import com.kuaigeglobal.epnova.common.Constants;
+import com.kuaigeglobal.epnova.common.ext.UriExtKt;
 import com.kuaigeglobal.epnova.common.permissions.PermissionsExt;
 import com.kuaigeglobal.epnova.common.permissions.PermissionsUtils;
 import com.kuaigeglobal.epnova.widget.LottieHeader;
@@ -142,7 +143,17 @@ public class Utils {
     public static List<String> toPathList(List<Uri> photoUris) {
         List<String> pathList = new ArrayList<>();
         for (Uri photoUri : photoUris) {
-            pathList.add(RealPathUtil.getRealPath(App.getInstance(), photoUri));
+            String path = null;
+            try {
+                path = RealPathUtil.getRealPath(App.getInstance(), photoUri);
+            } catch (Exception ignore) {
+            }
+            if (TextUtils.isEmpty(path)) {
+                path = UriExtKt.getTempFilePathFromUri(photoUri, App.getInstance());
+            }
+            if (!TextUtils.isEmpty(path)) {
+                pathList.add(path);
+            }
         }
         return pathList;
     }

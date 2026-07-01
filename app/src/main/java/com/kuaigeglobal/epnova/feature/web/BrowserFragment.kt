@@ -16,7 +16,6 @@ import android.webkit.WebChromeClient
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import androidx.appcompat.app.AppCompatActivity.RESULT_OK
 import androidx.core.view.isVisible
 import com.blankj.utilcode.util.GsonUtils
 import com.google.gson.Gson
@@ -26,9 +25,9 @@ import com.kuaigeglobal.epnova.BuildConfig
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.Constants
 import com.kuaigeglobal.epnova.common.ext.downloadFile
-import com.kuaigeglobal.epnova.common.ext.selectSinglePhotoFromAlbums
 import com.kuaigeglobal.epnova.common.jsbridge.WebViewJavascriptBridge
 import com.kuaigeglobal.epnova.common.jsbridge.data.DownLoadImageData
+import com.kuaigeglobal.epnova.common.picker.AppImagePicker
 import com.kuaigeglobal.epnova.common.permissions.PermissionsUtils
 import com.kuaigeglobal.epnova.common.permissions.requestImages2VideosPermissions
 import com.kuaigeglobal.epnova.common.permissions.requestRead2WritePermissions
@@ -61,7 +60,6 @@ import com.nhsd.basic.ext.getResString
 import com.nhsd.basic.ext.paddingStatusBar
 import com.nhsd.basic.ext.showToast
 import com.nhsd.basic.utils.Logger
-import com.nhsd.mattise.Matisse
 import org.json.JSONObject
 
 class BrowserFragment : BaseViewModelFragment<FragmentBrowserBinding, BrowserViewModel>() {
@@ -95,6 +93,16 @@ class BrowserFragment : BaseViewModelFragment<FragmentBrowserBinding, BrowserVie
 
     private var mUploadCallbackBelow: ValueCallback<Uri>? = null
     private var mUploadCallbackAboveL: ValueCallback<Array<Uri?>?>? = null
+
+    private val webImagePicker = AppImagePicker(
+        fragment = this,
+        requestCode = REQUEST_CODE_PHOTO_PICKER,
+        maxSelectable = 1,
+        capture = true,
+        useEmbeddedCamera = true,
+        onResult = ::handleWebImagePicked,
+        onCancel = { handleWebImagePicked(null) }
+    )
 
     private val mWebViewClient = object : WebViewClient() {
         override fun onPageFinished(view: WebView?, url: String?) {
@@ -372,14 +380,20 @@ class BrowserFragment : BaseViewModelFragment<FragmentBrowserBinding, BrowserVie
                         }
                     }
 
-                    "album" -> requestImages2VideosPermissions(
-                        R.string.sdcard_permission_description.getResString(),
-                        withVideo = false,
-                        openSelect = true
-                    ) { granted ->
-                        val result =
-                            ResultEntity(if (granted) ResultEntity.SUCCESS else ResultEntity.FAILED)
-                        jsCallback?.callback(Gson().toJson(result))
+                    "album" -> {
+                        if (AppImagePicker.usePhotoPicker()) {
+                            val result = ResultEntity(ResultEntity.SUCCESS)
+                            jsCallback?.callback(Gson().toJson(result))
+                        } else {
+                            requestImages2VideosPermissions(
+                                R.string.sdcard_permission_description.getResString(),
+                                withVideo = false,
+                                openSelect = true
+                            ) { granted ->
+                                val result = ResultEntity(if (granted) ResultEntity.SUCCESS else ResultEntity.FAILED)
+                                jsCallback?.callback(Gson().toJson(result))
+                            }
+                        }
                     }
 
                     "camera" -> {
@@ -524,21 +538,14 @@ class BrowserFragment : BaseViewModelFragment<FragmentBrowserBinding, BrowserVie
     }
 
     private fun choosePic() {
-        requestImages2VideosPermissions(
-            getString(R.string.sdcard_permission_description),
-            withVideo = false,
-            openSelect = true
-        ) { granted ->
-            if (granted) {
-                selectSinglePhotoFromAlbums(
-                    fragment = this@BrowserFragment,
-                    selectedUri = null,
-                    requestCode = REQUEST_CODE_PHOTO_PICKER,
-                    capture = true,
-                    useEmbeddedCamera = true
-                )
-            }
-        }
+        webImagePicker.pick()
+    }
+
+    private fun handleWebImagePicked(uris: List<Uri>?) {
+        mUploadCallbackBelow?.onReceiveValue(uris?.firstOrNull())
+        mUploadCallbackBelow = null
+        mUploadCallbackAboveL?.onReceiveValue(uris?.let { Array<Uri?>(it.size) { index -> it[index] } })
+        mUploadCallbackAboveL = null
     }
 
     private fun loadingUrl() {
@@ -548,29 +555,11 @@ class BrowserFragment : BaseViewModelFragment<FragmentBrowserBinding, BrowserVie
         }
     }
 
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        when (requestCode) {
-            REQUEST_CODE_PHOTO_PICKER -> handlePhotoPickerResult(resultCode, data)
-        }
+        webImagePicker.onActivityResult(requestCode, resultCode, data)
 //        ShareManager.onActivityResult(requestCode, resultCode, data)
     }
-
-    private fun handlePhotoPickerResult(resultCode: Int, data: Intent?) {
-        if (mUploadCallbackBelow == null && mUploadCallbackAboveL == null) return
-
-        if (mUploadCallbackBelow != null) {
-            val result = if (resultCode != RESULT_OK) null else Matisse.obtainResult(data)
-            mUploadCallbackBelow?.onReceiveValue(result?.getOrNull(0))
-            mUploadCallbackBelow = null
-        } else if (mUploadCallbackAboveL != null) {
-            val result = if (resultCode != RESULT_OK) null else Matisse.obtainResult(data)
-            mUploadCallbackAboveL?.onReceiveValue(result?.toTypedArray())
-            mUploadCallbackAboveL = null
-        }
-    }
-
 
     override fun onResume() {
         super.onResume()

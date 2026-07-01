@@ -2,6 +2,7 @@ package com.kuaigeglobal.epnova.feature.editor.info
 
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.text.Editable
 import android.view.View
 import androidx.lifecycle.lifecycleScope
@@ -9,8 +10,10 @@ import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.Constants
 import com.kuaigeglobal.epnova.common.SimpleTextWatcher
 import com.kuaigeglobal.epnova.common.ext.applySmartFocusManager
-import com.kuaigeglobal.epnova.common.ext.selectSinglePhotoFromAlbums
-import com.kuaigeglobal.epnova.common.permissions.requestImages2VideosPermissions
+import com.kuaigeglobal.epnova.common.ext.getTempFilePathFromUri
+import com.kuaigeglobal.epnova.common.picker.AppImagePicker
+import com.kuaigeglobal.epnova.common.utils.CropUtils
+import com.kuaigeglobal.epnova.common.utils.FileUtils
 import com.kuaigeglobal.epnova.core.Events
 import com.kuaigeglobal.epnova.core.ext.sensitiveWordCheck
 import com.kuaigeglobal.epnova.core.network.apis.entity.WorkInfo
@@ -18,7 +21,7 @@ import com.kuaigeglobal.epnova.databinding.ActivityWorkInfoEditBinding
 import com.nhsd.basic.BaseViewModelActivity
 import com.nhsd.basic.bus.FlowEventBus
 import com.nhsd.basic.ext.showToast
-import com.nhsd.mattise.Matisse
+import com.nhsd.crop.Crop
 import kotlinx.coroutines.launch
 
 /**
@@ -37,6 +40,15 @@ class DramaInfoEditActivity :
             context.startActivity(starter)
         }
     }
+
+    private var pendingCoverCropUri: Uri? = null
+
+    private val coverPicker = AppImagePicker(
+        activity = this,
+        requestCode = REQUEST_CODE_CHOOSE,
+        maxSelectable = 1,
+        onResult = { uris -> uris.firstOrNull()?.let(::startCoverCrop) }
+    )
 
     override fun onViewModelCreated() {
         super.onViewModelCreated()
@@ -116,29 +128,34 @@ class DramaInfoEditActivity :
     }
 
     private fun requestAlbumsPermission() {
-        requestImages2VideosPermissions {
-            if (it) {
-                selectSinglePhotoFromAlbums(
-                    activity = this@DramaInfoEditActivity,
-                    selectedUri = null,
-                    requestCode = REQUEST_CODE_CHOOSE,
-                    crop = true
-                )
-            }
-        }
+        coverPicker.pick()
+    }
+
+    private fun startCoverCrop(source: Uri) {
+        val destination = Uri.fromFile(FileUtils.newTempImageFile())
+        pendingCoverCropUri = destination
+        CropUtils.start(
+            this,
+            source,
+            destination,
+            CropUtils.getColorPrimary(this),
+            getColor(R.color.textColorDark),
+            1f to 1f
+        )
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == RESULT_OK) {
-            when (requestCode) {
-                REQUEST_CODE_CHOOSE -> {
-                    val result = Matisse.obtainPathResult(data)
-                    result?.firstOrNull()?.let {
-                        mRealVM.changeTargetPicture(it)
-                    }
-                }
+        if (coverPicker.onActivityResult(requestCode, resultCode, data)) return
+        if (resultCode == RESULT_OK && requestCode == Crop.REQUEST_CROP) {
+            val cropped = data?.getParcelableExtra<Uri>(Crop.EXTRA_OUTPUT_URI) ?: pendingCoverCropUri
+            val path = if (cropped?.scheme == "file") {
+                cropped.path
+            } else {
+                cropped?.getTempFilePathFromUri(this)
             }
+            pendingCoverCropUri = null
+            path?.let { mRealVM.changeTargetPicture(it) }
         }
     }
 }
