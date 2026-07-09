@@ -15,6 +15,7 @@
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:clipChildren="false"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -33,6 +34,7 @@
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:visibility="@{layout.showBottomBar?View.VISIBLE:View.GONE}"
+            android:clipChildren="false"
             app:layout_constraintBottom_toBottomOf="parent">
 
             <FrameLayout
@@ -69,26 +71,105 @@
                 android:layout_weight="1">
 
                 <com.kuaigeglobal.epnova.widget.FixedAnimatedRadioButton
-                    android:id="@+id/rbCreate"
+                    android:id="@+id/rbFeatured"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:button="@null"
-                    android:drawableTop="@drawable/cb_main_tab_create"
+                    android:drawableTop="@drawable/cb_main_tab_featured"
                     android:drawablePadding="4dp"
                     android:gravity="center"
-                    android:text="@string/creation"
+                    android:text="@string/featured"
                     style="@style/Text.Regular"
                     android:textColor="@color/cb_main_tab_txt"
                     android:textSize="11sp"
                     tools:checked="false" />
 
                 <View
-                    android:id="@+id/tabCreate"
+                    android:id="@+id/tabFeatured"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:onClick="@{layout.clickHandler::onClick}" />
 
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:clipChildren="false"
+                android:clipToPadding="false">
+
+                <com.kuaigeglobal.epnova.widget.FixedAnimatedRadioButton
+                    android:id="@+id/rbCreate"
+                    android:layout_width="1dp"
+                    android:layout_height="1dp"
+                    android:layout_gravity="center"
+                    android:button="@null"
+                    android:visibility="invisible"
+                    tools:checked="false" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:layout_gravity="center_horizontal"
+                    android:clipToPadding="false"
+                    android:orientation="vertical"
+                    android:translationY="-18dp">
+
+                    <com.google.android.material.imageview.ShapeableImageView
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:layout_width="72dp"
+                        android:layout_height="72dp"
+                        android:background="@color/bg_color_2_dark"
+                        app:shapeAppearance="@style/roundStyle_circle" />
+
+                    <ImageView
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:layout_gravity="center"
+                        android:src="@drawable/icon_main_tab_bg"
+                        android:layout_width="52dp"
+                        android:layout_height="52dp"/>
+
+                    <ImageView
+                        app:layout_constraintVertical_bias="0.5"
+                        app:layout_constraintVertical_chainStyle="packed"
+                        android:id="@+id/ivCreate"
+                        app:layout_constraintBottom_toTopOf="@id/tvCreate"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/icon_main_tab_create"
+                        tools:ignore="ContentDescription" />
+
+                    <TextView
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/ivCreate"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:text="@string/creation"
+                        android:textColor="@color/color_96_ffffff"
+                        android:textSize="10sp"
+                        android:fontFamily="@font/outfit_regular"
+                        android:id="@+id/tvCreate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <View
+                    android:id="@+id/tabCreate"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:onClick="@{layout.clickHandler::onClick}" />
             </FrameLayout>
 
             <FrameLayout

@@ -168,6 +168,9 @@ class MainActivity : BaseViewModelActivity<ActivityMainBinding, MainViewModel>()
 
                 R.id.rbCreate -> {
                     //创建
+                }
+
+                R.id.rbFeatured -> {
                     setKeepScreenOn(false)
                     mRealVM.showTab.set(1)
                     EventManager.onFirebaseTrack(FirebaseEvent.CREATE_HOME_VIEW)
@@ -200,7 +203,7 @@ class MainActivity : BaseViewModelActivity<ActivityMainBinding, MainViewModel>()
         }
         when (Config.get().appConfig.openAppLoadTab) {
             0 -> binding.mrg.check(R.id.rbHome)
-            1 -> binding.mrg.check(R.id.rbCreate)
+            1 -> binding.mrg.check(R.id.rbFeatured)
             2 -> binding.mrg.check(R.id.rbWorks)
             3 -> binding.mrg.check(R.id.rbMine)
             else -> binding.mrg.check(R.id.rbHome)
@@ -259,12 +262,12 @@ class MainActivity : BaseViewModelActivity<ActivityMainBinding, MainViewModel>()
 //                }
             }
 
-            R.id.tabCreate -> {
+            R.id.tabFeatured -> {
                 clickTab(
-                    tabId = R.id.rbCreate,
+                    tabId = R.id.rbFeatured,
                     interceptor = { AppNavigator.checkLoginIntercepted(true) } // 传入拦截逻辑
                 ) {
-                    binding.mrg.check(R.id.rbCreate) // 真正执行切换
+                    binding.mrg.check(R.id.rbFeatured) // 真正执行切换
                 }
             }
 
