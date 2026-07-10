@@ -780,4 +780,6 @@
     <string name="video_synthesis_save_failed">Failed to call save API.</string>
     <string name="video_download_watermark">AI generation</string>
     <string name="featured">Featured</string>
+    <string name="creation_one_tap_hit_generation">One-tap hit generation</string>
+    <string name="create_dramas_with_ai">Create dramas with AI</string>
 </resources>

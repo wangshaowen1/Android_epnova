@@ -15,6 +15,7 @@ import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.adapter.FragmentStateCacheAdapter
 import com.kuaigeglobal.epnova.common.ext.removeTheRipples
 import com.kuaigeglobal.epnova.common.ext.topActivity
+import com.kuaigeglobal.epnova.core.Events
 import com.kuaigeglobal.epnova.core.databinding.loadUri
 import com.kuaigeglobal.epnova.core.manager.EventManager
 import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
@@ -24,6 +25,7 @@ import com.kuaigeglobal.epnova.feature.create.child.ResourceCenterFragment
 import com.kuaigeglobal.epnova.feature.create.child.TopEarnersFragment
 import com.kuaigeglobal.epnova.router.AppRouter
 import com.nhsd.basic.BaseViewModelFragment
+import com.nhsd.basic.bus.FlowEventBus
 import com.nhsd.basic.ext.dp
 import com.nhsd.basic.ext.getResColor
 import com.nhsd.basic.ext.getResDrawable
@@ -45,7 +47,7 @@ import kotlin.math.abs
 import kotlin.text.toFloat
 
 /**
- * 主页 - Create
+ * 主页 - Featured
  */
 class CreateFragment : BaseViewModelFragment<FragmentCreateBinding, CreateViewModel>() {
 
@@ -120,7 +122,8 @@ class CreateFragment : BaseViewModelFragment<FragmentCreateBinding, CreateViewMo
 
         binding.btnCreation.setOnSingleClickListener {
             EventManager.onFirebaseTrack(FirebaseEvent.CREATE_BTN_CLICK)
-            CreationRootActivity.start(activity)
+            FlowEventBus.postSync(Events.MainTabEvent(Events.MainTabEvent.TAB_CREATE))
+//            CreationRootActivity.start(activity)
         }
         binding.srl.setOnRefreshListener {
             refreshPageData()

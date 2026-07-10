@@ -16,6 +16,7 @@ public class Events {
         public static int TAB_HOME = 1;
         public static int TAB_MY_CREATIONS = 2;
         public static int TAB_MINE = 3;
+        public static int TAB_CREATE = 4;
 
         private int type;
 

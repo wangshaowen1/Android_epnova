@@ -199,6 +199,16 @@ object EventManager {
  * 来源：EpNova埋点文档_updated.xlsx / 新版。
  */
 object FirebaseEvent {
+
+
+    /**
+     * 模块：Featured
+     * 事件类型：曝光
+     * 事件名称：创作入口页面曝光
+     * 说明：创作入口页面曝光：用户点击底部导航栏 Create tab，创作入口页面成功渲染展示时触发
+     */
+    const val FEATURED_HOME_VIEW = "featured_home_view"
+
     /**
      * 模块：创作入口
      * 事件类型：曝光

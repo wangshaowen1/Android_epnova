@@ -26,6 +26,7 @@ import com.kuaigeglobal.epnova.core.manager.UpgradeManager
 import com.kuaigeglobal.epnova.databinding.ActivityMainBinding
 import com.kuaigeglobal.epnova.feature.aicompose.generating.GeneratingViewModel
 import com.kuaigeglobal.epnova.feature.create.CreateFragment
+import com.kuaigeglobal.epnova.feature.creation.CreationFragment
 import com.kuaigeglobal.epnova.feature.home.HomeFragment
 import com.kuaigeglobal.epnova.feature.mine.MineFragment
 import com.kuaigeglobal.epnova.feature.rewards.RewardWelcomeDialog
@@ -58,6 +59,13 @@ import kotlinx.coroutines.launch
  */
 class MainActivity : BaseViewModelActivity<ActivityMainBinding, MainViewModel>() {
     companion object {
+
+        private const val PAGE_HOME = 0
+        private const val PAGE_FEATURED = 1
+        private const val PAGE_CREATE = 2
+        private const val PAGE_MYLIST = 3
+        private const val PAGE_PROFILE = 4
+
         val clicks = SparseArray<Long>()
         const val CLICK_INTERVAL_TIME: Long = 500
         private const val KEY_SCHEME = "KEY_SCHEME"
@@ -154,7 +162,7 @@ class MainActivity : BaseViewModelActivity<ActivityMainBinding, MainViewModel>()
                 R.id.rbHome -> {
                     //首页
                     setKeepScreenOn(false)
-                    mRealVM.showTab.set(0)
+                    mRealVM.showTab.set(PAGE_HOME)
                     EventManager.onFirebaseTrack(FirebaseEvent.HOME_PAGE_VIEW)
                     supportFragmentManager.switchFragment(
                         R.id.fragment,
@@ -166,24 +174,31 @@ class MainActivity : BaseViewModelActivity<ActivityMainBinding, MainViewModel>()
                     }
                 }
 
-                R.id.rbCreate -> {
-                    //创建
-                }
-
                 R.id.rbFeatured -> {
                     setKeepScreenOn(false)
-                    mRealVM.showTab.set(1)
-                    EventManager.onFirebaseTrack(FirebaseEvent.CREATE_HOME_VIEW)
+                    mRealVM.showTab.set(PAGE_FEATURED)
+                    EventManager.onFirebaseTrack(FirebaseEvent.FEATURED_HOME_VIEW)
                     supportFragmentManager.switchFragment(
                         R.id.fragment,
                         CreateFragment::class.java
                     )
                 }
 
+                R.id.rbCreate -> {
+                    //创建
+                    setKeepScreenOn(true)
+                    mRealVM.showTab.set(PAGE_CREATE)
+                    EventManager.onFirebaseTrack(FirebaseEvent.CREATE_HOME_VIEW)
+                    supportFragmentManager.switchFragment(
+                        R.id.fragment,
+                        CreationFragment::class.java
+                    )
+                }
+
                 R.id.rbWorks -> {
                     //热门
                     setKeepScreenOn(false)
-                    mRealVM.showTab.set(2)
+                    mRealVM.showTab.set(PAGE_MYLIST)
 //                    CreationRootActivity.start(this)
                     EventManager.onFirebaseTrack(FirebaseEvent.MY_LIST_VIEW)
                     supportFragmentManager.switchFragment(
@@ -196,16 +211,17 @@ class MainActivity : BaseViewModelActivity<ActivityMainBinding, MainViewModel>()
                 R.id.rbMine -> {
                     //我的
                     setKeepScreenOn(false)
-                    mRealVM.showTab.set(3)
+                    mRealVM.showTab.set(PAGE_PROFILE)
                     supportFragmentManager.switchFragment(R.id.fragment, MineFragment::class.java)
                 }
             }
         }
         when (Config.get().appConfig.openAppLoadTab) {
-            0 -> binding.mrg.check(R.id.rbHome)
-            1 -> binding.mrg.check(R.id.rbFeatured)
-            2 -> binding.mrg.check(R.id.rbWorks)
-            3 -> binding.mrg.check(R.id.rbMine)
+            PAGE_HOME -> binding.mrg.check(R.id.rbHome)
+            PAGE_FEATURED -> binding.mrg.check(R.id.rbFeatured)
+            PAGE_CREATE -> binding.mrg.check(R.id.rbCreate)
+            PAGE_MYLIST -> binding.mrg.check(R.id.rbWorks)
+            PAGE_PROFILE -> binding.mrg.check(R.id.rbMine)
             else -> binding.mrg.check(R.id.rbHome)
         }
     }
@@ -268,6 +284,15 @@ class MainActivity : BaseViewModelActivity<ActivityMainBinding, MainViewModel>()
                     interceptor = { AppNavigator.checkLoginIntercepted(true) } // 传入拦截逻辑
                 ) {
                     binding.mrg.check(R.id.rbFeatured) // 真正执行切换
+                }
+            }
+
+            R.id.tabCreate -> {
+                clickTab(
+                    tabId = R.id.rbCreate,
+                    interceptor = { AppNavigator.checkLoginIntercepted(true) }
+                ) {
+                    binding.mrg.check(R.id.rbCreate)
                 }
             }
 
@@ -423,6 +448,10 @@ class MainActivity : BaseViewModelActivity<ActivityMainBinding, MainViewModel>()
                         toHome()
                     }
 
+                    Events.MainTabEvent.TAB_CREATE -> {
+                        binding.mrg.check(R.id.rbCreate)
+                    }
+
                     Events.MainTabEvent.TAB_MY_CREATIONS -> {
                         binding.mrg.check(R.id.rbWorks)
                     }
@@ -478,7 +507,7 @@ class MainActivity : BaseViewModelActivity<ActivityMainBinding, MainViewModel>()
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
         if (keyCode == KeyEvent.KEYCODE_BACK && event.action == KeyEvent.ACTION_DOWN) {
-            if (mRealVM.showTab.get() == 1 && mRealVM.isEditing.get()) {
+            if (mRealVM.showTab.get() == PAGE_MYLIST && mRealVM.isEditing.get()) {
                 //在我的页面如果是编辑状态，返回应该是修改状态
                 mRealVM.setIsEditing?.invoke(true)
                 return true
