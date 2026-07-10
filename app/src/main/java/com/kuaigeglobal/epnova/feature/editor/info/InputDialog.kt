@@ -36,6 +36,7 @@ class InputDialog :
         const val TYPE_EPISODE_CONTENT = 3
         const val TYPE_ASSET_DESC = 4
         const val TYPE_STORYBOARD_DESC = 5
+        const val TYPE_SAME_STORY = 6
 
         /**通用类型，只编辑文案，不需要其他逻辑*/
         const val TYPE_NORMAL = 2

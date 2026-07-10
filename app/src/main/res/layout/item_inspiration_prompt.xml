@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="item"
+            type="com.kuaigeglobal.epnova.feature.creator.ItemInspirationPromptVM" />
+    </data>
+
+    <FrameLayout
+        android:layout_marginEnd="8dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            style="@style/Text12"
+            android:layout_width="wrap_content"
+            android:layout_height="26dp"
+            android:background="@drawable/bg_08_ffffff_r20"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:includeFontPadding="false"
+            android:maxLines="1"
+            android:onClick="@{() -> item.onItemClick()}"
+            android:paddingHorizontal="@dimen/spacing_s"
+            android:text="@{item.data.configCode}"
+            android:textColor="?attr/textColor3"
+            tools:text="萌宝出击" />
+    </FrameLayout>
+</layout>

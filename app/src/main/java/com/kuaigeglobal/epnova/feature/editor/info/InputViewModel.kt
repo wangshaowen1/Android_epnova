@@ -45,6 +45,7 @@ class InputViewModel : AppRepositoryViewModel<AppRepository>() {
                 InputDialog.TYPE_EPISODE_CONTENT -> 5000
                 InputDialog.TYPE_ASSET_DESC -> 200
                 InputDialog.TYPE_STORYBOARD_DESC -> 1000
+                InputDialog.TYPE_SAME_STORY -> 1000
                 else -> 500
             } * Constants.INTERNATIONALIZATION_RATIO)
         )
@@ -70,6 +71,10 @@ class InputViewModel : AppRepositoryViewModel<AppRepository>() {
 
             InputDialog.TYPE_STORYBOARD_DESC -> {
                 title.set(getString(R.string.edit_storyboard_desc))
+            }
+
+            InputDialog.TYPE_SAME_STORY -> {
+                title.set(getString(R.string.same_story))
             }
         }
     }

@@ -18,6 +18,8 @@ import com.kuaigeglobal.epnova.core.network.apis.entity.ExampleWorkInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.IncomeDetailInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.IncomeSummaryInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.InspirationInfo
+import com.kuaigeglobal.epnova.core.network.apis.entity.SameStyleHotCaseInfo
+import com.kuaigeglobal.epnova.core.network.apis.entity.SameStylePrefillInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.LogOffStatusInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.MyTvSeriesListInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.OnceTaskListData
@@ -84,6 +86,7 @@ import com.kuaigeglobal.epnova.core.network.apis.request.DramasTimbreBody
 import com.kuaigeglobal.epnova.core.network.apis.request.FeedbackBody
 import com.kuaigeglobal.epnova.core.network.apis.request.FcmTokenBody
 import com.kuaigeglobal.epnova.core.network.apis.request.GenerateStoryboardBody
+import com.kuaigeglobal.epnova.core.network.apis.request.HotCaseIdBody
 import com.kuaigeglobal.epnova.core.network.apis.request.GenerateSubtitleBody
 import com.kuaigeglobal.epnova.core.network.apis.request.IdsBody
 import com.kuaigeglobal.epnova.core.network.apis.request.ImgUrlBody
@@ -108,6 +111,7 @@ import com.kuaigeglobal.epnova.core.network.apis.request.PowerCalculateBody
 import com.kuaigeglobal.epnova.core.network.apis.request.PowerCalculateData
 import com.kuaigeglobal.epnova.core.network.apis.request.ReferenceImageBody
 import com.kuaigeglobal.epnova.core.network.apis.request.ReportSubmissionBody
+import com.kuaigeglobal.epnova.core.network.apis.request.ReportCreationUsageBody
 import com.kuaigeglobal.epnova.core.network.apis.request.RoleIdBody
 import com.kuaigeglobal.epnova.core.network.apis.request.RoleImageRegenerateBody
 import com.kuaigeglobal.epnova.core.network.apis.request.RoleSwitchBody
@@ -180,6 +184,7 @@ import com.kuaigeglobal.epnova.core.network.apis.response.ShelfStatusData
 import com.kuaigeglobal.epnova.core.network.apis.response.ShortLikeData
 import com.kuaigeglobal.epnova.core.network.apis.response.StoryboardListData
 import com.kuaigeglobal.epnova.core.network.apis.response.UpgradeData
+import com.kuaigeglobal.epnova.core.network.apis.response.UnusedPackageData
 import com.kuaigeglobal.epnova.core.network.apis.response.UserHomeData
 import com.kuaigeglobal.epnova.core.network.apis.response.UserPlayData
 import com.kuaigeglobal.epnova.core.network.apis.response.WorkIdData
@@ -742,6 +747,14 @@ interface ApiService {
     @POST(ApiConstants.INSPIRATION_QUICK_LIST)
     suspend fun getInspirationQuickList(@Body body: UserTokenBody): ApiResponse<List<InspirationInfo>?>
 
+    /** 创作同款热门案例分页列表。 */
+    @POST(ApiConstants.SAME_STYLE_HOT_CASE_PAGE)
+    suspend fun sameStyleHotCasePage(@Body body: PagedBody): ApiResponse<PagedList<SameStyleHotCaseInfo>?>
+
+    /** 根据热门案例获取同款创作预填数据。 */
+    @POST(ApiConstants.SAME_STYLE_PREFILL)
+    suspend fun sameStylePrefill(@Body body: HotCaseIdBody): ApiResponse<SameStylePrefillInfo?>
+
     /**
      * 查询历史角色
      */
@@ -1195,6 +1208,10 @@ interface ApiService {
     @POST(ApiConstants.CREATE_TASK_FROM_SINGLE_EPISODE)
     suspend fun createTaskFromSingleEpisode(@Body body: CreateTaskBody): ApiResponse<WorkTaskData?>
 
+    /** 查询已购买且尚未使用的短剧创作套餐。 */
+    @POST(ApiConstants.UNUSED_PACKAGE_LIST)
+    suspend fun unusedPackageList(@Body body: UserTokenBody): ApiResponse<UnusedPackageData?>
+
     /**
      *  单集生成任务-重试任务
      */
@@ -1477,5 +1494,9 @@ interface ApiService {
      */
     @POST(ApiConstants.WORK_ASSET_ROLE_IMAGE_PAGE)
     suspend fun workAssetRoleImagePage(@Body body: RoleIdPagedBody): ApiResponse<PagedList<RoleImageInfo>?>
+
+    /** 灵感案例、热门案例使用次数上报。 */
+    @POST(ApiConstants.REPORT_CREATION_USAGE_COUNT)
+    suspend fun reportCreationUsageCount(@Body body: ReportCreationUsageBody): ApiResponse<Any?>
 
 }

@@ -11,6 +11,7 @@ import com.kuaigeglobal.epnova.core.network.apis.entity.CreatorPlayableEpisode
 import com.kuaigeglobal.epnova.core.network.apis.entity.EpisodeInfo
 import com.kuaigeglobal.epnova.core.network.apis.request.FcmTokenBody
 import com.kuaigeglobal.epnova.core.network.apis.request.PlayEventBody
+import com.kuaigeglobal.epnova.core.network.apis.request.ReportCreationUsageBody
 import com.kuaigeglobal.epnova.core.network.apis.request.UserPlayBody
 import com.kuaigeglobal.epnova.core.network.apis.request.WorkBody
 import com.nhsd.basic.ext.launchNoCrash
@@ -23,6 +24,9 @@ import kotlinx.coroutines.delay
  * @author xiaoowuu
  */
 object EventManager {
+
+    const val REPORT_CREATION_TYPE_INSPIRATION = 1
+    const val REPORT_CREATION_TYPE_HOT_CASE = 2
 
     private var fetchingFcmToken = false
 
@@ -105,6 +109,15 @@ object EventManager {
     fun onPlayEvent(workId: String?, episodeId: String?) {
         ioScope.launchNoCrash {
             ApiFactory.apiService.playCountInc(WorkBody(workId, episodeId))
+        }
+    }
+
+    fun reportCreationUsageCount(reportId: String?, reportType: Int?) {
+        if (reportId.isNullOrBlank() || reportType == null) return
+        ioScope.launchNoCrash {
+            ApiFactory.apiService.reportCreationUsageCount(
+                ReportCreationUsageBody(reportId, reportType)
+            )
         }
     }
 

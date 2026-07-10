@@ -7,6 +7,10 @@ import androidx.databinding.ObservableField
 import androidx.databinding.ObservableInt
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.base.viewmodel.AppRepositoryViewModel
 import com.kuaigeglobal.epnova.common.ext.topActivity
@@ -14,10 +18,14 @@ import com.kuaigeglobal.epnova.common.utils.TextEncodingUtil
 import com.kuaigeglobal.epnova.core.Global
 import com.kuaigeglobal.epnova.core.ext.launch
 import com.kuaigeglobal.epnova.core.ext.parseMessage
+import com.kuaigeglobal.epnova.core.ext.request
 import com.kuaigeglobal.epnova.core.ext.requestWithLoading
+import com.kuaigeglobal.epnova.core.manager.EventManager
 import com.kuaigeglobal.epnova.core.network.apis.ApiException
 import com.kuaigeglobal.epnova.core.network.apis.ApiResponse
 import com.kuaigeglobal.epnova.core.network.apis.entity.InspirationInfo
+import com.kuaigeglobal.epnova.core.network.apis.entity.SameStylePrefillInfo
+import com.kuaigeglobal.epnova.core.network.apis.entity.UnusedPackageInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.VideoConfigData
 import com.kuaigeglobal.epnova.core.network.apis.request.CreateTaskBody
 import com.kuaigeglobal.epnova.core.network.apis.request.SSEContentBody
@@ -27,16 +35,19 @@ import com.kuaigeglobal.epnova.core.network.apis.request.WorkTaskData
 import com.kuaigeglobal.epnova.core.network.apis.response.FirstRechargeCreditsDialogData
 import com.kuaigeglobal.epnova.core.network.sse.SSEStreamHandler
 import com.kuaigeglobal.epnova.core.network.sse.processor.PlainTextSseProcessor
-import com.kuaigeglobal.epnova.feature.creator.CreationFragment.Companion.KEY_MODEL
-import com.kuaigeglobal.epnova.feature.creator.CreationFragment.Companion.MODEL_INSPIRATION
+import com.kuaigeglobal.epnova.feature.creation.CreationFragment.Companion.KEY_MODEL
+import com.kuaigeglobal.epnova.feature.creation.CreationFragment.Companion.MODEL_INSPIRATION
 import com.kuaigeglobal.epnova.feature.creator.data.CreationRepository
 import com.kuaigeglobal.epnova.feature.creator.data.DramaGenerateConstants
+import com.kuaigeglobal.epnova.feature.creator.hotcase.CreationHotCaseInfo
+import com.kuaigeglobal.epnova.feature.creator.hotcase.CreationHotCasePagingSource
 import com.kuaigeglobal.epnova.feature.recharge.PowerRechargeDialog
 import com.nhsd.basic.ext.getResString
 import com.nhsd.basic.ext.getThemeColor
 import com.nhsd.basic.ext.showToast
 import com.nhsd.basic.utils.Logger
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.Flow
 
 class CreationViewModel : AppRepositoryViewModel<CreationRepository>() {
     val input by lazy { MutableLiveData<String?>() }
@@ -49,6 +60,7 @@ class CreationViewModel : AppRepositoryViewModel<CreationRepository>() {
         ObservableInt(20000)
     }
     val promptGenerating = MutableLiveData<Pair<Boolean, String>>()
+    val workCreating = MutableLiveData(false)
 
     val hint = ObservableField<String>()
     val creationModel by lazy {
@@ -60,6 +72,18 @@ class CreationViewModel : AppRepositoryViewModel<CreationRepository>() {
     val inspirationPrompts by lazy { MutableLiveData<List<InspirationInfo>>() }
     val videoSetConfig by lazy { MutableLiveData<VideoConfigData>() }
     val firstRechargeCache = MutableLiveData<FirstRechargeCreditsDialogData>()
+    private var selectedInspirationReportId: String? = null
+    private var shouldShowInputFromStart = false
+
+    val creationHotCaseFlow: Flow<PagingData<CreationHotCaseInfo>> = Pager(
+        config = PagingConfig(
+            pageSize = 10,
+            initialLoadSize = 10,
+            prefetchDistance = 3,
+            enablePlaceholders = false
+        ),
+        pagingSourceFactory = { CreationHotCasePagingSource(mRepo.api) }
+    ).flow.cachedIn(viewModelScope)
 
     fun inspirationModel(): Boolean {
         return creationModel == MODEL_INSPIRATION
@@ -77,6 +101,42 @@ class CreationViewModel : AppRepositoryViewModel<CreationRepository>() {
         videoSetConfig {
 
         }
+    }
+
+    fun enableCreationTabUi() {
+        maxInputLength.set(5000)
+        hint.set(
+            if (inspirationModel()) R.string.story_inspiration_hint.getResString()
+            else R.string.paste_novel_hint.getResString()
+        )
+    }
+
+    fun selectInspirationPrompt(prompt: InspirationInfo) {
+        shouldShowInputFromStart = true
+        input.value = prompt.configValue
+        selectedInspirationReportId = prompt.inspirationConfigId
+    }
+
+    fun consumeShouldShowInputFromStart(): Boolean {
+        return shouldShowInputFromStart.also { shouldShowInputFromStart = false }
+    }
+
+    fun updateInputFromUser(content: String?) {
+        if (input.value != content) clearInspirationPromptUsage()
+        input.value = content
+    }
+
+    fun clearInspirationPromptUsage() {
+        selectedInspirationReportId = null
+    }
+
+    fun getInspirationReportIdForTask(): String? = selectedInspirationReportId
+
+    fun reportSelectedInspirationUsageIfNeeded() {
+        EventManager.reportCreationUsageCount(
+            selectedInspirationReportId,
+            EventManager.REPORT_CREATION_TYPE_INSPIRATION
+        )
     }
 
     @ColorInt
@@ -97,6 +157,11 @@ class CreationViewModel : AppRepositoryViewModel<CreationRepository>() {
     }
 
     fun sseGenerate(bizType: Int? = null, promptGeneratingContent: String?) {
+        if (bizType == SSEContentBody.TYPE_RANDOM_INSPIRATION ||
+            bizType == SSEContentBody.TYPE_AI_OPTIMIZE_INSPIRATION
+        ) {
+            clearInspirationPromptUsage()
+        }
         promptGenerating.value = true to (promptGeneratingContent ?: "")
         val sseFlow =
             if (bizType == SSEContentBody.TYPE_RANDOM_INSPIRATION) mRepo.api.sseContentRandom(
@@ -166,6 +231,21 @@ class CreationViewModel : AppRepositoryViewModel<CreationRepository>() {
         }
     }
 
+    fun sameStylePrefill(hotCaseId: String?, callback: (SameStylePrefillInfo?) -> Unit) {
+        requestWithLoading(
+            apiBlock = { mRepo.sameStylePrefill(hotCaseId) },
+            onSuccess = { callback(data) }
+        )
+    }
+
+    fun getUnusedCreationPackages(callback: (List<UnusedPackageInfo>, String?) -> Unit) {
+        request(
+            apiBlock = { mRepo.api.unusedPackageList(UserTokenBody()) },
+            onSuccess = { callback(data?.validPackages().orEmpty(), data?.displaySubtitle) },
+            onError = { callback(emptyList(), null) }
+        )
+    }
+
     fun randomInspirations(showLoading: Boolean = false) {
         if (unshownInspirations.isNotEmpty()) {
             displayNextBatch()
@@ -202,7 +282,8 @@ class CreationViewModel : AppRepositoryViewModel<CreationRepository>() {
     }
 
     fun createTask(modelType: Int, body: CreateTaskBody, callback: (WorkTaskData?) -> Unit) {
-        requestWithLoading(
+        workCreating.value = true
+        request(
             apiBlock = {
                 when (modelType) {
                     DramaGenerateConstants.MODEL_STORY_SINGLE -> {
@@ -220,7 +301,11 @@ class CreationViewModel : AppRepositoryViewModel<CreationRepository>() {
                     else -> null
                 }
             },
-            onSuccess = { callback.invoke(data) }
+            onError = { workCreating.value = false },
+            onSuccess = {
+                workCreating.value = false
+                callback.invoke(data)
+            }
         )
     }
 

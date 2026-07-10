@@ -782,4 +782,17 @@
     <string name="featured">Featured</string>
     <string name="creation_one_tap_hit_generation">One-tap hit generation</string>
     <string name="create_dramas_with_ai">Create dramas with AI</string>
+    <string name="creative_description">Creative Description</string>
+    <string name="creation_hot_case">Popular Examples</string>
+    <string name="creation_hot_case_desc">Create in a proven style for better reach and engagement.</string>
+    <string name="creation_hot_case_empty">No popular examples available</string>
+    <string name="creation_hot_case_recommend_title">Why It Works</string>
+    <string name="create_same">Create Similar</string>
+    <string name="same_story">Similar Story</string>
+    <string name="creation_package_unused_title">You have an unused creation package</string>
+    <string name="creation_package_select_desc">Choose a package to use</string>
+    <string name="creation_package_single_desc">Use this package for your creation</string>
+    <string name="creation_package_not_use">Not Now</string>
+    <string name="creation_package_use_now">Use Now</string>
+    <string name="work_creating">Creating your work…</string>
 </resources>

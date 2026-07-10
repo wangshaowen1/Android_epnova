@@ -4,5 +4,7 @@ data class InspirationInfo(
     //灵感示例词 code
     val configCode: String? = null,
     //灵感词
-    val configValue: String? = null
+    val configValue: String? = null,
+    // 灵感案例使用次数上报 ID
+    val inspirationConfigId: String? = null
 )

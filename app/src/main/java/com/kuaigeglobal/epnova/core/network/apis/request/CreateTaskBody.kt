@@ -12,6 +12,9 @@ data class CreateTaskBody(
     val totalEpisodeCnt: String? = null,
     val workRatio: String? = null,
     val workStyleCode: String? = null,
+    val reportType: Int? = null,
+    val reportId: String? = null,
+    val packageInstanceId: String? = null,
 ) : Parcelable
 
 

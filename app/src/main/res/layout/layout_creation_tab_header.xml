@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="layout"
+            type="com.kuaigeglobal.epnova.feature.creator.CreationViewModel" />
+
+        <import type="android.view.View" />
+    </data>
+
+    <LinearLayout
+        android:id="@+id/creationHeader"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/contentBlock"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/spacing_l"
+            android:background="@drawable/bg_creation_content_block"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/contentTitle"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/inputCard"
+                style="@style/Text14.Outfit.Medium"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="12dp"
+                android:layout_marginTop="12dp"
+                android:drawablePadding="8dp"
+                android:gravity="center_vertical"
+                android:includeFontPadding="false"
+                android:text="@string/creative_description"
+                android:textColor="?attr/textColor2"
+                app:drawableStartCompat="@drawable/icon_description" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                app:layout_constraintTop_toBottomOf="@id/contentTitle"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/inspirationExampleRow"
+                android:id="@+id/inputCard"
+                android:layout_width="match_parent"
+                android:layout_height="205dp"
+                android:layout_marginHorizontal="12dp"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/bg_070b21_stroke_08_ffffff_r12">
+
+                <com.kuaigeglobal.epnova.widget.CounterInputLayout
+                    android:id="@+id/inputView"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:background="@null"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:gravity="top|start"
+                    app:hint="@{layout.hint}"
+                    app:inputCounterTextSize="13sp"
+                    app:inputCounterVisible="false"
+                    app:inputHorizontalPadding="12dp"
+                    app:inputLineSpacingExtra="2dp"
+                    app:inputTextColor="@color/white"
+                    app:inputTextColorHint="?attr/textColor4"
+                    app:inputTextSize="13sp"
+                    app:inputVerticalPadding="12dp"
+                    app:layout_constraintBottom_toTopOf="@id/inputBottomBar"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:maxLength="@{layout.maxInputLength}" />
+
+                <LinearLayout
+                    android:id="@+id/inputBottomBar"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="8dp"
+                    android:paddingBottom="12dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/tvContentLength"
+                    app:layout_constraintStart_toStartOf="parent">
+
+                    <TextView
+                        android:id="@+id/btnOptimize"
+                        style="@style/Text12.Outfit.Regular"
+                        singleClick="@{layout.clickHandler::onClick}"
+                        android:layout_width="wrap_content"
+                        android:layout_height="28dp"
+                        android:background="@drawable/bg_08_ffffff_r20"
+                        android:drawablePadding="4dp"
+                        android:gravity="center"
+                        android:paddingHorizontal="10dp"
+                        android:text="@string/ai_optimization"
+                        android:textColor="?attr/funcColorSpecial"
+                        android:visibility="gone"
+                        app:drawableStartCompat="@drawable/icon_optimize_yellow"
+                        tools:visibility="visible" />
+
+                    <TextView
+                        android:id="@+id/btnRandomPrompt"
+                        style="@style/Text12.Outfit.Regular"
+                        singleClick="@{layout.clickHandler::onClick}"
+                        android:layout_width="wrap_content"
+                        android:layout_height="24dp"
+                        android:background="@drawable/bg_creation_random_chip"
+                        android:drawablePadding="4dp"
+                        android:gravity="center"
+                        android:includeFontPadding="false"
+                        android:paddingHorizontal="8dp"
+                        android:text="@string/random_inspiration"
+                        android:textColor="?attr/textColor1"
+                        app:drawableStartCompat="@drawable/icon_random2" />
+
+                    <TextView
+                        android:id="@+id/btnStoryUpload"
+                        style="@style/Text12.Outfit.Regular"
+                        singleClick="@{layout.clickHandler::onClick}"
+                        android:layout_width="wrap_content"
+                        android:layout_height="28dp"
+                        android:background="@drawable/bg_08_ffffff_r20"
+                        android:drawablePadding="4dp"
+                        android:gravity="center"
+                        android:paddingHorizontal="10dp"
+                        android:text="@string/upload_text"
+                        android:textColor="@color/white"
+                        android:visibility="gone"
+                        app:drawableStartCompat="@drawable/icon_copy_upload" />
+
+                    <TextView
+                        android:id="@+id/btnPaste"
+                        style="@style/Text12.Outfit.Regular"
+                        singleClick="@{layout.clickHandler::onClick}"
+                        android:layout_width="wrap_content"
+                        android:layout_height="28dp"
+                        android:layout_marginStart="8dp"
+                        android:background="@drawable/bg_08_ffffff_r20"
+                        android:drawablePadding="4dp"
+                        android:gravity="center"
+                        android:paddingHorizontal="10dp"
+                        android:text="@string/paste"
+                        android:textColor="@color/white"
+                        android:visibility="gone"
+                        app:drawableStartCompat="@drawable/icon_copy_full12" />
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="18dp"
+                        android:layout_marginStart="@dimen/spacing_s"
+                        android:background="?attr/borderColor2"
+                        android:visibility="@{layout.input.length()>0?View.VISIBLE:View.GONE}" />
+
+                    <ImageView
+                        android:id="@+id/btnDelete"
+                        singleClick="@{layout.clickHandler::onClick}"
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:layout_marginStart="2dp"
+                        android:padding="6dp"
+                        android:src="@drawable/icon_delete"
+                        android:visibility="gone" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/tvContentLength"
+                    style="@style/Text12.Outfit.Regular"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="12dp"
+                    android:layout_marginBottom="16dp"
+                    android:includeFontPadding="false"
+                    android:text="@{layout.input.length()+`/`+layout.maxInputLength}"
+                    android:textColor="?attr/textColor4"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    tools:text="0/5000" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                app:layout_constraintTop_toBottomOf="@id/inputCard"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:id="@+id/inspirationExampleRow"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginHorizontal="12dp"
+                android:layout_marginBottom="16dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/inspirationExampleText"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:includeFontPadding="false"
+                    android:fontFamily="@font/outfit_regular"
+                    android:text="@string/inspiration_example"
+                    android:textColor="?attr/textColor3"
+                    android:textSize="11sp" />
+
+                <ImageView
+                    app:layout_constraintTop_toTopOf="@id/inspirationExampleText"
+                    app:layout_constraintBottom_toBottomOf="@id/inspirationExampleText"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:id="@+id/randomInspirations"
+                    singleClick="@{layout.clickHandler::onClick}"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:padding="6dp"
+                    android:src="@drawable/icon_random" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    app:layout_constraintTop_toBottomOf="@id/inspirationExampleText"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    setItemDecoration=""
+                    android:id="@+id/lyricPrompts"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:clipToPadding="false"
+                    android:nestedScrollingEnabled="false"
+                    android:overScrollMode="never"
+                    android:scrollbars="none"
+                    tools:itemCount="1"
+                    tools:listitem="@layout/item_inspiration_prompt" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <Button
+            android:id="@+id/btnNext"
+            style="@style/Button.Bold"
+            singleClick="@{layout.clickHandler::onClick}"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_marginTop="@dimen/spacing_l"
+            android:layout_marginHorizontal="35dp"
+            android:background="@drawable/bg_creation_button"
+            android:text="@string/next_step" />
+
+        <TextView
+            style="@style/Text16.Outfit.Medium"
+            android:id="@+id/hotHeader"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginHorizontal="@dimen/spacing_l"
+            android:drawableStart="@drawable/img_hot"
+            android:drawablePadding="8dp"
+            android:gravity="center_vertical"
+            android:text="@string/creation_hot_case"
+            android:textColor="?attr/textColor1" />
+
+        <TextView
+            android:id="@+id/hotCaseDesc"
+            style="@style/Text12.Outfit.Regular"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/spacing_l"
+            android:layout_marginTop="@dimen/spacing_s"
+            android:layout_marginBottom="@dimen/spacing_l"
+            android:text="@string/creation_hot_case_desc"
+            android:textColor="?attr/textColor3" />
+    </LinearLayout>
+</layout>

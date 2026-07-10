@@ -450,6 +450,18 @@ object ApiConstants {
      */
     const val INSPIRATION_QUICK_LIST = "work/config/getInspirationExamples"
 
+    /** 创作同款热门案例分页列表。 */
+    const val SAME_STYLE_HOT_CASE_PAGE = "work/config/hotCase/page"
+
+    /** 根据热门案例获取同款创作预填数据。 */
+    const val SAME_STYLE_PREFILL = "work/config/hotCase/sameStylePrefill"
+
+    /** 查询已购买且尚未使用的短剧创作套餐。 */
+    const val UNUSED_PACKAGE_LIST = "trade/package/unused/list"
+
+    /** 灵感案例、热门案例使用次数上报。 */
+    const val REPORT_CREATION_USAGE_COUNT = "work/creation/report"
+
     /**
      * 使用历史角色
      */

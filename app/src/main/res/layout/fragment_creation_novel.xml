@@ -1,13 +1,148 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
+        <variable
+            name="layout"
+            type="com.kuaigeglobal.epnova.feature.creator.CreationViewModel" />
+
+        <import type="android.view.View" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        <LinearLayout
+            android:id="@+id/contentBlock"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginHorizontal="@dimen/spacing_l"
+            android:layout_weight="1"
+            android:background="@drawable/bg_creation_content_block2"
+            android:orientation="vertical">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/inputCard"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginHorizontal="12dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="12dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_070b21_stroke_08_ffffff_r12">
+
+                <com.kuaigeglobal.epnova.widget.CounterInputLayout
+                    android:id="@+id/inputView"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:background="@null"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:gravity="top|start"
+                    app:hint="@{layout.hint}"
+                    app:inputCounterTextSize="13sp"
+                    app:inputCounterVisible="false"
+                    app:inputHorizontalPadding="12dp"
+                    app:inputLineSpacingExtra="2dp"
+                    app:inputTextColor="@color/white"
+                    app:inputTextColorHint="?attr/textColor4"
+                    app:inputTextSize="13sp"
+                    app:inputVerticalPadding="12dp"
+                    app:layout_constraintBottom_toTopOf="@id/inputBottomBar"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:maxLength="@{layout.maxInputLength}" />
+
+                <LinearLayout
+                    android:id="@+id/inputBottomBar"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="8dp"
+                    android:paddingBottom="12dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/tvContentLength"
+                    app:layout_constraintStart_toStartOf="parent">
+
+                    <TextView
+                        android:visibility="gone"
+                        android:id="@+id/btnStoryUpload"
+                        style="@style/Text12.Outfit.Regular"
+                        singleClick="@{layout.clickHandler::onClick}"
+                        android:layout_width="wrap_content"
+                        android:layout_height="28dp"
+                        android:background="@drawable/bg_08_ffffff_r20"
+                        android:drawablePadding="4dp"
+                        android:gravity="center"
+                        android:paddingHorizontal="10dp"
+                        android:text="@string/upload_text"
+                        android:textColor="?attr/funcColorSpecial"
+                        app:drawableStartCompat="@drawable/icon_copy_upload" />
+
+                    <TextView
+                        android:id="@+id/btnPaste"
+                        style="@style/Text12.Outfit.Regular"
+                        singleClick="@{layout.clickHandler::onClick}"
+                        android:layout_width="wrap_content"
+                        android:layout_height="28dp"
+                        android:background="@drawable/bg_08_ffffff_r20"
+                        android:drawablePadding="4dp"
+                        android:gravity="center"
+                        android:paddingHorizontal="10dp"
+                        android:text="@string/paste"
+                        android:textColor="@color/white"
+                        app:drawableStartCompat="@drawable/icon_copy_full12" />
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="18dp"
+                        android:layout_marginStart="@dimen/spacing_s"
+                        android:background="?attr/borderColor2"
+                        android:visibility="@{layout.input.length()>0?View.VISIBLE:View.GONE}" />
+
+                    <ImageView
+                        android:id="@+id/btnDelete"
+                        singleClick="@{layout.clickHandler::onClick}"
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:layout_marginStart="2dp"
+                        android:padding="6dp"
+                        android:src="@drawable/icon_delete"
+                        android:visibility="gone" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/tvContentLength"
+                    style="@style/Text12.Outfit.Regular"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="12dp"
+                    android:layout_marginBottom="16dp"
+                    android:includeFontPadding="false"
+                    android:text="@{layout.input.length()+`/`+layout.maxInputLength}"
+                    android:textColor="?attr/textColor4"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    tools:text="0/5000" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnNext"
+            style="@style/Button.Bold"
+            singleClick="@{layout.clickHandler::onClick}"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_marginHorizontal="35dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="30dp"
+            android:background="@drawable/bg_creation_button"
+            android:text="@string/next_step" />
+    </LinearLayout>
 </layout>

@@ -2,6 +2,7 @@ package com.kuaigeglobal.epnova.feature.creator.data
 
 import com.kuaigeglobal.epnova.core.data.CommonRepository
 import com.kuaigeglobal.epnova.core.network.apis.request.ContentBody
+import com.kuaigeglobal.epnova.core.network.apis.request.HotCaseIdBody
 import com.kuaigeglobal.epnova.core.network.apis.request.UserTokenBody
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -17,6 +18,10 @@ class CreationRepository : CommonRepository() {
         api.videoSetConfig(UserTokenBody())
     }
 
+    suspend fun sameStylePrefill(hotCaseId: String?) = withContext(Dispatchers.IO) {
+        api.sameStylePrefill(HotCaseIdBody(hotCaseId))
+    }
+
     /**
      * 敏感词校验
      */
@@ -24,4 +29,3 @@ class CreationRepository : CommonRepository() {
         api.sensitiveWordCheck(ContentBody(content))
     }
 }
-
