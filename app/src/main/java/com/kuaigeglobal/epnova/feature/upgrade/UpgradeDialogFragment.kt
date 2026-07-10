@@ -33,6 +33,10 @@ class UpgradeDialogFragment : BaseVMDialogFragment<DialogUpgradeBinding, EmptyVi
         binding.cancel.visibility = force?.let {
             if (it) View.GONE else View.VISIBLE
         } ?: View.GONE
+        binding.close.visibility = force?.let {
+            if (it) View.GONE else View.VISIBLE
+        } ?: View.GONE
+
         observeEvents {
             on<Events.DownloadProgressEvent> { event ->
                 if (isAdded) {
@@ -67,7 +71,7 @@ class UpgradeDialogFragment : BaseVMDialogFragment<DialogUpgradeBinding, EmptyVi
         dialog?.window?.let { dialogWindow ->
             dialogWindow.attributes?.let { attr ->
                 val screenWidth = min(ScreenUtils.getScreenWidth(), ScreenUtils.getScreenHeight())
-                attr.width = (285 / 375f * screenWidth).toInt()
+                attr.width = (294 / 375f * screenWidth).toInt()
                 attr.gravity = Gravity.CENTER
                 dialogWindow.attributes = attr
             }

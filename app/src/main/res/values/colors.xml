@@ -27,6 +27,7 @@
     <color name="rippleColorLight">#334B3849</color>
     <color name="transparent">#00000000</color>
     <color name="color_333333">#333333</color>
+    <color name="text_color_dark_3">#666666</color>
     <color name="color_787878">#787878</color>
     <color name="bg_color_gray_f3">#F3f3f3</color>
     <color name="color_ffbf00">#FFBF00</color>
@@ -476,5 +477,6 @@
     <color name="color_ff1f4b">#FF1F4B</color>
     <color name="color_ffcd2c">#FFCD2C</color>
     <color name="color_f59e0b">#F59E0B</color>
+    <color name="color_30_4d1515">#4D4D1515</color>
 </resources>
 

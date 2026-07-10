@@ -15,63 +15,96 @@
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        tools:layout_width="294dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:layout_width="285dp">
+        android:layout_height="wrap_content">
 
         <androidx.constraintlayout.widget.Placeholder
             android:id="@+id/top"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            app:layout_constraintDimensionRatio="285:18"
-            app:layout_constraintTop_toTopOf="@+id/card" />
-
-        <com.kuaigeglobal.epnova.widget.GradientBorderView
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            app:backgroundStartColor="?attr/bgColor3"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/top"
-            app:roundCornerRadius="24dp" />
-
-        <View
-            android:id="@+id/card"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:background="@drawable/bg_upgrade"
-            app:layout_constraintDimensionRatio="285:112"
+            app:layout_constraintDimensionRatio="294:58"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/tvTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="44dp"
-            android:text="@string/new_version_found"
-            android:textAppearance="@style/Text28"
-            android:textColor="?attr/textColor1"
-            app:layout_constraintStart_toStartOf="@id/card"
-            app:layout_constraintTop_toTopOf="@id/card" />
+        <View
+            android:id="@+id/upgradeBg"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="@drawable/bg_white_r24"
+            app:layout_constraintBottom_toBottomOf="@id/upgradeBottomLayout"
+            app:layout_constraintTop_toBottomOf="@id/top" />
 
-        <TextView
-            android:id="@+id/version"
+        <com.google.android.material.imageview.ShapeableImageView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:src="@drawable/icon_upgrade_top_bg"
+            app:layout_constraintDimensionRatio="294:225"
+            app:layout_constraintTop_toBottomOf="@id/top"
+            app:shapeAppearanceOverlay="@style/roundStyle_tr24" />
+
+        <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="@style/Text14"
-            android:textColor="?attr/textColor3"
-            app:layout_constraintStart_toStartOf="@+id/tvTitle"
-            app:layout_constraintTop_toBottomOf="@+id/tvTitle"
-            tools:text="V1.1.3" />
+            android:scaleType="fitXY"
+            android:src="@drawable/icon_upgrade_rocket"
+            app:layout_constraintDimensionRatio="147:203"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <LinearLayout
+            android:id="@+id/upgradeTitleLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="20dp"
+            android:orientation="vertical"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/top">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/outfit_bold"
+                android:textColor="@color/color_14141e"
+                android:textSize="26sp"
+                tools:text="New Version" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/outfit_bold"
+                android:textColor="@color/color_ff2e55"
+                android:textSize="26sp"
+                tools:text="Available" />
+
+            <TextView
+                android:id="@+id/version"
+                style="@style/Text12.Outfit.Medium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:background="@drawable/bg_stroke_30_4d1515_r6"
+                android:paddingHorizontal="6dp"
+                android:paddingVertical="3dp"
+                android:textColor="@color/color_0d0d0d"
+                tools:text="V1.2.0" />
+        </LinearLayout>
 
         <com.kuaigeglobal.epnova.widget.AtMostScrollView
             android:id="@+id/llScrollView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:layout_marginHorizontal="15dp"
             android:layout_marginTop="12dp"
+            android:background="@drawable/bg_white_r14"
             app:bottomFadingEdgeStrength="1"
-            app:layout_constraintDimensionRatio="285:128"
-            app:layout_constraintTop_toBottomOf="@+id/version"
+            app:layout_constraintDimensionRatio="264:168"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/upgradeTitleLayout"
             app:topFadingEdgeStrength="0"
             app:verticalFadingEdgeEnabled="true">
 
@@ -79,44 +112,68 @@
                 android:id="@+id/content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingHorizontal="24dp"
-                android:textAppearance="@style/Text14"
-                android:textColor="?attr/textColor1"
+                android:padding="12dp"
+                android:textAppearance="@style/Text13.Outfit.Regular"
+                android:textColor="@color/color_0d0d0d"
                 tools:text="1.优化一键登录;\n2.优化完善资料;\n2.优化完善资料;\n2.优化完善资料;\n2.优化完善资料;\n2.优化完善资料;\n2.优化完善资料;\n2.优化完善资料;" />
         </com.kuaigeglobal.epnova.widget.AtMostScrollView>
 
-        <TextView
-            android:id="@+id/upgrade"
-            singleClick="@{layout.clickHandler::onClick}"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/upgradeBottomLayout"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginHorizontal="24dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:paddingHorizontal="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/llScrollView">
+
+            <TextView
+                android:id="@+id/upgrade"
+                singleClick="@{layout.clickHandler::onClick}"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/selector_upgrade_button"
+                android:gravity="center"
+                android:text="@string/update_now"
+                android:textAppearance="@style/Text16.Outfit.Medium"
+                android:textColor="@color/fixed_white_1"
+                app:layout_constraintBottom_toTopOf="@id/cancel"
+                app:layout_constraintDimensionRatio="254:44"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_goneMarginBottom="24dp" />
+
+            <TextView
+                android:id="@+id/cancel"
+                singleClick="@{layout.clickHandler::onClick}"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:gravity="center"
+                android:text="@string/update_cancel"
+                android:textAppearance="@style/Text13.Outfit.Regular"
+                android:textColor="@color/text_color_dark_3"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/upgrade"
+                tools:visibility="visible" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <ImageView
+            android:id="@+id/close"
+            singleClick="@{layout.clickHandler::onClick}"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             android:layout_marginTop="20dp"
-            android:background="@drawable/selector_common_button"
-            android:gravity="center"
-            android:text="@string/update_now"
-            android:textAppearance="@style/Text16"
-            android:textColor="@color/fixed_white_1"
-            app:layout_constraintDimensionRatio="237:44"
-            app:layout_constraintTop_toBottomOf="@+id/llScrollView" />
+            android:src="@drawable/icon_dialog_bottom_close"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/upgradeBg" />
 
-        <androidx.constraintlayout.widget.Placeholder
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            app:layout_constraintDimensionRatio="285:24"
-            app:layout_constraintTop_toBottomOf="@+id/upgrade" />
-
-        <TextView
-            android:id="@+id/cancel"
-            singleClick="@{layout.clickHandler::onClick}"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginHorizontal="24dp"
-            android:gravity="center"
-            android:text="@string/update_cancel"
-            android:textAppearance="@style/Text13"
-            android:textColor="?textColor3"
-            app:layout_constraintDimensionRatio="237:44"
-            app:layout_constraintTop_toBottomOf="@+id/upgrade" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
