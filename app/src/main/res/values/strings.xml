@@ -783,9 +783,9 @@
     <string name="creation_one_tap_hit_generation">One-tap hit generation</string>
     <string name="create_dramas_with_ai">Create dramas with AI</string>
     <string name="creative_description">Creative Description</string>
-    <string name="creation_hot_case">Popular Examples</string>
-    <string name="creation_hot_case_desc">Create in a proven style for better reach and engagement.</string>
-    <string name="creation_hot_case_empty">No popular examples available</string>
+    <string name="creation_hot_case">Hit Scripts</string>
+    <string name="creation_hot_case_desc">Remake for higher release chances, more exposure &amp; earnings.</string>
+    <string name="creation_hot_case_empty">No hit scripts available</string>
     <string name="creation_hot_case_recommend_title">Why It Works</string>
     <string name="create_same">Create Similar</string>
     <string name="same_story">Similar Story</string>

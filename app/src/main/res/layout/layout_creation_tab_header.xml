@@ -245,11 +245,12 @@
             style="@style/Button.Medium"
             singleClick="@{layout.clickHandler::onClick}"
             android:layout_width="match_parent"
-            android:layout_height="52dp"
+            android:layout_height="48dp"
             android:layout_marginTop="@dimen/spacing_l"
             android:layout_marginHorizontal="35dp"
             android:background="@drawable/bg_creation_button"
             android:textSize="16sp"
+            android:fontFamily="@font/outfit_medium"
             android:text="@string/next_step" />
 
         <TextView
