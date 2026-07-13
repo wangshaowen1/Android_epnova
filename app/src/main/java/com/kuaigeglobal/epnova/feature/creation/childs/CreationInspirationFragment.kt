@@ -28,11 +28,14 @@ import com.kuaigeglobal.epnova.feature.creator.ItemInspirationPromptVM
 import com.kuaigeglobal.epnova.feature.creator.hotcase.CreationHotCaseEvent
 import com.kuaigeglobal.epnova.feature.creator.hotcase.CreationHotCaseInfo
 import com.kuaigeglobal.epnova.feature.creator.hotcase.CreationHotCasePagingAdapter
+import com.kuaigeglobal.epnova.feature.creator.set.VideoSetActivity
+import com.kuaigeglobal.epnova.router.AppNavigator
 import com.kuaigeglobal.epnova.widget.decoration.BottomSpaceDecoration
 import com.kuaigeglobal.epnova.widget.stateful.paging.MyMultiStatePagingFooterAdapter
 import com.nhsd.basic.BaseViewModelFragment
 import com.nhsd.basic.bus.observeEvents
 import com.nhsd.basic.ext.dp
+import com.nhsd.basic.ext.showToast
 import com.nhsd.basic.item.BaseItemEventsViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -140,7 +143,9 @@ class CreationInspirationFragment :
                 hotCaseEventVm.events.collect { event ->
                     when (event) {
                         is CreationHotCaseEvent.CreateSame -> {
-                            event.item.data.get()?.let(pageDelegate::createSame)
+                            event.item.data.get()?.let { info ->
+                                onCreateSame(info)
+                            }
                         }
                     }
                 }
@@ -181,6 +186,38 @@ class CreationInspirationFragment :
 
     private fun updateHotCaseState() {
         hotCaseStateAdapter.update(hotCaseRefreshState, hotCaseAdapter.itemCount == 0)
+    }
+
+    private fun onCreateSame(info: CreationHotCaseInfo) {
+        if (mRealVM.isStreaming()) {
+            return
+        }
+        if (AppNavigator.checkLoginIntercepted(true)) {
+            return
+        }
+        mRealVM.sameStylePrefill(info.id) { prefill ->
+            val sameStory = prefill?.inspirationContent
+            if (sameStory.isNullOrBlank()) {
+                getString(R.string.page_load_error).showToast()
+                return@sameStylePrefill
+            }
+            val workTitle = prefill?.workTitle?.takeIf { it.isNotBlank() }
+            mRealVM.videoSetConfig(true) {
+                showPackageDialogForHotCase(workTitle, sameStory, info.id)
+            }
+        }
+    }
+
+    private fun showPackageDialogForHotCase(workTitle: String?, sameStory: String, hotCaseId: String?) {
+        //
+        VideoSetActivity.start(
+            context = context,
+            workTitle = workTitle,
+            sameStory = sameStory,
+            list = mRealVM.videoSetConfig.value,
+            hotCaseId = hotCaseId
+//            creationPackage = packageInfo
+        )
     }
 
     override fun <Data> onClick(view: View, data: Data?) {

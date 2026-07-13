@@ -788,7 +788,9 @@
     <string name="creation_hot_case_empty">No hit scripts available</string>
     <string name="creation_hot_case_recommend_title">Why It Works</string>
     <string name="create_same">Remake</string>
-    <string name="same_story">Similar Story</string>
+    <string name="same_story">Create Similar Works</string>
+    <string name="create_same_story_synopsis">Story Synopsis</string>
+    <string name="create_same_story_synopsis_hint">Please enter story synopsis</string>
     <string name="creation_package_unused_title">You have an unused creation package</string>
     <string name="creation_package_select_desc">Choose a package to use</string>
     <string name="creation_package_single_desc">Use this package for your creation</string>

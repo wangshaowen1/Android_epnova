@@ -1,21 +1,30 @@
 package com.kuaigeglobal.epnova.feature.creator.set
 
+import android.graphics.Color
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.widget.doAfterTextChanged
+import androidx.lifecycle.MutableLiveData
 import com.blankj.utilcode.util.KeyboardUtils
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.base.RecyclerViewVM
 import com.kuaigeglobal.epnova.base.viewmodel.AppRepositoryViewModel
+import com.kuaigeglobal.epnova.base.viewmodel.ToolbarViewModel
 import com.kuaigeglobal.epnova.common.Constants
 import com.kuaigeglobal.epnova.common.ext.getChildByType
 import com.kuaigeglobal.epnova.core.AppRepository
+import com.kuaigeglobal.epnova.core.ext.launch
+import com.kuaigeglobal.epnova.core.ext.request
 import com.kuaigeglobal.epnova.core.network.apis.entity.VideoConfigData
 import com.kuaigeglobal.epnova.core.network.apis.entity.VideoConfigInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.VideoStyleConfigInfo
+import com.kuaigeglobal.epnova.core.network.apis.request.CreateTaskBody
+import com.kuaigeglobal.epnova.core.network.apis.request.WorkTaskData
+import com.kuaigeglobal.epnova.core.network.apis.response.FirstRechargeDialogData
+import com.kuaigeglobal.epnova.feature.creator.data.DramaGenerateConstants
 import com.kuaigeglobal.epnova.feature.creator.set.allstyle.ItemCreationStyleVm
 import com.kuaigeglobal.epnova.widget.decoration.GridSpacingItemDecoration
 import com.nhsd.basic.ext.dp
@@ -29,12 +38,24 @@ import com.nhsd.basic.ext.showToast
  * *****************************************
  */
 class VideoSetViewModel : AppRepositoryViewModel<AppRepository>() {
+
+    val mToolbarVM = ToolbarViewModel(
+        navigationAction = { back() },
+        title = R.string.same_story.getResString(),
+        background = Color.TRANSPARENT
+    )
+
     val configsData by lazy { mBundle.getParcelableValue(Constants.Extra.DATA, VideoConfigData::class.java) }
     val workTitle by lazy { mBundle.getString(Constants.Extra.TITLE) }
+    val sameStory by lazy { mBundle.getString(Constants.Extra.CONTENT) }
+    val hotCaseId by lazy { mBundle.getString(Constants.Extra.ID) }
 
     var checkedRatio: ItemVideoConfigVm? = null
     var checkedEpisodeSet: ItemVideoConfigVm? = null
     var checkedStyle: ItemCreationStyleVm? = null
+
+    val firstRechargeCache = MutableLiveData<FirstRechargeDialogData?>()
+    val workCreating = MutableLiveData(false)
 
     val ratioVms = arrayListOf<ItemVideoConfigVm>()
     val styleVms = arrayListOf<ItemCreationStyleVm>()
@@ -163,6 +184,36 @@ class VideoSetViewModel : AppRepositoryViewModel<AppRepository>() {
                     this.checked.set(true)
                     checkedStyle = this
                 }
+            }
+        }
+    }
+
+    fun createSameTask(modelType: Int, body: CreateTaskBody, callback: (WorkTaskData?) -> Unit) {
+        workCreating.value = true
+        request(
+            apiBlock = {
+                when (modelType) {
+                    DramaGenerateConstants.MODEL_STORY_SINGLE -> mRepo.api.createTaskFromSingleEpisode(body)
+                    else -> mRepo.api.createSummaryTaskFromInspiration(body)
+                }
+            },
+            onError = {
+                workCreating.value = false
+            },
+            onSuccess = {
+                workCreating.value = false
+                callback.invoke(data)
+            }
+        )
+    }
+
+    fun getFirstRechargeInfo(callback: () -> Unit) {
+        launch {
+            val firstRechargeResponse = mRepo.api.getFirstRechargeDialogInfo()
+            if (firstRechargeResponse.data != null && firstRechargeResponse.data?.isNeedShow() == true) {
+                firstRechargeCache.value = firstRechargeResponse.data
+            } else {
+                callback.invoke()
             }
         }
     }
