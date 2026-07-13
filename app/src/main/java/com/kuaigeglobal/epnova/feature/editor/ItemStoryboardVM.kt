@@ -46,14 +46,14 @@ class ItemStoryboardVM(
         }
     }
 
-    fun clear() {
+    fun release() {
         cleared = true
         loopGenStatusJob?.cancel()
         loopSubtitleGenStatusJob?.cancel()
     }
 
     override fun onCleared() {
-        clear()
+        release()
         super.onCleared()
     }
 

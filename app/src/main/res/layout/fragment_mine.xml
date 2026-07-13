@@ -422,6 +422,7 @@
                 android:orientation="vertical">
 
                 <LinearLayout
+                    android:visibility="gone"
                     android:id="@+id/ll_languages"
                     singleClick="@{layout.clickHandler::onClick}"
                     android:layout_width="match_parent"

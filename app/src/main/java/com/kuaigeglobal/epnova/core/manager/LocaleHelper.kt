@@ -35,7 +35,8 @@ object LocaleHelper {
             "id", "in" -> LANGUAGE_ID_ID
             else -> LANGUAGE_EN_US
         }
-        return if (normalized in supportedLanguages) normalized else LANGUAGE_EN_US
+//        return if (normalized in supportedLanguages) normalized else LANGUAGE_EN_US
+        return LANGUAGE_EN_US
     }
 
     fun localeFromLanguageCode(langCode: String?): Locale {

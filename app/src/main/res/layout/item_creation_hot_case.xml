@@ -44,28 +44,27 @@
 
                 <TextView
                     android:id="@+id/tvTitle"
-                    style="@style/Text14"
+                    style="@style/Text14.Outfit.Medium"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:ellipsize="end"
                     android:includeFontPadding="false"
-                    android:maxLines="1"
+                    android:maxLines="2"
                     android:text="@{item.data.title}"
                     android:textColor="?attr/textColor1"
                     android:textStyle="bold"
                     tools:text="重生之仇女翻身" />
 
-                <TextView
-                    style="@style/Text12"
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvTags"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:ellipsize="end"
-                    android:includeFontPadding="false"
-                    android:maxLines="1"
-                    android:text="@{item.data.tagsText}"
-                    android:textColor="?attr/textColor4"
-                    tools:text="都市爱情・总裁" />
+                    android:orientation="horizontal"
+                    android:overScrollMode="never"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:itemCount="1"
+                    tools:listitem="@layout/item_hot_script_tag" />
             </LinearLayout>
 
             <TextView
@@ -75,7 +74,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="30dp"
                 android:layout_marginStart="12dp"
-                android:background="@drawable/bg_theme_color1_r50"
+                android:background="@drawable/bg_5a6afe_r54"
                 android:paddingHorizontal="@dimen/spacing_l"
                 android:text="@string/create_same"
                 android:textStyle="normal"
@@ -91,7 +90,7 @@
             android:padding="12dp">
 
             <TextView
-                style="@style/Text13"
+                style="@style/Text13.Outfit.Regular"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:includeFontPadding="false"
@@ -100,7 +99,7 @@
                 tools:text="爆款推荐语" />
 
             <TextView
-                style="@style/Text12"
+                style="@style/Text12.Outfit.Regular"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"

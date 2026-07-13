@@ -122,7 +122,7 @@ class EditStoryboardVideoViewModel : AppRepositoryViewModel<EditStoryboardReposi
         cancelDownload()
         progressJob?.cancel()
         loopSynthesisStatusJob?.cancel()
-        adapter.items.forEach { it.clear() }
+        adapter.items.forEach { it.release() }
         super.onCleared()
         storyboardPlayer.release()
     }
@@ -188,7 +188,7 @@ class EditStoryboardVideoViewModel : AppRepositoryViewModel<EditStoryboardReposi
                             }
                         }
                     }.let {
-                        adapter.items.forEach { it.clear() }
+                        adapter.items.forEach { it.release() }
                         adapter.submitList(it)
                     }
                     nextStepEnabled.set(allStoryboardGenerated())
