@@ -48,7 +48,9 @@
                             app:bvp_indicator_visibility="gone"
                             app:bvp_interval="4000"
                             app:bvp_scroll_duration="600"
-                            app:layout_constraintDimensionRatio="375:246"
+                            app:layout_constraintDimensionRatio="375:255"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <com.zhpan.indicator.IndicatorView
@@ -56,19 +58,20 @@
                             android:layout_width="wrap_content"
                             android:layout_height="4dp"
                             android:layout_marginEnd="@dimen/spacing_l"
-                            android:layout_marginBottom="30dp"
-                            app:layout_constraintBottom_toBottomOf="@id/banner"
+                            android:layout_marginBottom="18dp"
+                            app:layout_constraintBottom_toTopOf="@id/btnCreation"
                             app:layout_constraintEnd_toEndOf="@id/banner" />
 
                         <Button
                             android:id="@+id/btnCreation"
-                            style="@style/Button.Bold.Gradient"
+                            style="@style/Button.Medium.Gradient"
                             android:layout_width="match_parent"
                             android:layout_height="0dp"
                             android:layout_marginHorizontal="20dp"
-                            android:layout_marginTop="-12dp"
-                            app:layout_constraintDimensionRatio="325:48"
-                            app:layout_constraintTop_toBottomOf="@id/banner" />
+                            app:layout_constraintDimensionRatio="335:48"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintBottom_toBottomOf="@id/banner" />
 
                         <com.kuaigeglobal.epnova.widget.ShimmerView
                             app:layout_constraintBottom_toBottomOf="@id/btnCreation"

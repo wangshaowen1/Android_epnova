@@ -136,21 +136,31 @@
                 android:textSize="16sp" />
         </LinearLayout>
 
-        <TextView
-            setVisible="@{layout.loginRewardsValid}"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/bg_theme_color1_leaf_right"
-            android:drawableStart="@drawable/ic_coins"
-            android:drawablePadding="@dimen/spacing_xs"
+        <LinearLayout
             android:paddingHorizontal="6dp"
             android:paddingVertical="4dp"
-            android:text="@{@string/login_claim_coins(layout.loginRewards)}"
-            android:textColor="?attr/textColor1"
+            setVisible="@{layout.loginRewardsValid}"
+            android:background="@drawable/bg_theme_color1_leaf_right"
             android:translationY="-20dp"
             app:layout_constraintEnd_toEndOf="@id/btnGoogle"
             app:layout_constraintTop_toTopOf="@id/btnGoogle"
-            tools:text="@string/login_claim_coins" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:src="@drawable/ic_coins"
+                android:layout_width="16dp"
+                android:layout_height="16dp"/>
+
+            <TextView
+                android:layout_marginStart="4dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{@string/login_claim_coins(layout.loginRewards)}"
+                android:textColor="?attr/textColor1"
+                android:fontFamily="@font/outfit_medium"
+                android:textSize="12sp"
+                tools:text="@string/login_claim_coins" />
+        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/ll_describe"

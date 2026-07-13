@@ -227,7 +227,6 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    setItemDecoration=""
                     android:id="@+id/lyricPrompts"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -243,13 +242,14 @@
 
         <Button
             android:id="@+id/btnNext"
-            style="@style/Button.Bold"
+            style="@style/Button.Medium"
             singleClick="@{layout.clickHandler::onClick}"
             android:layout_width="match_parent"
             android:layout_height="52dp"
             android:layout_marginTop="@dimen/spacing_l"
             android:layout_marginHorizontal="35dp"
             android:background="@drawable/bg_creation_button"
+            android:textSize="16sp"
             android:text="@string/next_step" />
 
         <TextView

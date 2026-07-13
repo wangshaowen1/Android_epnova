@@ -6,7 +6,7 @@
 
     <com.kuaigeglobal.epnova.widget.EditTextWithScrollView
         android:id="@+id/contentInput"
-        style="@style/Text.Medium"
+        style="@style/Text.Regular"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@null"
@@ -37,7 +37,7 @@
             android:layout_height="wrap_content"
             android:textColor="@color/color_50_ffffff"
             android:textSize="15sp"
-            android:fontFamily="@font/outfit_medium"
+            android:fontFamily="@font/outfit_regular"
             tools:text="8" />
 
         <TextView
@@ -46,7 +46,7 @@
             android:layout_height="wrap_content"
             android:textColor="@color/color_50_ffffff"
             android:textSize="15sp"
-            android:fontFamily="@font/outfit_medium"
+            android:fontFamily="@font/outfit_regular"
             tools:text="/20" />
     </LinearLayout>
 </merge>

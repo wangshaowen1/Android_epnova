@@ -104,6 +104,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="4dp"
                             style="@style/Text.Regular"
+                            android:textSize="12sp"
                             android:text="@{@string/login_claim_coins(layout.loginRewards)}"
                             android:textColor="?attr/textColor1"
                             tools:text="@string/login_claim_coins" />
