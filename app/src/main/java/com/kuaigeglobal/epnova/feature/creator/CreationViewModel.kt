@@ -3,6 +3,7 @@ package com.kuaigeglobal.epnova.feature.creator
 import android.graphics.Color
 import android.util.Log
 import androidx.annotation.ColorInt
+import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableInt
 import androidx.lifecycle.MutableLiveData
@@ -62,6 +63,7 @@ class CreationViewModel : AppRepositoryViewModel<CreationRepository>() {
     val promptGenerating = MutableLiveData<Pair<Boolean, String>>()
     val workCreating = MutableLiveData(false)
 
+    val showRefreshInspirations = ObservableBoolean(true)
     val hint = ObservableField<String>()
     val creationModel by lazy {
         mBundle.getInt(KEY_MODEL)
@@ -257,6 +259,9 @@ class CreationViewModel : AppRepositoryViewModel<CreationRepository>() {
         ) {
             // 判空并处理新数据
             data?.let { newData ->
+                // 小于5条不展示刷新按钮
+                showRefreshInspirations.set(newData.size >= 5)
+
                 unshownInspirations.clear() // 保底清理
                 // 将新拿到的一批数据打乱顺序后放入缓存池，这样后续按顺序取相当于随机抽取
                 unshownInspirations.addAll(newData.shuffled())
@@ -268,8 +273,8 @@ class CreationViewModel : AppRepositoryViewModel<CreationRepository>() {
     }
 
     private fun displayNextBatch() {
-        // 每次取最多 4 个。如果末尾剩余不足 4 个，就全部取出展示
-        val countToTake = minOf(4, unshownInspirations.size)
+        // 每次取最多 5 个。如果末尾剩余不足 5 个，就全部取出展示
+        val countToTake = minOf(5, unshownInspirations.size)
 
         // 复制出要展示的数据列表
         val batchToShow = unshownInspirations.take(countToTake).toList()

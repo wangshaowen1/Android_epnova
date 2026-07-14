@@ -212,6 +212,7 @@
                     android:textSize="11sp" />
 
                 <ImageView
+                    setVisible="@{layout.showRefreshInspirations}"
                     app:layout_constraintTop_toTopOf="@id/inspirationExampleText"
                     app:layout_constraintBottom_toBottomOf="@id/inspirationExampleText"
                     app:layout_constraintEnd_toEndOf="parent"
