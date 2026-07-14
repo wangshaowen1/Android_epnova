@@ -250,7 +250,7 @@ class CreationViewModel : AppRepositoryViewModel<CreationRepository>() {
 
     fun randomInspirations(showLoading: Boolean = false) {
         if (unshownInspirations.isNotEmpty()) {
-            displayNextBatch()
+            displayNextBatch(false)
             return
         }
         requestWithLoading(
@@ -267,20 +267,36 @@ class CreationViewModel : AppRepositoryViewModel<CreationRepository>() {
                 unshownInspirations.addAll(newData.shuffled())
 
                 // 数据准备完毕，展示这一批的前5个
-                displayNextBatch()
+                displayNextBatch(true)
             }
         }
     }
 
-    private fun displayNextBatch() {
+    /**
+     * 取灵感展示
+     * @param flag 标记读远程数据还是缓存数据 true: 远程 false：缓存
+     */
+    private fun displayNextBatch(flag: Boolean = true) {
+        val limits = 5
         // 每次取最多 5 个。如果末尾剩余不足 5 个，就全部取出展示
-        val countToTake = minOf(5, unshownInspirations.size)
+        val countToTake = minOf(limits, unshownInspirations.size)
 
         // 复制出要展示的数据列表
-        val batchToShow = unshownInspirations.take(countToTake).toList()
+        val batchToShow = unshownInspirations.take(countToTake).toMutableList()
 
         // 从缓存池中剔除已经取出的数据 (使用 subList.clear() 比 removeAll 更安全且性能更好)
         unshownInspirations.subList(0, countToTake).clear()
+
+        // 读缓存才触发这段逻辑，取缓存展示
+        if (!flag) {
+            if (batchToShow.size < limits) {
+                val supplement = inspirationPrompts.value
+                    .orEmpty()
+                    .shuffled()
+                    .take(limits - batchToShow.size)
+                batchToShow.addAll(supplement)
+            }
+        }
 
         // 更新 LiveData 通知 UI 渲染
         inspirationPrompts.value = batchToShow
