@@ -15,6 +15,7 @@ import com.kuaigeglobal.epnova.core.AppRepository
 import com.kuaigeglobal.epnova.core.ext.requestWithLoading
 import com.kuaigeglobal.epnova.core.network.apis.request.SaveStorySummaryBody
 import com.kuaigeglobal.epnova.core.network.apis.request.WorkInfoUpdateBody
+import com.nhsd.basic.ext.getResString
 import java.util.regex.Pattern
 
 class InputViewModel : AppRepositoryViewModel<AppRepository>() {
@@ -28,6 +29,7 @@ class InputViewModel : AppRepositoryViewModel<AppRepository>() {
     val title = ObservableField<String>()
     val maxLength = ObservableInt()
     val subTitle = ObservableField<CharSequence>()
+    val desc = ObservableField<String>()
     var hasChange = false
 
     override fun onCreate() {
@@ -37,6 +39,7 @@ class InputViewModel : AppRepositoryViewModel<AppRepository>() {
             subTitle.set(formatEpisodeTitle(it, "#80ffffff".toColorInt()))
         }
         setTitle()
+        setDesc()
         // 海外版
         maxLength.set(
             (when (type) {
@@ -45,7 +48,7 @@ class InputViewModel : AppRepositoryViewModel<AppRepository>() {
                 InputDialog.TYPE_EPISODE_CONTENT -> 5000
                 InputDialog.TYPE_ASSET_DESC -> 200
                 InputDialog.TYPE_STORYBOARD_DESC -> 1000
-                InputDialog.TYPE_SAME_STORY -> 1000
+                InputDialog.TYPE_SAME_STORY -> 4000
                 else -> 500
             } * Constants.INTERNATIONALIZATION_RATIO)
         )
@@ -74,7 +77,18 @@ class InputViewModel : AppRepositoryViewModel<AppRepository>() {
             }
 
             InputDialog.TYPE_SAME_STORY -> {
-                title.set(getString(R.string.same_story))
+                title.set(getString(R.string.same_story_input_title))
+            }
+        }
+    }
+
+    fun setDesc() {
+        when (type) {
+            InputDialog.TYPE_SAME_STORY -> {
+                desc.set(R.string.same_story_input_desc.getResString())
+            }
+            else -> {
+                desc.set(R.string.content_restriction_warning.getResString())
             }
         }
     }

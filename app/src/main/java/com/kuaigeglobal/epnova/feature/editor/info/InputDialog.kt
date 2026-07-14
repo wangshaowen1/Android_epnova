@@ -20,6 +20,7 @@ import com.kuaigeglobal.epnova.common.ext.topActivity
 import com.kuaigeglobal.epnova.core.ext.sensitiveWordCheck
 import com.kuaigeglobal.epnova.databinding.DialogInputBinding
 import com.nhsd.basic.BaseBottomPushVMDialogFragment
+import com.nhsd.basic.ext.getResString
 import com.nhsd.basic.ext.isActive
 import com.nhsd.basic.ext.showToast
 import kotlinx.coroutines.launch
@@ -129,6 +130,8 @@ class InputDialog :
                 KeyboardUtils.showSoftInput(binding.inputView.input)
             }
         }, 100)
+
+        binding.inputView.setHint(if (mRealVM.type == TYPE_SAME_STORY) R.string.same_story_input_hint.getResString() else R.string.enter_content.getResString())
     }
 
     fun closeConfirm() {
