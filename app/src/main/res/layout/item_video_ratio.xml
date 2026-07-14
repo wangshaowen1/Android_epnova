@@ -46,7 +46,7 @@
             android:layout_marginStart="@dimen/spacing_m"
             android:text="@{item.data.configName}"
             android:textColor="?attr/textColor2"
-            android:textStyle="bold"
+            android:textStyle="normal"
             app:layout_constraintBottom_toTopOf="@id/tvValue"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/llImage"
