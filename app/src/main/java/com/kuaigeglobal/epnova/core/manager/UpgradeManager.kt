@@ -1,8 +1,9 @@
 package com.kuaigeglobal.epnova.core.manager
 
-// TODO: Feature
 import android.app.ProgressDialog
+import android.content.ActivityNotFoundException
 import android.content.Intent
+import android.net.Uri
 import android.text.TextUtils
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -31,6 +32,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
+import androidx.core.net.toUri
 
 class UpgradeManager(private val context: BaseActivity) {
 
@@ -203,8 +205,27 @@ class UpgradeManager(private val context: BaseActivity) {
             if (!needForceUpdate) {
                 dialog?.dismissAllowingStateLoss()
             }
-            downApk(upgradeData.upgradeUrl, upgradeData.md5Hash, false)
+            openGooglePlay()
             null
+        }
+    }
+
+    private fun openGooglePlay() {
+        val packageName = context.packageName
+        try {
+            context.startActivity(
+                Intent(Intent.ACTION_VIEW, "market://details?id=$packageName".toUri()).apply {
+                    setPackage("com.android.vending")
+                }
+            )
+        } catch (_: ActivityNotFoundException) {
+            // 兜底跳转网页版google play
+            context.startActivity(
+                Intent(
+                    Intent.ACTION_VIEW,
+                    "https://play.google.com/store/apps/details?id=$packageName".toUri()
+                )
+            )
         }
     }
 

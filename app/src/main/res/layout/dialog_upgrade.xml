@@ -43,11 +43,13 @@
             app:shapeAppearanceOverlay="@style/roundStyle_tr24" />
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="147dp"
+            android:layout_height="203dp"
             android:scaleType="fitXY"
             android:src="@drawable/icon_upgrade_rocket"
-            app:layout_constraintDimensionRatio="147:203"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintHorizontal_bias="1"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -70,7 +72,7 @@
                 android:fontFamily="@font/outfit_bold"
                 android:textColor="@color/color_14141e"
                 android:textSize="26sp"
-                tools:text="New Version" />
+                android:text="New Version" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -78,7 +80,7 @@
                 android:fontFamily="@font/outfit_bold"
                 android:textColor="@color/color_ff2e55"
                 android:textSize="26sp"
-                tools:text="Available" />
+                android:text="Available" />
 
             <TextView
                 android:id="@+id/version"
@@ -115,7 +117,7 @@
                 android:padding="12dp"
                 android:textAppearance="@style/Text13.Outfit.Regular"
                 android:textColor="@color/color_0d0d0d"
-                tools:text="1.优化一键登录;\n2.优化完善资料;\n2.优化完善资料;\n2.优化完善资料;\n2.优化完善资料;\n2.优化完善资料;\n2.优化完善资料;\n2.优化完善资料;" />
+                tools:text="1. Refreshed home screen with abrand-new look.\n2. All-new interactions -Al-generated exclusive dramas, easierearnings. Everyone's a creator.\n3. Faster withdrawals, no daily limits.Cash out anytime - may the richesflow.\n4. Faster withdrawals, no daily limits.Cash out anytime - may the richesflow."/>
         </com.kuaigeglobal.epnova.widget.AtMostScrollView>
 
         <androidx.constraintlayout.widget.ConstraintLayout

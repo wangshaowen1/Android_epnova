@@ -82,11 +82,10 @@ class UpgradeDialogFragment : BaseVMDialogFragment<DialogUpgradeBinding, EmptyVi
         super.onClick(view, data)
         when (view.id) {
             R.id.upgrade -> {
-                binding.upgrade.isEnabled = false
                 onUpgradeClick?.invoke()
             }
 
-            R.id.cancel -> dismissAllowingStateLoss()
+            R.id.cancel, R.id.close -> dismissAllowingStateLoss()
         }
     }
 

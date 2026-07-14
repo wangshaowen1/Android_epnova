@@ -32,6 +32,7 @@ import com.kuaigeglobal.epnova.widget.GeneratingDialog
 import com.nhsd.basic.BaseViewModelActivity
 import com.nhsd.basic.bus.AppEvent
 import com.nhsd.basic.ext.dp
+import com.nhsd.basic.ext.getResString
 import com.nhsd.basic.ext.getThemeColor
 import com.nhsd.basic.ext.setOnSingleClickListener
 import com.nhsd.basic.ext.showToast
@@ -222,7 +223,7 @@ class VideoSetActivity : BaseViewModelActivity<ActivityVideoSetBinding, VideoSet
         val workTitle = binding.nameInputer.text.trim()
         val sameStory = sameStoryContent.trim()
         if (workTitle.isEmpty()) {
-            "请输入作品名称".showToast()
+            R.string.please_enter_work_name.getResString().showToast()
             return
         }
         if (sameStory.isEmpty()) {
@@ -230,21 +231,21 @@ class VideoSetActivity : BaseViewModelActivity<ActivityVideoSetBinding, VideoSet
             return
         }
         if (mRealVM.checkedEpisodeSet == null) {
-            "请设置故事总集数".showToast()
+            R.string.please_set_total_episodes.getResString().showToast()
             return
         }
         if (mRealVM.checkedEpisodeSet?.data?.get()?.isCustomInput() == true &&
             mRealVM.checkedEpisodeSet?.input?.get().isNullOrEmpty()
         ) {
-            "请输入自定义集数".showToast()
+            R.string.please_enter_custom_episodes.getResString().showToast()
             return
         }
         if (mRealVM.checkedRatio == null) {
-            "请选择视频尺寸".showToast()
+            R.string.please_select_video_aspect_ratio.getResString().showToast()
             return
         }
         if (mRealVM.checkedStyle == null) {
-            "请选择视频风格".showToast()
+            R.string.please_select_video_style.getResString().showToast()
             return
         }
 
