@@ -12,6 +12,7 @@ import com.kuaigeglobal.epnova.core.network.apis.entity.VideoConfigData
 import com.kuaigeglobal.epnova.core.network.apis.entity.VideoConfigInfo
 import com.kuaigeglobal.epnova.core.manager.EventManager
 import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
+import com.kuaigeglobal.epnova.core.manager.FirebaseEventValue
 import com.kuaigeglobal.epnova.databinding.DialogVideoSetBinding
 import com.kuaigeglobal.epnova.feature.creator.set.allstyle.CreationStyleChooseDialog
 import com.nhsd.basic.BaseBottomPushVMDialogFragment
@@ -79,6 +80,7 @@ class VideoSetDialog : BaseBottomPushVMDialogFragment<DialogVideoSetBinding, Vid
                 getString(R.string.please_select_video_style).showToast()
                 return@setOnClickListener
             }
+            val trackMap = mutableMapOf<String, String>()
             lifecycleScope.launch {
                 sensitiveWordCheck(binding.nameInputer.text.toString(), {
                     val episodeSet = mRealVM.checkedEpisodeSet?.data?.get()
@@ -91,7 +93,11 @@ class VideoSetDialog : BaseBottomPushVMDialogFragment<DialogVideoSetBinding, Vid
                             EventManager.onFirebaseTrack(FirebaseEvent.CUSTOM_EPISODE_INPUT)
                         }
                     }
-                    EventManager.onFirebaseTrack(FirebaseEvent.START_CREATION_CLICK)
+                    trackMap[FirebaseEventValue.EPISODES] = episodeSet?.configValue ?: ""
+                    trackMap[FirebaseEventValue.VIDEO_SIZE] = mRealVM.checkedRatio?.data?.get()?.configValue ?: ""
+                    trackMap[FirebaseEventValue.STYLE] = mRealVM.checkedStyle?.data?.get()?.styleName ?: ""
+
+                    EventManager.onFirebaseTrack(FirebaseEvent.START_CREATION_CLICK, trackMap)
                     onSuccess?.invoke(
                         this@VideoSetDialog,
                         episodeSet?.configCode,

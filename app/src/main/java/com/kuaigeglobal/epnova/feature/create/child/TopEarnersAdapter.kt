@@ -57,7 +57,7 @@ class TopEarnersAdapter : PagingDataAdapter<CreatorWorkInfo, RecyclerView.ViewHo
                 ).apply {
                     onItemClick.value = {
                         EventManager.onFirebaseTrack(
-                            FirebaseEvent.CREATE_TOP_EARNERS_DRAMA_CLICK,
+                            FirebaseEvent.FEATURED_TOP_EARNERS_DRAMA_CLICK,
                             FirebaseEventParam.DRAMA_ID to item.workId
                         )
                         // TopEarners 是唯一允许跨作品上下切换的入口，播放器会复用同一个共享 work feed。

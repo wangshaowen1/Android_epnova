@@ -159,7 +159,7 @@
         <!-- 保存按钮 -->
         <Button
             android:id="@+id/btnConfirm"
-            style="@style/Button.Bold"
+            style="@style/Button.Bold.Gradient"
             android:layout_width="match_parent"
             android:layout_marginTop="37dp"
             android:layout_marginBottom="30dp"

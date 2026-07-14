@@ -188,7 +188,7 @@ class MainActivity : BaseViewModelActivity<ActivityMainBinding, MainViewModel>()
                     //创建
                     setKeepScreenOn(true)
                     mRealVM.showTab.set(PAGE_CREATE)
-                    EventManager.onFirebaseTrack(FirebaseEvent.CREATE_HOME_VIEW)
+//                    EventManager.onFirebaseTrack(FirebaseEvent.CREATE_HOME_VIEW)
                     supportFragmentManager.switchFragment(
                         R.id.fragment,
                         CreationFragment::class.java

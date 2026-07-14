@@ -15,6 +15,8 @@ import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.adapter.QuickAdapter
 import com.kuaigeglobal.epnova.core.Events
 import com.kuaigeglobal.epnova.core.ext.onUserSignOut
+import com.kuaigeglobal.epnova.core.manager.EventManager
+import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
 import com.kuaigeglobal.epnova.core.network.apis.entity.InspirationInfo
 import com.kuaigeglobal.epnova.databinding.FragmentCreationInspirationBinding
 import com.kuaigeglobal.epnova.databinding.LayoutCreationTabHeaderBinding
@@ -129,6 +131,8 @@ class CreationInspirationFragment :
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 mRealVM.creationHotCaseFlow.collectLatest { pagingData ->
+                    // 加载创作同款列表
+                    EventManager.onFirebaseTrack(FirebaseEvent.HIT_SCRIPTS_VIEW)
                     hotCaseAdapter.submitData(pagingData)
                 }
             }
@@ -143,6 +147,7 @@ class CreationInspirationFragment :
                 hotCaseEventVm.events.collect { event ->
                     when (event) {
                         is CreationHotCaseEvent.CreateSame -> {
+                            EventManager.onFirebaseTrack(FirebaseEvent.REMAKE_BTN_CLICK)
                             event.item.data.get()?.let { info ->
                                 onCreateSame(info)
                             }
@@ -203,19 +208,20 @@ class CreationInspirationFragment :
             }
             val workTitle = prefill?.workTitle?.takeIf { it.isNotBlank() }
             mRealVM.videoSetConfig(true) {
-                showPackageDialogForHotCase(workTitle, sameStory, info.id)
+                showPackageDialogForHotCase(workTitle, sameStory, info.id, info.title)
             }
         }
     }
 
-    private fun showPackageDialogForHotCase(workTitle: String?, sameStory: String, hotCaseId: String?) {
+    private fun showPackageDialogForHotCase(workTitle: String?, sameStory: String, hotCaseId: String?, hotCaseTitle: String?) {
         //
         VideoSetActivity.start(
             context = context,
             workTitle = workTitle,
             sameStory = sameStory,
             list = mRealVM.videoSetConfig.value,
-            hotCaseId = hotCaseId
+            hotCaseId = hotCaseId,
+            hotCaseTitle = hotCaseTitle
 //            creationPackage = packageInfo
         )
     }

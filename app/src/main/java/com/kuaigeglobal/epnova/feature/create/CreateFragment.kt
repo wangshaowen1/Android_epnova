@@ -7,10 +7,7 @@ import android.view.View
 import android.widget.ImageView
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
-import com.kuaigeglobal.epnova.core.Config
 import com.kuaigeglobal.epnova.databinding.FragmentCreateBinding
-import com.kuaigeglobal.epnova.feature.creator.CreationRootActivity
-import com.kuaigeglobal.epnova.router.AppNavigator
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.adapter.FragmentStateCacheAdapter
 import com.kuaigeglobal.epnova.common.ext.removeTheRipples
@@ -41,10 +38,7 @@ import com.nhsd.magicindicator.buildins.commonnavigator.titles.ColorTransitionPa
 import com.zhpan.bannerview.BaseBannerAdapter
 import com.zhpan.bannerview.BaseViewHolder
 import com.zhpan.indicator.enums.IndicatorStyle
-import kotlin.compareTo
-import kotlin.div
 import kotlin.math.abs
-import kotlin.text.toFloat
 
 /**
  * 主页 - Featured
@@ -89,9 +83,10 @@ class CreateFragment : BaseViewModelFragment<FragmentCreateBinding, CreateViewMo
                 holder?.apply {
                     val image = findViewById<ImageView>(R.id.image)
                     loadUri(image, data.imageUrl, R.drawable.img_default_cover_16_9.getResDrawable())
+                    EventManager.onFirebaseTrack(FirebaseEvent.FEATURED_BANNER_VIEW)
                     image.setOnSingleClickListener {
                         EventManager.onFirebaseTrack(
-                            FirebaseEvent.CREATE_BANNER_CLICK,
+                            FirebaseEvent.FEATURED_BANNER_CLICK,
                             FirebaseEventParam.BANNER_ID to data.firebaseBannerId()
                         )
                         AppRouter.jumpFromBanner(data.jumpUri, data.firebaseBannerId())
@@ -121,7 +116,7 @@ class CreateFragment : BaseViewModelFragment<FragmentCreateBinding, CreateViewMo
 
 
         binding.btnCreation.setOnSingleClickListener {
-            EventManager.onFirebaseTrack(FirebaseEvent.CREATE_BTN_CLICK)
+            EventManager.onFirebaseTrack(FirebaseEvent.FEATURED_BTN_CLICK)
             FlowEventBus.postSync(Events.MainTabEvent(Events.MainTabEvent.TAB_CREATE))
 //            CreationRootActivity.start(activity)
         }
@@ -209,7 +204,7 @@ class CreateFragment : BaseViewModelFragment<FragmentCreateBinding, CreateViewMo
                 titleView.selectedColor = topActivity?.getThemeColor(R.attr.textColor1) ?: 0
                 titleView.setOnClickListener {
                     if (index == 1 && binding.viewPager2.currentItem != index) {
-                        EventManager.onFirebaseTrack(FirebaseEvent.CREATE_RESOURCE_CENTER_CLICK)
+                        EventManager.onFirebaseTrack(FirebaseEvent.FEATURED_RESOURCE_CENTER_CLICK)
                     }
                     binding.viewPager2.currentItem = index
                 }

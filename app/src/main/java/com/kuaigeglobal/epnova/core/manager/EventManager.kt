@@ -223,6 +223,14 @@ object FirebaseEvent {
     const val FEATURED_HOME_VIEW = "featured_home_view"
 
     /**
+     * 模块：Featured
+     * 事件类型：曝光
+     * 事件名称：创作入口顶部banner曝光
+     * 说明：创作入口顶部banner曝光：创作入口页面顶部banner图片成功渲染展示时触发
+     */
+    const val FEATURED_BANNER_VIEW = "featured_banner_view"
+
+    /**
      * 模块：创作入口
      * 事件类型：曝光
      * 事件名称：创作入口页面曝光
@@ -244,7 +252,7 @@ object FirebaseEvent {
      * 事件名称：创作入口顶部banner点击
      * 说明：创作入口顶部banner点击：用户点击顶部banner图片时触发
      */
-    const val CREATE_BANNER_CLICK = "create_banner_click"
+    const val FEATURED_BANNER_CLICK = "featured_banner_click"
 
     /**
      * 模块：创作入口
@@ -252,7 +260,7 @@ object FirebaseEvent {
      * 事件名称：点击Creating Short Dramas按钮
      * 说明：点击Creating Short Dramas按钮：用户点击创作入口页面中部"Creating Short Dramas"按钮时触发
      */
-    const val CREATE_BTN_CLICK = "create_btn_click"
+    const val FEATURED_BTN_CLICK = "featured_btn_click"
 
     /**
      * 模块：创作入口
@@ -260,7 +268,7 @@ object FirebaseEvent {
      * 事件名称：点击Resource Center tab
      * 说明：点击Resource Center tab：用户在创作入口页面主动切换至Resource Center tab时触发，默认选中Top Earners不触发
      */
-    const val CREATE_RESOURCE_CENTER_CLICK = "create_resource_center_click"
+    const val FEATURED_RESOURCE_CENTER_CLICK = "featured_resource_center_click"
 
     /**
      * 模块：创作入口
@@ -269,7 +277,7 @@ object FirebaseEvent {
      * 说明：点击top earners展示的作品封面：用户点击Top Earners列表中任意作品卡片时触发
      * 参数：需同时上报点击的对应的作品的id（drama_id)
      */
-    const val CREATE_TOP_EARNERS_DRAMA_CLICK = "create_top_earners_drama_click"
+    const val FEATURED_TOP_EARNERS_DRAMA_CLICK = "featured_top_earners_drama_click"
 
     /**
      * 模块：商店
@@ -677,6 +685,14 @@ object FirebaseEvent {
     const val START_CREATION_CLICK = "start_creation_click"
 
     /**
+     * 模块: 创作流程
+     * 事件类型: 点击
+     * 事件名称：创作同款页面点击 Start Creating 按钮
+     * 说明：点击 Start Creating 按钮：创作同款页面中点击 Start Creating 按钮时触发
+     */
+    const val CREATE_SIMILAR_PAGE_BTN_CLICK = "create_similar_page_btn_click"
+
+    /**
      * 模块：创作流程
      * 事件类型：曝光
      * 事件名称：故事剧本环节
@@ -838,6 +854,30 @@ object FirebaseEvent {
      * 登录方式（login_way: facebook / apple / google）
      */
     const val LOGIN_SUCCESS = "login_success"
+
+    /**
+     * 模块: 创作流程
+     * 事件类型: 点击
+     * 事件名称：创作页底部爆款案例曝光
+     * 说明：创作页底部爆款案例成歌渲染展示时触发
+     */
+    const val HIT_SCRIPTS_VIEW = "hit_scripts_view"
+
+    /**
+     * 模块: 创作流程
+     * 事件类型: 点击
+     * 事件名称：点击爆款案例的Remake按钮
+     * 说明：用户点击爆款案例的Remake按钮上报
+     */
+    const val REMAKE_BTN_CLICK = "remake_btn_click"
+
+    /**
+     * 模块: 创作流程
+     * 事件类型: 点击
+     * 事件名称：创作同款页面曝光
+     * 说明：创作同款页面曝光：点击Remake按钮后跳转创作同款页面，页面成功渲染展示时触发
+     */
+    const val CREATE_SIMILAR_PAGE_VIEW = "create_similar_page_view"
 }
 
 /**
@@ -954,4 +994,16 @@ object FirebaseEventValue {
 
     /** login_way: apple */
     const val LOGIN_WAY_APPLE = "apple"
+
+    /** start_creation_click:episodes */
+    const val EPISODES = "episodes"
+
+    /** start_creation_click:video_size */
+    const val VIDEO_SIZE = "video_size"
+
+    /** start_creation_click:style */
+    const val STYLE = "style"
+
+    /** hit_scripts_name */
+    const val HIT_SCRIPTS_NAME = "hit_scripts_name"
 }

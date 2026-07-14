@@ -16,6 +16,8 @@ import com.kuaigeglobal.epnova.core.Events
 import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.ext.sensitiveWordCheck
 import com.kuaigeglobal.epnova.core.manager.EventManager
+import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
+import com.kuaigeglobal.epnova.core.manager.FirebaseEventValue
 import com.kuaigeglobal.epnova.core.network.apis.entity.UnusedPackageInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.VideoConfigData
 import com.kuaigeglobal.epnova.core.network.apis.entity.VideoConfigInfo
@@ -37,6 +39,7 @@ import com.nhsd.basic.ext.getThemeColor
 import com.nhsd.basic.ext.setOnSingleClickListener
 import com.nhsd.basic.ext.showToast
 import kotlinx.coroutines.launch
+import kotlin.collections.set
 
 class VideoSetActivity : BaseViewModelActivity<ActivityVideoSetBinding, VideoSetViewModel>() {
 
@@ -52,6 +55,7 @@ class VideoSetActivity : BaseViewModelActivity<ActivityVideoSetBinding, VideoSet
             list: VideoConfigData?,
             charCount: Int? = null,
             hotCaseId: String? = null,
+            hotCaseTitle: String? = null
 //            creationPackage: UnusedPackageInfo? = null
         ) {
             val current = context ?: return
@@ -61,6 +65,7 @@ class VideoSetActivity : BaseViewModelActivity<ActivityVideoSetBinding, VideoSet
             starter.putExtra(Constants.Extra.DATA, list)
             charCount?.let { starter.putExtra(Constants.Extra.COUNT, it) }
             hotCaseId?.let { starter.putExtra(Constants.Extra.ID, it) }
+            hotCaseTitle?.let { starter.putExtra(Constants.Extra.TITLE, it) }
 //            creationPackage?.let { starter.putExtra(VideoSetViewModel.ARG_CREATION_PACKAGE, it) }
             current.startActivity(starter)
         }
@@ -72,7 +77,7 @@ class VideoSetActivity : BaseViewModelActivity<ActivityVideoSetBinding, VideoSet
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding.root.applySmartFocusManager()
-//        EventManager.onAppTrack(AppEvent.SF_VIEW_MATERIAL_SAME_PAGE)
+        EventManager.onFirebaseTrack(FirebaseEvent.CREATE_SIMILAR_PAGE_VIEW)
         initView()
         initListener()
         observeData()
@@ -265,6 +270,13 @@ class VideoSetActivity : BaseViewModelActivity<ActivityVideoSetBinding, VideoSet
             mRealVM.hotCaseId?.let {
                 EventManager.reportCreationUsageCount(it, EventManager.REPORT_CREATION_TYPE_HOT_CASE)
             }
+
+            val trackMap = mutableMapOf<String, String>()
+            trackMap[FirebaseEventValue.HIT_SCRIPTS_NAME] = mRealVM.workTitle ?: (mRealVM.hotCaseId ?: "")
+            trackMap[FirebaseEventValue.EPISODES] = mRealVM.checkedEpisodeSet?.data?.get()?.configValue ?: ""
+            trackMap[FirebaseEventValue.VIDEO_SIZE] = mRealVM.checkedRatio?.data?.get()?.configValue ?: ""
+            trackMap[FirebaseEventValue.STYLE] = mRealVM.checkedStyle?.data?.get()?.styleName ?: ""
+            EventManager.onFirebaseTrack(FirebaseEvent.CREATE_SIMILAR_PAGE_BTN_CLICK, trackMap)
             createSameTask(workTitle, sameStory)
         }
     }
