@@ -20,7 +20,7 @@
 
         <TextView
             android:id="@+id/title"
-            style="@style/Text16"
+            style="@style/Text16.Outfit.Medium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_l"
@@ -32,7 +32,7 @@
 
         <TextView
             android:id="@+id/subTitle"
-            style="@style/Text13"
+            style="@style/Text13.Outfit.Regular"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_s"

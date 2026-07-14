@@ -23,20 +23,20 @@
 
         <TextView
             android:id="@+id/tvName"
-            style="@style/Text14"
+            style="@style/Text14.Outfit.Medium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:alpha="@{item.data.valid?1f:0.5f}"
             android:text="@{item.data.configName}"
             android:textColor="?attr/textColor1"
-            android:textStyle="bold"
+            android:textStyle="normal"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="解说漫模型" />
 
         <TextView
             android:id="@+id/tvDesc"
-            style="@style/Text12"
+            style="@style/Text12.Outfit.Regular"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_s"

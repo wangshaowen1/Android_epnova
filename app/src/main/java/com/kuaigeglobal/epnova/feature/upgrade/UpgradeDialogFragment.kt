@@ -69,9 +69,9 @@ class UpgradeDialogFragment : BaseVMDialogFragment<DialogUpgradeBinding, EmptyVi
         binding.cancel.visibility = force?.let {
             if (it) View.GONE else View.VISIBLE
         } ?: View.GONE
-        binding.close.visibility = force?.let {
-            if (it) View.GONE else View.VISIBLE
-        } ?: View.GONE
+//        binding.close.visibility = force?.let {
+//            if (it) View.GONE else View.VISIBLE
+//        } ?: View.GONE
 
         observeEvents {
             on<Events.DownloadProgressEvent> { event ->

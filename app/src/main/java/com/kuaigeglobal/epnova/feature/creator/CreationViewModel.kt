@@ -64,6 +64,8 @@ class CreationViewModel : AppRepositoryViewModel<CreationRepository>() {
     val workCreating = MutableLiveData(false)
 
     val showRefreshInspirations = ObservableBoolean(true)
+    val showInspirationsExample = ObservableBoolean(false)
+
     val hint = ObservableField<String>()
     val creationModel by lazy {
         mBundle.getInt(KEY_MODEL)
@@ -259,6 +261,7 @@ class CreationViewModel : AppRepositoryViewModel<CreationRepository>() {
         ) {
             // 判空并处理新数据
             data?.let { newData ->
+                showInspirationsExample.set(newData.isNotEmpty())
                 // 小于5条不展示刷新按钮
                 showRefreshInspirations.set(newData.size >= 5)
 

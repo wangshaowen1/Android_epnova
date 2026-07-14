@@ -19,7 +19,7 @@
 
         <TextView
             android:id="@+id/title"
-            style="@style/Text16"
+            style="@style/Text16.Outfit.Medium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_l"
@@ -74,6 +74,8 @@
             <Button
                 android:id="@+id/btnCancel"
                 style="@style/Button.Bold.Cancel"
+                android:fontFamily="@font/outfit_medium"
+                android:textStyle="normal"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:text="@string/cancel" />
@@ -82,6 +84,7 @@
             <Button
                 android:id="@+id/btnConfirm"
                 style="@style/Button.Bold"
+                android:textStyle="normal"
                 android:layout_width="0dp"
                 android:layout_marginStart="@dimen/spacing_l"
                 android:layout_weight="1"
