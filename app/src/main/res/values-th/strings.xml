@@ -484,6 +484,7 @@
     <string name="please_complete_storyboard_description">เฟรมสตอรี่บอร์ดบางเฟรมไม่มีคำอธิบาย กรุณากรอกก่อนดำเนินต่อ</string>
     <string name="in_progress">กำลังดำเนินการ</string>
     <string name="storyboard_s">สตอรี่บอร์ด %1$d</string>
+    <string name="frame_s">สตอรี่บอร์ด %1$d</string>
     <string name="please_agree_to_cancellation_terms">เพื่อยืนยันการลบ กรุณาอ่านและยอมรับเงื่อนไขการลบ</string>
     <string name="confirm_account_cancellation">ลบบัญชีของคุณหรือไม่?</string>
     <string name="confirm_cancel_cancellation_request">ยกเลิกคำขอลบบัญชีหรือไม่?</string>

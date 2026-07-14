@@ -74,7 +74,7 @@ class ItemStoryboardVM(
         when {
             info?.videoGenerating == true -> R.string.in_progress.getResString()
             info?.videoGenerateFailed == true -> R.string.loading_failed.getResString()
-            else -> R.string.storyboard_s.getResString(info?.sortNo)
+            else -> R.string.frame_s.getResString(info?.sortNo)
         }
 
     fun generate(storyInfo: EpisodeInfo?) {

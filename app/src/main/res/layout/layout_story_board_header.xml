@@ -40,7 +40,7 @@
 
         <TextView
             android:id="@+id/step1_text"
-            style="@style/Text12"
+            style="@style/Text12.Outfit.Regular"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -84,7 +84,7 @@
 
         <TextView
             android:id="@+id/step2_text"
-            style="@style/Text12"
+            style="@style/Text12.Outfit.Regular"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -125,7 +125,7 @@
 
         <TextView
             android:id="@+id/step3_text"
-            style="@style/Text12"
+            style="@style/Text12.Outfit.Regular"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -166,7 +166,7 @@
 
         <TextView
             android:id="@+id/step4_text"
-            style="@style/Text12"
+            style="@style/Text12.Outfit.Regular"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -207,7 +207,7 @@
 
         <TextView
             android:id="@+id/step5_text"
-            style="@style/Text12"
+            style="@style/Text12.Outfit.Regular"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"

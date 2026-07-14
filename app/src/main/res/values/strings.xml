@@ -481,7 +481,8 @@
     <string name="please_enter_scene_name">Please fill in the scene name first</string>
     <string name="please_complete_storyboard_description">Some storyboard frames are missing descriptions. Please fill them in before continuing.</string>
     <string name="in_progress">In Progress</string>
-    <string name="storyboard_s">Frame %1$d</string>
+    <string name="storyboard_s">Storyboard %1$d</string>
+    <string name="frame_s">Frame %1$d</string>
     <string name="please_agree_to_cancellation_terms">To confirm deletion, please read and agree to the deletion terms.</string>
     <string name="confirm_account_cancellation">Delete your account?</string>
     <string name="confirm_cancel_cancellation_request">Cancel your deletion request?</string>

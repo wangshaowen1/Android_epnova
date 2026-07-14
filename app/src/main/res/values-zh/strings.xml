@@ -477,6 +477,7 @@
     <string name="please_complete_storyboard_description">您还有分镜尚未填写描述，请补充后再继续</string>
     <string name="in_progress">制作中</string>
     <string name="storyboard_s">分镜%1$d</string>
+    <string name="frame_s">分镜%1$d</string>
     <string name="please_agree_to_cancellation_terms">如需确认注销，请先阅读并同意注销说明</string>
     <string name="confirm_account_cancellation">是否注销账号</string>
     <string name="confirm_cancel_cancellation_request">是否确认取消注销申请</string>

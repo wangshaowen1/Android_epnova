@@ -45,6 +45,7 @@
                         android:onClick="@{layout.clickHandler::onClick}"
                         android:paddingHorizontal="12dp"
                         android:text="@string/roles"
+                        android:fontFamily="@font/outfit_regular"
                         android:textAppearance="@style/Text14"
                         android:textColor="@color/sel_text2_text3" />
 
@@ -58,6 +59,7 @@
                         android:onClick="@{layout.clickHandler::onClick}"
                         android:paddingHorizontal="12dp"
                         android:text="@string/scenes"
+                        android:fontFamily="@font/outfit_regular"
                         android:textAppearance="@style/Text14"
                         android:textColor="@color/sel_text2_text3" />
 
@@ -71,6 +73,7 @@
                         android:onClick="@{layout.clickHandler::onClick}"
                         android:paddingHorizontal="12dp"
                         android:text="@string/props"
+                        android:fontFamily="@font/outfit_regular"
                         android:textAppearance="@style/Text14"
                         android:textColor="@color/sel_text2_text3" />
 
@@ -109,6 +112,8 @@
                         android:text="@{layout.buttonText(layout.step,layout.cost)}"
                         android:textAppearance="@style/Text16"
                         android:textColor="@color/fixed_white_1"
+                        android:textSize="16sp"
+                        android:fontFamily="@font/outfit_medium"
                         app:layout_constraintDimensionRatio="345:44"
                         app:layout_constraintTop_toTopOf="parent"
                         tools:text="下一步" />

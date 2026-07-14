@@ -52,6 +52,7 @@
 
         <TextView
             style="@style/TextAppearance.AIChip"
+            android:fontFamily="@font/outfit_regular"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/spacing_s"
@@ -104,6 +105,7 @@
             android:textColor="?attr/textColor4"
             android:textSize="12sp"
             android:tintMode="src_in"
+            android:fontFamily="@font/outfit_regular"
             app:layout_constraintBottom_toBottomOf="@+id/ivCover"
             app:layout_constraintEnd_toEndOf="@+id/ivCover"
             app:layout_constraintStart_toStartOf="@+id/ivCover"
@@ -139,6 +141,7 @@
             android:textAppearance="@style/Text13"
             android:textColor="?attr/textColor2"
             android:textColorHint="?attr/textColor4"
+            android:fontFamily="@font/outfit_regular"
             app:layout_constraintDimensionRatio="229:130"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/ivCover"
@@ -164,6 +167,7 @@
             android:textAppearance="@style/Text13"
             android:textColor="?attr/textColor2"
             android:textColorHint="?attr/textColor4"
+            android:fontFamily="@font/outfit_regular"
             app:layout_constraintDimensionRatio="109:32"
             app:layout_constraintStart_toStartOf="@+id/etAssetDesc"
             app:layout_constraintTop_toBottomOf="@+id/etAssetDesc"
@@ -204,6 +208,7 @@
                 android:text="@{item.status &lt; 1||item.status==10 ? item.generateButtonText : @string/regenerate}"
                 android:textAppearance="@style/Text13"
                 android:textColor="@android:color/white"
+                android:fontFamily="@font/outfit_regular"
                 app:endColor="#8F83FF"
                 app:startColor="#68BFF9"
                 tools:text="生成角色" />

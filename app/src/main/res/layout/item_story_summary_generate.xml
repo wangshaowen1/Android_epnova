@@ -18,7 +18,7 @@
         android:padding="@dimen/spacing_m">
 
         <TextView
-            style="@style/Text14"
+            style="@style/Text14.Outfit.Medium"
             android:layout_width="match_parent"
             android:text="@{item.data.storyTitle}"
             android:layout_height="wrap_content"
@@ -26,7 +26,7 @@
             tools:text="第 1 集 | 武魂觉醒" />
 
         <TextView
-            style="@style/Text14"
+            style="@style/Text14.Outfit.Regular"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_s"

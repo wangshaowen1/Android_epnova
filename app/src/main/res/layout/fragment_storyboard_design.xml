@@ -58,6 +58,7 @@
                         android:text="@{layout.buttonText(layout.step,layout.cost)}"
                         android:textAppearance="@style/Text16"
                         android:textColor="@color/fixed_white_1"
+                        android:fontFamily="@font/outfit_medium"
                         app:layout_constraintDimensionRatio="345:44"
                         app:layout_constraintTop_toTopOf="parent"
                         tools:text="生成分镜视频" />

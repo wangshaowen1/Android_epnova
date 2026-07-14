@@ -65,6 +65,7 @@
                 android:textColor="?attr/textColor3"
                 android:textColorHint="?attr/textColor4"
                 android:textSize="16sp"
+                android:fontFamily="@font/outfit_regular"
                 tools:text="代码纪元：觉醒指令..." />
 
             <ImageView
@@ -110,6 +111,7 @@
                 android:text="@{layout.currentCreationModel.configName}"
                 android:textColor="?attr/textColor1"
                 android:textSize="14sp"
+                android:fontFamily="@font/outfit_regular"
                 tools:text="解说漫模型" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 

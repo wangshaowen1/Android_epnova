@@ -484,6 +484,7 @@ Untuk mengkonfirmasi, ketuk [Minta Penghapusan].</string>
     <string name="please_complete_storyboard_description">Beberapa frame storyboard tidak memiliki deskripsi. Harap isi sebelum melanjutkan.</string>
     <string name="in_progress">Sedang Berlangsung</string>
     <string name="storyboard_s">Storyboard %1$d</string>
+    <string name="frame_s">Frame %1$d</string>
     <string name="please_agree_to_cancellation_terms">Untuk mengonfirmasi penghapusan, harap baca dan setujui ketentuan penghapusan.</string>
     <string name="confirm_account_cancellation">Hapus akun Anda?</string>
     <string name="confirm_cancel_cancellation_request">Batalkan permintaan penghapusan?</string>
