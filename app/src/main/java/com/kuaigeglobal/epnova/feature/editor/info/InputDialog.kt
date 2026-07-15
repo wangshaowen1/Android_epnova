@@ -15,6 +15,7 @@ import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.Constants
 import com.kuaigeglobal.epnova.common.SimpleTextWatcher
 import com.kuaigeglobal.epnova.common.ext.applySmartFocusManager
+import com.kuaigeglobal.epnova.common.ext.showCommonDialog
 import com.kuaigeglobal.epnova.common.ext.showConfirmPrompt
 import com.kuaigeglobal.epnova.common.ext.topActivity
 import com.kuaigeglobal.epnova.core.ext.sensitiveWordCheck
@@ -63,6 +64,7 @@ class InputDialog :
                     Constants.Extra.EXTRA to extra,
                     KEY_HIGHLIGHTED_CONTENT to highlightedContent
                 )
+                this.isCancelable = false
                 this.callback = callback
             }.show(activity.supportFragmentManager)
         }
@@ -136,16 +138,27 @@ class InputDialog :
 
     fun closeConfirm() {
         if (mRealVM.hasChange && mRealVM.content != binding.inputView.text) {
-            topActivity?.showConfirmPrompt(
-                tip = getString(R.string.confirm_exit_without_saving),
-                cancelText = getString(R.string.exit_directly),
-                confirmText = getString(R.string.save_and_exit),
-                cancel = {
-                    dismissAllowingStateLoss()
-                },
-                confirm = {
-                    save()
-                })
+            if (mRealVM.type == TYPE_SAME_STORY) {
+                topActivity?.showCommonDialog(
+                    title = getString(R.string.discard_changes_title),
+                    tip = getString(R.string.discard_changes_content),
+                    cancelText = getString(R.string.discard),
+                    confirmText = getString(R.string.save_and_exit),
+                    cancel = { dismissAllowingStateLoss() },
+                    confirm = { save() }
+                )
+            } else {
+                topActivity?.showConfirmPrompt(
+                    tip = getString(R.string.confirm_exit_without_saving),
+                    cancelText = getString(R.string.exit_directly),
+                    confirmText = getString(R.string.save_and_exit),
+                    cancel = {
+                        dismissAllowingStateLoss()
+                    },
+                    confirm = {
+                        save()
+                    })
+            }
         } else {
             dismissAllowingStateLoss()
         }

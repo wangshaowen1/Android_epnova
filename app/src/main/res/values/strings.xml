@@ -434,6 +434,8 @@
     <string name="save_changes_prompt">You have unsaved changes. Save before leaving?</string>
     <string name="discard">Discard</string>
     <string name="save_and_exit">Save &amp; Exit</string>
+    <string name="discard_changes_title">Discard changes?</string>
+    <string name="discard_changes_content">Your changes haven\'t been saved. If you leave now, they\'ll be loast.</string>
     <string name="edit_work">Edit Work</string>
     <string name="please_enter_work_name">Please enter a title</string>
     <string name="please_enter_work_description">Please enter a synopsis</string>
