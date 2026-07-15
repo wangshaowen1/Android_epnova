@@ -116,7 +116,7 @@ class CreationInspirationFragment :
 
     private fun initHotCaseList() {
         binding.rvHotCases.apply {
-            addItemDecoration(BottomSpaceDecoration(160.dp))
+            addItemDecoration(BottomSpaceDecoration(20.dp))
             isFocusable = false
             itemAnimator = null
             hotCaseAdapter.stateRestorationPolicy =

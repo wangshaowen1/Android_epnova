@@ -97,12 +97,15 @@ class InputDialog :
         binding.inputView.addTextChangedListener(object : SimpleTextWatcher() {
             override fun afterTextChanged(s: Editable?) {
                 mRealVM.input.value = s.toString()
+                s?.let { after ->
+                    // 是否改变
+                    mRealVM.hasChange = after.toString() != mRealVM.content
+                }
             }
         })
 
         mRealVM.input.observe(this) {
             if (it != binding.inputView.text) {
-                mRealVM.hasChange = true
                 binding.inputView.setTextNoSelection(it)
             }
         }
