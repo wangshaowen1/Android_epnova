@@ -116,7 +116,7 @@ class InputDialog :
         }
 
         binding.btnOk.setOnClickListener {
-            if (binding.inputView.text.trim().isEmpty()) {
+            if (binding.inputView.text.trim().isEmpty() && mRealVM.type != TYPE_SAME_STORY) {
                 getString(R.string.enter_update_content).showToast()
                 return@setOnClickListener
             }
