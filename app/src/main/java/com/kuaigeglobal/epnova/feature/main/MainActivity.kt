@@ -427,6 +427,9 @@ class MainActivity : BaseViewModelActivity<ActivityMainBinding, MainViewModel>()
 
     private fun observeEvents() {
         mRealVM.loginTaskData.observe(this) {
+            // 强更不弹
+            if (upgradeManager.needForceUpdate) return@observe
+
             val todayDate = DateUtil.getDateTime()
             if (Config.get().loginRewardsDialog != todayDate) {
                 RewardWelcomeDialog.newInstance(it).show(supportFragmentManager)
