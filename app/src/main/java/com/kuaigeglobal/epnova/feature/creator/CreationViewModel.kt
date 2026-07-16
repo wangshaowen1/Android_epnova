@@ -51,6 +51,11 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.Flow
 
 class CreationViewModel : AppRepositoryViewModel<CreationRepository>() {
+
+    companion object {
+        const val CONTENT_LENGTH = 20000
+    }
+
     val input by lazy { MutableLiveData<String?>() }
     var fileName: String? = null
     var fileUrl: String? = null
@@ -58,7 +63,7 @@ class CreationViewModel : AppRepositoryViewModel<CreationRepository>() {
     val minInputLength = 10
     // 海外统一20000
     val maxInputLength by lazy {
-        ObservableInt(20000)
+        ObservableInt(CONTENT_LENGTH)
     }
     val promptGenerating = MutableLiveData<Pair<Boolean, String>>()
     val workCreating = MutableLiveData(false)
@@ -108,7 +113,7 @@ class CreationViewModel : AppRepositoryViewModel<CreationRepository>() {
     }
 
     fun enableCreationTabUi() {
-        maxInputLength.set(5000)
+        maxInputLength.set(CONTENT_LENGTH)
         hint.set(
             if (inspirationModel()) R.string.story_inspiration_hint.getResString()
             else R.string.paste_novel_hint.getResString()
