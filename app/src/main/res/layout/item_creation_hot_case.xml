@@ -104,7 +104,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
                 android:ellipsize="end"
-                android:maxLines="2"
+                android:maxLines="3"
                 android:text="@{item.data.recommendText}"
                 android:textColor="?attr/textColor3"
                 tools:text="你不在，时间变得好慢，这是咸鱼的梦想你不在，时间变得好慢，这是咸鱼的梦想" />
