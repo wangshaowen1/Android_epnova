@@ -92,3 +92,14 @@ Android 13+ Photo Picker 多选结果 → 不再与页面已有 `Uri` 合并，�
 
 ### 验证结论
 STATIC：`AppImagePicker` 的 Photo Picker 和 Matisse 回调都统一返回本次结果，`selectedUris` 仅用于 legacy Matisse `setSelectedUris`。
+
+## 本轮 Google Play 强制更新迁移
+
+### 变更了什么
+生产版强制更新 → 从自定义不可取消弹窗及历史 APK 自安装链路，迁移为 Google Play Core `IMMEDIATE` In-app Update；普通建议更新继续使用现有可取消弹窗并跳转 Google Play。
+
+### 为什么
+Google Play 禁止通过 Play 分发的应用使用 Play 更新机制之外的方法更新自身；官方 `IMMEDIATE` 流程会先验证当前用户是否存在可用且允许的更新，并由 Play 完成下载、安装和重启。服务端标记强更但 Play 尚未覆盖当前用户时，降级为建议更新可避免灰度或兼容性差异造成不可恢复的锁死。
+
+### 验证结论
+STATIC：已确认强更入口使用 `AppUpdateManager`、前台恢复处理中断的 Immediate 流程，升级模块不再引用 APK 下载或安装逻辑；未跑 Gradle，需通过 Google Play 内部测试轨道验证更新可用、取消重试、安装重启和无可用更新降级。

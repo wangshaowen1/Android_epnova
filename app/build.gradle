@@ -337,6 +337,8 @@ dependencies {
     implementation 'com.google.android.gms:play-services-base:18.9.0'
     implementation libs.play.services.auth
     implementation libs.play.services.ads.identifier
+    implementation libs.play.app.update.core
+    implementation libs.play.app.update.ktx
     // AdMob 激励广告 SDK
     implementation 'com.google.android.gms:play-services-ads:25.2.0'
 

@@ -257,6 +257,7 @@ class MainActivity : BaseViewModelActivity<ActivityMainBinding, MainViewModel>()
     override fun onResume() {
         super.onResume()
         GeneratingViewModel.visible = false
+        upgradeManager.resumeImmediateUpdate()
     }
 
     override fun <Data> onClick(view: View?, data: Data?) {

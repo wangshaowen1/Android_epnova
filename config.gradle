@@ -17,12 +17,12 @@ ext {
             compileSdkVersion : 35,
             applicationId     : "com.kuaigeglobal.epnova",
             minSdkVersion     : 24,
-            targetSdkVersion  : 35,
+            targetSdkVersion  : 36,
             buildToolsVersion : "35.0.0",
-            versionCodeRelease: 11,
-            versionCodeDebug  : 11,
+            versionCodeRelease: 10,
+            versionCodeDebug  : 10,
             //版本名称
-            versionName       : "1.3.0",
+            versionName       : "1.2.0",
 
             //数据库版本号
             databaseVersion   : 100000
