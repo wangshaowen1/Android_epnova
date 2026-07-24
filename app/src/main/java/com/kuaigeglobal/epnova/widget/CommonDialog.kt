@@ -2,12 +2,13 @@ package com.kuaigeglobal.epnova.widget
 
 import android.app.Dialog
 import android.content.Context
+import android.os.Bundle
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.method.LinkMovementMethod
-import android.view.KeyEvent
 import android.view.View
 import android.view.ViewGroup.MarginLayoutParams
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatDialog
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.databinding.DialogCommonBinding
@@ -25,6 +26,16 @@ class CommonDialog @JvmOverloads constructor(context: Context, content: CharSequ
 
 
     private var backEnable: Boolean = true
+
+    private val backPressedCallback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            if (backEnable) {
+                isEnabled = false
+                onBackPressedDispatcher.onBackPressed()
+                isEnabled = true
+            }
+        }
+    }
 
     init {
         setContentView(binding.root)
@@ -44,23 +55,13 @@ class CommonDialog @JvmOverloads constructor(context: Context, content: CharSequ
         binding.close.setOnClickListener { dismiss() }
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        onBackPressedDispatcher.addCallback(this, backPressedCallback)
+    }
+
     fun setBackEnable(backEnable: Boolean) {
         this.backEnable = backEnable
-    }
-
-    override fun dispatchKeyEvent(event: KeyEvent): Boolean {
-        if (event.keyCode == KeyEvent.KEYCODE_BACK) {
-            if (!backEnable) {
-                return true
-            }
-        }
-        return super.dispatchKeyEvent(event)
-    }
-
-    override fun onBackPressed() {
-        if (backEnable) {
-            super.onBackPressed()
-        }
     }
 
 
