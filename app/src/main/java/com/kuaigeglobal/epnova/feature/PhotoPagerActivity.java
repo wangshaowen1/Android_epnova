@@ -20,6 +20,7 @@ import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.core.util.Pair;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -55,6 +56,14 @@ import java.util.List;
 
 
 public class PhotoPagerActivity extends BaseActivity {
+
+    private final OnBackPressedCallback backPressedCallback = new OnBackPressedCallback(true) {
+        @Override
+        public void handleOnBackPressed() {
+            handleBackPressed();
+        }
+    };
+
     public static final String EXTRA_VIEW_POSITIONS = "extra_view_positions";
     public static final String EXTRA_PHOTO_URIS = "photoUris";
     public static final String EXTRA_CLICK_POSITION = "position";
@@ -103,6 +112,7 @@ public class PhotoPagerActivity extends BaseActivity {
         }
         setContentView(getContentViewId());
         initView();
+        getOnBackPressedDispatcher().addCallback(this, backPressedCallback);
 
     }
 
@@ -263,13 +273,17 @@ public class PhotoPagerActivity extends BaseActivity {
         }
     }
 
-    @Override
-    public void onBackPressed() {
+    private void handleBackPressed() {
         if (currentImage != null) {
             exist(currentImage);
         } else {
-            super.onBackPressed();
+            exitPage();
         }
+    }
+
+    private void exitPage() {
+        backPressedCallback.setEnabled(false);
+        getOnBackPressedDispatcher().onBackPressed();
     }
 
     private void exist(final GestureImageView image) {
