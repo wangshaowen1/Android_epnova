@@ -14,15 +14,15 @@ ext {
      * gradle配置
      */
     android = [
-            compileSdkVersion : 35,
+            compileSdkVersion : 36,
             applicationId     : "com.kuaigeglobal.epnova",
             minSdkVersion     : 24,
             targetSdkVersion  : 36,
             buildToolsVersion : "35.0.0",
-            versionCodeRelease: 10,
-            versionCodeDebug  : 10,
+            versionCodeRelease: 12,
+            versionCodeDebug  : 12,
             //版本名称
-            versionName       : "1.2.0",
+            versionName       : "1.4.0",
 
             //数据库版本号
             databaseVersion   : 100000

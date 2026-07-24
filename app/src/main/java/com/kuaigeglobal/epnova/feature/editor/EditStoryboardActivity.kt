@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.text.method.ScrollingMovementMethod
+import androidx.activity.OnBackPressedCallback
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.Constants
 import com.kuaigeglobal.epnova.common.ext.applySmartFocusManager
@@ -20,6 +21,13 @@ import com.nhsd.basic.ext.setOnSingleClickListener
  * 分镜重绘
  */
 class EditStoryboardActivity : BaseViewModelActivity<ActivityEditStoryboardBinding, EditStoryboardViewModel>() {
+
+    private val backPressedCallback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            handleBackPressed()
+        }
+    }
+
     companion object {
         @JvmStatic
         fun launchIntent(activity: Activity, info: SimpleStoryboardInfo, workRatio: String?, storyStatus: Int?): Intent {
@@ -38,6 +46,7 @@ class EditStoryboardActivity : BaseViewModelActivity<ActivityEditStoryboardBindi
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        onBackPressedDispatcher.addCallback(this, backPressedCallback)
         binding.root.applySmartFocusManager()
         binding.tvStoryboardDesc.movementMethod = ScrollingMovementMethod()
         binding.tvStoryboardDesc.setOnSingleClickListener {
@@ -48,16 +57,21 @@ class EditStoryboardActivity : BaseViewModelActivity<ActivityEditStoryboardBindi
         }
     }
 
-    override fun onBackPressed() {
+    private fun handleBackPressed() {
         if (mRealVM.storyBoardDesc.value != mRealVM.storyboard.get()?.storyBoardDesc) {
             showCommonDialog(
                 tip = getString(R.string.save_storyboard_changes_prompt),
                 cancelText = R.string.discard.getResString(),
-                cancel = { super.onBackPressed() },
+                cancel = { exitPage() },
                 confirmText = R.string.save_and_exit.getResString(),
                 confirm = { mRealVM.save(true) })
         } else {
-            super.onBackPressed()
+            exitPage()
         }
+    }
+
+    private fun exitPage() {
+        backPressedCallback.isEnabled = false
+        onBackPressedDispatcher.onBackPressed()
     }
 }
