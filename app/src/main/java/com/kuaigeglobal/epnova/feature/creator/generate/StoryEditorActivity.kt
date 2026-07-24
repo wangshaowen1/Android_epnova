@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import androidx.activity.OnBackPressedCallback
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.Constants
 import com.kuaigeglobal.epnova.common.ext.showConfirmPrompt
@@ -20,6 +21,12 @@ import com.nhsd.basic.BaseViewModelActivity
  */
 class StoryEditorActivity :
     BaseViewModelActivity<ActivityStoryEditorBinding, StoryEditorViewModel>() {
+
+    private val backPressedCallback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            handleBackPressed()
+        }
+    }
 
     companion object {
         const val KEY_STEP = "step"
@@ -123,10 +130,10 @@ class StoryEditorActivity :
         }
     }
 
-    override fun onBackPressed() {
+    private fun handleBackPressed() {
         if (mRealVM.step.value == 1 && mRealVM.backWarning) {//因为步骤1流式输出的时候 不会保存生成的内容
             showConfirmPrompt("退出后将无法保留生成的内容，请谨慎操作") {
-                super.onBackPressed()
+                exitPage()
             }
         } else {
             val currentFragment = supportFragmentManager.findFragmentById(R.id.container)
@@ -134,12 +141,18 @@ class StoryEditorActivity :
                 val isHandled = currentFragment.handleBackPressed()
                 if (isHandled) return // 如果 Fragment 返回 true，表示它拦截了退出，Activity 直接 return
             }
-            super.onBackPressed()
+            exitPage()
         }
+    }
+
+    private fun exitPage() {
+        backPressedCallback.isEnabled = false
+        onBackPressedDispatcher.onBackPressed()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        onBackPressedDispatcher.addCallback(this, backPressedCallback)
         mRealVM.title.observe(this) {
             mRealVM.mToolbarVM.mTitle.set(it)
         }
