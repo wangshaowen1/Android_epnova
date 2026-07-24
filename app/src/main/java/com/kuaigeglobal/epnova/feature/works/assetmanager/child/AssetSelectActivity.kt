@@ -58,7 +58,7 @@ class AssetSelectActivity : BaseViewModelActivity<ActivityAssetSelectBinding, As
 
     fun initListener() {
         binding.btnCancel.setOnSingleClickListener {
-            onBackPressed()
+            onBackPressedDispatcher.onBackPressed()
         }
         binding.btnConfirm.setOnSingleClickListener {
             if (mRealVM.selectedItem != null) {

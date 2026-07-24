@@ -96,7 +96,7 @@ class PhoneLoginDialogActivity :
         super.onClick(view, data)
         when (view?.id) {
             R.id.btnClose -> {
-                onBackPressed()
+                onBackPressedDispatcher.onBackPressed()
             }
 
             R.id.btnSend -> {

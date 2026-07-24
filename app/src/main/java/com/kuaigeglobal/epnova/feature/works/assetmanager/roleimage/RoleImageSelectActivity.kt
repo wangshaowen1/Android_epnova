@@ -102,7 +102,7 @@ class RoleImageSelectActivity : BaseViewModelActivity<ActivityRoleImageSelectBin
 
     fun initListener() {
         binding.btnCancel.setOnSingleClickListener {
-            onBackPressed()
+            onBackPressedDispatcher.onBackPressed()
         }
         binding.btnConfirm.setOnSingleClickListener {
             if (mRealVM.mSelectedItem != null) {
