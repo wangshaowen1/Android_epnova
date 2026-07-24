@@ -10,7 +10,6 @@ import android.net.Uri
 import android.net.http.SslError
 import android.os.Bundle
 import android.text.TextUtils
-import android.view.KeyEvent
 import android.view.View
 import android.webkit.SslErrorHandler
 import android.webkit.ValueCallback
@@ -18,6 +17,7 @@ import android.webkit.WebChromeClient
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import androidx.activity.OnBackPressedCallback
 import androidx.core.view.isVisible
 import com.blankj.utilcode.util.GsonUtils
 import com.blankj.utilcode.util.NetworkUtils
@@ -69,6 +69,12 @@ import com.nhsd.basic.utils.Logger
 import org.json.JSONObject
 
 class SimpleBrowserActivity : BaseViewModelActivity<ActivityBrowserBinding, BrowserViewModel>() {
+
+    private val backPressedCallback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            handleBackPressed()
+        }
+    }
 
     companion object {
         private const val REQUEST_CODE_PHOTO_PICKER = 0x999
@@ -288,6 +294,7 @@ class SimpleBrowserActivity : BaseViewModelActivity<ActivityBrowserBinding, Brow
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        onBackPressedDispatcher.addCallback(this, backPressedCallback)
         AndroidBug5497Workaround.assistActivity(this)
 //        mRealVM.shareManagerFactory = this
 //        mRealVM.getFragmentManager = { supportFragmentManager }
@@ -391,20 +398,29 @@ class SimpleBrowserActivity : BaseViewModelActivity<ActivityBrowserBinding, Brow
         }
     }
 
-    override fun onBackPressed() {
+    private fun handleBackPressed() {
+        if (binding.webview.canGoBack()) {
+            binding.webview.goBack()
+            return
+        }
+
         if (mRealVM.isLoading.value != true &&
             mRealVM.isLoadError.value != true &&
             mRealVM.interceptBack
         ) {
-
             bridge?.callHandler("confirmBack", null) { data ->
                 if (data == null || data.contains("false")) {
-                    App.instance.post { super.onBackPressed() }
+                    App.instance.post { exitBrowser() }
                 }
             }
         } else {
-            super.onBackPressed()
+            exitBrowser()
         }
+    }
+
+    private fun exitBrowser() {
+        backPressedCallback.isEnabled = false
+        onBackPressedDispatcher.onBackPressed()
     }
 
 //    override fun onStart(share_media: SHARE_MEDIA?) {}
@@ -425,10 +441,10 @@ class SimpleBrowserActivity : BaseViewModelActivity<ActivityBrowserBinding, Brow
 
     private fun registerHandle() {
         bridge?.apply {
-            registerHandler("back") { _, _ -> super.onBackPressed() }
+            registerHandler("back") { _, _ -> exitBrowser() }
             registerHandler("backIntercept") { data, _ ->
                 if (data == null || !data.contains("true")) {
-                    super.onBackPressed()
+                    exitBrowser()
                 }
             }
             registerHandler("login") { _, _ -> AppNavigator.checkLoginIntercepted(true) }
@@ -724,14 +740,6 @@ class SimpleBrowserActivity : BaseViewModelActivity<ActivityBrowserBinding, Brow
     override fun onDestroy() {
         binding.webview.destroy()
         super.onDestroy()
-    }
-
-    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
-        if (keyCode == KeyEvent.KEYCODE_BACK && binding.webview.canGoBack()) {
-            binding.webview.goBack()
-            return true
-        }
-        return super.onKeyDown(keyCode, event)
     }
 
 //    override fun getShareManager(): ShareManager {
