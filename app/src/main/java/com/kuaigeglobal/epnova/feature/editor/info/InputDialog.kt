@@ -1,10 +1,13 @@
 package com.kuaigeglobal.epnova.feature.editor.info
 
+import android.app.Dialog
 import android.content.DialogInterface
+import android.os.Bundle
 import android.text.Editable
 import android.text.Spanned
 import android.text.style.ForegroundColorSpan
-import android.view.KeyEvent
+import androidx.activity.OnBackPressedCallback
+import androidx.appcompat.app.AppCompatDialog
 import androidx.core.os.bundleOf
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
@@ -72,18 +75,16 @@ class InputDialog :
 
     var callback: ((String) -> Unit)? = null
 
+    private val backPressedCallback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            closeConfirm()
+        }
+    }
 
-    override fun onStart() {
-        super.onStart()
-
-        // 2. 拦截物理返回键
-        dialog?.setOnKeyListener { _, keyCode, event ->
-            if (keyCode == KeyEvent.KEYCODE_BACK && event.action == KeyEvent.ACTION_UP) {
-                closeConfirm() // 统一走你的检查逻辑
-                true // 表示我们已经消费了该事件
-            } else {
-                false
-            }
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        return AppCompatDialog(requireContext(), com.nhsd.basic.R.style.Dialog_BottomPush).apply {
+            setCanceledOnTouchOutside(true)
+            onBackPressedDispatcher.addCallback(this@InputDialog, backPressedCallback)
         }
     }
 
