@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import androidx.activity.OnBackPressedCallback
 import androidx.core.view.marginEnd
 import androidx.core.view.marginStart
 import androidx.fragment.app.FragmentManager
@@ -36,6 +37,13 @@ import com.nhsd.basic.ext.showToast
  * 编辑分镜视频
  */
 class EditStoryboardVideoActivity : BaseViewModelActivity<ActivityEditStoryboardVideoBinding, EditStoryboardVideoViewModel>(), DownloadMethodDialog.DownloadTypeLauncher, DownloadingViewModel.DownloadStatusHolderFactory {
+
+    private val backPressedCallback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            handleBackPressed()
+        }
+    }
+
     companion object {
         @JvmStatic
         fun launchIntent(
@@ -69,7 +77,7 @@ class EditStoryboardVideoActivity : BaseViewModelActivity<ActivityEditStoryboard
     private var downloadStoryboard: SimpleStoryboardInfo? = null
     private var downloadingDialog: DownloadingDialog? = null
 
-    override fun onBackPressed() {
+    private fun handleBackPressed() {
         mRealVM.getStoryInfo {
             //重绘已完成
             if (it?.stepProgress == EpisodeInfo.EPISODE_REPAINT_COMPLETED) {
@@ -107,6 +115,7 @@ class EditStoryboardVideoActivity : BaseViewModelActivity<ActivityEditStoryboard
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        onBackPressedDispatcher.addCallback(this, backPressedCallback)
         EventManager.onFirebaseTrack(
             FirebaseEvent.VIDEO_GENERATION_VIEW,
             FirebaseEventParam.DRAMA_ID to mRealVM.workId,
