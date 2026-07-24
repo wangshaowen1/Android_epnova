@@ -2,11 +2,13 @@ package com.kuaigeglobal.epnova.widget.guideview;
 
 import android.app.Activity;
 import android.content.Context;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+
+import androidx.activity.OnBackPressedCallback;
+import androidx.activity.OnBackPressedDispatcherOwner;
 
 /**
  * 遮罩系统的封装 <br>
@@ -15,7 +17,7 @@ import android.view.animation.AnimationUtils;
  *
  * Created by binIoter
  */
-public class Guide implements View.OnKeyListener, View.OnClickListener {
+public class Guide implements View.OnClickListener {
   /**
    * Cannot initialize out of package <font
    * color=red>包内才可见，外部使用时必须调用GuideBuilder来创建.</font>
@@ -28,6 +30,8 @@ public class Guide implements View.OnKeyListener, View.OnClickListener {
   private Configuration mConfiguration;
   private MaskView mMaskView;
   private Component[] mComponents;
+  private OnBackPressedCallback mBackPressedCallback;
+  private boolean mIsDismissing;
   // 根据locInwindow定位后，是否需要判断loc值非0
   private boolean mShouldCheckLocInWindow = true;
   private GuideBuilder.OnVisibilityChangedListener mOnVisibilityChangedListener;
@@ -58,6 +62,8 @@ public class Guide implements View.OnKeyListener, View.OnClickListener {
     ViewGroup content = (ViewGroup) activity.findViewById(android.R.id.content);
     if (mMaskView.getParent() == null) {
       content.addView(mMaskView);
+      mIsDismissing = false;
+      registerBackPressedCallback(activity);
       if (mConfiguration.mEnterAnimationId != -1) {
         Animation anim = AnimationUtils.loadAnimation(activity, mConfiguration.mEnterAnimationId);
         assert anim != null;
@@ -89,13 +95,15 @@ public class Guide implements View.OnKeyListener, View.OnClickListener {
    * 隐藏该遮罩并回收资源相关
    */
   public void dismiss() {
-    if (mMaskView == null) {
+    if (mMaskView == null || mIsDismissing) {
       return;
     }
     final ViewGroup vp = (ViewGroup) mMaskView.getParent();
     if (vp == null) {
+      removeBackPressedCallback();
       return;
     }
+    mIsDismissing = true;
     if (mConfiguration.mExitAnimationId != -1) {
       // mMaskView may leak if context is null
       Context context = mMaskView.getContext();
@@ -151,7 +159,6 @@ public class Guide implements View.OnKeyListener, View.OnClickListener {
     maskView.setPaddingBottom(mConfiguration.mPaddingBottom);
     maskView.setHighTargetGraphStyle(mConfiguration.mGraphStyle);
     maskView.setOverlayTarget(mConfiguration.mOverlayTarget);
-    maskView.setOnKeyListener(this);
 
     // For removing the height of status bar we need the root content view's
     // location on screen
@@ -221,24 +228,37 @@ public class Guide implements View.OnKeyListener, View.OnClickListener {
     return maskView;
   }
 
+  private void registerBackPressedCallback(Activity activity) {
+    removeBackPressedCallback();
+    if (mConfiguration == null
+        || !mConfiguration.mAutoDismiss
+        || !(activity instanceof OnBackPressedDispatcherOwner)) {
+      return;
+    }
+    mBackPressedCallback = new OnBackPressedCallback(true) {
+      @Override public void handleOnBackPressed() {
+        dismiss();
+      }
+    };
+    OnBackPressedDispatcherOwner owner = (OnBackPressedDispatcherOwner) activity;
+    owner.getOnBackPressedDispatcher().addCallback(owner, mBackPressedCallback);
+  }
+
+  private void removeBackPressedCallback() {
+    if (mBackPressedCallback != null) {
+      mBackPressedCallback.remove();
+      mBackPressedCallback = null;
+    }
+  }
+
   private void onDestroy() {
+    removeBackPressedCallback();
     mConfiguration = null;
     mComponents = null;
     mOnVisibilityChangedListener = null;
     mMaskView.removeAllViews();
     mMaskView = null;
-  }
-
-  @Override public boolean onKey(View v, int keyCode, KeyEvent event) {
-    if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_UP) {
-      if (mConfiguration != null && mConfiguration.mAutoDismiss) {
-        dismiss();
-        return true;
-      } else {
-        return false;
-      }
-    }
-    return false;
+    mIsDismissing = false;
   }
 
   @Override public void onClick(View v) {
