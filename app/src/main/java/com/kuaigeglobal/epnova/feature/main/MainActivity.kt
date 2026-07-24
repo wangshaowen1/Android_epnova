@@ -6,9 +6,9 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.SparseArray
-import android.view.KeyEvent
 import android.view.View
 import android.view.WindowManager
+import androidx.activity.OnBackPressedCallback
 import androidx.core.util.getOrDefault
 import androidx.lifecycle.lifecycleScope
 import com.kuaigeglobal.epnova.App
@@ -58,6 +58,13 @@ import kotlinx.coroutines.launch
  * *****************************************
  */
 class MainActivity : BaseViewModelActivity<ActivityMainBinding, MainViewModel>() {
+
+    private val backPressedCallback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            handleBackPressed()
+        }
+    }
+
     companion object {
 
         private const val PAGE_HOME = 0
@@ -97,6 +104,7 @@ class MainActivity : BaseViewModelActivity<ActivityMainBinding, MainViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        onBackPressedDispatcher.addCallback(this, backPressedCallback)
 
         registerTime = System.currentTimeMillis()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
@@ -509,22 +517,18 @@ class MainActivity : BaseViewModelActivity<ActivityMainBinding, MainViewModel>()
     }
 
 
-    override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
-        if (keyCode == KeyEvent.KEYCODE_BACK && event.action == KeyEvent.ACTION_DOWN) {
-            if (mRealVM.showTab.get() == PAGE_MYLIST && mRealVM.isEditing.get()) {
-                //在我的页面如果是编辑状态，返回应该是修改状态
-                mRealVM.setIsEditing?.invoke(true)
-                return true
-            }
-            if (System.currentTimeMillis() - exitTime > 2000) {
-                getString(R.string.press_again_to_exit).showToast()
-                exitTime = System.currentTimeMillis()
-            } else {
-                finishAffinity()
-            }
-            return true
+    private fun handleBackPressed() {
+        if (mRealVM.showTab.get() == PAGE_MYLIST && mRealVM.isEditing.get()) {
+            //在我的页面如果是编辑状态，返回应该是修改状态
+            mRealVM.setIsEditing?.invoke(true)
+            return
         }
-        return super.onKeyDown(keyCode, event)
+        if (System.currentTimeMillis() - exitTime > 2000) {
+            getString(R.string.press_again_to_exit).showToast()
+            exitTime = System.currentTimeMillis()
+        } else {
+            finishAffinity()
+        }
     }
 
 
