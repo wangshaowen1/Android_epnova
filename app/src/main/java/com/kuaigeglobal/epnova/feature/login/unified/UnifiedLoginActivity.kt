@@ -21,6 +21,8 @@ import com.kuaigeglobal.epnova.core.Config
 import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.facebook.login.FacebookSignInHelper
 import com.kuaigeglobal.epnova.core.google.login.GoogleSignInHelper
+import com.kuaigeglobal.epnova.core.manager.EventManager
+import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
 import com.kuaigeglobal.epnova.core.network.apis.ApiFactory
 import com.kuaigeglobal.epnova.databinding.ActivityUnifiedLoginBinding
 import com.kuaigeglobal.epnova.feature.settings.SettingsActivity
@@ -64,6 +66,10 @@ class UnifiedLoginActivity : BaseViewModelActivity<ActivityUnifiedLoginBinding, 
 
     override fun onViewModelCreated() {
         super.onViewModelCreated()
+        EventManager.onFirebaseTrack(
+            FirebaseEvent.Category.LOGIN,
+            FirebaseEvent.Action.LOGIN_SHOW
+        )
         termsOfService()
     }
 
@@ -105,7 +111,11 @@ class UnifiedLoginActivity : BaseViewModelActivity<ActivityUnifiedLoginBinding, 
             }
 
             R.id.btnGoogle -> {
-
+                EventManager.onFirebaseTrack(
+                    FirebaseEvent.Category.LOGIN,
+                    FirebaseEvent.Action.LOGIN_CLICK,
+                    FirebaseEvent.Value.LOGIN_GOOGLE
+                )
                 googleSignInHelper.signIn(
                     onSuccess = { body ->
                         mRealVM.loginByThird(body) {
@@ -114,6 +124,12 @@ class UnifiedLoginActivity : BaseViewModelActivity<ActivityUnifiedLoginBinding, 
                         }
                     },
                     onFailure = { msg ->
+                        EventManager.onFirebaseTrack(
+                            FirebaseEvent.Category.LOGIN,
+                            FirebaseEvent.Action.LOGIN_RESULT,
+                            FirebaseEvent.Value.LOGIN_GOOGLE,
+                            FirebaseEvent.Value.RESULT_FAIL
+                        )
                         msg?.toString()?.showToast()
                     }
                 )
