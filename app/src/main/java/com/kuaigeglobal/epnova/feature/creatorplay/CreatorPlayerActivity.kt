@@ -86,6 +86,15 @@ class CreatorPlayerActivity :
     /**下载方式弹窗回调时使用的当前视频 URL。*/
     private var downloadVideoUrl: String? = null
 
+    /** GA4 播放器展示仅在本次页面首次真正开始播放时上报。 */
+    private var hasReportedPlayerShow = false
+
+    /** GA4 播放节点按剧集去重，切集时重置。 */
+    private var analyticsEpisodeKey: String? = null
+    private var hasReportedValidPlay = false
+    private val reportedProcessNodes = mutableSetOf<Int>()
+    private var hasReportedComplete = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mRealVM.playSource = readPlaySource()
@@ -144,6 +153,7 @@ class CreatorPlayerActivity :
         listController = CreatorFeedListController(binding.recyclerView, adapter, playerManager).apply {
             onPageChanged = { item, _ ->
                 mRealVM.updateCurrentPlayableEpisode(item)
+                resetAnalyticsReportStateIfNeeded(item)
                 EventManager.onPlayEvent(item)
             }
         }
@@ -187,16 +197,21 @@ class CreatorPlayerActivity :
         lifecycleScope.launch {
             playerManager.playerState.collectLatest { state ->
                 listController.getCurrentHolder()?.updatePlayerUiState(state)
+                if (state is CreatorFeedPlayerManager.CreatorPlayerState.Playing) {
+                    reportPlayerShowIfNeeded()
+                }
             }
         }
         lifecycleScope.launch {
             playerManager.progressFlow.collectLatest { (current, total) ->
                 listController.getCurrentHolder()?.updateProgress(current, total)
+                reportPlayerAnalyticsIfNeeded(current, total)
             }
         }
         lifecycleScope.launch {
             playerManager.playerEvent.collectLatest { event ->
                 if (event is CreatorFeedPlayerManager.PlayerEvent.OnPlayEnded) {
+                    reportPlayerCompleteIfNeeded()
                     val hasNext = listController.smoothScrollToNext()
                     if (!hasNext) {
                         playerManager.pause()
@@ -212,6 +227,101 @@ class CreatorPlayerActivity :
                 }
             }
         }
+    }
+
+    private fun resetAnalyticsReportStateIfNeeded(item: CreatorPlayableEpisode) {
+        val episodeKey = creatorMediaKey(item)
+        if (analyticsEpisodeKey == episodeKey) return
+        analyticsEpisodeKey = episodeKey
+        hasReportedValidPlay = false
+        reportedProcessNodes.clear()
+        hasReportedComplete = false
+    }
+
+    private fun reportPlayerShowIfNeeded() {
+        if (hasReportedPlayerShow || mRealVM.playSource != CreatorPlaySource.TOP_EARNERS) return
+        val item = mRealVM.currentPlayableEpisode.get() ?: return
+        val workId = (item.workContext.workId ?: item.episode.workId)
+            ?.takeIf { it.isNotBlank() } ?: return
+        hasReportedPlayerShow = true
+        // GA4：Top Earners 播放器首次开始自动播放。
+        EventManager.onFirebaseTrack(
+            FirebaseEvent.Category.PLAYER,
+            FirebaseEvent.Action.PLAYER_SHOW,
+            workId,
+            FirebaseEvent.Value.SOURCE_TOP_EARNERS
+        )
+    }
+
+    private fun reportPlayerAnalyticsIfNeeded(current: Long, total: Long) {
+        val item = mRealVM.currentPlayableEpisode.get() ?: return
+        if (creatorMediaKey(item) != playerManager.currentPlayingKey || total <= 0L) return
+        val workId = (item.workContext.workId ?: item.episode.workId)
+            ?.takeIf { it.isNotBlank() } ?: return
+        val storyId = item.episode.storyId?.takeIf { it.isNotBlank() } ?: return
+        resetAnalyticsReportStateIfNeeded(item)
+
+        val progressPercent = ((current.coerceAtLeast(0L) * 100L) / total).toInt().coerceIn(0, 100)
+        if (progressPercent >= 10 && !hasReportedValidPlay) {
+            hasReportedValidPlay = true
+            // GA4：播放进度达到 10%，记为一次有效播放。
+            EventManager.onFirebaseTrack(
+                FirebaseEvent.Category.PLAYER,
+                FirebaseEvent.Action.PLAYER_VALID_PLAY,
+                workId,
+                storyId
+            )
+        }
+        reportPlayerProcessIfNeeded(progressPercent, 25, FirebaseEvent.Value.PROCESS_25, workId, storyId)
+        reportPlayerProcessIfNeeded(progressPercent, 50, FirebaseEvent.Value.PROCESS_50, workId, storyId)
+        reportPlayerProcessIfNeeded(progressPercent, 75, FirebaseEvent.Value.PROCESS_75, workId, storyId)
+        if (progressPercent >= 90) {
+            reportPlayerCompleteIfNeeded()
+        }
+    }
+
+    private fun reportPlayerProcessIfNeeded(
+        progressPercent: Int,
+        targetPercent: Int,
+        label: String,
+        workId: String,
+        storyId: String
+    ) {
+        if (progressPercent < targetPercent || !reportedProcessNodes.add(targetPercent)) return
+        // GA4：播放进度首次达到指定漏斗节点。
+        EventManager.onFirebaseTrack(
+            FirebaseEvent.Category.PLAYER,
+            FirebaseEvent.Action.PLAYER_PROCESS,
+            workId,
+            storyId,
+            label
+        )
+    }
+
+    private fun reportPlayerCompleteIfNeeded() {
+        if (hasReportedComplete) return
+        val item = mRealVM.currentPlayableEpisode.get() ?: return
+        if (creatorMediaKey(item) != playerManager.currentPlayingKey) return
+        val workId = (item.workContext.workId ?: item.episode.workId)
+            ?.takeIf { it.isNotBlank() } ?: return
+        val storyId = item.episode.storyId?.takeIf { it.isNotBlank() } ?: return
+        resetAnalyticsReportStateIfNeeded(item)
+        hasReportedComplete = true
+        // GA4：播放进度达到 90% 或收到真实完播回调。
+        EventManager.onFirebaseTrack(
+            FirebaseEvent.Category.PLAYER,
+            FirebaseEvent.Action.PLAYER_COMPLETE,
+            workId,
+            storyId
+        )
+    }
+
+    /** 与 CreatorFeedPlayerManager 的 mediaKey 生成顺序保持一致。 */
+    private fun creatorMediaKey(item: CreatorPlayableEpisode): String? {
+        return item.feedKey
+            ?: item.episode.storyId
+            ?: item.workContext.workId
+            ?: item.episode.videoUrl
     }
 
     /**展示下载进度弹窗；实际下载生命周期在 ViewModel 中控制。*/

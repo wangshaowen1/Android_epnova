@@ -11,6 +11,7 @@ import com.kuaigeglobal.epnova.common.ext.showCommonDialog
 import com.kuaigeglobal.epnova.common.ext.topActivity
 import com.kuaigeglobal.epnova.common.permissions.requestRead2WritePermissions
 import com.kuaigeglobal.epnova.core.manager.EventManager
+import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
 import com.kuaigeglobal.epnova.core.network.apis.entity.EpisodeInfo
 import com.kuaigeglobal.epnova.core.network.apis.response.PlayMenuInfo
 import com.kuaigeglobal.epnova.databinding.ActivityDramasPlayPagerBinding
@@ -98,6 +99,15 @@ class DramasPlayPagerActivity :
     private var lastPlaybackProgressMs = 0L
     private var lastPlaybackDurationMs = 0L
 
+    /** GA4 播放器展示仅在本次页面首次真正开始播放时上报。 */
+    private var hasReportedPlayerShow = false
+
+    /** GA4 播放节点按剧集去重，切集时重置。 */
+    private var analyticsEpisodeKey: String? = null
+    private var hasReportedValidPlay = false
+    private val reportedProcessNodes = mutableSetOf<Int>()
+    private var hasReportedComplete = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mRealVM.workId = intent.getStringExtra(Constants.Extra.WORK_ID)
@@ -149,6 +159,7 @@ class DramasPlayPagerActivity :
             isEpisodeLocked = false  // 切集时解除拦截
             mRealVM.currentEpisode.set(episodeInfo)
             resetProgressReportStateIfNeeded(episodeInfo.storyId)
+            resetAnalyticsReportStateIfNeeded(episodeInfo)
             mRealVM.getUserPlayStatus(episodeInfo)
             val realWorkId = mRealVM.workId
             EventManager.onPlayEvent(realWorkId, episodeInfo.storyId)
@@ -391,6 +402,7 @@ class DramasPlayPagerActivity :
                     holder?.updateProgress(current, total)
                 }
                 reportProgressNodeIfNeeded(current, total)
+                reportPlayerAnalyticsIfNeeded(current, total)
             }
         }
 
@@ -399,6 +411,9 @@ class DramasPlayPagerActivity :
                 // [优化] 直接把状态甩给 ViewHolder 处理，逻辑更聚拢
                 updateViewHolderSafely { holder ->
                     holder?.updatePlayerUiState(state)
+                }
+                if (state is FeedPlayerManager.FeedPlayerState.Playing) {
+                    reportPlayerShowIfNeeded()
                 }
                 // [补充] 针对 Activity 级别的特殊处理（如 Toast）
                 if (state is FeedPlayerManager.FeedPlayerState.Error) {
@@ -413,7 +428,10 @@ class DramasPlayPagerActivity :
         // 播放结束策略
         lifecycleScope.launch {
             playerManager.playerEvent.collect { event ->
-                if (event is FeedPlayerManager.PlayerEvent.OnPlayEnded) handlePlayEnded()
+                if (event is FeedPlayerManager.PlayerEvent.OnPlayEnded) {
+                    reportPlayerCompleteIfNeeded()
+                    handlePlayEnded()
+                }
             }
         }
     }
@@ -474,6 +492,90 @@ class DramasPlayPagerActivity :
         lastProgressReportNode = 0
         lastPlaybackProgressMs = 0L
         lastPlaybackDurationMs = 0L
+    }
+
+    private fun resetAnalyticsReportStateIfNeeded(episode: EpisodeInfo) {
+        val episodeKey = "${mRealVM.workId}_${episode.storyId}"
+        if (analyticsEpisodeKey == episodeKey) return
+        analyticsEpisodeKey = episodeKey
+        hasReportedValidPlay = false
+        reportedProcessNodes.clear()
+        hasReportedComplete = false
+    }
+
+    private fun reportPlayerShowIfNeeded() {
+        if (hasReportedPlayerShow) return
+        val workId = mRealVM.workId?.takeIf { it.isNotBlank() } ?: return
+        val source = intent.getStringExtra(EXTRA_PLAYER_SOURCE)?.takeIf { it.isNotBlank() } ?: return
+        hasReportedPlayerShow = true
+        // GA4：播放器首次开始自动播放，Label1=剧 ID，Label2=入口来源。
+        EventManager.onFirebaseTrack(
+            FirebaseEvent.Category.PLAYER,
+            FirebaseEvent.Action.PLAYER_SHOW,
+            workId,
+            source
+        )
+    }
+
+    private fun reportPlayerAnalyticsIfNeeded(current: Long, total: Long) {
+        val episode = mRealVM.currentEpisode.get() ?: return
+        if (episode.storyId != playerManager.currentPlayingId || total <= 0L) return
+        val workId = mRealVM.workId?.takeIf { it.isNotBlank() } ?: return
+        val storyId = episode.storyId?.takeIf { it.isNotBlank() } ?: return
+        resetAnalyticsReportStateIfNeeded(episode)
+
+        val progressPercent = ((current.coerceAtLeast(0L) * 100L) / total).toInt().coerceIn(0, 100)
+        if (progressPercent >= 10 && !hasReportedValidPlay) {
+            hasReportedValidPlay = true
+            // GA4：播放进度达到 10%，记为一次有效播放。
+            EventManager.onFirebaseTrack(
+                FirebaseEvent.Category.PLAYER,
+                FirebaseEvent.Action.PLAYER_VALID_PLAY,
+                workId,
+                storyId
+            )
+        }
+        reportPlayerProcessIfNeeded(progressPercent, 25, FirebaseEvent.Value.PROCESS_25, workId, storyId)
+        reportPlayerProcessIfNeeded(progressPercent, 50, FirebaseEvent.Value.PROCESS_50, workId, storyId)
+        reportPlayerProcessIfNeeded(progressPercent, 75, FirebaseEvent.Value.PROCESS_75, workId, storyId)
+        if (progressPercent >= 90) {
+            reportPlayerCompleteIfNeeded()
+        }
+    }
+
+    private fun reportPlayerProcessIfNeeded(
+        progressPercent: Int,
+        targetPercent: Int,
+        label: String,
+        workId: String,
+        storyId: String
+    ) {
+        if (progressPercent < targetPercent || !reportedProcessNodes.add(targetPercent)) return
+        // GA4：播放进度首次达到指定漏斗节点。
+        EventManager.onFirebaseTrack(
+            FirebaseEvent.Category.PLAYER,
+            FirebaseEvent.Action.PLAYER_PROCESS,
+            workId,
+            storyId,
+            label
+        )
+    }
+
+    private fun reportPlayerCompleteIfNeeded() {
+        if (hasReportedComplete) return
+        val episode = mRealVM.currentEpisode.get() ?: return
+        if (episode.storyId != playerManager.currentPlayingId) return
+        val workId = mRealVM.workId?.takeIf { it.isNotBlank() } ?: return
+        val storyId = episode.storyId?.takeIf { it.isNotBlank() } ?: return
+        resetAnalyticsReportStateIfNeeded(episode)
+        hasReportedComplete = true
+        // GA4：播放进度达到 90% 或收到真实完播回调。
+        EventManager.onFirebaseTrack(
+            FirebaseEvent.Category.PLAYER,
+            FirebaseEvent.Action.PLAYER_COMPLETE,
+            workId,
+            storyId
+        )
     }
 
     private fun reportProgressNodeIfNeeded(current: Long, total: Long) {
