@@ -186,6 +186,11 @@ class MainActivity : BaseViewModelActivity<ActivityMainBinding, MainViewModel>()
                 }
 
                 R.id.rbFeatured -> {
+                    // featured_show：精选页面展示时上报。
+                    EventManager.onFirebaseTrack(
+                        FirebaseEvent.Category.FEATURE,
+                        FirebaseEvent.Action.FEATURED_SHOW
+                    )
                     setKeepScreenOn(false)
                     mRealVM.showTab.set(PAGE_FEATURED)
                     supportFragmentManager.switchFragment(

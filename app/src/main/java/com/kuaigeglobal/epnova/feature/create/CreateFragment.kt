@@ -14,6 +14,8 @@ import com.kuaigeglobal.epnova.common.ext.removeTheRipples
 import com.kuaigeglobal.epnova.common.ext.topActivity
 import com.kuaigeglobal.epnova.core.Events
 import com.kuaigeglobal.epnova.core.databinding.loadUri
+import com.kuaigeglobal.epnova.core.manager.EventManager
+import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
 import com.kuaigeglobal.epnova.core.network.apis.entity.BannerInfo
 import com.kuaigeglobal.epnova.feature.create.child.ResourceCenterFragment
 import com.kuaigeglobal.epnova.feature.create.child.TopEarnersFragment
@@ -108,6 +110,11 @@ class CreateFragment : BaseViewModelFragment<FragmentCreateBinding, CreateViewMo
 
 
         binding.btnCreation.setOnSingleClickListener {
+            // create_btn_click：点击 Creating Short Dramas 按钮时上报。
+            EventManager.onFirebaseTrack(
+                FirebaseEvent.Category.FEATURE,
+                FirebaseEvent.Action.CREATE_BTN_CLICK
+            )
             FlowEventBus.postSync(Events.MainTabEvent(Events.MainTabEvent.TAB_CREATE))
 //            CreationRootActivity.start(activity)
         }
