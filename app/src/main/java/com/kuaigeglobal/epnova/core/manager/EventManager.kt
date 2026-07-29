@@ -104,6 +104,27 @@ object EventManager {
     }
 
     /**
+     * 用户从 App 外点击推送通知时上报 GA4。
+     *
+     * 仅接受埋点表中约定的业务类型；旧版 pushMsgType=1/2 属于通知展示类型，不参与该埋点。
+     */
+    fun reportPushClick(pushType: String?) {
+        val normalizedType = when (pushType?.trim()) {
+            FirebaseEvent.Value.PUSH_TYPE_CHECK_IN -> FirebaseEvent.Value.PUSH_TYPE_CHECK_IN
+            FirebaseEvent.Value.PUSH_TYPE_COINS_GIFT -> FirebaseEvent.Value.PUSH_TYPE_COINS_GIFT
+            FirebaseEvent.Value.PUSH_TYPE_CREDITS_GIFT -> FirebaseEvent.Value.PUSH_TYPE_CREDITS_GIFT
+            FirebaseEvent.Value.PUSH_TYPE_CREATION_PROCESS -> FirebaseEvent.Value.PUSH_TYPE_CREATION_PROCESS
+            FirebaseEvent.Value.PUSH_TYPE_PUBLISH_SUCCESS -> FirebaseEvent.Value.PUSH_TYPE_PUBLISH_SUCCESS
+            else -> return
+        }
+        onFirebaseTrack(
+            FirebaseEvent.Category.PUSH,
+            FirebaseEvent.Action.PUSH_CLICK,
+            normalizedType
+        )
+    }
+
+    /**
      * 作品播放量计数
      */
     fun onPlayEvent(workId: String?, episodeId: String?) {

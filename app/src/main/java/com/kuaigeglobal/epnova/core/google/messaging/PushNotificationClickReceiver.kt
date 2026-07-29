@@ -3,15 +3,20 @@ package com.kuaigeglobal.epnova.core.google.messaging
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import com.kuaigeglobal.epnova.core.manager.EventManager
 import com.kuaigeglobal.epnova.router.AppRouter
 
 class PushNotificationClickReceiver : BroadcastReceiver() {
 
     companion object {
         const val EXTRA_SCHEME = "scheme"
+        const val EXTRA_PUSH_TYPE = "push_type"
     }
 
     override fun onReceive(context: Context, intent: Intent) {
+        // GA4：用户从 App 外点击前台场景下由客户端创建的通知。
+        EventManager.reportPushClick(intent.getStringExtra(EXTRA_PUSH_TYPE))
+
         val scheme = intent.getStringExtra(EXTRA_SCHEME)
         if (!scheme.isNullOrEmpty()) {
             // 复用 AppLaunchJump：App 存活时拉回前台后跳转，冷启动时等待启动完成再跳转。

@@ -22,7 +22,10 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
     companion object {
         const val KEY_PUSH_MSG_JUMP_URI = "pushMsgJumpUri"
-        private const val KEY_PUSH_MSG_TYPE = "pushMsgType"
+        /** GA4 推送业务类型；值使用 FirebaseEvent.Value.PUSH_TYPE_*。 */
+        const val KEY_PUSH_EVENT_TYPE = "pushType"
+        /** 旧通知展示类型字段；兼容后端直接下发 GA4 字符串值。 */
+        const val KEY_PUSH_MSG_TYPE = "pushMsgType"
     }
 
     override fun onMessageReceived(message: RemoteMessage) {
@@ -33,7 +36,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         val notification: RemoteMessage.Notification? = message.getNotification()
         val title = notification?.title ?: ""
         val body = notification?.body ?: ""
-        val type = message.data[KEY_PUSH_MSG_TYPE] ?: -1
+        val pushType = message.data[KEY_PUSH_EVENT_TYPE] ?: message.data[KEY_PUSH_MSG_TYPE]
         val pushMsgJumpUri = message.data[KEY_PUSH_MSG_JUMP_URI] ?: ""
 //        val data = message.data
 //        val custom = data["custom"]
@@ -43,7 +46,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 //        messageInfo?.let {
 //            getNotification(it)
 //        }
-        showNotification(title, body, pushMsgJumpUri)
+        showNotification(title, body, pushMsgJumpUri, pushType)
     }
 
     fun getNotification(messageInfo: PushMessageInfo?) {
@@ -91,7 +94,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         }
     }
 
-    private fun showNotification(title: String, body: String, scheme: String?) {
+    private fun showNotification(title: String, body: String, scheme: String?, pushType: String?) {
         val channelId = "default_notification_channel_id"
         val channelName = "Push Notifications"
         val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
@@ -111,6 +114,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         // 避免 App 已在栈内时直接启动 SplashActivity 清空当前任务栈。
         val intent = Intent(this, PushNotificationClickReceiver::class.java).apply {
             putExtra(PushNotificationClickReceiver.EXTRA_SCHEME, scheme)
+            putExtra(PushNotificationClickReceiver.EXTRA_PUSH_TYPE, pushType)
         }
         val pendingIntent = PendingIntent.getBroadcast(
             this,

@@ -8,7 +8,10 @@ import com.blankj.utilcode.util.ActivityUtils
 import com.gyf.immersionbar.ImmersionBar
 import com.kuaigeglobal.epnova.App
 import com.kuaigeglobal.epnova.core.Config
+import com.kuaigeglobal.epnova.core.google.messaging.MyFirebaseMessagingService.Companion.KEY_PUSH_EVENT_TYPE
 import com.kuaigeglobal.epnova.core.google.messaging.MyFirebaseMessagingService.Companion.KEY_PUSH_MSG_JUMP_URI
+import com.kuaigeglobal.epnova.core.google.messaging.MyFirebaseMessagingService.Companion.KEY_PUSH_MSG_TYPE
+import com.kuaigeglobal.epnova.core.manager.EventManager
 import com.kuaigeglobal.epnova.databinding.ActivitySplashBinding
 import com.kuaigeglobal.epnova.feature.main.MainActivity
 import com.kuaigeglobal.epnova.router.AppNavigator
@@ -33,6 +36,7 @@ class SplashActivity : BaseViewModelActivity<ActivitySplashBinding, SplashViewMo
             val splashScreen = installSplashScreen()
             splashScreen.setOnExitAnimationListener { it.remove() }
             super.onCreate(savedInstanceState)
+            reportPushClickIfNeeded()
 
             if (!isTaskRoot) {
                 val schemeUri = getSchemeUriFromIntent()
@@ -53,6 +57,16 @@ class SplashActivity : BaseViewModelActivity<ActivitySplashBinding, SplashViewMo
             e.printStackTrace()
             next()
         }
+    }
+
+    private fun reportPushClickIfNeeded() {
+        val pushType = intent.getStringExtra(KEY_PUSH_EVENT_TYPE)
+            ?: intent.getStringExtra(KEY_PUSH_MSG_TYPE)
+        // 立即移除，避免同一启动 Intent 因页面重建而重复上报。
+        intent.removeExtra(KEY_PUSH_EVENT_TYPE)
+        intent.removeExtra(KEY_PUSH_MSG_TYPE)
+        // GA4：用户从 App 外点击 FCM 后台自动展示的通知。
+        EventManager.reportPushClick(pushType)
     }
 
     private fun next() {
