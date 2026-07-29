@@ -10,6 +10,8 @@ import androidx.recyclerview.widget.ConcatAdapter
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.ext.startRefreshWithAdapter
 import com.kuaigeglobal.epnova.core.databinding.loadUri
+import com.kuaigeglobal.epnova.core.manager.EventManager
+import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
 import com.kuaigeglobal.epnova.core.network.apis.entity.BannerInfo
 import com.kuaigeglobal.epnova.core.network.apis.response.Section
 import com.kuaigeglobal.epnova.databinding.FragmentHomeBinding
@@ -99,7 +101,13 @@ class HomeFragment :
                     val image = findViewById<ImageView>(R.id.image)
                     loadUri(image, data.imageUrl, R.drawable.img_default_cover_16_9.getResDrawable())
                     image.setOnSingleClickListener {
-                        AppRouter.jumpFromBanner(data.jumpUri, data.firebaseBannerId())
+                        val bannerId = data.firebaseBannerId()
+                        EventManager.onFirebaseTrack(
+                            FirebaseEvent.Category.HOME,
+                            FirebaseEvent.Action.BANNER_CLICK,
+                            bannerId
+                        )
+                        AppRouter.jumpFromBanner(data.jumpUri, bannerId)
                     }
                 }
             }
@@ -227,4 +235,5 @@ class HomeFragment :
     private fun BannerInfo.firebaseBannerId(): String? {
         return jumpUri ?: title ?: sortNo?.toString()
     }
+
 }

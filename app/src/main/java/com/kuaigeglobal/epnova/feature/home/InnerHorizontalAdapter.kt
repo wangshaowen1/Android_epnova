@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.kuaigeglobal.epnova.common.ext.getVm
+import com.kuaigeglobal.epnova.core.manager.EventManager
 import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
 import com.kuaigeglobal.epnova.core.network.apis.entity.WorkVOInfo
 import com.kuaigeglobal.epnova.databinding.ItemBookShelfChildBinding
@@ -61,6 +62,11 @@ class InnerHorizontalAdapter : ListAdapter<WorkVOInfo, RecyclerView.ViewHolder>(
                     initCallback = {}
                 ).apply {
                     onItemClick.value = {
+                        EventManager.onFirebaseTrack(
+                            FirebaseEvent.Category.HOME,
+                            FirebaseEvent.Action.DRAMA_CLICK,
+                            validItem.workId
+                        )
                         DramasPlayPagerActivity.start(
                             workId = validItem.workId,
                             position = 0,

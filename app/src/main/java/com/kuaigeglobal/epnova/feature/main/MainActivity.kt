@@ -20,6 +20,8 @@ import com.kuaigeglobal.epnova.core.Config
 import com.kuaigeglobal.epnova.core.Events
 import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.google.billing.BillingManager
+import com.kuaigeglobal.epnova.core.manager.EventManager
+import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
 import com.kuaigeglobal.epnova.core.manager.UpgradeManager
 import com.kuaigeglobal.epnova.databinding.ActivityMainBinding
 import com.kuaigeglobal.epnova.feature.aicompose.generating.GeneratingViewModel
@@ -167,6 +169,10 @@ class MainActivity : BaseViewModelActivity<ActivityMainBinding, MainViewModel>()
             when (checkedId) {
                 R.id.rbHome -> {
                     //首页
+                    EventManager.onFirebaseTrack(
+                        FirebaseEvent.Category.HOME,
+                        FirebaseEvent.Action.HOME_SHOW
+                    )
                     setKeepScreenOn(false)
                     mRealVM.showTab.set(PAGE_HOME)
                     supportFragmentManager.switchFragment(
