@@ -15,6 +15,7 @@ import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.ext.onUserSignOut
 import com.kuaigeglobal.epnova.core.ext.sensitiveWordCheck
 import com.kuaigeglobal.epnova.core.manager.EventManager
+import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
 import com.kuaigeglobal.epnova.core.network.apis.entity.UnusedPackageInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.VideoConfigInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.WorkInfo
@@ -167,6 +168,14 @@ class CreationPageActionDelegate(
     fun nextStep() {
         if (AppNavigator.checkLoginIntercepted(true) || viewModel.isStreaming()) return
         if (!hasEnoughInput()) return
+        EventManager.onFirebaseTrack(
+            FirebaseEvent.Category.CREATE,
+            if (isInspirationPage) {
+                FirebaseEvent.Action.INSPIRATION_NEXT_CLICK
+            } else {
+                FirebaseEvent.Action.NOVEL_NEXT_CLICK
+            }
+        )
         fragment.lifecycleScope.launch {
             sensitiveWordCheck(viewModel.input.value, {
                 val title = viewModel.extractStoryName(viewModel.input.value)
@@ -237,6 +246,18 @@ class CreationPageActionDelegate(
                 if (!fileUrl.isNullOrEmpty()) viewModel.analysisResult?.charCount else null
             ).apply {
                 onSuccess = { videoDialog, range, custom, ratio, style, name ->
+                    EventManager.onFirebaseTrack(
+                        FirebaseEvent.Category.CREATE,
+                        FirebaseEvent.Action.START_CREATING_CLICK,
+                        if (isInspirationPage) {
+                            FirebaseEvent.Value.CREATION_INSPIRATION
+                        } else {
+                            FirebaseEvent.Value.CREATION_NOVEL
+                        },
+                        videoDialog?.selectedEpisodeCount(),
+                        ratio,
+                        style
+                    )
                     val createWork = {
                         videoDialog?.dismissAllowingStateLoss()
                         val isFileModel = !fileUrl.isNullOrEmpty()

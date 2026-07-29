@@ -8,6 +8,8 @@ import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.adapter.FragmentStateCacheAdapter
 import com.kuaigeglobal.epnova.common.utils.KeyboardUtils
 import com.kuaigeglobal.epnova.core.Events
+import com.kuaigeglobal.epnova.core.manager.EventManager
+import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
 import com.kuaigeglobal.epnova.databinding.FragmentCreationDramasBinding
 import com.kuaigeglobal.epnova.feature.creation.childs.CreationInspirationFragment
 import com.kuaigeglobal.epnova.feature.creation.childs.CreationNovelFragment
@@ -40,7 +42,15 @@ class CreationFragment : BaseViewModelFragment<FragmentCreationDramasBinding, Cr
 
     override fun onPrepareView() {
         super.onPrepareView()
+        reportInspirationShow()
         initViewPager()
+    }
+
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+        if (!hidden && binding.viewPager.currentItem == 0) {
+            reportInspirationShow()
+        }
     }
 
     private fun initViewPager() {
@@ -76,15 +86,32 @@ class CreationFragment : BaseViewModelFragment<FragmentCreationDramasBinding, Cr
         super.onClick(view, data)
         when (view.id) {
             R.id.tabInspiration -> {
+                val changedToInspiration = binding.viewPager.currentItem != 0
+                EventManager.onFirebaseTrack(
+                    FirebaseEvent.Category.CREATE,
+                    FirebaseEvent.Action.INSPIRATION_TAB_CLICK
+                )
                 binding.viewPager.currentItem = 0
-//                EventManager.onAppTrack(AppEvent.SF_VIEW_STORY_INSPIRATION_TAB)
+                if (changedToInspiration) {
+                    reportInspirationShow()
+                }
             }
 
             R.id.tabNovel -> {
+                EventManager.onFirebaseTrack(
+                    FirebaseEvent.Category.CREATE,
+                    FirebaseEvent.Action.NOVEL_TAB_CLICK
+                )
                 binding.viewPager.currentItem = 1
-//                EventManager.onAppTrack(AppEvent.SF_VIEW_NOVEL_ADAPTATION_TAB)
             }
         }
+    }
+
+    private fun reportInspirationShow() {
+        EventManager.onFirebaseTrack(
+            FirebaseEvent.Category.CREATE,
+            FirebaseEvent.Action.INSPIRATION_SHOW
+        )
     }
 
     override fun onDestroy() {

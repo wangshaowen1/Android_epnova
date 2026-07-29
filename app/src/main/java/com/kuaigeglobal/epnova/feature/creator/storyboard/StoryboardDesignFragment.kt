@@ -7,6 +7,8 @@ import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.ext.applySmartFocusManager
 import com.kuaigeglobal.epnova.common.ext.showCommonDialog
 import com.kuaigeglobal.epnova.core.Global
+import com.kuaigeglobal.epnova.core.manager.EventManager
+import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
 import com.kuaigeglobal.epnova.databinding.FragmentStoryboardDesignBinding
 import com.kuaigeglobal.epnova.feature.creator.data.DramaGenerateConstants
 import com.kuaigeglobal.epnova.feature.creator.generate.OnBackPressedHandler
@@ -37,6 +39,10 @@ class StoryboardDesignFragment :
 
     override fun onPrepareView() {
         super.onPrepareView()
+        EventManager.onFirebaseTrack(
+            FirebaseEvent.Category.CREATE,
+            FirebaseEvent.Action.STORYBOARD_SHOW
+        )
         mRealVM.currentCreationModel.observe(this) {
             hostVm?.currentCreationModel?.value = it
         }
@@ -78,6 +84,15 @@ class StoryboardDesignFragment :
         super.onClick(view, data)
         when (view.id) {
             R.id.btnNext -> {
+                EventManager.onFirebaseTrack(
+                    FirebaseEvent.Category.CREATE,
+                    FirebaseEvent.Action.STORYBOARD_GENERATE_CLICK,
+                    if (mRealVM.currentCreationModel.value?.isNarration() == true) {
+                        FirebaseEvent.Value.MODEL_NARRATION_COMIC
+                    } else {
+                        FirebaseEvent.Value.MODEL_DYNAMIC_COMIC
+                    }
+                )
                 mRealVM.clickNext { workId, storyId, taskId ->
                     EditStoryboardVideoActivity.start(
                         hostVm?.title?.value?.let {

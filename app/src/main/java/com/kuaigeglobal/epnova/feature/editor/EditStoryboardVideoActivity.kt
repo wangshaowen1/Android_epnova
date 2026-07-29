@@ -15,6 +15,8 @@ import com.kuaigeglobal.epnova.common.ext.showCommonDialog
 import com.kuaigeglobal.epnova.common.ext.topActivity
 import com.kuaigeglobal.epnova.common.permissions.requestRead2WritePermissions
 import com.kuaigeglobal.epnova.core.Events
+import com.kuaigeglobal.epnova.core.manager.EventManager
+import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
 import com.kuaigeglobal.epnova.core.network.apis.entity.EpisodeInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.SimpleStoryboardInfo
 import com.kuaigeglobal.epnova.databinding.ActivityEditStoryboardVideoBinding
@@ -112,6 +114,10 @@ class EditStoryboardVideoActivity : BaseViewModelActivity<ActivityEditStoryboard
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        EventManager.onFirebaseTrack(
+            FirebaseEvent.Category.CREATE,
+            FirebaseEvent.Action.PREVIEW_VIDEO_SHOW
+        )
         onBackPressedDispatcher.addCallback(this, backPressedCallback)
         binding.loadState.setNoDataIcon(0)
         binding.root.applySmartFocusManager()
@@ -165,6 +171,10 @@ class EditStoryboardVideoActivity : BaseViewModelActivity<ActivityEditStoryboard
                     getString(R.string.video_generating_please_wait).showToast()
                     return
                 }
+                EventManager.onFirebaseTrack(
+                    FirebaseEvent.Category.CREATE,
+                    FirebaseEvent.Action.STORYBOARD_REDRAW_CLICK
+                )
                 EditStoryboardActivity.start(current, mRealVM.workRatio.get(), mRealVM.storyInfo?.stepProgress)
             }
 
@@ -179,6 +189,10 @@ class EditStoryboardVideoActivity : BaseViewModelActivity<ActivityEditStoryboard
                     return
                 }
                 if (current.videoGenerated) {
+                    EventManager.onFirebaseTrack(
+                        FirebaseEvent.Category.CREATE,
+                        FirebaseEvent.Action.PREVIEW_VIDEO_DOWNLOAD_CLICK
+                    )
                     downloadStoryboard = current
                     if (current.hasWatermark == true) {
                         downloadVideo(false)
@@ -197,6 +211,10 @@ class EditStoryboardVideoActivity : BaseViewModelActivity<ActivityEditStoryboard
 
             R.id.btnGenerate -> {
                 if (mRealVM.showPublishLockedToast()) return
+                EventManager.onFirebaseTrack(
+                    FirebaseEvent.Category.CREATE,
+                    FirebaseEvent.Action.COMBINE_VIDEO_CLICK
+                )
                 mRealVM.synthesis()
             }
         }

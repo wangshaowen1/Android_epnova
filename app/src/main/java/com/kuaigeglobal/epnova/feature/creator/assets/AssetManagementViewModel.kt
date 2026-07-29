@@ -19,6 +19,8 @@ import com.kuaigeglobal.epnova.core.Events
 import com.kuaigeglobal.epnova.core.ext.launch
 import com.kuaigeglobal.epnova.core.ext.launchWithLoading
 import com.kuaigeglobal.epnova.core.ext.showRechargeDialog
+import com.kuaigeglobal.epnova.core.manager.EventManager
+import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
 import com.kuaigeglobal.epnova.core.network.apis.ApiResponse
 import com.kuaigeglobal.epnova.core.network.apis.entity.AssetInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.RoleImageInfo
@@ -659,13 +661,26 @@ class AssetManagementViewModel : AppRepositoryViewModel<AssetManagementRepositor
      */
     fun clickNext(toNextStep: ((workId: String?, storyId: String?, taskId: String?) -> Unit)?) {
         when (step.get()) {
-            STEP_DESCRIPTION_GENERATED, STEP_IMAGE_GENERATE_FAILED -> {
-                //一键生成、重试失败项
+            STEP_DESCRIPTION_GENERATED -> {
+                //一键生成
+                EventManager.onFirebaseTrack(
+                    FirebaseEvent.Category.CREATE,
+                    FirebaseEvent.Action.ASSET_GENERATE_CLICK
+                )
+                oneKeyGenerate()
+            }
+
+            STEP_IMAGE_GENERATE_FAILED -> {
+                //重试失败项不属于表格中的“一键生成”点击
                 oneKeyGenerate()
             }
 
             STEP_IMAGE_GENERATED -> {
                 //下一步：分镜设计
+                EventManager.onFirebaseTrack(
+                    FirebaseEvent.Category.CREATE,
+                    FirebaseEvent.Action.ASSET_NEXT_CLICK
+                )
                 generateAllStoryboardDescription(toNextStep)
             }
         }

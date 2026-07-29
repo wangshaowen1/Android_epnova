@@ -8,6 +8,8 @@ import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.Constants
 import com.kuaigeglobal.epnova.common.ext.applySmartFocusManager
 import com.kuaigeglobal.epnova.core.ext.sensitiveWordCheck
+import com.kuaigeglobal.epnova.core.manager.EventManager
+import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
 import com.kuaigeglobal.epnova.core.network.apis.entity.VideoConfigData
 import com.kuaigeglobal.epnova.databinding.DialogVideoSetBinding
 import com.kuaigeglobal.epnova.feature.creator.set.allstyle.CreationStyleChooseDialog
@@ -38,6 +40,10 @@ class VideoSetDialog : BaseBottomPushVMDialogFragment<DialogVideoSetBinding, Vid
 
     override fun onPrepareView() {
         super.onPrepareView()
+        EventManager.onFirebaseTrack(
+            FirebaseEvent.Category.CREATE,
+            FirebaseEvent.Action.CREATE_WORK_SHOW
+        )
         binding.root.applySmartFocusManager()
         binding.nameInputer.setText(mRealVM.workTitle)
         binding.btnConfirm.alpha = if (mRealVM.workTitle.isNullOrEmpty()) 0.6f else 1f
@@ -110,6 +116,16 @@ class VideoSetDialog : BaseBottomPushVMDialogFragment<DialogVideoSetBinding, Vid
                 }
             }
             newInstance.show(childFragmentManager)
+        }
+    }
+
+    fun selectedEpisodeCount(): String? {
+        val selected = mRealVM.checkedEpisodeSet ?: return null
+        val config = selected.data.get()
+        return if (config?.isCustomInput() == true) {
+            selected.input.get()
+        } else {
+            config?.configValue
         }
     }
 }

@@ -13,6 +13,8 @@ import com.kuaigeglobal.epnova.common.SimpleTextWatcher
 import com.kuaigeglobal.epnova.common.ext.applySmartFocusManager
 import com.kuaigeglobal.epnova.common.ext.showConfirmPrompt
 import com.kuaigeglobal.epnova.core.ext.sensitiveWordCheck
+import com.kuaigeglobal.epnova.core.manager.EventManager
+import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
 import com.kuaigeglobal.epnova.databinding.FragmentDramaGenerateStep2Binding
 import com.kuaigeglobal.epnova.feature.creator.data.DramaGenerateConstants
 import com.kuaigeglobal.epnova.feature.editor.info.InputDialog
@@ -47,6 +49,10 @@ class DramaGenerateStep2Fragment :
 
     override fun onPrepareView() {
         super.onPrepareView()
+        EventManager.onFirebaseTrack(
+            FirebaseEvent.Category.CREATE,
+            FirebaseEvent.Action.SCRIPT_SHOW
+        )
         binding.root.applySmartFocusManager()
         parseIntentData()
         initView()
@@ -103,6 +109,10 @@ class DramaGenerateStep2Fragment :
         }
 
         binding.btnNext.setOnSingleClickListener {
+            EventManager.onFirebaseTrack(
+                FirebaseEvent.Category.CREATE,
+                FirebaseEvent.Action.SCRIPT_NEXT_CLICK
+            )
             handleNextStep()
         }
         setupTouchInterceptor()

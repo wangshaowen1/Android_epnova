@@ -11,6 +11,8 @@ import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.Constants
 import com.kuaigeglobal.epnova.common.adapter.QuickAdapter
 import com.kuaigeglobal.epnova.common.ext.showConfirmPrompt
+import com.kuaigeglobal.epnova.core.manager.EventManager
+import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
 import com.kuaigeglobal.epnova.databinding.FragmentDramaGenerateStep1Binding
 import com.kuaigeglobal.epnova.feature.creator.CreationRootActivity
 import com.kuaigeglobal.epnova.feature.creator.StoryReuploadDialog
@@ -47,6 +49,10 @@ class DramaGenerateStep1Fragment :
 
     override fun onPrepareView() {
         super.onPrepareView()
+        EventManager.onFirebaseTrack(
+            FirebaseEvent.Category.CREATE,
+            FirebaseEvent.Action.SYNOPSIS_SHOW
+        )
         activity?.intent?.let {
             mRealVM.workId = it.getStringExtra(Constants.Extra.WORK_ID)
             mRealVM.model = it.getIntExtra(Constants.Extra.MODE, 0)
@@ -132,6 +138,10 @@ class DramaGenerateStep1Fragment :
             }
         }
         binding.btnNext.setOnSingleClickListener {
+            EventManager.onFirebaseTrack(
+                FirebaseEvent.Category.CREATE,
+                FirebaseEvent.Action.SYNOPSIS_NEXT_CLICK
+            )
             mRealVM.saveTitle {
                 hostVm?.nextStep(2, mRealVM.workId, mRealVM.storySummaryResult.value?.result?.getFirstStoryId())
             }

@@ -12,6 +12,8 @@ import com.kuaigeglobal.epnova.core.Events
 import com.kuaigeglobal.epnova.core.ext.launch
 import com.kuaigeglobal.epnova.core.ext.launchWithLoading
 import com.kuaigeglobal.epnova.core.ext.sensitiveWordCheck
+import com.kuaigeglobal.epnova.core.manager.EventManager
+import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
 import com.kuaigeglobal.epnova.core.network.apis.ApiFactory
 import com.kuaigeglobal.epnova.core.network.apis.entity.SimpleStoryboardInfo
 import com.kuaigeglobal.epnova.core.network.apis.request.GenerateStoryboardBody
@@ -251,6 +253,10 @@ class EditStoryboardViewModel : AppRepositoryViewModel<EditStoryboardRepository>
      * 重新生成视频
      */
     fun reGenerateVideo() {
+        EventManager.onFirebaseTrack(
+            FirebaseEvent.Category.CREATE,
+            FirebaseEvent.Action.REDRAW_NOW_CLICK
+        )
         retryGenerateVideo(true)
     }
 

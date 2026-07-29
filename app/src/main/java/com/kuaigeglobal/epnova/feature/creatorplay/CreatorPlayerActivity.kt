@@ -11,6 +11,7 @@ import com.kuaigeglobal.epnova.common.ext.showCommonDialog
 import com.kuaigeglobal.epnova.common.ext.topActivity
 import com.kuaigeglobal.epnova.common.permissions.requestRead2WritePermissions
 import com.kuaigeglobal.epnova.core.manager.EventManager
+import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
 import com.kuaigeglobal.epnova.core.network.apis.entity.CreatorPlaySource
 import com.kuaigeglobal.epnova.core.network.apis.entity.CreatorPlayableEpisode
 import com.kuaigeglobal.epnova.core.network.apis.response.PlayMenuInfo
@@ -162,6 +163,10 @@ class CreatorPlayerActivity :
             showPopupWindow()
         }
         binding.btnEdit.setOnSingleClickListener {
+            EventManager.onFirebaseTrack(
+                FirebaseEvent.Category.CREATE,
+                FirebaseEvent.Action.WORK_REDRAW_CLICK
+            )
             showRedrawConfirm()
         }
     }
@@ -289,6 +294,10 @@ class CreatorPlayerActivity :
             tip = getString(R.string.redraw_cover_confirm),
             confirmText = getString(R.string.confirm_ok)
         ) {
+            EventManager.onFirebaseTrack(
+                FirebaseEvent.Category.CREATE,
+                FirebaseEvent.Action.REDRAW_CONFIRM_CLICK
+            )
             CreatorStoryboardEditorLauncher.start(item)
         }
     }

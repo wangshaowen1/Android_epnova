@@ -16,6 +16,7 @@ import com.kuaigeglobal.epnova.core.Events
 import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.ext.sensitiveWordCheck
 import com.kuaigeglobal.epnova.core.manager.EventManager
+import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
 import com.kuaigeglobal.epnova.core.network.apis.entity.UnusedPackageInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.VideoConfigData
 import com.kuaigeglobal.epnova.core.network.apis.entity.VideoConfigInfo
@@ -74,6 +75,10 @@ class VideoSetActivity : BaseViewModelActivity<ActivityVideoSetBinding, VideoSet
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        EventManager.onFirebaseTrack(
+            FirebaseEvent.Category.CREATE,
+            FirebaseEvent.Action.CREATE_WORK_SHOW
+        )
         binding.root.applySmartFocusManager()
         initView()
         initListener()
@@ -268,6 +273,19 @@ class VideoSetActivity : BaseViewModelActivity<ActivityVideoSetBinding, VideoSet
             mRealVM.hotCaseId?.let {
                 EventManager.reportCreationUsageCount(it, EventManager.REPORT_CREATION_TYPE_HOT_CASE)
             }
+            val episodeConfig = mRealVM.checkedEpisodeSet?.data?.get()
+            EventManager.onFirebaseTrack(
+                FirebaseEvent.Category.CREATE,
+                FirebaseEvent.Action.START_CREATING_CLICK,
+                FirebaseEvent.Value.CREATION_INSPIRATION,
+                if (episodeConfig?.isCustomInput() == true) {
+                    mRealVM.checkedEpisodeSet?.input?.get()
+                } else {
+                    episodeConfig?.configValue
+                },
+                mRealVM.checkedRatio?.data?.get()?.configValue,
+                mRealVM.checkedStyle?.data?.get()?.styleCode
+            )
 
             createSameTask(workTitle, sameStory)
         }
