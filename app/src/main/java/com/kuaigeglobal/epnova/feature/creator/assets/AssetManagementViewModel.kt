@@ -19,8 +19,6 @@ import com.kuaigeglobal.epnova.core.Events
 import com.kuaigeglobal.epnova.core.ext.launch
 import com.kuaigeglobal.epnova.core.ext.launchWithLoading
 import com.kuaigeglobal.epnova.core.ext.showRechargeDialog
-import com.kuaigeglobal.epnova.core.manager.EventManager
-import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
 import com.kuaigeglobal.epnova.core.network.apis.ApiResponse
 import com.kuaigeglobal.epnova.core.network.apis.entity.AssetInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.RoleImageInfo
@@ -479,7 +477,6 @@ class AssetManagementViewModel : AppRepositoryViewModel<AssetManagementRepositor
 
     private fun generate(cost: Int) {
         if (PowerRechargeDialog.checkLowBalance(cost, PowerRechargeDialog.TAB_CREDITS)) return
-        EventManager.onFirebaseTrack(FirebaseEvent.ASSET_GENERATE_CLICK)
         var notInput = false
         val notGenerateItems = arrayListOf<Triple<ItemAssetVM, String, String>>()
         adapter.items.forEachIndexed { index, item ->
@@ -669,7 +666,6 @@ class AssetManagementViewModel : AppRepositoryViewModel<AssetManagementRepositor
 
             STEP_IMAGE_GENERATED -> {
                 //下一步：分镜设计
-                EventManager.onFirebaseTrack(FirebaseEvent.ASSET_MANAGEMENT_NEXT_CLICK)
                 generateAllStoryboardDescription(toNextStep)
             }
         }

@@ -15,8 +15,6 @@ import com.kuaigeglobal.epnova.core.Global
 import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.ext.onUserSignOut
 import com.kuaigeglobal.epnova.core.ext.sensitiveWordCheck
-import com.kuaigeglobal.epnova.core.manager.EventManager
-import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
 import com.kuaigeglobal.epnova.core.network.apis.entity.VideoConfigInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.WorkInfo
 import com.kuaigeglobal.epnova.core.network.apis.request.CreateTaskBody
@@ -62,9 +60,6 @@ class CreationFragment :
     private var pendingFirstRechargeContinuation: (() -> Unit)? = null
     override fun onPrepareView() {
         super.onPrepareView()
-        if (mRealVM.creationModel == MODEL_INSPIRATION) {
-            EventManager.onFirebaseTrack(FirebaseEvent.STORY_INSPIRATION_VIEW)
-        }
         initView()
         //数据更新
         dataUpdate()
@@ -333,16 +328,6 @@ class CreationFragment :
                 if ((mRealVM.input.value?.length ?: 0) < mRealVM.minInputLength) {
                     getString(R.string.input_min_length, mRealVM.minInputLength).showToast()
                     return
-                }
-                EventManager.onFirebaseTrack(
-                    if (mRealVM.creationModel == MODEL_INSPIRATION) {
-                        FirebaseEvent.STORY_INSPIRATION_NEXT_CLICK
-                    } else {
-                        FirebaseEvent.NOVEL_ADAPTATION_NEXT_CLICK
-                    }
-                )
-                if (mRealVM.creationModel == MODEL_INSPIRATION) {
-                } else {
                 }
                 //检查敏感词
                 lifecycleScope.launch {

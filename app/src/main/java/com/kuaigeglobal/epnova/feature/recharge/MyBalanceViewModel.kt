@@ -18,10 +18,6 @@ import com.kuaigeglobal.epnova.core.ext.launch
 import com.kuaigeglobal.epnova.core.ext.launchWithLoading
 import com.kuaigeglobal.epnova.core.google.billing.BillingManager
 import com.kuaigeglobal.epnova.core.google.billing.PurchaseResult
-import com.kuaigeglobal.epnova.core.manager.EventManager
-import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
-import com.kuaigeglobal.epnova.core.manager.FirebaseEventParam
-import com.kuaigeglobal.epnova.core.manager.FirebaseEventValue
 import com.kuaigeglobal.epnova.core.network.apis.response.SimpleBannerInfo
 import com.kuaigeglobal.epnova.core.response
 import com.kuaigeglobal.epnova.feature.details.ComputingPowerDetailsActivity
@@ -103,7 +99,6 @@ class MyBalanceViewModel(
                 if (coinsAdapter.items.isEmpty()) loadCoinsConfig()
                 else {
                     loadState.set(LoadStateViewHolder.CONTENT)
-                    trackCoinsFirstPurchaseGiftCardView(coinsAdapter.items)
                 }
             }
             TAB_CREDITS -> {
@@ -112,7 +107,6 @@ class MyBalanceViewModel(
                 if (creditsAdapter.items.isEmpty()) loadCreditsConfig()
                 else {
                     loadState.set(LoadStateViewHolder.CONTENT)
-                    trackCreditsFirstPurchaseGiftCardView(creditsAdapter.items)
                 }
             }
         }
@@ -132,7 +126,6 @@ class MyBalanceViewModel(
                 updateBalance()
                 data?.items?.map { ItemRechargePowerVM(it).apply { onItemClick.value = { selectCoins() } } }.let { vms ->
                     coinsAdapter.submitList(vms)
-                    trackCoinsFirstPurchaseGiftCardView(vms)
                     loadGoogleProductsForCoins(vms)
                     vms?.find { it.data.get()?.isDiscountValid() == true }?.let { startGlobalCountDown() }
                 }
@@ -154,7 +147,6 @@ class MyBalanceViewModel(
                 }
                 data?.items?.map { ItemRechargeCreditsVM(it).apply { onItemClick.value = { selectCredits() } } }.let { vms ->
                     creditsAdapter.submitList(vms)
-                    trackCreditsFirstPurchaseGiftCardView(vms)
                     loadGoogleProductsForCredits(vms)
                     vms?.find { it.data.get()?.isDiscountValid() == true }?.let { startGlobalCountDown() }
                 }
@@ -211,8 +203,6 @@ class MyBalanceViewModel(
         currentCoinsItem?.isChecked?.set(false)
         isChecked.set(true)
         currentCoinsItem = this
-        trackStoreProduct(FirebaseEvent.STORE_PRODUCT_CLICK)
-        trackCoinsFirstPurchaseGiftClickIfNeeded()
         recharge()
     }
 
@@ -220,8 +210,6 @@ class MyBalanceViewModel(
         currentCreditsItem?.isChecked?.set(false)
         isChecked.set(true)
         currentCreditsItem = this
-        trackStoreProduct(FirebaseEvent.STORE_PRODUCT_CLICK)
-        trackCreditsFirstPurchaseGiftClickIfNeeded()
         recharge()
     }
 
@@ -230,9 +218,6 @@ class MyBalanceViewModel(
         purchaseJob = viewModelScope.launch {
             BillingManager.purchaseResultFlow.take(1).collect { result ->
                 if (result is PurchaseResult.Success) {
-                    trackStoreProduct(FirebaseEvent.STORE_PRODUCT_SUCCESS)
-                    trackCoinsFirstPurchaseGiftSuccessIfNeeded()
-                    trackCreditsFirstPurchaseGiftSuccessIfNeeded()
                     loadConfig()
                     refreshCoinsAndPoints()
                 }
@@ -282,7 +267,6 @@ class MyBalanceViewModel(
     }
 
     fun navigateToHistory() {
-        EventManager.onFirebaseTrack(FirebaseEvent.TRANSACTION_HISTORY_VIEW)
         ComputingPowerDetailsActivity.start(topActivity, currentTab)
     }
 
@@ -310,69 +294,6 @@ class MyBalanceViewModel(
 
     private fun refreshCoinsAndPoints() {
         Global.refreshCoinsAndPoints()
-    }
-
-    private fun trackStoreProduct(eventName: String) {
-        if (currentTab == TAB_COINS) {
-            val item = currentCoinsItem?.data?.get() ?: return
-            EventManager.onFirebaseTrack(
-                eventName,
-                FirebaseEventParam.PRODUCT_ID to (item.coinsConfigCode ?: item.googleProductId),
-                FirebaseEventParam.CURRENCY_TYPE to FirebaseEventValue.CURRENCY_COINS,
-                FirebaseEventParam.PRICE to item.coinsPrice
-            )
-        } else {
-            val item = currentCreditsItem?.data?.get() ?: return
-            EventManager.onFirebaseTrack(
-                eventName,
-                FirebaseEventParam.PRODUCT_ID to (item.pointConfigCode ?: item.googleProductId),
-                FirebaseEventParam.CURRENCY_TYPE to FirebaseEventValue.CURRENCY_CREDITS,
-                FirebaseEventParam.PRICE to item.pointPrice
-            )
-        }
-    }
-
-    private fun trackCoinsFirstPurchaseGiftCardView(items: List<ItemRechargePowerVM>?) {
-        items.orEmpty()
-            .filter { it.data.get()?.shouldShowGiftInfo() == true }
-            .forEach {
-                EventManager.onFirebaseTrack(FirebaseEvent.COINS_FIRST_PURCHASE_GIFT_POPUP_VIEW)
-            }
-    }
-
-    private fun ItemRechargePowerVM.trackCoinsFirstPurchaseGiftClickIfNeeded() {
-        if (data.get()?.shouldShowGiftInfo() != true) return
-        EventManager.onFirebaseTrack(FirebaseEvent.COINS_FIRST_PURCHASE_GIFT_POPUP_CLICK)
-    }
-
-    private fun trackCoinsFirstPurchaseGiftSuccessIfNeeded() {
-        if (currentTab != TAB_COINS) return
-        if (currentCoinsItem?.data?.get()?.shouldShowGiftInfo() != true) return
-        EventManager.onFirebaseTrack(FirebaseEvent.COINS_FIRST_PURCHASE_GIFT_POPUP_SUCCESS)
-    }
-
-    private fun trackCreditsFirstPurchaseGiftCardView(items: List<ItemRechargeCreditsVM>?) {
-        items.orEmpty()
-            .filter { it.data.get()?.isDiscountValid() == true }
-            .forEach {
-                val item = it.data.get()
-                EventManager.onFirebaseTrack(
-                    FirebaseEvent.CREDITS_FIRST_PURCHASE_GIFT_POPUP_VIEW,
-                    FirebaseEventParam.PRODUCT_ID to (item?.pointConfigCode ?: item?.googleProductId),
-                    FirebaseEventParam.PRICE to item?.pointPrice
-                )
-            }
-    }
-
-    private fun ItemRechargeCreditsVM.trackCreditsFirstPurchaseGiftClickIfNeeded() {
-        if (data.get()?.isDiscountValid() != true) return
-        EventManager.onFirebaseTrack(FirebaseEvent.CREDITS_FIRST_PURCHASE_GIFT_POPUP_CLICK)
-    }
-
-    private fun trackCreditsFirstPurchaseGiftSuccessIfNeeded() {
-        if (currentTab != TAB_CREDITS) return
-        if (currentCreditsItem?.data?.get()?.isDiscountValid() != true) return
-        EventManager.onFirebaseTrack(FirebaseEvent.CREDITS_FIRST_PURCHASE_POPUP_SUCCESS)
     }
 
     private var countDownJob: Job? = null

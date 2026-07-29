@@ -11,9 +11,6 @@ import com.kuaigeglobal.epnova.common.ext.showCommonDialog
 import com.kuaigeglobal.epnova.common.ext.topActivity
 import com.kuaigeglobal.epnova.common.permissions.requestRead2WritePermissions
 import com.kuaigeglobal.epnova.core.manager.EventManager
-import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
-import com.kuaigeglobal.epnova.core.manager.FirebaseEventParam
-import com.kuaigeglobal.epnova.core.manager.FirebaseEventValue
 import com.kuaigeglobal.epnova.core.network.apis.entity.CreatorPlaySource
 import com.kuaigeglobal.epnova.core.network.apis.entity.CreatorPlayableEpisode
 import com.kuaigeglobal.epnova.core.network.apis.response.PlayMenuInfo
@@ -87,9 +84,6 @@ class CreatorPlayerActivity :
 
     /**下载方式弹窗回调时使用的当前视频 URL。*/
     private var downloadVideoUrl: String? = null
-    private var lastFirebaseValidPlayStoryId: String? = null
-    private var lastFirebaseProcessStoryId: String? = null
-    private val lastFirebaseProcessNodes = mutableSetOf<Int>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -150,8 +144,6 @@ class CreatorPlayerActivity :
             onPageChanged = { item, _ ->
                 mRealVM.updateCurrentPlayableEpisode(item)
                 EventManager.onPlayEvent(item)
-                resetFirebasePlaybackState(item.episode.storyId)
-                trackPlayerView(item)
             }
         }
 
@@ -195,14 +187,11 @@ class CreatorPlayerActivity :
         lifecycleScope.launch {
             playerManager.progressFlow.collectLatest { (current, total) ->
                 listController.getCurrentHolder()?.updateProgress(current, total)
-                val item = mRealVM.currentPlayableEpisode.get() ?: return@collectLatest
-                trackFirebasePlaybackProgress(item, current, total)
             }
         }
         lifecycleScope.launch {
             playerManager.playerEvent.collectLatest { event ->
                 if (event is CreatorFeedPlayerManager.PlayerEvent.OnPlayEnded) {
-                    mRealVM.currentPlayableEpisode.get()?.let { trackPlayerComplete(it) }
                     val hasNext = listController.smoothScrollToNext()
                     if (!hasNext) {
                         playerManager.pause()
@@ -300,11 +289,6 @@ class CreatorPlayerActivity :
             tip = getString(R.string.redraw_cover_confirm),
             confirmText = getString(R.string.confirm_ok)
         ) {
-            EventManager.onFirebaseTrack(
-                FirebaseEvent.WORK_REPLAY_REDRAW_CLICK,
-                FirebaseEventParam.DRAMA_ID to (item.workContext.workId ?: item.episode.workId),
-                FirebaseEventParam.EPISODE_ID to item.episode.storyId
-            )
             CreatorStoryboardEditorLauncher.start(item)
         }
     }
@@ -316,65 +300,4 @@ class CreatorPlayerActivity :
             .getOrDefault(CreatorPlaySource.TOP_EARNERS)
     }
 
-    private fun resetFirebasePlaybackState(storyId: String?) {
-        if (lastFirebaseProcessStoryId == storyId) return
-        lastFirebaseValidPlayStoryId = null
-        lastFirebaseProcessStoryId = storyId
-        lastFirebaseProcessNodes.clear()
-    }
-
-    private fun trackPlayerView(item: CreatorPlayableEpisode) {
-        EventManager.onFirebaseTrack(
-            FirebaseEvent.PLAYER_VIEW,
-            FirebaseEventParam.DRAMA_ID to (item.workContext.workId ?: item.episode.workId),
-            FirebaseEventParam.EPISODE_ID to item.episode.storyId,
-            FirebaseEventParam.SOURCE to item.firebasePlayerSource()
-        )
-    }
-
-    private fun trackFirebasePlaybackProgress(item: CreatorPlayableEpisode, current: Long, total: Long) {
-        if (total <= 0) return
-        val episode = item.episode
-        val progressPercent = ((current.coerceAtLeast(0L) * 100L) / total).toInt().coerceIn(0, 100)
-        if (progressPercent >= 10 && lastFirebaseValidPlayStoryId != episode.storyId) {
-            lastFirebaseValidPlayStoryId = episode.storyId
-            EventManager.onFirebaseTrack(
-                FirebaseEvent.PLAYER_VALID_PLAY,
-                FirebaseEventParam.DRAMA_ID to (item.workContext.workId ?: episode.workId),
-                FirebaseEventParam.EPISODE_ID to episode.storyId
-            )
-        }
-        val processNode = when {
-            progressPercent >= 75 -> 75
-            progressPercent >= 50 -> 50
-            progressPercent >= 25 -> 25
-            else -> return
-        }
-        if (lastFirebaseProcessStoryId != episode.storyId) {
-            resetFirebasePlaybackState(episode.storyId)
-        }
-        if (lastFirebaseProcessNodes.add(processNode)) {
-            EventManager.onFirebaseTrack(
-                FirebaseEvent.PLAYER_PROCESS,
-                FirebaseEventParam.DRAMA_ID to (item.workContext.workId ?: episode.workId),
-                FirebaseEventParam.EPISODE_ID to episode.storyId,
-                FirebaseEventParam.PROCESS to processNode
-            )
-        }
-    }
-
-    private fun trackPlayerComplete(item: CreatorPlayableEpisode) {
-        EventManager.onFirebaseTrack(
-            FirebaseEvent.PLAYER_COMPLETE,
-            FirebaseEventParam.DRAMA_ID to (item.workContext.workId ?: item.episode.workId),
-            FirebaseEventParam.EPISODE_ID to item.episode.storyId
-        )
-    }
-
-    private fun CreatorPlayableEpisode.firebasePlayerSource(): String? {
-        return when (source) {
-            CreatorPlaySource.TOP_EARNERS -> FirebaseEventValue.SOURCE_TOP_EARNERS
-            else -> null
-        }
-    }
 }

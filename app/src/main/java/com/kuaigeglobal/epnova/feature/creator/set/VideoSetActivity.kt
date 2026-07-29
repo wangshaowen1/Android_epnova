@@ -16,8 +16,6 @@ import com.kuaigeglobal.epnova.core.Events
 import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.ext.sensitiveWordCheck
 import com.kuaigeglobal.epnova.core.manager.EventManager
-import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
-import com.kuaigeglobal.epnova.core.manager.FirebaseEventValue
 import com.kuaigeglobal.epnova.core.network.apis.entity.UnusedPackageInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.VideoConfigData
 import com.kuaigeglobal.epnova.core.network.apis.entity.VideoConfigInfo
@@ -77,7 +75,6 @@ class VideoSetActivity : BaseViewModelActivity<ActivityVideoSetBinding, VideoSet
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding.root.applySmartFocusManager()
-        EventManager.onFirebaseTrack(FirebaseEvent.CREATE_SIMILAR_PAGE_VIEW)
         initView()
         initListener()
         observeData()
@@ -272,12 +269,6 @@ class VideoSetActivity : BaseViewModelActivity<ActivityVideoSetBinding, VideoSet
                 EventManager.reportCreationUsageCount(it, EventManager.REPORT_CREATION_TYPE_HOT_CASE)
             }
 
-            val trackMap = mutableMapOf<String, String>()
-            trackMap[FirebaseEventValue.HIT_SCRIPTS_NAME] = mRealVM.workTitle ?: (mRealVM.hotCaseId ?: "")
-            trackMap[FirebaseEventValue.EPISODES] = mRealVM.checkedEpisodeSet?.data?.get()?.configValue ?: ""
-            trackMap[FirebaseEventValue.VIDEO_SIZE] = mRealVM.checkedRatio?.data?.get()?.configValue ?: ""
-            trackMap[FirebaseEventValue.STYLE] = mRealVM.checkedStyle?.data?.get()?.styleName ?: ""
-            EventManager.onFirebaseTrack(FirebaseEvent.CREATE_SIMILAR_PAGE_BTN_CLICK, trackMap)
             createSameTask(workTitle, sameStory)
         }
     }

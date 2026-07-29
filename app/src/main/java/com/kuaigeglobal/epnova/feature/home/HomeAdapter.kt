@@ -6,10 +6,7 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.kuaigeglobal.epnova.common.ext.getVm
-import com.kuaigeglobal.epnova.core.manager.EventManager
 import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
-import com.kuaigeglobal.epnova.core.manager.FirebaseEventParam
-import com.kuaigeglobal.epnova.core.manager.FirebaseEventValue
 import com.kuaigeglobal.epnova.core.network.apis.entity.WorkVOInfo
 import com.kuaigeglobal.epnova.databinding.ItemHomeDramaBinding
 import com.kuaigeglobal.epnova.feature.play.DramasPlayPagerActivity
@@ -42,23 +39,15 @@ class HomeAdapter : PagingDataAdapter<WorkVOInfo, RecyclerView.ViewHolder>(DIFF_
             getItem(position)?.let { item ->
 //                item.workId?.let { workId ->
 //                    if (viewedDramaIds.add(workId)) {
-//                        EventManager.onFirebaseTrack(
-//                            FirebaseEvent.HOME_DRAMA_VIEW,
-//                            FirebaseEventParam.DRAMA_ID to workId
-//                        )
 //                    }
 //                }
                 val transVM = binding.getVm(position, item, ItemHomeDramaVm::class.java).apply {
                     onItemClick.value = {
-                        EventManager.onFirebaseTrack(
-                            FirebaseEvent.HOME_DRAMA_CLICK,
-                            FirebaseEventParam.DRAMA_ID to item.workId
-                        )
                         DramasPlayPagerActivity.start(
                             workId = item.workId,
                             position = 0,
                             isSeriesMode = false,
-                            source = FirebaseEventValue.SOURCE_HOME
+                            source = FirebaseEvent.Value.SOURCE_HOME
                         )
                     }
                 }

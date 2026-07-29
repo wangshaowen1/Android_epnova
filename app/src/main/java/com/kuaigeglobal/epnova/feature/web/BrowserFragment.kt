@@ -40,6 +40,7 @@ import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.ext.onUserStatusChanged
 import com.kuaigeglobal.epnova.core.ext.openWithBrowser
 import com.kuaigeglobal.epnova.core.manager.EventManager
+import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
 import com.kuaigeglobal.epnova.core.model.H5PayInfo
 import com.kuaigeglobal.epnova.core.model.PermissionEntity
 import com.kuaigeglobal.epnova.core.model.PreviewImageEntity
@@ -489,21 +490,39 @@ class BrowserFragment : BaseViewModelFragment<FragmentBrowserBinding, BrowserVie
                 PaySuccessDialog.checkAndShow(PaySuccessDialog.SCENE_OTHER)
             }
 
-            // H5 Firebase 埋点上报：
+            // H5 GA4 埋点上报：
             // {
-            //  "event_name": 埋点名称,
-            //  "params": 埋点参数（json）
+            //   "event_name": Event,
+            //   "action_name": Action,
+            //   "params": {
+            //     "Label1": 第一业务维度,
+            //     "Label2": 第二业务维度,
+            //     "Label3": 第三业务维度,
+            //     "Label4": 第四业务维度
+            //   }
             //}
             registerHandler("trackEvent") { data, _ ->
                 try {
                     val json = JSONObject(data)
-                    val code = json.getString("event_name")
-                    val params = json.optJSONObject("params")?.let {
-                        val map = mutableMapOf<String, String?>()
-                        it.keys().forEach { key -> map[key] = it.optString(key) }
-                        map
+                    val event = json.optString("event_name").takeIf { it.isNotBlank() }
+                        ?: return@registerHandler
+                    val params = json.optJSONObject("params")
+                    fun readParam(key: String): Any? {
+                        val value = params?.opt(key)
+                            ?: params?.opt(key.replaceFirstChar { it.lowercase() })
+                        return value?.takeUnless { it == JSONObject.NULL }
                     }
-                    EventManager.onFirebaseTrack(code, params)
+                    val action = json.optString("action_name").takeIf { it.isNotBlank() }
+                        ?: (readParam(FirebaseEvent.Label.ACTION) as? String)
+                        ?: return@registerHandler
+                    EventManager.onFirebaseTrack(
+                        event = event,
+                        action = action,
+                        label1 = readParam(FirebaseEvent.Label.LABEL_1),
+                        label2 = readParam(FirebaseEvent.Label.LABEL_2),
+                        label3 = readParam(FirebaseEvent.Label.LABEL_3),
+                        label4 = readParam(FirebaseEvent.Label.LABEL_4),
+                    )
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }

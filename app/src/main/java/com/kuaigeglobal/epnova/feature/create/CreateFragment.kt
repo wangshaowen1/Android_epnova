@@ -14,9 +14,6 @@ import com.kuaigeglobal.epnova.common.ext.removeTheRipples
 import com.kuaigeglobal.epnova.common.ext.topActivity
 import com.kuaigeglobal.epnova.core.Events
 import com.kuaigeglobal.epnova.core.databinding.loadUri
-import com.kuaigeglobal.epnova.core.manager.EventManager
-import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
-import com.kuaigeglobal.epnova.core.manager.FirebaseEventParam
 import com.kuaigeglobal.epnova.core.network.apis.entity.BannerInfo
 import com.kuaigeglobal.epnova.feature.create.child.ResourceCenterFragment
 import com.kuaigeglobal.epnova.feature.create.child.TopEarnersFragment
@@ -83,12 +80,7 @@ class CreateFragment : BaseViewModelFragment<FragmentCreateBinding, CreateViewMo
                 holder?.apply {
                     val image = findViewById<ImageView>(R.id.image)
                     loadUri(image, data.imageUrl, R.drawable.img_default_cover_16_9.getResDrawable())
-                    EventManager.onFirebaseTrack(FirebaseEvent.FEATURED_BANNER_VIEW)
                     image.setOnSingleClickListener {
-                        EventManager.onFirebaseTrack(
-                            FirebaseEvent.FEATURED_BANNER_CLICK,
-                            FirebaseEventParam.BANNER_ID to data.firebaseBannerId()
-                        )
                         AppRouter.jumpFromBanner(data.jumpUri, data.firebaseBannerId())
                     }
                 }
@@ -116,7 +108,6 @@ class CreateFragment : BaseViewModelFragment<FragmentCreateBinding, CreateViewMo
 
 
         binding.btnCreation.setOnSingleClickListener {
-            EventManager.onFirebaseTrack(FirebaseEvent.FEATURED_BTN_CLICK)
             FlowEventBus.postSync(Events.MainTabEvent(Events.MainTabEvent.TAB_CREATE))
 //            CreationRootActivity.start(activity)
         }
@@ -150,12 +141,6 @@ class CreateFragment : BaseViewModelFragment<FragmentCreateBinding, CreateViewMo
     private fun dataUpdate() {
         mRealVM.bannerData.observe(this) { banners ->
             binding.banner.refreshData(banners)
-//            banners.orEmpty().forEach { banner ->
-//                EventManager.onFirebaseTrack(
-//                    FirebaseEvent.CREATE_BANNER_VIEW,
-//                    FirebaseEventParam.BANNER_ID to banner.firebaseBannerId()
-//                )
-//            }
         }
     }
 
@@ -203,9 +188,6 @@ class CreateFragment : BaseViewModelFragment<FragmentCreateBinding, CreateViewMo
                 titleView.normalColor = topActivity?.getThemeColor(R.attr.textColor4) ?: 0
                 titleView.selectedColor = topActivity?.getThemeColor(R.attr.textColor1) ?: 0
                 titleView.setOnClickListener {
-                    if (index == 1 && binding.viewPager2.currentItem != index) {
-                        EventManager.onFirebaseTrack(FirebaseEvent.FEATURED_RESOURCE_CENTER_CLICK)
-                    }
                     binding.viewPager2.currentItem = index
                 }
                 return titleView

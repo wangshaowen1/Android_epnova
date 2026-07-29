@@ -18,7 +18,7 @@ import com.kuaigeglobal.epnova.common.permissions.requestRead2WritePermissions
 import com.kuaigeglobal.epnova.common.utils.IntentUtils
 import com.kuaigeglobal.epnova.common.utils.Utils
 import com.kuaigeglobal.epnova.core.Events
-import com.kuaigeglobal.epnova.core.manager.FirebaseEventValue
+import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
 import com.kuaigeglobal.epnova.core.manager.IRouter
 import com.kuaigeglobal.epnova.core.network.apis.ApiFactory
 import com.kuaigeglobal.epnova.core.network.apis.entity.CreatorWorkInfo
@@ -72,7 +72,7 @@ object AppRouter : IRouter {
 
     @JvmStatic
     fun jumpFromBanner(schemeUri: String?, bannerId: String?) {
-        jumpInternal(schemeUri, FirebaseEventValue.SOURCE_BANNER, bannerId)
+        jumpInternal(schemeUri, FirebaseEvent.Value.SOURCE_BANNER, bannerId)
     }
 
     private fun jumpInternal(schemeUri: String?, playerSource: String?, bannerId: String?) {

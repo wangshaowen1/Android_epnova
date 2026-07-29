@@ -186,824 +186,301 @@ object EventManager {
 
 
     /**
-     * Firebase 埋点入口。
+     * 按 Event-Action-Label 结构上报 GA4 自定义事件。
      *
-     * 新版埋点文档里的事件统一走这里，后续按页面逐点接入。
+     * Event 使用 [FirebaseEvent.Category]，Action 使用 [FirebaseEvent.Action]；
+     * Label 按表格顺序传入，空值不会写入事件参数。
      */
     @JvmStatic
-    fun onFirebaseTrack(eventName: String, paramsMap: Map<String, Any?>? = null) {
-        Logger.d("[onFirebaseTrack] Firebase Event -> Code: $eventName, Params: $paramsMap")
-        AnalyticsHelper.logEvent(eventName, paramsMap)
-    }
-
-    /**
-     * Firebase 埋点入口，便于调用处用 "key" to value 的形式传参。
-     */
-    @JvmStatic
-    fun onFirebaseTrack(eventName: String, vararg params: Pair<String, Any?>) {
-        onFirebaseTrack(eventName, if (params.isEmpty()) null else params.toMap())
+    fun onFirebaseTrack(
+        event: String,
+        action: String,
+        label1: Any? = null,
+        label2: Any? = null,
+        label3: Any? = null,
+        label4: Any? = null,
+    ) {
+        val params = buildMap<String, Any?> {
+            put(FirebaseEvent.Label.ACTION, action)
+            label1?.let { put(FirebaseEvent.Label.LABEL_1, it) }
+            label2?.let { put(FirebaseEvent.Label.LABEL_2, it) }
+            label3?.let { put(FirebaseEvent.Label.LABEL_3, it) }
+            label4?.let { put(FirebaseEvent.Label.LABEL_4, it) }
+        }
+        Logger.d("[onFirebaseTrack] GA4 Event: $event, Action: $action")
+        AnalyticsHelper.logEvent(event, params)
     }
 
 }
 
 /**
- * Firebase 埋点事件。
+ * GA4 埋点定义，统一使用 Event-Action-Label 结构。
  *
- * 来源：EpNova埋点文档_updated.xlsx / 新版。
+ * 数据来源：EpNova GA埋点.xlsx（Sheet1，A1:M66）。
  */
 object FirebaseEvent {
 
-
-    /**
-     * 模块：Featured
-     * 事件类型：曝光
-     * 事件名称：创作入口页面曝光
-     * 说明：创作入口页面曝光：用户点击底部导航栏 Create tab，创作入口页面成功渲染展示时触发
-     */
-    const val FEATURED_HOME_VIEW = "featured_home_view"
-
-    /**
-     * 模块：Featured
-     * 事件类型：曝光
-     * 事件名称：创作入口顶部banner曝光
-     * 说明：创作入口顶部banner曝光：创作入口页面顶部banner图片成功渲染展示时触发
-     */
-    const val FEATURED_BANNER_VIEW = "featured_banner_view"
-
-    /**
-     * 模块：创作入口
-     * 事件类型：曝光
-     * 事件名称：创作入口页面曝光
-     * 说明：创作入口页面曝光：用户点击底部导航栏 Create tab，创作入口页面成功渲染展示时触发
-     */
-    const val CREATE_HOME_VIEW = "create_home_view"
-
-    /**
-     * 模块：创作入口
-     * 事件类型：曝光
-     * 事件名称：创作入口顶部banner曝光
-     * 说明：创作入口顶部banner曝光：创作入口页面顶部banner图片成功渲染展示时触发
-     */
-    const val CREATE_BANNER_VIEW = "create_banner_view"
-
-    /**
-     * 模块：创作入口
-     * 事件类型：点击
-     * 事件名称：创作入口顶部banner点击
-     * 说明：创作入口顶部banner点击：用户点击顶部banner图片时触发
-     */
-    const val FEATURED_BANNER_CLICK = "featured_banner_click"
-
-    /**
-     * 模块：创作入口
-     * 事件类型：点击
-     * 事件名称：点击Creating Short Dramas按钮
-     * 说明：点击Creating Short Dramas按钮：用户点击创作入口页面中部"Creating Short Dramas"按钮时触发
-     */
-    const val FEATURED_BTN_CLICK = "featured_btn_click"
-
-    /**
-     * 模块：创作入口
-     * 事件类型：点击
-     * 事件名称：点击Resource Center tab
-     * 说明：点击Resource Center tab：用户在创作入口页面主动切换至Resource Center tab时触发，默认选中Top Earners不触发
-     */
-    const val FEATURED_RESOURCE_CENTER_CLICK = "featured_resource_center_click"
-
-    /**
-     * 模块：创作入口
-     * 事件类型：点击
-     * 事件名称：点击top earners展示的作品封面
-     * 说明：点击top earners展示的作品封面：用户点击Top Earners列表中任意作品卡片时触发
-     * 参数：需同时上报点击的对应的作品的id（drama_id)
-     */
-    const val FEATURED_TOP_EARNERS_DRAMA_CLICK = "featured_top_earners_drama_click"
-
-    /**
-     * 模块：商店
-     * 事件类型：曝光
-     * 事件名称：商店曝光
-     * 说明：商店曝光：用户进入商店页面时触发
-     */
-    const val STORE_VIEW = "store_view"
-
-    /**
-     * 模块：商店
-     * 事件类型：曝光
-     * 事件名称：交易历史记录明细页曝光
-     * 说明：交易历史记录明细页曝光：用户进入交易历史记录明细页面时触发
-     */
-    const val TRANSACTION_HISTORY_VIEW = "transaction_history_view"
-
-    /**
-     * 模块：商店
-     * 事件类型：点击
-     * 事件名称：点击切换至credits购买页
-     * 说明：点击切换至credits购买页：用户在商店页面主动切换至Credits tab时触发，默认选中Coins不触发
-     */
-    const val STORE_CREDITS_CLICK = "store_credits_click"
-
-    /**
-     * 模块：商店
-     * 事件类型：点击
-     * 事件名称：商店内点击套餐卡片
-     * 说明：商店内点击套餐卡片：用户在商店页面点击任意充值套餐卡片时触发，同时上报套餐id和价格
-     * 参数：需同时上报:
-     * 1. 商品id（product_id)
-     * 2. 货币类型（currency_type: coins / credits)
-     * 3. 当时的商品价格（price）
-     */
-    const val STORE_PRODUCT_CLICK = "store_product_click"
-
-    /**
-     * 模块：商店
-     * 事件类型：行为
-     * 事件名称：商店内点击套餐卡片并支付成功
-     * 说明：商店内支付成功：用户在商店页面发起支付后，支付成功时触发
-     * 参数：需同时上报:
-     * 1. 商品id（product_id)
-     * 2. 货币类型（currency_type: coins / credits)
-     * 3. 当时的商品价格（price）
-     */
-    const val STORE_PRODUCT_SUCCESS = "store_product_success"
-
-    /**
-     * 模块：Credits首充礼包
-     * 事件类型：曝光
-     * 事件名称：Credits的首充礼包曝光
-     * 说明：Credits的首充礼包曝光：Credits首充礼包弹窗成功展示，或商城/充值弹窗里的算力首充礼包卡片展示时触发
-     * 参数：因有两个触发场景，需同时上报：
-     * 1. 触发场景（trigger：create_btn / insufficient_balance)
-     * 2. 礼包id（product_id）
-     * 3. 当时的礼包价格（price）
-     * 参数说明：注：create_btn为点击开始创作后弹出
-     * 的场景，insufficient_balance为创作
-     * 流程后余额不足的触发场景
-     */
-    const val CREDITS_FIRST_PURCHASE_GIFT_POPUP_VIEW = "credits_first_purchase_gift_popup_view"
-
-    /**
-     * 模块：Credits首充礼包
-     * 事件类型：点击
-     * 事件名称：Credits的首充礼包点击
-     * 说明：Credits的首充礼包点击：用户点击Credits首充礼包套餐卡片或弹窗购买按钮时触发
-     */
-    const val CREDITS_FIRST_PURCHASE_GIFT_POPUP_CLICK = "credits_first_purchase_gift_popup_click"
-
-    /**
-     * 模块：Credits首充礼包
-     * 事件类型：行为
-     * 事件名称：Credits的首充礼包支付成功
-     * 说明：Credits的首充礼包支付成功：用户在弹窗、商城或充值弹窗完成Credits首充礼包支付时触发
-     */
-    const val CREDITS_FIRST_PURCHASE_POPUP_SUCCESS = "credits_first_purchase_popup_success"
-
-    /**
-     * 模块：Coins 首充礼包
-     * 事件类型：曝光
-     * 事件名称：Coins的首充礼包曝光
-     * 说明：Coins的首充礼包曝光：Coins首充礼包弹窗成功展示，或商城/充值弹窗里的首充礼包卡片展示时触发
-     */
-    const val COINS_FIRST_PURCHASE_GIFT_POPUP_VIEW = "coins_first_purchase_gift_popup_view"
-
-    /**
-     * 模块：Coins 首充礼包
-     * 事件类型：点击
-     * 事件名称：Coins的首充礼包点击
-     * 说明：Coins的首充礼包点击：用户点击Coins首充礼包套餐卡片或弹窗购买按钮时触发
-     */
-    const val COINS_FIRST_PURCHASE_GIFT_POPUP_CLICK = "coins_first_purchase_gift_popup_click"
-
-    /**
-     * 模块：Coins 首充礼包
-     * 事件类型：行为
-     * 事件名称：Coins的首充礼包支付成功
-     * 说明：Coins的首充礼包支付成功：用户在弹窗、商城或充值弹窗完成Coins首充礼包支付时触发
-     */
-    const val COINS_FIRST_PURCHASE_GIFT_POPUP_SUCCESS = "coins_first_purchase_gift_popup_success"
-
-    /**
-     * 模块：提现
-     * 事件类型：曝光
-     * 事件名称：提现页面曝光
-     * 说明：提现页面曝光：用户进入收益提现页面时触发
-     */
-    const val INCOME_PAGE_VIEW = "Income_page_view"
-
-    /**
-     * 模块：提现
-     * 事件类型：点击
-     * 事件名称：提现按钮点击
-     * 说明：提现按钮点击：用户点击提现页面Withdraw按钮时触发，同时上报当前可提现余额
-     * 参数：需同时上报：
-     * 用户可提现金额（available_balance)
-     */
-    const val INCOME_WITHDRAW_CLICK = "Income_withdraw_click"
-
-    /**
-     * 模块：作品发布
-     * 事件类型：曝光
-     * 事件名称：ugc剧集详情页曝光
-     * 说明：剧集详情页曝光：用户进入ugc剧集详情页时触发
-     * 参数：需同时上报：
-     * 剧id（drama_id)
-     */
-    const val UGC_DRAMA_DETAIL_VIEW = "ugc_drama_detail_view"
-
-    /**
-     * 模块：作品发布
-     * 事件类型：点击
-     * 事件名称：ugc剧集详情页点击发布按钮
-     * 说明：剧集详情页点击发布按钮：用户点击剧集详情页Publish按钮时触发，包含余额不足等被拦截情况
-     * 参数：需同时上报：
-     * 1. 剧id（drama_id)
-     */
-    const val UGC_DRAMA_PUBLISH_CLICK = "ugc_drama_publish_click"
-
-    /**
-     * 模块：作品发布
-     * 事件类型：曝光
-     * 事件名称：作品发布h5页面曝光
-     * 说明：作品发布h5页面曝光：用户首次发布时进入H5发布页面时触发
-     */
-    const val PUBLISH_H5_PAGE_VIEW = "publish_h5_page_view"
-
-    /**
-     * 模块：my list
-     * 事件类型：曝光
-     * 事件名称：my_list页面曝光
-     * 说明：my_list页面曝光：用户进入My List页面时触发
-     */
-    const val MY_LIST_VIEW = "my_list_view"
-
-    /**
-     * 模块：my list
-     * 事件类型：点击
-     * 事件名称：my_list页面内切换至History tab
-     * 说明：my_list页面内切换至History tab：用户在My List页面主动切换至History tab时触发
-     */
-    const val MY_LIST_HISTORY_CLICK = "my_list_history_click"
-
-    /**
-     * 模块：my list
-     * 事件类型：点击
-     * 事件名称：my_list页面内切换至Collection tab
-     * 说明：my_list页面内切换至Collection tab：用户在My List页面主动切换至Collection tab时触发
-     */
-    const val MY_LIST_COLLECTION_CLICK = "my_list_collection_click"
-
-    /**
-     * 模块：push
-     * 事件类型：行为
-     * 事件名称：用户站外点击推送
-     * 说明：用户站外点击推送：用户在App外点击推送通知打开App时触发
-     * 实现边界：点击来源用客户端写入的 from_push 标识判断；不从 FCM payload 读取非固定字段。
-     */
-    const val PUSH_CLICK = "push_click"
-
-    /**
-     * 模块：福利中心
-     * 事件类型：曝光
-     * 事件名称：福利中心页面曝光
-     * 说明：福利中心页面曝光：用户进入福利中心页面时触发
-     */
-    const val REWARDS_CENTER_PAGE_VIEW = "rewards_center_page_view"
-
-    /**
-     * 模块：福利中心
-     * 事件类型：点击
-     * 事件名称：福利中心首页入口点击
-     * 说明：福利中心首页入口点击：用户点击首页福利中心入口时触发
-     */
-    const val HOME_REWARDS_CENTER_BTN_CLICK = "home_rewards_center_btn_click"
-
-    /**
-     * 模块：福利中心
-     * 事件类型：点击
-     * 事件名称：福利中心个人中心入口点击
-     * 说明：福利中心个人中心入口点击：用户点击个人中心页面福利中心入口时触发
-     */
-    const val PROFILE_REWARDS_CENTER_BTN_CLICK = "profile_rewards_center_btn_click"
-
-    /**
-     * 模块：福利中心
-     * 事件类型：行为
-     * 事件名称：金币奖励发放
-     * 说明：金币奖励发放：用户通过签到、看广告、完成任务等方式获得虚拟货币奖励时触发，同时上报奖励类型、数量及触发来源
-     * 参数：需同时上报：
-     * 1. 发放数量（amount）
-     * 2. 奖励来源（granted_source: check_in / check_in_ad / task_done / login_popup )
-     * 3. 任务id（task_id)     // 仅granted_source = task_done时上报
-     * 参数说明：奖励来源（granted_source: check_in（签到）/
-     * check_in_ad （签到后的一次激励广告机会）/ task_done（完成任务，
-     * 这里包含登录奖励、开启消息通知权限任务、广告任务等) / login_popup（登录弹窗）
-     */
-    const val REWARD_COINS_GRANTED = "reward_coins_granted"
-
-    /**
-     * 模块：首页
-     * 事件类型：曝光
-     * 事件名称：首页曝光
-     * 说明：首页曝光：用户进入首页时触发
-     */
-    const val HOME_PAGE_VIEW = "home_page_view"
-
-    /**
-     * 模块：首页
-     * 事件类型：曝光
-     * 事件名称：首页banner曝光
-     * 说明：首页banner曝光：首页顶部banner图片成功渲染展示时触发
-     * 参数：需同时上报：
-     * banner_id
-     */
-    const val HOME_BANNER_VIEW = "home_banner_view"
-
-    /**
-     * 模块：首页
-     * 事件类型：点击
-     * 事件名称：首页banner点击
-     * 说明：首页banner点击：用户点击首页banner时触发
-     * 参数：需同时上报：
-     * banner_id
-     */
-    const val HOME_BANNER_CLICK = "home_banner_click"
-
-    /**
-     * 模块：首页
-     * 事件类型：曝光
-     * 事件名称：首页剧封面曝光
-     * 说明：首页剧封面曝光：首页剧集卡片出现在用户可视区域内时触发，需客户端做可见性检测
-     * 参数：需同时上报：
-     * 剧id（drama_id)
-     */
-    const val HOME_DRAMA_VIEW = "home_drama_view"
-
-    /**
-     * 模块：首页
-     * 事件类型：点击
-     * 事件名称：首页剧封面点击
-     * 说明：首页剧封面点击：用户点击首页任意剧集封面卡片时触发
-     * 参数：需同时上报：
-     * 剧id（drama_id）
-     */
-    const val HOME_DRAMA_CLICK = "home_drama_click"
-
-    /**
-     * 模块：播放器
-     * 事件类型：行为
-     * 事件名称：进入播放器
-     * 说明：进入播放器：用户进入视频播放器页面，视频开始自动播放时触发，同时上报剧id、集id及进入来源
-     * 参数：需同时上报：
-     * 1. 剧id（drama_id）
-     * 2. 集id（episode_id)
-     * 3. 从哪里进入播放器（source: home / banner / search_page / history / collection / top_earners)
-     * 4. banner_id（仅source = banner时传）
-     * 参数说明：从哪里进入播放器页面说明
-     * source: home（主页） / banner（任意banner） / search_page（搜索页，指的是输入文本点击搜索后出现的作品封面） / history（历史记录） / collection（收藏） / top_earners（创作入口页的top_earners处）)
-     */
-    const val PLAYER_VIEW = "player_view"
-
-    /**
-     * 模块：播放器
-     * 事件类型：行为
-     * 事件名称：有效播放
-     * 说明：有效播放：视频播放进度达到10%时触发，标记为一次有效播放
-     * 参数：触发时机：当播放进度>10%的时候
-     * 需同时上报：
-     * 1. 剧id（drama_id)
-     * 2. 集id（episode_id)
-     * 3.（文档未补充字段名）
-     */
-    const val PLAYER_VALID_PLAY = "player_valid_play"
-
-    /**
-     * 模块：播放器
-     * 事件类型：行为
-     * 事件名称：播放进度
-     * 说明：播放进度：视频播放进度分别达到25%、50%、75%时各触发一次，用于分析用户在各阶段的流失情况
-     * 参数：触发时机：当播放进度分别等于25%, 50%和75%的时候
-     * 需同时上报：
-     * 1. 剧id（drama_id)
-     * 2. 集id（episode_id)
-     * 3. 播放进度（process: 25/ 50/ 75)
-     */
-    const val PLAYER_PROCESS = "player_process"
-
-    /**
-     * 模块：播放器
-     * 事件类型：行为
-     * 事件名称：完播
-     * 说明：完播：视频播放进度达到90%及以上时触发，标记为一次完播
-     * 参数：触发时机：当播放进度>10%的时候
-     * 需同时上报：
-     * 1. 剧id（drama_id)
-     * 2. 集id（episode_id)
-     */
-    const val PLAYER_COMPLETE = "player_complete"
-
-    /**
-     * 模块：创作流程
-     * 事件类型：曝光
-     * 事件名称：用户进入故事灵感页面
-     * 说明：用户进入故事灵感页面，显示的时候上报
-     */
-    const val STORY_INSPIRATION_VIEW = "story_inspiration_view"
-
-    /**
-     * 模块：创作流程
-     * 事件类型：点击
-     * 事件名称：故事灵感tab
-     * 说明：用户点击故事灵感tab
-     */
-    const val STORY_INSPIRATION_TAB_CLICK = "story_inspiration_tab_click"
-
-    /**
-     * 模块：创作流程
-     * 事件类型：点击
-     * 事件名称：故事灵感页面的下一步按钮
-     * 说明：用户在故事灵感tab页 输入文字后点击下一步按钮
-     */
-    const val STORY_INSPIRATION_NEXT_CLICK = "story_inspiration_next_click"
-
-    /**
-     * 模块：创作流程
-     * 事件类型：点击
-     * 事件名称：小说改编tab页面
-     * 说明：用户点击小说改编tab
-     */
-    const val NOVEL_ADAPTATION_TAB_CLICK = "novel_adaptation_tab_click"
-
-    /**
-     * 模块：创作流程
-     * 事件类型：点击
-     * 事件名称：小说改编页面的下一步按钮
-     * 说明：用户在小说改编tab页 输入文字后点击下一步按钮
-     */
-    const val NOVEL_ADAPTATION_NEXT_CLICK = "novel_adaptation_next_click"
-
-    /**
-     * 模块：创作流程
-     * 事件类型：曝光
-     * 事件名称：故事梗概环节
-     * 说明：用户进入创作流程中的故事梗概环节页面
-     * 参数：需同时上报：
-     * 1. 创作来源类型：creation_source_type: novel / inspiration
-     * 参数说明：创作来源类型：小说 / 灵感
-     */
-    const val STORY_OUTLINE_VIEW = "story_outline_view"
-
-    /**
-     * 模块：创作流程
-     * 事件类型：点击
-     * 事件名称：故事梗概环节的下一步按钮
-     * 说明：用户在故事梗概环节想要进入下一步，点击下一步按钮时上报
-     */
-    const val STORY_OUTLINE_NEXT_CLICK = "story_outline_next_click"
-
-    /**
-     * 模块：创作流程
-     * 事件类型：点击
-     * 事件名称：创建作品页选择“单集短片”
-     * 说明：用户点击单集短片按钮时上报
-     */
-    const val SINGLE_EPISODE_CLICK = "single_episode_click"
-
-    /**
-     * 模块：创作流程
-     * 事件类型：点击
-     * 事件名称：创建作品页 输入“自定义”集数
-     * 说明：用户点击自定义输入集数时上报
-     */
-    const val CUSTOM_EPISODE_INPUT = "custom_episode_input"
-
-    /**
-     * 模块：创作流程
-     * 事件类型：点击
-     * 事件名称：创建作品页“开始创作”按钮
-     * 说明：用户填完作品信息，点击开始创作按钮
-     */
-    const val START_CREATION_CLICK = "start_creation_click"
-
-    /**
-     * 模块: 创作流程
-     * 事件类型: 点击
-     * 事件名称：创作同款页面点击 Start Creating 按钮
-     * 说明：点击 Start Creating 按钮：创作同款页面中点击 Start Creating 按钮时触发
-     */
-    const val CREATE_SIMILAR_PAGE_BTN_CLICK = "create_similar_page_btn_click"
-
-    /**
-     * 模块：创作流程
-     * 事件类型：曝光
-     * 事件名称：故事剧本环节
-     * 说明：用户进入创作流程中的故事剧本环节页面
-     */
-    const val SCRIPT_VIEW = "script_view"
-
-    /**
-     * 模块：创作流程
-     * 事件类型：点击
-     * 事件名称：故事剧本环节的下一步按钮
-     * 说明：用户在故事剧本环节想要进入下一步，点击下一步按钮时上报
-     */
-    const val SCRIPT_NEXT_CLICK = "script_next_click"
-
-    /**
-     * 模块：创作流程
-     * 事件类型：曝光
-     * 事件名称：资产管理环节
-     * 说明：用户进入资产管理页面（角色/场景/道具管理）
-     */
-    const val ASSET_MANAGEMENT_VIEW = "asset_management_view"
-
-    /**
-     * 模块：创作流程
-     * 事件类型：点击
-     * 事件名称：资产管理环节的下一步按钮
-     * 说明：用户在资产管理环节想要进入下一步，点击下一步按钮时上报
-     */
-    const val ASSET_MANAGEMENT_NEXT_CLICK = "asset_management_next_click"
-
-    /**
-     * 模块：创作流程
-     * 事件类型：点击
-     * 事件名称：资产管理页的一键生成按钮
-     * 说明：用户在资产管理页面点击“一键生成”按钮进行资产生成
-     */
-    const val ASSET_GENERATE_CLICK = "asset_generate_click"
-
-    /**
-     * 模块：创作流程
-     * 事件类型：曝光
-     * 事件名称：分镜设计环节
-     * 说明：用户进入分镜设计环节页面
-     */
-    const val STORYBOARD_VIEW = "storyboard_view"
-
-    /**
-     * 模块：创作流程
-     * 事件类型：点击
-     * 事件名称：分镜设计环节“生成分镜”按钮
-     * 说明：用户在分镜设计环节想要进入下一步，点击 生成分镜 按钮时上报
-     */
-    const val STORYBOARD_GENERATE_CLICK = "storyboard_generate_click"
-
-    /**
-     * 模块：创作流程
-     * 事件类型：曝光
-     * 事件名称：分镜视频生成环节
-     * 说明：用户进入创作流程中的分镜视频生成环节页面
-     */
-    const val VIDEO_GENERATION_VIEW = "video_generation_view"
-
-    /**
-     * 模块：创作流程
-     * 事件类型：点击
-     * 事件名称：分镜预览页面的“下载视频”按钮
-     * 说明：在分镜预览页面，用户点击“下载视频”按钮
-     */
-    const val VIDEO_DOWNLOAD_CLICK = "video_download_click"
-
-    /**
-     * 模块：创作流程
-     * 事件类型：点击
-     * 事件名称：分镜预览页面的重绘分镜按钮
-     * 说明：在重绘已合成视频页面 或新集创作的分镜视频合成页面，用户点击左下角“重绘分镜”按钮
-     */
-    const val STORYBOARD_REDRAW_CLICK = "storyboard_redraw_click"
-
-    /**
-     * 模块：创作流程
-     * 事件类型：点击
-     * 事件名称：重绘分镜页面的“立即重绘”按钮
-     * 说明：在单个分镜视频设计页面，用户点击“立即重绘”按钮
-     */
-    const val REDRAW_NOW_CLICK = "redraw_now_click"
-
-    /**
-     * 模块：创作流程
-     * 事件类型：点击
-     * 事件名称：重绘分镜页面的“重新生成”按钮
-     * 说明：在单个分镜视频设计页面，用户点击“重新生成”按钮
-     */
-    const val REGENERATE_CLICK = "regenerate_click"
-
-    /**
-     * 模块：创作流程
-     * 事件类型：点击
-     * 事件名称：合成按钮
-     * 说明：在分镜视频生成页面 和重绘视频页面的 右上角的用户点击“合成”按钮开始视频生成
-     */
-    const val COMBINE_VIDEO_CLICK = "combine_video_click"
-
-    /**
-     * 模块：创作流程
-     * 事件类型：点击
-     * 事件名称：创建续集按钮
-     * 说明：在作品续集页，用户点击创建续集按钮
-     */
-    const val CREATE_SEQUEL_CLICK = "create_sequel_click"
-
-    /**
-     * 模块：创作流程
-     * 事件类型：点击
-     * 事件名称：用户作品播放页重绘视频按钮
-     * 说明：在用户作品播放页中，用户点击“重绘视频”按钮进行视频重绘
-     */
-    const val WORK_REPLAY_REDRAW_CLICK = "work_replay_redraw_click"
-
-    /**
-     * 模块：通用
-     * 事件类型：行为
-     * 事件名称：新用户首次打开app
-     * 说明：新用户首次打开app
-     * 参数：设备首次安装打开app时触发
-     */
-    const val APP_FIRST_OPEN = "app_first_open"
-
-    /**
-     * 模块：登录弹窗
-     * 事件类型：曝光
-     * 事件名称：登录弹窗曝光
-     * 说明：登录弹窗曝光
-     */
-    const val LOGIN_POPUP_VIEW = "login_popup_view"
-
-    /**
-     * 模块：登录弹窗
-     * 事件类型：点击
-     * 事件名称：登录弹窗点击Claim按钮
-     * 说明：登录弹窗
-     */
-    const val LOGIN_POPUP_CLAIM_CLICK = "login_popup_claim_click"
-
-    /**
-     * 模块：登录弹窗
-     * 事件类型：点击
-     * 事件名称：登录弹窗点击关闭
-     * 说明：登录弹窗点击关闭
-     */
-    const val LOGIN_POPUP_CLOSE_CLICK = "login_popup_close_click"
-
-    /**
-     * 模块：登录弹窗
-     * 事件类型：行为
-     * 事件名称：登录成功
-     * 说明：登录成功
-     * 参数：需要同时上报：
-     * 登录方式（login_way: facebook / apple / google）
-     */
-    const val LOGIN_SUCCESS = "login_success"
-
-    /**
-     * 模块: 创作流程
-     * 事件类型: 点击
-     * 事件名称：创作页底部爆款案例曝光
-     * 说明：创作页底部爆款案例成歌渲染展示时触发
-     */
-    const val HIT_SCRIPTS_VIEW = "hit_scripts_view"
-
-    /**
-     * 模块: 创作流程
-     * 事件类型: 点击
-     * 事件名称：点击爆款案例的Remake按钮
-     * 说明：用户点击爆款案例的Remake按钮上报
-     */
-    const val REMAKE_BTN_CLICK = "remake_btn_click"
-
-    /**
-     * 模块: 创作流程
-     * 事件类型: 点击
-     * 事件名称：创作同款页面曝光
-     * 说明：创作同款页面曝光：点击Remake按钮后跳转创作同款页面，页面成功渲染展示时触发
-     */
-    const val CREATE_SIMILAR_PAGE_VIEW = "create_similar_page_view"
-}
-
-/**
- * Firebase 埋点参数 key。
- *
- * 来源：EpNova埋点文档_updated.xlsx / 新版。
- */
-object FirebaseEventParam {
-    /** 剧 id */
-    const val DRAMA_ID = "drama_id"
-
-    /** 集 id */
-    const val EPISODE_ID = "episode_id"
-
-    /** banner id */
-    const val BANNER_ID = "banner_id"
-
-    /** 商品或礼包 id */
-    const val PRODUCT_ID = "product_id"
-
-    /** 货币类型：coins / credits */
-    const val CURRENCY_TYPE = "currency_type"
-
-    /** 商品或礼包价格 */
-    const val PRICE = "price"
-
-    /** 触发场景：create_btn / insufficient_balance */
-    const val TRIGGER = "trigger"
-
-    /** 用户可提现金额 */
-    const val AVAILABLE_BALANCE = "available_balance"
-
-    /** 奖励发放数量 */
-    const val AMOUNT = "amount"
-
-    /** 奖励来源：check_in / check_in_ad / task_done / login_popup */
-    const val GRANTED_SOURCE = "granted_source"
-
-    /** 任务 id，仅 granted_source = task_done 时上报 */
-    const val TASK_ID = "task_id"
-
-    /** 播放器进入来源：home / banner / search_page / history / collection / top_earners */
-    const val SOURCE = "source"
-
-    /** 播放进度：25 / 50 / 75 */
-    const val PROCESS = "process"
-
-    /** 创作来源类型：novel / inspiration */
-    const val CREATION_SOURCE_TYPE = "creation_source_type"
-
-    /** 登录方式：facebook / apple / google */
-    const val LOGIN_WAY = "login_way"
-}
-
-/**
- * Firebase 埋点参数值。
- *
- * 来源：EpNova埋点文档_updated.xlsx / 新版。
- */
-object FirebaseEventValue {
-    /** currency_type: coins */
-    const val CURRENCY_COINS = "coins"
-
-    /** currency_type: credits */
-    const val CURRENCY_CREDITS = "credits"
-
-    /** trigger: create_btn */
-    const val TRIGGER_CREATE_BTN = "create_btn"
-
-    /** trigger: insufficient_balance */
-    const val TRIGGER_INSUFFICIENT_BALANCE = "insufficient_balance"
-
-    /** granted_source: check_in */
-    const val GRANTED_SOURCE_CHECK_IN = "check_in"
-
-    /** granted_source: check_in_ad */
-    const val GRANTED_SOURCE_CHECK_IN_AD = "check_in_ad"
-
-    /** granted_source: task_done */
-    const val GRANTED_SOURCE_TASK_DONE = "task_done"
-
-    /** granted_source: login_popup */
-    const val GRANTED_SOURCE_LOGIN_POPUP = "login_popup"
-
-    /** source: home */
-    const val SOURCE_HOME = "home"
-
-    /** source: banner */
-    const val SOURCE_BANNER = "banner"
-
-    /** source: search_page */
-    const val SOURCE_SEARCH_PAGE = "search_page"
-
-    /** source: history */
-    const val SOURCE_HISTORY = "history"
-
-    /** source: collection */
-    const val SOURCE_COLLECTION = "collection"
-
-    /** source: top_earners */
-    const val SOURCE_TOP_EARNERS = "top_earners"
-
-    /** creation_source_type: novel */
-    const val CREATION_SOURCE_NOVEL = "novel"
-
-    /** creation_source_type: inspiration */
-    const val CREATION_SOURCE_INSPIRATION = "inspiration"
-
-    /** login_way: facebook */
-    const val LOGIN_WAY_FACEBOOK = "facebook"
-
-    /** login_way: google */
-    const val LOGIN_WAY_GOOGLE = "google"
-
-    /** login_way: apple */
-    const val LOGIN_WAY_APPLE = "apple"
-
-    /** start_creation_click:episodes */
-    const val EPISODES = "episodes"
-
-    /** start_creation_click:video_size */
-    const val VIDEO_SIZE = "video_size"
-
-    /** start_creation_click:style */
-    const val STYLE = "style"
-
-    /** hit_scripts_name */
-    const val HIT_SCRIPTS_NAME = "hit_scripts_name"
+    /** Event：用于区分业务模块。 */
+    object Category {
+        /** 首次打开 APP。 */
+        const val FIRST_OPEN = "first_open"
+        /** 登录。 */
+        const val LOGIN = "login"
+        /** 首页。 */
+        const val HOME = "home"
+        /** 创作流程。 */
+        const val CREATE = "create"
+        /** 发布。 */
+        const val PUBLISH = "publish"
+        /** 精选。 */
+        const val FEATURE = "feature"
+        /** 商店。 */
+        const val STORE = "store"
+        /** Credits 首充礼包。 */
+        const val FIRST_PURCHASE_CREDITS = "first_purchase_credits"
+        /** Coins 首充礼包；值按表格保留为单数 coin。 */
+        const val FIRST_PURCHASE_COIN = "first_purchase_coin"
+        /** 我的列表。 */
+        const val MY_LIST = "my_list"
+        /** 福利中心。 */
+        const val REWARDS = "rewards"
+        /** 播放器。 */
+        const val PLAYER = "player"
+        /** 推送。 */
+        const val PUSH = "push"
+    }
+
+    /** GA4 事件参数 key，顺序与表格的 Action、Label 1～4 一致。 */
+    object Label {
+        /** 数据行为。 */
+        const val ACTION = "Action"
+        /** 第一业务维度。 */
+        const val LABEL_1 = "Label1"
+        /** 第二业务维度。 */
+        const val LABEL_2 = "Label2"
+        /** 第三业务维度。 */
+        const val LABEL_3 = "Label3"
+        /** 第四业务维度。 */
+        const val LABEL_4 = "Label4"
+    }
+
+    /** Action：同名 Action 可在不同 Event 下复用，具体 Label 规则见各常量注释。 */
+    object Action {
+        /** [first_open] 新用户首次打开 App。 */
+        const val OPEN = "open"
+        /** [login] 欢迎弹窗展示；值按表格保留为 welcom_popup_show。 */
+        const val WELCOME_POPUP_SHOW = "welcom_popup_show"
+        /** [login] 欢迎弹窗确认按钮点击。 */
+        const val WELCOME_CONFIRM_CLICK = "welcome_confirm_click"
+        /** [login] 欢迎弹窗关闭按钮点击。 */
+        const val WELCOME_CLOSE_CLICK = "welcome_close_click"
+        /** [login] 登录页面展示。 */
+        const val LOGIN_SHOW = "login_show"
+        /** [login] 登录点击；Label1=登录方式（google/apple）。 */
+        const val LOGIN_CLICK = "login_click"
+        /** [login] 登录结果；Label1=登录方式，Label2=结果（success/fail）。 */
+        const val LOGIN_RESULT = "login_result"
+        /** [home] 首页曝光。 */
+        const val HOME_SHOW = "home_show"
+        /** [home]/[feature] 剧封面点击；Label1=剧 ID。 */
+        const val DRAMA_CLICK = "drama_click"
+        /** [home] Banner 点击；Label1=Banner ID。 */
+        const val BANNER_CLICK = "banner_click"
+        /** [create] 故事灵感页面展示。 */
+        const val INSPIRATION_SHOW = "inspiration_show"
+        /** [create] 故事灵感 Tab 点击。 */
+        const val INSPIRATION_TAB_CLICK = "inspiration_tab_click"
+        /** [create] 故事灵感页面下一步点击。 */
+        const val INSPIRATION_NEXT_CLICK = "inspiration_next_click"
+        /** [create] 小说改编 Tab 点击。 */
+        const val NOVEL_TAB_CLICK = "novel_tab_click"
+        /** [create] 小说改编页面下一步点击。 */
+        const val NOVEL_NEXT_CLICK = "novel_next_click"
+        /** [create] Create Work 弹窗展示。 */
+        const val CREATE_WORK_SHOW = "create_work_show"
+        /** [create] 开始创作；Label1=来源，Label2=集数，Label3=视频比例，Label4=风格英文名。 */
+        const val START_CREATING_CLICK = "start_creating_click"
+        /** [create] 故事梗概环节展示。 */
+        const val SYNOPSIS_SHOW = "synopsis_show"
+        /** [create] 故事梗概下一步点击。 */
+        const val SYNOPSIS_NEXT_CLICK = "synopsis_next_click"
+        /** [create] 剧本页面展示。 */
+        const val SCRIPT_SHOW = "script_show"
+        /** [create] 剧本环节下一步点击。 */
+        const val SCRIPT_NEXT_CLICK = "script_next_click"
+        /** [create] 资产创建页面展示。 */
+        const val ASSET_SHOW = "asset_show"
+        /** [create] 资产一键生成点击。 */
+        const val ASSET_GENERATE_CLICK = "asset_generate_click"
+        /** [create] 资产管理下一步点击。 */
+        const val ASSET_NEXT_CLICK = "asset_next_click"
+        /** [create] 分镜设计页面展示。 */
+        const val STORYBOARD_SHOW = "storyboard_show"
+        /** [create] 生成分镜点击；Label1=模型（dynamic_comic/Narration_comic）。 */
+        const val STORYBOARD_GENERATE_CLICK = "storyboard_generate_click"
+        /** [create] 分镜视频生成页面展示。 */
+        const val PREVIEW_VIDEO_SHOW = "preview_video_show"
+        /** [create] 分镜预览下载视频点击。 */
+        const val PREVIEW_VIDEO_DOWNLOAD_CLICK = "preview_video_download_click"
+        /** [create] 分镜预览重绘分镜点击。 */
+        const val STORYBOARD_REDRAW_CLICK = "storyboard_redraw_click"
+        /** [create] 单个分镜立即重绘点击。 */
+        const val REDRAW_NOW_CLICK = "redraw_now_click"
+        /** [create] 合成视频点击。 */
+        const val COMBINE_VIDEO_CLICK = "combine_video_click"
+        /** [create] 作品播放页重绘点击。 */
+        const val WORK_REDRAW_CLICK = "work_redraw_click"
+        /** [create] 重绘二次确认弹窗确定点击。 */
+        const val REDRAW_CONFIRM_CLICK = "redraw_confirm_click"
+        /** [publish] 作品详情页展示。 */
+        const val WORK_DETAIL_SHOW = "work_detail_show"
+        /** [publish] 下一集 Pending Creation 点击。 */
+        const val PENDING_CREATION_CLICK = "pending_creation_click"
+        /** [publish] 作品详情页发布按钮点击。 */
+        const val WORK_DETAIL_PUBLISH_CLICK = "work_detail_publish_click"
+        /** [publish] 作品发布 H5 页面展示。 */
+        const val PUBLISH_H5_SHOW = "publish_h5_show"
+        /** [publish] 身份验证填写弹窗展示。 */
+        const val IDENTITY_VERIFICATION_SHOW = "identity_verification_show"
+        /** [publish] 身份验证提交点击。 */
+        const val IDENTITY_VERIFICATION_SUBMIT_CLICK = "identity_verification_submit_click"
+        /** [feature] 精选页面展示。 */
+        const val FEATURED_SHOW = "featured_show"
+        /** [feature] Creating Short Dramas 按钮点击。 */
+        const val CREATE_BTN_CLICK = "create_btn_click"
+        /** [store] 商店页面展示。 */
+        const val STORE_SHOW = "store_show"
+        /** [store] 交易历史记录明细页展示。 */
+        const val TRANSACTION_HISTORY_SHOW = "transaction_history_show"
+        /** [store] 商品卡片点击；Label1=货币类型，Label2=货币数量。 */
+        const val PRODUCT_CLICK = "product_click"
+        /** [store] 支付结果：Label1=货币类型，Label2=数量，Label3=状态；首充 Event 下 Label1=状态。 */
+        const val PURCHASE_RESULT = "purchase_result"
+        /** [first_purchase_credits]/[first_purchase_coin] 首充弹窗展示；Label1=触发场景。 */
+        const val POPUP_SHOW = "popup_show"
+        /** [first_purchase_credits]/[first_purchase_coin] 首充购买按钮点击。 */
+        const val PAY_NOW_CLICK = "pay_now_click"
+        /** [my_list] My List 页面展示。 */
+        const val MY_LIST_SHOW = "my_list_show"
+        /** [my_list] 切换至 History Tab。 */
+        const val HISTORY_CLICK = "history_click"
+        /** [my_list] 切换至 Collection Tab。 */
+        const val COLLECTION_CLICK = "collection_click"
+        /** [rewards] 福利中心页面展示。 */
+        const val REWARDS_SHOW = "rewards_show"
+        /** [rewards] 首页福利中心入口点击。 */
+        const val HOME_REWARDS_BTN_CLICK = "home_rewards_btn_click"
+        /** [rewards] 个人中心福利入口点击。 */
+        const val PROFILE_REWARDS_BTN_CLICK = "profile_rewards_btn_click"
+        /** [rewards] 金币奖励发放；Label1=发放来源，Label2=发放数量。 */
+        const val COINS_GRANTED = "coins_granted"
+        /** [player] 播放器展示；Label1=剧 ID，Label2=来源。 */
+        const val PLAYER_SHOW = "player_show"
+        /** [player] 有效播放；Label1=剧 ID，Label2=集 ID。 */
+        const val PLAYER_VALID_PLAY = "player_valid_play"
+        /** [player] 播放进度；Label1=剧 ID，Label2=集 ID，Label3=进度（25%/50%/75%）。 */
+        const val PLAYER_PROCESS = "player_process"
+        /** [player] 完播；Label1=剧 ID，Label2=集 ID。 */
+        const val PLAYER_COMPLETE = "player_complete"
+        /** [push] 服务端发送推送；Label1=推送类型，由服务端上报。 */
+        const val PUSH_SEND = "push_send"
+        /** [push] 用户站外点击推送；Label1=推送类型。 */
+        const val PUSH_CLICK = "push_click"
+    }
+
+    /** 表格中已枚举的固定 Label 值；ID、数量、自定义集数和风格名等动态值由调用处传入。 */
+    object Value {
+        /** 登录方式：Google。 */
+        const val LOGIN_GOOGLE = "google"
+        /** 登录方式：Apple。 */
+        const val LOGIN_APPLE = "apple"
+        /** 结果：成功。 */
+        const val RESULT_SUCCESS = "success"
+        /** 结果：失败。 */
+        const val RESULT_FAIL = "fail"
+        /** 创作来源：故事灵感。 */
+        const val CREATION_INSPIRATION = "inspiration"
+        /** 创作来源：小说改编。 */
+        const val CREATION_NOVEL = "novel"
+        /** 固定集数：30。 */
+        const val EPISODES_30 = "30"
+        /** 固定集数：45。 */
+        const val EPISODES_45 = "45"
+        /** 固定集数：60。 */
+        const val EPISODES_60 = "60"
+        /** 视频比例：16:9。 */
+        const val VIDEO_RATIO_16_9 = "16:9"
+        /** 视频比例：9:16。 */
+        const val VIDEO_RATIO_9_16 = "9:16"
+        /** 分镜模型：Dynamic Comic。 */
+        const val MODEL_DYNAMIC_COMIC = "dynamic_comic"
+        /** 分镜模型；大小写按表格原值保留。 */
+        const val MODEL_NARRATION_COMIC = "Narration_comic"
+        /** 货币类型：Coins。 */
+        const val CURRENCY_COINS = "coins"
+        /** 货币类型：Credits。 */
+        const val CURRENCY_CREDITS = "credits"
+        /** 商品货币数量：500。 */
+        const val CURRENCY_AMOUNT_500 = "500"
+        /** 商品货币数量：1000。 */
+        const val CURRENCY_AMOUNT_1000 = "1000"
+        /** 商品货币数量：1500。 */
+        const val CURRENCY_AMOUNT_1500 = "1500"
+        /** 商品货币数量：2000。 */
+        const val CURRENCY_AMOUNT_2000 = "2000"
+        /** 商品货币数量：3000。 */
+        const val CURRENCY_AMOUNT_3000 = "3000"
+        /** 商品货币数量：4000。 */
+        const val CURRENCY_AMOUNT_4000 = "4000"
+        /** 商品货币数量：5000。 */
+        const val CURRENCY_AMOUNT_5000 = "5000"
+        /** 商品货币数量：8000。 */
+        const val CURRENCY_AMOUNT_8000 = "8000"
+        /** 商品货币数量：10000。 */
+        const val CURRENCY_AMOUNT_10000 = "10000"
+        /** 首充触发场景：点击创作按钮。 */
+        const val TRIGGER_CREATE_BTN = "create_btn"
+        /** 首充触发场景：余额不足。 */
+        const val TRIGGER_INSUFFICIENT_BALANCE = "insufficient_balance"
+        /** 金币发放来源：签到。 */
+        const val GRANTED_SOURCE_CHECK_IN = "check_in"
+        /** 金币发放来源：签到后激励广告。 */
+        const val GRANTED_SOURCE_CHECK_IN_AD = "check_in_ad"
+        /** 金币发放来源：福利中心广告。 */
+        const val GRANTED_SOURCE_AD = "ad"
+        /** 金币发放来源：看广告解锁剧集。 */
+        const val GRANTED_SOURCE_UNLOCK_AD = "unlock_ad"
+        /** 金币发放来源：登录。 */
+        const val GRANTED_SOURCE_LOGIN = "login"
+        /** 金币发放来源：打开通知权限。 */
+        const val GRANTED_SOURCE_NOTICE = "notice"
+        /** 播放来源：首页。 */
+        const val SOURCE_HOME = "home"
+        /** 播放来源：Banner。 */
+        const val SOURCE_BANNER = "banner"
+        /** 播放来源：搜索页。 */
+        const val SOURCE_SEARCH_PAGE = "search_page"
+        /** 播放来源：历史记录。 */
+        const val SOURCE_HISTORY = "history"
+        /** 播放来源：收藏。 */
+        const val SOURCE_COLLECTION = "collection"
+        /** 播放来源：Top Earners。 */
+        const val SOURCE_TOP_EARNERS = "top_earners"
+        /** 播放进度：25%。 */
+        const val PROCESS_25 = "25%"
+        /** 播放进度：50%。 */
+        const val PROCESS_50 = "50%"
+        /** 播放进度：75%。 */
+        const val PROCESS_75 = "75%"
+        /** 推送类型：签到。 */
+        const val PUSH_TYPE_CHECK_IN = "check_in"
+        /** 推送类型：金币礼包。 */
+        const val PUSH_TYPE_COINS_GIFT = "coins_gift"
+        /** 推送类型：积分礼包。 */
+        const val PUSH_TYPE_CREDITS_GIFT = "credits_gift"
+        /** 推送类型：创作流程。 */
+        const val PUSH_TYPE_CREATION_PROCESS = "creation_process"
+        /** 推送类型：发布成功。 */
+        const val PUSH_TYPE_PUBLISH_SUCCESS = "publish_success"
+    }
 }

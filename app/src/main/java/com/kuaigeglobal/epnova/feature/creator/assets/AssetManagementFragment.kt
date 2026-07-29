@@ -13,8 +13,6 @@ import com.kuaigeglobal.epnova.core.Config
 import com.kuaigeglobal.epnova.core.Events
 import com.kuaigeglobal.epnova.core.Global
 import com.kuaigeglobal.epnova.core.User
-import com.kuaigeglobal.epnova.core.manager.EventManager
-import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
 import com.kuaigeglobal.epnova.core.network.apis.entity.AssetInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.RoleImageInfo
 import com.kuaigeglobal.epnova.databinding.FragmentAssetManagementBinding
@@ -73,7 +71,6 @@ class AssetManagementFragment : BaseViewModelFragment<FragmentAssetManagementBin
 
     override fun onPrepareView() {
         super.onPrepareView()
-        EventManager.onFirebaseTrack(FirebaseEvent.ASSET_MANAGEMENT_VIEW)
         binding.root.applySmartFocusManager()
         mRealVM.workId = hostVm?.workId
         mRealVM.storyId = hostVm?.storyId

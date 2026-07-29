@@ -5,8 +5,6 @@ import android.view.Gravity
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.Constants
 import com.kuaigeglobal.epnova.core.ext.onUserSignIn
-import com.kuaigeglobal.epnova.core.manager.EventManager
-import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
 import com.kuaigeglobal.epnova.core.network.apis.response.LoginTaskData
 import com.kuaigeglobal.epnova.databinding.DialogRewardWelcomeBinding
 import com.kuaigeglobal.epnova.router.AppNavigator
@@ -48,15 +46,12 @@ class RewardWelcomeDialog : BaseDialogFragment<DialogRewardWelcomeBinding>() {
 
     override fun onPrepareView() {
         super.onPrepareView()
-        EventManager.onFirebaseTrack(FirebaseEvent.LOGIN_POPUP_VIEW)
         binding.tvCoinsAmount.text = getString(R.string.home_login_reward_coins, data?.rewardLabel)
         binding.btnClaim.setOnSingleClickListener {
-            EventManager.onFirebaseTrack(FirebaseEvent.LOGIN_POPUP_CLAIM_CLICK)
             AppNavigator.checkRealLogin(false)
         }
 
         binding.ivClose.setOnClickListener {
-            EventManager.onFirebaseTrack(FirebaseEvent.LOGIN_POPUP_CLOSE_CLICK)
             dismissAllowingStateLoss()
         }
 

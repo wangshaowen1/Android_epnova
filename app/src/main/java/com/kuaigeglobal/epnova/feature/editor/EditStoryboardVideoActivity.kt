@@ -15,9 +15,6 @@ import com.kuaigeglobal.epnova.common.ext.showCommonDialog
 import com.kuaigeglobal.epnova.common.ext.topActivity
 import com.kuaigeglobal.epnova.common.permissions.requestRead2WritePermissions
 import com.kuaigeglobal.epnova.core.Events
-import com.kuaigeglobal.epnova.core.manager.EventManager
-import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
-import com.kuaigeglobal.epnova.core.manager.FirebaseEventParam
 import com.kuaigeglobal.epnova.core.network.apis.entity.EpisodeInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.SimpleStoryboardInfo
 import com.kuaigeglobal.epnova.databinding.ActivityEditStoryboardVideoBinding
@@ -116,11 +113,6 @@ class EditStoryboardVideoActivity : BaseViewModelActivity<ActivityEditStoryboard
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         onBackPressedDispatcher.addCallback(this, backPressedCallback)
-        EventManager.onFirebaseTrack(
-            FirebaseEvent.VIDEO_GENERATION_VIEW,
-            FirebaseEventParam.DRAMA_ID to mRealVM.workId,
-            FirebaseEventParam.EPISODE_ID to mRealVM.storyId
-        )
         binding.loadState.setNoDataIcon(0)
         binding.root.applySmartFocusManager()
         binding.loadState.setNoDataButton(getString(R.string.generate_storyboard_video)) {
@@ -173,11 +165,6 @@ class EditStoryboardVideoActivity : BaseViewModelActivity<ActivityEditStoryboard
                     getString(R.string.video_generating_please_wait).showToast()
                     return
                 }
-                EventManager.onFirebaseTrack(
-                    FirebaseEvent.STORYBOARD_REDRAW_CLICK,
-                    FirebaseEventParam.DRAMA_ID to current.workId,
-                    FirebaseEventParam.EPISODE_ID to current.storyId
-                )
                 EditStoryboardActivity.start(current, mRealVM.workRatio.get(), mRealVM.storyInfo?.stepProgress)
             }
 
@@ -192,11 +179,6 @@ class EditStoryboardVideoActivity : BaseViewModelActivity<ActivityEditStoryboard
                     return
                 }
                 if (current.videoGenerated) {
-                    EventManager.onFirebaseTrack(
-                        FirebaseEvent.VIDEO_DOWNLOAD_CLICK,
-                        FirebaseEventParam.DRAMA_ID to current.workId,
-                        FirebaseEventParam.EPISODE_ID to current.storyId
-                    )
                     downloadStoryboard = current
                     if (current.hasWatermark == true) {
                         downloadVideo(false)

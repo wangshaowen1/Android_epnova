@@ -19,8 +19,6 @@ import com.kuaigeglobal.epnova.core.AppRepository
 import com.kuaigeglobal.epnova.core.ext.launch
 import com.kuaigeglobal.epnova.core.ext.launchWithLoading
 import com.kuaigeglobal.epnova.core.ext.showRechargeDialog
-import com.kuaigeglobal.epnova.core.manager.EventManager
-import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
 import com.kuaigeglobal.epnova.core.network.apis.ApiResponse
 import com.kuaigeglobal.epnova.core.network.apis.entity.CreationModelInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.SimpleStoryboardInfo
@@ -351,7 +349,6 @@ class StoryboardDesignViewModel : AppRepositoryViewModel<AppRepository>() {
 
     private fun generate(cost: Int, toNextStep: ((workId: String?, storyId: String?, taskId: String?) -> Unit)? = null) {
         if (PowerRechargeDialog.checkLowBalance(cost, PowerRechargeDialog.TAB_CREDITS)) return
-        EventManager.onFirebaseTrack(FirebaseEvent.STORYBOARD_GENERATE_CLICK)
         launchWithLoading {
             adapter.items.forEach { if (it is ItemStoryboardVM && !it.save()) return@launchWithLoading }
             response(

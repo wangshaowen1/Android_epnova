@@ -15,8 +15,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.utils.IntentUtils
 import com.kuaigeglobal.epnova.core.ext.onUserStatusChanged
-import com.kuaigeglobal.epnova.core.manager.EventManager
-import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
 import com.kuaigeglobal.epnova.databinding.ActivityRewardsBinding
 import com.kuaigeglobal.epnova.widget.decoration.GridSpacingItemDecoration
 import com.nhsd.basic.BaseViewModelActivity
@@ -39,7 +37,6 @@ class RewardsActivity : BaseViewModelActivity<ActivityRewardsBinding, RewardsVie
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        EventManager.onFirebaseTrack(FirebaseEvent.REWARDS_CENTER_PAGE_VIEW)
         initView()
         observeEvents()
         mRealVM.loadData()

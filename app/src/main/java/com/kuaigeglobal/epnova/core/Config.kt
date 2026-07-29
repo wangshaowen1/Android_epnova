@@ -189,7 +189,7 @@ class Config : NetworkChangedListener {
 
     fun markAppOpenedWithNotify() {
         if (this.isFirstOpenApp) {
-            EventManager.onFirebaseTrack(FirebaseEvent.APP_FIRST_OPEN)
+            EventManager.onFirebaseTrack(FirebaseEvent.Category.FIRST_OPEN, FirebaseEvent.Action.OPEN)
         }
         this.isFirstOpenApp = false
         notifyChange(FIRST_OPEN_APP)

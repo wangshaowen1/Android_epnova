@@ -11,8 +11,6 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.core.Config
-import com.kuaigeglobal.epnova.core.manager.EventManager
-import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
 import com.kuaigeglobal.epnova.databinding.DialogUnifiedLoginBinding
 import com.kuaigeglobal.epnova.feature.settings.SettingsActivity
 import com.kuaigeglobal.epnova.feature.web.SimpleBrowserActivity

@@ -9,9 +9,6 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.kuaigeglobal.epnova.common.ext.getVm
 import com.kuaigeglobal.epnova.core.databinding.loadUri
-import com.kuaigeglobal.epnova.core.manager.EventManager
-import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
-import com.kuaigeglobal.epnova.core.manager.FirebaseEventParam
 import com.kuaigeglobal.epnova.core.network.apis.entity.CreatorPlaySource
 import com.kuaigeglobal.epnova.core.network.apis.entity.CreatorWorkInfo
 import com.kuaigeglobal.epnova.databinding.ItemTopEarnersBinding
@@ -56,10 +53,6 @@ class TopEarnersAdapter : PagingDataAdapter<CreatorWorkInfo, RecyclerView.ViewHo
                     },
                 ).apply {
                     onItemClick.value = {
-                        EventManager.onFirebaseTrack(
-                            FirebaseEvent.FEATURED_TOP_EARNERS_DRAMA_CLICK,
-                            FirebaseEventParam.DRAMA_ID to item.workId
-                        )
                         // TopEarners 是唯一允许跨作品上下切换的入口，播放器会复用同一个共享 work feed。
                         val currentPosition = bindingAdapterPosition.takeIf { it != RecyclerView.NO_POSITION }
                             ?: position

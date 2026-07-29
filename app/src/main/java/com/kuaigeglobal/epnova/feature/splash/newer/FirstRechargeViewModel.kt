@@ -11,8 +11,6 @@ import com.kuaigeglobal.epnova.core.ext.launchWithLoading
 import com.kuaigeglobal.epnova.core.ext.parseMessage
 import com.kuaigeglobal.epnova.core.google.billing.BillingManager
 import com.kuaigeglobal.epnova.core.google.billing.PurchaseResult
-import com.kuaigeglobal.epnova.core.manager.EventManager
-import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
 import com.kuaigeglobal.epnova.core.network.apis.response.FirstRechargeDialogData
 import com.kuaigeglobal.epnova.core.response
 import com.kuaigeglobal.epnova.feature.recharge.CoinRepository
@@ -98,14 +96,12 @@ class FirstRechargeViewModel : AppRepositoryViewModel<CoinRepository>() {
     fun googlePay() {
         if (AppNavigator.checkLoginIntercepted()) return
         val rechargeData = data ?: return
-        EventManager.onFirebaseTrack(FirebaseEvent.COINS_FIRST_PURCHASE_GIFT_POPUP_CLICK)
 
         // 先订阅结果，再发起支付，确保不遗漏回调
         purchaseJob?.cancel()
         purchaseJob = viewModelScope.launch {
             BillingManager.purchaseResultFlow.take(1).collect { result ->
                 if (result is PurchaseResult.Success) {
-                    EventManager.onFirebaseTrack(FirebaseEvent.COINS_FIRST_PURCHASE_GIFT_POPUP_SUCCESS)
                     refreshCoinsAndPoints()
                 } else if (result is PurchaseResult.Failed) {
                     R.string.first_recharge_payment_failed_retry.getResString().showToast()

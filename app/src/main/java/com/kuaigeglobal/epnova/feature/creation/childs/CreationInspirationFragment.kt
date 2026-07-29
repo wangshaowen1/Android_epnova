@@ -15,8 +15,6 @@ import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.adapter.QuickAdapter
 import com.kuaigeglobal.epnova.core.Events
 import com.kuaigeglobal.epnova.core.ext.onUserSignOut
-import com.kuaigeglobal.epnova.core.manager.EventManager
-import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
 import com.kuaigeglobal.epnova.core.network.apis.entity.InspirationInfo
 import com.kuaigeglobal.epnova.databinding.FragmentCreationInspirationBinding
 import com.kuaigeglobal.epnova.databinding.LayoutCreationTabHeaderBinding
@@ -132,7 +130,6 @@ class CreationInspirationFragment :
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 mRealVM.creationHotCaseFlow.collectLatest { pagingData ->
                     // 加载创作同款列表
-                    EventManager.onFirebaseTrack(FirebaseEvent.HIT_SCRIPTS_VIEW)
                     hotCaseAdapter.submitData(pagingData)
                 }
             }
@@ -147,7 +144,6 @@ class CreationInspirationFragment :
                 hotCaseEventVm.events.collect { event ->
                     when (event) {
                         is CreationHotCaseEvent.CreateSame -> {
-                            EventManager.onFirebaseTrack(FirebaseEvent.REMAKE_BTN_CLICK)
                             event.item.data.get()?.let { info ->
                                 onCreateSame(info)
                             }

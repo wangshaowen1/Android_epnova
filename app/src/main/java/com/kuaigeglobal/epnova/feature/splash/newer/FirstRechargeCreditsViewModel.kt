@@ -10,8 +10,6 @@ import com.kuaigeglobal.epnova.core.Global
 import com.kuaigeglobal.epnova.core.ext.launchWithLoading
 import com.kuaigeglobal.epnova.core.google.billing.BillingManager
 import com.kuaigeglobal.epnova.core.google.billing.PurchaseResult
-import com.kuaigeglobal.epnova.core.manager.EventManager
-import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
 import com.kuaigeglobal.epnova.core.network.apis.response.FirstRechargeCreditsDialogData
 import com.kuaigeglobal.epnova.core.response
 import com.kuaigeglobal.epnova.feature.recharge.CoinRepository
@@ -90,13 +88,11 @@ class FirstRechargeCreditsViewModel : AppRepositoryViewModel<CoinRepository>() {
     fun googlePay() {
         if (AppNavigator.checkLoginIntercepted()) return
         val pointConfig = data?.pointConfigVO ?: return
-        EventManager.onFirebaseTrack(FirebaseEvent.CREDITS_FIRST_PURCHASE_GIFT_POPUP_CLICK)
 
         purchaseJob?.cancel()
         purchaseJob = viewModelScope.launch {
             BillingManager.purchaseResultFlow.take(1).collect { result ->
                 if (result is PurchaseResult.Success) {
-                    EventManager.onFirebaseTrack(FirebaseEvent.CREDITS_FIRST_PURCHASE_POPUP_SUCCESS)
                     refreshCoinsAndPoints()
                 }
                 _purchaseEvent.emit(result)

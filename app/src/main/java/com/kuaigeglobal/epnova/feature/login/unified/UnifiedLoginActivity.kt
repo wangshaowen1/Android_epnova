@@ -21,10 +21,6 @@ import com.kuaigeglobal.epnova.core.Config
 import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.facebook.login.FacebookSignInHelper
 import com.kuaigeglobal.epnova.core.google.login.GoogleSignInHelper
-import com.kuaigeglobal.epnova.core.manager.EventManager
-import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
-import com.kuaigeglobal.epnova.core.manager.FirebaseEventParam
-import com.kuaigeglobal.epnova.core.manager.FirebaseEventValue
 import com.kuaigeglobal.epnova.core.network.apis.ApiFactory
 import com.kuaigeglobal.epnova.databinding.ActivityUnifiedLoginBinding
 import com.kuaigeglobal.epnova.feature.settings.SettingsActivity
@@ -223,11 +219,6 @@ class UnifiedLoginActivity : BaseViewModelActivity<ActivityUnifiedLoginBinding, 
                 val response = ApiFactory.apiService.reportLoginTask()
                 withContext(Dispatchers.Main) {
                     if (response.isSuccess) {
-                        EventManager.onFirebaseTrack(
-                            FirebaseEvent.REWARD_COINS_GRANTED,
-                            FirebaseEventParam.AMOUNT to response.data?.rewardLabel?.trim()?.removePrefix("+")?.trim()?.toLongOrNull(),
-                            FirebaseEventParam.GRANTED_SOURCE to FirebaseEventValue.GRANTED_SOURCE_LOGIN_POPUP
-                        )
                         showRewardToast(response.data?.rewardLabel)
                     } else {
                         response.msg?.showToast()

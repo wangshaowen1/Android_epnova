@@ -9,7 +9,7 @@ import com.kuaigeglobal.epnova.common.adapter.QuickAdapter
 import com.kuaigeglobal.epnova.core.AppRepository
 import com.kuaigeglobal.epnova.core.ext.launch
 import com.kuaigeglobal.epnova.core.ext.parseMessage
-import com.kuaigeglobal.epnova.core.manager.FirebaseEventValue
+import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
 import com.kuaigeglobal.epnova.core.network.apis.request.KeyworkBody
 import com.kuaigeglobal.epnova.feature.play.DramasPlayPagerActivity
 import kotlinx.coroutines.Dispatchers
@@ -36,7 +36,7 @@ class SearchViewModel : AppRepositoryViewModel<AppRepository>() {
                                 workId = data.get()?.workId,
                                 position = 0,
                                 isSeriesMode = false,
-                                source = FirebaseEventValue.SOURCE_SEARCH_PAGE
+                                source = FirebaseEvent.Value.SOURCE_SEARCH_PAGE
                             )
                         }
                     }

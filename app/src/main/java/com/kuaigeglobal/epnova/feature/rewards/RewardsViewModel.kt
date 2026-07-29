@@ -11,10 +11,6 @@ import com.kuaigeglobal.epnova.common.adapter.QuickAdapter
 import com.kuaigeglobal.epnova.core.AppRepository
 import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.ext.request
-import com.kuaigeglobal.epnova.core.manager.EventManager
-import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
-import com.kuaigeglobal.epnova.core.manager.FirebaseEventParam
-import com.kuaigeglobal.epnova.core.manager.FirebaseEventValue
 import com.kuaigeglobal.epnova.core.manager.RewardedAdManager
 import com.kuaigeglobal.epnova.core.network.apis.ApiException
 import com.kuaigeglobal.epnova.core.network.apis.ApiResponse
@@ -146,11 +142,6 @@ class RewardsViewModel : AppRepositoryViewModel<AppRepository>() {
                 balance.set(balance.get() + (d.rewardNum ?: 0))
                 User.get().storeCoins(balance.get())
                 loadCheckInList(updateLoadState = false)
-                EventManager.onFirebaseTrack(
-                    FirebaseEvent.REWARD_COINS_GRANTED,
-                    FirebaseEventParam.AMOUNT to (d.rewardNum ?: 0),
-                    FirebaseEventParam.GRANTED_SOURCE to FirebaseEventValue.GRANTED_SOURCE_CHECK_IN
-                )
                 _showCheckInSuccessEvent.tryEmit(Pair(d.rewardNum ?: 0, adRewardCoins.get()))
             }
         )
@@ -224,12 +215,6 @@ class RewardsViewModel : AppRepositoryViewModel<AppRepository>() {
                         vm.isWatch.set(false)
                         balance.set(balance.get() + vm.coins)
                         User.get().storeCoins(balance.get())
-                        EventManager.onFirebaseTrack(
-                            FirebaseEvent.REWARD_COINS_GRANTED,
-                            FirebaseEventParam.AMOUNT to vm.coins,
-                            FirebaseEventParam.GRANTED_SOURCE to FirebaseEventValue.GRANTED_SOURCE_TASK_DONE,
-                            FirebaseEventParam.TASK_ID to vm.data.get()?.taskRecordId
-                        )
                         _showAdTaskRewardEvent.tryEmit(vm.coins.toString())
                         loadAdTaskList()
                         return@launch
@@ -288,11 +273,6 @@ class RewardsViewModel : AppRepositoryViewModel<AppRepository>() {
                         val coins = adRewardCoins.get()
                         balance.set(balance.get() + coins)
                         User.get().storeCoins(balance.get())
-                        EventManager.onFirebaseTrack(
-                            FirebaseEvent.REWARD_COINS_GRANTED,
-                            FirebaseEventParam.AMOUNT to coins,
-                            FirebaseEventParam.GRANTED_SOURCE to FirebaseEventValue.GRANTED_SOURCE_CHECK_IN_AD
-                        )
                         _showCheckInAdRewardEvent.tryEmit(coins)
                         return@launch
                     }
@@ -361,12 +341,6 @@ class RewardsViewModel : AppRepositoryViewModel<AppRepository>() {
                     balance.set(balance.get() + rewardCoins)
                     User.get().storeCoins(balance.get())
                 }
-                EventManager.onFirebaseTrack(
-                    FirebaseEvent.REWARD_COINS_GRANTED,
-                    FirebaseEventParam.AMOUNT to rewardCoins,
-                    FirebaseEventParam.GRANTED_SOURCE to FirebaseEventValue.GRANTED_SOURCE_TASK_DONE,
-                    FirebaseEventParam.TASK_ID to task.taskCode
-                )
                 _showPushNotificationRewardEvent.tryEmit(rewardLabel)
                 loadOnceTaskList()
             }

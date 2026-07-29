@@ -20,8 +20,6 @@ import com.kuaigeglobal.epnova.core.Config
 import com.kuaigeglobal.epnova.core.Events
 import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.google.billing.BillingManager
-import com.kuaigeglobal.epnova.core.manager.EventManager
-import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
 import com.kuaigeglobal.epnova.core.manager.UpgradeManager
 import com.kuaigeglobal.epnova.databinding.ActivityMainBinding
 import com.kuaigeglobal.epnova.feature.aicompose.generating.GeneratingViewModel
@@ -171,7 +169,6 @@ class MainActivity : BaseViewModelActivity<ActivityMainBinding, MainViewModel>()
                     //首页
                     setKeepScreenOn(false)
                     mRealVM.showTab.set(PAGE_HOME)
-                    EventManager.onFirebaseTrack(FirebaseEvent.HOME_PAGE_VIEW)
                     supportFragmentManager.switchFragment(
                         R.id.fragment,
                         HomeFragment::class.java
@@ -185,7 +182,6 @@ class MainActivity : BaseViewModelActivity<ActivityMainBinding, MainViewModel>()
                 R.id.rbFeatured -> {
                     setKeepScreenOn(false)
                     mRealVM.showTab.set(PAGE_FEATURED)
-                    EventManager.onFirebaseTrack(FirebaseEvent.FEATURED_HOME_VIEW)
                     supportFragmentManager.switchFragment(
                         R.id.fragment,
                         CreateFragment::class.java
@@ -196,7 +192,6 @@ class MainActivity : BaseViewModelActivity<ActivityMainBinding, MainViewModel>()
                     //创建
                     setKeepScreenOn(true)
                     mRealVM.showTab.set(PAGE_CREATE)
-//                    EventManager.onFirebaseTrack(FirebaseEvent.CREATE_HOME_VIEW)
                     supportFragmentManager.switchFragment(
                         R.id.fragment,
                         CreationFragment::class.java
@@ -208,7 +203,6 @@ class MainActivity : BaseViewModelActivity<ActivityMainBinding, MainViewModel>()
                     setKeepScreenOn(false)
                     mRealVM.showTab.set(PAGE_MYLIST)
 //                    CreationRootActivity.start(this)
-                    EventManager.onFirebaseTrack(FirebaseEvent.MY_LIST_VIEW)
                     supportFragmentManager.switchFragment(
                         R.id.fragment,
                         MyListFragment::class.java

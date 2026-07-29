@@ -21,8 +21,6 @@ import com.kuaigeglobal.epnova.common.utils.CommonNavigatorUtils
 import com.kuaigeglobal.epnova.core.Config
 import com.kuaigeglobal.epnova.core.Events
 import com.kuaigeglobal.epnova.core.google.billing.PurchaseResult
-import com.kuaigeglobal.epnova.core.manager.EventManager
-import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
 import com.kuaigeglobal.epnova.databinding.ActivityMyBalanceBinding
 import com.kuaigeglobal.epnova.feature.web.SimpleBrowserActivity
 import com.nhsd.basic.BaseViewModelActivity
@@ -50,7 +48,6 @@ class MyBalanceActivity : BaseViewModelActivity<ActivityMyBalanceBinding, MyBala
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        EventManager.onFirebaseTrack(FirebaseEvent.STORE_VIEW)
         initTitleBar()
         initRecyclerView()
         updateTabUi(mRealVM.currentTab)
@@ -128,9 +125,6 @@ class MyBalanceActivity : BaseViewModelActivity<ActivityMyBalanceBinding, MyBala
 
     private fun switchTab(index: Int) {
         if (mRealVM.currentTab == index) return
-        if (index == MyBalanceViewModel.TAB_CREDITS) {
-            EventManager.onFirebaseTrack(FirebaseEvent.STORE_CREDITS_CLICK)
-        }
         binding.magicIndicator.onPageSelected(index)
         binding.magicIndicator.onPageScrolled(index, 0f, 0)
         mRealVM.onTabSelected(index)

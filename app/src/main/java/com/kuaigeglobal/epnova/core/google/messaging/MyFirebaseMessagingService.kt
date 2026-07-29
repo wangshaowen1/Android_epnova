@@ -110,7 +110,6 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         // 点击通知先交给 Receiver，再由现有 push 路由处理；
         // 避免 App 已在栈内时直接启动 SplashActivity 清空当前任务栈。
         val intent = Intent(this, PushNotificationClickReceiver::class.java).apply {
-            putExtra(PushNotificationClickReceiver.EXTRA_FROM_PUSH, true)
             putExtra(PushNotificationClickReceiver.EXTRA_SCHEME, scheme)
         }
         val pendingIntent = PendingIntent.getBroadcast(
