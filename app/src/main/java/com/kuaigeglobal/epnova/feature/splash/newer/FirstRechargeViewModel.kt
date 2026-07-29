@@ -11,6 +11,8 @@ import com.kuaigeglobal.epnova.core.ext.launchWithLoading
 import com.kuaigeglobal.epnova.core.ext.parseMessage
 import com.kuaigeglobal.epnova.core.google.billing.BillingManager
 import com.kuaigeglobal.epnova.core.google.billing.PurchaseResult
+import com.kuaigeglobal.epnova.core.manager.EventManager
+import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
 import com.kuaigeglobal.epnova.core.network.apis.response.FirstRechargeDialogData
 import com.kuaigeglobal.epnova.core.response
 import com.kuaigeglobal.epnova.feature.recharge.CoinRepository
@@ -94,6 +96,11 @@ class FirstRechargeViewModel : AppRepositoryViewModel<CoinRepository>() {
     }
 
     fun googlePay() {
+        // pay_now_click：点击弹窗底部购买按钮时上报。
+        EventManager.onFirebaseTrack(
+            FirebaseEvent.Category.FIRST_PURCHASE_COIN,
+            FirebaseEvent.Action.PAY_NOW_CLICK
+        )
         if (AppNavigator.checkLoginIntercepted()) return
         val rechargeData = data ?: return
 
@@ -101,6 +108,16 @@ class FirstRechargeViewModel : AppRepositoryViewModel<CoinRepository>() {
         purchaseJob?.cancel()
         purchaseJob = viewModelScope.launch {
             BillingManager.purchaseResultFlow.take(1).collect { result ->
+                // purchase_result：Label1=支付状态。
+                EventManager.onFirebaseTrack(
+                    FirebaseEvent.Category.FIRST_PURCHASE_COIN,
+                    FirebaseEvent.Action.PURCHASE_RESULT,
+                    if (result is PurchaseResult.Success) {
+                        FirebaseEvent.Value.RESULT_SUCCESS
+                    } else {
+                        FirebaseEvent.Value.RESULT_FAIL
+                    }
+                )
                 if (result is PurchaseResult.Success) {
                     refreshCoinsAndPoints()
                 } else if (result is PurchaseResult.Failed) {
