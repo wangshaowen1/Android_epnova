@@ -210,7 +210,11 @@ class MainActivity : BaseViewModelActivity<ActivityMainBinding, MainViewModel>()
                 }
 
                 R.id.rbWorks -> {
-                    //热门
+                    // my_list_show：My List 页面展示时上报。
+                    EventManager.onFirebaseTrack(
+                        FirebaseEvent.Category.MY_LIST,
+                        FirebaseEvent.Action.MY_LIST_SHOW
+                    )
                     setKeepScreenOn(false)
                     mRealVM.showTab.set(PAGE_MYLIST)
 //                    CreationRootActivity.start(this)
