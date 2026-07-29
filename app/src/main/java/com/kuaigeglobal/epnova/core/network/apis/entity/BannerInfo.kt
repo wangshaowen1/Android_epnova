@@ -10,6 +10,7 @@ package com.kuaigeglobal.epnova.core.network.apis.entity
  * }
  */
 data class BannerInfo(
+    val id: String? = null,
     val title: String? = null,
     val imageUrl: String? = null,
     val jumpType: Int? = null,

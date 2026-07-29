@@ -224,6 +224,6 @@ class CreateFragment : BaseViewModelFragment<FragmentCreateBinding, CreateViewMo
     }
 
     private fun BannerInfo.firebaseBannerId(): String? {
-        return jumpUri ?: title ?: sortNo?.toString()
+        return id ?: jumpUri ?: title ?: sortNo?.toString()
     }
 }

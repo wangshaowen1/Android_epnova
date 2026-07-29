@@ -238,7 +238,7 @@ class HomeFragment :
     }
 
     private fun BannerInfo.firebaseBannerId(): String? {
-        return jumpUri ?: title ?: sortNo?.toString()
+        return id ?: jumpUri ?: title ?: sortNo?.toString()
     }
 
 }
