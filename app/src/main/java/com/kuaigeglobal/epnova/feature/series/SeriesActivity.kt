@@ -16,6 +16,8 @@ import com.kuaigeglobal.epnova.common.ext.showConfirmPrompt
 import com.kuaigeglobal.epnova.common.ext.startRefreshWithAdapter
 import com.kuaigeglobal.epnova.common.ext.topActivity
 import com.kuaigeglobal.epnova.core.Events
+import com.kuaigeglobal.epnova.core.manager.EventManager
+import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
 import com.kuaigeglobal.epnova.core.network.apis.entity.CreatorEpisodeInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.CreatorPlaySource
 import com.kuaigeglobal.epnova.core.network.apis.entity.CreatorWorkInfo
@@ -68,6 +70,11 @@ class SeriesActivity : BaseViewModelActivity<ActivitySeriesBinding, SeriesViewMo
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // work_detail_show：作品详情页面展示时上报。
+        EventManager.onFirebaseTrack(
+            FirebaseEvent.Category.PUBLISH,
+            FirebaseEvent.Action.WORK_DETAIL_SHOW
+        )
         binding.toolbarLayout.minimumHeight = 32.dp
         initView()
         //数据更新
@@ -205,6 +212,11 @@ class SeriesActivity : BaseViewModelActivity<ActivitySeriesBinding, SeriesViewMo
             }
 
             CreatorEpisodeInfo.NOT_CREATED, CreatorEpisodeInfo.PROGRESS_SUMMARY_GENERATING -> {
+                // pending_creation_click：点击下一集的 Pending Creation 时上报。
+                EventManager.onFirebaseTrack(
+                    FirebaseEvent.Category.PUBLISH,
+                    FirebaseEvent.Action.PENDING_CREATION_CLICK
+                )
                 val snapshot = episodeAdapter.snapshot().items
                 // 1. 寻找前置阻断点
                 val blocker = findFirstBlocker(snapshot, position)
@@ -337,6 +349,11 @@ class SeriesActivity : BaseViewModelActivity<ActivitySeriesBinding, SeriesViewMo
             }
 
             R.id.btnPublish -> {
+                // work_detail_publish_click：点击作品详情页底部发布按钮时上报。
+                EventManager.onFirebaseTrack(
+                    FirebaseEvent.Category.PUBLISH,
+                    FirebaseEvent.Action.WORK_DETAIL_PUBLISH_CLICK
+                )
                 mRealVM.queryWorkPublishStatus(
                     openPublishPage = { openPublishPage(it) },
                     confirmNativePublish = { showPublishConfirm(it) },
