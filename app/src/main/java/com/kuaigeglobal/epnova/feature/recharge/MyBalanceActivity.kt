@@ -21,6 +21,8 @@ import com.kuaigeglobal.epnova.common.utils.CommonNavigatorUtils
 import com.kuaigeglobal.epnova.core.Config
 import com.kuaigeglobal.epnova.core.Events
 import com.kuaigeglobal.epnova.core.google.billing.PurchaseResult
+import com.kuaigeglobal.epnova.core.manager.EventManager
+import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
 import com.kuaigeglobal.epnova.databinding.ActivityMyBalanceBinding
 import com.kuaigeglobal.epnova.feature.web.SimpleBrowserActivity
 import com.nhsd.basic.BaseViewModelActivity
@@ -48,6 +50,11 @@ class MyBalanceActivity : BaseViewModelActivity<ActivityMyBalanceBinding, MyBala
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // store_show：商店页面展示时上报。
+        EventManager.onFirebaseTrack(
+            FirebaseEvent.Category.STORE,
+            FirebaseEvent.Action.STORE_SHOW
+        )
         initTitleBar()
         initRecyclerView()
         updateTabUi(mRealVM.currentTab)

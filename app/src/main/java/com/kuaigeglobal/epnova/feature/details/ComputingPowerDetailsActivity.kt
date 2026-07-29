@@ -12,6 +12,8 @@ import com.kuaigeglobal.epnova.common.adapter.FragmentStateCacheAdapter
 import com.kuaigeglobal.epnova.common.ext.removeTheRipples
 import com.kuaigeglobal.epnova.common.ext.topActivity
 import com.kuaigeglobal.epnova.common.utils.CommonNavigatorUtils
+import com.kuaigeglobal.epnova.core.manager.EventManager
+import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
 import com.kuaigeglobal.epnova.databinding.ActivityComputingPowerDetailsBinding
 import com.kuaigeglobal.epnova.feature.details.child.ComputingPowerDetailsTabFragment
 import com.kuaigeglobal.epnova.feature.recharge.MyBalanceViewModel
@@ -56,6 +58,11 @@ class ComputingPowerDetailsActivity :
 
     override fun onViewModelCreated() {
         super.onViewModelCreated()
+        // transaction_history_show：交易历史记录明细页展示时上报。
+        EventManager.onFirebaseTrack(
+            FirebaseEvent.Category.STORE,
+            FirebaseEvent.Action.TRANSACTION_HISTORY_SHOW
+        )
         initView()
         //数据更新
         dataUpdate()

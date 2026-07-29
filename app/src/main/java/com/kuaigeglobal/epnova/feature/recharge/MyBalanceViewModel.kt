@@ -18,6 +18,8 @@ import com.kuaigeglobal.epnova.core.ext.launch
 import com.kuaigeglobal.epnova.core.ext.launchWithLoading
 import com.kuaigeglobal.epnova.core.google.billing.BillingManager
 import com.kuaigeglobal.epnova.core.google.billing.PurchaseResult
+import com.kuaigeglobal.epnova.core.manager.EventManager
+import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
 import com.kuaigeglobal.epnova.core.network.apis.response.SimpleBannerInfo
 import com.kuaigeglobal.epnova.core.response
 import com.kuaigeglobal.epnova.feature.details.ComputingPowerDetailsActivity
@@ -200,6 +202,13 @@ class MyBalanceViewModel(
     }
 
     private fun ItemRechargePowerVM.selectCoins() {
+        // product_click：点击 Coins 商品卡片，Label1=货币类型，Label2=货币数量。
+        EventManager.onFirebaseTrack(
+            FirebaseEvent.Category.STORE,
+            FirebaseEvent.Action.PRODUCT_CLICK,
+            FirebaseEvent.Value.CURRENCY_COINS,
+            data.get()?.coinsNum?.toString()
+        )
         currentCoinsItem?.isChecked?.set(false)
         isChecked.set(true)
         currentCoinsItem = this
@@ -207,6 +216,13 @@ class MyBalanceViewModel(
     }
 
     private fun ItemRechargeCreditsVM.selectCredits() {
+        // product_click：点击 Credits 商品卡片，Label1=货币类型，Label2=货币数量。
+        EventManager.onFirebaseTrack(
+            FirebaseEvent.Category.STORE,
+            FirebaseEvent.Action.PRODUCT_CLICK,
+            FirebaseEvent.Value.CURRENCY_CREDITS,
+            data.get()?.pointNum?.toString()
+        )
         currentCreditsItem?.isChecked?.set(false)
         isChecked.set(true)
         currentCreditsItem = this
@@ -214,9 +230,31 @@ class MyBalanceViewModel(
     }
 
     fun recharge() {
+        val currencyType = if (currentTab == TAB_COINS) {
+            FirebaseEvent.Value.CURRENCY_COINS
+        } else {
+            FirebaseEvent.Value.CURRENCY_CREDITS
+        }
+        val currencyAmount = if (currentTab == TAB_COINS) {
+            currentCoinsItem?.data?.get()?.coinsNum?.toString()
+        } else {
+            currentCreditsItem?.data?.get()?.pointNum?.toString()
+        }
         purchaseJob?.cancel()
         purchaseJob = viewModelScope.launch {
             BillingManager.purchaseResultFlow.take(1).collect { result ->
+                // purchase_result：Label1=货币类型，Label2=数量，Label3=支付状态。
+                EventManager.onFirebaseTrack(
+                    FirebaseEvent.Category.STORE,
+                    FirebaseEvent.Action.PURCHASE_RESULT,
+                    currencyType,
+                    currencyAmount,
+                    if (result is PurchaseResult.Success) {
+                        FirebaseEvent.Value.RESULT_SUCCESS
+                    } else {
+                        FirebaseEvent.Value.RESULT_FAIL
+                    }
+                )
                 if (result is PurchaseResult.Success) {
                     loadConfig()
                     refreshCoinsAndPoints()
