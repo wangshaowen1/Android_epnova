@@ -9,6 +9,8 @@ import com.kuaigeglobal.epnova.core.Config
 import com.kuaigeglobal.epnova.core.Events
 import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.ext.onUserStatusChanged
+import com.kuaigeglobal.epnova.core.manager.EventManager
+import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
 import com.kuaigeglobal.epnova.databinding.FragmentMineBinding
 import com.kuaigeglobal.epnova.feature.income.IncomeActivity
 import com.kuaigeglobal.epnova.feature.main.MainViewModel
@@ -139,6 +141,11 @@ class MineFragment : BaseViewModelFragment<FragmentMineBinding, MineViewModel>()
                 if (AppNavigator.checkLoginIntercepted(false)) {
                     return
                 }
+                // 个人中心 Rewards 入口点击。
+                EventManager.onFirebaseTrack(
+                    FirebaseEvent.Category.REWARDS,
+                    FirebaseEvent.Action.PROFILE_REWARDS_BTN_CLICK
+                )
                 //福利中心
                 RewardsActivity.start(mActivity)
             }

@@ -235,7 +235,15 @@ class UnifiedLoginActivity : BaseViewModelActivity<ActivityUnifiedLoginBinding, 
                 val response = ApiFactory.apiService.reportLoginTask()
                 withContext(Dispatchers.Main) {
                     if (response.isSuccess) {
-                        showRewardToast(response.data?.rewardLabel)
+                        val rewardLabel = response.data?.rewardLabel ?: "0"
+                        // 登录任务成功获得金币，Label1=login，Label2=实际金币数。
+                        EventManager.onFirebaseTrack(
+                            FirebaseEvent.Category.REWARDS,
+                            FirebaseEvent.Action.COINS_GRANTED,
+                            FirebaseEvent.Value.GRANTED_SOURCE_LOGIN,
+                            rewardLabel
+                        )
+                        showRewardToast(rewardLabel)
                     } else {
                         response.msg?.showToast()
                     }

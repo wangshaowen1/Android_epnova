@@ -81,6 +81,11 @@ class HomeFragment :
             SearchActivity.start(mActivity)
         }
         binding.btnRewards.setOnSingleClickListener {
+            // 首页右上角福利中心入口点击。
+            EventManager.onFirebaseTrack(
+                FirebaseEvent.Category.REWARDS,
+                FirebaseEvent.Action.HOME_REWARDS_BTN_CLICK
+            )
             RewardsActivity.start(mActivity)
         }
     }

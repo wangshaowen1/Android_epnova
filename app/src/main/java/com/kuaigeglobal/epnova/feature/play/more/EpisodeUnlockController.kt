@@ -7,6 +7,8 @@ import androidx.databinding.ObservableField
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.core.Config
 import com.kuaigeglobal.epnova.core.User
+import com.kuaigeglobal.epnova.core.manager.EventManager
+import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
 import com.kuaigeglobal.epnova.core.manager.RewardedAdManager
 import com.kuaigeglobal.epnova.core.network.apis.ApiService
 import com.kuaigeglobal.epnova.core.network.apis.entity.EpisodeInfo
@@ -86,6 +88,13 @@ class EpisodeUnlockController(
             mgr.onUnlockSuccess = {
                 hideAdLoading()
                 episode?.let { ep ->
+                    // 广告解锁等价获得本集解锁所需金币。
+                    EventManager.onFirebaseTrack(
+                        FirebaseEvent.Category.REWARDS,
+                        FirebaseEvent.Action.COINS_GRANTED,
+                        FirebaseEvent.Value.GRANTED_SOURCE_UNLOCK_AD,
+                        unlockInfo?.costNums ?: ep.costNums ?: 0
+                    )
                     showToast(R.string.episode_unlock_success)
                     onUnlockSuccess?.invoke(ep)
                 }

@@ -11,6 +11,8 @@ import com.kuaigeglobal.epnova.common.adapter.QuickAdapter
 import com.kuaigeglobal.epnova.core.AppRepository
 import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.ext.request
+import com.kuaigeglobal.epnova.core.manager.EventManager
+import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
 import com.kuaigeglobal.epnova.core.manager.RewardedAdManager
 import com.kuaigeglobal.epnova.core.network.apis.ApiException
 import com.kuaigeglobal.epnova.core.network.apis.ApiResponse
@@ -142,6 +144,11 @@ class RewardsViewModel : AppRepositoryViewModel<AppRepository>() {
                 balance.set(balance.get() + (d.rewardNum ?: 0))
                 User.get().storeCoins(balance.get())
                 loadCheckInList(updateLoadState = false)
+                // 签到成功获得金币，Label1=check_in，Label2=实际金币数。
+                reportCoinsGranted(
+                    FirebaseEvent.Value.GRANTED_SOURCE_CHECK_IN,
+                    d.rewardNum ?: 0
+                )
                 _showCheckInSuccessEvent.tryEmit(Pair(d.rewardNum ?: 0, adRewardCoins.get()))
             }
         )
@@ -215,6 +222,8 @@ class RewardsViewModel : AppRepositoryViewModel<AppRepository>() {
                         vm.isWatch.set(false)
                         balance.set(balance.get() + vm.coins)
                         User.get().storeCoins(balance.get())
+                        // 福利中心广告任务成功获得金币。
+                        reportCoinsGranted(FirebaseEvent.Value.GRANTED_SOURCE_AD, vm.coins)
                         _showAdTaskRewardEvent.tryEmit(vm.coins.toString())
                         loadAdTaskList()
                         return@launch
@@ -273,6 +282,8 @@ class RewardsViewModel : AppRepositoryViewModel<AppRepository>() {
                         val coins = adRewardCoins.get()
                         balance.set(balance.get() + coins)
                         User.get().storeCoins(balance.get())
+                        // 签到后观看广告成功获得额外金币。
+                        reportCoinsGranted(FirebaseEvent.Value.GRANTED_SOURCE_CHECK_IN_AD, coins)
                         _showCheckInAdRewardEvent.tryEmit(coins)
                         return@launch
                     }
@@ -340,6 +351,8 @@ class RewardsViewModel : AppRepositoryViewModel<AppRepository>() {
                 if (rewardCoins > 0L) {
                     balance.set(balance.get() + rewardCoins)
                     User.get().storeCoins(balance.get())
+                    // 开启消息通知任务成功获得金币。
+                    reportCoinsGranted(FirebaseEvent.Value.GRANTED_SOURCE_NOTICE, rewardCoins)
                 }
                 _showPushNotificationRewardEvent.tryEmit(rewardLabel)
                 loadOnceTaskList()
@@ -348,6 +361,15 @@ class RewardsViewModel : AppRepositoryViewModel<AppRepository>() {
     }
 
     // ─── 内部辅助 ────────────────────────────────────────────────────────────
+
+    private fun reportCoinsGranted(source: String, amount: Number) {
+        EventManager.onFirebaseTrack(
+            FirebaseEvent.Category.REWARDS,
+            FirebaseEvent.Action.COINS_GRANTED,
+            source,
+            amount
+        )
+    }
 
     private fun showBackendMsg(error: Throwable?) {
         val message = (error as? ApiException)?.message

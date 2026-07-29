@@ -5,6 +5,8 @@ import androidx.core.os.bundleOf
 import com.blankj.utilcode.util.ScreenUtils
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.Constants
+import com.kuaigeglobal.epnova.core.manager.EventManager
+import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
 import com.kuaigeglobal.epnova.core.network.apis.entity.EpisodeInfo
 import com.kuaigeglobal.epnova.databinding.DialogAdUnlockBinding
 import com.nhsd.basic.BaseActivity
@@ -78,6 +80,13 @@ class AdUnlockDialog : BaseVMDialogFragment<DialogAdUnlockBinding, AdUnlockViewM
     private fun setupVmCallbacks() {
         mRealVM.onUnlockSuccess = {
             didWatch = true
+            // 广告解锁等价获得本集解锁所需金币。
+            EventManager.onFirebaseTrack(
+                FirebaseEvent.Category.REWARDS,
+                FirebaseEvent.Action.COINS_GRANTED,
+                FirebaseEvent.Value.GRANTED_SOURCE_UNLOCK_AD,
+                mRealVM.episode?.costNums ?: 0
+            )
             getString(R.string.episode_unlock_success).showToast()
             onUnlockSuccess?.invoke()
             dismissAllowingStateLoss()
