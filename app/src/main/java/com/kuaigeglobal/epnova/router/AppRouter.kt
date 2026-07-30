@@ -131,6 +131,7 @@ object AppRouter : IRouter {
         }
 
         when (host) {
+            // 恢复创作
             "restoreCreator" -> {//epnovascheme://toHome
                 val workId = uri.getQueryParameter("workId")
                 val storyId = uri.getQueryParameter("storyId")
@@ -141,12 +142,12 @@ object AppRouter : IRouter {
                 Logger.i("retoreCreator workId=$workId, storyId=$storyId, workTitle=$workTitle, workType=$workType, workRatio=$workRatio")
                 startStory(workId, storyId, workTitle, workType?.toIntOrNull(), totalEpisodeCnt?.toIntOrNull(), workRatio)
             }
-
+            // 首页
             "toHome" -> {//epnovascheme://toHome
                 FlowEventBus.postSync(Events.MainTabEvent(Events.MainTabEvent.TAB_HOME))
                 ActivityUtils.finishToActivity(MainActivity::class.java, false)
             }
-
+            // 福利页
             "toRewards" -> {//epnovascheme://toRewards
                 if (AppNavigator.checkLoginIntercepted(showToast = false)) {
                     return
@@ -154,21 +155,21 @@ object AppRouter : IRouter {
                 val context = topActivity ?: return
                 RewardsActivity.start(context)
             }
-
+            // 金币商店
             "toStoreCoins" -> {//epnovascheme://toStoreCoins
                 if (AppNavigator.checkLoginIntercepted(showToast = false)) {
                     return
                 }
                 MyBalanceActivity.start(MyBalanceViewModel.TAB_COINS)
             }
-
+            // 积分商店
             "toStoreCredits" -> {//epnovascheme://toStoreCredits
                 if (AppNavigator.checkLoginIntercepted(showToast = false)) {
                     return
                 }
                 MyBalanceActivity.start(MyBalanceViewModel.TAB_CREDITS)
             }
-
+            // 作品详情
             "toSeriesDetail" -> {//epnovascheme://toSeriesDetail?workId=%s
                 val workId = uri.getQueryParameter("workId")
                 if (workId.isNullOrEmpty()) {
@@ -176,7 +177,7 @@ object AppRouter : IRouter {
                 }
                 SeriesActivity.start(workId)
             }
-
+            // 指定剧集
             "toTargetEpisode" -> {//epnovascheme://toTargetEpisode?workId=%s&storyId=%s
                 val workId = uri.getQueryParameter("workId")
                 val storyId = uri.getQueryParameter("storyId")

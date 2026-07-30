@@ -14,6 +14,7 @@ import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.Constants
 import com.kuaigeglobal.epnova.common.jsbridge.BridgeDataUtils
 import com.kuaigeglobal.epnova.core.manager.EventManager
+import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
 import com.kuaigeglobal.epnova.core.model.PushMessageInfo
 import com.nhsd.basic.utils.Logger
 
@@ -23,9 +24,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     companion object {
         const val KEY_PUSH_MSG_JUMP_URI = "pushMsgJumpUri"
         /** GA4 推送业务类型；值使用 FirebaseEvent.Value.PUSH_TYPE_*。 */
-        const val KEY_PUSH_EVENT_TYPE = "pushType"
-        /** 旧通知展示类型字段；兼容后端直接下发 GA4 字符串值。 */
-        const val KEY_PUSH_MSG_TYPE = "pushMsgType"
+        const val KEY_PUSH_EVENT_TYPE = "pushScene"
     }
 
     override fun onMessageReceived(message: RemoteMessage) {
@@ -36,8 +35,16 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         val notification: RemoteMessage.Notification? = message.getNotification()
         val title = notification?.title ?: ""
         val body = notification?.body ?: ""
-        val pushType = message.data[KEY_PUSH_EVENT_TYPE] ?: message.data[KEY_PUSH_MSG_TYPE]
+        val pushType = message.data[KEY_PUSH_EVENT_TYPE]
         val pushMsgJumpUri = message.data[KEY_PUSH_MSG_JUMP_URI] ?: ""
+
+        pushType?.let { pushScene ->
+            EventManager.onFirebaseTrack(
+                FirebaseEvent.Category.PUSH,
+                FirebaseEvent.Action.PUSH_SEND,
+                pushScene
+            )
+        }
 //        val data = message.data
 //        val custom = data["custom"]
 //        Logger.d("MyFirebaseMessagingService", "onMessageReceived custom: $custom")
