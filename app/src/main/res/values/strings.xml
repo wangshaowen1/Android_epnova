@@ -1,8 +1,8 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation,ExtraTranslation">
-    <string name="app_name" translatable="false">EpNova</string>
-    <string name="facebook_app_id" translatable="false">3218717494963372</string>
-    <string name="fb_login_protocol_scheme" translatable="false">fb3218717494963372</string>
-    <string name="facebook_client_token" translatable="false">e79d753cfcf9a9013f8b3e89ba6894dd</string>
+    <string name="app_name">EpNova</string>
+    <string name="facebook_app_id">3218717494963372</string>
+    <string name="fb_login_protocol_scheme">fb3218717494963372</string>
+    <string name="facebook_client_token">e79d753cfcf9a9013f8b3e89ba6894dd</string>
     <string name="request_failed_tips">Slow connection. Please try again in a moment.</string>
     <string name="no_network_tips">Connection failed. Please check your network.</string>
 
@@ -803,4 +803,5 @@
     <string name="creation_package_not_use">Not Now</string>
     <string name="creation_package_use_now">Use Now</string>
     <string name="work_creating">Creating your work…</string>
+    <string name="edit_storyboard_empty">No Storyboard Video</string>
 </resources>

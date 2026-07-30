@@ -37,6 +37,7 @@ import com.kuaigeglobal.epnova.feature.series.SeriesActivity
 import com.kuaigeglobal.epnova.feature.web.SimpleBrowserActivity.Companion.launch
 import com.kuaigeglobal.epnova.widget.LoadingDialog2
 import com.nhsd.basic.bus.FlowEventBus
+import com.nhsd.basic.ext.getResString
 import com.nhsd.basic.ext.launchNoCrash
 import com.nhsd.basic.ext.showToast
 import com.nhsd.basic.utils.Logger
@@ -396,7 +397,7 @@ object AppRouter : IRouter {
             EpisodeInfo.EPISODE_REPAINT_COMPLETED -> {
                 EditStoryboardVideoActivity.start(
                     // 优化：原代码使用了可能为空的 info.sortNo，这里直接使用兜底过的非空 sortNo
-                    storyTitle = workTitle?.let { "$it：第${sortNo}集" },
+                    storyTitle = workTitle?.let { "$it：${R.string.episode_number_format.getResString(sortNo)}" },
                     workId = workId,
                     storyId = info.storyId,
                     workRatio = info.workRatio,

@@ -24,7 +24,7 @@
             onRetry="@{()->layout.getStoryboardList()}"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:noData="暂无分镜视频">
+            app:noData="@string/edit_storyboard_empty">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
