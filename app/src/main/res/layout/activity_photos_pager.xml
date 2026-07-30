@@ -6,6 +6,13 @@
     android:layout_height="fill_parent"
     android:orientation="vertical">
 
+    <View
+        android:id="@+id/transitionScrim"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0"
+        android:background="@android:color/black" />
+
     <com.kuaigeglobal.epnova.widget.HackyViewPager
         android:id="@+id/hackpager"
         android:layout_width="match_parent"
