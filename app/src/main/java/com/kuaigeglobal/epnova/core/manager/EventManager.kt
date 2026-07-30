@@ -237,14 +237,14 @@ object EventManager {
 /**
  * GA4 埋点定义，统一使用 Event-Action-Label 结构。
  *
- * 数据来源：EpNova GA埋点.xlsx（Sheet1，A1:M66）。
+ * 数据来源：EpNova GA埋点.xlsx（Sheet1，A1:M70）。
  */
 object FirebaseEvent {
 
     /** Event：用于区分业务模块。 */
     object Category {
         /** 首次打开 APP。 */
-        const val FIRST_OPEN = "first_open"
+        const val FIRST_OPEN = "app_first_open"
         /** 登录。 */
         const val LOGIN = "login"
         /** 首页。 */
@@ -269,6 +269,8 @@ object FirebaseEvent {
         const val PLAYER = "player"
         /** 推送。 */
         const val PUSH = "push"
+        /** 创作同款。 */
+        const val HIT_SCRIPTS = "hit_scripts"
     }
 
     /** GA4 事件参数 key，顺序与表格的 Action、Label 1～4 一致。 */
@@ -407,6 +409,12 @@ object FirebaseEvent {
         const val PUSH_SEND = "push_send"
         /** [push] 用户站外点击推送；Label1=推送类型。 */
         const val PUSH_CLICK = "push_click"
+        /** [hit_scripts] 爆款案例 Remake 点击；Label1=爆款案例名字。 */
+        const val REMAKE_BTN_CLICK = "remake_btn_click"
+        /** [hit_scripts] 创作同款页面展示。 */
+        const val CREATE_SIMILAR_PAGE_SHOW = "create_similar_page_show"
+        /** [hit_scripts] 开始创作同款；Label1=案例名，Label2=集数，Label3=比例，Label4=风格英文名。 */
+        const val CREATE_SIMILAR_BTN_CLICK = "create_similar_btn_click"
     }
 
     /** 表格中已枚举的固定 Label 值；ID、数量、自定义集数和风格名等动态值由调用处传入。 */

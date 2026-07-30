@@ -49,6 +49,8 @@ class VideoSetViewModel : AppRepositoryViewModel<AppRepository>() {
     val workTitle by lazy { mBundle.getString(Constants.Extra.TITLE) }
     val sameStory by lazy { mBundle.getString(Constants.Extra.CONTENT) }
     val hotCaseId by lazy { mBundle.getString(Constants.Extra.ID) }
+    /** GA4 创作同款事件使用的爆款案例名字。 */
+    val hotCaseTitle by lazy { mBundle.getString(Constants.Extra.NAME) }
 
     var checkedRatio: ItemVideoConfigVm? = null
     var checkedEpisodeSet: ItemVideoConfigVm? = null

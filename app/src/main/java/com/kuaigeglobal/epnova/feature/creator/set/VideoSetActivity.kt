@@ -64,7 +64,10 @@ class VideoSetActivity : BaseViewModelActivity<ActivityVideoSetBinding, VideoSet
             starter.putExtra(Constants.Extra.DATA, list)
             charCount?.let { starter.putExtra(Constants.Extra.COUNT, it) }
             hotCaseId?.let { starter.putExtra(Constants.Extra.ID, it) }
-            hotCaseTitle?.let { starter.putExtra(Constants.Extra.TITLE, it) }
+            hotCaseTitle?.let {
+                starter.putExtra(Constants.Extra.TITLE, it)
+                starter.putExtra(Constants.Extra.NAME, it)
+            }
 //            creationPackage?.let { starter.putExtra(VideoSetViewModel.ARG_CREATION_PACKAGE, it) }
             current.startActivity(starter)
         }
@@ -79,6 +82,13 @@ class VideoSetActivity : BaseViewModelActivity<ActivityVideoSetBinding, VideoSet
             FirebaseEvent.Category.CREATE,
             FirebaseEvent.Action.CREATE_WORK_SHOW
         )
+        if (!mRealVM.hotCaseId.isNullOrBlank()) {
+            // GA4：创作同款页面展示。
+            EventManager.onFirebaseTrack(
+                FirebaseEvent.Category.HIT_SCRIPTS,
+                FirebaseEvent.Action.CREATE_SIMILAR_PAGE_SHOW
+            )
+        }
         binding.root.applySmartFocusManager()
         initView()
         initListener()
@@ -286,9 +296,34 @@ class VideoSetActivity : BaseViewModelActivity<ActivityVideoSetBinding, VideoSet
                 mRealVM.checkedRatio?.data?.get()?.configValue,
                 mRealVM.checkedStyle?.data?.get()?.styleCode
             )
+            if (!mRealVM.hotCaseId.isNullOrBlank()) {
+                // GA4：创作同款页点击 Start Creating，Label1～4 按表格顺序上报。
+                EventManager.onFirebaseTrack(
+                    FirebaseEvent.Category.HIT_SCRIPTS,
+                    FirebaseEvent.Action.CREATE_SIMILAR_BTN_CLICK,
+                    mRealVM.hotCaseTitle,
+                    if (episodeConfig?.isCustomInput() == true) {
+                        mRealVM.checkedEpisodeSet?.input?.get()
+                    } else {
+                        episodeConfig?.configValue
+                    },
+                    mRealVM.checkedRatio?.data?.get()?.configValue,
+                    selectedStyleAnalyticsName()
+                )
+            }
 
             createSameTask(workTitle, sameStory)
         }
+    }
+
+    /** 将风格英文名中的单词分隔符统一为下划线，符合 GA4 Label4 约定。 */
+    private fun selectedStyleAnalyticsName(): String? {
+        val style = mRealVM.checkedStyle?.data?.get()
+        // styleCode 是服务端稳定英文标识且已使用下划线；仅在缺失时用展示名兜底。
+        val sourceName = style?.styleCode?.takeIf { it.isNotBlank() } ?: style?.styleName
+        return sourceName
+            ?.trim()
+            ?.replace(Regex("[\\s-]+"), "_")
     }
 
     private fun createSameTask(workTitle: String, sameStory: String) {

@@ -15,6 +15,8 @@ import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.adapter.QuickAdapter
 import com.kuaigeglobal.epnova.core.Events
 import com.kuaigeglobal.epnova.core.ext.onUserSignOut
+import com.kuaigeglobal.epnova.core.manager.EventManager
+import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
 import com.kuaigeglobal.epnova.core.network.apis.entity.InspirationInfo
 import com.kuaigeglobal.epnova.databinding.FragmentCreationInspirationBinding
 import com.kuaigeglobal.epnova.databinding.LayoutCreationTabHeaderBinding
@@ -190,6 +192,12 @@ class CreationInspirationFragment :
     }
 
     private fun onCreateSame(info: CreationHotCaseInfo) {
+        // 点击爆款案例 Remake，Label1=爆款案例名字。
+        EventManager.onFirebaseTrack(
+            FirebaseEvent.Category.HIT_SCRIPTS,
+            FirebaseEvent.Action.REMAKE_BTN_CLICK,
+            info.title
+        )
         if (mRealVM.isStreaming()) {
             return
         }
