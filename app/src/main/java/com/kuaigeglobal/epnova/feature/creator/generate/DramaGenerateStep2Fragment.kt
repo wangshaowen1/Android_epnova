@@ -46,6 +46,8 @@ class DramaGenerateStep2Fragment :
 
     private var showBackToast = false
     private var scrollAnimator: ObjectAnimator? = null
+    private var textScrollRunnable: Runnable? = null
+    private var sensitiveScrollRunnable: Runnable? = null
 
     override fun onPrepareView() {
         super.onPrepareView()
@@ -119,7 +121,7 @@ class DramaGenerateStep2Fragment :
     }
 
     private fun handleNextStep() {
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             sensitiveWordCheck(mRealVM.input.value, {
                 sensitiveHighlightedText = null
                 mRealVM.confirmGenerate { workId, storyId, taskId ->
@@ -136,11 +138,17 @@ class DramaGenerateStep2Fragment :
     }
 
     private fun scrollToFirstSensitiveWord(spannedText: CharSequence) {
-        binding.inputView.post {
-            val layout = binding.inputView.layout ?: return@post
-            val spanned = spannedText as? Spanned ?: return@post
+        val spanned = spannedText as? Spanned ?: return
+        val inputView = binding.inputView
+        val scrollContainer = binding.scrollContainer
+
+        sensitiveScrollRunnable?.let { inputView.removeCallbacks(it) }
+        val scrollRunnable = Runnable {
+            if (!inputView.isAttachedToWindow || !scrollContainer.isAttachedToWindow) return@Runnable
+
+            val layout = inputView.layout ?: return@Runnable
             val spans = spanned.getSpans(0, spanned.length, ForegroundColorSpan::class.java)
-            if (spans.isEmpty()) return@post
+            if (spans.isEmpty()) return@Runnable
 
             val firstSpanStart = spans.minOf { spanned.getSpanStart(it) }
             val line = layout.getLineForOffset(firstSpanStart)
@@ -148,18 +156,20 @@ class DramaGenerateStep2Fragment :
 
             // 通过屏幕坐标计算 inputView 相对于 scrollContainer 内容区域的偏移
             val scrollViewOffset = IntArray(2)
-            binding.scrollContainer.getLocationOnScreen(scrollViewOffset)
+            scrollContainer.getLocationOnScreen(scrollViewOffset)
             val inputViewOffset = IntArray(2)
-            binding.inputView.getLocationOnScreen(inputViewOffset)
+            inputView.getLocationOnScreen(inputViewOffset)
 
-            val inputViewRelativeTop = inputViewOffset[1] - scrollViewOffset[1] + binding.scrollContainer.scrollY
-            val lineAbsoluteY = inputViewRelativeTop + binding.inputView.paddingTop + lineTop
+            val inputViewRelativeTop = inputViewOffset[1] - scrollViewOffset[1] + scrollContainer.scrollY
+            val lineAbsoluteY = inputViewRelativeTop + inputView.paddingTop + lineTop
 
             // 将标红行居中显示
             val lineHeight = layout.getLineBottom(line) - lineTop
-            val centeredY = lineAbsoluteY + lineHeight / 2 - binding.scrollContainer.height / 2
-            binding.scrollContainer.smoothScrollTo(0, maxOf(0, centeredY))
+            val centeredY = lineAbsoluteY + lineHeight / 2 - scrollContainer.height / 2
+            scrollContainer.smoothScrollTo(0, maxOf(0, centeredY))
         }
+        sensitiveScrollRunnable = scrollRunnable
+        inputView.post(scrollRunnable)
     }
 
     private var sensitiveHighlightedText: CharSequence? = null
@@ -198,7 +208,7 @@ class DramaGenerateStep2Fragment :
     }
 
     private fun dataUpdate() {
-        mRealVM.input.observe(this) { text ->
+        mRealVM.input.observe(viewLifecycleOwner) { text ->
             val newText = text ?: ""
             val currentText = binding.inputView.text.toString()
 
@@ -208,16 +218,16 @@ class DramaGenerateStep2Fragment :
             }
         }
 
-        mRealVM.storyScriptResult.observe(this) {
+        mRealVM.storyScriptResult.observe(viewLifecycleOwner) {
             showBackToast = false
         }
 
-        mRealVM.mWorkName.observe(this) {
+        mRealVM.mWorkName.observe(viewLifecycleOwner) {
             if (hostVm?.title?.value.isNullOrEmpty()) {
                 hostVm?.title?.value = it
             }
         }
-        hostVm?.title?.observe(this) {
+        hostVm?.title?.observe(viewLifecycleOwner) {
             if (it != mRealVM.mWorkName.value) {
                 mRealVM.mWorkName.value = it
                 mRealVM.episodeTitle.set("《$it》${getString(R.string.episode_number_format, mRealVM.chapterIndex ?: 1)}")
@@ -236,33 +246,44 @@ class DramaGenerateStep2Fragment :
     }
 
     private fun handleTextScrollAnimation() {
-        binding.inputView.post {
-            val layout = binding.inputView.layout ?: return@post
+        val inputView = binding.inputView
 
-            val contentHeight = layout.getLineTop(binding.inputView.lineCount)
-            val targetScrollY = contentHeight + binding.inputView.paddingTop +
-                    binding.inputView.paddingBottom - binding.inputView.height
+        textScrollRunnable?.let { inputView.removeCallbacks(it) }
+        val scrollRunnable = Runnable {
+            if (!inputView.isAttachedToWindow) return@Runnable
 
+            val layout = inputView.layout ?: return@Runnable
+
+            val contentHeight = layout.getLineTop(inputView.lineCount)
+            val targetScrollY = contentHeight + inputView.paddingTop +
+                    inputView.paddingBottom - inputView.height
+
+            // 取消上一次未完成的动画，保持流式输出平滑
+            scrollAnimator?.cancel()
             if (targetScrollY > 0) {
-                // 取消上一次未完成的动画，保持流式输出平滑
-                scrollAnimator?.cancel()
                 scrollAnimator = ObjectAnimator.ofInt(
-                    binding.inputView, "scrollY", binding.inputView.scrollY, targetScrollY
+                    inputView, "scrollY", inputView.scrollY, targetScrollY
                 ).apply {
                     duration = 60
                     interpolator = LinearInterpolator()
                     start()
                 }
             } else {
-                binding.inputView.scrollTo(0, 0)
+                inputView.scrollTo(0, 0)
             }
         }
+        textScrollRunnable = scrollRunnable
+        inputView.post(scrollRunnable)
     }
 
-    override fun onDestroy() {
+    override fun onDestroyView() {
+        textScrollRunnable?.let { binding.inputView.removeCallbacks(it) }
+        textScrollRunnable = null
+        sensitiveScrollRunnable?.let { binding.inputView.removeCallbacks(it) }
+        sensitiveScrollRunnable = null
         scrollAnimator?.cancel()
         scrollAnimator = null
-        super.onDestroy()
+        super.onDestroyView()
     }
 
     override fun handleBackPressed(): Boolean {
