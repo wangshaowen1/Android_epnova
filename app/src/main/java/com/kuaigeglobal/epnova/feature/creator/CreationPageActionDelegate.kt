@@ -151,10 +151,7 @@ class CreationPageActionDelegate(
     }
 
     fun pasteInput() {
-//        if (!viewModel.isStreaming()) viewModel.input.value = ClipboardUtils.getText().toString()
-        if (viewModel.isStreaming()) return
-        val clipboardContent = ClipboardUtils.getText().toString()
-        inputViewProvider()?.setText(clipboardContent)
+        if (!viewModel.isStreaming()) viewModel.input.value = ClipboardUtils.getText().toString()
     }
 
     fun uploadStory() {
