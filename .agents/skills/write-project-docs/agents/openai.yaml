@@ -1,0 +1,4 @@
+interface:
+  display_name: "项目文档治理"
+  short_description: "编写精简、可维护且便于开发者与 AI 理解的项目与契约文档"
+  default_prompt: "使用 $write-project-docs 为当前代码库创建或收敛精简的项目文档。"
