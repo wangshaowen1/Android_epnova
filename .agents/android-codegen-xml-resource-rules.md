@@ -6,16 +6,18 @@
 
 - 新增页面 DataBinding XML 默认使用 `<layout>` 根节点，页面 ViewModel 变量名默认 `layout`。
 - 新增列表 item DataBinding XML 默认变量名 `item`。
-- Dialog XML 先跟随当前文件和同类弹窗：无 VM 弹窗不要为了 DataBinding 表达式新增 `layout`、`dialog`、接口实体等变量，优先在 Dialog 内直接更新文案、显隐、选中态和点击事件。
-- VM 弹窗 XML 默认只绑定 `layout`；VM 可暴露源对象和少量复用状态，XML 可直接写简单属性或三元表达式。不要把每个颜色、背景、显隐、文案都拆成 Observable 或 `getXxxText()` / `isXxxVisible()` 透传函数，也不要在 Dialog 根 XML `<data>` 里单独声明接口实体变量承载展示。
 - 编辑历史 XML、include、纯 ViewBinding 或无绑定 layout 时，跟随当前文件和同类文件，不强行改结构。
-- Fragment 初始化优先放在 `onPrepareView()` 中；只有页面逻辑已经较多时，才按职责拆成 `initView()`、`initListener()`、`initObservers()` 或现有相近命名。简单页面/弹窗不要套空模板，少量赋值和点击可直接写在 `onCreate()` / `onPrepareView()`。
-- 与 `onPrepareView()` 成对的手动回调清理默认放在 Fragment 的 `onDestroy()`，例如 ViewPager2 callback、AdapterDataObserver、键盘监听和事件监听；不要默认生成 `onDestroyView()` 清理，除非正在修改的同类页面或基类已经这样做。
+- 页面初始化优先放在 Fragment 的 `onPrepareView()` 中；只有代码已有独立职责时才拆成 `initView()`、`initListener()`、`initObservers()` 或现有相近命名，不生成空函数或只包一两行的层级。
+- 与 `onPrepareView()` 成对的手动回调清理点必须先查当前 baselibrary、基类是否缓存 View 和附近同类页面。当前项目常见写法是 `onDestroy()`；标准 Fragment 或不缓存 View 的基类通常使用 `onDestroyView()`，不要把任一历史写法固化成跨版本模板。
 - Activity 可以在 `onCreate()` 做启动初始化，但网络和业务动作仍应委托给 ViewModel。
 - 保存、提交、支付、生成、跳转、登录等用户高频动作优先使用 `setOnSingleClickListener` 或 XML 中 `layout.clickHandler::onClick`。简单关闭、toggle、播放器点击、adapter retry、widget 内部回调、Java 旧控件或同类代码已采用的简单监听，可以沿用 `setOnClickListener`。
-- XML 可以写简单可读的 DataBinding 表达式，简单属性、空判断、兜底和颜色/显隐三元表达式不需要新增 ViewModel 透传方法或 BindingAdapter；复杂业务判断才放到 ViewModel 方法或 BindingAdapter。
+- XML 可以写简单可读的 DataBinding 表达式，复杂业务判断放到 ViewModel 方法或 BindingAdapter。
+- `binding.xxx` 只是类型安全访问 View，不视为已使用 DataBinding；接口结果、关系状态、数量、文案、红点、选中、启用和稳定显隐优先由 ViewModel 状态绑定。
+- 同一位置出现三个及以上互斥布局时，优先用 `ViewAnimator` 和单一状态绑定 `android:displayedChild`；不要由多个 Observer 分别切换各 child 的显隐。
+- 手势坐标、录音按压、拖动、动画逐帧、播放器进度和第三方控件回调保留命令式更新，不为消灭 View 操作制造复杂 XML 表达式。
 - 图片加载优先使用项目已有 `loadUri`、`loadHQThumbnailUri`、`loadThumbnailUri`、`loadVideoUrl` 等 BindingAdapter。
 - 文案必须走字符串资源；新增 key 前先检查重复，并同步当前仓库已有且业务要求覆盖的 `values*/strings.xml`。
+- 不为“一行展示 N 个”擅自增加固定等分宽度、强制宽度计算或布局算法；除非设计明确要求等分，否则 item 宽度按内容、现有 style/dimen 和原设计样式自适应。
 
 ## 执行边界
 
@@ -33,30 +35,20 @@
 - 只有项目没有对应资源，或设计值与现有 token 不一致时，才允许在当前 XML 或新增资源中写设计稿原始值。
 - 常见间距必须优先映射：`4dp -> @dimen/spacing_xs`、`8dp -> @dimen/spacing_s`、`12dp -> @dimen/spacing_m`、`16dp -> @dimen/spacing_l`、`24dp -> @dimen/spacing_xl`。
 - 常见圆角必须优先映射：`4dp -> @dimen/radius_s`、`8dp -> @dimen/radius_m`、`12dp -> @dimen/radius_l`、`16dp -> @dimen/radius_xl`。
-- 识别到 Figma 文本层级、样式名或语义为 `Text1`、`Text2`、`Text3`、`Text4`、`Text5` 时，文本颜色必须优先使用 `?attr/textColor1`、`?attr/textColor2`、`?attr/textColor3`、`?attr/textColor4`、`?attr/textColor5`。
-- 识别到主题色、背景色、填充色、功能色语义时，优先使用 `?attr/themeColor*`、`?attr/bgColor*`、`?attr/fillColor*`、`?attr/funcColor*`；不要直接写 `#FFFFFF`、`#121212`、`#F5FFFFFF` 等字面量，除非没有对应 token。
+- 识别到 Figma 文本层级、样式名或语义为 `Text1`、`Text2`、`Text3`、`Text4`、`Text5` 时，文本颜色必须优先使用 `?attr/textColorPrimary`、`?attr/textColorTitle`、`?attr/textColorSecondary`、`?attr/textColorHint`、`?attr/textColorDisabled`（与 `app/src/main/res/values/attrs.xml` 声明一一对应，无 `textColorBody`）。
+- 识别到主题色、背景色、填充色、描边色、功能色语义时，优先使用 `?attr/colorBrand`、`?attr/bgPrimary`、`?attr/fillPrimary`、`?attr/outlineDefault`、`?attr/funcColor*` 等语义 token；不要新增 `themeColor1`、`textColor2`、`bgColor3` 这类数字别名。
 - 字号、字重优先使用项目 Text style；不要为了贴 Figma 重复手写 `android:fontFamily`、`android:textStyle`、`android:textSize`。
+- 新增或替换 Text style 时遵循 Android/Material 的语义角色思路，使用 `Text.Title`、`Text.Body`、`Text.Caption`、`Text.Label` 等语义名，不新增 `Text16`、`Text18` 这类数字字号 style。
 - 本地没有的字体不需要做系统字体兜底。禁止为了模拟字重而写 `android:fontFamily="sans-serif-medium"`、`sans-serif`、`PingFang SC` 等临时字体名。
 - 默认不要在每个 TextView/Button 上手写 `android:letterSpacing`、`android:lineHeight`。只有设计稿明确要求特殊字距/行高，且项目 Text style 没有对应层级、实际 UI 不加会明显偏离时才允许局部添加。
 - 新增或修改 XML 后，只检查本次触达片段中的裸 `dp`、裸 `#` 色值和手写字体属性；能映射项目资源的必须替换为项目资源引用，非必要的 `letterSpacing`、`lineHeight` 必须移除。
 
 ## 命名与资源
 
-- Kotlin 缩进 4 空格。
-- 优先安全调用和 Elvis 表达式，避免 `!!`。
-- 单行长度尽量控制在 120 字符左右。
-- 类名使用 `XxxActivity`、`XxxFragment`、`XxxViewModel`、`XxxRepository`、`XxxDialog`、`ItemXxxVM`。
-- 常量放到 `companion object`，使用 upper snake case。
-- Boolean 命名以 `is`、`has`、`can`、`should` 开头。
-- 事件回调以 `onXxx` 命名。
-- 跨类传递、复用、公开入口、Activity result、MMKV 和 SharedPreferences 的 key 必须抽成常量。
-- 单个私有 Dialog/Fragment 的局部参数可使用当前类 `private const val KEY_XXX`；编辑历史直接字符串时不为规范单独重构，除非本次触达或存在拼写风险。
-- Job 变量使用 `xxxJob`。
-- layout 文件使用 `activity_xxx.xml`、`fragment_xxx.xml`、`dialog_xxx.xml`、`item_xxx.xml`。
 - 不透明纯色背景使用 `bg_<颜色值>_<圆角位置><圆角值>.xml`，例如 `bg_242435_r16.xml`、`bg_ffffff_r8.xml`。
 - 透明色背景使用 `bg_<透明百分比>_<颜色值>_<圆角位置><圆角值>.xml`，例如 `bg_08_ffffff_r20.xml`；透明百分比沿用项目已有口径，不按十六进制 alpha 强行换算。
 - 胶囊类背景一律使用 `r50`。
 - 描边背景先查项目已有同类命名，常见形式包括 `bg_<填充色>_stroke_<描边色>_<圆角>.xml`、`bg_<填充色>_stroke_<透明百分比>_<描边色>_<圆角>.xml`。
 - 通用渐变沿用当前项目已有方向和值命名，新增前先查同类 `gradient_*` / `bg_gradient_*` 资源，不强制重命名历史风格。
 - 界面特有或功能语义强的资源可以用 `shape_bg_<功能>_<状态或角色>.xml`。
-- 只有新增命名、资源命名冲突、命名审查或用户明确要求时才读取 `android-naming` skill；普通局部改动按本节摘要和现有同类命名处理。
+- style 名使用用途语义，不使用字号、序号或主观形容词命名；触达历史 `TextNN` 时应替换为等价 `Text.*` 语义 style。

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Android Tab 与 ViewPager2"
+  short_description: "按项目实际 Adapter 处理多 Tab 与 ViewPager2 容器。"
+  default_prompt: "使用 $android-tab-viewpager 实现或审查 Android 多 Tab 与 ViewPager2 Fragment 容器。"

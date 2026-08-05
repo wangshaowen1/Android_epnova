@@ -1,4 +1,4 @@
 interface:
   display_name: "Android 分页状态 UI"
   short_description: "按当前项目规范生成和审查 Paging3 分页列表与分页状态 UI。"
-  default_prompt: "使用 Android 分页状态 UI 规范实现或审查分页列表、Paging3、PagingSource、PagingDataAdapter、SmartRefreshLayout 分页上下文刷新、LoadStateViewHolder、MyMultiStatePagingFooterAdapter、分页重试行为、分页空/错/加载 UI，以及可选的 RemoteMediator 数据库缓存分页；普通非分页刷新不触发。"
+  default_prompt: "使用 $android-paging-state-ui 实现或审查 Paging3 链路、分页刷新、LoadState 与可选 Room 缓存。"

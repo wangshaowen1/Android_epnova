@@ -13,6 +13,7 @@ Gradle 规则：默认不运行 Gradle，不申请 Gradle/网络权限做验证�
 - 场景路由与高风险：`.agents/android-codegen-scenarios.md`
 - 完整 Checklist：`.agents/android-codegen-checklist.md`
 - 场景 skill：`.agents/skills/*/SKILL.md`（每个 skill 只读 `SKILL.md` 与按需 `references/`；`agents/openai.yaml` 仅 Codex 用，Claude/Android Studio 跳过不读）
+- 项目文档治理：创建、更新、审计或收敛 `docs` 时，必须先完整读取 `.agents/skills/write-project-docs/SKILL.md`；新建或大幅重写时，只按 Skill 路由读取一个对应的 `references/` 模板，规范正文不在本文件重复维护。
 - 项目记忆：`.agents/memory/MEMORY.md`（语义/情节记忆索引，Codex 与 Claude Code 共享）。
   会话结束前，若本轮产生值得留存的判断或决策，主动写入对应记忆文件：
   语义记忆（稳定约定）更新 `.agents/memory/semantic/*.md`；

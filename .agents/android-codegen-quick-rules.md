@@ -5,10 +5,11 @@
 
 ## 执行范围
 
+- 只要求分析、对比或审查时，不修改代码、文档或配置；先给证据和结论。
 - 快速局部修改:只读目标文件、直接相关代码和必要资源;不读完整规范,不读无关 skill。
 - 标准代码生成:先读本文件,再按本次实际新增或修改的领域读取最小必要 skill。
-- 组合型轻量闭环:用户已明确目标入口、接口路径/字段、目标弹窗或目标页面,只需要把已有页面流程串起来时,先读本文件 + 目标代码 + 必要同类实现;不默认升级到多个完整 skill。只有遇到基类选择、跨模块架构、复杂生命周期、分页/长任务等无法由 quick rules 覆盖的问题时,才读取对应完整 skill。
 - Figma/UI 还原:先读目标 Figma 节点和 `android-figma-xml-quick.md`。
+- 只改可见 UI 时，不顺手新增业务 helper、BindingAdapter、状态层或重构逻辑；只有现有能力确实无法表达目标 UI 时才扩大。
 - 用户明确说“不走 Gradle”时,只做静态检查(流程见 `android-check-quick.md`)。
 
 ## 查找方式
@@ -16,24 +17,26 @@
 - 先用 `rg -n` 定位符号、id、资源名、字符串 key 和调用点;不要先整文件读取。
 - 只在命中行不足以判断时读取附近片段。
 - 同类实现搜索先限定当前 feature、目标 layout、直接资源目录;找不到再扩大范围。
-- 扫描规则文档时默认排除 `.agents/project/**`、`.agents/memory/**` 和历史扫描摘要；这些只作需求或导航资料，不作为通用生成规则。
 - 资源检查先按明确路径、候选资源名、颜色值、圆角值、描边值精确查询;不要默认扫描整个 `res`。
 - 文档和当前代码不一致时,当前代码同类实现优先。
 - Windows PowerShell 读取含中文文件易乱码:用 `[Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false)`、`$OutputEncoding = [System.Text.UTF8Encoding]::new($false)` 和 `Get-Content -Encoding UTF8`;不要把终端乱码误判为文件损坏。
 
 ## 场景路由(命中才读,不连锁)
 
-只按本次实际触达范围读取对应 skill,不因为相关词出现在上下文里就连锁读取。完整路由表与组合场景见 `android-codegen-scenarios.md`。最常用:
+只按本次实际触达范围读取对应 skill,不因为相关词出现在上下文里就连锁读取。用户已明确目标页面、接口或弹窗且只是局部修改时，即使同时出现多个场景词，也优先走目标代码 + quick rules 的轻量路径。完整路由表与组合场景见 `android-codegen-scenarios.md`。最常用:
 
 - 新页面骨架 → `skills/android-feature-scaffold`
-- 接口链路新增/改 → `skills/android-api-request`
+- 页面稳定状态、互斥区域、Observer 批量写 View → `skills/android-databinding-ui`
+- 新增接口、接口链路至少两层的新增/修改/审查，或调整请求封装/错误语义 → `skills/android-api-request`
 - 轮询/SSE/下载等长任务 → `skills/android-async-task`
 - 非分页列表 → `skills/android-databinding-list`;分页 → `skills/android-paging-state-ui`
+- 多 Tab + ViewPager2 Fragment 容器 → `skills/android-tab-viewpager`；每个 Tab 独立分页时再读 `skills/android-paging-state-ui`
 - 弹窗 → `skills/android-dialog`;导航/事件 → `skills/android-navigation-events`
-- XML token/drawable 命名 → `android-codegen-xml-resource-rules.md`,命名仍不定再读 `skills/android-naming`
+- XML token/drawable 命名 → `android-codegen-xml-resource-rules.md`
+
 ## 局部接口快路径
 
-用户已给接口截图/字段表/明确路径,且只是给现有页面、列表或点击流程补一个局部接口时,走快路径,不升级到完整 API/分页 skill,也不等外部接口工具:
+当前分支已有完整同类接口链路、字段和调用位置明确，且只补一个字段、参数或单一调用点时，走快路径，不升级到完整 API/分页 skill，也不等外部接口工具。新增接口，或同时触达 `ApiService`、request/response model、Repository、ViewModel 中至少两层时，读取 `android-api-request`：
 
 - 只读目标 `ApiConstants`、`ApiService`、request/entity、目标 VM/Repo/Fragment/Adapter/XML 和必要同类写法。
 - 优先复用项目已有 `UserTokenBody`、`PagedBody`、`ApiResponse`、`PagedList`、`PagingSource`、`request/requestWithLoading` 链路;字段确实无法覆盖或语义需隔离时才新增专用 Body/模型。

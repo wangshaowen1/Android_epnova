@@ -1,4 +1,4 @@
 interface:
   display_name: "Android 页面骨架"
-  short_description: "按当前项目规范创建或审查新页面骨架。"
-  default_prompt: "仅在实际新增页面、创建 Activity/Fragment/ViewModel/XML 骨架、重构页面基础结构，或判断 Base 类、包路径、start/newInstance、mBundle 模式时使用 Android 页面骨架规范；局部逻辑、XML、Toast、点击事件或状态同步不触发。"
+  short_description: "按当前项目 Base 类、注入与参数模式创建或审查新页面骨架。"
+  default_prompt: "使用 $android-feature-scaffold 创建或审查项目原生 Activity/Fragment/ViewModel/XML 页面骨架。"

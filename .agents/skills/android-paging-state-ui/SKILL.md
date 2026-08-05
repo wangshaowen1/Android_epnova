@@ -5,238 +5,59 @@ description: "Android Paging3 分页加载与状态 UI 实现规范。仅在本�
 
 # Android 分页状态 UI
 
-## 触发条件
-
-当任务涉及 Android 项目的分页列表或分页状态 UI 时使用本 skill：
-
-- 用户提到 pagination、paging、分页、分页加载、上拉加载、加载更多、Paging3、PagingSource、PagingDataAdapter、LoadState 或 cached paging；下拉刷新/刷新只有明确处在分页列表、Paging3 或 LoadState 上下文中才触发。
-- 生成或审查分页 Activity/Fragment、ViewModel pager、PagingSource、PagingDataAdapter、item VM、XML RecyclerView 布局、footer 状态、重试逻辑或刷新逻辑。
-- 实现或审查分页场景下的 `SmartRefreshLayout`、`LoadStateViewHolder`、`MyMultiStatePagingFooterAdapter`、empty/error/loading/content UI、没有更多数据 UI 或页面级状态切换。
-- 新增或审查 `RemoteMediator` / `VideoRemoteMediator`；只有需要 Room 数据库缓存、离线缓存、本地优先展示或跨会话列表持久化时，才使用该分支。
-- 修复重复刷新、append 错误状态、空列表展示、生命周期收集、网格 footer span 或 `PagingSource.load()` 副作用相关 bug。
-
-## 核心规则
-
-默认使用 `PagingSource + PagingDataAdapter + LoadStateViewHolder`。
-
-只有用户明确需要 Room 数据库缓存、离线缓存、本地优先展示或跨会话列表持久化时，才加入 `RemoteMediator`。`VideoRemoteMediator` 和其他 `RemoteMediator` 示例属于数据库缓存分支，不是默认分支。
-
-实现或审查分页页面时，先查当前 feature 或相近页面的现有分页实现。只有找不到同类实现、不确定项目分页组件用法、需要新增完整分页页面，或发现分页状态/缓存/生命周期问题时，才读取 [project-examples.md](references/project-examples.md) 对齐当前项目示例和已知坑点。
+多 Tab + ViewPager2 容器同时读取 `android-tab-viewpager`；本 skill 只负责每个子 Fragment 自己的 Pager、PagingSource、Adapter 和 LoadState。只有附近分页实现不足时读取 [项目分页索引](references/project-examples.md)。
 
 ## 默认结构
 
-使用现有项目栈：
+- 默认 `PagingSource + PagingDataAdapter + LoadStateViewHolder`。
+- 新页面优先 `SmartRefreshLayout -> LoadStateViewHolder -> RecyclerView`；当前 feature 已稳定使用 `CoolRefreshView` 等容器时沿用其现有扩展，同一页面不混用两套状态链路。
+- Footer 使用 `MyMultiStatePagingFooterAdapter`。
+- 只有明确需要 Room 离线缓存、本地优先或跨会话持久化时使用 `RemoteMediator`。
+- 全页 LoadState 容器内的 RecyclerView 通常为 `match_parent`；只有外层明确负责测量和滚动时使用 `wrap_content`。
 
-- 页面：`BaseViewModelActivity<VB, VM>` 或 `BaseViewModelFragment<VB, VM>`。
-- ViewModel：需要 API 访问时使用 `AppRepositoryViewModel<AppRepository>`。
-- XML：`<layout>` 根节点，页面变量名为 `layout`。
-- 刷新和状态容器：`SmartRefreshLayout` -> `LoadStateViewHolder` -> `RecyclerView`。
-- Adapter：`PagingDataAdapter<T, RecyclerView.ViewHolder>`。
-- Footer：`MyMultiStatePagingFooterAdapter`。
+## Pager 与查询条件
 
-普通分页页面不要引入 Hilt、AppContainer、ViewModelFactory、AppResult/AppError、UseCase 或完整 MVI。
+- 固定查询条件：创建一次 `Pager(...).flow.cachedIn(viewModelScope)`。
+- 可变查询条件：使用 reload trigger，或 `StateFlow.distinctUntilChanged().flatMapLatest { Pager(...) }` 后再 `cachedIn(viewModelScope)`。
+- 不用 getter 每次访问都新建 Pager，也不让固定 Pager 捕获之后会变化的普通字段。
+- page size/prefetch 复用当前常量或附近同类配置。
 
-## XML 模式
+## PagingSource
 
-除非附近 feature 已有更强局部模式，否则使用以下结构：
+- `load()` 只加载数据，不写 Observable/LiveData、Adapter 或页面 UI。
+- 优先从 `mRepo.api` 传入 ApiService 或小型 loader；新代码不直接抓全局 `ApiFactory.apiService`。
+- API 业务失败转为 `LoadResult.Error(ApiException(...))`。
+- 空列表或小于真实请求 page size 时结束；若后端忽略 `params.loadSize`，按实际请求值判断。
+- 捕获异常时重新抛出 `CancellationException`。
 
-```xml
-<com.scwang.smart.refresh.layout.SmartRefreshLayout
-    android:id="@+id/srl"
-    android:layout_width="match_parent"
-    android:layout_height="0dp"
-    app:srlAccentColor="@color/white"
-    app:srlPrimaryColor="@color/transparent">
+## 页面初始化与状态
 
-    <com.kuaigeglobal.epnova.widget.LoadStateViewHolder
-        android:id="@+id/lsv"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:noData="@string/no_data">
+- Adapter、footer、LoadState 和 Flow 收集一起初始化。
+- `startRefreshWithAdapter(...)` 只绑定一次；它已调用 `adapter.refresh()`，不要再传重复 refresh 的 `onRefreshListener`。该回调只用于额外刷新头部或重启其他任务。
+- Fragment 使用 `viewLifecycleOwner.lifecycleScope + repeatOnLifecycle(STARTED)` 收集；手动 Observer/callback 的清理点仍按当前 Base View 缓存行为判断。
+- 网格/瀑布流添加 footer 后调用 `applyGridSpanSizeLookup()`。
+- 页面 retry 使用 `adapter.refresh()`；footer retry 使用 `adapter.retry()`。
+- ConcatAdapter 有非分页 header 时单独验证空状态：项目 helper 通常读取 paging adapter 的 item count，不是 concat 总数。
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clipToPadding="false"
-            android:overScrollMode="never"
-            android:scrollbars="none" />
-    </com.kuaigeglobal.epnova.widget.LoadStateViewHolder>
-</com.scwang.smart.refresh.layout.SmartRefreshLayout>
-```
+## Adapter 与 ItemVM
 
-全页 `LoadStateViewHolder` 内的 `RecyclerView` 优先使用 `match_parent`。只有列表刻意嵌套在可测量父容器中，并且外层布局明确处理滚动时，才使用 `wrap_content`。
+- Adapter 只展示和转发；`areItemsTheSame` 使用稳定业务 id，`areContentsTheSame` 默认完整比较。
+- DataBinding item 使用 `ItemXxxVM` 时，变量名遵循实际 `BR.item`。
+- 仅在模型存在非空、稳定、唯一的业务 key 时使用 `binding.getVm(key, ...)`；不使用 null、position、可变展示字段或废弃 position 重载。
+- XML 可直接读取实体展示字段时，不生成 ItemVM 透传 getter/Observable。
+- 多选、跨页刷新、批量操作和复杂 item 动作通过当前 feature 事件 VM/callback/ViewModel 收敛；Adapter 不请求网络或直接导航。
 
-## ViewModel 模式
+## 多 Tab 与缓存分支
 
-在 ViewModel 中创建 pager，并使用 `viewModelScope` 缓存。
+- 每个 Tab 子 Fragment 独立持有参数、ViewModel、Pager、PagingSource、Adapter 和 LoadState；容器不共享 PagingData 或可变查询字段。
+- `RemoteMediator` 使用事务、作用域清理和可靠 remote key；API 失败返回 `MediatorResult.Error`，取消异常继续抛出。
+- Room entity 在 Adapter 外映射成页面实际消费模型；不为普通网络分页默认新增数据库或 domain 层。
 
-```kotlin
-fun getXxxPage(): Flow<PagingData<XxxInfo>> {
-    return Pager(
-        config = PagingConfig(
-            initialLoadSize = Constant.Paged.PAGE_SIZE,
-            pageSize = Constant.Paged.PAGE_SIZE,
-            prefetchDistance = Constant.Paged.PREFETCH_DISTANCE,
-        ),
-        pagingSourceFactory = {
-            XxxPagingSource(
-                api = mRepo.api,
-                queryType = queryType
-            )
-        }
-    ).flow.cachedIn(viewModelScope)
-}
-```
+## 检查
 
-如果查询条件会变化，使用 reload trigger 或 `StateFlow.flatMapLatest`，再接 `cachedIn(viewModelScope)`。
-
-## PagingSource 规则
-
-`PagingSource` 只专注加载分页数据，不要在 `load()` 中更新 `ObservableBoolean`、`LiveData`、Adapter 状态或其他 UI 状态。
-
-优先把 `mRepo.api` 或小型 loader lambda 传入 `PagingSource`。除非正在编辑已经沿用该风格的旧类，新代码避免直接使用 `ApiFactory.apiService`。
-
-```kotlin
-class XxxPagingSource(
-    private val api: ApiService,
-    private val queryType: Int,
-) : PagingSource<Int, XxxInfo>() {
-
-    override fun getRefreshKey(state: PagingState<Int, XxxInfo>): Int? {
-        return state.anchorPosition?.let { anchorPosition ->
-            val anchorPage = state.closestPageToPosition(anchorPosition)
-            anchorPage?.prevKey?.plus(1) ?: anchorPage?.nextKey?.minus(1)
-        }
-    }
-
-    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, XxxInfo> {
-        return try {
-            val pageNum = params.key ?: 1
-            val response = api.xxxPage(XxxPagedBody(pageNum = pageNum, pageSize = params.loadSize))
-            if (!response.isSuccess) {
-                return LoadResult.Error(ApiException(response.code, response.msg))
-            }
-
-            val items = response.data?.items?.filterNotNull().orEmpty()
-            val prevKey = if (pageNum > 1) pageNum - 1 else null
-            val nextKey = if (items.isEmpty() || items.size < params.loadSize) null else pageNum + 1
-            LoadResult.Page(data = items, prevKey = prevKey, nextKey = nextKey)
-        } catch (e: CancellationException) {
-            throw e
-        } catch (e: Exception) {
-            LoadResult.Error(e)
-        }
-    }
-}
-```
-
-如果后端忽略 `params.loadSize` 并总是使用固定 page size，判断是否还有更多数据时要和实际请求 page size 对比。
-
-## 页面初始化
-
-Adapter、footer、状态容器和数据收集要一起初始化。
-
-```kotlin
-private val xxxAdapter by lazy { XxxAdapter(eventVm) }
-
-private fun initView() {
-    binding.recyclerView.apply {
-        itemAnimator = null
-        adapter = xxxAdapter.withLoadStateFooter(
-            MyMultiStatePagingFooterAdapter(
-                hostAdapter = xxxAdapter,
-                noData = getString(R.string.no_data),
-                noMoreThreshold = 12
-            ) {
-                xxxAdapter.retry()
-            }
-        )
-        applyGridSpanSizeLookup()
-    }
-
-    binding.srl.startRefreshWithAdapter(
-        pagingDataAdapter = xxxAdapter,
-        loadStateHolder = binding.lsv
-    )
-}
-
-private fun dataUpdate() {
-    lifecycleScope.launch {
-        repeatOnLifecycle(Lifecycle.State.STARTED) {
-            mRealVM.getXxxPage().collectLatest { pagingData ->
-                xxxAdapter.submitData(pagingData)
-            }
-        }
-    }
-}
-```
-
-Fragment 收集 Paging/Flow 数据时可以使用 `viewLifecycleOwner.lifecycleScope` 和 `viewLifecycleOwner.repeatOnLifecycle(...)`。这只约束数据收集生命周期；如果在 `onPrepareView()` 中注册 AdapterDataObserver、RecyclerView/ViewPager callback、键盘监听等手动回调，默认仍在 `onDestroy()` 解除并清空引用，不要生成到 `onDestroyView()`，除非附近同类页面或基类已经这样做。
-
-不要把 `onRefreshListener = { adapter.refresh() }` 传给 `startRefreshWithAdapter`；该扩展已经会调用 `pagingDataAdapter.refresh()`。`onRefreshListener` 只用于重启轮询、刷新头部数据等额外工作。
-
-## Adapter 规则
-
-Adapter 只负责展示：
-
-- 继承 `PagingDataAdapter<T, RecyclerView.ViewHolder>`。
-- ViewHolder 优先继承 `BindingViewHolder<VB>`，不要手写 `RecyclerView.ViewHolder(binding.root)`，除非同类旧代码已明确采用该写法。
-- `areItemsTheSame` 使用稳定业务 id。
-- `areContentsTheSame` 默认使用 `oldItem == newItem`，除非有明确理由只比较特定字段。
-- 现有 item layout 使用 DataBinding 时，XML `item` 变量优先绑定 `ItemXxxVM`，通过 `binding.getVm(...)` 获取或复用 item VM，不直接绑定接口实体或临时 UI data class。
-- ItemVM 只承载接口实体、本地 UI 状态和点击回调；接口实体已有展示字段时，XML 可直接绑定 `item.data.xxx`，不要为了普通字段展示生成 `getXxxText()`、`displayXxx`、`isXxxVisible()` 透传属性/函数。
-- 分页 item 的复杂点击/选择/操作、多选、跨页面刷新或批量操作优先通过 `BaseItemEventsViewModel` 或当前 feature 已有事件 VM 转发，由 Fragment/Activity/ViewModel 收事件处理业务；简单局部 item 操作可以沿用当前 feature 的 item VM callback 或同类 `onItemClick` 写法。Adapter 不直接请求网络、跳转或执行业务。
-
-## 状态 UI 规则
-
-使用项目 helper，不要手写 loading/empty/error 切换：
-
-- `SmartRefreshLayout.startRefreshWithAdapter(...)`
-- `LoadStateViewHolder.showLoading()`
-- `LoadStateViewHolder.showContent()`
-- `LoadStateViewHolder.showEmpty()`
-- `LoadStateViewHolder.showRetry(...)`
-- `MyMultiStatePagingFooterAdapter`
-
-Page-level state is driven by `adapter.loadState.refresh` in `startRefreshWithAdapter`.
-
-Footer 状态通过 `withLoadStateFooter(...)` 由 `append` 驱动。
-
-网格列表设置带 footer 的 Adapter 后，调用 `applyGridSpanSizeLookup()`，确保 footer/空状态横跨所有列。
-
-如果页面通过 `ConcatAdapter` 添加非分页 header，需要明确验证空状态行为。`startRefreshWithAdapter` 使用 paging adapter 的 item count，不是 concat adapter 总数。
-
-## RemoteMediator 分支
-
-只有需求包含数据库缓存时，才使用 `RemoteMediator`。
-
-使用时：
-
-- API、DAO 和 database 依赖保持从 `mRepo` 传入。
-- 使用 `database.withTransaction`。
-- `LoadType.REFRESH` 只清理当前作用域缓存。
-- 存储 page key 或 remote key，保证 `APPEND` 可靠。
-- `ApiResponse` 失败时返回 `MediatorResult.Error(ApiException(...))`。
-- 重新抛出 `CancellationException`。
-- 在 Adapter 外把 Room entity 转成当前列表/页面实际消费的模型，通常放在 `Pager.flow.map { pagingData.map { it.toXxxInfo() } }` 或已有 mapper 中；不要为了分页缓存默认新增 domain 层。
-
-不要为了让普通网络列表看起来更“架构化”而新增 Room entity、DAO、mapper 或 `RemoteMediator`。
-
-## 审查清单
-
-分页页面完成前检查：
-
-- `startRefreshWithAdapter` 只调用一次，并且没有重复调用 `adapter.refresh()`。
-- Fragment 收集数据可以使用 view 生命周期；`onPrepareView()` 中的手动注册回调用 `onDestroy()` 清理。
-- `PagingSource.load()` 没有 UI 副作用。
-- 除非为了保留附近历史风格，新代码避免直接使用 `ApiFactory.apiService`。
-- 没有吞掉 `CancellationException`。
-- API 失败转成 `LoadResult.Error(ApiException(...))`。
-- 全页列表中的 `RecyclerView` 没有误用 `wrap_content`。
-- DataBinding item XML 绑定的是 `ItemXxxVM`，Adapter ViewHolder 使用 `BindingViewHolder` 和 `binding.getVm(...)`。
-- ItemVM 没有无意义透传接口实体展示字段；只在需要本地 UI 状态、点击回调或复用业务展示规则时新增字段/方法。
-- 复杂 item 点击/选择/操作没有直接落在 Adapter lambda 中；多选、跨页面刷新、批量操作或分页业务动作优先通过 `BaseItemEventsViewModel` 或同类事件 VM 转发，简单局部 item 操作可沿用当前 feature 的 callback / `onItemClick` 写法。
-- Footer 重试使用 `adapter.retry()`，页面重试使用 `adapter.refresh()`。
-- 网格/瀑布流 footer 横跨全宽。
-- 空/错/加载文案和图标使用 string/drawable 资源与项目 style。
+- Pager 没有重复创建或捕获失效条件，`startRefreshWithAdapter` 没有重复 refresh。
+- PagingSource 无 UI 副作用，业务失败和取消处理正确。
+- Fragment 收集与手动回调使用各自真实生命周期。
+- footer、网格 span、ConcatAdapter 空状态和 retry 语义已验证。
+- ItemVM key 稳定且非空，没有 position 重载或透传字段。
+- 多 Tab 子页独立；RemoteMediator 只在真实缓存需求下出现。

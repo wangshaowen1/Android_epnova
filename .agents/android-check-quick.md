@@ -13,19 +13,22 @@
 ## Kotlin/逻辑
 
 - 新状态字段、方法、点击分支是否接上。
+- `binding.xxx` 只代表安全访问 View；稳定的 `text/visibility/enabled/selected` 是否应由 ViewModel + DataBinding 驱动。
+- 同一 View 被两个以上方法修改、一个方法连续修改三个以上稳定 View 状态、多个 Observer 决定同一区域时，是否应先收敛单一 UI 状态。
+- 三个以上同位置互斥布局是否使用 `ViewAnimator` 等状态容器，并由单一状态绑定 `displayedChild`。
 - 旧手动逻辑是否残留。
 - 关键 import、常量、BindingAdapter、回调方法是否存在。
 - 是否误引入 Hilt、UseCase、AppResult/AppError、完整 MVI。
 - 是否直接在 Activity/Fragment 发网络请求或在 Adapter 写业务请求。
 - 新增复杂/风险逻辑是否有必要中文原因注释，且没有堆模板化废话注释。
-- Fragment 中 `onPrepareView()` 注册的手动回调是否在 `onDestroy()` 解除；除非同类或基类明确如此，不要用 `onDestroyView()` 清理。
+- Fragment 中 `onPrepareView()` 注册的手动回调是否按当前 baselibrary、基类 View 缓存策略和附近同类页面选择清理点；当前项目常见写法是 `onDestroy()`，但不要固化成跨版本规则。
 
 ## XML/资源
 
 - 目标 XML 能否解析。
 - 本次触达的 `@drawable/@string/@color/@dimen/@style` 直接引用是否存在。
 - DataBinding 变量是否为项目习惯的 `layout` / `item`。
-- 本次触达行是否违反 token 规则：可映射间距/圆角、`Text1` 到 `?attr/textColor1`、裸色值、字体兜底、无必要 `letterSpacing/lineHeight`。token 细则见 `android-codegen-xml-resource-rules.md`。
+- 本次触达行是否违反 token 规则：可映射间距/圆角、`Text1` 到 `?attr/textColorPrimary`、裸色值、字体兜底、无必要 `letterSpacing/lineHeight`。token 细则见 `android-codegen-xml-resource-rules.md`。
 - 新增 drawable 是否先查等价资源，并按值命名。
 - 需要批量或脚本化检查 XML token 时，只有仓库实际存在对应脚本才运行；当前 `.agents/` 未维护 `scripts/` 目录。默认优先检查本次触达文件或变更行，不要为了局部任务全量清理历史问题。
 
