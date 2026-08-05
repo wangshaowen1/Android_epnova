@@ -190,7 +190,7 @@ foreach ($markdownFile in $markdownFiles) {
         $target = $match.Groups["target"].Value.Trim().Trim("<", ">")
         if ($target -match "^(https?://|mailto:|#)" -or [string]::IsNullOrWhiteSpace($target)) { continue }
         $target = ($target -split "#", 2)[0]
-        if ($target -match "^[A-Za-z]:[\\/]") {
+        if ([IO.Path]::IsPathRooted($target) -or $target -match "^[A-Za-z]:[\\/]") {
             Add-ValidationError $markdownFile.FullName "Markdown link must not use a machine-absolute path: $target"
             continue
         }

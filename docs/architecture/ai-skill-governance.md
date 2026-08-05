@@ -147,7 +147,7 @@ Tab 容器和分页子页具有不同的状态所有权：
 | Tab/ViewPager2 | [`.agents/skills/android-tab-viewpager/`](../../.agents/skills/android-tab-viewpager/) | 对照 Adapter、指示器和 callback 的当前实现 |
 | Paging 边界 | [`.agents/skills/android-paging-state-ui/`](../../.agents/skills/android-paging-state-ui/) | 确认容器不持有子页分页状态 |
 | API 边界 | [`.agents/skills/android-api-request/`](../../.agents/skills/android-api-request/) | 对照 quick path 与跨层触发条件 |
-| 结构校验 | [`.agents/scripts/validate-agent-docs.ps1`](../../.agents/scripts/validate-agent-docs.ps1) | 修改规则或 Skill 后运行，无错误再提交 |
+| 结构校验 | [Windows](../../.agents/scripts/validate-agent-docs.ps1) / [Linux、macOS](../../.agents/scripts/validate-agent-docs.sh) | 按系统运行；调整校验项时同步修改两个脚本 |
 
 ## 维护与验证
 
@@ -158,7 +158,7 @@ Tab 容器和分页子页具有不同的状态所有权：
 - `agents/openai.yaml` 的 `default_prompt` 明确引用 `$skill-name`。
 - references 中的符号在当前分支真实存在，且没有机器绝对路径或来源项目业务路径。
 - quick rules、scenarios 和 Skill 之间没有互相矛盾的触发条件。
-- 运行 `powershell -ExecutionPolicy Bypass -File .agents/scripts/validate-agent-docs.ps1`，确认：
+- 按系统运行结构校验：Windows 使用 `powershell -ExecutionPolicy Bypass -File .agents/scripts/validate-agent-docs.ps1`，Linux/macOS 使用 `sh .agents/scripts/validate-agent-docs.sh`。两个脚本不得互相调用或依赖额外运行时，并应保持校验项、错误语义和退出码一致。确认：
   - `SKILL.md` 从首字节 `---` 开始，不含会导致发现失败的 UTF-8 BOM。
   - frontmatter 的 name/description、目录名和 `agents/openai.yaml` 一致，`default_prompt` 显式引用 `$skill-name`。
   - 每个 reference 由同目录 `SKILL.md` 直接链接，Skill 注册表与目录一致。

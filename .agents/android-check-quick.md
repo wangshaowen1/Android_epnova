@@ -30,7 +30,7 @@
 - DataBinding 变量是否为项目习惯的 `layout` / `item`。
 - 本次触达行是否违反 token 规则：可映射间距/圆角、`Text1` 到 `?attr/textColorPrimary`、裸色值、字体兜底、无必要 `letterSpacing/lineHeight`。token 细则见 `android-codegen-xml-resource-rules.md`。
 - 新增 drawable 是否先查等价资源，并按值命名。
-- 需要批量或脚本化检查 XML token 时，只有仓库实际存在对应脚本才运行；当前 `.agents/` 未维护 `scripts/` 目录。默认优先检查本次触达文件或变更行，不要为了局部任务全量清理历史问题。
+- 需要批量或脚本化检查时只运行仓库真实存在且与任务匹配的脚本；规则/Skill 结构在 Windows 使用 `.agents/scripts/validate-agent-docs.ps1`，Linux/macOS 使用 `.agents/scripts/validate-agent-docs.sh`。默认优先检查本次触达文件或变更行，不为局部任务全量清理历史问题。
 
 ## Figma/XML
 

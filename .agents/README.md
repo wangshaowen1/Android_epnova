@@ -60,6 +60,6 @@
 - 通用语言规范、行业既定事实和“跟随最佳实践”之类无项目判别力的内容不做 skill；能由当前代码同类实现直接得出的写法也不重复展开。
 - 触发边界写在 `SKILL.md` 的 `description`；正文只保留执行时会改变实现选择的规则，详细项目索引按需放入 `references/`。
 - 每个 `references/` 文件必须由同目录 `SKILL.md` 直接链接并注明读取条件，避免二级跳转和默认全量读取。
-- 修改规则或 Skill 后运行 `powershell -ExecutionPolicy Bypass -File .agents/scripts/validate-agent-docs.ps1`，检查 `SKILL.md` BOM/frontmatter、元数据、reference 直链、注册表与本地 Markdown 链接。
+- 修改规则或 Skill 后按系统运行结构校验：Windows 使用 `powershell -ExecutionPolicy Bypass -File .agents/scripts/validate-agent-docs.ps1`，Linux/macOS 使用 `sh .agents/scripts/validate-agent-docs.sh`。两个系统脚本检查相同的 `SKILL.md` BOM/frontmatter、元数据、reference 直链、注册表与本地 Markdown 链接；调整校验项时必须同步更新。
 - 任何文档与当前分支代码不一致时,以当前代码同类实现为准。
 - 不写死复制来源项目的项目名、包名、scheme、语言目录或 SDK 名称。
