@@ -38,7 +38,7 @@ import kotlinx.coroutines.launch
 
 class MyBalanceActivity : BaseViewModelActivity<ActivityMyBalanceBinding, MyBalanceViewModel>() {
     companion object {
-        fun start(tab: Int = MyBalanceViewModel.TAB_COINS) {
+        fun start(tab: Int = MyBalanceViewModel.TAB_CREDITS) {
             val activity = topActivity ?: return
             activity.startActivity(
                 Intent(activity, MyBalanceActivity::class.java).apply {
