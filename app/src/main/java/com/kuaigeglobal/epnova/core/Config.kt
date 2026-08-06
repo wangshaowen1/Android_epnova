@@ -13,6 +13,7 @@ import com.kuaigeglobal.epnova.common.utils.MmkvDelegate
 import com.kuaigeglobal.epnova.core.manager.LocaleHelper
 import com.kuaigeglobal.epnova.core.manager.EventManager
 import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
+import com.kuaigeglobal.epnova.core.model.StoryOutlineStreamCache
 import com.kuaigeglobal.epnova.core.network.apis.ApiFactory.apiService
 import com.kuaigeglobal.epnova.core.network.apis.request.UserTokenBody
 import com.kuaigeglobal.epnova.core.network.apis.response.AppConfigData
@@ -353,6 +354,47 @@ class Config : NetworkChangedListener {
         return mmkv.decodeBool("switch_model_enable", false)
     }
 
+    /**
+     * 保存故事梗概未完成的 SSE 展示状态。
+     *
+     * 这里使用 Config 的 MMKV，和项目内其它轻量配置保持一致。
+     * cache=null 表示生成已结束或需要 reset，直接删除对应 workId 的缓存。
+     */
+    fun storeStoryOutlineStreamCache(workId: String?, cache: StoryOutlineStreamCache?) {
+        if (workId.isNullOrEmpty()) return
+        val cacheKey = getStoryOutlineStreamCacheKey(workId)
+        if (cache == null) {
+            mmkv.removeValueForKey(cacheKey)
+        } else {
+            mmkv.encode(cacheKey, gson.toJson(cache))
+        }
+    }
+
+    /**
+     * 读取故事梗概流式缓存。
+     *
+     * 反序列化失败时返回 null，页面会按无缓存处理，重新通过 session 判断后端任务状态。
+     */
+    fun getStoryOutlineStreamCache(workId: String?): StoryOutlineStreamCache? {
+        if (workId.isNullOrEmpty()) return null
+        val json = mmkv.decodeString(getStoryOutlineStreamCacheKey(workId), null) ?: return null
+        return runCatching {
+            gson.fromJson(json, StoryOutlineStreamCache::class.java)
+        }.getOrNull()
+    }
+
+    /**
+     * 清理故事梗概缓存。final 成功、业务失败、reset=true 或用户重新生成都会走这里。
+     */
+    fun clearStoryOutlineStreamCache(workId: String?) {
+        storeStoryOutlineStreamCache(workId, null)
+    }
+
+    // workId 参与 key，避免不同作品的未完成梗概流互相覆盖。
+    private fun getStoryOutlineStreamCacheKey(workId: String): String {
+        return "${STORY_OUTLINE_STREAM_CACHE}_$workId"
+    }
+
     fun clear() {
         val keysToRemove = arrayOf(
             FIRST_OPEN_APP,
@@ -382,6 +424,7 @@ class Config : NetworkChangedListener {
         private const val EPISODE_AUTO_UNLOCK = "episodeAutoUnlock"
         private const val TODAY_LOGIN_REWARDS_DIALOG = "today_login_rewards_dialog"
         private const val LOGIN_REWARDS = "login_rewards"
+        private const val STORY_OUTLINE_STREAM_CACHE = "story_outline_stream_cache"
         const val DAILY: Int = 1
         const val UAT: Int = 2
         const val ONLINE: Int = 3

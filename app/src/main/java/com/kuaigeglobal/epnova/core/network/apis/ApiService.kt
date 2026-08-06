@@ -136,6 +136,7 @@ import com.kuaigeglobal.epnova.core.network.apis.request.ShotSegmentIdBody
 import com.kuaigeglobal.epnova.core.network.apis.request.RewardAdCompleteBody
 import com.kuaigeglobal.epnova.core.network.apis.request.RewardAdTaskPrepareBody
 import com.kuaigeglobal.epnova.core.network.apis.request.RoleIdPagedBody
+import com.kuaigeglobal.epnova.core.network.apis.request.RollNovelSummaryResult
 import com.kuaigeglobal.epnova.core.network.apis.request.SaveStorySummaryBody
 import com.kuaigeglobal.epnova.core.network.apis.request.StoryStreamSessionBody
 import com.kuaigeglobal.epnova.core.network.apis.request.StoryUnlockAdCompleteBody
@@ -428,16 +429,22 @@ interface ApiService {
     fun sseContentSynopsis(@Body body: AISynopsisBody): Flow<SSEvent>
 
     /**
-     * 故事梗概流式生成会话
+     * 故事梗概流式生成会话。
+     *
+     * 返回 result 时类型就是 RollNovelSummaryResult；ViewModel 再包装成旧 UI 使用的 PollSummaryData。
+     * outline 阶段不要传 storyId，续传只依赖 workId + lastEventId。
      */
     @Headers("Accept: application/json")
     @POST(ApiConstants.STORY_STREAM_OUTLINE_SESSION)
     suspend fun storyStreamOutlineSession(
         @Body body: StoryStreamSessionBody
-    ): ApiResponse<StoryStreamSessionInfo<PollSummaryData>?>
+    ): ApiResponse<StoryStreamSessionInfo<RollNovelSummaryResult>?>
 
     /**
-     * 故事剧本流式生成会话
+     * 故事剧本流式生成会话。
+     *
+     * 有当前剧集 ID 时 body.storyId 建议传入；session 可能直接返回 PollScriptData.result，
+     * 也可能只告诉前端 subscribe 已就绪。
      */
     @Headers("Accept: application/json")
     @POST(ApiConstants.STORY_STREAM_SCRIPT_SESSION)
