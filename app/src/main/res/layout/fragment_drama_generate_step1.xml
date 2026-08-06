@@ -28,7 +28,6 @@
             android:orientation="vertical">
 
             <androidx.core.widget.NestedScrollView
-                isScrollable="@{!layout.isSummaryLoading()}"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
@@ -45,8 +44,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/story_summary"
                         android:textColor="?attr/textColor1"
-                        android:textStyle="normal"
-                        android:visibility="@{!layout.isSummaryLoading?View.VISIBLE:View.GONE}" />
+                        android:textStyle="normal" />
 
                     <TextView
                         android:id="@+id/tvStoryDesc"
@@ -55,81 +53,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/spacing_m"
                         android:textColor="?attr/textColor3"
-                        android:visibility="@{!layout.isSummaryLoading?View.VISIBLE:View.GONE}"
                         tools:text="唐三在武魂觉醒仪式上，意外觉醒出被视为“废武魂”的蓝银草，却暗中展现出不寻常的天赋..." />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/fill_color1_r16"
-                        android:gravity="center"
-                        android:orientation="vertical"
-                        android:paddingVertical="20dp"
-                        android:visibility="@{layout.isSummaryLoading?View.VISIBLE : View.GONE}">
-
-                        <com.airbnb.lottie.LottieAnimationView
-                            android:id="@+id/loading_image"
-                            android:layout_width="60dp"
-                            android:layout_height="60dp"
-                            app:lottie_autoPlay="true"
-                            app:lottie_fileName="loading_ball/loading_ball.json"
-                            app:lottie_imageAssetsFolder="loading_ball/images"
-                            app:lottie_loop="true"
-                            app:lottie_repeatMode="reverse" />
-
-                        <TextView
-                            style="@style/Text16.Outfit.Medium"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/spacing_m"
-                            android:layout_marginBottom="@dimen/spacing_s"
-                            android:text="@{layout.isBalanceFail ? @string/balance_fail_title : layout.storySummaryResult.toastTextProgress}"
-                            android:textColor="?attr/textColor1"
-                            android:textStyle="normal"
-                            tools:text="正在读取小说内容..." />
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/spacing_xs"
-                            android:gravity="center"
-                            android:visibility="@{layout.isBalanceFail ? View.GONE : View.VISIBLE}">
-
-                            <TextView
-                                style="@style/Text13.Outfit.Regular"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/estimated_time_remaining"
-                                android:textColor="?attr/textColor4" />
-
-                            <TextView
-                                style="@style/Text13.Outfit.Regular"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@{layout.storySummaryResult.toastTextTime}"
-                                android:textColor="?attr/textColor1"
-                                tools:text="12-15分钟" />
-                        </LinearLayout>
-
-                        <TextView
-                            style="@style/Text13.Outfit.Regular"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/spacing_xs"
-                            android:text="@{layout.isBalanceFail ? @string/balance_fail_hint : @string/ai_generation_continues_on_exit}"
-                            android:textColor="?attr/textColor4"
-                            tools:text="@string/ai_generation_continues_on_exit" />
-
-                        <Button
-                            android:id="@+id/btnRecharge"
-                            style="@style/Button.Bold"
-                            android:layout_width="match_parent"
-                            android:layout_marginHorizontal="@dimen/spacing_l"
-                            android:layout_marginTop="@dimen/spacing_m"
-                            android:text="@string/top_up_now"
-                            android:textStyle="normal"
-                            android:visibility="@{layout.isBalanceFail ? View.VISIBLE : View.GONE}" />
-                    </LinearLayout>
 
                     <TextView
                         style="@style/Text14.Outfit.Medium"
@@ -141,48 +65,96 @@
                         android:textColor="?attr/textColor1"
                         android:textStyle="normal" />
 
-                    <FrameLayout
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recyclerView"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-
-                        <com.facebook.shimmer.ShimmerFrameLayout
-                            android:id="@+id/shimmerView"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:visibility="@{layout.isSummaryLoading?View.VISIBLE : View.GONE}"
-                            app:shimmer_base_alpha="0.7"
-                            app:shimmer_dropoff="0.5"
-                            app:shimmer_duration="1500"
-                            app:shimmer_highlight_alpha="0.3">
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:orientation="vertical">
-
-                                <include layout="@layout/item_skeleton_story_summary" />
-
-                                <include layout="@layout/item_skeleton_story_summary" />
-
-                                <include layout="@layout/item_skeleton_story_summary" />
-
-                                <include layout="@layout/item_skeleton_story_summary" />
-
-                                <include layout="@layout/item_skeleton_story_summary" />
-                            </LinearLayout>
-                        </com.facebook.shimmer.ShimmerFrameLayout>
-
-                        <androidx.recyclerview.widget.RecyclerView
-                            android:id="@+id/recyclerView"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:nestedScrollingEnabled="false"
-                            android:visibility="@{layout.isSummaryLoading ? View.GONE : View.VISIBLE}"
-                            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                            tools:listitem="@layout/item_story_summary_generate" />
-                    </FrameLayout>
+                        android:layout_height="wrap_content"
+                        android:nestedScrollingEnabled="false"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                        tools:listitem="@layout/item_story_summary_generate" />
                 </LinearLayout>
             </androidx.core.widget.NestedScrollView>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:paddingVertical="20dp">
+
+                <com.airbnb.lottie.LottieAnimationView
+                    android:id="@+id/loading_image"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    app:lottie_autoPlay="true"
+                    app:lottie_fileName="loading_ball/loading_ball.json"
+                    app:lottie_imageAssetsFolder="loading_ball/images"
+                    app:lottie_loop="true"
+                    app:lottie_repeatMode="reverse" />
+
+                <TextView
+                    style="@style/Text16.Outfit.Medium"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_m"
+                    android:layout_marginBottom="@dimen/spacing_s"
+                    android:text="@{layout.isBalanceFail ? @string/balance_fail_title : layout.storySummaryResult.toastTextProgress}"
+                    android:textColor="?attr/textColor1"
+                    android:textStyle="normal"
+                    tools:text="Generating story outline..." />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_xs"
+                    android:gravity="center"
+                    android:visibility="@{layout.isBalanceFail || TextUtils.isEmpty(layout.useOldSummaryBusiness() ? layout.storySummaryResult.toastTextTime : layout.summaryToastTextTime) ? View.GONE : View.VISIBLE}">
+
+                    <TextView
+                        style="@style/Text13.Outfit.Regular"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/estimated_time_remaining"
+                        android:textColor="?attr/textColor4" />
+
+                    <TextView
+                        style="@style/Text13.Outfit.Regular"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="monospace"
+                        android:text="@{layout.useOldSummaryBusiness() ? layout.storySummaryResult.toastTextTime : layout.summaryToastTextTime}"
+                        android:textColor="?attr/textColor1"
+                        tools:text="30s" />
+                </LinearLayout>
+
+                <TextView
+                    style="@style/Text13.Outfit.Regular"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_xs"
+                    android:text="@{layout.isBalanceFail ? @string/balance_fail_hint : @string/ai_generation_continues_on_exit}"
+                    android:textColor="?attr/textColor4"
+                    tools:text="@string/ai_generation_continues_on_exit" />
+
+                <Button
+                    android:id="@+id/btnRecharge"
+                    style="@style/Button.Bold"
+                    android:layout_width="match_parent"
+                    android:layout_marginHorizontal="@dimen/spacing_l"
+                    android:layout_marginTop="@dimen/spacing_m"
+                    android:text="@string/top_up_now"
+                    android:textStyle="normal"
+                    android:visibility="@{layout.isBalanceFail ? View.VISIBLE : View.GONE}" />
+            </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/streamMarkdownContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clipToPadding="false"
+                android:paddingHorizontal="@dimen/spacing_l"
+                android:paddingTop="20dp"
+                android:stackFromBottom="true" />
 
             <LinearLayout
                 android:layout_width="match_parent"
