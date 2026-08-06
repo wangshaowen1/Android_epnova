@@ -79,14 +79,15 @@
                         android:id="@+id/inputView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:enabled="@{!layout.isScriptLoading()}"
+                        android:enabled="@{!layout.isScriptLoading() &amp;&amp; !layout.isScriptStreaming()}"
                         android:gravity="top|start"
                         android:maxLength="@{layout.maxInputLength}"
                         android:minHeight="200dp"
                         android:padding="@dimen/spacing_m"
                         android:textColor="?attr/textColor2"
                         android:textColorHint="?attr/textColor4"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"
+                        android:visibility="@{layout.outputFail?View.GONE:View.VISIBLE}" />
                 </LinearLayout>
             </androidx.core.widget.NestedScrollView>
 
@@ -158,14 +159,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/spacing_m"
-                    android:text="@string/generating_story_script"
+                    android:text="@{layout.useOldScriptBusiness ? @string/generating_story_script : (TextUtils.isEmpty(layout.storyScriptResult.toastTextProgress) ? @string/generating_story_script : layout.storyScriptResult.toastTextProgress)}"
                     android:textColor="?attr/textColor1" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/spacing_m"
-                    android:gravity="center">
+                    android:gravity="center"
+                    android:visibility="@{layout.useOldScriptBusiness || !TextUtils.isEmpty(layout.scriptToastTextTime) ? View.VISIBLE : View.GONE}">
 
                     <TextView
                         style="@style/Text13.Outfit.Regular"
@@ -178,7 +180,8 @@
                         style="@style/Text13.Outfit.Regular"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/estimated_duration_2_3m"
+                        android:fontFamily="monospace"
+                        android:text="@{layout.useOldScriptBusiness ? @string/estimated_duration_2_3m : (TextUtils.isEmpty(layout.scriptToastTextTime) ? `` : layout.scriptToastTextTime)}"
                         android:textColor="?attr/textColor1"
                         android:textStyle="normal" />
                 </LinearLayout>
@@ -246,6 +249,7 @@
                 android:layout_marginBottom="@dimen/spacing_l"
                 android:text="@{layout.input.length()+`/`+layout.maxInputLength}"
                 android:textColor="@{layout.getLimitColor(layout.input.length)}"
+                android:visibility="@{layout.outputFail?View.GONE:View.VISIBLE}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 tools:text="0/5000" />

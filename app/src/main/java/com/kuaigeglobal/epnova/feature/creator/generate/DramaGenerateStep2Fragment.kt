@@ -1,11 +1,9 @@
 package com.kuaigeglobal.epnova.feature.creator.generate
 
-import android.animation.ObjectAnimator
 import android.os.Bundle
 import android.text.Editable
 import android.text.Spanned
 import android.text.style.ForegroundColorSpan
-import android.view.animation.LinearInterpolator
 import androidx.lifecycle.lifecycleScope
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.Constants
@@ -45,9 +43,8 @@ class DramaGenerateStep2Fragment :
     val from by lazy { hostVm?.from }
 
     private var showBackToast = false
-    private var scrollAnimator: ObjectAnimator? = null
-    private var textScrollRunnable: Runnable? = null
     private var sensitiveScrollRunnable: Runnable? = null
+    private var pendingScriptAutoScroll = false
 
     override fun onPrepareView() {
         super.onPrepareView()
@@ -77,19 +74,26 @@ class DramaGenerateStep2Fragment :
     }
 
     private fun scriptGenerate(retry: Boolean = false) {
-        if (mRealVM.isNovelDocuments()) {
-            if (retry) {
+        if (mRealVM.useOldScriptBusiness.get()) {
+            if (mRealVM.isNovelDocuments()) {
+                if (!retry) {
+                    startPolling()
+                    return
+                }
                 mRealVM.createScriptTask { startPolling() }
-                return
+            } else {
+                mRealVM.createScriptTask(retry) { startPolling() }
             }
-            startPolling()
         } else {
-            mRealVM.createScriptTask(retry) { startPolling() }
+            mRealVM.createScriptTask(retry) {
+                mRealVM.startScriptSession(resetContent = true)
+                showBackToast = true
+            }
         }
     }
 
     private fun startPolling() {
-        mRealVM.pollNovelScript()
+        mRealVM.pollOldScript()
         showBackToast = true
     }
 
@@ -106,7 +110,9 @@ class DramaGenerateStep2Fragment :
             scriptGenerate(true)
         }
         binding.btnDelete.setOnSingleClickListener {
-            if (mRealVM.isScriptLoading.get()) return@setOnSingleClickListener
+            if (mRealVM.isScriptLoading.get() || mRealVM.isScriptStreaming.get()) {
+                return@setOnSingleClickListener
+            }
             mRealVM.input.value = ""
         }
 
@@ -178,7 +184,9 @@ class DramaGenerateStep2Fragment :
 
     private fun setupTouchInterceptor() {
         binding.inputView.setOnSingleClickListener {
-            if (mRealVM.isScriptLoading.get()) return@setOnSingleClickListener
+            if (mRealVM.isScriptLoading.get() || mRealVM.isScriptStreaming.get()) {
+                return@setOnSingleClickListener
+            }
 
             if (mRealVM.input.value?.trim().isNullOrEmpty() || isNotified) {
                 enterEditMode()
@@ -209,17 +217,19 @@ class DramaGenerateStep2Fragment :
 
     private fun dataUpdate() {
         mRealVM.input.observe(viewLifecycleOwner) { text ->
+            val currentBinding = bindingNullable ?: return@observe
             val newText = text ?: ""
-            val currentText = binding.inputView.text.toString()
+            val currentText = currentBinding.inputView.text.toString()
 
             if (newText != currentText) {
-                updateInputViewContent(newText, currentText)
-                handleTextScrollAnimation()
+                updateInputViewContent(currentBinding, newText, currentText)
+                handleTextScrollAnimation(currentBinding)
             }
         }
 
         mRealVM.storyScriptResult.observe(viewLifecycleOwner) {
             showBackToast = false
+            updateEpisodeTitle(hostVm?.title?.value)
         }
 
         mRealVM.mWorkName.observe(viewLifecycleOwner) {
@@ -230,68 +240,68 @@ class DramaGenerateStep2Fragment :
         hostVm?.title?.observe(viewLifecycleOwner) {
             if (it != mRealVM.mWorkName.value) {
                 mRealVM.mWorkName.value = it
-                mRealVM.episodeTitle.set("《$it》${getString(R.string.episode_number_format, mRealVM.chapterIndex ?: 1)}")
+                updateEpisodeTitle(it)
             }
         }
     }
 
-    private fun updateInputViewContent(newText: String, currentText: String) {
-        // 增量追加优化：避免全量重绘引起的闪烁
+    private fun updateEpisodeTitle(workTitle: String?) {
+        if (workTitle.isNullOrEmpty()) return
+        val title = if (mRealVM.model == DramaGenerateConstants.MODEL_STORY_SINGLE) {
+            "《$workTitle》"
+        } else {
+            "《$workTitle》${getString(R.string.episode_number_format, mRealVM.chapterIndex ?: 1)}"
+        }
+        mRealVM.episodeTitle.set(title)
+    }
+
+    private fun updateInputViewContent(
+        currentBinding: FragmentDramaGenerateStep2Binding,
+        newText: String,
+        currentText: String
+    ) {
         if (newText.startsWith(currentText)) {
             val appendText = newText.substring(currentText.length)
-            binding.inputView.append(appendText)
+            currentBinding.inputView.append(appendText)
         } else {
-            binding.inputView.setText(newText)
+            currentBinding.inputView.setText(newText)
         }
     }
 
-    private fun handleTextScrollAnimation() {
-        val inputView = binding.inputView
-
-        textScrollRunnable?.let { inputView.removeCallbacks(it) }
-        val scrollRunnable = Runnable {
-            if (!inputView.isAttachedToWindow) return@Runnable
-
-            val layout = inputView.layout ?: return@Runnable
-
-            val contentHeight = layout.getLineTop(inputView.lineCount)
-            val targetScrollY = contentHeight + inputView.paddingTop +
-                    inputView.paddingBottom - inputView.height
-
-            // 取消上一次未完成的动画，保持流式输出平滑
-            scrollAnimator?.cancel()
-            if (targetScrollY > 0) {
-                scrollAnimator = ObjectAnimator.ofInt(
-                    inputView, "scrollY", inputView.scrollY, targetScrollY
-                ).apply {
-                    duration = 60
-                    interpolator = LinearInterpolator()
-                    start()
-                }
-            } else {
-                inputView.scrollTo(0, 0)
-            }
+    private fun handleTextScrollAnimation(currentBinding: FragmentDramaGenerateStep2Binding) {
+        if (pendingScriptAutoScroll) return
+        pendingScriptAutoScroll = true
+        val inputView = currentBinding.inputView
+        val scrollContainer = currentBinding.scrollContainer
+        scrollContainer.postOnAnimation {
+            pendingScriptAutoScroll = false
+            if (bindingNullable !== currentBinding) return@postOnAnimation
+            val layout = inputView.layout ?: return@postOnAnimation
+            val lastLine = (inputView.lineCount - 1).coerceAtLeast(0)
+            val lastLineBottom = layout.getLineBottom(lastLine)
+            val targetScrollY = inputView.top +
+                    inputView.paddingTop +
+                    lastLineBottom +
+                    inputView.paddingBottom -
+                    scrollContainer.height
+            scrollContainer.scrollTo(0, maxOf(0, targetScrollY))
         }
-        textScrollRunnable = scrollRunnable
-        inputView.post(scrollRunnable)
     }
 
     override fun onDestroyView() {
-        textScrollRunnable?.let { binding.inputView.removeCallbacks(it) }
-        textScrollRunnable = null
+        pendingScriptAutoScroll = false
         sensitiveScrollRunnable?.let { binding.inputView.removeCallbacks(it) }
         sensitiveScrollRunnable = null
-        scrollAnimator?.cancel()
-        scrollAnimator = null
         super.onDestroyView()
     }
 
     override fun handleBackPressed(): Boolean {
-        if (mRealVM.isScriptLoading.get()) {
+        if (mRealVM.isScriptLoading.get() || mRealVM.isScriptStreaming.get()) {
             getString(R.string.ai_generating_auto_saved).showToast()
         } else {
             getString(R.string.auto_saved_as_draft).showToast()
         }
+        mRealVM.cancelScriptStream()
         if (mRealVM.model == DramaGenerateConstants.MODEL_STORY_SINGLE) {
             if (from != StoryEditorActivity.FROM_MY_WORKS) {
                 MyCreationsFragment.start()
