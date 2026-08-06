@@ -45,6 +45,7 @@ data class PollSummaryData(
     val genStatus: Int? = null,
     val toastTextProgress: String? = null,//用户提示-进度文本;例如正在读取小说内容
     val toastTextTime: String? = null,//用户提示-剩余时间文本;例如12-15分钟
+    val toastTextEstimatedSeconds: Int? = null,//用户提示-预估总秒数;例如30秒
     val novelCharCount: Int? = null,//小说字符数
     val novelFileName: String? = null,//小说文件名
     val toastTextAuditFailed: String? = null,//用户提示-审核失败;发现23处敏感词
@@ -115,6 +116,9 @@ data class PollScriptData(
     val storyId: String? = null,
     val sortNo: Int? = null,//集数序号
     val genStatus: Int? = null,//[枚举]生成状态 [0=待生成 1=生成中 2=成功 3=失败 4=算力不足，请充值]
+    val toastTextProgress: String? = null,//用户提示-进度文本;例如正在创建故事剧本
+    val toastTextTime: String? = null,//用户提示-剩余时间文本;例如30-60秒
+    val toastTextEstimatedSeconds: Int? = null,//用户提示-预估总秒数;例如30秒
     val storyContent: String? = null,
 ){
     fun isSuccess(): Boolean {

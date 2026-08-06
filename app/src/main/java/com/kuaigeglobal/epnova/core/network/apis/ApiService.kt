@@ -47,6 +47,7 @@ import com.kuaigeglobal.epnova.core.network.apis.entity.SensitiveWordCheckData
 import com.kuaigeglobal.epnova.core.network.apis.entity.SeriesPriceConfigInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.ShortDramaInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.SimpleStoryboardInfo
+import com.kuaigeglobal.epnova.core.network.apis.entity.StoryStreamSessionInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.StoryUnlockStatusData
 import com.kuaigeglobal.epnova.core.network.apis.entity.SubtitleTaskStatusInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.TaskStatusInfo
@@ -136,6 +137,7 @@ import com.kuaigeglobal.epnova.core.network.apis.request.RewardAdCompleteBody
 import com.kuaigeglobal.epnova.core.network.apis.request.RewardAdTaskPrepareBody
 import com.kuaigeglobal.epnova.core.network.apis.request.RoleIdPagedBody
 import com.kuaigeglobal.epnova.core.network.apis.request.SaveStorySummaryBody
+import com.kuaigeglobal.epnova.core.network.apis.request.StoryStreamSessionBody
 import com.kuaigeglobal.epnova.core.network.apis.request.StoryUnlockAdCompleteBody
 import com.kuaigeglobal.epnova.core.network.apis.request.StoryUnlockCoinsBody
 import com.kuaigeglobal.epnova.core.network.apis.request.StoryboardIdBody
@@ -424,6 +426,50 @@ interface ApiService {
     )
     @POST(ApiConstants.SSE_CONTENT_SYNOPSIS)
     fun sseContentSynopsis(@Body body: AISynopsisBody): Flow<SSEvent>
+
+    /**
+     * 故事梗概流式生成会话
+     */
+    @Headers("Accept: application/json")
+    @POST(ApiConstants.STORY_STREAM_OUTLINE_SESSION)
+    suspend fun storyStreamOutlineSession(
+        @Body body: StoryStreamSessionBody
+    ): ApiResponse<StoryStreamSessionInfo<PollSummaryData>?>
+
+    /**
+     * 故事剧本流式生成会话
+     */
+    @Headers("Accept: application/json")
+    @POST(ApiConstants.STORY_STREAM_SCRIPT_SESSION)
+    suspend fun storyStreamScriptSession(
+        @Body body: StoryStreamSessionBody
+    ): ApiResponse<StoryStreamSessionInfo<PollScriptData>?>
+
+    /**
+     * 故事梗概流式输出订阅
+     */
+    @Headers(
+        "Accept: text/event-stream",
+        "Cache-Control: no-cache",
+        "Connection: keep-alive"
+    )
+    @POST(ApiConstants.STORY_STREAM_OUTLINE_SUBSCRIBE)
+    fun storyStreamOutlineSubscribe(
+        @Body body: StoryStreamSessionBody
+    ): Flow<SSEvent>
+
+    /**
+     * 故事剧本流式输出订阅
+     */
+    @Headers(
+        "Accept: text/event-stream",
+        "Cache-Control: no-cache",
+        "Connection: keep-alive"
+    )
+    @POST(ApiConstants.STORY_STREAM_SCRIPT_SUBSCRIBE)
+    fun storyStreamScriptSubscribe(
+        @Body body: StoryStreamSessionBody
+    ): Flow<SSEvent>
 
     /**
      * 灵感保存故事梗概（下一步创建剧本）

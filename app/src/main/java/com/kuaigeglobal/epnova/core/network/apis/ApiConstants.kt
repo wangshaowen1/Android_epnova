@@ -174,6 +174,27 @@ object ApiConstants {
     const val SSE_CONTENT_SYNOPSIS = "ai/stream/script/synopsis"
 
     /**
+     * 故事梗概流式生成会话
+     */
+    const val STORY_STREAM_OUTLINE_SESSION = "ai/story/stream/outline/session"
+
+    /**
+     * 故事梗概流式输出订阅
+     */
+    const val STORY_STREAM_OUTLINE_SUBSCRIBE = "ai/story/stream/outline/subscribe"
+
+    /**
+     * 故事剧本流式生成会话
+     */
+    const val STORY_STREAM_SCRIPT_SESSION = "ai/story/stream/script/session"
+
+    /**
+     * 故事剧本流式输出订阅
+     */
+    const val STORY_STREAM_SCRIPT_SUBSCRIBE = "ai/story/stream/script/subscribe"
+
+
+    /**
      *灵感保存故事梗概（下一步创建剧本）
      */
     const val SAVE_WORK_SUMMARY = "work/production/new/saveStorySummary"
