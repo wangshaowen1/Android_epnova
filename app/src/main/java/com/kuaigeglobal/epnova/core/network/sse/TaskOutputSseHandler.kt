@@ -160,10 +160,10 @@ class TaskOutputSseHandler(
 
     companion object {
         private const val TAG = "TaskOutputSseHandler"
-        private const val EVENT_CHUNK = "chunk"
-        private const val EVENT_HEARTBEAT = "heartbeat"
-        private const val EVENT_FINAL = "final"
-        private const val EVENT_ERROR = "error"
+        private const val EVENT_CHUNK = "CHUNK"
+        private const val EVENT_HEARTBEAT = "HEARTBEAT"
+        private const val EVENT_FINAL = "FINAL"
+        private const val EVENT_ERROR = "ERROR"
 
         private val taskStreamJson = Json {
             ignoreUnknownKeys = true
