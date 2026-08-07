@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.Gravity
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.Constants
+import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.ext.onUserSignIn
 import com.kuaigeglobal.epnova.core.manager.EventManager
 import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
@@ -58,6 +59,10 @@ class RewardWelcomeDialog : BaseDialogFragment<DialogRewardWelcomeBinding>() {
                 FirebaseEvent.Category.LOGIN,
                 FirebaseEvent.Action.WELCOME_CONFIRM_CLICK
             )
+            if (User.get().isLogin) {
+                dismissAllowingStateLoss()
+                return@setOnSingleClickListener
+            }
             AppNavigator.checkRealLogin(false)
         }
 
