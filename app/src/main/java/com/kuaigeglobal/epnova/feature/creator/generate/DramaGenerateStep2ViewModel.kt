@@ -28,6 +28,7 @@ import com.kuaigeglobal.epnova.core.network.sse.TaskOutputSseHandler
 import com.kuaigeglobal.epnova.core.response
 import com.kuaigeglobal.epnova.feature.creator.data.CreationRepository
 import com.kuaigeglobal.epnova.feature.creator.data.DramaGenerateConstants
+import com.nhsd.basic.ext.getResString
 import com.nhsd.basic.ext.getThemeColor
 import com.nhsd.basic.ext.showToast
 import kotlinx.coroutines.Job
@@ -254,15 +255,16 @@ class DramaGenerateStep2ViewModel : AppRepositoryViewModel<CreationRepository>()
 
         val current = storyScriptResult.value
         val estimatedSeconds = getScriptToastEstimatedSeconds(sessionInfo)
-        val nextToastTextTime = if (estimatedSeconds != null) {
-            val countdownKey = getScriptToastCountdownKey(sessionInfo)
-            val isSameCountdown = scriptToastCountdownKey == countdownKey &&
-                    scriptToastCountdownInitialSeconds == estimatedSeconds
-            scriptToastTextTime.get()
-                ?: if (isSameCountdown) null else formatToastCountdown(estimatedSeconds)
-        } else {
-            sessionInfo?.toastTextTime ?: scriptToastTextTime.get() ?: current?.toastTextTime
-        }
+//        val nextToastTextTime = if (estimatedSeconds != null) {
+//            val countdownKey = getScriptToastCountdownKey(sessionInfo)
+//            val isSameCountdown = scriptToastCountdownKey == countdownKey &&
+//                    scriptToastCountdownInitialSeconds == estimatedSeconds
+//            scriptToastTextTime.get()
+//                ?: if (isSameCountdown) null else formatToastCountdown(estimatedSeconds)
+//        } else {
+//            sessionInfo?.toastTextTime ?: scriptToastTextTime.get() ?: current?.toastTextTime
+//        }
+        val nextToastTextTime = sessionInfo?.toastTextTime ?: R.string.estimated_duration_2_3m.getResString()
         scriptToastTextTime.set(nextToastTextTime)
         storyScriptResult.value = PollScriptData(
             workId = current?.workId ?: sessionInfo?.workId ?: workId.value,
@@ -275,7 +277,7 @@ class DramaGenerateStep2ViewModel : AppRepositoryViewModel<CreationRepository>()
                 ?: current?.toastTextEstimatedSeconds,
             storyContent = current?.storyContent
         )
-        startScriptToastCountdownIfNeeded(sessionInfo)
+//        startScriptToastCountdownIfNeeded(sessionInfo)
     }
 
     private fun startScriptToastCountdownIfNeeded(
@@ -357,7 +359,7 @@ class DramaGenerateStep2ViewModel : AppRepositoryViewModel<CreationRepository>()
 
     private fun parseToastCountdownSeconds(text: String?): Int? {
         val value = text?.trim().orEmpty()
-        val match = Regex("""^(\d+)\s*(?:s|秒)?$""", RegexOption.IGNORE_CASE)
+        val match = Regex("""^(\d+)\s*(?:s|seconds)?$""", RegexOption.IGNORE_CASE)
             .matchEntire(value) ?: return null
         return match.groupValues[1].toIntOrNull()?.takeIf { it > 0 }
     }

@@ -6,6 +6,7 @@ import androidx.databinding.ObservableField
 import androidx.databinding.ObservableInt
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.base.viewmodel.AppRepositoryViewModel
 import com.kuaigeglobal.epnova.core.Config
 import com.kuaigeglobal.epnova.core.ext.PollingState
@@ -23,6 +24,7 @@ import com.kuaigeglobal.epnova.core.network.sse.TaskOutputEvent
 import com.kuaigeglobal.epnova.core.network.sse.TaskOutputSseHandler
 import com.kuaigeglobal.epnova.feature.creator.data.CreationRepository
 import com.kuaigeglobal.epnova.feature.creator.data.DramaGenerateConstants
+import com.nhsd.basic.ext.getResString
 import com.nhsd.basic.ext.showToast
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -241,15 +243,16 @@ class DramaGenerateStep1ViewModel : AppRepositoryViewModel<CreationRepository>()
 
         val current = storySummaryResult.value
         val estimatedSeconds = getSummaryToastEstimatedSeconds(sessionInfo)
-        val nextToastTextTime = if (estimatedSeconds != null) {
-            val countdownKey = getSummaryToastCountdownKey(sessionInfo)
-            val isSameCountdown = summaryToastCountdownKey == countdownKey &&
-                    summaryToastCountdownInitialSeconds == estimatedSeconds
-            summaryToastTextTime.get()
-                ?: if (isSameCountdown) null else formatToastCountdown(estimatedSeconds)
-        } else {
-            sessionInfo?.toastTextTime ?: summaryToastTextTime.get() ?: current?.toastTextTime
-        }
+//        val nextToastTextTime = if (estimatedSeconds != null) {
+//            val countdownKey = getSummaryToastCountdownKey(sessionInfo)
+//            val isSameCountdown = summaryToastCountdownKey == countdownKey &&
+//                    summaryToastCountdownInitialSeconds == estimatedSeconds
+//            summaryToastTextTime.get()
+//                ?: if (isSameCountdown) null else formatToastCountdown(estimatedSeconds)
+//        } else {
+//            sessionInfo?.toastTextTime ?: summaryToastTextTime.get() ?: current?.toastTextTime
+//        }
+        val nextToastTextTime = sessionInfo?.toastTextTime ?: R.string.estimated_duration_2_3m.getResString()
         summaryToastTextTime.set(nextToastTextTime)
         storySummaryResult.value = PollSummaryData(
             genStatus = current?.genStatus,
@@ -263,7 +266,7 @@ class DramaGenerateStep1ViewModel : AppRepositoryViewModel<CreationRepository>()
             result = current?.result,
             workId = current?.workId ?: sessionInfo?.workId ?: workId
         )
-        startSummaryToastCountdownIfNeeded(sessionInfo)
+//        startSummaryToastCountdownIfNeeded(sessionInfo)
     }
 
     private fun startSummaryToastCountdownIfNeeded(
@@ -343,7 +346,7 @@ class DramaGenerateStep1ViewModel : AppRepositoryViewModel<CreationRepository>()
 
     private fun parseToastCountdownSeconds(text: String?): Int? {
         val value = text?.trim().orEmpty()
-        val match = Regex("""^(\d+)\s*(?:s|秒)?$""", RegexOption.IGNORE_CASE)
+        val match = Regex("""^(\d+)\s*(?:s|seconds)?$""", RegexOption.IGNORE_CASE)
             .matchEntire(value) ?: return null
         return match.groupValues[1].toIntOrNull()?.takeIf { it > 0 }
     }
