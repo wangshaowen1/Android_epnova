@@ -178,9 +178,9 @@
 
                     <TextView
                         style="@style/Text13.Outfit.Regular"
+                        android:layout_marginStart="2dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="monospace"
                         android:text="@{layout.useOldScriptBusiness ? @string/estimated_duration_2_3m : (TextUtils.isEmpty(layout.scriptToastTextTime) ? `` : layout.scriptToastTextTime)}"
                         android:textColor="?attr/textColor1"
                         android:textStyle="normal" />
