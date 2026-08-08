@@ -84,7 +84,7 @@
                     app:inputHint="@string/feedback_details_required_10_plus"
                     app:inputHorizontalPadding="16dp"
                     app:inputLines="5"
-                    app:inputMaxLength="500"
+                    app:inputMaxLength="2500"
                     app:inputTextColor="?attr/textColor2"
                     app:inputTextColorHint="?attr/textColor4"
                     app:inputTextSize="14sp"
