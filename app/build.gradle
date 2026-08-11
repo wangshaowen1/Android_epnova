@@ -235,7 +235,6 @@ dependencies {
 //        debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.14'
     implementation project(':magicindicator')
     implementation project(':datepicker')
-    implementation project(':matisse')
     //公共依赖
     implementation libs.kotlinx.serialization.json
     implementation(libs.androidx.core.ktx)
@@ -258,6 +257,7 @@ dependencies {
     implementation rootProject.ext.modules.oss.gav
     implementation rootProject.ext.modules.videoedit.gav
     implementation rootProject.ext.modules.luban.gav
+    implementation rootProject.ext.modules.matisse.gav
     implementation rootProject.ext.modules.permissionx.gav
     implementation rootProject.ext.modules.ucrop.gav
     implementation rootProject.ext.modules.mvchelper.gav
@@ -317,7 +317,6 @@ dependencies {
     implementation 'com.github.Dimezis:BlurView:version-3.2.0'
     implementation libs.jsoup
     //implementation libs.face.detection
-//    implementation 'com.moizhassan.ffmpeg:ffmpeg-kit-16kb:6.1.1'
 
     implementation 'org.jcodec:jcodec:0.2.5'        // 基础库
     implementation 'com.tencent:mmkv:2.4.0'

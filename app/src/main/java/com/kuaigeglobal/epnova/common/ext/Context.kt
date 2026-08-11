@@ -23,7 +23,9 @@ import com.nhsd.basic.ext.showToast
 import com.nhsd.basic.ext.toArrayList
 import com.nhsd.basic.manager.FileManager
 import com.nhsd.mattise.Matisse
+import com.nhsd.mattise.MatisseUiConfig
 import com.nhsd.mattise.MimeType
+import com.nhsd.mattise.SelectionCreator
 import com.nhsd.mattise.engine.impl.GlideEngine
 import com.nhsd.mattise.internal.entity.CaptureStrategy
 
@@ -92,6 +94,29 @@ fun List<Fragment>.clear(host: FragmentActivity) {
     (this as? ArrayList)?.clear()
 }
 
+fun SelectionCreator.applyEpnovaMatisseUi(): SelectionCreator =
+    theme(R.style.Theme_Epnova_Matisse).uiConfig(
+        MatisseUiConfig.Builder()
+            .cancelText(R.string.cancel)
+            .navigationIcon(com.zhihu.matisse.R.drawable.ic_matisse_nav_back)
+            .partialAccessText(R.string.matisse_partial_access)
+            .openSettingsText(R.string.matisse_open_settings)
+            .permissionRationales(
+                R.string.matisse_camera_permission_rationale,
+                R.string.matisse_media_permission_rationale
+            )
+            .addMediaItem(
+                com.zhihu.matisse.R.drawable.matisse_ic_add,
+                R.string.matisse_add_media
+            )
+            .captureItem(
+                com.zhihu.matisse.R.drawable.matisse_ic_capture,
+                R.string.matisse_take_photo
+            )
+            .animations(R.anim.push_bottom_in, R.anim.push_bottom_out)
+            .build()
+    )
+
 
 fun Activity.selectMultPhotoFromAlbums(
     selectedUris: List<Uri?>?,
@@ -101,6 +126,7 @@ fun Activity.selectMultPhotoFromAlbums(
 ) {
     Matisse.from(this)
         .choose(MimeType.ofImage(), false)
+        .applyEpnovaMatisseUi()
         .countable(countable)
         .capture(capture)
         .spanCount(4)
@@ -163,6 +189,7 @@ fun selectSinglePhotoFromAlbums(
     } ?: return
     matisse
         .choose(MimeType.ofImage(), false)
+        .applyEpnovaMatisseUi()
         .countable(countable)
         .capture(capture)
         .useEmbeddedCamera(useEmbeddedCamera)
@@ -195,6 +222,7 @@ fun Activity.selectMultPhotoFromAlbums(
 ) {
     Matisse.from(this)
         .choose(MimeType.ofImage(), false)
+        .applyEpnovaMatisseUi()
         .countable(false)
         .capture(true)
         .useEmbeddedCamera(false)
@@ -228,5 +256,4 @@ fun getScreenWidth(): Int {
 fun getScreenHeight(): Int {
     return ScreenUtils.getScreenHeight()
 }
-
 

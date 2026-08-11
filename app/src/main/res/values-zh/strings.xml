@@ -16,6 +16,7 @@
     <string name="permissionx_default_denied_forever_rationale_negative">取消</string>
     <string name="permissionx_default_denied_forever_rationale_positive">去开启</string>
     <string name="permissionx_default_denied_forever_rationale_message">为正常使用该功能，请前往系统应用设置中开启所需权限</string>
+    <string name="permissionx_open_settings">去设置</string>
 
     <string name="cancel">取消</string>
     <string name="messages">系统消息</string>
@@ -116,6 +117,12 @@
     <string name="permission_application_failed">权限申请失败</string>
 
     <string name="camera_permission_description">用于发送或分享视频/图片、上传个人头像、扫一扫进行二维码识别。</string>
+    <string name="matisse_partial_access">只能访问部分照片，建议允许访问所有照片</string>
+    <string name="matisse_open_settings">去设置</string>
+    <string name="matisse_camera_permission_rationale">需要相机权限以拍摄照片。</string>
+    <string name="matisse_media_permission_rationale">允许访问更多照片和视频，以便继续选择。</string>
+    <string name="matisse_add_media">添加照片</string>
+    <string name="matisse_take_photo">拍照</string>
     <string name="sdcard_permission_description">用于发送/分享/下载视频、图片、上传个人头像、扫一扫进行二维码识别、保存文件和日志。</string>
     <string name="location_permission_description">用于向你推荐附近你可能感兴趣的相关信息，包括但不限于内容、生活服务或用户等，以提升浏览体验，或帮你在发布的信息或互动中展示位置。</string>
     <string name="call_phone_permission_description">仅用于你发起的拨打电话服务。</string>

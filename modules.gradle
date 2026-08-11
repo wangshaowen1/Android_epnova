@@ -18,14 +18,14 @@ ext {
             oss        : [
                     groupId   : 'com.kuaige',
                     artifactId: 'oss',
-                    version   : '1.0.3',
-                    gav       : 'com.kuaige:oss:1.0.3'
+                    version   : '1.0.6',
+                    gav       : 'com.kuaige:oss:1.0.6'
             ],
             payment    : [
                     groupId   : 'com.kuaige',
                     artifactId: 'payment',
-                    version   : '1.0.3',
-                    gav       : 'com.kuaige:payment:1.0.3'
+                    version   : '1.0.8',
+                    gav       : 'com.kuaige:payment:1.0.8'
             ],
             videoedit  : [
                     groupId   : 'com.kuaige',
@@ -42,32 +42,38 @@ ext {
             matisse    : [
                     groupId   : 'com.kuaige.thirdparty',
                     artifactId: 'matisse',
-                    version   : '1.0.0',
-                    gav       : 'com.kuaige.thirdparty:matisse:1.0.0'
+                    version   : '1.0.4',
+                    gav       : 'com.kuaige.thirdparty:matisse:1.0.4'
             ],
             ucrop      : [
                     groupId   : 'com.kuaige.thirdparty',
                     artifactId: 'ucrop',
-                    version   : '1.0.1',
-                    gav       : 'com.kuaige.thirdparty:ucrop:1.0.1'
+                    version   : '1.0.4',
+                    gav       : 'com.kuaige.thirdparty:ucrop:1.0.4'
             ],
             permissionx: [
                     groupId   : 'com.kuaige.thirdparty',
                     artifactId: 'permissionx',
-                    version   : '1.0.0',
-                    gav       : 'com.kuaige.thirdparty:permissionx:1.0.0'
+                    version   : '1.0.2',
+                    gav       : 'com.kuaige.thirdparty:permissionx:1.0.2'
             ],
             mvchelper  : [
                     groupId   : 'com.kuaige.thirdparty',
                     artifactId: 'mvchelper',
-                    version   : '1.0.0',
-                    gav       : 'com.kuaige.thirdparty:mvchelper:1.0.0'
+                    version   : '1.0.2',
+                    gav       : 'com.kuaige.thirdparty:mvchelper:1.0.2'
             ],
             umeng      : [
                     groupId   : 'com.kuaige.thirdparty',
                     artifactId: 'umeng',
                     version   : '1.0.1',
                     gav       : 'com.kuaige.thirdparty:umeng:1.0.1'
+            ],
+            imsdk      : [
+                    groupId   : 'com.kuaige.thirdparty',
+                    artifactId: 'imsdk',
+                    version   : '1.0.7',
+                    gav       : 'com.kuaige.thirdparty:imsdk:1.0.7'
             ]
     ]
 }

@@ -1,6 +1,5 @@
 rootProject.name = "Epnova"
 include ':app'
-include ':matisse'
 include ':magicindicator'
 //include ':apisecurity'
 include ':datepicker'

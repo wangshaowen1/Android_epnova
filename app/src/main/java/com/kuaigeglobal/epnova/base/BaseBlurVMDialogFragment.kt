@@ -105,7 +105,6 @@ abstract class BaseBlurVMDialogFragment<VB : ViewDataBinding, VM : BaseLayoutVie
 
 
     override fun onDestroy() {
-        handleViewModelLifecycle { it.onDestroy() }
         if (useSharedViewModel) {
             mRealVM.clickHandler?.removeListeners(clickListener)
         }

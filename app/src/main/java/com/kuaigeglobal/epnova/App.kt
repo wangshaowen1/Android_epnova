@@ -127,7 +127,7 @@ class App : BaseApp() {
                             R.string.permissionx_default_denied_forever_rationale_message
                         )
                     )
-                    commonDialog.setPositiveButtonText(context.getString(R.string.allow))
+                    commonDialog.setPositiveButtonText(context.getString(R.string.permissionx_open_settings))
                     commonDialog.onPositiveButtonClickListener = { _ ->
                         positive.run()
                         positiveCheck = true

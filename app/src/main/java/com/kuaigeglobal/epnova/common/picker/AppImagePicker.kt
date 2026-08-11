@@ -11,6 +11,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import com.kuaigeglobal.epnova.common.Constants
+import com.kuaigeglobal.epnova.common.ext.applyEpnovaMatisseUi
 import com.kuaigeglobal.epnova.common.permissions.requestImages2VideosPermissions
 import com.nhsd.basic.manager.FileManager
 import com.nhsd.mattise.Matisse
@@ -145,6 +146,7 @@ class AppImagePicker private constructor(
         val matisse = fragment?.let { Matisse.from(it) } ?: activity?.let { Matisse.from(it) } ?: return
         matisse
             .choose(MimeType.ofImage(), false)
+            .applyEpnovaMatisseUi()
             .countable(false)
             .capture(capture)
             .useEmbeddedCamera(useEmbeddedCamera)

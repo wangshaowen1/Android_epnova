@@ -104,6 +104,24 @@
         <item name="android:layout_weight">1</item>
     </style>
 
+    <style name="Theme.Epnova.Matisse" parent="Matisse.Kuaige">
+        <item name="android:windowBackground">@color/color_121212</item>
+        <item name="page.bg">@color/color_121212</item>
+        <item name="bottomToolbar.bg">@color/color_121212</item>
+        <item name="android:listPopupWindowStyle">@style/Popup.Epnova.Matisse</item>
+        <item name="listPopupWindowStyle">@style/Popup.Epnova.Matisse</item>
+        <item name="buttonStyle">@style/Widget.Epnova.Matisse.ActionButton</item>
+    </style>
+
+    <style name="Popup.Epnova.Matisse" parent="Widget.AppCompat.ListPopupWindow">
+        <item name="android:popupBackground">@color/color_121212</item>
+    </style>
+
+    <style name="Widget.Epnova.Matisse.ActionButton" parent="Widget.Matisse.ActionButton">
+        <item name="android:background">@drawable/selector_common_button</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+
     <style name="Button.Menu" parent="Button.Medium">
         <item name="android:textSize">14sp</item>
         <item name="android:layout_height">wrap_content</item>

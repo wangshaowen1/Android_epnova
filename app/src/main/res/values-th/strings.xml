@@ -16,6 +16,7 @@
     <string name="permissionx_default_denied_forever_rationale_negative">ยกเลิก</string>
     <string name="permissionx_default_denied_forever_rationale_positive">เปิดใช้งาน</string>
     <string name="permissionx_default_denied_forever_rationale_message">หากต้องการใช้ฟีเจอร์นี้ กรุณาเปิดสิทธิ์ที่จำเป็นในการตั้งค่าอุปกรณ์ของคุณ</string>
+    <string name="permissionx_open_settings">เปิดการตั้งค่า</string>
     <string name="cancel">ยกเลิก</string>
     <string name="messages">ข้อความระบบ</string>
     <string name="failed">ล้มเหลว</string>
@@ -104,6 +105,12 @@
     <string name="allow">เปิดใช้งาน</string>
     <string name="permission_application_failed">การขอสิทธิ์ล้มเหลว</string>
     <string name="camera_permission_description">ใช้สำหรับส่งหรือแชร์วิดีโอ/รูปภาพ อัปโหลดรูปโปรไฟล์ และสแกนคิวอาร์โค้ด</string>
+    <string name="matisse_partial_access">ใช้งานได้เฉพาะรูปภาพที่เลือก อนุญาตให้เข้าถึงรูปภาพทั้งหมดเพื่อดูเพิ่มเติม</string>
+    <string name="matisse_open_settings">การตั้งค่า</string>
+    <string name="matisse_camera_permission_rationale">จำเป็นต้องเข้าถึงกล้องเพื่อถ่ายภาพ</string>
+    <string name="matisse_media_permission_rationale">อนุญาตให้เข้าถึงเพื่อเลือกรูปภาพและวิดีโอเพิ่มเติม</string>
+    <string name="matisse_add_media">เพิ่มสื่อ</string>
+    <string name="matisse_take_photo">ถ่ายภาพ</string>
     <string name="sdcard_permission_description">ใช้สำหรับส่ง แชร์ และดาวน์โหลดวิดีโอ/รูปภาพ อัปโหลดรูปโปรไฟล์ สแกนคิวอาร์โค้ด และบันทึกไฟล์และล็อก</string>
     <string name="location_permission_description">ใช้เพื่อแนะนำเนื้อหาใกล้บ้านที่คุณอาจสนใจ รวมถึงโพสต์ บริการท้องถิ่น และผู้คน เพื่อปรับปรุงประสบการณ์การท่องเว็บ หรือแสดงตำแหน่งของคุณในโพสต์และการโต้ตอบ</string>
     <string name="call_phone_permission_description">ใช้เฉพาะสำหรับการโทรที่คุณเริ่มต้น</string>
