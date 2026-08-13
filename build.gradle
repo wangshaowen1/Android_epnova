@@ -19,20 +19,7 @@ buildscript {
         google()
         mavenCentral()
         gradlePluginPortal()
-        maven {
-            credentials {
-                username '5fc45272d3c4ecfbf34b90fd'
-                password 'rcv8Li625sKw'
-            }
-            url 'https://packages.aliyun.com/maven/repository/2053204-release-IwccRW/'
-        }
-        maven {
-            credentials {
-                username '5fc45272d3c4ecfbf34b90fd'
-                password 'rcv8Li625sKw'
-            }
-            url 'https://packages.aliyun.com/maven/repository/2053204-snapshot-0LQaae/'
-        }
+\
         // 配置HMS Core SDK的Maven仓地址。
         maven { url 'https://developer.huawei.com/repo/' }
     }
@@ -68,25 +55,13 @@ allprojects {
         google()
         mavenCentral()
 
-        maven {
-            credentials {
-                username '5fc45272d3c4ecfbf34b90fd'
-                password 'rcv8Li625sKw'
-            }
-            url 'https://packages.aliyun.com/maven/repository/2053204-release-IwccRW/'
-        }
-        maven {
-            credentials {
-                username '5fc45272d3c4ecfbf34b90fd'
-                password 'rcv8Li625sKw'
-            }
-            url 'https://packages.aliyun.com/maven/repository/2053204-snapshot-0LQaae/'
-        }
         //Android生产库
         maven {
             credentials {
-                username '66988f5d595d2a8bee37566f'
-                password '=hk_Z8-1[CZb'
+                username = providers.gradleProperty('KUAIGE_RELEASE_MAVEN_USERNAME')
+                        .orElse(providers.environmentVariable('KUAIGE_RELEASE_MAVEN_USERNAME')).orNull
+                password = providers.gradleProperty('KUAIGE_RELEASE_MAVEN_PASSWORD')
+                        .orElse(providers.environmentVariable('KUAIGE_RELEASE_MAVEN_PASSWORD')).orNull
             }
             url 'https://packages.aliyun.com/669762019bc4550a6d341126/maven/2482282-release-m2vz15'
         }
