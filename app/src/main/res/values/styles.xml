@@ -11,6 +11,7 @@
         <!--<item name="android:typeface">monospace</item>-->
         <item name="android:windowContentOverlay">@android:color/transparent</item>
         <item name="android:textColorSecondary">@color/textColorSecondary</item>
+        <item name="matisseTheme">@style/Theme.Epnova.Matisse</item>
         <item name="toolbarNavigationButtonStyle">@style/toolbarNavigationButtonStyle</item>
         <item name="actionBarSize">@dimen/action_bar_size</item>
         <item name="calendarViewStyle">@style/Widget.Holo.CalendarView</item>
@@ -104,7 +105,7 @@
         <item name="android:layout_weight">1</item>
     </style>
 
-    <style name="Theme.Epnova.Matisse" parent="Matisse.Kuaige">
+    <style name="Theme.Epnova.Matisse" parent="Matisse.Base">
         <item name="android:statusBarColor">@color/color_121212</item>
         <item name="android:windowBackground">@color/color_121212</item>
         <item name="page.bg">@color/color_121212</item>
@@ -112,6 +113,11 @@
         <item name="android:listPopupWindowStyle">@style/Popup.Epnova.Matisse</item>
         <item name="listPopupWindowStyle">@style/Popup.Epnova.Matisse</item>
         <item name="buttonStyle">@style/Widget.Epnova.Matisse.ActionButton</item>
+        <item name="matisseNavigationIcon">@drawable/ic_matisse_nav_back</item>
+        <item name="matisseAddMediaIcon">@drawable/matisse_ic_add</item>
+        <item name="matisseCaptureIcon">@drawable/matisse_ic_capture</item>
+        <item name="matisseEnterAnimation">@anim/push_bottom_in</item>
+        <item name="matisseExitAnimation">@anim/push_bottom_out</item>
     </style>
 
     <style name="Popup.Epnova.Matisse" parent="Widget.AppCompat.ListPopupWindow">

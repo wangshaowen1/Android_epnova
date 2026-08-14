@@ -42,8 +42,8 @@ ext {
             matisse    : [
                     groupId   : 'com.kuaige.thirdparty',
                     artifactId: 'matisse',
-                    version   : '1.0.4',
-                    gav       : 'com.kuaige.thirdparty:matisse:1.0.4'
+                    version   : '1.0.5',
+                    gav       : 'com.kuaige.thirdparty:matisse:1.0.5'
             ],
             ucrop      : [
                     groupId   : 'com.kuaige.thirdparty',

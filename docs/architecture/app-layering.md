@@ -2,7 +2,7 @@
 title: App 分层架构
 type: architecture
 status: active
-last_verified: 2026-08-05
+last_verified: 2026-08-14
 ---
 
 # App 分层架构
@@ -19,8 +19,8 @@ EpNova 的主应用按 `base`、`common`、`core`、`kit`、`router`、`service`
 
 ## 当前模型
 
-- `app` 通过 `modules.gradle` 和 `app/build.gradle` 使用 Maven 制品 `com.kuaige:baselibrary:1.1.0`。
-- `settings.gradle` 当前包含主应用 `:app`，以及 `:matisse`、`:magicindicator`、`:datepicker` 三个本地库模块；这些库不是业务分层模块。
+- `app` 通过 `modules.gradle` 和 `app/build.gradle` 使用 Maven 制品 `com.kuaige:baselibrary:1.1.4`。
+- `settings.gradle` 当前包含主应用 `:app`，以及 `:magicindicator`、`:datepicker` 两个本地库模块；Matisse 通过 Maven 制品接入，仓库中的同名源码目录未纳入构建。
 - `base`、`common`、`core`、`kit`、`router`、`service`、`widget` 和 `feature` 是 `app` 内的 Kotlin/Java 包，不是独立 Gradle 模块。
 - `app/base` 是基于 `baselibrary` 的 App 级适配集合，现有列表 VM、Dialog 基类、分享 ViewModel 等仍有业务调用，不是待清空目录。
 - 当前 `core`、`kit`、`router`、`widget` 中存在对具体 `feature` 的引用。路由层负责最终页面装配时允许依赖目标页面；其他共享能力绑定具体页面属于触及时优先评估的收敛点。
@@ -37,7 +37,7 @@ EpNova 的主应用按 `base`、`common`、`core`、`kit`、`router`、`service`
 | `router/` | App 内外路由分发、登录拦截和最终页面装配 | 具体页面的请求、状态机和交互逻辑 |
 | `service/` | 需要 Android Service 生命周期承载的后台能力 | 页面展示和页面级业务状态 |
 | `feature/` | 面向用户的页面、交互和完整业务流程 | 向共享层泄漏页面实现 |
-| 本地库模块 | 可独立复用的选择器、指示器和日期组件 | EpNova 业务流程 |
+| 本地库模块 | 当前纳入构建的指示器和日期组件 | EpNova 业务流程 |
 
 新增代码优先按现有职责放置。旧代码只在真实收益足以覆盖迁移和回归成本时调整。
 
@@ -63,7 +63,7 @@ EpNova 的主应用按 `base`、`common`、`core`、`kit`、`router`、`service`
 | --- | --- | --- |
 | 最底层基础能力使用 `baselibrary` 命名 | 与实际依赖制品一致 | `BaseModule` 或 `app/base` 会混淆制品与应用适配代码 |
 | 保留 `app/base` | 它是仍有调用方的 App 级适配集合 | 整体迁入 `core` 或清空目录会制造高风险、低收益迁移 |
-| 本地库与业务分层分开描述 | 三个本地库是可复用组件，不是业务层级 | 把所有 Gradle module 画进业务依赖链会误导代码归属 |
+| 本地库与业务分层分开描述 | 本地库是可复用组件，不是业务层级 | 把所有 Gradle module 画进业务依赖链会误导代码归属 |
 | 旧代码渐进治理 | 可结合业务验证降低回归成本 | 独立批量整理 import 难以产生对应业务价值 |
 
 ## 实现地图与验证

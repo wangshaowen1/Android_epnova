@@ -22,6 +22,7 @@
     <string name="permissionx_open_settings">Open settings</string>
 
     <string name="cancel">Cancel</string>
+    <string name="button_cancel">Cancel</string>
     <string name="messages">System Messages</string>
     <string name="failed">Failed</string>
     <string name="live">Lifestyle</string>
@@ -122,10 +123,10 @@
     <string name="permission_application_failed">Permission Request Failed</string>
 
     <string name="camera_permission_description">Used for sending or sharing videos/photos, uploading a profile picture, and scanning QR codes.</string>
-    <string name="matisse_partial_access">Only selected photos are available. Allow access to all photos to see more.</string>
-    <string name="matisse_open_settings">Settings</string>
-    <string name="matisse_camera_permission_rationale">Camera access is required to take photos.</string>
-    <string name="matisse_media_permission_rationale">Allow access to select more photos and videos.</string>
+    <string name="matisse_partial_media_access_description">Only selected photos are available. Allow access to all photos to see more.</string>
+    <string name="button_open_settings">Settings</string>
+    <string name="matisse_camera_permission_description">Camera access is required to take photos.</string>
+    <string name="matisse_media_permission_description">Allow access to select more photos and videos.</string>
     <string name="matisse_add_media">Add media</string>
     <string name="matisse_take_photo">Take photo</string>
     <string name="sdcard_permission_description">Used for sending, sharing, and downloading videos/photos, uploading a profile picture, scanning QR codes, and saving files and logs.</string>

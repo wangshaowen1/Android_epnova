@@ -18,6 +18,7 @@
     <string name="permissionx_default_denied_forever_rationale_message">Untuk menggunakan fitur ini, silakan aktifkan izin yang diperlukan di pengaturan perangkat Anda.</string>
     <string name="permissionx_open_settings">Buka pengaturan</string>
     <string name="cancel">Batal</string>
+    <string name="button_cancel">Batal</string>
     <string name="messages">Pesan Sistem</string>
     <string name="failed">Gagal</string>
     <string name="live">Gaya Hidup</string>
@@ -105,10 +106,10 @@
     <string name="allow">Aktifkan</string>
     <string name="permission_application_failed">Gagal Meminta Izin</string>
     <string name="camera_permission_description">Digunakan untuk mengirim atau membagikan video/foto, mengunggah foto profil, dan memindai kode QR.</string>
-    <string name="matisse_partial_access">Hanya foto yang dipilih yang tersedia. Izinkan akses ke semua foto untuk melihat lebih banyak.</string>
-    <string name="matisse_open_settings">Pengaturan</string>
-    <string name="matisse_camera_permission_rationale">Akses kamera diperlukan untuk mengambil foto.</string>
-    <string name="matisse_media_permission_rationale">Izinkan akses untuk memilih lebih banyak foto dan video.</string>
+    <string name="matisse_partial_media_access_description">Hanya foto yang dipilih yang tersedia. Izinkan akses ke semua foto untuk melihat lebih banyak.</string>
+    <string name="button_open_settings">Pengaturan</string>
+    <string name="matisse_camera_permission_description">Akses kamera diperlukan untuk mengambil foto.</string>
+    <string name="matisse_media_permission_description">Izinkan akses untuk memilih lebih banyak foto dan video.</string>
     <string name="matisse_add_media">Tambah media</string>
     <string name="matisse_take_photo">Ambil foto</string>
     <string name="sdcard_permission_description">Digunakan untuk mengirim, membagikan, dan mengunduh video/foto, mengunggah foto profil, memindai kode QR, serta menyimpan file dan log.</string>

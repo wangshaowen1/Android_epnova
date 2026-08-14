@@ -19,6 +19,7 @@
     <string name="permissionx_open_settings">去设置</string>
 
     <string name="cancel">取消</string>
+    <string name="button_cancel">取消</string>
     <string name="messages">系统消息</string>
     <string name="failed">失败</string>
     <string name="live">生活</string>
@@ -117,10 +118,10 @@
     <string name="permission_application_failed">权限申请失败</string>
 
     <string name="camera_permission_description">用于发送或分享视频/图片、上传个人头像、扫一扫进行二维码识别。</string>
-    <string name="matisse_partial_access">只能访问部分照片，建议允许访问所有照片</string>
-    <string name="matisse_open_settings">去设置</string>
-    <string name="matisse_camera_permission_rationale">需要相机权限以拍摄照片。</string>
-    <string name="matisse_media_permission_rationale">允许访问更多照片和视频，以便继续选择。</string>
+    <string name="matisse_partial_media_access_description">只能访问部分照片，建议允许访问所有照片</string>
+    <string name="button_open_settings">去设置</string>
+    <string name="matisse_camera_permission_description">需要相机权限以拍摄照片。</string>
+    <string name="matisse_media_permission_description">允许访问更多照片和视频，以便继续选择。</string>
     <string name="matisse_add_media">添加照片</string>
     <string name="matisse_take_photo">拍照</string>
     <string name="sdcard_permission_description">用于发送/分享/下载视频、图片、上传个人头像、扫一扫进行二维码识别、保存文件和日志。</string>
