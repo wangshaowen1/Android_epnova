@@ -178,6 +178,7 @@ import com.kuaigeglobal.epnova.core.network.apis.response.FirstRechargeDialogDat
 import com.kuaigeglobal.epnova.core.network.apis.response.FollowingData
 import com.kuaigeglobal.epnova.core.network.apis.response.HomeBookShelfData
 import com.kuaigeglobal.epnova.core.network.apis.response.LikeData
+import com.kuaigeglobal.epnova.core.network.apis.response.MemberCardData
 import com.kuaigeglobal.epnova.core.network.apis.response.OrderNoData
 import com.kuaigeglobal.epnova.core.network.apis.response.PictureBook
 import com.kuaigeglobal.epnova.core.network.apis.response.PointAmountData
@@ -295,6 +296,13 @@ interface ApiService {
      */
     @POST(ApiConstants.VIP_CONFIG)
     suspend fun vipConfig(@Body body: UserTokenBody): ApiResponse<VipConfigInfo?>
+
+    /**
+     * 查询会员中心卡片
+     */
+    @Headers("mobileType: 1")
+    @POST(ApiConstants.MEMBER_CARD_CURRENT)
+    suspend fun getCurrentMemberCard(): ApiResponse<MemberCardData?>
 
     /**
      * 用户日活记录

@@ -90,6 +90,11 @@ object ApiConstants {
      */
     const val VIP_CONFIG = "vip/getVipConfig"
 
+    /**
+     * 查询会员中心卡片
+     */
+    const val MEMBER_CARD_CURRENT = "trade/member/card/current"
+
 
     /**
      * 用户日活记录

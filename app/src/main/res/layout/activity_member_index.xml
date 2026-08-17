@@ -48,6 +48,66 @@
                     app:layout_constraintStart_toStartOf="@id/iv_member_top"
                     tools:src="@drawable/icon_member_text_1" />
 
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/member_price_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="24dp"
+                    android:layout_marginTop="7dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/iv_member_top">
+
+                    <ImageView
+                        android:id="@+id/iv_member_credits"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/icon_power"
+                        app:layout_constraintBottom_toBottomOf="@id/tv_member_credits"
+                        app:layout_constraintEnd_toStartOf="@id/tv_member_credits"
+                        app:layout_constraintHorizontal_bias="0"
+                        app:layout_constraintHorizontal_chainStyle="packed"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/tv_member_credits" />
+
+                    <TextView
+                        android:id="@+id/tv_member_credits"
+                        style="@style/Text.SemiBold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="4dp"
+                        android:textColor="@color/text_color_1_dark"
+                        android:textSize="42sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/tv_member_credits_unit"
+                        app:layout_constraintStart_toEndOf="@id/iv_member_credits"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:text="9999" />
+
+                    <TextView
+                        android:id="@+id/tv_member_credits_unit"
+                        style="@style/Text.Regular"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/text_color_4_dark"
+                        android:textSize="14sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/tv_member_credits"
+                        tools:text="/week" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_privilege"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="24dp"
+                    android:layout_marginTop="18dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="@id/member_price_layout"
+                    app:layout_constraintStart_toStartOf="@id/member_price_layout"
+                    app:layout_constraintTop_toBottomOf="@id/member_price_layout"
+                    app:layout_constraintVertical_bias="0" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -91,14 +151,14 @@
                 tools:text="@string/member_subscribe_now" />
 
             <TextView
-                android:layout_gravity="center"
                 style="@style/Text.Regular"
-                android:textSize="12sp"
-                android:textColor="@color/text_color_3_dark"
-                tools:text="@string/member_cancel_anytime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp" />
+                android:layout_gravity="center"
+                android:layout_marginTop="12dp"
+                android:textColor="@color/text_color_3_dark"
+                android:textSize="12sp"
+                tools:text="@string/member_cancel_anytime" />
         </LinearLayout>
 
         <include
