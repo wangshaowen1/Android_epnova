@@ -59,7 +59,6 @@
 
                 <TextView
                     android:id="@+id/tv_name"
-                    android:textSize="18sp"
                     style="@style/Text.SemiBold"
                     singleClick="@{layout.clickHandler::onClick}"
                     android:layout_width="wrap_content"
@@ -71,6 +70,7 @@
                     android:maxLines="1"
                     android:text="@{layout.userInfo[`nickname`]}"
                     android:textColor="@color/color_96_ffffff"
+                    android:textSize="18sp"
                     app:layout_constraintBottom_toTopOf="@id/tv_id"
                     app:layout_constraintStart_toEndOf="@id/siv_avatar"
                     app:layout_constraintTop_toTopOf="@id/siv_avatar"
@@ -85,28 +85,28 @@
                     app:layout_constraintStart_toStartOf="@id/tv_name">
 
                     <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_theme_color1_r50"
                         android:gravity="center"
                         android:paddingHorizontal="6dp"
-                        android:paddingVertical="4dp"
-                        android:background="@drawable/bg_theme_color1_r50"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content">
+                        android:paddingVertical="4dp">
 
                         <ImageView
-                            android:importantForAccessibility="no"
-                            android:src="@drawable/ic_coins"
                             android:layout_width="16dp"
-                            android:layout_height="16dp"/>
+                            android:layout_height="16dp"
+                            android:importantForAccessibility="no"
+                            android:src="@drawable/ic_coins" />
 
                         <TextView
                             android:id="@+id/tv_floating_tip"
+                            style="@style/Text.Regular"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="4dp"
-                            style="@style/Text.Regular"
-                            android:textSize="12sp"
                             android:text="@{@string/login_claim_coins(layout.loginRewards)}"
                             android:textColor="?attr/textColor1"
+                            android:textSize="12sp"
                             tools:text="@string/login_claim_coins" />
                     </LinearLayout>
 
@@ -128,10 +128,19 @@
                     app:layout_constraintStart_toEndOf="@id/tv_name"
                     app:layout_constraintTop_toTopOf="@id/tv_name" />
 
+                <ImageView
+                    android:id="@+id/iv_member_tag"
+                    setVisible="@{layout.isLogin()}"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:src="@drawable/icon_member_tag"
+                    app:layout_constraintBottom_toBottomOf="@id/tv_name"
+                    app:layout_constraintStart_toEndOf="@id/tv_name"
+                    app:layout_constraintTop_toTopOf="@id/tv_name" />
 
                 <TextView
                     android:id="@+id/tv_id"
-                    android:textSize="12sp"
                     style="@style/Text.Regular"
                     singleClick="@{layout.clickHandler::onClick}"
                     android:layout_width="wrap_content"
@@ -139,6 +148,7 @@
                     android:layout_marginBottom="@dimen/spacing_s"
                     android:text="@{`UID:`+layout.userInfo[`id`]}"
                     android:textColor="?attr/textColor4"
+                    android:textSize="12sp"
                     app:layout_constraintBottom_toBottomOf="@id/siv_avatar"
                     app:layout_constraintStart_toStartOf="@id/tv_name"
                     app:layout_constraintTop_toBottomOf="@id/tv_name"
@@ -157,178 +167,384 @@
                     app:layout_constraintTop_toTopOf="@id/tv_id" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <!-- member -->
+            <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/spacing_l"
-                android:layout_marginTop="@dimen/dp20"
-                android:background="@drawable/bg_06_ffffff_r12"
-                android:paddingBottom="13dp">
+                android:layout_marginTop="24dp">
 
-                <LinearLayout
-                    android:id="@+id/ll_store"
-                    singleClick="@{layout.clickHandler::onClick}"
+                <!-- 周订阅 -->
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="51dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:paddingHorizontal="15dp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
+                    android:layout_height="209dp"
+                    android:background="@drawable/icon_mine_member_209"
+                    tools:visibility="visible">
 
                     <TextView
+                        android:id="@+id/mine_member_week_title"
+                        style="@style/Text.Bold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="15dp"
+                        android:layout_marginTop="15dp"
+                        android:text="@string/member_creator_plan"
+                        android:textColor="@color/text_color_2_dark"
+                        android:textSize="18sp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/mine_member_week_desc"
+                        style="@style/Text.Regular"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:paddingHorizontal="15dp"
+                        android:textColor="@color/text_color_4_dark"
+                        android:textSize="12sp"
+                        app:layout_constrainedWidth="true"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/mine_member_week_title"
+                        tools:text="Get more credits to create your next AI drama" />
+
+                    <LinearLayout
+                        android:id="@+id/mine_member_privilege_view_1"
+                        android:layout_width="72dp"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        app:layout_constraintBottom_toTopOf="@id/mine_member_btn"
+                        app:layout_constraintEnd_toStartOf="@id/mine_member_privilege_view_2"
+                        app:layout_constraintHorizontal_chainStyle="packed"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/mine_member_week_desc">
+
+                        <ImageView
+                            android:layout_width="36dp"
+                            android:layout_height="36dp"
+                            android:src="@drawable/icon_mine_member_create_more_drama" />
+
+                        <TextView
+                            style="@style/Text.Regular"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:gravity="center"
+                            android:text="@string/member_create_more_drama"
+                            android:textColor="@color/text_color_2_dark"
+                            android:textSize="10sp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/mine_member_privilege_view_2"
+                        android:layout_width="72dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="34dp"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        app:layout_constraintBottom_toBottomOf="@id/mine_member_privilege_view_1"
+                        app:layout_constraintEnd_toStartOf="@id/mine_member_privilege_view_3"
+                        app:layout_constraintStart_toEndOf="@id/mine_member_privilege_view_1"
+                        app:layout_constraintTop_toTopOf="@id/mine_member_privilege_view_1"
+                        app:layout_constraintVertical_bias="0">
+
+                        <ImageView
+                            android:layout_width="36dp"
+                            android:layout_height="36dp"
+                            android:src="@drawable/icon_mine_member_premium_quality" />
+
+                        <TextView
+                            style="@style/Text.Regular"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:gravity="center"
+                            android:text="@string/member_premium_quality"
+                            android:textColor="@color/text_color_2_dark"
+                            android:textSize="10sp" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/mine_member_privilege_view_3"
+                        android:layout_width="72dp"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        app:layout_constraintBottom_toBottomOf="@id/mine_member_privilege_view_1"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/mine_member_privilege_view_2"
+                        app:layout_constraintTop_toTopOf="@id/mine_member_privilege_view_1"
+                        app:layout_constraintVertical_bias="0">
+
+                        <ImageView
+                            android:layout_width="36dp"
+                            android:layout_height="36dp"
+                            android:src="@drawable/icon_mine_member_publish_earn" />
+
+                        <TextView
+                            style="@style/Text.Regular"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:gravity="center"
+                            android:text="@string/member_publish_earn"
+                            android:textColor="@color/text_color_2_dark"
+                            android:textSize="10sp" />
+
+                    </LinearLayout>
+
+                    <ImageView
+                        android:id="@+id/mine_member_btn"
+                        singleClick="@{layout.clickHandler::onClick}"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_marginHorizontal="30dp"
+                        android:layout_marginBottom="16dp"
+                        android:src="@drawable/icon_mine_member_btn"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintDimensionRatio="285:44"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent" />
+
+                    <TextView
+                        style="@style/Text.Medium"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/fixed_black_1"
                         android:textSize="16sp"
+                        app:layout_constraintBottom_toBottomOf="@id/mine_member_btn"
+                        app:layout_constraintEnd_toEndOf="@id/mine_member_btn"
+                        app:layout_constraintStart_toStartOf="@id/mine_member_btn"
+                        app:layout_constraintTop_toTopOf="@id/mine_member_btn"
+                        tools:text="@string/member_subscribe_now" />
+
+                    <TextView
+                        android:id="@+id/mine_member_discount"
+                        style="@style/Text.SemiBold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/shape_ff2e55_r4"
+                        android:paddingHorizontal="8dp"
+                        android:paddingVertical="2dp"
+                        android:textColor="@color/text_color_1_dark"
+                        android:textSize="12sp"
+                        app:layout_constraintBottom_toTopOf="@id/mine_member_btn"
+                        app:layout_constraintEnd_toEndOf="@id/mine_member_btn"
+                        app:layout_constraintTop_toTopOf="@id/mine_member_btn"
+                        tools:text="Save 33%" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <!-- 月订阅 -->
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="80dp"
+                    android:background="@drawable/icon_mine_member_80"
+                    android:padding="15dp"
+                    tools:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/mine_member_month_title"
+                        style="@style/Text.Bold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/member_creator_plan"
+                        android:textColor="@color/text_color_2_dark"
+                        android:textSize="18sp"
+                        app:layout_constraintBottom_toTopOf="@id/mine_member_month_desc"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_bias="0.5"
+                        app:layout_constraintVertical_chainStyle="packed" />
+
+                    <TextView
+                        android:id="@+id/mine_member_month_desc"
+                        style="@style/Text.Regular"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:textColor="@color/text_color_4_dark"
+                        android:textSize="12sp"
+                        app:layout_constrainedWidth="true"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/mine_member_month_title"
+                        tools:text="Super Weekly Plan Active · Renews on  Aug 12, 2026" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </FrameLayout>
+
+            <!-- store -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="72dp"
+                android:layout_marginHorizontal="@dimen/spacing_l"
+                android:layout_marginVertical="@dimen/spacing_l"
+                android:orientation="horizontal"
+                android:weightSum="2">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/mine_coins"
+                    singleClick="@{layout.clickHandler::onClick}"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_06_ffffff_r12">
+
+                    <TextView
+                        android:id="@+id/tv_coins_data"
                         style="@style/Text.Medium"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="@string/store_store"
-                        android:textColor="@color/color_96_ffffff" />
+                        android:layout_marginStart="@dimen/spacing_xs"
+                        android:maxLines="1"
+                        android:text="@{layout.coins}"
+                        android:textColor="@color/color_96_ffffff"
+                        android:textSize="20sp"
+                        app:layout_constrainedWidth="true"
+                        app:layout_constraintBottom_toTopOf="@id/tv_coins"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/iv_coins"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_bias="0.5"
+                        app:layout_constraintVertical_chainStyle="packed"
+                        tools:text="0" />
+
+                    <ImageView
+                        android:id="@+id/iv_coins"
+                        android:layout_width="12dp"
+                        android:layout_height="12dp"
+                        android:layout_marginStart="15dp"
+                        android:importantForAccessibility="no"
+                        android:src="@drawable/ic_coins"
+                        app:layout_constraintBottom_toBottomOf="@id/tv_coins_data"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/tv_coins_data" />
+
+                    <TextView
+                        android:id="@+id/tv_coins"
+                        style="@style/Text.Regular"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="2dp"
+                        android:layout_marginTop="6dp"
+                        android:text="@string/newbie_coins"
+                        android:textColor="?attr/textColor4"
+                        android:textSize="12sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="@id/iv_coins"
+                        app:layout_constraintTop_toBottomOf="@id/tv_coins_data" />
+
+                    <ImageView
+                        android:id="@+id/iv_coins_tooltip"
+                        singleClick="@{layout.clickHandler::onClick}"
+                        android:layout_width="12dp"
+                        android:layout_height="12dp"
+                        android:layout_marginStart="2dp"
+                        android:importantForAccessibility="no"
+                        android:src="@drawable/icon_attention"
+                        app:layout_constraintBottom_toBottomOf="@+id/tv_coins"
+                        app:layout_constraintStart_toEndOf="@+id/tv_coins"
+                        app:layout_constraintTop_toTopOf="@+id/tv_coins" />
 
                     <ImageView
                         android:layout_width="16dp"
                         android:layout_height="16dp"
+                        android:layout_marginEnd="10dp"
                         android:importantForAccessibility="no"
-                        android:src="@drawable/arrow_right_gray36" />
-                </LinearLayout>
+                        android:src="@drawable/arrow_right_gray36"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-                <View
-                    android:id="@+id/divider"
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginHorizontal="15dp"
-                    android:background="@color/border_color_2_dark"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/ll_store" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
-                <TextView
-                    android:id="@+id/tv_coins_data"
-                    style="@style/Text.Medium"
-                    android:textSize="20sp"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="15dp"
-                    android:layout_marginTop="13dp"
-                    android:maxLines="1"
-                    android:text="@{layout.coins}"
-                    android:textColor="@color/color_96_ffffff"
-                    android:layout_marginEnd="@dimen/spacing_xs"
-                    app:layout_constraintEnd_toStartOf="@+id/tv_credits_data"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/divider"
-                    tools:text="0" />
-
-                <ImageView
-                    android:id="@+id/iv_coins"
-                    android:layout_width="12dp"
-                    android:layout_height="12dp"
-                    android:importantForAccessibility="no"
-                    android:src="@drawable/ic_coins"
-                    app:layout_constraintBottom_toBottomOf="@id/tv_coins"
-                    app:layout_constraintStart_toStartOf="@id/tv_coins_data"
-                    app:layout_constraintTop_toTopOf="@id/tv_coins" />
-
-                <TextView
-                    android:id="@+id/tv_coins"
-                    style="@style/Text.Regular"
-                    android:textSize="12sp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="2dp"
-                    android:layout_marginTop="4dp"
-                    android:text="@string/newbie_coins"
-                    android:textColor="?attr/textColor4"
-                    app:layout_constraintStart_toEndOf="@id/iv_coins"
-                    app:layout_constraintTop_toBottomOf="@id/tv_coins_data" />
-
-                <ImageView
-                    android:id="@+id/iv_coins_tooltip"
-                    singleClick="@{layout.clickHandler::onClick}"
-                    android:layout_width="12dp"
-                    android:layout_height="12dp"
-                    android:layout_marginStart="2dp"
-                    android:importantForAccessibility="no"
-                    android:src="@drawable/icon_attention"
-                    app:layout_constraintBottom_toBottomOf="@+id/tv_coins"
-                    app:layout_constraintStart_toEndOf="@+id/tv_coins"
-                    app:layout_constraintTop_toTopOf="@+id/tv_coins" />
-
-                <TextView
-                    android:id="@+id/tv_credits_data"
-                    style="@style/Text.Medium"
-                    android:textSize="20sp"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/spacing_xs"
-                    android:maxLines="1"
-                    android:text="@{layout.credits}"
-                    android:textColor="@color/color_96_ffffff"
-                    app:layout_constraintEnd_toStartOf="@id/tv_recharge"
-                    app:layout_constraintStart_toStartOf="@id/iv_credits"
-                    app:layout_constraintTop_toTopOf="@id/tv_coins_data"
-                    tools:text="0" />
-
-                <ImageView
-                    android:id="@+id/iv_credits"
-                    android:layout_width="12dp"
-                    android:layout_height="12dp"
-                    android:layout_marginStart="40dp"
-                    android:importantForAccessibility="no"
-                    android:src="@drawable/icon_power"
-                    app:layout_constraintBottom_toBottomOf="@id/tv_credits"
-                    app:layout_constraintStart_toEndOf="@id/iv_coins_tooltip"
-                    app:layout_constraintTop_toTopOf="@id/tv_credits" />
-
-                <TextView
-                    android:id="@+id/tv_credits"
-                    style="@style/Text.Regular"
-                    android:textSize="12sp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="2dp"
-                    android:layout_marginTop="4dp"
-                    android:text="@string/profile_credits"
-                    android:textColor="?attr/textColor4"
-                    app:layout_constraintStart_toEndOf="@id/iv_credits"
-                    app:layout_constraintTop_toBottomOf="@id/tv_credits_data" />
-
-                <ImageView
-                    android:id="@+id/iv_credits_tooltip"
-                    singleClick="@{layout.clickHandler::onClick}"
-                    android:layout_width="12dp"
-                    android:layout_height="12dp"
-                    android:layout_marginStart="2dp"
-                    android:importantForAccessibility="no"
-                    android:src="@drawable/icon_attention"
-                    app:layout_constraintBottom_toBottomOf="@+id/tv_credits"
-                    app:layout_constraintStart_toEndOf="@+id/tv_credits"
-                    app:layout_constraintTop_toTopOf="@+id/tv_credits" />
-
-                <TextView
-                    android:id="@+id/tv_recharge"
-                    style="@style/Text.Medium"
-                    android:textSize="14sp"
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/mine_credits"
                     singleClick="@{layout.clickHandler::onClick}"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="15dp"
-                    android:background="@drawable/bg_theme_color1_r50"
-                    android:gravity="center"
-                    android:paddingHorizontal="14dp"
-                    android:paddingVertical="8dp"
-                    android:text="@string/profile_recharge"
-                    android:textColor="?attr/textColor1"
-                    app:layout_constraintBottom_toBottomOf="@+id/tv_credits"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/tv_credits_data" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="13dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_06_ffffff_r12">
+
+                    <TextView
+                        android:id="@+id/tv_credits_data"
+                        style="@style/Text.Medium"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/spacing_xs"
+                        android:maxLines="1"
+                        android:text="@{layout.credits}"
+                        android:textColor="@color/color_96_ffffff"
+                        android:textSize="20sp"
+                        app:layout_constrainedWidth="true"
+                        app:layout_constraintBottom_toTopOf="@id/tv_credits"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/iv_credits"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_bias="0.5"
+                        app:layout_constraintVertical_chainStyle="packed"
+                        tools:text="0" />
+
+                    <ImageView
+                        android:id="@+id/iv_credits"
+                        android:layout_width="12dp"
+                        android:layout_height="12dp"
+                        android:layout_marginStart="15dp"
+                        android:importantForAccessibility="no"
+                        android:src="@drawable/icon_power"
+                        app:layout_constraintBottom_toBottomOf="@id/tv_credits_data"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/tv_credits_data" />
+
+                    <TextView
+                        android:id="@+id/tv_credits"
+                        style="@style/Text.Regular"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:text="@string/profile_credits"
+                        android:textColor="?attr/textColor4"
+                        android:textSize="12sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="@id/iv_credits"
+                        app:layout_constraintTop_toBottomOf="@id/tv_credits_data" />
+
+                    <ImageView
+                        android:id="@+id/iv_credits_tooltip"
+                        singleClick="@{layout.clickHandler::onClick}"
+                        android:layout_width="12dp"
+                        android:layout_height="12dp"
+                        android:layout_marginStart="2dp"
+                        android:importantForAccessibility="no"
+                        android:src="@drawable/icon_attention"
+                        app:layout_constraintBottom_toBottomOf="@+id/tv_credits"
+                        app:layout_constraintStart_toEndOf="@+id/tv_credits"
+                        app:layout_constraintTop_toTopOf="@+id/tv_credits" />
+
+                    <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:layout_marginEnd="10dp"
+                        android:importantForAccessibility="no"
+                        android:src="@drawable/arrow_right_gray36"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="15dp"
-                android:layout_marginTop="@dimen/spacing_l"
                 android:background="@drawable/bg_06_ffffff_r12"
                 android:orientation="vertical">
 
@@ -349,13 +565,13 @@
 
                     <TextView
                         style="@style/Text.Regular"
-                        android:textSize="14sp"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/spacing_m"
                         android:layout_weight="1"
                         android:text="@string/profile_income"
-                        android:textColor="@color/color_96_ffffff" />
+                        android:textColor="@color/color_96_ffffff"
+                        android:textSize="14sp" />
 
                     <ImageView
                         android:layout_width="16dp"
@@ -381,18 +597,17 @@
 
                     <TextView
                         style="@style/Text.Regular"
-                        android:textSize="14sp"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/spacing_m"
                         android:layout_weight="1"
                         android:text="@string/rewards_title"
-                        android:textColor="@color/color_96_ffffff" />
+                        android:textColor="@color/color_96_ffffff"
+                        android:textSize="14sp" />
 
                     <TextView
                         android:id="@+id/tv_rewards_data"
                         style="@style/Text.Regular"
-                        android:textSize="12sp"
                         setVisible="@{layout.unCheckNum>0}"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -403,6 +618,7 @@
                         android:paddingHorizontal="6dp"
                         android:text="@{`+`+layout.unCheckNum}"
                         android:textColor="?attr/textColor1"
+                        android:textSize="12sp"
                         tools:text="+1000" />
 
                     <ImageView
@@ -422,14 +638,14 @@
                 android:orientation="vertical">
 
                 <LinearLayout
-                    android:visibility="gone"
                     android:id="@+id/ll_languages"
                     singleClick="@{layout.clickHandler::onClick}"
                     android:layout_width="match_parent"
                     android:layout_height="54dp"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
-                    android:paddingHorizontal="@dimen/spacing_l">
+                    android:paddingHorizontal="@dimen/spacing_l"
+                    android:visibility="gone">
 
                     <ImageView
                         android:layout_width="24dp"
@@ -439,22 +655,22 @@
 
                     <TextView
                         style="@style/Text.Regular"
-                        android:textSize="14sp"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/spacing_m"
                         android:layout_weight="1"
                         android:text="@string/settings_language"
-                        android:textColor="@color/color_96_ffffff" />
+                        android:textColor="@color/color_96_ffffff"
+                        android:textSize="14sp" />
 
                     <TextView
                         style="@style/Text.Regular"
-                        android:textSize="14sp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="8dp"
                         android:text="@{layout.language.name}"
                         android:textColor="?attr/textColor4"
+                        android:textSize="14sp"
                         tools:text="English" />
 
                     <ImageView
@@ -481,13 +697,13 @@
 
                     <TextView
                         style="@style/Text.Regular"
-                        android:textSize="14sp"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/spacing_m"
                         android:layout_weight="1"
                         android:text="@string/profile_feedback_suggestions"
-                        android:textColor="@color/color_96_ffffff" />
+                        android:textColor="@color/color_96_ffffff"
+                        android:textSize="14sp" />
 
                     <ImageView
                         android:layout_width="16dp"
@@ -513,13 +729,13 @@
 
                     <TextView
                         style="@style/Text.Regular"
-                        android:textSize="14sp"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/spacing_m"
                         android:layout_weight="1"
                         android:text="@string/title_settings"
-                        android:textColor="@color/color_96_ffffff" />
+                        android:textColor="@color/color_96_ffffff"
+                        android:textSize="14sp" />
 
                     <ImageView
                         android:layout_width="16dp"

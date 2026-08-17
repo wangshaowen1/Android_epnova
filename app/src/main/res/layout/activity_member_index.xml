@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="layout"
+            type="com.kuaigeglobal.epnova.feature.member.vm.MemberIndexViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="?attr/bgColor2">
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="342dp">
+
+                <ImageView
+                    android:id="@+id/iv_member_top"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:src="@drawable/icon_member_top_board"
+                    app:layout_constraintDimensionRatio="375:280"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/iv_member_top_text"
+                    android:layout_width="320dp"
+                    android:layout_height="108dp"
+                    android:layout_marginBottom="18dp"
+                    app:layout_constraintBottom_toBottomOf="@id/iv_member_top"
+                    app:layout_constraintEnd_toEndOf="@id/iv_member_top"
+                    app:layout_constraintStart_toStartOf="@id/iv_member_top"
+                    tools:src="@drawable/icon_member_text_1" />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.core.widget.NestedScrollView>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:src="@drawable/icon_member_bottom_mask"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="375:246"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <LinearLayout
+            android:id="@+id/ll_member_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="34dp"
+            android:orientation="vertical"
+            android:paddingHorizontal="15dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_member_recharge"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/btn_member_subscribe"
+                style="@style/Text.Bold"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:layout_marginTop="42dp"
+                android:background="@drawable/selector_creation_button"
+                android:gravity="center"
+                android:textColor="@color/text_color_1_dark"
+                android:textSize="16sp"
+                tools:text="@string/member_subscribe_now" />
+
+            <TextView
+                android:layout_gravity="center"
+                style="@style/Text.Regular"
+                android:textSize="12sp"
+                android:textColor="@color/text_color_3_dark"
+                tools:text="@string/member_cancel_anytime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp" />
+        </LinearLayout>
+
+        <include
+            android:id="@+id/toolbar"
+            layout="@layout/view_model_toolbar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:toolbar="@{layout.mToolbarVM}" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

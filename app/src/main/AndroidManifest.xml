@@ -310,6 +310,8 @@
         <activity
             android:name=".feature.recharge.MyBalanceActivity"
             android:screenOrientation="portrait" />
+        <activity android:name=".feature.member.MemberIndexActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".feature.splash.newer.GuideStep1AdActivity"
             android:screenOrientation="portrait" />
