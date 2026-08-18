@@ -95,6 +95,11 @@ object ApiConstants {
      */
     const val MEMBER_CARD_CURRENT = "trade/member/card/current"
 
+    /**
+     * 查询会员套餐
+     */
+    const val MEMBER_PLAN_LIST = "trade/member/plan/list"
+
 
     /**
      * 用户日活记录
@@ -705,6 +710,11 @@ object ApiConstants {
      * 算力信息配置列表
      */
     const val POINT_CONFIG_LIST = "trade/point/config/list"
+
+    /**
+     * 查询算力不足付费引导
+     */
+    const val POINT_INSUFFICIENT_GUIDE = "trade/point/insufficientGuide"
 
     /**
      * 交易支付方式配置列表

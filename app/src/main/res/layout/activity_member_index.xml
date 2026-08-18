@@ -43,6 +43,7 @@
                     android:layout_width="320dp"
                     android:layout_height="108dp"
                     android:layout_marginBottom="18dp"
+                    android:src="@{layout.planMode ? @drawable/icon_member_text_2 : @drawable/icon_member_text_1}"
                     app:layout_constraintBottom_toBottomOf="@id/iv_member_top"
                     app:layout_constraintEnd_toEndOf="@id/iv_member_top"
                     app:layout_constraintStart_toStartOf="@id/iv_member_top"
@@ -75,6 +76,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="4dp"
+                        android:text="@{layout.selectedPeriodPointNum}"
                         android:textColor="@color/text_color_1_dark"
                         android:textSize="42sp"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -88,6 +90,7 @@
                         style="@style/Text.Regular"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:text="@{layout.selectedPeriodUnit}"
                         android:textColor="@color/text_color_4_dark"
                         android:textSize="14sp"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -103,11 +106,14 @@
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="24dp"
                     android:layout_marginTop="18dp"
+                    android:nestedScrollingEnabled="false"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="@id/member_price_layout"
                     app:layout_constraintStart_toStartOf="@id/member_price_layout"
                     app:layout_constraintTop_toBottomOf="@id/member_price_layout"
-                    app:layout_constraintVertical_bias="0" />
+                    app:layout_constraintVertical_bias="0"
+                    tools:itemCount="4"
+                    tools:listitem="@layout/item_member_privilege" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -136,7 +142,9 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_member_recharge"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                tools:itemCount="2"
+                tools:listitem="@layout/item_member_recharge" />
 
             <TextView
                 android:id="@+id/btn_member_subscribe"
@@ -148,6 +156,7 @@
                 android:gravity="center"
                 android:textColor="@color/text_color_1_dark"
                 android:textSize="16sp"
+                android:text="@{layout.planMode ? @string/member_upgrade_now : @string/member_subscribe_now}"
                 tools:text="@string/member_subscribe_now" />
 
             <TextView

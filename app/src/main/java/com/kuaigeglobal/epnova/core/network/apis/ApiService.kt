@@ -179,10 +179,12 @@ import com.kuaigeglobal.epnova.core.network.apis.response.FollowingData
 import com.kuaigeglobal.epnova.core.network.apis.response.HomeBookShelfData
 import com.kuaigeglobal.epnova.core.network.apis.response.LikeData
 import com.kuaigeglobal.epnova.core.network.apis.response.MemberCardData
+import com.kuaigeglobal.epnova.core.network.apis.response.MemberPlanListData
 import com.kuaigeglobal.epnova.core.network.apis.response.OrderNoData
 import com.kuaigeglobal.epnova.core.network.apis.response.PictureBook
 import com.kuaigeglobal.epnova.core.network.apis.response.PointAmountData
 import com.kuaigeglobal.epnova.core.network.apis.response.CoinConfigData
+import com.kuaigeglobal.epnova.core.network.apis.response.PointInsufficientGuideData
 import com.kuaigeglobal.epnova.core.network.apis.response.PointConfigData
 import com.kuaigeglobal.epnova.core.network.apis.response.ShelfStatusData
 import com.kuaigeglobal.epnova.core.network.apis.response.ShortLikeData
@@ -300,9 +302,14 @@ interface ApiService {
     /**
      * 查询会员中心卡片
      */
-    @Headers("mobileType: 1")
     @POST(ApiConstants.MEMBER_CARD_CURRENT)
     suspend fun getCurrentMemberCard(): ApiResponse<MemberCardData?>
+
+    /**
+     * 查询会员套餐
+     */
+    @POST(ApiConstants.MEMBER_PLAN_LIST)
+    suspend fun getMemberPlanList(): ApiResponse<MemberPlanListData?>
 
     /**
      * 用户日活记录
@@ -1089,6 +1096,12 @@ interface ApiService {
      */
     @POST(ApiConstants.POINT_CONFIG_LIST)
     suspend fun pointConfigList(@Body body: UserTokenBody): ApiResponse<PointConfigData?>
+
+    /**
+     * 查询算力不足付费引导
+     */
+    @POST(ApiConstants.POINT_INSUFFICIENT_GUIDE)
+    suspend fun pointInsufficientGuide(): ApiResponse<PointInsufficientGuideData?>
 
     /**
      * 交易支付方式配置列表

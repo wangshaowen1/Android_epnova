@@ -813,5 +813,5 @@
     <string name="member_publish_earn">Publish &amp; earn</string>
     <string name="member_premium_quality">Premium Quality</string>
     <string name="member_create_more_drama">Create More Drama</string>
-    <string name="member_discount_percent">Save %1$d%</string>
+    <string name="member_discount_percent">Save %1$d%%</string>
 </resources>
