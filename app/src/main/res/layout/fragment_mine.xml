@@ -177,6 +177,7 @@
 
                 <!-- 周订阅 -->
                 <androidx.constraintlayout.widget.ConstraintLayout
+                    setVisible="@{!layout.memberCard.hasMonthly()}"
                     android:layout_width="match_parent"
                     android:layout_height="209dp"
                     android:background="@drawable/icon_mine_member_209"
@@ -302,6 +303,7 @@
                     <ImageView
                         android:id="@+id/mine_member_btn"
                         singleClick="@{layout.clickHandler::onClick}"
+                        setEnabled="@{layout.memberCard.hasEnable()}"
                         android:layout_width="0dp"
                         android:layout_height="0dp"
                         android:layout_marginHorizontal="30dp"
@@ -318,6 +320,7 @@
                         android:layout_height="wrap_content"
                         android:textColor="@color/fixed_black_1"
                         android:textSize="16sp"
+                        android:text="@{layout.memberCard.btnStr()}"
                         app:layout_constraintBottom_toBottomOf="@id/mine_member_btn"
                         app:layout_constraintEnd_toEndOf="@id/mine_member_btn"
                         app:layout_constraintStart_toStartOf="@id/mine_member_btn"
@@ -326,6 +329,7 @@
 
                     <TextView
                         android:id="@+id/mine_member_discount"
+                        setVisible="@{layout.memberCard.hasDiscount()}"
                         style="@style/Text.SemiBold"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -334,6 +338,7 @@
                         android:paddingVertical="2dp"
                         android:textColor="@color/text_color_1_dark"
                         android:textSize="12sp"
+                        android:text="@{layout.memberCard.discountStr()}"
                         app:layout_constraintBottom_toTopOf="@id/mine_member_btn"
                         app:layout_constraintEnd_toEndOf="@id/mine_member_btn"
                         app:layout_constraintTop_toTopOf="@id/mine_member_btn"
@@ -343,6 +348,7 @@
 
                 <!-- 月订阅 -->
                 <androidx.constraintlayout.widget.ConstraintLayout
+                    setVisible="@{layout.memberCard.hasMonthly()}"
                     android:layout_width="match_parent"
                     android:layout_height="80dp"
                     android:background="@drawable/icon_mine_member_80"
