@@ -87,6 +87,7 @@ import com.kuaigeglobal.epnova.core.network.apis.request.DramasTimbreBody
 import com.kuaigeglobal.epnova.core.network.apis.request.FeedbackBody
 import com.kuaigeglobal.epnova.core.network.apis.request.FcmTokenBody
 import com.kuaigeglobal.epnova.core.network.apis.request.GenerateStoryboardBody
+import com.kuaigeglobal.epnova.core.network.apis.request.GoogleMemberSubscriptionBody
 import com.kuaigeglobal.epnova.core.network.apis.request.HotCaseIdBody
 import com.kuaigeglobal.epnova.core.network.apis.request.GenerateSubtitleBody
 import com.kuaigeglobal.epnova.core.network.apis.request.IdsBody
@@ -97,6 +98,8 @@ import com.kuaigeglobal.epnova.core.network.apis.request.LatestEpisodeBody
 import com.kuaigeglobal.epnova.core.network.apis.request.LoginByFlashMobileBody
 import com.kuaigeglobal.epnova.core.network.apis.request.LoginByPhoneBody
 import com.kuaigeglobal.epnova.core.network.apis.request.LoginByThirdBody
+import com.kuaigeglobal.epnova.core.network.apis.request.MemberSubscriptionPrepareBody
+import com.kuaigeglobal.epnova.core.network.apis.request.MemberSubscriptionPrepareReleaseBody
 import com.kuaigeglobal.epnova.core.network.apis.request.MusicGenerateSourceBody
 import com.kuaigeglobal.epnova.core.network.apis.request.MyWorkBody
 import com.kuaigeglobal.epnova.core.network.apis.request.OptimizeContentData
@@ -180,6 +183,8 @@ import com.kuaigeglobal.epnova.core.network.apis.response.HomeBookShelfData
 import com.kuaigeglobal.epnova.core.network.apis.response.LikeData
 import com.kuaigeglobal.epnova.core.network.apis.response.MemberCardData
 import com.kuaigeglobal.epnova.core.network.apis.response.MemberPlanListData
+import com.kuaigeglobal.epnova.core.network.apis.response.MemberSubscriptionPrepareData
+import com.kuaigeglobal.epnova.core.network.apis.response.MemberSubscriptionPrepareReleaseData
 import com.kuaigeglobal.epnova.core.network.apis.response.OrderNoData
 import com.kuaigeglobal.epnova.core.network.apis.response.PictureBook
 import com.kuaigeglobal.epnova.core.network.apis.response.PointAmountData
@@ -310,6 +315,38 @@ interface ApiService {
      */
     @POST(ApiConstants.MEMBER_PLAN_LIST)
     suspend fun getMemberPlanList(): ApiResponse<MemberPlanListData?>
+
+    /**
+     * 准备会员购买
+     */
+    @POST(ApiConstants.MEMBER_SUBSCRIPTION_PURCHASE_PREPARE)
+    suspend fun prepareMemberSubscriptionPurchase(
+        @Body body: MemberSubscriptionPrepareBody,
+    ): ApiResponse<MemberSubscriptionPrepareData?>
+
+    /**
+     * 释放会员购买准备
+     */
+    @POST(ApiConstants.MEMBER_SUBSCRIPTION_PURCHASE_PREPARE_RELEASE)
+    suspend fun releaseMemberSubscriptionPurchasePrepare(
+        @Body body: MemberSubscriptionPrepareReleaseBody,
+    ): ApiResponse<MemberSubscriptionPrepareReleaseData?>
+
+    /**
+     * 确认 Google 订阅购买
+     */
+    @POST(ApiConstants.MEMBER_SUBSCRIPTION_GOOGLE_PURCHASE_CONFIRM)
+    suspend fun confirmGoogleMemberSubscriptionPurchase(
+        @Body body: GoogleMemberSubscriptionBody,
+    ): ApiResponse<Any?>
+
+    /**
+     * 自动同步 Google 订阅
+     */
+    @POST(ApiConstants.MEMBER_SUBSCRIPTION_GOOGLE_SYNC)
+    suspend fun syncGoogleMemberSubscription(
+        @Body body: GoogleMemberSubscriptionBody,
+    ): ApiResponse<Any?>
 
     /**
      * 用户日活记录

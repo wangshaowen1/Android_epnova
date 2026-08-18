@@ -100,6 +100,26 @@ object ApiConstants {
      */
     const val MEMBER_PLAN_LIST = "trade/member/plan/list"
 
+    /**
+     * 准备会员购买
+     */
+    const val MEMBER_SUBSCRIPTION_PURCHASE_PREPARE = "trade/member/subscription/purchase/prepare"
+
+    /**
+     * 释放会员购买准备
+     */
+    const val MEMBER_SUBSCRIPTION_PURCHASE_PREPARE_RELEASE = "trade/member/subscription/purchase/prepare/release"
+
+    /**
+     * 确认 Google 订阅购买
+     */
+    const val MEMBER_SUBSCRIPTION_GOOGLE_PURCHASE_CONFIRM = "trade/member/subscription/google/purchase/confirm"
+
+    /**
+     * 自动同步 Google 订阅
+     */
+    const val MEMBER_SUBSCRIPTION_GOOGLE_SYNC = "trade/member/subscription/google/sync"
+
 
     /**
      * 用户日活记录

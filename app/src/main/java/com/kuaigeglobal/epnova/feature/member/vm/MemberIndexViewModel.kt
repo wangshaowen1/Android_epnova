@@ -102,7 +102,7 @@ class MemberIndexViewModel : AppRepositoryViewModel<AppRepository>() {
 
         selectedPeriodPointNum.set(plan?.periodPointNum?.toString().orEmpty())
         selectedPeriodUnit.set("/${plan?.periodUnit.orEmpty()}")
-        
+
         submitPrivileges(plan?.benefitItems)
     }
 

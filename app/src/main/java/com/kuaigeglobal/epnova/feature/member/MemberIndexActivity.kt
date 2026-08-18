@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.ext.topActivity
 import com.kuaigeglobal.epnova.databinding.ActivityMemberIndexBinding
 import com.kuaigeglobal.epnova.feature.member.vm.MemberIndexViewModel
@@ -54,5 +55,10 @@ class MemberIndexActivity : BaseViewModelActivity<ActivityMemberIndexBinding, Me
 
     override fun <Data> onClick(view: View?, data: Data?) {
         super.onClick(view, data)
+        when (view?.id) {
+            R.id.btn_member_subscribe -> {
+
+            }
+        }
     }
 }
