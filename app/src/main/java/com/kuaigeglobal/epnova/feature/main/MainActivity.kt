@@ -20,6 +20,7 @@ import com.kuaigeglobal.epnova.core.Config
 import com.kuaigeglobal.epnova.core.Events
 import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.google.billing.BillingManager
+import com.kuaigeglobal.epnova.core.google.billing.MemberSubscriptionRecoveryManager
 import com.kuaigeglobal.epnova.core.manager.EventManager
 import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
 import com.kuaigeglobal.epnova.core.manager.UpgradeManager
@@ -97,6 +98,8 @@ class MainActivity : BaseViewModelActivity<ActivityMainBinding, MainViewModel>()
 
     private var exitTime: Long = 0
     private var needRefreshUserInfo: Boolean = false
+    /** 首次 INAPP 补偿完成后才允许 onResume 触发 SUBS 恢复，避免冷启动两个查询抢连接。 */
+    private var memberRecoveryStartupReady = false
     private val upgradeManager by lazy { UpgradeManager(this) }
 
     //当前打开的时间，用与跟注册时间对比来判断这一次登录的是否是刚注册的账号
@@ -159,6 +162,10 @@ class MainActivity : BaseViewModelActivity<ActivityMainBinding, MainViewModel>()
             delay(1000)
             BillingManager.markActivePage(true)
             BillingManager.queryPendingPurchases { _, _, _, _ ->
+                // 普通 INAPP 补偿结束后再启动会员 SUBS 恢复，避免两个查询同时争用尚在建立的
+                // Billing 连接。恢复管理器内部仍会检查当前账号标记；普通启动不会查询 SUBS。
+                memberRecoveryStartupReady = true
+                MemberSubscriptionRecoveryManager.recoverIfNeeded()
                 BillingManager.markActivePage(false)
             }
         }
@@ -276,6 +283,11 @@ class MainActivity : BaseViewModelActivity<ActivityMainBinding, MainViewModel>()
         super.onResume()
         GeneratingViewModel.visible = false
         upgradeManager.resumeImmediateUpdate()
+        if (memberRecoveryStartupReady && App.instance.isApiSecurityInit) {
+            // PENDING 可能在 App 留在后台期间转为 PURCHASED。每次主页面重新前台化都给恢复
+            // 管理器一次有界查询机会；没有当前账号标记或已有任务运行时会立即返回。
+            MemberSubscriptionRecoveryManager.recoverIfNeeded()
+        }
     }
 
     override fun <Data> onClick(view: View?, data: Data?) {

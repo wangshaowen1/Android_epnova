@@ -57,7 +57,9 @@ class MemberIndexActivity : BaseViewModelActivity<ActivityMemberIndexBinding, Me
         super.onClick(view, data)
         when (view?.id) {
             R.id.btn_member_subscribe -> {
-
+                // Activity 只转发 UI 事件；套餐资格、prepare、Billing 和服务端确认均由 ViewModel
+                // 按单笔购买上下文编排，避免页面层持有支付状态。
+                mRealVM.startMemberSubscription()
             }
         }
     }

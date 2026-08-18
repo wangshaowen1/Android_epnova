@@ -154,6 +154,7 @@
                 android:layout_height="44dp"
                 android:layout_marginTop="42dp"
                 android:background="@drawable/selector_creation_button"
+                android:enabled="@{layout.canSubscribe}"
                 android:gravity="center"
                 android:textColor="@color/text_color_1_dark"
                 android:textSize="16sp"

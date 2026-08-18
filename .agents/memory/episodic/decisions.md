@@ -103,3 +103,14 @@ Google Play 禁止通过 Play 分发的应用使用 Play 更新机制之外的�
 
 ### 验证结论
 STATIC：已确认强更入口使用 `AppUpdateManager`、前台恢复处理中断的 Immediate 流程，升级模块不再引用 APK 下载或安装逻辑；未跑 Gradle，需通过 Google Play 内部测试轨道验证更新可用、取消重试、安装重启和无可用更新降级。
+
+## 本轮会员订阅进程恢复归属
+
+### 变更了什么
+会员订阅进程重启恢复 → 由 `MemberSubscriptionRecoveryManager` 作为 Application 生命周期的唯一后台编排者：首页启动及重新前台化时仅在当前账号存在恢复标记时查询 Google SUBS，严格匹配 productId 与 obfuscatedAccountId，PURCHASED 调幂等 `google/sync`，PENDING/未知结果保留标记；会员页继续负责持有 prepare 上下文的正常 confirm/release。
+
+### 为什么
+原页面级恢复只能在用户重新进入会员页后执行，进程重启停留在首页时无法主动收敛已成交交易；如果首页和会员页同时恢复，又可能重复查询和 sync。恢复任务需要跨 Activity 重建存活、限制单实例与有界重试，同时不能持久化 purchaseToken、prepare token 或完整 Purchase。
+
+### 验证结论
+STATIC：已核对恢复标记账号隔离、商品与混淆账号双重匹配、后台/页面互斥、Billing 使用计数成对释放、最多一次查询重试，以及成功/无有效交易/稳定业务错误与 PENDING/网络未知/300185 的清理边界；未跑 Gradle，仍需 License Tester 实机验证进程杀死后恢复、PENDING 转 PURCHASED 和重复前台化。
