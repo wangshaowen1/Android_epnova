@@ -16,10 +16,9 @@ import com.kuaigeglobal.epnova.common.ext.showCommonDialog
 import com.kuaigeglobal.epnova.common.ext.topActivity
 import com.kuaigeglobal.epnova.common.utils.AutoProgressSimulator
 import com.kuaigeglobal.epnova.core.AppRepository
+import com.kuaigeglobal.epnova.core.ext.handlePointInsufficientError
 import com.kuaigeglobal.epnova.core.ext.launch
 import com.kuaigeglobal.epnova.core.ext.launchWithLoading
-import com.kuaigeglobal.epnova.core.ext.showRechargeDialog
-import com.kuaigeglobal.epnova.core.network.apis.ApiResponse
 import com.kuaigeglobal.epnova.core.network.apis.entity.CreationModelInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.SimpleStoryboardInfo
 import com.kuaigeglobal.epnova.core.network.apis.request.IdsBody
@@ -355,14 +354,7 @@ class StoryboardDesignViewModel : AppRepositoryViewModel<AppRepository>() {
                 bean = mRepo.api.workStoryboardVideoGenerate(WorkBody(workId, storyId)),
                 result = { toNextStep?.invoke(workId, storyId, data?.taskId) },
                 error = {
-                    if (
-                        this?.code == ApiResponse.RESPONSE_CODE_POWER_NOT_ENOUGH ||
-                        this?.code == ApiResponse.RESPONSE_CODE_POWER_ERROR
-                    ) {
-                        viewModelScope.launch {
-                            showRechargeDialog(true)
-                        }
-                    } else {
+                    if (!handlePointInsufficientError(this?.code)) {
                         this?.msg?.showToast()
                     }
                 })

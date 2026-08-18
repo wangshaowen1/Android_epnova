@@ -3,6 +3,7 @@
 package com.kuaigeglobal.epnova.core.ext
 
 import android.app.Activity
+import androidx.lifecycle.ViewModel
 import com.blankj.utilcode.util.AppUtils
 import com.blankj.utilcode.util.EncryptUtils
 import com.kuaigeglobal.epnova.R
@@ -15,9 +16,13 @@ import com.kuaigeglobal.epnova.core.Global
 import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.model.PhotoItem
 import com.kuaigeglobal.epnova.core.network.apis.ApiFactory
+import com.kuaigeglobal.epnova.core.network.apis.ApiResponse
 import com.kuaigeglobal.epnova.core.network.apis.entity.SimpleStoryboardInfo
 import com.kuaigeglobal.epnova.core.network.apis.request.ContentBody
+import com.kuaigeglobal.epnova.core.network.apis.response.PointInsufficientGuideData
 import com.kuaigeglobal.epnova.core.network.apis.response.UserHomeData
+import com.kuaigeglobal.epnova.core.response
+import com.kuaigeglobal.epnova.feature.member.MemberIndexActivity
 import com.kuaigeglobal.epnova.feature.recharge.PowerRechargeDialog
 import com.kuaigeglobal.epnova.feature.splash.newer.FirstRechargeCreditsDialog
 import com.kuaigeglobal.epnova.feature.splash.newer.FirstRechargeDialog
@@ -195,6 +200,64 @@ suspend fun sensitiveWordCheck(content: String?, needHighlight: Boolean? = true)
         return false to null
     }
     return true to null
+}
+
+/**
+ * 统一处理算力不足错误，并根据服务端配置展示对应付费引导。
+ *
+ * @return 当前错误码是否属于算力不足并已接管处理
+ */
+fun ViewModel.handlePointInsufficientError(
+    errorCode: Int?,
+    allowFirstRechargeForLegacyGuide: Boolean = true
+): Boolean {
+    val isPointInsufficient =
+        errorCode == ApiResponse.RESPONSE_CODE_POWER_NOT_ENOUGH ||
+            errorCode == ApiResponse.RESPONSE_CODE_POWER_ERROR
+    if (!isPointInsufficient) return false
+
+    launch(showToast = true) {
+        var guideType: Int? = null
+        response(
+            block = { ApiFactory.apiService.pointInsufficientGuide() },
+            result = {
+                guideType = data?.guideType ?: PointInsufficientGuideData.GUIDE_TYPE_LEGACY
+            },
+        )
+        val resolvedGuideType = guideType ?: return@launch
+
+        when (resolvedGuideType) {
+            PointInsufficientGuideData.GUIDE_TYPE_LEGACY -> {
+                showLegacyPointInsufficientGuide(allowFirstRechargeForLegacyGuide)
+            }
+
+            PointInsufficientGuideData.GUIDE_TYPE_FIRST_RECHARGE -> {
+                if (!showFirstRecharge(true, PowerRechargeDialog.TAB_CREDITS)) {
+                    showPowerRechargeDialog()
+                }
+            }
+
+            PointInsufficientGuideData.GUIDE_TYPE_MEMBER -> MemberIndexActivity.start()
+            PointInsufficientGuideData.GUIDE_TYPE_RECHARGE_DIALOG -> showPowerRechargeDialog()
+            else -> showLegacyPointInsufficientGuide(allowFirstRechargeForLegacyGuide)
+        }
+    }
+    return true
+}
+
+private suspend fun showLegacyPointInsufficientGuide(allowFirstRecharge: Boolean) {
+    if (allowFirstRecharge) {
+        showRechargeDialog(true, PowerRechargeDialog.TAB_CREDITS)
+    } else {
+        showPowerRechargeDialog()
+    }
+}
+
+private fun showPowerRechargeDialog() {
+    PowerRechargeDialog.show(
+        showToast = true,
+        rechargeTab = PowerRechargeDialog.TAB_CREDITS
+    )
 }
 
 suspend fun showRechargeDialog(

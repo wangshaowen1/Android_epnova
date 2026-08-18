@@ -17,13 +17,13 @@ import com.kuaigeglobal.epnova.base.viewmodel.AppRepositoryViewModel
 import com.kuaigeglobal.epnova.common.ext.topActivity
 import com.kuaigeglobal.epnova.common.utils.TextEncodingUtil
 import com.kuaigeglobal.epnova.core.Global
+import com.kuaigeglobal.epnova.core.ext.handlePointInsufficientError
 import com.kuaigeglobal.epnova.core.ext.launch
 import com.kuaigeglobal.epnova.core.ext.parseMessage
 import com.kuaigeglobal.epnova.core.ext.request
 import com.kuaigeglobal.epnova.core.ext.requestWithLoading
 import com.kuaigeglobal.epnova.core.manager.EventManager
 import com.kuaigeglobal.epnova.core.network.apis.ApiException
-import com.kuaigeglobal.epnova.core.network.apis.ApiResponse
 import com.kuaigeglobal.epnova.core.network.apis.entity.InspirationInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.SameStylePrefillInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.UnusedPackageInfo
@@ -42,12 +42,10 @@ import com.kuaigeglobal.epnova.feature.creator.data.CreationRepository
 import com.kuaigeglobal.epnova.feature.creator.data.DramaGenerateConstants
 import com.kuaigeglobal.epnova.feature.creator.hotcase.CreationHotCaseInfo
 import com.kuaigeglobal.epnova.feature.creator.hotcase.CreationHotCasePagingSource
-import com.kuaigeglobal.epnova.feature.recharge.PowerRechargeDialog
 import com.nhsd.basic.ext.getResString
 import com.nhsd.basic.ext.getThemeColor
 import com.nhsd.basic.ext.showToast
 import com.nhsd.basic.utils.Logger
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.Flow
 
 class CreationViewModel : AppRepositoryViewModel<CreationRepository>() {
@@ -348,16 +346,12 @@ class CreationViewModel : AppRepositoryViewModel<CreationRepository>() {
                 callback.invoke(data)
             },
             onError = {
-                if (
-                    it is ApiException &&
-                    (it.errorCode == ApiResponse.RESPONSE_CODE_POWER_NOT_ENOUGH ||
-                        it.errorCode == ApiResponse.RESPONSE_CODE_POWER_ERROR)
-                ) {
-                    viewModelScope.launch {
-                        //这里和VideoSetDialog共用首充礼包弹出场景，前面会弹，这就不需要弹了，直接弹出充值弹出
-                        PowerRechargeDialog.show(showToast = true, rechargeTab = PowerRechargeDialog.TAB_CREDITS)
-                    }
-                } else {
+                // 该流程前面已处理首充，guideType=0 时保持原逻辑，直接展示充值半屏。
+                val handled = it is ApiException && handlePointInsufficientError(
+                    errorCode = it.errorCode,
+                    allowFirstRechargeForLegacyGuide = false,
+                )
+                if (!handled) {
                     it?.message?.showToast()
                 }
             }

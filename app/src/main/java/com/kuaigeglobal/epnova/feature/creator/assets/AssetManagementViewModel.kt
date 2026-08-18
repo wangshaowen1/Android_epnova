@@ -16,12 +16,11 @@ import com.kuaigeglobal.epnova.common.ext.showCommonDialog
 import com.kuaigeglobal.epnova.common.ext.topActivity
 import com.kuaigeglobal.epnova.common.utils.AutoProgressSimulator
 import com.kuaigeglobal.epnova.core.Events
+import com.kuaigeglobal.epnova.core.ext.handlePointInsufficientError
 import com.kuaigeglobal.epnova.core.ext.launch
 import com.kuaigeglobal.epnova.core.ext.launchWithLoading
-import com.kuaigeglobal.epnova.core.ext.showRechargeDialog
 import com.kuaigeglobal.epnova.core.manager.EventManager
 import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
-import com.kuaigeglobal.epnova.core.network.apis.ApiResponse
 import com.kuaigeglobal.epnova.core.network.apis.entity.AssetInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.RoleImageInfo
 import com.kuaigeglobal.epnova.core.network.apis.request.AssetStoryImageBody
@@ -502,12 +501,7 @@ class AssetManagementViewModel : AppRepositoryViewModel<AssetManagementRepositor
                 notGenerateItems.forEach { (item, assetDesc, assetName) -> if (!item.save(assetDesc, assetName)) return@launchWithLoading }
                 val response = withContext(Dispatchers.IO) { mRepo.api.workAssetOneKeyGenerate(WorkBody(workId, storyId)) }
                 if (!response.isSuccess) {
-                    if (
-                        response.code == ApiResponse.RESPONSE_CODE_POWER_NOT_ENOUGH ||
-                        response.code == ApiResponse.RESPONSE_CODE_POWER_ERROR
-                    ) {
-                        showRechargeDialog(true)
-                    } else {
+                    if (!handlePointInsufficientError(response.code)) {
                         response.msg?.showToast()
                     }
                     return@launchWithLoading
