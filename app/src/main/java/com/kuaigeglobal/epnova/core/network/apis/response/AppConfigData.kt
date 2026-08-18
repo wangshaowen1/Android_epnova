@@ -166,6 +166,16 @@ class AppConfigData {
      * 20260512新增作品-算力/权益类弹窗配置（先根据enableSwitch判断开关再跳转url）
      */
     val workPointPowerPopUpDto: WorkPointPowerPopUpDto? = null
+
+    /**
+     * 20260817新增APP 默认进入页面
+     * 0 - Home
+     * 1 - Featured
+     * 2 - Create
+     * 3 - My list
+     * 4 - Profile
+     */
+    val defaultLandingTab: Int? = null
 }
 
 data class SimpleBannerInfo(

@@ -233,7 +233,8 @@ class MainActivity : BaseViewModelActivity<ActivityMainBinding, MainViewModel>()
                 }
             }
         }
-        when (Config.get().appConfig.openAppLoadTab) {
+        // 根据接口返回，定位默认选中页
+        when (Config.get().appConfig.defaultLandingTab) {
             PAGE_HOME -> binding.mrg.check(R.id.rbHome)
             PAGE_FEATURED -> binding.mrg.check(R.id.rbFeatured)
             PAGE_CREATE -> binding.mrg.check(R.id.rbCreate)
