@@ -240,7 +240,7 @@ class MainActivity : BaseViewModelActivity<ActivityMainBinding, MainViewModel>()
             PAGE_CREATE -> binding.mrg.check(R.id.rbCreate)
             PAGE_MYLIST -> binding.mrg.check(R.id.rbWorks)
             PAGE_PROFILE -> binding.mrg.check(R.id.rbMine)
-            else -> binding.mrg.check(R.id.rbHome)
+            else -> binding.mrg.check(R.id.rbFeatured)
         }
     }
 
