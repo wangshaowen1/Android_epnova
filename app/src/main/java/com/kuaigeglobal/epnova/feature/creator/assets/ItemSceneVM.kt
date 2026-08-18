@@ -156,7 +156,10 @@ class ItemSceneVM(
                         }
                     },
                     error = {
-                        if (this?.code == ApiResponse.RESPONSE_CODE_POWER_NOT_ENOUGH) {
+                        if (
+                            this?.code == ApiResponse.RESPONSE_CODE_POWER_NOT_ENOUGH ||
+                            this?.code == ApiResponse.RESPONSE_CODE_POWER_ERROR
+                        ) {
                             viewModelScope.launch {
                                 showRechargeDialog(true)
                             }

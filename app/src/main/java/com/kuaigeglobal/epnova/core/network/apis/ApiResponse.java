@@ -8,6 +8,10 @@ public class ApiResponse<T> {
      * 算力不足
      */
     public static final int RESPONSE_CODE_POWER_NOT_ENOUGH = 300005;
+    /**
+     * 算力不足
+     */
+    public static final int RESPONSE_CODE_POWER_ERROR = 300162;
 
     private int code;
     private String msg;

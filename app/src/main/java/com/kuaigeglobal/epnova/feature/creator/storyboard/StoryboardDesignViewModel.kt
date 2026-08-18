@@ -355,7 +355,10 @@ class StoryboardDesignViewModel : AppRepositoryViewModel<AppRepository>() {
                 bean = mRepo.api.workStoryboardVideoGenerate(WorkBody(workId, storyId)),
                 result = { toNextStep?.invoke(workId, storyId, data?.taskId) },
                 error = {
-                    if (this?.code == ApiResponse.RESPONSE_CODE_POWER_NOT_ENOUGH) {
+                    if (
+                        this?.code == ApiResponse.RESPONSE_CODE_POWER_NOT_ENOUGH ||
+                        this?.code == ApiResponse.RESPONSE_CODE_POWER_ERROR
+                    ) {
                         viewModelScope.launch {
                             showRechargeDialog(true)
                         }

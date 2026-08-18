@@ -348,7 +348,11 @@ class CreationViewModel : AppRepositoryViewModel<CreationRepository>() {
                 callback.invoke(data)
             },
             onError = {
-                if (it is ApiException && it.errorCode == ApiResponse.RESPONSE_CODE_POWER_NOT_ENOUGH) {
+                if (
+                    it is ApiException &&
+                    (it.errorCode == ApiResponse.RESPONSE_CODE_POWER_NOT_ENOUGH ||
+                        it.errorCode == ApiResponse.RESPONSE_CODE_POWER_ERROR)
+                ) {
                     viewModelScope.launch {
                         //这里和VideoSetDialog共用首充礼包弹出场景，前面会弹，这就不需要弹了，直接弹出充值弹出
                         PowerRechargeDialog.show(showToast = true, rechargeTab = PowerRechargeDialog.TAB_CREDITS)

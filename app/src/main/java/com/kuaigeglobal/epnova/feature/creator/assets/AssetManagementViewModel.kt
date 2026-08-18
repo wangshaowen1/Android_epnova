@@ -502,7 +502,10 @@ class AssetManagementViewModel : AppRepositoryViewModel<AssetManagementRepositor
                 notGenerateItems.forEach { (item, assetDesc, assetName) -> if (!item.save(assetDesc, assetName)) return@launchWithLoading }
                 val response = withContext(Dispatchers.IO) { mRepo.api.workAssetOneKeyGenerate(WorkBody(workId, storyId)) }
                 if (!response.isSuccess) {
-                    if (response.code == ApiResponse.RESPONSE_CODE_POWER_NOT_ENOUGH) {
+                    if (
+                        response.code == ApiResponse.RESPONSE_CODE_POWER_NOT_ENOUGH ||
+                        response.code == ApiResponse.RESPONSE_CODE_POWER_ERROR
+                    ) {
                         showRechargeDialog(true)
                     } else {
                         response.msg?.showToast()

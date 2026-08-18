@@ -28,7 +28,10 @@ class StoryGenerateConfirmViewModel : AppRepositoryViewModel<AppRepository>() {
         if (body == null) return
         launchWithLoading {
             val data = mRepo.api.novelUploadSummary(body!!)
-            if (data.code == ApiResponse.RESPONSE_CODE_POWER_NOT_ENOUGH) {
+            if (
+                data.code == ApiResponse.RESPONSE_CODE_POWER_NOT_ENOUGH ||
+                data.code == ApiResponse.RESPONSE_CODE_POWER_ERROR
+            ) {
                 viewModelScope.launch {
                     PowerRechargeDialog.show(showToast = true, rechargeTab = PowerRechargeDialog.TAB_CREDITS)
                 }

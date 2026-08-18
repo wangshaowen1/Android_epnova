@@ -465,7 +465,10 @@ class EditStoryboardVideoViewModel : AppRepositoryViewModel<EditStoryboardReposi
                         bean = mRepo.api.workStoryboardVideoGenerate(WorkBody(workId, storyId)),
                         result = { getStoryboardList() },
                         error = {
-                            if (this?.code == ApiResponse.RESPONSE_CODE_POWER_NOT_ENOUGH) {
+                            if (
+                                this?.code == ApiResponse.RESPONSE_CODE_POWER_NOT_ENOUGH ||
+                                this?.code == ApiResponse.RESPONSE_CODE_POWER_ERROR
+                            ) {
                                 viewModelScope.launch {
                                     showRechargeDialog(true)
                                 }
