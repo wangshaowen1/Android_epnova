@@ -45,6 +45,9 @@ import kotlinx.coroutines.launch
 class MemberIndexViewModel : AppRepositoryViewModel<AppRepository>() {
 
     companion object {
+        private const val MEMBER_PERIOD_UNIT_WEEK = "WEEK"
+        private const val MEMBER_PERIOD_UNIT_MONTH = "MONTH"
+
         /** 返回会员页后给 PurchasesUpdatedListener 的正常回调留出时间，超时才主动查 SUBS。 */
         private const val MEMBER_BILLING_CALLBACK_GRACE_MS = 1_500L
 
@@ -106,6 +109,11 @@ class MemberIndexViewModel : AppRepositoryViewModel<AppRepository>() {
      * PENDING、结果未知及恢复同步期间也保持 true，不能只覆盖网络 Loading 阶段。
      */
     val isSubscribing = ObservableBoolean(false)
+
+    /**
+     * 底部补充描述文案
+     */
+    val bottomHint = ObservableField<String>("")
 
     // 当前选中档位
     private var currentRechargeItem: ItemMemberRechargeViewModel? = null
@@ -1118,8 +1126,15 @@ class MemberIndexViewModel : AppRepositoryViewModel<AppRepository>() {
                         ?.takeIf { productId -> productId.isNotBlank() }
                 }.distinct().singleOrNull()
 
-                val selectedItem = items.firstOrNull { it.data.get()?.defaultSelected == 1 }
-                    ?: items.firstOrNull()
+                // 默认选中逻辑
+                // 如果子项action都等于pageMode，则取defaultSelected为1的，否则取子项中action等于pageMode的首项
+                val pageMode = data?.pageMode
+                val selectedItem = if (items.all { it.data.get()?.action == pageMode }) {
+                    items.firstOrNull { it.data.get()?.defaultSelected == 1 }
+                        ?: items.firstOrNull()
+                } else {
+                    items.firstOrNull { it.data.get()?.action == pageMode }
+                }
 
                 selectedItem?.isSelected?.set(true)
 
@@ -1138,6 +1153,12 @@ class MemberIndexViewModel : AppRepositoryViewModel<AppRepository>() {
     }
 
     private fun selectPlan(item: ItemMemberRechargeViewModel) {
+        val action = item.data.get()?.action
+        if (
+            action != MemberActionEnum.PURCHASE.name &&
+            action != MemberActionEnum.SWITCH.name
+        ) return
+
         // prepare 已开始后，本次交易必须继续使用点击购买时的套餐快照；支付收敛前禁止切换
         // 页面选中项，避免页面积分/价格展示与即将由 Google 扣款的套餐不一致。
         if (memberPurchaseBusy) return
@@ -1152,10 +1173,51 @@ class MemberIndexViewModel : AppRepositoryViewModel<AppRepository>() {
         val plan = item?.data?.get()
 
         selectedPeriodPointNum.set(plan?.periodPointNum?.toString().orEmpty())
-        selectedPeriodUnit.set("/${plan?.periodUnit.orEmpty().lowercase().replaceFirstChar { it.uppercaseChar() }}")
+        selectedPeriodUnit.set("/${plan?.periodUnit.orEmpty().lowercase()}")
+        updateBottomHint()
 
         submitPrivileges(plan?.benefitItems)
         updateSubscribeAvailability()
+    }
+
+    private fun updateBottomHint() {
+        val item = currentRechargeItem
+        val plan = item?.data?.get()
+        if (item == null || plan == null) {
+            bottomHint.set("")
+            return
+        }
+
+        val currentPrice = item.priceText.get().orEmpty()
+        val originalPrice = item.originalPriceText.get().orEmpty()
+        // originalPriceText 只有在 Google 仍返回指定优惠且优惠价与原价不同时才会写入。
+        val hasWeeklyIntroOffer = plan.periodUnit == MEMBER_PERIOD_UNIT_WEEK &&
+            currentPrice.isNotBlank() && originalPrice.isNotBlank()
+        val hint = when {
+            plan.action == MemberActionEnum.SWITCH.name -> {
+                formatBottomHintTemplate(
+                    plan.switchBottomTextTemplate,
+                    plan.planName.orEmpty(),
+                ) ?: R.string.member_switch_plan_hint.getResString(plan.planName.orEmpty())
+            }
+
+            hasWeeklyIntroOffer -> {
+                formatBottomHintTemplate(
+                    plan.introBottomTextTemplate,
+                    currentPrice,
+                    originalPrice,
+                ) ?: R.string.member_intro_offer_hint.getResString(currentPrice, originalPrice)
+            }
+
+            else -> plan.standardBottomTextTemplate?.takeIf { it.isNotBlank() }
+                ?: R.string.member_cancel_anytime.getResString()
+        }
+        bottomHint.set(hint)
+    }
+
+    private fun formatBottomHintTemplate(template: String?, vararg values: String): String? {
+        val validTemplate = template?.takeIf { it.isNotBlank() } ?: return null
+        return runCatching { String.format(validTemplate, *values) }.getOrNull()
     }
 
     private fun submitPrivileges(benefitItems: List<MemberBenefitItemInfo>?) {
@@ -1214,6 +1276,7 @@ class MemberIndexViewModel : AppRepositoryViewModel<AppRepository>() {
                         standardPrice.takeIf { hasStoreDiscount }.orEmpty(),
                     )
                 }
+                updateBottomHint()
                 updateSubscribeAvailability()
             }
         }
