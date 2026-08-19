@@ -38,7 +38,8 @@ import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.launch
 
 class MyBalanceViewModel(
-    initialTab: Int = TAB_COINS
+    initialTab: Int = TAB_COINS,
+    val isPaidEpisodeAnalytics: Boolean = false,
 ) : AppRepositoryViewModel<CoinRepository>() {
 
     companion object {
@@ -200,13 +201,23 @@ class MyBalanceViewModel(
     }
 
     private fun ItemRechargePowerVM.selectCoins() {
-        // product_click：点击 Coins 商品卡片，Label1=货币类型，Label2=货币数量。
-        EventManager.onFirebaseTrack(
-            FirebaseEvent.Category.STORE,
-            FirebaseEvent.Action.PRODUCT_CLICK,
-            FirebaseEvent.Value.CURRENCY_COINS,
-            data.get()?.coinsNum?.toString()
-        )
+        val amount = data.get()?.coinsNum?.toString()
+        if (isPaidEpisodeAnalytics) {
+            // buy_coin_click：付费剧集内点击金币商品，Label1=货币数量。
+            EventManager.onFirebaseTrack(
+                FirebaseEvent.Category.PAID_EPISODE,
+                FirebaseEvent.Action.BUY_COIN_CLICK,
+                amount,
+            )
+        } else {
+            // product_click：点击 Coins 商品卡片，Label1=货币类型，Label2=货币数量。
+            EventManager.onFirebaseTrack(
+                FirebaseEvent.Category.STORE,
+                FirebaseEvent.Action.PRODUCT_CLICK,
+                FirebaseEvent.Value.CURRENCY_COINS,
+                amount,
+            )
+        }
         currentCoinsItem?.isChecked?.set(false)
         isChecked.set(true)
         currentCoinsItem = this
@@ -241,18 +252,29 @@ class MyBalanceViewModel(
         purchaseJob?.cancel()
         purchaseJob = viewModelScope.launch {
             BillingManager.purchaseResultFlow.take(1).collect { result ->
-                // purchase_result：Label1=货币类型，Label2=数量，Label3=支付状态。
-                EventManager.onFirebaseTrack(
-                    FirebaseEvent.Category.STORE,
-                    FirebaseEvent.Action.PURCHASE_RESULT,
-                    currencyType,
-                    currencyAmount,
-                    if (result is PurchaseResult.Success) {
-                        FirebaseEvent.Value.RESULT_SUCCESS
-                    } else {
-                        FirebaseEvent.Value.RESULT_FAIL
-                    }
-                )
+                val resultValue = if (result is PurchaseResult.Success) {
+                    FirebaseEvent.Value.RESULT_SUCCESS
+                } else {
+                    FirebaseEvent.Value.RESULT_FAIL
+                }
+                if (isPaidEpisodeAnalytics && currentTab == TAB_COINS) {
+                    // buy_coin_result：Label1=支付状态，Label2=货币数量。
+                    EventManager.onFirebaseTrack(
+                        FirebaseEvent.Category.PAID_EPISODE,
+                        FirebaseEvent.Action.BUY_COIN_RESULT,
+                        resultValue,
+                        currencyAmount,
+                    )
+                } else {
+                    // purchase_result：Label1=货币类型，Label2=数量，Label3=支付状态。
+                    EventManager.onFirebaseTrack(
+                        FirebaseEvent.Category.STORE,
+                        FirebaseEvent.Action.PURCHASE_RESULT,
+                        currencyType,
+                        currencyAmount,
+                        resultValue,
+                    )
+                }
                 if (result is PurchaseResult.Success) {
                     loadConfig()
                     refreshCoinsAndPoints()

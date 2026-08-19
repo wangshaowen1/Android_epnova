@@ -77,6 +77,12 @@ class RewardedAdManager(
     var onAdLoaded: (() -> Unit)? = null
     var onAdLoadFailed: (() -> Unit)? = null
 
+    /** 广告已加载但 SDK 展示失败；与素材加载失败、SSV 解锁失败分开通知。 */
+    var onAdShowFailed: (() -> Unit)? = null
+
+    /** 广告页正常关闭但用户未获得奖励。 */
+    var onAdDismissedWithoutReward: (() -> Unit)? = null
+
     private var nonce: String? = null
     private var currentWorkId: String? = null
     private var currentStoryId: String? = null
@@ -113,10 +119,14 @@ class RewardedAdManager(
         platform.show(
             activity = activity,
             onRewarded = { completeAdResult() },
-            onDismissed = { isAdReady.set(false) },
+            onDismissed = { rewardEarned ->
+                isAdReady.set(false)
+                if (!rewardEarned) onAdDismissedWithoutReward?.invoke()
+            },
             onFailed = {
                 isAdReady.set(false)
                 showAdNotReadyToast()
+                onAdShowFailed?.invoke()
             }
         )
     }
@@ -154,7 +164,7 @@ class RewardedAdManager(
                 platform.show(
                     activity = activity,
                     onRewarded = onRewarded,
-                    onDismissed = { isAdReady.set(false) },
+                    onDismissed = { _ -> isAdReady.set(false) },
                     onFailed = {
                         isAdReady.set(false)
                         showAdNotReadyToast()

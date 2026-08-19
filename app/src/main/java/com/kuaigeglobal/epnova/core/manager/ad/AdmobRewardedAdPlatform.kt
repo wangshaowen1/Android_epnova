@@ -70,7 +70,7 @@ class AdmobRewardedAdPlatform : IRewardedAdPlatform {
     override fun show(
         activity: Activity,
         onRewarded: () -> Unit,
-        onDismissed: () -> Unit,
+        onDismissed: (rewardEarned: Boolean) -> Unit,
         onFailed: () -> Unit
     ) {
         val ad = rewardedAd ?: run {
@@ -94,7 +94,7 @@ class AdmobRewardedAdPlatform : IRewardedAdPlatform {
                 Logger.d(TAG, "onAdDismissedFullScreenContent")
                 adDismissed = true
                 rewardedAd = null
-                onDismissed()
+                onDismissed(rewardEarned)
                 dispatchRewardIfReady()
             }
 

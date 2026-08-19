@@ -5,7 +5,9 @@ import android.os.Bundle
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kuaigeglobal.epnova.R
+import com.kuaigeglobal.epnova.common.Constants
 import com.kuaigeglobal.epnova.common.ext.topActivity
+import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
 import com.kuaigeglobal.epnova.databinding.ActivityMemberIndexBinding
 import com.kuaigeglobal.epnova.feature.member.vm.MemberIndexViewModel
 import com.kuaigeglobal.epnova.widget.decoration.SpaceDecoration
@@ -20,10 +22,14 @@ import com.nhsd.basic.ext.dp
 class MemberIndexActivity : BaseViewModelActivity<ActivityMemberIndexBinding, MemberIndexViewModel>() {
 
     companion object {
-        fun start() {
+        fun start(
+            entryScene: String = FirebaseEvent.Value.TRIGGER_MEMBERSHIP_ENTRY,
+        ) {
             val activity = topActivity ?: return
             activity.startActivity(
-                Intent(activity, MemberIndexActivity::class.java)
+                Intent(activity, MemberIndexActivity::class.java).apply {
+                    putExtra(Constants.Extra.FROM_PAGE, entryScene)
+                }
             )
         }
     }

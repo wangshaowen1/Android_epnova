@@ -84,9 +84,19 @@ class EpisodeUnlockController(
             }
             mgr.onAdLoadFailed = {
                 hideAdLoading()
+                reportAdUnlockResult(isSuccess = false)
+            }
+            mgr.onAdShowFailed = {
+                hideAdLoading()
+                reportAdUnlockResult(isSuccess = false)
+            }
+            mgr.onAdDismissedWithoutReward = {
+                hideAdLoading()
+                reportAdUnlockResult(isSuccess = false)
             }
             mgr.onUnlockSuccess = {
                 hideAdLoading()
+                reportAdUnlockResult(isSuccess = true)
                 episode?.let { ep ->
                     // 广告解锁等价获得本集解锁所需金币。
                     EventManager.onFirebaseTrack(
@@ -101,6 +111,7 @@ class EpisodeUnlockController(
             }
             mgr.onUnlockFailed = {
                 hideAdLoading()
+                reportAdUnlockResult(isSuccess = false)
                 showToast(R.string.episode_unlock_ad_not_ready)
             }
         }
@@ -163,6 +174,10 @@ class EpisodeUnlockController(
 
     /** 点击"看广告解锁"按钮 */
     fun onClickAdUnlock(context: Context, activity: Activity) {
+        EventManager.onFirebaseTrack(
+            FirebaseEvent.Category.PAID_EPISODE,
+            FirebaseEvent.Action.AD_UNLOCK_CLICK,
+        )
         when {
             isPolling.get() -> Unit
             isAdReady.get() -> adManager.showAd(activity)
@@ -198,6 +213,38 @@ class EpisodeUnlockController(
 
     fun getAdRemainCount(): Int = unlockInfo?.adUnlockRemainCount ?: 0
 
+    private fun reportAdUnlockResult(isSuccess: Boolean) {
+        val result = if (isSuccess) {
+            FirebaseEvent.Value.RESULT_SUCCESS
+        } else {
+            FirebaseEvent.Value.RESULT_FAIL
+        }
+        EventManager.onFirebaseTrack(
+            FirebaseEvent.Category.PAID_EPISODE,
+            FirebaseEvent.Action.AD_PLAY_RESULT,
+            result,
+        )
+        EventManager.onFirebaseTrack(
+            FirebaseEvent.Category.PAID_EPISODE,
+            FirebaseEvent.Action.AD_UNLOCK_RESULT,
+            result,
+            FirebaseEvent.Value.UNLOCK_SOURCE_AD,
+        )
+    }
+
+    private fun reportCoinUnlockResult(isSuccess: Boolean) {
+        EventManager.onFirebaseTrack(
+            FirebaseEvent.Category.PAID_EPISODE,
+            FirebaseEvent.Action.AD_UNLOCK_RESULT,
+            if (isSuccess) {
+                FirebaseEvent.Value.RESULT_SUCCESS
+            } else {
+                FirebaseEvent.Value.RESULT_FAIL
+            },
+            FirebaseEvent.Value.UNLOCK_SOURCE_COIN,
+        )
+    }
+
     // --- 金币解锁（内部） ---
 
     private fun unlockWithCoins() {
@@ -205,14 +252,22 @@ class EpisodeUnlockController(
         val sId = episode?.storyId?.toLongOrNull() ?: return
         scope.launch {
             response(
-                api.storyUnlockCoins(StoryUnlockCoinsBody(workId = wId, storyIds = listOf(sId), unlockType = 2))
-            ) {
-                episode.let { ep ->
-                    showToast(R.string.episode_unlock_success)
-                    User.get().storeCoins(data?.remainCoinsBalance)
-                    onUnlockSuccess?.invoke(ep)
-                }
-            }
+                bean = api.storyUnlockCoins(
+                    StoryUnlockCoinsBody(workId = wId, storyIds = listOf(sId), unlockType = 2)
+                ),
+                result = {
+                    reportCoinUnlockResult(isSuccess = true)
+                    episode.let { ep ->
+                        showToast(R.string.episode_unlock_success)
+                        User.get().storeCoins(data?.remainCoinsBalance)
+                        onUnlockSuccess?.invoke(ep)
+                    }
+                },
+                error = {
+                    reportCoinUnlockResult(isSuccess = false)
+                    this?.msg?.showToast()
+                },
+            )
         }
     }
 

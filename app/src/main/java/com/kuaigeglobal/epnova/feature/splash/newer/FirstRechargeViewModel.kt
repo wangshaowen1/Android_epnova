@@ -52,6 +52,10 @@ class FirstRechargeViewModel : AppRepositoryViewModel<CoinRepository>() {
         return scene == FirstRechargeDialog.SCENE_HOME
     }
 
+    fun isFromPlayer(): Boolean {
+        return scene == FirstRechargeDialog.SCENE_PLAYER
+    }
+
     init {
         BillingManager.markActivePage(true)
     }
@@ -101,6 +105,13 @@ class FirstRechargeViewModel : AppRepositoryViewModel<CoinRepository>() {
             FirebaseEvent.Category.FIRST_PURCHASE_COIN,
             FirebaseEvent.Action.PAY_NOW_CLICK
         )
+        if (isFromPlayer()) {
+            EventManager.onFirebaseTrack(
+                FirebaseEvent.Category.PAID_EPISODE,
+                FirebaseEvent.Action.BUY_COIN_CLICK,
+                data?.coinsNum?.toString(),
+            )
+        }
         if (AppNavigator.checkLoginIntercepted()) return
         val rechargeData = data ?: return
 
@@ -108,16 +119,25 @@ class FirstRechargeViewModel : AppRepositoryViewModel<CoinRepository>() {
         purchaseJob?.cancel()
         purchaseJob = viewModelScope.launch {
             BillingManager.purchaseResultFlow.take(1).collect { result ->
+                val resultValue = if (result is PurchaseResult.Success) {
+                    FirebaseEvent.Value.RESULT_SUCCESS
+                } else {
+                    FirebaseEvent.Value.RESULT_FAIL
+                }
                 // purchase_result：Label1=支付状态。
                 EventManager.onFirebaseTrack(
                     FirebaseEvent.Category.FIRST_PURCHASE_COIN,
                     FirebaseEvent.Action.PURCHASE_RESULT,
-                    if (result is PurchaseResult.Success) {
-                        FirebaseEvent.Value.RESULT_SUCCESS
-                    } else {
-                        FirebaseEvent.Value.RESULT_FAIL
-                    }
+                    resultValue,
                 )
+                if (isFromPlayer()) {
+                    EventManager.onFirebaseTrack(
+                        FirebaseEvent.Category.PAID_EPISODE,
+                        FirebaseEvent.Action.BUY_COIN_RESULT,
+                        resultValue,
+                        data?.coinsNum?.toString(),
+                    )
+                }
                 if (result is PurchaseResult.Success) {
                     refreshCoinsAndPoints()
                 } else if (result is PurchaseResult.Failed) {

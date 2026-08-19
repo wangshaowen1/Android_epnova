@@ -21,6 +21,8 @@ import com.kuaigeglobal.epnova.core.Events
 import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.ext.showRechargeDialog
 import com.kuaigeglobal.epnova.core.google.billing.PurchaseResult
+import com.kuaigeglobal.epnova.core.manager.EventManager
+import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
 import com.kuaigeglobal.epnova.databinding.DialogRechargePowerBinding
 import com.kuaigeglobal.epnova.feature.web.SimpleBrowserActivity
 import com.nhsd.basic.BaseBottomPushVMDialogFragment
@@ -38,6 +40,7 @@ class PowerRechargeDialog : BaseBottomPushVMDialogFragment<DialogRechargePowerBi
     companion object {
         const val TAB_COINS = MyBalanceViewModel.TAB_COINS
         const val TAB_CREDITS = MyBalanceViewModel.TAB_CREDITS
+        private const val EXTRA_PAID_EPISODE_ANALYTICS = "extra_paid_episode_analytics"
 
         /**
          * 检查是否余额不足，并弹出充值弹窗
@@ -60,7 +63,8 @@ class PowerRechargeDialog : BaseBottomPushVMDialogFragment<DialogRechargePowerBi
             toastMessage: String? = null,
             rechargeTab: Int = MyBalanceViewModel.TAB_COINS,
             onRechargeSuccess: (() -> Unit)? = null,
-            onDismiss: ((Boolean) -> Unit)? = null
+            onDismiss: ((Boolean) -> Unit)? = null,
+            paidEpisodeAnalytics: Boolean = false,
         ) {
             (topActivity as? FragmentActivity)?.supportFragmentManager?.let {
                 if (it.fragments.any { fragment -> fragment is PowerRechargeDialog }) return
@@ -68,6 +72,7 @@ class PowerRechargeDialog : BaseBottomPushVMDialogFragment<DialogRechargePowerBi
                     arguments = Bundle().apply {
                         putInt(Constants.Extra.COST, thisEpisode ?: 0)
                         putInt(Constants.Extra.TAB, rechargeTab)
+                        putBoolean(EXTRA_PAID_EPISODE_ANALYTICS, paidEpisodeAnalytics)
                     }
                     onDismissCallback = onDismiss
                     onRechargeSuccessCallback = onRechargeSuccess
@@ -94,6 +99,12 @@ class PowerRechargeDialog : BaseBottomPushVMDialogFragment<DialogRechargePowerBi
     override fun onPrepareView() {
         super.onPrepareView()
         mRealVM.isDialog = true
+        if (mRealVM.isPaidEpisodeAnalytics) {
+            EventManager.onFirebaseTrack(
+                FirebaseEvent.Category.PAID_EPISODE,
+                FirebaseEvent.Action.BUY_COIN_POPUP_SHOW,
+            )
+        }
         initRechargeUi()
         // 支付结果：通过 Flow 观察，生命周期安全
         viewLifecycleOwner.lifecycleScope.launch {
@@ -124,7 +135,11 @@ class PowerRechargeDialog : BaseBottomPushVMDialogFragment<DialogRechargePowerBi
             MyBalanceViewModel.TAB_COINS
         ) ?: MyBalanceViewModel.TAB_COINS
         return MyBalanceViewModel(
-            initialTab = rechargeTab
+            initialTab = rechargeTab,
+            isPaidEpisodeAnalytics = arguments?.getBoolean(
+                EXTRA_PAID_EPISODE_ANALYTICS,
+                false,
+            ) == true,
         )
     }
 

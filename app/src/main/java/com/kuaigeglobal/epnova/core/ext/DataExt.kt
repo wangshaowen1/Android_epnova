@@ -14,6 +14,7 @@ import com.kuaigeglobal.epnova.common.utils.WXUtils
 import com.kuaigeglobal.epnova.core.Config
 import com.kuaigeglobal.epnova.core.Global
 import com.kuaigeglobal.epnova.core.User
+import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
 import com.kuaigeglobal.epnova.core.model.PhotoItem
 import com.kuaigeglobal.epnova.core.network.apis.ApiFactory
 import com.kuaigeglobal.epnova.core.network.apis.ApiResponse
@@ -237,7 +238,9 @@ fun ViewModel.handlePointInsufficientError(
                 }
             }
 
-            PointInsufficientGuideData.GUIDE_TYPE_MEMBER -> MemberIndexActivity.start()
+            PointInsufficientGuideData.GUIDE_TYPE_MEMBER -> {
+                MemberIndexActivity.start(FirebaseEvent.Value.TRIGGER_INSUFFICIENT_BALANCE)
+            }
             PointInsufficientGuideData.GUIDE_TYPE_RECHARGE_DIALOG -> showPowerRechargeDialog()
             else -> showLegacyPointInsufficientGuide(allowFirstRechargeForLegacyGuide)
         }

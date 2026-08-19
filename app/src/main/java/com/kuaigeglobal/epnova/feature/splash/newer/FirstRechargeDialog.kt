@@ -67,6 +67,12 @@ class FirstRechargeDialog : BaseVMDialogFragment<DialogFirstRechargeBinding, Fir
                 FirebaseEvent.Value.TRIGGER_INSUFFICIENT_BALANCE
             }
         )
+        if (mRealVM.isFromPlayer()) {
+            EventManager.onFirebaseTrack(
+                FirebaseEvent.Category.PAID_EPISODE,
+                FirebaseEvent.Action.BUY_COIN_POPUP_SHOW,
+            )
+        }
         val googleProductId = mRealVM.data?.googleProductId
         BillingManager.loadNewerGiftPrice(googleProductId) { map ->
             binding.btnBuy.text = map[googleProductId]?.first

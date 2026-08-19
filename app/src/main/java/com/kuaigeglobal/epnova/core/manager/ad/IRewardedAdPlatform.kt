@@ -35,13 +35,13 @@ interface IRewardedAdPlatform {
      *
      * @param activity    宿主 Activity
      * @param onRewarded  用户完整观看广告并关闭广告页后回调
-     * @param onDismissed 广告正常关闭时回调（含看完关闭）
+     * @param onDismissed 广告正常关闭时回调，参数表示用户是否已获得奖励
      * @param onFailed    展示失败时回调
      */
     fun show(
         activity: Activity,
         onRewarded: () -> Unit,
-        onDismissed: () -> Unit,
+        onDismissed: (rewardEarned: Boolean) -> Unit,
         onFailed: () -> Unit
     )
 

@@ -9,6 +9,7 @@ import com.android.billingclient.api.Purchase
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.base.viewmodel.AppRepositoryViewModel
 import com.kuaigeglobal.epnova.base.viewmodel.ToolbarViewModel
+import com.kuaigeglobal.epnova.common.Constants
 import com.kuaigeglobal.epnova.common.adapter.QuickAdapter
 import com.kuaigeglobal.epnova.common.ext.topActivity
 import com.kuaigeglobal.epnova.core.AppRepository
@@ -19,6 +20,8 @@ import com.kuaigeglobal.epnova.core.google.billing.MemberBillingResult
 import com.kuaigeglobal.epnova.core.google.billing.MemberSubscriptionRecoveryManager
 import com.kuaigeglobal.epnova.core.google.billing.MemberSubscriptionRecoveryStore
 import com.kuaigeglobal.epnova.core.google.billing.MemberSubscriptionStorePreparationResult
+import com.kuaigeglobal.epnova.core.manager.EventManager
+import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
 import com.kuaigeglobal.epnova.core.network.apis.ApiException
 import com.kuaigeglobal.epnova.core.network.apis.request.GoogleMemberSubscriptionBody
 import com.kuaigeglobal.epnova.core.network.apis.request.MemberSubscriptionPrepareBody
@@ -82,6 +85,16 @@ class MemberIndexViewModel : AppRepositoryViewModel<AppRepository>() {
 
     /** 是否已订阅 */
     val planMode = ObservableBoolean(false)
+
+    /** 会员页入口场景，仅普通会员商店曝光使用；升级页按表格不携带 Label。 */
+    private val entryScene by lazy {
+        mBundle.getString(Constants.Extra.FROM_PAGE)
+            ?.takeIf { it.isNotBlank() }
+            ?: FirebaseEvent.Value.TRIGGER_MEMBERSHIP_ENTRY
+    }
+
+    /** 套餐刷新、支付恢复会重复调用 loadMemberPlans，页面曝光在单个 VM 生命周期内只上报一次。 */
+    private var hasReportedPageShow = false
 
     // 权益适配器
     val privilegeAdapter = QuickAdapter<ItemMemberPrivilegeViewModel>(
@@ -206,6 +219,73 @@ class MemberIndexViewModel : AppRepositoryViewModel<AppRepository>() {
         memberResumeRecoveryJob?.cancel()
         BillingManager.markActivePage(false)
         super.onCleared()
+    }
+
+    private fun reportMemberPageShowIfNeeded(isUpgradeMode: Boolean) {
+        if (hasReportedPageShow) return
+        hasReportedPageShow = true
+        if (isUpgradeMode) {
+            EventManager.onFirebaseTrack(
+                FirebaseEvent.Category.MEMBERSHIP_UPGRADE,
+                FirebaseEvent.Action.UPGRADE_SHOW,
+            )
+        } else {
+            EventManager.onFirebaseTrack(
+                FirebaseEvent.Category.MEMBERSHIP,
+                FirebaseEvent.Action.MEMBERSHIP_SHOW,
+                entryScene,
+            )
+        }
+    }
+
+    private fun reportMemberPlanClick(plan: MemberPlanInfo) {
+        if (plan.action == MemberActionEnum.SWITCH.name) {
+            EventManager.onFirebaseTrack(
+                FirebaseEvent.Category.MEMBERSHIP_UPGRADE,
+                FirebaseEvent.Action.PRODUCT_CLICK,
+            )
+        } else {
+            EventManager.onFirebaseTrack(
+                FirebaseEvent.Category.MEMBERSHIP,
+                FirebaseEvent.Action.PRODUCT_CLICK,
+                membershipPeriodLabel(plan.periodUnit),
+            )
+        }
+    }
+
+    private fun reportMemberPurchaseResult(
+        context: ActiveMemberPurchaseContext,
+        isSuccess: Boolean,
+    ) {
+        if (context.analyticsResultReported) return
+        context.analyticsResultReported = true
+        val result = if (isSuccess) {
+            FirebaseEvent.Value.RESULT_SUCCESS
+        } else {
+            FirebaseEvent.Value.RESULT_FAIL
+        }
+        if (context.actionType == MemberActionEnum.SWITCH.name) {
+            EventManager.onFirebaseTrack(
+                FirebaseEvent.Category.MEMBERSHIP_UPGRADE,
+                FirebaseEvent.Action.UPGRADE_RESULT,
+                result,
+            )
+        } else {
+            EventManager.onFirebaseTrack(
+                FirebaseEvent.Category.MEMBERSHIP,
+                FirebaseEvent.Action.PURCHASE_RESULT,
+                membershipPeriodLabel(context.periodUnit),
+                result,
+            )
+        }
+    }
+
+    private fun membershipPeriodLabel(periodUnit: String?): String? {
+        return when (periodUnit) {
+            MEMBER_PERIOD_UNIT_WEEK -> FirebaseEvent.Value.MEMBERSHIP_PERIOD_WEEKLY
+            MEMBER_PERIOD_UNIT_MONTH -> FirebaseEvent.Value.MEMBERSHIP_PERIOD_MONTHLY
+            else -> null
+        }
     }
 
     /**
@@ -669,6 +749,10 @@ class MemberIndexViewModel : AppRepositoryViewModel<AppRepository>() {
         // release 发出后若 Google 又补发 PURCHASED，购买结果优先，旧 release 回调必须失效。
         // 后端即使已经释放两分钟锁，也不能否定随后取得的官方购买，confirm 仍可正常验真。
         if (!context.releaseRequested) return
+        if (context.billingLaunchStarted && !context.officialPurchaseObserved) {
+            // 失败埋点延后到 release 收敛，避免迟到的 PURCHASED 被先到的取消/失败误锁成 fail。
+            reportMemberPurchaseResult(context, isSuccess = false)
+        }
         memberPurchaseRequestJob = null
         confirmingMemberPurchase = false
         if (activeMemberPurchase === context) {
@@ -1041,6 +1125,9 @@ class MemberIndexViewModel : AppRepositoryViewModel<AppRepository>() {
 
     /** 明确业务错误禁止自动 sync，也禁止 release 已存在的官方 PURCHASED。 */
     private fun finishMemberPurchaseOnBusinessError() {
+        activeMemberPurchase?.let { context ->
+            reportMemberPurchaseResult(context, isSuccess = false)
+        }
         memberResumeRecoveryJob?.cancel()
         memberPurchaseRequestJob = null
         invalidateMemberRecoveryQuery()
@@ -1102,6 +1189,7 @@ class MemberIndexViewModel : AppRepositoryViewModel<AppRepository>() {
 
     /** 同页订阅成功后按目标套餐提示，并返回来源页。 */
     private fun finishSuccessfulMemberPurchase(context: ActiveMemberPurchaseContext) {
+        reportMemberPurchaseResult(context, isSuccess = true)
         Global.refreshCoinsAndPoints()
         val toastRes = when {
             context.periodUnit == MEMBER_PERIOD_UNIT_WEEK -> {
@@ -1131,7 +1219,9 @@ class MemberIndexViewModel : AppRepositoryViewModel<AppRepository>() {
         requestWithLoading(
             apiBlock = { mRepo.api.getMemberPlanList() },
             onSuccess = {
-                planMode.set(data?.pageMode == MemberPlanMode.SWITCH.name)
+                val isUpgradeMode = data?.pageMode == MemberPlanMode.SWITCH.name
+                planMode.set(isUpgradeMode)
+                if (data != null) reportMemberPageShowIfNeeded(isUpgradeMode)
 
                 currentRechargeItem = null
                 val items = data?.plans.orEmpty().map { plan ->
@@ -1176,7 +1266,8 @@ class MemberIndexViewModel : AppRepositoryViewModel<AppRepository>() {
     }
 
     private fun selectPlan(item: ItemMemberRechargeViewModel) {
-        val action = item.data.get()?.action
+        val plan = item.data.get() ?: return
+        val action = plan.action
         if (
             action != MemberActionEnum.PURCHASE.name &&
             action != MemberActionEnum.SWITCH.name
@@ -1185,6 +1276,7 @@ class MemberIndexViewModel : AppRepositoryViewModel<AppRepository>() {
         // prepare 已开始后，本次交易必须继续使用点击购买时的套餐快照；支付收敛前禁止切换
         // 页面选中项，避免页面积分/价格展示与即将由 Google 扣款的套餐不一致。
         if (memberPurchaseBusy) return
+        reportMemberPlanClick(plan)
         if (currentRechargeItem === item) return
         currentRechargeItem?.isSelected?.set(false)
         item.isSelected.set(true)
@@ -1360,6 +1452,7 @@ class MemberIndexViewModel : AppRepositoryViewModel<AppRepository>() {
         var confirmAttempted = false
         var recoveryQueryOnResume = false
         var releaseRequested = false
+        var analyticsResultReported = false
 
         /** 只确认本次商品及账号绑定标识都匹配的 Google Purchase。 */
         fun matches(purchase: Purchase): Boolean {
