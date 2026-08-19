@@ -1,6 +1,5 @@
 package com.kuaigeglobal.epnova.feature.recharge
 
-import androidx.annotation.LayoutRes
 import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableInt
@@ -39,7 +38,6 @@ import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.launch
 
 class MyBalanceViewModel(
-    @LayoutRes private val paymentItemLayout: Int,
     initialTab: Int = TAB_COINS
 ) : AppRepositoryViewModel<CoinRepository>() {
 

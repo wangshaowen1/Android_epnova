@@ -30,8 +30,8 @@ import com.kuaigeglobal.epnova.feature.creator.generate.StoryEditorActivity
 import com.kuaigeglobal.epnova.feature.editor.EditStoryboardVideoActivity
 import com.kuaigeglobal.epnova.feature.main.MainActivity
 import com.kuaigeglobal.epnova.feature.play.DramasPlayPagerActivity
-import com.kuaigeglobal.epnova.feature.recharge.MyBalanceActivity
-import com.kuaigeglobal.epnova.feature.recharge.MyBalanceViewModel
+import com.kuaigeglobal.epnova.feature.recharge.CoinBalanceActivity
+import com.kuaigeglobal.epnova.feature.recharge.CreditsBalanceActivity
 import com.kuaigeglobal.epnova.feature.rewards.RewardsActivity
 import com.kuaigeglobal.epnova.feature.series.SeriesActivity
 import com.kuaigeglobal.epnova.feature.web.SimpleBrowserActivity.Companion.launch
@@ -160,14 +160,14 @@ object AppRouter : IRouter {
                 if (AppNavigator.checkLoginIntercepted(showToast = false)) {
                     return
                 }
-                MyBalanceActivity.start(MyBalanceViewModel.TAB_COINS)
+                CoinBalanceActivity.start()
             }
             // 积分商店
             "toStoreCredits" -> {//epnovascheme://toStoreCredits
                 if (AppNavigator.checkLoginIntercepted(showToast = false)) {
                     return
                 }
-                MyBalanceActivity.start(MyBalanceViewModel.TAB_CREDITS)
+                CreditsBalanceActivity.start()
             }
             // 作品详情
             "toSeriesDetail" -> {//epnovascheme://toSeriesDetail?workId=%s

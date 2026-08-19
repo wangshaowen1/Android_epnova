@@ -307,8 +307,9 @@
         <activity
             android:name=".feature.editor.info.DramaInfoEditActivity"
             android:screenOrientation="portrait" />
-        <activity
-            android:name=".feature.recharge.MyBalanceActivity"
+        <activity android:name=".feature.recharge.CoinBalanceActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".feature.recharge.CreditsBalanceActivity"
             android:screenOrientation="portrait" />
         <activity android:name=".feature.member.MemberIndexActivity"
             android:screenOrientation="portrait" />

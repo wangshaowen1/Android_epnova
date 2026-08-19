@@ -15,8 +15,8 @@ import com.kuaigeglobal.epnova.databinding.FragmentMineBinding
 import com.kuaigeglobal.epnova.feature.income.IncomeActivity
 import com.kuaigeglobal.epnova.feature.main.MainViewModel
 import com.kuaigeglobal.epnova.feature.member.MemberIndexActivity
-import com.kuaigeglobal.epnova.feature.recharge.MyBalanceActivity
-import com.kuaigeglobal.epnova.feature.recharge.MyBalanceViewModel
+import com.kuaigeglobal.epnova.feature.recharge.CoinBalanceActivity
+import com.kuaigeglobal.epnova.feature.recharge.CreditsBalanceActivity
 import com.kuaigeglobal.epnova.feature.rewards.RewardsActivity
 import com.kuaigeglobal.epnova.feature.settings.SettingsActivity
 import com.kuaigeglobal.epnova.feature.settings.feedback.FeedbackActivity
@@ -113,7 +113,7 @@ class MineFragment : BaseViewModelFragment<FragmentMineBinding, MineViewModel>()
                     return
                 }
                 //商城
-                MyBalanceActivity.start(MyBalanceViewModel.TAB_COINS)
+                CoinBalanceActivity.start()
             }
 
             R.id.mine_credits -> {
@@ -121,7 +121,7 @@ class MineFragment : BaseViewModelFragment<FragmentMineBinding, MineViewModel>()
                     return
                 }
                 //商城
-                MyBalanceActivity.start(MyBalanceViewModel.TAB_CREDITS)
+                CreditsBalanceActivity.start()
             }
 
             R.id.mine_member_btn -> {

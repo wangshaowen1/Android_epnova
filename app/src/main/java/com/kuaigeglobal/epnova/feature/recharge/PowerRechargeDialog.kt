@@ -124,7 +124,6 @@ class PowerRechargeDialog : BaseBottomPushVMDialogFragment<DialogRechargePowerBi
             MyBalanceViewModel.TAB_COINS
         ) ?: MyBalanceViewModel.TAB_COINS
         return MyBalanceViewModel(
-            paymentItemLayout = R.layout.item_recharge_payment_dialog,
             initialTab = rechargeTab
         )
     }
