@@ -39,27 +39,11 @@ data class MemberCardData(
             R.string.member_subscribe_now.getResString()
 
     /** 是否月卡 */
-    fun hasMonthly(): Boolean = action != null && action == MemberActionEnum.UNAVAILABLE.name
-}
-
-enum class MemberStatusEnum(code: Int) {
-
-    NONE(0),
-
-    // 具有会员身
-    ACTIVE(1),
-    // 具有会员身份
-    GRACE_PERIOD(3),
-
-    ON_HOLD(4),
-
-    EXPIRED(5),
-
-    REVOKED(6)
+    fun hasMonthly(): Boolean = action != null && action == MemberActionEnum.NONE.name
 }
 
 enum class MemberActionEnum {
-    /** */
+    /** 不可点击 */
     NONE,
     /** 新购 */
     PURCHASE,
