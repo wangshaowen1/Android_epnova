@@ -65,6 +65,9 @@
         <item name="borderColor3">@color/border_color_3_dark</item>
         <item name="borderColor4">@color/border_color_4_dark</item>
 
+        <item name="powerCheckBg">@color/color_12_ff2e55</item>
+        <item name="creditsCheckBg">@color/color_12_3f2eff</item>
+
         <item name="colorPrimary">@color/theme_color_1_dark</item>
         <item name="android:windowBackground">@color/bg_color_1_dark</item>
         <item name="android:textColorPrimary">@color/text_color_1_dark</item>

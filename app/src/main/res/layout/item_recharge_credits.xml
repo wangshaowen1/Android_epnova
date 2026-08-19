@@ -20,13 +20,14 @@
         android:layout_marginBottom="@dimen/spacing_m">
 
         <com.kuaigeglobal.epnova.widget.BorderConstraintLayout
-            backgroundColorAttr="@{item.isChecked ? R.attr.bgColor2 : R.attr.fillColor1}"
+            backgroundColorAttr="@{item.isChecked ? R.attr.creditsCheckBg : R.attr.fillColor1}"
             showBorder="@{item.isChecked}"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:onClick="@{(it)->item.onItemClick.invoke(it)}"
-            app:borderCenterColor="?attr/themeColor1"
-            app:borderStartColor="?attr/themeColor1"
+            app:borderEndColor="@color/color_524dec"
+            app:borderCenterColor="@color/color_7567f0"
+            app:borderStartColor="@color/color_73b0f8"
             app:borderWidth="1.5dp"
             app:roundCornerRadius="12dp"
             tools:backgroundStartColor="?attr/bgColor2">
