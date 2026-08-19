@@ -816,4 +816,8 @@
     <string name="member_premium_quality">Premium Quality</string>
     <string name="member_create_more_drama">Create More Drama</string>
     <string name="member_discount_percent">Save %1$d%%</string>
+    <string name="member_current_unit">%1$d credits /%2$s</string>
+    <string name="member_your_current_plan">Your Current Plan</string>
+    <string name="member_membership_activated">Membership activated</string>
+    <string name="member_upgrade_scheduled">Upgrade scheduled</string>
 </resources>

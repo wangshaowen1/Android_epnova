@@ -323,6 +323,7 @@ class MemberIndexViewModel : AppRepositoryViewModel<AppRepository>() {
 
         val context = ActiveMemberPurchaseContext(
             actionType = actionType,
+            periodUnit = selectedPlan.periodUnit,
             purchasePrepareToken = prepareToken,
             productId = preparedProductId,
             basePlanId = preparedBasePlanId,
@@ -619,8 +620,7 @@ class MemberIndexViewModel : AppRepositoryViewModel<AppRepository>() {
         MemberSubscriptionRecoveryStore.clearForCurrentUser()
         BillingManager.finishMemberBillingFlow()
         memberPurchaseBusy = false
-        R.string.system_payment_success.getResString().showToast()
-        refreshMemberPageState()
+        finishSuccessfulMemberPurchase(context)
     }
 
     /**
@@ -694,6 +694,7 @@ class MemberIndexViewModel : AppRepositoryViewModel<AppRepository>() {
 
         val invalidContext = ActiveMemberPurchaseContext(
             actionType = "",
+            periodUnit = null,
             purchasePrepareToken = prepareToken,
             productId = "",
             basePlanId = "",
@@ -1020,7 +1021,7 @@ class MemberIndexViewModel : AppRepositoryViewModel<AppRepository>() {
     }
 
     private fun completeRecoveredMemberPurchase() {
-        val showSuccess = activeMemberPurchase != null
+        val activeContext = activeMemberPurchase
         memberPurchaseRequestJob = null
         invalidateMemberRecoveryQuery()
         memberEmptyRecoveryQueryCount = 0
@@ -1031,8 +1032,11 @@ class MemberIndexViewModel : AppRepositoryViewModel<AppRepository>() {
         MemberSubscriptionRecoveryStore.clearForCurrentUser()
         BillingManager.finishMemberBillingFlow()
         memberPurchaseBusy = false
-        if (showSuccess) R.string.system_payment_success.getResString().showToast()
-        refreshMemberPageState()
+        if (activeContext != null) {
+            finishSuccessfulMemberPurchase(activeContext)
+        } else {
+            refreshMemberPageState()
+        }
     }
 
     /** 明确业务错误禁止自动 sync，也禁止 release 已存在的官方 PURCHASED。 */
@@ -1094,6 +1098,25 @@ class MemberIndexViewModel : AppRepositoryViewModel<AppRepository>() {
     private fun refreshMemberPageState() {
         loadMemberPlans()
         Global.refreshCoinsAndPoints()
+    }
+
+    /** 同页订阅成功后按目标套餐提示，并返回来源页。 */
+    private fun finishSuccessfulMemberPurchase(context: ActiveMemberPurchaseContext) {
+        Global.refreshCoinsAndPoints()
+        val toastRes = when {
+            context.periodUnit == MEMBER_PERIOD_UNIT_WEEK -> {
+                R.string.member_membership_activated
+            }
+
+            context.actionType == MemberActionEnum.SWITCH.name &&
+                context.periodUnit == MEMBER_PERIOD_UNIT_MONTH -> {
+                R.string.member_upgrade_scheduled
+            }
+
+            else -> R.string.system_payment_success
+        }
+        toastRes.getResString().showToast()
+        finish()
     }
 
     private fun showPaymentFailed() {
@@ -1323,6 +1346,7 @@ class MemberIndexViewModel : AppRepositoryViewModel<AppRepository>() {
      */
     private class ActiveMemberPurchaseContext(
         val actionType: String,
+        val periodUnit: String?,
         val purchasePrepareToken: String,
         val productId: String,
         val basePlanId: String,

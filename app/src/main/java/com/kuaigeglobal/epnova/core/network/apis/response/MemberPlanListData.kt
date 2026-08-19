@@ -1,5 +1,8 @@
 package com.kuaigeglobal.epnova.core.network.apis.response
 
+import com.kuaigeglobal.epnova.R
+import com.nhsd.basic.ext.getResString
+
 /**
  * 会员套餐页配置。
  */
@@ -44,7 +47,14 @@ data class MemberPlanInfo(
     val benefitItems: List<MemberBenefitItemInfo>? = null,
     /** 当前用户可执行动作。 */
     val action: String? = null,
-)
+) {
+
+    fun hasCurrent(): Boolean = action != null && action == MemberActionEnum.CURRENT.name
+
+    fun planNameStr(): String = if (hasCurrent()) { R.string.member_your_current_plan.getResString() } else { (planName ?: "") }
+
+    fun currentInfo(): String = R.string.member_current_unit.getResString((periodPointNum ?: 0), (periodUnit?.lowercase() ?: "unit"))
+}
 
 /**
  * 套餐权益项。

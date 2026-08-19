@@ -44,7 +44,7 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:text="@{item.data.planName}"
+                android:text="@{item.data.planNameStr()}"
                 android:textColor="?attr/textColor1"
                 android:textSize="18sp"
                 tools:text="Weekly" />
@@ -81,22 +81,43 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:includeFontPadding="false"
-                android:text="@{item.priceText}"
+                android:text="@{item.data.hasCurrent() ? item.data.planName : item.priceText}"
                 android:textColor="?attr/textColor1"
                 android:textSize="18sp"
                 tools:text="$9.99" />
 
-            <TextView
-                style="@style/Text.Medium"
-                setStrike="@{true}"
-                setVisible="@{!TextUtils.isEmpty(item.originalPriceText)}"
+            <LinearLayout
+                android:orientation="horizontal"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:includeFontPadding="false"
-                android:text="@{item.originalPriceText}"
-                android:textColor="?attr/textColor4"
-                android:textSize="12sp"
-                tools:text="$14.99" />
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:paddingTop="2dp"
+                    style="@style/Text.Medium"
+                    setVisible="@{item.data.hasCurrent()}"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:includeFontPadding="false"
+                    android:text="@{item.data.currentInfo()}"
+                    android:textColor="?attr/textColor4"
+                    android:textSize="15sp"
+                    tools:visibility="gone"
+                    tools:text="1700 credits /week" />
+
+                <TextView
+                    android:paddingTop="4dp"
+                    style="@style/Text.Medium"
+                    setStrike="@{true}"
+                    setVisible="@{!TextUtils.isEmpty(item.originalPriceText)}"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:includeFontPadding="false"
+                    android:text="@{item.originalPriceText}"
+                    android:textColor="?attr/textColor4"
+                    android:textSize="12sp"
+                    tools:visibility="visible"
+                    tools:text="$14.99" />
+            </LinearLayout>
         </LinearLayout>
     </com.kuaigeglobal.epnova.widget.BorderConstraintLayout>
 </layout>
