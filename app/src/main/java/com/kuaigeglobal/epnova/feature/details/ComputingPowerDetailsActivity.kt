@@ -37,6 +37,7 @@ import com.nhsd.magicindicator.buildins.commonnavigator.titles.SimplePagerTitleV
  * @Version: 1.0
  * *****************************************
  */
+@Deprecated(message = "1.3.6 拆分", replaceWith = ReplaceWith("com.kuaigeglobal.epnova.feature.recharge.records.TransactionHistoryActivity"))
 class ComputingPowerDetailsActivity :
     BaseViewModelActivity<ActivityComputingPowerDetailsBinding, ComputingPowerDetailsViewModel>() {
 

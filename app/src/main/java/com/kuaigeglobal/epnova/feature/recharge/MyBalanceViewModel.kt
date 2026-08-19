@@ -21,7 +21,7 @@ import com.kuaigeglobal.epnova.core.manager.EventManager
 import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
 import com.kuaigeglobal.epnova.core.network.apis.response.SimpleBannerInfo
 import com.kuaigeglobal.epnova.core.response
-import com.kuaigeglobal.epnova.feature.details.ComputingPowerDetailsActivity
+import com.kuaigeglobal.epnova.feature.recharge.records.TransactionHistoryActivity
 import com.kuaigeglobal.epnova.feature.web.SimpleBrowserActivity
 import com.kuaigeglobal.epnova.widget.LoadStateViewHolder
 import com.nhsd.basic.ext.getResString
@@ -303,7 +303,7 @@ class MyBalanceViewModel(
     }
 
     fun navigateToHistory() {
-        ComputingPowerDetailsActivity.start(topActivity, currentTab)
+        TransactionHistoryActivity.start(topActivity, currentTab)
     }
 
     fun viewPaymentAgreement() {
