@@ -24,6 +24,7 @@ import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
 import com.kuaigeglobal.epnova.core.network.apis.entity.AssetInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.RoleImageInfo
 import com.kuaigeglobal.epnova.core.network.apis.request.AssetStoryImageBody
+import com.kuaigeglobal.epnova.core.network.apis.request.CreationScene
 import com.kuaigeglobal.epnova.core.network.apis.request.StrategyTypeBody
 import com.kuaigeglobal.epnova.core.network.apis.request.WorkBody
 import com.kuaigeglobal.epnova.core.network.apis.response.AssetStoryListInfo
@@ -501,7 +502,11 @@ class AssetManagementViewModel : AppRepositoryViewModel<AssetManagementRepositor
                 notGenerateItems.forEach { (item, assetDesc, assetName) -> if (!item.save(assetDesc, assetName)) return@launchWithLoading }
                 val response = withContext(Dispatchers.IO) { mRepo.api.workAssetOneKeyGenerate(WorkBody(workId, storyId)) }
                 if (!response.isSuccess) {
-                    if (!handlePointInsufficientError(response.code)) {
+                    val handled = handlePointInsufficientError(
+                        creationScene = CreationScene.IMAGE_GENERATION,
+                        errorCode = response.code,
+                    )
+                    if (!handled) {
                         response.msg?.showToast()
                     }
                     return@launchWithLoading

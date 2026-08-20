@@ -7,6 +7,7 @@ import com.kuaigeglobal.epnova.core.AppRepository
 import com.kuaigeglobal.epnova.core.Config
 import com.kuaigeglobal.epnova.core.ext.handlePointInsufficientError
 import com.kuaigeglobal.epnova.core.ext.launchWithLoading
+import com.kuaigeglobal.epnova.core.network.apis.request.CreationScene
 import com.kuaigeglobal.epnova.core.network.apis.request.UploadStoryBody
 import com.kuaigeglobal.epnova.core.network.apis.request.WorkTaskData
 import com.kuaigeglobal.epnova.router.AppRouter
@@ -26,6 +27,7 @@ class StoryGenerateConfirmViewModel : AppRepositoryViewModel<AppRepository>() {
         launchWithLoading {
             val data = mRepo.api.novelUploadSummary(body!!)
             val handled = handlePointInsufficientError(
+                creationScene = CreationScene.STORY_OUTLINE,
                 errorCode = data.code,
                 allowFirstRechargeForLegacyGuide = false,
             )

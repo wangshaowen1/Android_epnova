@@ -20,6 +20,7 @@ import com.kuaigeglobal.epnova.core.ext.putAIGCMetadata
 import com.kuaigeglobal.epnova.core.network.RetrofitClient
 import com.kuaigeglobal.epnova.core.network.apis.entity.EpisodeInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.SimpleStoryboardInfo
+import com.kuaigeglobal.epnova.core.network.apis.request.CreationScene
 import com.kuaigeglobal.epnova.core.network.apis.request.IdsBody
 import com.kuaigeglobal.epnova.core.network.apis.request.TaskIdBody
 import com.kuaigeglobal.epnova.core.network.apis.request.WorkBody
@@ -462,7 +463,11 @@ class EditStoryboardVideoViewModel : AppRepositoryViewModel<EditStoryboardReposi
                         bean = mRepo.api.workStoryboardVideoGenerate(WorkBody(workId, storyId)),
                         result = { getStoryboardList() },
                         error = {
-                            if (!handlePointInsufficientError(this?.code)) {
+                            val handled = handlePointInsufficientError(
+                                creationScene = CreationScene.VIDEO_GENERATION,
+                                errorCode = this?.code,
+                            )
+                            if (!handled) {
                                 this?.msg?.showToast()
                             }
                             loadState.set(LoadStateViewHolder.NO_DATA)

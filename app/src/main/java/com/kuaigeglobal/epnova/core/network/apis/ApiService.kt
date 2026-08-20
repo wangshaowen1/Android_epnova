@@ -86,6 +86,7 @@ import com.kuaigeglobal.epnova.core.network.apis.request.DramasSeriesId
 import com.kuaigeglobal.epnova.core.network.apis.request.DramasTimbreBody
 import com.kuaigeglobal.epnova.core.network.apis.request.FeedbackBody
 import com.kuaigeglobal.epnova.core.network.apis.request.FcmTokenBody
+import com.kuaigeglobal.epnova.core.network.apis.request.FirstRechargeCreditsBody
 import com.kuaigeglobal.epnova.core.network.apis.request.GenerateStoryboardBody
 import com.kuaigeglobal.epnova.core.network.apis.request.GoogleMemberSubscriptionBody
 import com.kuaigeglobal.epnova.core.network.apis.request.HotCaseIdBody
@@ -93,6 +94,7 @@ import com.kuaigeglobal.epnova.core.network.apis.request.GenerateSubtitleBody
 import com.kuaigeglobal.epnova.core.network.apis.request.IdsBody
 import com.kuaigeglobal.epnova.core.network.apis.request.ImgUrlBody
 import com.kuaigeglobal.epnova.core.network.apis.request.IncomeDetailPageBody
+import com.kuaigeglobal.epnova.core.network.apis.request.InsufficientGuideBody
 import com.kuaigeglobal.epnova.core.network.apis.request.KeyworkBody
 import com.kuaigeglobal.epnova.core.network.apis.request.LatestEpisodeBody
 import com.kuaigeglobal.epnova.core.network.apis.request.LoginByFlashMobileBody
@@ -1138,7 +1140,7 @@ interface ApiService {
      * 查询算力不足付费引导
      */
     @POST(ApiConstants.POINT_INSUFFICIENT_GUIDE)
-    suspend fun pointInsufficientGuide(): ApiResponse<PointInsufficientGuideData?>
+    suspend fun pointInsufficientGuide(@Body body: InsufficientGuideBody): ApiResponse<PointInsufficientGuideData?>
 
     /**
      * 交易支付方式配置列表
@@ -1357,7 +1359,7 @@ interface ApiService {
      * 获取算力新人专享礼
      */
     @POST(ApiConstants.GET_FIRST_RECHARGE_CREDITS_DIALOG_INFO)
-    suspend fun getFirstRechargeCreditsDialogInfo(): ApiResponse<FirstRechargeCreditsDialogData?>
+    suspend fun getFirstRechargeCreditsDialogInfo(@Body body: FirstRechargeCreditsBody): ApiResponse<FirstRechargeCreditsDialogData?>
 
     /**
      * 播放-分页查询播放历史列表

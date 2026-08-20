@@ -347,14 +347,16 @@ class CreationPageActionDelegate(
                             )
                         }
                     }
-                    val showRecharge = !User.get().hasPurchasedPoints() &&
-                        !Config.get().isFirstRechargeShown(FirstRechargeCreditsDialog.SCENE_HOME)
+//                    val showRecharge = !User.get().hasPurchasedPoints() && !Config.get().isFirstRechargeShown(FirstRechargeCreditsDialog.SCENE_HOME)
+                    val showRecharge = !User.get().hasPurchasedPoints()
                     if (showRecharge) {
                         pendingFirstRechargeContinuation = createWork
-                        viewModel.getFirstRechargeInfo {
-                            pendingFirstRechargeContinuation = null
-                            createWork()
-                        }
+                        viewModel.pointInsufficientGuide()
+                        pendingFirstRechargeContinuation = null
+//                        viewModel.getFirstRechargeInfo {
+//                            pendingFirstRechargeContinuation = null
+//                            createWork()
+//                        }
                     } else {
                         createWork()
                     }

@@ -20,6 +20,8 @@ import com.kuaigeglobal.epnova.core.network.apis.ApiFactory
 import com.kuaigeglobal.epnova.core.network.apis.ApiResponse
 import com.kuaigeglobal.epnova.core.network.apis.entity.SimpleStoryboardInfo
 import com.kuaigeglobal.epnova.core.network.apis.request.ContentBody
+import com.kuaigeglobal.epnova.core.network.apis.request.FirstRechargeCreditsBody
+import com.kuaigeglobal.epnova.core.network.apis.request.InsufficientGuideBody
 import com.kuaigeglobal.epnova.core.network.apis.response.PointInsufficientGuideData
 import com.kuaigeglobal.epnova.core.network.apis.response.UserHomeData
 import com.kuaigeglobal.epnova.core.response
@@ -209,6 +211,7 @@ suspend fun sensitiveWordCheck(content: String?, needHighlight: Boolean? = true)
  * @return 当前错误码是否属于算力不足并已接管处理
  */
 fun ViewModel.handlePointInsufficientError(
+    creationScene: Int,
     errorCode: Int?,
     allowFirstRechargeForLegacyGuide: Boolean = true
 ): Boolean {
@@ -220,38 +223,60 @@ fun ViewModel.handlePointInsufficientError(
     launch(showToast = true) {
         var guideType: Int? = null
         response(
-            block = { ApiFactory.apiService.pointInsufficientGuide() },
+            block = { ApiFactory.apiService.pointInsufficientGuide(InsufficientGuideBody(creationScene)) },
             result = {
                 guideType = data?.guideType ?: PointInsufficientGuideData.GUIDE_TYPE_LEGACY
             },
         )
         val resolvedGuideType = guideType ?: return@launch
-
-        when (resolvedGuideType) {
-            PointInsufficientGuideData.GUIDE_TYPE_LEGACY -> {
-                showLegacyPointInsufficientGuide(allowFirstRechargeForLegacyGuide)
-            }
-
-            PointInsufficientGuideData.GUIDE_TYPE_FIRST_RECHARGE -> {
-//                if (!showFirstRecharge(true, PowerRechargeDialog.TAB_CREDITS)) {
-//                    showPowerRechargeDialog()
-//                }
-                showCreditsFirstRecharge(true, PowerRechargeDialog.TAB_CREDITS)
-            }
-
-            PointInsufficientGuideData.GUIDE_TYPE_MEMBER -> {
-                MemberIndexActivity.start(FirebaseEvent.Value.TRIGGER_INSUFFICIENT_BALANCE)
-            }
-            PointInsufficientGuideData.GUIDE_TYPE_RECHARGE_DIALOG -> showPowerRechargeDialog()
-            else -> showLegacyPointInsufficientGuide(allowFirstRechargeForLegacyGuide)
-        }
+        showPointInsufficientGuide(
+            creationScene = creationScene,
+            guideType = resolvedGuideType,
+            allowFirstRechargeForLegacyGuide = allowFirstRechargeForLegacyGuide,
+        )
     }
     return true
 }
 
-private suspend fun showLegacyPointInsufficientGuide(allowFirstRecharge: Boolean) {
+internal suspend fun showPointInsufficientGuide(
+    creationScene: Int,
+    guideType: Int?,
+    allowFirstRechargeForLegacyGuide: Boolean = true,
+) {
+    when (guideType ?: PointInsufficientGuideData.GUIDE_TYPE_LEGACY) {
+        PointInsufficientGuideData.GUIDE_TYPE_LEGACY -> {
+            showLegacyPointInsufficientGuide(allowFirstRechargeForLegacyGuide, creationScene)
+        }
+
+        PointInsufficientGuideData.GUIDE_TYPE_FIRST_RECHARGE -> {
+//                if (!showFirstRecharge(true, PowerRechargeDialog.TAB_CREDITS)) {
+//                    showPowerRechargeDialog()
+//                }
+            showCreditsFirstRecharge(
+                showToast = true,
+                rechargeTab = PowerRechargeDialog.TAB_CREDITS,
+                creationScene = creationScene,
+            )
+        }
+
+        PointInsufficientGuideData.GUIDE_TYPE_MEMBER -> {
+            MemberIndexActivity.start(FirebaseEvent.Value.TRIGGER_INSUFFICIENT_BALANCE)
+        }
+        PointInsufficientGuideData.GUIDE_TYPE_RECHARGE_DIALOG -> showPowerRechargeDialog()
+        else -> showLegacyPointInsufficientGuide(allowFirstRechargeForLegacyGuide, creationScene)
+    }
+}
+
+private suspend fun showLegacyPointInsufficientGuide(
+    allowFirstRecharge: Boolean,
+    creationScene: Int,
+) {
     if (allowFirstRecharge) {
-        showRechargeDialog(true, PowerRechargeDialog.TAB_CREDITS)
+        showRechargeDialog(
+            showToast = true,
+            rechargeTab = PowerRechargeDialog.TAB_CREDITS,
+            creationScene = creationScene,
+        )
     } else {
         showPowerRechargeDialog()
     }
@@ -266,9 +291,10 @@ private fun showPowerRechargeDialog() {
 
 suspend fun showRechargeDialog(
     showToast: Boolean = false,
-    rechargeTab: Int = PowerRechargeDialog.TAB_CREDITS
+    rechargeTab: Int = PowerRechargeDialog.TAB_CREDITS,
+    creationScene: Int? = null,
 ) {
-    if (!showFirstRecharge(showToast, rechargeTab)) {
+    if (!showFirstRecharge(showToast, rechargeTab, creationScene)) {
         PowerRechargeDialog.show(0, showToast, rechargeTab = rechargeTab)
     }
 }
@@ -279,18 +305,20 @@ suspend fun showRechargeDialog(
  */
 suspend fun showFirstRecharge(
     showToast: Boolean,
-    rechargeTab: Int = PowerRechargeDialog.TAB_CREDITS
+    rechargeTab: Int = PowerRechargeDialog.TAB_CREDITS,
+    creationScene: Int? = null,
 ): Boolean {
     val hasPurchased = if (rechargeTab == PowerRechargeDialog.TAB_CREDITS) {
         User.get().hasPurchasedPoints()
     } else {
         User.get().hasPurchasedCoins()
     }
-    val canShowFirstRecharge = !hasPurchased &&
-            !Config.get().isFirstRechargeShown(FirstRechargeDialog.SCENE_OTHER)
+//    val canShowFirstRecharge = !hasPurchased &&
+//            !Config.get().isFirstRechargeShown(FirstRechargeDialog.SCENE_OTHER)
+    val canShowFirstRecharge = !hasPurchased
     if (!canShowFirstRecharge) return false
     val isShown = if (rechargeTab == PowerRechargeDialog.TAB_CREDITS) {
-        showCreditsFirstRecharge(showToast, rechargeTab)
+        showCreditsFirstRecharge(showToast, rechargeTab, creationScene)
     } else {
         showCoinsFirstRecharge(showToast, rechargeTab)
     }
@@ -302,17 +330,19 @@ suspend fun showFirstRecharge(
 
 private suspend fun showCreditsFirstRecharge(
     showToast: Boolean,
-    rechargeTab: Int
+    rechargeTab: Int,
+    creationScene: Int? = null,
 ): Boolean {
     val firstRechargeDialogData = withContext(Dispatchers.IO) {
-        ApiFactory.apiService.getFirstRechargeCreditsDialogInfo()
+        ApiFactory.apiService.getFirstRechargeCreditsDialogInfo(FirstRechargeCreditsBody(creationScene))
     }.data
     if (firstRechargeDialogData == null) return false
-    val dialog = FirstRechargeCreditsDialog.show(FirstRechargeCreditsDialog.SCENE_OTHER, firstRechargeDialogData)?.apply {
-        onClose = {
-            PowerRechargeDialog.show(0, showToast, rechargeTab = rechargeTab)
-        }
-    }
+    val dialog = FirstRechargeCreditsDialog.show(FirstRechargeCreditsDialog.SCENE_OTHER, firstRechargeDialogData)
+//    val dialog = FirstRechargeCreditsDialog.show(FirstRechargeCreditsDialog.SCENE_OTHER, firstRechargeDialogData)?.apply {
+//        onClose = {
+//            PowerRechargeDialog.show(0, showToast, rechargeTab = rechargeTab)
+//        }
+//    }
     return dialog != null
 }
 
@@ -324,10 +354,11 @@ private suspend fun showCoinsFirstRecharge(
         ApiFactory.apiService.getFirstRechargeDialogInfo()
     }.data
     if (firstRechargeDialogData == null) return false
-    val dialog = FirstRechargeDialog.show(FirstRechargeDialog.SCENE_OTHER, firstRechargeDialogData)?.apply {
-        onClose = {
-            PowerRechargeDialog.show(0, showToast, rechargeTab = rechargeTab)
-        }
-    }
+    val dialog = FirstRechargeDialog.show(FirstRechargeDialog.SCENE_OTHER, firstRechargeDialogData)
+//    val dialog = FirstRechargeDialog.show(FirstRechargeDialog.SCENE_OTHER, firstRechargeDialogData)?.apply {
+//        onClose = {
+//            PowerRechargeDialog.show(0, showToast, rechargeTab = rechargeTab)
+//        }
+//    }
     return dialog != null
 }

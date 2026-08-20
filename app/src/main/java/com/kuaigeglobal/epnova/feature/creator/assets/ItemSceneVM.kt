@@ -14,6 +14,7 @@ import com.kuaigeglobal.epnova.core.network.apis.entity.AssetGenerateInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.AssetInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.ReferenceImageInfo
 import com.kuaigeglobal.epnova.core.network.apis.request.AssetGenerateBody
+import com.kuaigeglobal.epnova.core.network.apis.request.CreationScene
 import com.kuaigeglobal.epnova.core.network.apis.request.AssetSaveBody
 import com.kuaigeglobal.epnova.core.network.apis.request.AssetUnlinkBody
 import com.kuaigeglobal.epnova.core.network.apis.request.TaskIdBody
@@ -154,7 +155,11 @@ class ItemSceneVM(
                         }
                     },
                     error = {
-                        if (!handlePointInsufficientError(this?.code)) {
+                        val handled = handlePointInsufficientError(
+                            creationScene = CreationScene.IMAGE_GENERATION,
+                            errorCode = this?.code,
+                        )
+                        if (!handled) {
                             this?.msg?.showToast()
                         }
                         updateStatus(preStatus)

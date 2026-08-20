@@ -21,6 +21,7 @@ import com.kuaigeglobal.epnova.core.ext.launch
 import com.kuaigeglobal.epnova.core.ext.launchWithLoading
 import com.kuaigeglobal.epnova.core.network.apis.entity.CreationModelInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.SimpleStoryboardInfo
+import com.kuaigeglobal.epnova.core.network.apis.request.CreationScene
 import com.kuaigeglobal.epnova.core.network.apis.request.IdsBody
 import com.kuaigeglobal.epnova.core.network.apis.request.StrategyTypeBody
 import com.kuaigeglobal.epnova.core.network.apis.request.SwitchModelBody
@@ -354,7 +355,11 @@ class StoryboardDesignViewModel : AppRepositoryViewModel<AppRepository>() {
                 bean = mRepo.api.workStoryboardVideoGenerate(WorkBody(workId, storyId)),
                 result = { toNextStep?.invoke(workId, storyId, data?.taskId) },
                 error = {
-                    if (!handlePointInsufficientError(this?.code)) {
+                    val handled = handlePointInsufficientError(
+                        creationScene = CreationScene.VIDEO_GENERATION,
+                        errorCode = this?.code,
+                    )
+                    if (!handled) {
                         this?.msg?.showToast()
                     }
                 })
