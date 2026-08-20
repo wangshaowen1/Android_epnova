@@ -103,11 +103,11 @@ class CreationPageActionDelegate(
             val continuation = pendingFirstRechargeContinuation
             pendingFirstRechargeContinuation = null
             val rechargeDialog = FirstRechargeCreditsDialog.show(
-                FirstRechargeCreditsDialog.SCENE_HOME,
+                FirstRechargeCreditsDialog.SCENE_GUIDE,
                 data
             )
             if (rechargeDialog == null) continuation?.invoke()
-            Config.get().markFirstRechargeShown(FirstRechargeCreditsDialog.SCENE_HOME)
+            Config.get().markFirstRechargeShown(FirstRechargeCreditsDialog.SCENE_GUIDE)
         }
         fragment.observeEvents {
             onUserSignOut { viewModel.input.value = "" }
@@ -347,8 +347,7 @@ class CreationPageActionDelegate(
                             )
                         }
                     }
-//                    val showRecharge = !User.get().hasPurchasedPoints() && !Config.get().isFirstRechargeShown(FirstRechargeCreditsDialog.SCENE_HOME)
-                    val showRecharge = !User.get().hasPurchasedPoints()
+                    val showRecharge = !User.get().hasPurchasedPoints() && !Config.get().isFirstRechargeShown(FirstRechargeCreditsDialog.SCENE_GUIDE)
                     if (showRecharge) {
                         pendingFirstRechargeContinuation = createWork
                         viewModel.pointInsufficientGuide()

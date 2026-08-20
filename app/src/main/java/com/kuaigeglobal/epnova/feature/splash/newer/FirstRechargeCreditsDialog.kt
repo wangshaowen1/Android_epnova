@@ -28,9 +28,10 @@ class FirstRechargeCreditsDialog :
 
         const val SCENE_HOME = FirstRechargeDialog.SCENE_HOME
         const val SCENE_OTHER = FirstRechargeDialog.SCENE_OTHER
+        const val SCENE_GUIDE = FirstRechargeDialog.SCENE_GUIDE
 
         fun show(
-            scene: Int = SCENE_OTHER,
+            scene: Int = SCENE_GUIDE,
             firstRechargeDialogData: FirstRechargeCreditsDialogData?
         ): FirstRechargeCreditsDialog? {
             if (firstRechargeDialogData?.isNeedShow() != true) return null

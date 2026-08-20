@@ -313,9 +313,8 @@ suspend fun showFirstRecharge(
     } else {
         User.get().hasPurchasedCoins()
     }
-//    val canShowFirstRecharge = !hasPurchased &&
-//            !Config.get().isFirstRechargeShown(FirstRechargeDialog.SCENE_OTHER)
-    val canShowFirstRecharge = !hasPurchased
+    val canShowFirstRecharge = !hasPurchased &&
+            !Config.get().isFirstRechargeShown(FirstRechargeDialog.SCENE_GUIDE)
     if (!canShowFirstRecharge) return false
     val isShown = if (rechargeTab == PowerRechargeDialog.TAB_CREDITS) {
         showCreditsFirstRecharge(showToast, rechargeTab, creationScene)
@@ -323,7 +322,7 @@ suspend fun showFirstRecharge(
         showCoinsFirstRecharge(showToast, rechargeTab)
     }
     if (isShown) {
-        Config.get().markFirstRechargeShown(FirstRechargeDialog.SCENE_OTHER)
+        Config.get().markFirstRechargeShown(FirstRechargeDialog.SCENE_GUIDE)
     }
     return isShown
 }
@@ -337,7 +336,7 @@ private suspend fun showCreditsFirstRecharge(
         ApiFactory.apiService.getFirstRechargeCreditsDialogInfo(FirstRechargeCreditsBody(creationScene))
     }.data
     if (firstRechargeDialogData == null) return false
-    val dialog = FirstRechargeCreditsDialog.show(FirstRechargeCreditsDialog.SCENE_OTHER, firstRechargeDialogData)
+    val dialog = FirstRechargeCreditsDialog.show(FirstRechargeCreditsDialog.SCENE_GUIDE, firstRechargeDialogData)
 //    val dialog = FirstRechargeCreditsDialog.show(FirstRechargeCreditsDialog.SCENE_OTHER, firstRechargeDialogData)?.apply {
 //        onClose = {
 //            PowerRechargeDialog.show(0, showToast, rechargeTab = rechargeTab)
@@ -354,7 +353,7 @@ private suspend fun showCoinsFirstRecharge(
         ApiFactory.apiService.getFirstRechargeDialogInfo()
     }.data
     if (firstRechargeDialogData == null) return false
-    val dialog = FirstRechargeDialog.show(FirstRechargeDialog.SCENE_OTHER, firstRechargeDialogData)
+    val dialog = FirstRechargeDialog.show(FirstRechargeDialog.SCENE_GUIDE, firstRechargeDialogData)
 //    val dialog = FirstRechargeDialog.show(FirstRechargeDialog.SCENE_OTHER, firstRechargeDialogData)?.apply {
 //        onClose = {
 //            PowerRechargeDialog.show(0, showToast, rechargeTab = rechargeTab)
