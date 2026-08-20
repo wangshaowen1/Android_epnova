@@ -1195,12 +1195,9 @@ class MemberIndexViewModel : AppRepositoryViewModel<AppRepository>() {
             context.periodUnit == MEMBER_PERIOD_UNIT_WEEK -> {
                 R.string.member_membership_activated
             }
-
-            context.actionType == MemberActionEnum.SWITCH.name &&
-                context.periodUnit == MEMBER_PERIOD_UNIT_MONTH -> {
+            context.periodUnit == MEMBER_PERIOD_UNIT_MONTH -> {
                 R.string.member_upgrade_scheduled
             }
-
             else -> R.string.system_payment_success
         }
         toastRes.getResString().showToast()
