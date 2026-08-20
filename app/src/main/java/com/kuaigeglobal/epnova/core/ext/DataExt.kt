@@ -233,9 +233,10 @@ fun ViewModel.handlePointInsufficientError(
             }
 
             PointInsufficientGuideData.GUIDE_TYPE_FIRST_RECHARGE -> {
-                if (!showFirstRecharge(true, PowerRechargeDialog.TAB_CREDITS)) {
-                    showPowerRechargeDialog()
-                }
+//                if (!showFirstRecharge(true, PowerRechargeDialog.TAB_CREDITS)) {
+//                    showPowerRechargeDialog()
+//                }
+                showCreditsFirstRecharge(true, PowerRechargeDialog.TAB_CREDITS)
             }
 
             PointInsufficientGuideData.GUIDE_TYPE_MEMBER -> {

@@ -477,7 +477,7 @@ class AssetManagementViewModel : AppRepositoryViewModel<AssetManagementRepositor
     }
 
     private fun generate(cost: Int) {
-        if (PowerRechargeDialog.checkLowBalance(cost, PowerRechargeDialog.TAB_CREDITS)) return
+//        if (PowerRechargeDialog.checkLowBalance(cost, PowerRechargeDialog.TAB_CREDITS)) return
         var notInput = false
         val notGenerateItems = arrayListOf<Triple<ItemAssetVM, String, String>>()
         adapter.items.forEachIndexed { index, item ->
