@@ -349,9 +349,7 @@ class CreationPageActionDelegate(
                     }
                     val showRecharge = !User.get().hasPurchasedPoints() && !Config.get().isFirstRechargeShown(FirstRechargeCreditsDialog.SCENE_GUIDE)
                     if (showRecharge) {
-                        pendingFirstRechargeContinuation = createWork
-                        viewModel.pointInsufficientGuide()
-                        pendingFirstRechargeContinuation = null
+                        viewModel.pointInsufficientGuide(createWork)
 //                        viewModel.getFirstRechargeInfo {
 //                            pendingFirstRechargeContinuation = null
 //                            createWork()

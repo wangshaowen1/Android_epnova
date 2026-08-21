@@ -3,7 +3,11 @@
 package com.kuaigeglobal.epnova.core.ext
 
 import android.app.Activity
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
+import com.blankj.utilcode.util.ActivityUtils
 import com.blankj.utilcode.util.AppUtils
 import com.blankj.utilcode.util.EncryptUtils
 import com.kuaigeglobal.epnova.R
@@ -243,6 +247,7 @@ internal suspend fun showPointInsufficientGuide(
     creationScene: Int,
     guideType: Int?,
     allowFirstRechargeForLegacyGuide: Boolean = true,
+    nextBloack: () -> Unit = {},
 ) {
     when (guideType ?: PointInsufficientGuideData.GUIDE_TYPE_LEGACY) {
         PointInsufficientGuideData.GUIDE_TYPE_LEGACY -> {
@@ -257,15 +262,44 @@ internal suspend fun showPointInsufficientGuide(
                 showToast = true,
                 rechargeTab = PowerRechargeDialog.TAB_CREDITS,
                 creationScene = creationScene,
+                onClose = nextBloack,
             )
         }
 
         PointInsufficientGuideData.GUIDE_TYPE_MEMBER -> {
-            MemberIndexActivity.start(if (creationScene == CreationScene.STORY_OUTLINE) FirebaseEvent.Value.TRIGGER_CREATE_BTN else FirebaseEvent.Value.TRIGGER_INSUFFICIENT_BALANCE)
+            runAfterReturningToCurrentActivity(nextBloack)
+            MemberIndexActivity.start(
+                if (creationScene == CreationScene.STORY_OUTLINE) {
+                    FirebaseEvent.Value.TRIGGER_CREATE_BTN
+                } else {
+                    FirebaseEvent.Value.TRIGGER_INSUFFICIENT_BALANCE
+                }
+            )
         }
         PointInsufficientGuideData.GUIDE_TYPE_RECHARGE_DIALOG -> showPowerRechargeDialog()
         else -> showLegacyPointInsufficientGuide(allowFirstRechargeForLegacyGuide, creationScene)
     }
+}
+
+private fun runAfterReturningToCurrentActivity(block: () -> Unit) {
+    val source = ActivityUtils.getTopActivity() as? LifecycleOwner ?: return
+    var hasLeftSource = false
+    lateinit var observer: LifecycleEventObserver
+    observer = LifecycleEventObserver { owner, event ->
+        when (event) {
+            // 注册时会同步当前生命周期，必须先收到 PAUSE 才视为已进入会员页。
+            Lifecycle.Event.ON_PAUSE -> hasLeftSource = true
+            Lifecycle.Event.ON_RESUME -> {
+                if (hasLeftSource) {
+                    owner.lifecycle.removeObserver(observer)
+                    block()
+                }
+            }
+            Lifecycle.Event.ON_DESTROY -> owner.lifecycle.removeObserver(observer)
+            else -> Unit
+        }
+    }
+    source.lifecycle.addObserver(observer)
 }
 
 private suspend fun showLegacyPointInsufficientGuide(
@@ -332,12 +366,18 @@ private suspend fun showCreditsFirstRecharge(
     showToast: Boolean,
     rechargeTab: Int,
     creationScene: Int? = null,
+    onClose: (() -> Unit)? = null,
 ): Boolean {
     val firstRechargeDialogData = withContext(Dispatchers.IO) {
         ApiFactory.apiService.getFirstRechargeCreditsDialogInfo(FirstRechargeCreditsBody(creationScene))
     }.data
     if (firstRechargeDialogData == null) return false
-    val dialog = FirstRechargeCreditsDialog.show(FirstRechargeCreditsDialog.SCENE_GUIDE, firstRechargeDialogData)
+    val dialog = FirstRechargeCreditsDialog.show(
+        FirstRechargeCreditsDialog.SCENE_GUIDE,
+        firstRechargeDialogData,
+    )?.apply {
+        this.onClose = onClose
+    }
     Config.get().markFirstRechargeShown(FirstRechargeDialog.SCENE_GUIDE)
 //    val dialog = FirstRechargeCreditsDialog.show(FirstRechargeCreditsDialog.SCENE_OTHER, firstRechargeDialogData)?.apply {
 //        onClose = {

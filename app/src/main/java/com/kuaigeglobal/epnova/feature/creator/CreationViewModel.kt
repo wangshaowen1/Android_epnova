@@ -397,7 +397,7 @@ class CreationViewModel : AppRepositoryViewModel<CreationRepository>() {
     }
 
     /** 查询故事梗概场景的算力不足引导，并展示服务端指定的付费入口。 */
-    fun pointInsufficientGuide() {
+    fun pointInsufficientGuide(nextBloack: () -> Unit) {
         launch(showToast = true) {
             var guideType: Int? = null
             response(
@@ -415,6 +415,7 @@ class CreationViewModel : AppRepositoryViewModel<CreationRepository>() {
             showPointInsufficientGuide(
                 creationScene = CreationScene.STORY_OUTLINE,
                 guideType = resolvedGuideType,
+                nextBloack = nextBloack,
             )
         }
     }

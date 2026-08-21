@@ -1192,6 +1192,7 @@ class MemberIndexViewModel : AppRepositoryViewModel<AppRepository>() {
     private fun finishSuccessfulMemberPurchase(context: ActiveMemberPurchaseContext) {
         reportMemberPurchaseResult(context, isSuccess = true)
         Global.refreshCoinsAndPoints()
+        Global.refreshUserInfo()
         val toastRes = when {
             context.periodUnit == MEMBER_PERIOD_UNIT_WEEK -> {
                 R.string.member_membership_activated
