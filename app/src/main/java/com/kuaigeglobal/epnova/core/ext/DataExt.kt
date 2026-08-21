@@ -20,6 +20,7 @@ import com.kuaigeglobal.epnova.core.network.apis.ApiFactory
 import com.kuaigeglobal.epnova.core.network.apis.ApiResponse
 import com.kuaigeglobal.epnova.core.network.apis.entity.SimpleStoryboardInfo
 import com.kuaigeglobal.epnova.core.network.apis.request.ContentBody
+import com.kuaigeglobal.epnova.core.network.apis.request.CreationScene
 import com.kuaigeglobal.epnova.core.network.apis.request.FirstRechargeCreditsBody
 import com.kuaigeglobal.epnova.core.network.apis.request.InsufficientGuideBody
 import com.kuaigeglobal.epnova.core.network.apis.response.PointInsufficientGuideData
@@ -260,7 +261,7 @@ internal suspend fun showPointInsufficientGuide(
         }
 
         PointInsufficientGuideData.GUIDE_TYPE_MEMBER -> {
-            MemberIndexActivity.start(FirebaseEvent.Value.TRIGGER_INSUFFICIENT_BALANCE)
+            MemberIndexActivity.start(if (creationScene == CreationScene.STORY_OUTLINE) FirebaseEvent.Value.TRIGGER_CREATE_BTN else FirebaseEvent.Value.TRIGGER_INSUFFICIENT_BALANCE)
         }
         PointInsufficientGuideData.GUIDE_TYPE_RECHARGE_DIALOG -> showPowerRechargeDialog()
         else -> showLegacyPointInsufficientGuide(allowFirstRechargeForLegacyGuide, creationScene)
@@ -337,6 +338,7 @@ private suspend fun showCreditsFirstRecharge(
     }.data
     if (firstRechargeDialogData == null) return false
     val dialog = FirstRechargeCreditsDialog.show(FirstRechargeCreditsDialog.SCENE_GUIDE, firstRechargeDialogData)
+    Config.get().markFirstRechargeShown(FirstRechargeDialog.SCENE_GUIDE)
 //    val dialog = FirstRechargeCreditsDialog.show(FirstRechargeCreditsDialog.SCENE_OTHER, firstRechargeDialogData)?.apply {
 //        onClose = {
 //            PowerRechargeDialog.show(0, showToast, rechargeTab = rechargeTab)

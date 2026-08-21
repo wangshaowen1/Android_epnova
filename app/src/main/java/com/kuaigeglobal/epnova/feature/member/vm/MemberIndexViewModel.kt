@@ -238,7 +238,8 @@ class MemberIndexViewModel : AppRepositoryViewModel<AppRepository>() {
         }
     }
 
-    private fun reportMemberPlanClick(plan: MemberPlanInfo) {
+    fun reportMemberPlanClick() {
+        val plan = currentRechargeItem?.data?.get() ?: return
         if (plan.action == MemberActionEnum.SWITCH.name) {
             EventManager.onFirebaseTrack(
                 FirebaseEvent.Category.MEMBERSHIP_UPGRADE,
@@ -1273,7 +1274,6 @@ class MemberIndexViewModel : AppRepositoryViewModel<AppRepository>() {
         // prepare 已开始后，本次交易必须继续使用点击购买时的套餐快照；支付收敛前禁止切换
         // 页面选中项，避免页面积分/价格展示与即将由 Google 扣款的套餐不一致。
         if (memberPurchaseBusy) return
-        reportMemberPlanClick(plan)
         if (currentRechargeItem === item) return
         currentRechargeItem?.isSelected?.set(false)
         item.isSelected.set(true)
