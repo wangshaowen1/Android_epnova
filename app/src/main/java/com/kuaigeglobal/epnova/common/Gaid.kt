@@ -15,4 +15,21 @@ object Gaid {
         }
         return gaid
     }
+
+    /**
+     * 没有google 服务的手机也能发起请求
+     */
+    @JvmStatic
+    fun safeGetGaid(): String {
+        val gaid = gaid ?: ""
+        if (gaid.isEmpty()) {
+            try {
+                val adInfo: AdvertisingIdClient.Info = AdvertisingIdClient.getAdvertisingIdInfo(App.instance)
+                this.gaid = adInfo.id
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+        return gaid
+    }
 }
