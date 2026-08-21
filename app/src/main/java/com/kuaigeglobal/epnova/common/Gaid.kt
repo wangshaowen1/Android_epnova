@@ -17,7 +17,8 @@ object Gaid {
     }
 
     /**
-     * 没有google 服务的手机也能发起请求
+     * 兼容没有google服务的手机
+     * 保证发起请求
      */
     @JvmStatic
     fun safeGetGaid(): String {

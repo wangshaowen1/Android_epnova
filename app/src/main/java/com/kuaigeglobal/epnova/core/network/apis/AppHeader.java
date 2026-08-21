@@ -72,7 +72,7 @@ public class AppHeader {
 
 
             String mac = Session.getInstance().getMac();
-            String gaid = Gaid.getGaid();
+            String gaid = Gaid.safeGetGaid();
             String mobileDeviceId = DeviceID.getClientId();
             String imei = Session.getInstance().getImei();
             String riskKey = getRandomLowerCaseLetter() + androidId
