@@ -28,6 +28,7 @@ import com.kuaigeglobal.epnova.core.network.apis.request.MemberSubscriptionPrepa
 import com.kuaigeglobal.epnova.core.network.apis.request.MemberSubscriptionPrepareReleaseBody
 import com.kuaigeglobal.epnova.core.network.apis.response.MemberActionEnum
 import com.kuaigeglobal.epnova.core.network.apis.response.MemberBenefitItemInfo
+import com.kuaigeglobal.epnova.core.network.apis.response.MemberBenefitItemType
 import com.kuaigeglobal.epnova.core.network.apis.response.MemberPlanInfo
 import com.kuaigeglobal.epnova.core.network.apis.response.MemberPlanMode
 import com.kuaigeglobal.epnova.core.network.apis.response.MemberSubscriptionPrepareData
@@ -1289,7 +1290,7 @@ class MemberIndexViewModel : AppRepositoryViewModel<AppRepository>() {
         selectedPeriodUnit.set("/${plan?.periodUnit.orEmpty().lowercase()}")
         updateBottomHint()
 
-        submitPrivileges(plan?.benefitItems)
+        submitPrivileges(item)
         updateSubscribeAvailability()
     }
 
@@ -1301,27 +1302,38 @@ class MemberIndexViewModel : AppRepositoryViewModel<AppRepository>() {
             return
         }
 
-//        val currentPrice = item.priceText.get().orEmpty()
-//        val originalPrice = item.originalPriceText.get().orEmpty()
-        // originalPriceText 只有在 Google 仍返回指定优惠且优惠价与原价不同时才会写入。
-//        val hasWeeklyIntroOffer = plan.periodUnit == MEMBER_PERIOD_UNIT_WEEK && currentPrice.isNotBlank() && originalPrice.isNotBlank()
         val hint = when {
             plan.action == MemberActionEnum.SWITCH.name -> {
                 R.string.member_switch_plan_hint.getResString(plan.planName.orEmpty())
             }
-
-//            hasWeeklyIntroOffer -> {
-//                R.string.member_intro_offer_hint.getResString(currentPrice, originalPrice)
-//            }
 
             else -> R.string.member_cancel_anytime.getResString()
         }
         bottomHint.set(hint)
     }
 
-    private fun submitPrivileges(benefitItems: List<MemberBenefitItemInfo>?) {
+    private fun submitPrivileges(item: ItemMemberRechargeViewModel?) {
+        val plan = item?.data?.get()
+        val benefitItems = plan?.benefitItems.orEmpty().toMutableList()
+        if (item != null && plan?.periodUnit == MEMBER_PERIOD_UNIT_WEEK) {
+            val currentPrice = item.priceText.get().orEmpty()
+            val originalPrice = item.originalPriceText.get().orEmpty()
+            // originalPriceText 只有在 Google 仍返回指定优惠且优惠价与原价不同时才会写入。
+            if (currentPrice.isNotBlank() && originalPrice.isNotBlank()) {
+                // 存在首周优惠 新增权益一条
+                benefitItems.add(
+                    MemberBenefitItemInfo(
+                        itemType = MemberBenefitItemType.TEXT.name,
+                        text = R.string.member_intro_offer_hint.getResString(
+                            currentPrice,
+                            originalPrice,
+                        ),
+                    ),
+                )
+            }
+        }
         privilegeAdapter.submitList(
-            benefitItems.orEmpty().map(::ItemMemberPrivilegeViewModel),
+            benefitItems.map(::ItemMemberPrivilegeViewModel),
         )
     }
 
@@ -1374,6 +1386,9 @@ class MemberIndexViewModel : AppRepositoryViewModel<AppRepository>() {
                     item.originalPriceText.set(
                         standardPrice.takeIf { hasStoreDiscount }.orEmpty(),
                     )
+                    if (item === currentRechargeItem) {
+                        submitPrivileges(item)
+                    }
                 }
                 updateBottomHint()
                 updateSubscribeAvailability()
