@@ -1307,7 +1307,7 @@ class MemberIndexViewModel : AppRepositoryViewModel<AppRepository>() {
                 R.string.member_switch_plan_hint.getResString(plan.planName.orEmpty())
             }
 
-            else -> R.string.member_cancel_anytime.getResString()
+            else -> ""
         }
         bottomHint.set(hint)
     }
