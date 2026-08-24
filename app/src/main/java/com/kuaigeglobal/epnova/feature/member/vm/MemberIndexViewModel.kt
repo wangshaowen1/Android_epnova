@@ -1301,36 +1301,22 @@ class MemberIndexViewModel : AppRepositoryViewModel<AppRepository>() {
             return
         }
 
-        val currentPrice = item.priceText.get().orEmpty()
-        val originalPrice = item.originalPriceText.get().orEmpty()
+//        val currentPrice = item.priceText.get().orEmpty()
+//        val originalPrice = item.originalPriceText.get().orEmpty()
         // originalPriceText 只有在 Google 仍返回指定优惠且优惠价与原价不同时才会写入。
-        val hasWeeklyIntroOffer = plan.periodUnit == MEMBER_PERIOD_UNIT_WEEK &&
-            currentPrice.isNotBlank() && originalPrice.isNotBlank()
+//        val hasWeeklyIntroOffer = plan.periodUnit == MEMBER_PERIOD_UNIT_WEEK && currentPrice.isNotBlank() && originalPrice.isNotBlank()
         val hint = when {
             plan.action == MemberActionEnum.SWITCH.name -> {
-                formatBottomHintTemplate(
-                    plan.switchBottomTextTemplate,
-                    plan.planName.orEmpty(),
-                ) ?: R.string.member_switch_plan_hint.getResString(plan.planName.orEmpty())
+                R.string.member_switch_plan_hint.getResString(plan.planName.orEmpty())
             }
 
-            hasWeeklyIntroOffer -> {
-                formatBottomHintTemplate(
-                    plan.introBottomTextTemplate,
-                    currentPrice,
-                    originalPrice,
-                ) ?: R.string.member_intro_offer_hint.getResString(currentPrice, originalPrice)
-            }
+//            hasWeeklyIntroOffer -> {
+//                R.string.member_intro_offer_hint.getResString(currentPrice, originalPrice)
+//            }
 
-            else -> plan.standardBottomTextTemplate?.takeIf { it.isNotBlank() }
-                ?: R.string.member_cancel_anytime.getResString()
+            else -> R.string.member_cancel_anytime.getResString()
         }
         bottomHint.set(hint)
-    }
-
-    private fun formatBottomHintTemplate(template: String?, vararg values: String): String? {
-        val validTemplate = template?.takeIf { it.isNotBlank() } ?: return null
-        return runCatching { String.format(validTemplate, *values) }.getOrNull()
     }
 
     private fun submitPrivileges(benefitItems: List<MemberBenefitItemInfo>?) {

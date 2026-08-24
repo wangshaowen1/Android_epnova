@@ -37,12 +37,6 @@ data class MemberPlanInfo(
     val defaultSelected: Int? = null,
     /** 优惠角标百分比。 */
     val discountPercent: Int? = null,
-    /** 首期优惠说明模板。 */
-    val introBottomTextTemplate: String? = null,
-    /** 标准订阅说明模板。 */
-    val standardBottomTextTemplate: String? = null,
-    /** 下周期套餐切换说明模板。 */
-    val switchBottomTextTemplate: String? = null,
     /** 有序权益展示项。 */
     val benefitItems: List<MemberBenefitItemInfo>? = null,
     /** 当前用户可执行动作。 */
