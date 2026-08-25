@@ -12,8 +12,8 @@ ext {
             imageloader: [
                     groupId   : 'com.kuaige',
                     artifactId: 'imageloader',
-                    version   : '1.0.5',
-                    gav       : 'com.kuaige:imageloader:1.0.5'
+                    version   : '1.0.6',
+                    gav       : 'com.kuaige:imageloader:1.0.6'
             ],
             oss        : [
                     groupId   : 'com.kuaige',
@@ -24,8 +24,8 @@ ext {
             payment    : [
                     groupId   : 'com.kuaige',
                     artifactId: 'payment',
-                    version   : '1.0.8',
-                    gav       : 'com.kuaige:payment:1.0.8'
+                    version   : '1.0.11',
+                    gav       : 'com.kuaige:payment:1.0.11'
             ],
             videoedit  : [
                     groupId   : 'com.kuaige',
@@ -54,8 +54,8 @@ ext {
             permissionx: [
                     groupId   : 'com.kuaige.thirdparty',
                     artifactId: 'permissionx',
-                    version   : '1.0.2',
-                    gav       : 'com.kuaige.thirdparty:permissionx:1.0.2'
+                    version   : '1.0.4',
+                    gav       : 'com.kuaige.thirdparty:permissionx:1.0.4'
             ],
             mvchelper  : [
                     groupId   : 'com.kuaige.thirdparty',
