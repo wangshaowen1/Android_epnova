@@ -108,7 +108,7 @@
                     android:paddingTop="4dp"
                     style="@style/Text.Medium"
                     setStrike="@{true}"
-                    setVisible="@{!TextUtils.isEmpty(item.originalPriceText)}"
+                    setVisible="@{!item.data.hasCurrent()}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:includeFontPadding="false"
