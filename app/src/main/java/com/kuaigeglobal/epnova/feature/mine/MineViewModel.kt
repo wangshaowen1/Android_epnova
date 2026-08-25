@@ -11,6 +11,7 @@ import com.kuaigeglobal.epnova.core.Global
 import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.ext.launch
 import com.kuaigeglobal.epnova.core.network.apis.request.UserTokenBody
+import com.kuaigeglobal.epnova.core.network.apis.response.MemberCardData
 import com.kuaigeglobal.epnova.core.network.apis.response.SimpleBannerInfo
 import com.kuaigeglobal.epnova.core.response
 import com.kuaigeglobal.epnova.feature.settings.lang.languagesConfigs
@@ -36,6 +37,9 @@ class MineViewModel : AppRepositoryViewModel<AppRepository>() {
     val unCheckNum by lazy { ObservableInt() }
 
     val workCourseBanner by lazy { ObservableField<SimpleBannerInfo>() }
+
+    //会员中心卡片
+    val memberCard by lazy { ObservableField<MemberCardData>() }
 
     val language by lazy { languagesConfigs.find { it.code == Config.get().getSavedLanguage() } }
 
@@ -71,6 +75,8 @@ class MineViewModel : AppRepositoryViewModel<AppRepository>() {
     fun updateInformation() {
         //获取用户主页信息接口
         getUserHomeInfo()
+        //获取会员中心卡片
+        getCurrentMemberCard()
     }
 
     /**
@@ -117,6 +123,29 @@ class MineViewModel : AppRepositoryViewModel<AppRepository>() {
             )
         }, onError = {
             unCheckNum.set(0)
+        })
+    }
+
+    /**
+     * 获取会员中心卡片
+     */
+    private fun getCurrentMemberCard() {
+        if (User.get().isVisitor) {
+            memberCard.set(null)
+            return
+        }
+        launch(block = {
+            response(
+                bean = mRepo.api.getCurrentMemberCard(),
+                result = {
+                    memberCard.set(data)
+                },
+                error = {
+                    memberCard.set(null)
+                }
+            )
+        }, onError = {
+            memberCard.set(null)
         })
     }
 

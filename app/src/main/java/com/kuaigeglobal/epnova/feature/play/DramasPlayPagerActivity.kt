@@ -80,6 +80,9 @@ class DramasPlayPagerActivity :
     /** 当前集处于解锁流程中，阻止自动切集 */
     private var isEpisodeLocked = false
 
+    /** 同一锁定剧集的重复回调只记一次曝光，切换到其他集后允许再次上报。 */
+    private var paidEpisodeExposureKey: String? = null
+
     /**
      * 当前播放集的最近上报节点。
      *
@@ -167,6 +170,7 @@ class DramasPlayPagerActivity :
 
         listController.onEpisodeLocked = { episode, isAutoUnlockFailed ->
             isEpisodeLocked = true  // 进入解锁流程，阻止自动切集
+            reportPaidEpisodeShowIfNeeded(episode)
             if (isAutoUnlockFailed) {
                 // 自动解锁因余额不足失败：先查广告次数，再决定弹首充礼包或普通充值弹窗
                 // 充值弹窗关闭后在 onDismiss 里决定下一步（广告 or 手动解锁）
@@ -288,7 +292,7 @@ class DramasPlayPagerActivity :
         if (!data.isNeedShow()) return false
 
         // 确认弹窗成功展示后再标记，避免 show() 失败时 flag 被永久占用
-        val dialog = FirstRechargeDialog.show(FirstRechargeDialog.SCENE_OTHER, data) ?: return false
+        val dialog = FirstRechargeDialog.show(FirstRechargeDialog.SCENE_PLAYER, data) ?: return false
         Config.get().markFirstRechargeShown(FirstRechargeDialog.SCENE_OTHER)
         dialog.onPaySuccess = { retryUnlockAfterRecharge(episode) }
         dialog.onClose = {
@@ -306,7 +310,8 @@ class DramasPlayPagerActivity :
             },
             onDismiss = { recharged ->
                 if (!recharged) showUnlockFallbackAfterRechargeDismiss(episode, adRemain)
-            }
+            },
+            paidEpisodeAnalytics = true,
         )
     }
 
@@ -364,7 +369,8 @@ class DramasPlayPagerActivity :
                         onDismiss = {
                             if (adRemainCount > 0) showAdUnlockDialog(episode, adRemainCount)
                             // adRemainCount == 0：手动解锁覆盖层本身还在，无需额外操作
-                        }
+                        },
+                        paidEpisodeAnalytics = true,
                     )
                 }
             }
@@ -498,9 +504,24 @@ class DramasPlayPagerActivity :
         val episodeKey = "${mRealVM.workId}_${episode.storyId}"
         if (analyticsEpisodeKey == episodeKey) return
         analyticsEpisodeKey = episodeKey
+        paidEpisodeExposureKey = null
         hasReportedValidPlay = false
         reportedProcessNodes.clear()
         hasReportedComplete = false
+    }
+
+    private fun reportPaidEpisodeShowIfNeeded(episode: EpisodeInfo) {
+        val workId = mRealVM.workId?.takeIf { it.isNotBlank() } ?: return
+        val storyId = episode.storyId?.takeIf { it.isNotBlank() } ?: return
+        val episodeKey = "${workId}_$storyId"
+        if (paidEpisodeExposureKey == episodeKey) return
+        paidEpisodeExposureKey = episodeKey
+        EventManager.onFirebaseTrack(
+            FirebaseEvent.Category.PAID_EPISODE,
+            FirebaseEvent.Action.PAID_EPISODE_SHOW,
+            workId,
+            storyId,
+        )
     }
 
     private fun reportPlayerShowIfNeeded() {

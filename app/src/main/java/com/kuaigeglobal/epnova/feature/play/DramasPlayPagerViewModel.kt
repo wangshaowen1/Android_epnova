@@ -13,6 +13,7 @@ import com.kuaigeglobal.epnova.core.ext.launch
 import com.kuaigeglobal.epnova.core.ext.launchWithLoading
 import com.kuaigeglobal.epnova.core.ext.parseMessage
 import com.kuaigeglobal.epnova.core.manager.EventManager
+import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
 import com.kuaigeglobal.epnova.core.network.RetrofitClient
 import com.kuaigeglobal.epnova.core.network.apis.entity.EpisodeInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.StoryUnlockInfoData
@@ -162,6 +163,15 @@ class DramasPlayPagerViewModel : AppRepositoryViewModel<CreationRepository>(), D
             if (apiResponse.isSuccess) {
                 val storyData = apiResponse.data?.currentStory
                 val finalLockStatus = storyData?.lockStatus ?: episode.lockStatus
+                if (episode.lockStatus == 2) {
+                    when {
+                        apiResponse.data?.autoUnlocked == true && finalLockStatus != 2 -> {
+                            reportAutoCoinUnlockResult(isSuccess = true)
+                        }
+
+                        finalLockStatus == 2 -> reportAutoCoinUnlockResult(isSuccess = false)
+                    }
+                }
                 val updatedEpisode = episode.copy(
                     videoUrl = storyData?.videoUrl,
                     likeCount = storyData?.likeCount,
@@ -197,6 +207,19 @@ class DramasPlayPagerViewModel : AppRepositoryViewModel<CreationRepository>(), D
             }
         }
         return episode
+    }
+
+    private fun reportAutoCoinUnlockResult(isSuccess: Boolean) {
+        EventManager.onFirebaseTrack(
+            FirebaseEvent.Category.PAID_EPISODE,
+            FirebaseEvent.Action.AD_UNLOCK_RESULT,
+            if (isSuccess) {
+                FirebaseEvent.Value.RESULT_SUCCESS
+            } else {
+                FirebaseEvent.Value.RESULT_FAIL
+            },
+            FirebaseEvent.Value.UNLOCK_SOURCE_COIN,
+        )
     }
 
     /**

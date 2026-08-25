@@ -109,7 +109,12 @@ class AppConfigData {
     val userTipoffTypeList: List<KeyValueInfo>? = null
 
     /**
-     * 打开app加载tab 0=首页 1=爆款 2=消息 3=我的
+     * 20260817新增APP 默认进入页面
+     * 0 - Home
+     * 1 - Featured
+     * 2 - Create
+     * 3 - My list
+     * 4 - Profile
      */
     val openAppLoadTab: Int? = null
 

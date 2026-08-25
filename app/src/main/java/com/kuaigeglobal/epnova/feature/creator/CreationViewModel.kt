@@ -17,37 +17,41 @@ import com.kuaigeglobal.epnova.base.viewmodel.AppRepositoryViewModel
 import com.kuaigeglobal.epnova.common.ext.topActivity
 import com.kuaigeglobal.epnova.common.utils.TextEncodingUtil
 import com.kuaigeglobal.epnova.core.Global
+import com.kuaigeglobal.epnova.core.ext.handlePointInsufficientError
 import com.kuaigeglobal.epnova.core.ext.launch
 import com.kuaigeglobal.epnova.core.ext.parseMessage
 import com.kuaigeglobal.epnova.core.ext.request
 import com.kuaigeglobal.epnova.core.ext.requestWithLoading
+import com.kuaigeglobal.epnova.core.ext.showPointInsufficientGuide
 import com.kuaigeglobal.epnova.core.manager.EventManager
 import com.kuaigeglobal.epnova.core.network.apis.ApiException
-import com.kuaigeglobal.epnova.core.network.apis.ApiResponse
 import com.kuaigeglobal.epnova.core.network.apis.entity.InspirationInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.SameStylePrefillInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.UnusedPackageInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.VideoConfigData
 import com.kuaigeglobal.epnova.core.network.apis.request.CreateTaskBody
+import com.kuaigeglobal.epnova.core.network.apis.request.CreationScene
+import com.kuaigeglobal.epnova.core.network.apis.request.FirstRechargeCreditsBody
+import com.kuaigeglobal.epnova.core.network.apis.request.InsufficientGuideBody
 import com.kuaigeglobal.epnova.core.network.apis.request.SSEContentBody
 import com.kuaigeglobal.epnova.core.network.apis.request.UploadStoryBody
 import com.kuaigeglobal.epnova.core.network.apis.request.UserTokenBody
 import com.kuaigeglobal.epnova.core.network.apis.request.WorkTaskData
 import com.kuaigeglobal.epnova.core.network.apis.response.FirstRechargeCreditsDialogData
+import com.kuaigeglobal.epnova.core.network.apis.response.PointInsufficientGuideData
 import com.kuaigeglobal.epnova.core.network.sse.SSEStreamHandler
 import com.kuaigeglobal.epnova.core.network.sse.processor.PlainTextSseProcessor
+import com.kuaigeglobal.epnova.core.response
 import com.kuaigeglobal.epnova.feature.creation.CreationFragment.Companion.KEY_MODEL
 import com.kuaigeglobal.epnova.feature.creation.CreationFragment.Companion.MODEL_INSPIRATION
 import com.kuaigeglobal.epnova.feature.creator.data.CreationRepository
 import com.kuaigeglobal.epnova.feature.creator.data.DramaGenerateConstants
 import com.kuaigeglobal.epnova.feature.creator.hotcase.CreationHotCaseInfo
 import com.kuaigeglobal.epnova.feature.creator.hotcase.CreationHotCasePagingSource
-import com.kuaigeglobal.epnova.feature.recharge.PowerRechargeDialog
 import com.nhsd.basic.ext.getResString
 import com.nhsd.basic.ext.getThemeColor
 import com.nhsd.basic.ext.showToast
 import com.nhsd.basic.utils.Logger
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.Flow
 
 class CreationViewModel : AppRepositoryViewModel<CreationRepository>() {
@@ -348,12 +352,13 @@ class CreationViewModel : AppRepositoryViewModel<CreationRepository>() {
                 callback.invoke(data)
             },
             onError = {
-                if (it is ApiException && it.errorCode == ApiResponse.RESPONSE_CODE_POWER_NOT_ENOUGH) {
-                    viewModelScope.launch {
-                        //这里和VideoSetDialog共用首充礼包弹出场景，前面会弹，这就不需要弹了，直接弹出充值弹出
-                        PowerRechargeDialog.show(showToast = true, rechargeTab = PowerRechargeDialog.TAB_CREDITS)
-                    }
-                } else {
+                // 该流程前面已处理首充，guideType=0 时保持原逻辑，直接展示充值半屏。
+                val handled = it is ApiException && handlePointInsufficientError(
+                    creationScene = CreationScene.STORY_OUTLINE,
+                    errorCode = it.errorCode,
+                    allowFirstRechargeForLegacyGuide = false,
+                )
+                if (!handled) {
                     it?.message?.showToast()
                 }
             }
@@ -380,12 +385,38 @@ class CreationViewModel : AppRepositoryViewModel<CreationRepository>() {
     fun getFirstRechargeInfo(callback: () -> Unit) {
         launch {
             // 2. 请求首充接口 (这里必须先于活动配置完成)
-            val firstRechargeResponse = mRepo.api.getFirstRechargeCreditsDialogInfo()
+            val firstRechargeResponse = mRepo.api.getFirstRechargeCreditsDialogInfo(
+                FirstRechargeCreditsBody(CreationScene.STORY_OUTLINE)
+            )
             if (firstRechargeResponse.data != null && firstRechargeResponse.data?.isNeedShow() == true) {
                 firstRechargeCache.value = firstRechargeResponse.data
             } else {
                 callback.invoke()
             }
+        }
+    }
+
+    /** 查询故事梗概场景的算力不足引导，并展示服务端指定的付费入口。 */
+    fun pointInsufficientGuide(nextBloack: () -> Unit) {
+        launch(showToast = true) {
+            var guideType: Int? = null
+            response(
+                block = {
+                    mRepo.api.pointInsufficientGuide(
+                        InsufficientGuideBody(CreationScene.STORY_OUTLINE)
+                    )
+                },
+                result = {
+                    guideType = data?.guideType
+                        ?: PointInsufficientGuideData.GUIDE_TYPE_LEGACY
+                },
+            )
+            val resolvedGuideType = guideType ?: return@launch
+            showPointInsufficientGuide(
+                creationScene = CreationScene.STORY_OUTLINE,
+                guideType = resolvedGuideType,
+                nextBloack = nextBloack,
+            )
         }
     }
 }

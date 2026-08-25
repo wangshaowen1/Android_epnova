@@ -29,6 +29,7 @@ class FirstRechargeDialog : BaseVMDialogFragment<DialogFirstRechargeBinding, Fir
         const val SCENE_HOME = 0
         const val SCENE_OTHER = 1
         const val SCENE_PLAYER = 2
+        const val SCENE_GUIDE = 3
 
         fun show(scene: Int = SCENE_OTHER, firstRechargeDialogData: FirstRechargeDialogData?): FirstRechargeDialog? {
             if (firstRechargeDialogData?.isNeedShow() == false) return null
@@ -67,6 +68,12 @@ class FirstRechargeDialog : BaseVMDialogFragment<DialogFirstRechargeBinding, Fir
                 FirebaseEvent.Value.TRIGGER_INSUFFICIENT_BALANCE
             }
         )
+        if (mRealVM.isFromPlayer()) {
+            EventManager.onFirebaseTrack(
+                FirebaseEvent.Category.PAID_EPISODE,
+                FirebaseEvent.Action.BUY_COIN_POPUP_SHOW,
+            )
+        }
         val googleProductId = mRealVM.data?.googleProductId
         BillingManager.loadNewerGiftPrice(googleProductId) { map ->
             binding.btnBuy.text = map[googleProductId]?.first

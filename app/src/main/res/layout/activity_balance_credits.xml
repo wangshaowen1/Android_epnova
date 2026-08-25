@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="layout"
+            type="com.kuaigeglobal.epnova.feature.recharge.MyBalanceViewModel" />
+
+        <import type="android.view.View" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/ivBg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_store_credits"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- Status bar placeholder -->
+        <com.kuaigeglobal.epnova.widget.StatusBarView
+            android:id="@+id/vStatusBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- Custom title bar with MagicIndicator -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/clTitleBar"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/action_bar_size"
+            app:layout_constraintTop_toBottomOf="@+id/vStatusBar">
+
+            <ImageView
+                android:id="@+id/ivBack"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:paddingHorizontal="@dimen/spacing_m"
+                android:src="@drawable/icon_back_left"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                style="@style/Text.Medium"
+                android:textSize="18sp"
+                android:textColor="@color/text_color_1_dark"
+                android:text="@string/store_credits"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/tvHistory"
+                app:layout_constraintStart_toEndOf="@+id/ivBack"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/tvHistory"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:paddingHorizontal="@dimen/spacing_l"
+                android:src="@drawable/icon_store_history"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <com.kuaigeglobal.epnova.widget.LoadStateViewHolder
+            displayChild="@{layout.loadState}"
+            onRetry="@{layout::loadConfig}"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/clTitleBar">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <androidx.core.widget.NestedScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="100dp">
+
+                        <ImageView
+                            android:id="@+id/tvBalance"
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
+                            android:src="@drawable/icon_attention"
+                            android:padding="@dimen/spacing_xs"
+                            android:gravity="center"
+                            android:onClick="@{layout.clickHandler::onClick}"
+                            app:layout_constraintTop_toTopOf="@id/tvPower"
+                            app:layout_constraintBottom_toBottomOf="@id/tvPower"
+                            app:layout_constraintStart_toEndOf="@id/tvPower"
+                            app:layout_constraintEnd_toEndOf="parent" />
+
+                        <ImageView
+                            android:id="@+id/ivBalanceIcon"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/icon_power"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintBottom_toBottomOf="@+id/tvPower"
+                            app:layout_constraintEnd_toStartOf="@+id/tvPower"
+                            app:layout_constraintHorizontal_chainStyle="packed"
+                            app:layout_constraintTop_toTopOf="@+id/tvPower" />
+
+                        <TextView
+                            android:id="@+id/tvPower"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="4dp"
+                            android:layout_marginTop="@dimen/spacing_l"
+                            android:fontFamily="@font/outfit_medium"
+                            android:text="@{layout.displayBalance}"
+                            android:textColor="?attr/textColor1"
+                            android:textSize="20sp"
+                            app:layout_constraintEnd_toStartOf="@id/tvBalance"
+                            app:layout_constraintStart_toEndOf="@+id/ivBalanceIcon"
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:text="1000" />
+
+                        <include
+                            android:id="@+id/banner"
+                            banner="@{layout.workCourseBanner}"
+                            layout="@layout/layout_common_banner"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="15dp"
+                            android:layout_marginTop="24dp"
+                            android:visibility="gone"
+                            app:layout_constraintTop_toBottomOf="@+id/tvPower" />
+
+                        <TextView
+                            android:id="@+id/tvRechargeAmount"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/spacing_l"
+                            android:layout_marginTop="24dp"
+                            android:text="@string/store_select_recharge_amount"
+                            android:textAppearance="@style/Text14"
+                            android:textColor="?attr/textColor3"
+                            android:textStyle="normal"
+                            android:fontFamily="@font/outfit_medium"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/banner" />
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/rvRechargeAmount"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/spacing_m"
+                            android:overScrollMode="never"
+                            android:paddingHorizontal="9dp"
+                            android:paddingVertical="6dp"
+                            android:scrollbars="none"
+                            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                            app:layout_constraintTop_toBottomOf="@+id/tvRechargeAmount"
+                            app:spanCount="2"
+                            tools:itemCount="6"
+                            tools:listitem="@layout/item_recharge_credits" />
+
+                        <TextView
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/rvRechargeAmount"
+                            android:id="@+id/tvTitle"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            android:layout_marginHorizontal="@dimen/spacing_l"
+                            android:fontFamily="@font/outfit_medium"
+                            android:textColor="?attr/textColor3"
+                            android:text="@string/store_tips_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+
+                        <TextView
+                            android:id="@+id/tvTip"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/spacing_s"
+                            android:layout_marginHorizontal="@dimen/spacing_l"
+                            android:fontFamily="@font/outfit_regular"
+                            android:lineSpacingExtra="@dimen/lineSpacingExtraLarge"
+                            android:text="@string/store_tips_content_coins"
+                            android:textColor="?attr/textColor4"
+                            android:textSize="12sp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/tvTitle" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                </androidx.core.widget.NestedScrollView>
+
+                <TextView
+                    singleClick="@{(v)->layout.recharge()}"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:background="@drawable/selector_common_button"
+                    android:gravity="center"
+                    android:text="@string/top_up_now"
+                    android:textAppearance="@style/Text16"
+                    android:textColor="@color/fixed_white_1"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toTopOf="@+id/llPolicy"
+                    app:layout_constraintDimensionRatio="345:44"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintWidth_percent="0.92" />
+
+                <LinearLayout
+                    android:id="@+id/llPolicy"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/agree_to_purchase"
+                        android:textAppearance="@style/Text12"
+                        android:textColor="?attr/textColor3" />
+
+                    <TextView
+                        singleClick="@{(v)->layout.viewPaymentAgreement()}"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingVertical="12dp"
+                        android:text="@string/payment_agreement_show"
+                        android:textAppearance="@style/Text12"
+                        android:textColor="?attr/textColor1" />
+                </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </com.kuaigeglobal.epnova.widget.LoadStateViewHolder>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

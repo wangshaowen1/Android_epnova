@@ -80,6 +80,7 @@ class AdUnlockDialog : BaseVMDialogFragment<DialogAdUnlockBinding, AdUnlockViewM
     private fun setupVmCallbacks() {
         mRealVM.onUnlockSuccess = {
             didWatch = true
+            reportAdUnlockResult(isSuccess = true)
             // 广告解锁等价获得本集解锁所需金币。
             EventManager.onFirebaseTrack(
                 FirebaseEvent.Category.REWARDS,
@@ -95,6 +96,7 @@ class AdUnlockDialog : BaseVMDialogFragment<DialogAdUnlockBinding, AdUnlockViewM
         mRealVM.onUnlockFailed = {
             pendingShowAdAfterLoad = false
             hideAdLoading()
+            reportAdUnlockResult(isSuccess = false)
             getString(R.string.episode_unlock_ad_not_ready).showToast()
         }
         mRealVM.adManager.onAdLoaded = {
@@ -109,8 +111,19 @@ class AdUnlockDialog : BaseVMDialogFragment<DialogAdUnlockBinding, AdUnlockViewM
             pendingShowAdAfterLoad = false
             hideAdLoading()
             if (shouldShowToast) {
+                reportAdUnlockResult(isSuccess = false)
                 getString(R.string.episode_unlock_ad_not_ready).showToast()
             }
+        }
+        mRealVM.adManager.onAdShowFailed = {
+            pendingShowAdAfterLoad = false
+            hideAdLoading()
+            reportAdUnlockResult(isSuccess = false)
+        }
+        mRealVM.adManager.onAdDismissedWithoutReward = {
+            pendingShowAdAfterLoad = false
+            hideAdLoading()
+            reportAdUnlockResult(isSuccess = false)
         }
     }
 
@@ -121,6 +134,10 @@ class AdUnlockDialog : BaseVMDialogFragment<DialogAdUnlockBinding, AdUnlockViewM
 
         binding.btnAdUnlockContainer.setOnSingleClickListener {
             val activity = activity ?: return@setOnSingleClickListener
+            EventManager.onFirebaseTrack(
+                FirebaseEvent.Category.PAID_EPISODE,
+                FirebaseEvent.Action.AD_UNLOCK_CLICK,
+            )
             when {
                 mRealVM.isPolling.get() -> Unit  // 验证中，忽略重复点击
                 mRealVM.isAdReady.get() -> mRealVM.showAd(activity)
@@ -135,6 +152,25 @@ class AdUnlockDialog : BaseVMDialogFragment<DialogAdUnlockBinding, AdUnlockViewM
                 }
             }
         }
+    }
+
+    private fun reportAdUnlockResult(isSuccess: Boolean) {
+        val result = if (isSuccess) {
+            FirebaseEvent.Value.RESULT_SUCCESS
+        } else {
+            FirebaseEvent.Value.RESULT_FAIL
+        }
+        EventManager.onFirebaseTrack(
+            FirebaseEvent.Category.PAID_EPISODE,
+            FirebaseEvent.Action.AD_PLAY_RESULT,
+            result,
+        )
+        EventManager.onFirebaseTrack(
+            FirebaseEvent.Category.PAID_EPISODE,
+            FirebaseEvent.Action.AD_UNLOCK_RESULT,
+            result,
+            FirebaseEvent.Value.UNLOCK_SOURCE_AD,
+        )
     }
 
     private fun showAdLoading() {

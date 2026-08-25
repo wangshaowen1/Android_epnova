@@ -86,17 +86,22 @@ import com.kuaigeglobal.epnova.core.network.apis.request.DramasSeriesId
 import com.kuaigeglobal.epnova.core.network.apis.request.DramasTimbreBody
 import com.kuaigeglobal.epnova.core.network.apis.request.FeedbackBody
 import com.kuaigeglobal.epnova.core.network.apis.request.FcmTokenBody
+import com.kuaigeglobal.epnova.core.network.apis.request.FirstRechargeCreditsBody
 import com.kuaigeglobal.epnova.core.network.apis.request.GenerateStoryboardBody
+import com.kuaigeglobal.epnova.core.network.apis.request.GoogleMemberSubscriptionBody
 import com.kuaigeglobal.epnova.core.network.apis.request.HotCaseIdBody
 import com.kuaigeglobal.epnova.core.network.apis.request.GenerateSubtitleBody
 import com.kuaigeglobal.epnova.core.network.apis.request.IdsBody
 import com.kuaigeglobal.epnova.core.network.apis.request.ImgUrlBody
 import com.kuaigeglobal.epnova.core.network.apis.request.IncomeDetailPageBody
+import com.kuaigeglobal.epnova.core.network.apis.request.InsufficientGuideBody
 import com.kuaigeglobal.epnova.core.network.apis.request.KeyworkBody
 import com.kuaigeglobal.epnova.core.network.apis.request.LatestEpisodeBody
 import com.kuaigeglobal.epnova.core.network.apis.request.LoginByFlashMobileBody
 import com.kuaigeglobal.epnova.core.network.apis.request.LoginByPhoneBody
 import com.kuaigeglobal.epnova.core.network.apis.request.LoginByThirdBody
+import com.kuaigeglobal.epnova.core.network.apis.request.MemberSubscriptionPrepareBody
+import com.kuaigeglobal.epnova.core.network.apis.request.MemberSubscriptionPrepareReleaseBody
 import com.kuaigeglobal.epnova.core.network.apis.request.MusicGenerateSourceBody
 import com.kuaigeglobal.epnova.core.network.apis.request.MyWorkBody
 import com.kuaigeglobal.epnova.core.network.apis.request.OptimizeContentData
@@ -178,10 +183,15 @@ import com.kuaigeglobal.epnova.core.network.apis.response.FirstRechargeDialogDat
 import com.kuaigeglobal.epnova.core.network.apis.response.FollowingData
 import com.kuaigeglobal.epnova.core.network.apis.response.HomeBookShelfData
 import com.kuaigeglobal.epnova.core.network.apis.response.LikeData
+import com.kuaigeglobal.epnova.core.network.apis.response.MemberCardData
+import com.kuaigeglobal.epnova.core.network.apis.response.MemberPlanListData
+import com.kuaigeglobal.epnova.core.network.apis.response.MemberSubscriptionPrepareData
+import com.kuaigeglobal.epnova.core.network.apis.response.MemberSubscriptionPrepareReleaseData
 import com.kuaigeglobal.epnova.core.network.apis.response.OrderNoData
 import com.kuaigeglobal.epnova.core.network.apis.response.PictureBook
 import com.kuaigeglobal.epnova.core.network.apis.response.PointAmountData
 import com.kuaigeglobal.epnova.core.network.apis.response.CoinConfigData
+import com.kuaigeglobal.epnova.core.network.apis.response.PointInsufficientGuideData
 import com.kuaigeglobal.epnova.core.network.apis.response.PointConfigData
 import com.kuaigeglobal.epnova.core.network.apis.response.ShelfStatusData
 import com.kuaigeglobal.epnova.core.network.apis.response.ShortLikeData
@@ -295,6 +305,50 @@ interface ApiService {
      */
     @POST(ApiConstants.VIP_CONFIG)
     suspend fun vipConfig(@Body body: UserTokenBody): ApiResponse<VipConfigInfo?>
+
+    /**
+     * 查询会员中心卡片
+     */
+    @POST(ApiConstants.MEMBER_CARD_CURRENT)
+    suspend fun getCurrentMemberCard(): ApiResponse<MemberCardData?>
+
+    /**
+     * 查询会员套餐
+     */
+    @POST(ApiConstants.MEMBER_PLAN_LIST)
+    suspend fun getMemberPlanList(): ApiResponse<MemberPlanListData?>
+
+    /**
+     * 准备会员购买
+     */
+    @POST(ApiConstants.MEMBER_SUBSCRIPTION_PURCHASE_PREPARE)
+    suspend fun prepareMemberSubscriptionPurchase(
+        @Body body: MemberSubscriptionPrepareBody,
+    ): ApiResponse<MemberSubscriptionPrepareData?>
+
+    /**
+     * 释放会员购买准备
+     */
+    @POST(ApiConstants.MEMBER_SUBSCRIPTION_PURCHASE_PREPARE_RELEASE)
+    suspend fun releaseMemberSubscriptionPurchasePrepare(
+        @Body body: MemberSubscriptionPrepareReleaseBody,
+    ): ApiResponse<MemberSubscriptionPrepareReleaseData?>
+
+    /**
+     * 确认 Google 订阅购买
+     */
+    @POST(ApiConstants.MEMBER_SUBSCRIPTION_GOOGLE_PURCHASE_CONFIRM)
+    suspend fun confirmGoogleMemberSubscriptionPurchase(
+        @Body body: GoogleMemberSubscriptionBody,
+    ): ApiResponse<Any?>
+
+    /**
+     * 自动同步 Google 订阅
+     */
+    @POST(ApiConstants.MEMBER_SUBSCRIPTION_GOOGLE_SYNC)
+    suspend fun syncGoogleMemberSubscription(
+        @Body body: GoogleMemberSubscriptionBody,
+    ): ApiResponse<Any?>
 
     /**
      * 用户日活记录
@@ -1083,6 +1137,12 @@ interface ApiService {
     suspend fun pointConfigList(@Body body: UserTokenBody): ApiResponse<PointConfigData?>
 
     /**
+     * 查询算力不足付费引导
+     */
+    @POST(ApiConstants.POINT_INSUFFICIENT_GUIDE)
+    suspend fun pointInsufficientGuide(@Body body: InsufficientGuideBody): ApiResponse<PointInsufficientGuideData?>
+
+    /**
      * 交易支付方式配置列表
      */
     @POST(ApiConstants.PAYMENT_CONFIG_LIST)
@@ -1299,7 +1359,7 @@ interface ApiService {
      * 获取算力新人专享礼
      */
     @POST(ApiConstants.GET_FIRST_RECHARGE_CREDITS_DIALOG_INFO)
-    suspend fun getFirstRechargeCreditsDialogInfo(): ApiResponse<FirstRechargeCreditsDialogData?>
+    suspend fun getFirstRechargeCreditsDialogInfo(@Body body: FirstRechargeCreditsBody): ApiResponse<FirstRechargeCreditsDialogData?>
 
     /**
      * 播放-分页查询播放历史列表

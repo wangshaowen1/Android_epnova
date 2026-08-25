@@ -1,20 +1,18 @@
 package com.kuaigeglobal.epnova.feature.creator.set
 
 import androidx.databinding.ObservableBoolean
-import androidx.lifecycle.viewModelScope
 import com.kuaigeglobal.epnova.base.viewmodel.AppRepositoryViewModel
 import com.kuaigeglobal.epnova.common.Constants
 import com.kuaigeglobal.epnova.core.AppRepository
 import com.kuaigeglobal.epnova.core.Config
+import com.kuaigeglobal.epnova.core.ext.handlePointInsufficientError
 import com.kuaigeglobal.epnova.core.ext.launchWithLoading
-import com.kuaigeglobal.epnova.core.network.apis.ApiResponse
+import com.kuaigeglobal.epnova.core.network.apis.request.CreationScene
 import com.kuaigeglobal.epnova.core.network.apis.request.UploadStoryBody
 import com.kuaigeglobal.epnova.core.network.apis.request.WorkTaskData
-import com.kuaigeglobal.epnova.feature.recharge.PowerRechargeDialog
 import com.kuaigeglobal.epnova.router.AppRouter
 import com.nhsd.basic.ext.getParcelableValue
 import com.nhsd.basic.ext.showToast
-import kotlinx.coroutines.launch
 
 
 class StoryGenerateConfirmViewModel : AppRepositoryViewModel<AppRepository>() {
@@ -28,11 +26,13 @@ class StoryGenerateConfirmViewModel : AppRepositoryViewModel<AppRepository>() {
         if (body == null) return
         launchWithLoading {
             val data = mRepo.api.novelUploadSummary(body!!)
-            if (data.code == ApiResponse.RESPONSE_CODE_POWER_NOT_ENOUGH) {
-                viewModelScope.launch {
-                    PowerRechargeDialog.show(showToast = true, rechargeTab = PowerRechargeDialog.TAB_CREDITS)
-                }
-            } else if (data.isSuccess) {
+            val handled = handlePointInsufficientError(
+                creationScene = CreationScene.STORY_OUTLINE,
+                errorCode = data.code,
+                allowFirstRechargeForLegacyGuide = false,
+            )
+            if (handled) return@launchWithLoading
+            if (data.isSuccess) {
                 callback.invoke(data.data)
             } else {
                 data.msg?.showToast()

@@ -3,6 +3,11 @@
 package com.kuaigeglobal.epnova.core.ext
 
 import android.app.Activity
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.ViewModel
+import com.blankj.utilcode.util.ActivityUtils
 import com.blankj.utilcode.util.AppUtils
 import com.blankj.utilcode.util.EncryptUtils
 import com.kuaigeglobal.epnova.R
@@ -13,11 +18,19 @@ import com.kuaigeglobal.epnova.common.utils.WXUtils
 import com.kuaigeglobal.epnova.core.Config
 import com.kuaigeglobal.epnova.core.Global
 import com.kuaigeglobal.epnova.core.User
+import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
 import com.kuaigeglobal.epnova.core.model.PhotoItem
 import com.kuaigeglobal.epnova.core.network.apis.ApiFactory
+import com.kuaigeglobal.epnova.core.network.apis.ApiResponse
 import com.kuaigeglobal.epnova.core.network.apis.entity.SimpleStoryboardInfo
 import com.kuaigeglobal.epnova.core.network.apis.request.ContentBody
+import com.kuaigeglobal.epnova.core.network.apis.request.CreationScene
+import com.kuaigeglobal.epnova.core.network.apis.request.FirstRechargeCreditsBody
+import com.kuaigeglobal.epnova.core.network.apis.request.InsufficientGuideBody
+import com.kuaigeglobal.epnova.core.network.apis.response.PointInsufficientGuideData
 import com.kuaigeglobal.epnova.core.network.apis.response.UserHomeData
+import com.kuaigeglobal.epnova.core.response
+import com.kuaigeglobal.epnova.feature.member.MemberIndexActivity
 import com.kuaigeglobal.epnova.feature.recharge.PowerRechargeDialog
 import com.kuaigeglobal.epnova.feature.splash.newer.FirstRechargeCreditsDialog
 import com.kuaigeglobal.epnova.feature.splash.newer.FirstRechargeDialog
@@ -197,11 +210,126 @@ suspend fun sensitiveWordCheck(content: String?, needHighlight: Boolean? = true)
     return true to null
 }
 
+/**
+ * 统一处理算力不足错误，并根据服务端配置展示对应付费引导。
+ *
+ * @return 当前错误码是否属于算力不足并已接管处理
+ */
+fun ViewModel.handlePointInsufficientError(
+    creationScene: Int,
+    errorCode: Int?,
+    allowFirstRechargeForLegacyGuide: Boolean = true
+): Boolean {
+    val isPointInsufficient =
+        errorCode == ApiResponse.RESPONSE_CODE_POWER_NOT_ENOUGH ||
+            errorCode == ApiResponse.RESPONSE_CODE_POWER_ERROR
+    if (!isPointInsufficient) return false
+
+    launch(showToast = true) {
+        var guideType: Int? = null
+        response(
+            block = { ApiFactory.apiService.pointInsufficientGuide(InsufficientGuideBody(creationScene)) },
+            result = {
+                guideType = data?.guideType ?: PointInsufficientGuideData.GUIDE_TYPE_LEGACY
+            },
+        )
+        val resolvedGuideType = guideType ?: return@launch
+        showPointInsufficientGuide(
+            creationScene = creationScene,
+            guideType = resolvedGuideType,
+            allowFirstRechargeForLegacyGuide = allowFirstRechargeForLegacyGuide,
+        )
+    }
+    return true
+}
+
+internal suspend fun showPointInsufficientGuide(
+    creationScene: Int,
+    guideType: Int?,
+    allowFirstRechargeForLegacyGuide: Boolean = true,
+    nextBloack: () -> Unit = {},
+) {
+    when (guideType ?: PointInsufficientGuideData.GUIDE_TYPE_LEGACY) {
+        PointInsufficientGuideData.GUIDE_TYPE_LEGACY -> {
+            showLegacyPointInsufficientGuide(allowFirstRechargeForLegacyGuide, creationScene)
+        }
+
+        PointInsufficientGuideData.GUIDE_TYPE_FIRST_RECHARGE -> {
+//                if (!showFirstRecharge(true, PowerRechargeDialog.TAB_CREDITS)) {
+//                    showPowerRechargeDialog()
+//                }
+            showCreditsFirstRecharge(
+                showToast = true,
+                rechargeTab = PowerRechargeDialog.TAB_CREDITS,
+                creationScene = creationScene,
+                onClose = nextBloack,
+            )
+        }
+
+        PointInsufficientGuideData.GUIDE_TYPE_MEMBER -> {
+            runAfterReturningToCurrentActivity(nextBloack)
+            MemberIndexActivity.start(
+                if (creationScene == CreationScene.STORY_OUTLINE) {
+                    FirebaseEvent.Value.TRIGGER_CREATE_BTN
+                } else {
+                    FirebaseEvent.Value.TRIGGER_INSUFFICIENT_BALANCE
+                }
+            )
+        }
+        PointInsufficientGuideData.GUIDE_TYPE_RECHARGE_DIALOG -> showPowerRechargeDialog()
+        else -> showLegacyPointInsufficientGuide(allowFirstRechargeForLegacyGuide, creationScene)
+    }
+}
+
+private fun runAfterReturningToCurrentActivity(block: () -> Unit) {
+    val source = ActivityUtils.getTopActivity() as? LifecycleOwner ?: return
+    var hasLeftSource = false
+    lateinit var observer: LifecycleEventObserver
+    observer = LifecycleEventObserver { owner, event ->
+        when (event) {
+            // 注册时会同步当前生命周期，必须先收到 PAUSE 才视为已进入会员页。
+            Lifecycle.Event.ON_PAUSE -> hasLeftSource = true
+            Lifecycle.Event.ON_RESUME -> {
+                if (hasLeftSource) {
+                    owner.lifecycle.removeObserver(observer)
+                    block()
+                }
+            }
+            Lifecycle.Event.ON_DESTROY -> owner.lifecycle.removeObserver(observer)
+            else -> Unit
+        }
+    }
+    source.lifecycle.addObserver(observer)
+}
+
+private suspend fun showLegacyPointInsufficientGuide(
+    allowFirstRecharge: Boolean,
+    creationScene: Int,
+) {
+    if (allowFirstRecharge) {
+        showRechargeDialog(
+            showToast = true,
+            rechargeTab = PowerRechargeDialog.TAB_CREDITS,
+            creationScene = creationScene,
+        )
+    } else {
+        showPowerRechargeDialog()
+    }
+}
+
+private fun showPowerRechargeDialog() {
+    PowerRechargeDialog.show(
+        showToast = true,
+        rechargeTab = PowerRechargeDialog.TAB_CREDITS
+    )
+}
+
 suspend fun showRechargeDialog(
     showToast: Boolean = false,
-    rechargeTab: Int = PowerRechargeDialog.TAB_CREDITS
+    rechargeTab: Int = PowerRechargeDialog.TAB_CREDITS,
+    creationScene: Int? = null,
 ) {
-    if (!showFirstRecharge(showToast, rechargeTab)) {
+    if (!showFirstRecharge(showToast, rechargeTab, creationScene)) {
         PowerRechargeDialog.show(0, showToast, rechargeTab = rechargeTab)
     }
 }
@@ -212,7 +340,8 @@ suspend fun showRechargeDialog(
  */
 suspend fun showFirstRecharge(
     showToast: Boolean,
-    rechargeTab: Int = PowerRechargeDialog.TAB_CREDITS
+    rechargeTab: Int = PowerRechargeDialog.TAB_CREDITS,
+    creationScene: Int? = null,
 ): Boolean {
     val hasPurchased = if (rechargeTab == PowerRechargeDialog.TAB_CREDITS) {
         User.get().hasPurchasedPoints()
@@ -220,32 +349,41 @@ suspend fun showFirstRecharge(
         User.get().hasPurchasedCoins()
     }
     val canShowFirstRecharge = !hasPurchased &&
-            !Config.get().isFirstRechargeShown(FirstRechargeDialog.SCENE_OTHER)
+            !Config.get().isFirstRechargeShown(FirstRechargeDialog.SCENE_GUIDE)
     if (!canShowFirstRecharge) return false
     val isShown = if (rechargeTab == PowerRechargeDialog.TAB_CREDITS) {
-        showCreditsFirstRecharge(showToast, rechargeTab)
+        showCreditsFirstRecharge(showToast, rechargeTab, creationScene)
     } else {
         showCoinsFirstRecharge(showToast, rechargeTab)
     }
     if (isShown) {
-        Config.get().markFirstRechargeShown(FirstRechargeDialog.SCENE_OTHER)
+        Config.get().markFirstRechargeShown(FirstRechargeDialog.SCENE_GUIDE)
     }
     return isShown
 }
 
 private suspend fun showCreditsFirstRecharge(
     showToast: Boolean,
-    rechargeTab: Int
+    rechargeTab: Int,
+    creationScene: Int? = null,
+    onClose: (() -> Unit)? = null,
 ): Boolean {
     val firstRechargeDialogData = withContext(Dispatchers.IO) {
-        ApiFactory.apiService.getFirstRechargeCreditsDialogInfo()
+        ApiFactory.apiService.getFirstRechargeCreditsDialogInfo(FirstRechargeCreditsBody(creationScene))
     }.data
     if (firstRechargeDialogData == null) return false
-    val dialog = FirstRechargeCreditsDialog.show(FirstRechargeCreditsDialog.SCENE_OTHER, firstRechargeDialogData)?.apply {
-        onClose = {
-            PowerRechargeDialog.show(0, showToast, rechargeTab = rechargeTab)
-        }
+    val dialog = FirstRechargeCreditsDialog.show(
+        FirstRechargeCreditsDialog.SCENE_GUIDE,
+        firstRechargeDialogData,
+    )?.apply {
+        this.onClose = onClose
     }
+    Config.get().markFirstRechargeShown(FirstRechargeDialog.SCENE_GUIDE)
+//    val dialog = FirstRechargeCreditsDialog.show(FirstRechargeCreditsDialog.SCENE_OTHER, firstRechargeDialogData)?.apply {
+//        onClose = {
+//            PowerRechargeDialog.show(0, showToast, rechargeTab = rechargeTab)
+//        }
+//    }
     return dialog != null
 }
 
@@ -257,10 +395,11 @@ private suspend fun showCoinsFirstRecharge(
         ApiFactory.apiService.getFirstRechargeDialogInfo()
     }.data
     if (firstRechargeDialogData == null) return false
-    val dialog = FirstRechargeDialog.show(FirstRechargeDialog.SCENE_OTHER, firstRechargeDialogData)?.apply {
-        onClose = {
-            PowerRechargeDialog.show(0, showToast, rechargeTab = rechargeTab)
-        }
-    }
+    val dialog = FirstRechargeDialog.show(FirstRechargeDialog.SCENE_GUIDE, firstRechargeDialogData)
+//    val dialog = FirstRechargeDialog.show(FirstRechargeDialog.SCENE_OTHER, firstRechargeDialogData)?.apply {
+//        onClose = {
+//            PowerRechargeDialog.show(0, showToast, rechargeTab = rechargeTab)
+//        }
+//    }
     return dialog != null
 }

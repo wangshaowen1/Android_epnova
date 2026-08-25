@@ -16,15 +16,15 @@ import com.kuaigeglobal.epnova.common.ext.showCommonDialog
 import com.kuaigeglobal.epnova.common.ext.topActivity
 import com.kuaigeglobal.epnova.common.utils.AutoProgressSimulator
 import com.kuaigeglobal.epnova.core.Events
+import com.kuaigeglobal.epnova.core.ext.handlePointInsufficientError
 import com.kuaigeglobal.epnova.core.ext.launch
 import com.kuaigeglobal.epnova.core.ext.launchWithLoading
-import com.kuaigeglobal.epnova.core.ext.showRechargeDialog
 import com.kuaigeglobal.epnova.core.manager.EventManager
 import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
-import com.kuaigeglobal.epnova.core.network.apis.ApiResponse
 import com.kuaigeglobal.epnova.core.network.apis.entity.AssetInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.RoleImageInfo
 import com.kuaigeglobal.epnova.core.network.apis.request.AssetStoryImageBody
+import com.kuaigeglobal.epnova.core.network.apis.request.CreationScene
 import com.kuaigeglobal.epnova.core.network.apis.request.StrategyTypeBody
 import com.kuaigeglobal.epnova.core.network.apis.request.WorkBody
 import com.kuaigeglobal.epnova.core.network.apis.response.AssetStoryListInfo
@@ -478,7 +478,7 @@ class AssetManagementViewModel : AppRepositoryViewModel<AssetManagementRepositor
     }
 
     private fun generate(cost: Int) {
-        if (PowerRechargeDialog.checkLowBalance(cost, PowerRechargeDialog.TAB_CREDITS)) return
+//        if (PowerRechargeDialog.checkLowBalance(cost, PowerRechargeDialog.TAB_CREDITS)) return
         var notInput = false
         val notGenerateItems = arrayListOf<Triple<ItemAssetVM, String, String>>()
         adapter.items.forEachIndexed { index, item ->
@@ -502,9 +502,11 @@ class AssetManagementViewModel : AppRepositoryViewModel<AssetManagementRepositor
                 notGenerateItems.forEach { (item, assetDesc, assetName) -> if (!item.save(assetDesc, assetName)) return@launchWithLoading }
                 val response = withContext(Dispatchers.IO) { mRepo.api.workAssetOneKeyGenerate(WorkBody(workId, storyId)) }
                 if (!response.isSuccess) {
-                    if (response.code == ApiResponse.RESPONSE_CODE_POWER_NOT_ENOUGH) {
-                        showRechargeDialog(true)
-                    } else {
+                    val handled = handlePointInsufficientError(
+                        creationScene = CreationScene.IMAGE_GENERATION,
+                        errorCode = response.code,
+                    )
+                    if (!handled) {
                         response.msg?.showToast()
                     }
                     return@launchWithLoading

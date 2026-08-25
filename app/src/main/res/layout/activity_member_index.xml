@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="layout"
+            type="com.kuaigeglobal.epnova.feature.member.vm.MemberIndexViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="?attr/bgColor2">
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="342dp">
+
+                <ImageView
+                    android:id="@+id/iv_member_top"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:src="@drawable/icon_member_top_board"
+                    app:layout_constraintDimensionRatio="375:280"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/iv_member_top_text"
+                    android:layout_width="320dp"
+                    android:layout_height="108dp"
+                    android:layout_marginBottom="18dp"
+                    android:src="@{layout.planMode ? @drawable/icon_member_text_2 : @drawable/icon_member_text_1}"
+                    app:layout_constraintBottom_toBottomOf="@id/iv_member_top"
+                    app:layout_constraintEnd_toEndOf="@id/iv_member_top"
+                    app:layout_constraintStart_toStartOf="@id/iv_member_top"
+                    tools:src="@drawable/icon_member_text_1" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/member_price_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="24dp"
+                    android:layout_marginTop="7dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/iv_member_top">
+
+                    <ImageView
+                        android:id="@+id/iv_member_credits"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/icon_power"
+                        app:layout_constraintBottom_toBottomOf="@id/tv_member_credits"
+                        app:layout_constraintEnd_toStartOf="@id/tv_member_credits"
+                        app:layout_constraintHorizontal_bias="0"
+                        app:layout_constraintHorizontal_chainStyle="packed"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/tv_member_credits" />
+
+                    <TextView
+                        android:id="@+id/tv_member_credits"
+                        style="@style/Text.SemiBold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="4dp"
+                        android:text="@{layout.selectedPeriodPointNum}"
+                        android:textColor="@color/text_color_1_dark"
+                        android:textSize="42sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/tv_member_credits_unit"
+                        app:layout_constraintStart_toEndOf="@id/iv_member_credits"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:text="9999" />
+
+                    <TextView
+                        android:id="@+id/tv_member_credits_unit"
+                        style="@style/Text.Regular"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@{layout.selectedPeriodUnit}"
+                        android:textColor="@color/text_color_4_dark"
+                        android:textSize="14sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/tv_member_credits"
+                        tools:text="/week" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_privilege"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="24dp"
+                    android:layout_marginTop="18dp"
+                    android:nestedScrollingEnabled="false"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="@id/member_price_layout"
+                    app:layout_constraintStart_toStartOf="@id/member_price_layout"
+                    app:layout_constraintTop_toBottomOf="@id/member_price_layout"
+                    app:layout_constraintVertical_bias="0"
+                    tools:itemCount="4"
+                    tools:listitem="@layout/item_member_privilege" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.core.widget.NestedScrollView>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:src="@drawable/icon_member_bottom_mask"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="375:246"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <LinearLayout
+            android:id="@+id/ll_member_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="34dp"
+            android:orientation="vertical"
+            android:paddingHorizontal="15dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_member_recharge"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:itemCount="2"
+                tools:listitem="@layout/item_member_recharge" />
+
+            <TextView
+                style="@style/Text.Regular"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="34dp"
+                android:textColor="@color/text_color_3_dark"
+                android:textSize="12sp"
+                android:text="@{layout.bottomHint}"
+                tools:text="@string/member_cancel_anytime" />
+
+            <TextView
+                android:id="@+id/btn_member_subscribe"
+                singleClick="@{layout.clickHandler::onClick}"
+                style="@style/Text.Bold"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/selector_creation_button"
+                android:enabled="@{layout.canSubscribe}"
+                android:gravity="center"
+                android:textColor="@color/text_color_1_dark"
+                android:textSize="16sp"
+                android:text="@{layout.planMode ? @string/member_upgrade_now : @string/member_subscribe_now}"
+                tools:text="@string/member_subscribe_now" />
+
+            <TextView
+                android:id="@+id/tv_member_service"
+                style="@style/Text.Regular"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="12dp"
+                android:textColor="@color/text_color_3_dark"
+                android:textSize="12sp"
+                android:text="@string/member_service_and_policy" />
+        </LinearLayout>
+
+        <include
+            android:id="@+id/toolbar"
+            layout="@layout/view_model_toolbar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:toolbar="@{layout.mToolbarVM}" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

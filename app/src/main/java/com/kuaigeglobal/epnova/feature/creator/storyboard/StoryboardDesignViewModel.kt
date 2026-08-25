@@ -16,12 +16,12 @@ import com.kuaigeglobal.epnova.common.ext.showCommonDialog
 import com.kuaigeglobal.epnova.common.ext.topActivity
 import com.kuaigeglobal.epnova.common.utils.AutoProgressSimulator
 import com.kuaigeglobal.epnova.core.AppRepository
+import com.kuaigeglobal.epnova.core.ext.handlePointInsufficientError
 import com.kuaigeglobal.epnova.core.ext.launch
 import com.kuaigeglobal.epnova.core.ext.launchWithLoading
-import com.kuaigeglobal.epnova.core.ext.showRechargeDialog
-import com.kuaigeglobal.epnova.core.network.apis.ApiResponse
 import com.kuaigeglobal.epnova.core.network.apis.entity.CreationModelInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.SimpleStoryboardInfo
+import com.kuaigeglobal.epnova.core.network.apis.request.CreationScene
 import com.kuaigeglobal.epnova.core.network.apis.request.IdsBody
 import com.kuaigeglobal.epnova.core.network.apis.request.StrategyTypeBody
 import com.kuaigeglobal.epnova.core.network.apis.request.SwitchModelBody
@@ -348,18 +348,18 @@ class StoryboardDesignViewModel : AppRepositoryViewModel<AppRepository>() {
     }
 
     private fun generate(cost: Int, toNextStep: ((workId: String?, storyId: String?, taskId: String?) -> Unit)? = null) {
-        if (PowerRechargeDialog.checkLowBalance(cost, PowerRechargeDialog.TAB_CREDITS)) return
+//        if (PowerRechargeDialog.checkLowBalance(cost, PowerRechargeDialog.TAB_CREDITS)) return
         launchWithLoading {
             adapter.items.forEach { if (it is ItemStoryboardVM && !it.save()) return@launchWithLoading }
             response(
                 bean = mRepo.api.workStoryboardVideoGenerate(WorkBody(workId, storyId)),
                 result = { toNextStep?.invoke(workId, storyId, data?.taskId) },
                 error = {
-                    if (this?.code == ApiResponse.RESPONSE_CODE_POWER_NOT_ENOUGH) {
-                        viewModelScope.launch {
-                            showRechargeDialog(true)
-                        }
-                    } else {
+                    val handled = handlePointInsufficientError(
+                        creationScene = CreationScene.VIDEO_GENERATION,
+                        errorCode = this?.code,
+                    )
+                    if (!handled) {
                         this?.msg?.showToast()
                     }
                 })

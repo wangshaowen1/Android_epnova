@@ -231,7 +231,7 @@ object EventManager {
 /**
  * GA4 埋点定义，统一使用 Event-Action-Label 结构。
  *
- * 数据来源：EpNova GA埋点.xlsx（Sheet1，A1:M70）。
+ * 数据来源：EpNova GA埋点.xlsx（1.3.2 A1:M70；1.3.6 A1:M14）。
  */
 object FirebaseEvent {
 
@@ -265,6 +265,12 @@ object FirebaseEvent {
         const val PUSH = "push"
         /** 创作同款。 */
         const val HIT_SCRIPTS = "hit_scripts"
+        /** 会员商店。 */
+        const val MEMBERSHIP = "membership"
+        /** 会员升级。 */
+        const val MEMBERSHIP_UPGRADE = "membership_upgrade"
+        /** 付费剧集解锁。 */
+        const val PAID_EPISODE = "paid_episode"
     }
 
     /** GA4 事件参数 key，顺序与表格的 Action、Label 1～4 一致。 */
@@ -369,10 +375,30 @@ object FirebaseEvent {
         const val STORE_SHOW = "store_show"
         /** [store] 交易历史记录明细页展示。 */
         const val TRANSACTION_HISTORY_SHOW = "transaction_history_show"
-        /** [store] 商品卡片点击；Label1=货币类型，Label2=货币数量。 */
+        /** [membership] 会员页面展示；Label1=触发场景。 */
+        const val MEMBERSHIP_SHOW = "membership_show"
+        /** [membership_upgrade] 会员升级页面展示。 */
+        const val UPGRADE_SHOW = "upgrade_show"
+        /** [store]/[membership]/[membership_upgrade] 商品卡片点击；Label 规则由 Event 决定。 */
         const val PRODUCT_CLICK = "product_click"
-        /** [store] 支付结果：Label1=货币类型，Label2=数量，Label3=状态；首充 Event 下 Label1=状态。 */
+        /** [store]/[membership] 支付结果；Label 规则由 Event 决定。 */
         const val PURCHASE_RESULT = "purchase_result"
+        /** [membership_upgrade] 升级结果；Label1=升级结果。 */
+        const val UPGRADE_RESULT = "upgrade_result"
+        /** [paid_episode] 付费剧集曝光；Label1=剧 ID，Label2=集 ID。 */
+        const val PAID_EPISODE_SHOW = "paid_episode_show"
+        /** [paid_episode] 金币购买弹窗曝光。 */
+        const val BUY_COIN_POPUP_SHOW = "buy_coin_popup_show"
+        /** [paid_episode] 点击购买金币；Label1=货币数量。 */
+        const val BUY_COIN_CLICK = "buy_coin_click"
+        /** [paid_episode] 金币购买结果；Label1=支付状态，Label2=货币数量。 */
+        const val BUY_COIN_RESULT = "buy_coin_result"
+        /** [paid_episode] 点击广告解锁按钮。 */
+        const val AD_UNLOCK_CLICK = "ad_unlock_click"
+        /** [paid_episode] 广告播放结果；Label1=播放状态。 */
+        const val AD_PLAY_RESULT = "ad_play_result"
+        /** [paid_episode] 剧集解锁结果；Label1=解锁状态，Label2=解锁来源。 */
+        const val AD_UNLOCK_RESULT = "ad_unlock_result"
         /** [first_purchase_credits]/[first_purchase_coin] 首充弹窗展示；Label1=触发场景。 */
         const val POPUP_SHOW = "popup_show"
         /** [first_purchase_credits]/[first_purchase_coin] 首充购买按钮点击。 */
@@ -461,10 +487,20 @@ object FirebaseEvent {
         const val CURRENCY_AMOUNT_8000 = "8000"
         /** 商品货币数量：10000。 */
         const val CURRENCY_AMOUNT_10000 = "10000"
-        /** 首充触发场景：点击创作按钮。 */
+        /** 页面/弹窗触发场景：点击创作按钮。 */
         const val TRIGGER_CREATE_BTN = "create_btn"
-        /** 首充触发场景：余额不足。 */
+        /** 页面/弹窗触发场景：余额不足。 */
         const val TRIGGER_INSUFFICIENT_BALANCE = "insufficient_balance"
+        /** 会员页触发场景：会员入口。 */
+        const val TRIGGER_MEMBERSHIP_ENTRY = "membership_entry"
+        /** 会员周期：周。 */
+        const val MEMBERSHIP_PERIOD_WEEKLY = "Weekly"
+        /** 会员周期：月。 */
+        const val MEMBERSHIP_PERIOD_MONTHLY = "Monthly"
+        /** 剧集解锁来源：金币。 */
+        const val UNLOCK_SOURCE_COIN = "coin"
+        /** 剧集解锁来源：广告。 */
+        const val UNLOCK_SOURCE_AD = "ad"
         /** 金币发放来源：签到。 */
         const val GRANTED_SOURCE_CHECK_IN = "check_in"
         /** 金币发放来源：签到后激励广告。 */

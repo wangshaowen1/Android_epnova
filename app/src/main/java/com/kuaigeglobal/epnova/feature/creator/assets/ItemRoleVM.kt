@@ -1,20 +1,20 @@
 package com.kuaigeglobal.epnova.feature.creator.assets
 
 import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.viewModelScope
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.ext.topActivity
 import com.kuaigeglobal.epnova.core.Config
 import com.kuaigeglobal.epnova.core.Events
+import com.kuaigeglobal.epnova.core.ext.handlePointInsufficientError
 import com.kuaigeglobal.epnova.core.ext.launch
 import com.kuaigeglobal.epnova.core.ext.sensitiveWordCheck
-import com.kuaigeglobal.epnova.core.ext.showRechargeDialog
 import com.kuaigeglobal.epnova.core.network.apis.ApiFactory
 import com.kuaigeglobal.epnova.core.network.apis.ApiResponse
 import com.kuaigeglobal.epnova.core.network.apis.entity.AssetGenerateInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.AssetInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.ReferenceImageInfo
 import com.kuaigeglobal.epnova.core.network.apis.request.AssetGenerateBody
+import com.kuaigeglobal.epnova.core.network.apis.request.CreationScene
 import com.kuaigeglobal.epnova.core.network.apis.request.AssetSaveBody
 import com.kuaigeglobal.epnova.core.network.apis.request.AssetUnlinkBody
 import com.kuaigeglobal.epnova.core.network.apis.request.TaskIdBody
@@ -26,7 +26,6 @@ import com.nhsd.basic.ext.getResString
 import com.nhsd.basic.ext.showToast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class ItemRoleVM(
@@ -157,11 +156,11 @@ class ItemRoleVM(
                         }
                     },
                     error = {
-                        if (this?.code == ApiResponse.RESPONSE_CODE_POWER_NOT_ENOUGH) {
-                            viewModelScope.launch {
-                                showRechargeDialog(true)
-                            }
-                        } else {
+                        val handled = handlePointInsufficientError(
+                            creationScene = CreationScene.IMAGE_GENERATION,
+                            errorCode = this?.code,
+                        )
+                        if (!handled) {
                             this?.msg?.showToast()
                         }
                         updateStatus(preStatus)

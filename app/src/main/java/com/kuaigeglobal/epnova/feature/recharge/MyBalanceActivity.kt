@@ -36,6 +36,7 @@ import com.nhsd.magicindicator.buildins.commonnavigator.abs.IPagerTitleView
 import com.nhsd.magicindicator.buildins.commonnavigator.titles.ScaleTransitionPagerTitleView
 import kotlinx.coroutines.launch
 
+@Deprecated(message = "1.3.6版本拆分成两个独立的商城")
 class MyBalanceActivity : BaseViewModelActivity<ActivityMyBalanceBinding, MyBalanceViewModel>() {
     companion object {
         fun start(tab: Int = MyBalanceViewModel.TAB_CREDITS) {
@@ -70,7 +71,7 @@ class MyBalanceActivity : BaseViewModelActivity<ActivityMyBalanceBinding, MyBala
         val initialTab = intent.getIntExtra(Constants.Extra.TAB, MyBalanceViewModel.TAB_COINS)
             .takeIf { it == MyBalanceViewModel.TAB_COINS || it == MyBalanceViewModel.TAB_CREDITS }
             ?: MyBalanceViewModel.TAB_COINS
-        return MyBalanceViewModel(R.layout.item_recharge_payment, initialTab)
+        return MyBalanceViewModel(initialTab)
     }
 
     private fun initTitleBar() {

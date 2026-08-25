@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="item"
+            type="com.kuaigeglobal.epnova.feature.member.vm.ItemMemberRechargeViewModel" />
+
+        <import type="android.text.TextUtils" />
+    </data>
+
+    <com.kuaigeglobal.epnova.widget.BorderConstraintLayout
+        showBorder="@{item.isSelected}"
+        android:layout_width="match_parent"
+        android:layout_height="72dp"
+        android:onClick="@{(view) -> item.onItemClick.invoke(view)}"
+        app:backgroundStartColor="@color/color_06_ffffff"
+        app:borderCenterColor="@color/gradient_btn_center_dark"
+        app:borderEndColor="@color/gradient_btn_end_dark"
+        app:borderStartColor="@color/gradient_btn_start_dark"
+        app:borderWidth="1dp"
+        app:roundCornerRadius="@dimen/radius_l">
+
+        <LinearLayout
+            android:id="@+id/ll_plan_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/ll_plan_price"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                style="@style/Text.Medium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="@{item.data.planNameStr()}"
+                android:textColor="?attr/textColor1"
+                android:textSize="18sp"
+                tools:text="Weekly" />
+
+            <TextView
+                style="@style/Text.Regular"
+                setVisible="@{item.showDiscount}"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:background="@drawable/shape_ff2e55_r4"
+                android:paddingHorizontal="4dp"
+                android:paddingVertical="2dp"
+                android:text="@{item.discountText()}"
+                android:textColor="@color/text_color_1_dark"
+                android:textSize="9sp"
+                tools:text="Save 33%" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_plan_price"
+            setVisible="@{!TextUtils.isEmpty(item.priceText)}"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="15dp"
+            android:gravity="end"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                style="@style/Text.Medium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:includeFontPadding="false"
+                android:text="@{item.data.hasCurrent() ? item.data.planName : item.priceText}"
+                android:textColor="?attr/textColor1"
+                android:textSize="18sp"
+                tools:text="$9.99" />
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:paddingTop="2dp"
+                    style="@style/Text.Medium"
+                    setVisible="@{item.data.hasCurrent()}"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:includeFontPadding="false"
+                    android:text="@{item.data.currentInfo()}"
+                    android:textColor="?attr/textColor4"
+                    android:textSize="15sp"
+                    tools:visibility="gone"
+                    tools:text="1700 credits /week" />
+
+                <TextView
+                    android:paddingTop="4dp"
+                    style="@style/Text.Medium"
+                    setStrike="@{true}"
+                    setVisible="@{!item.data.hasCurrent()}"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:includeFontPadding="false"
+                    android:text="@{item.originalPriceText}"
+                    android:textColor="?attr/textColor4"
+                    android:textSize="12sp"
+                    tools:visibility="visible"
+                    tools:text="$14.99" />
+            </LinearLayout>
+        </LinearLayout>
+    </com.kuaigeglobal.epnova.widget.BorderConstraintLayout>
+</layout>
