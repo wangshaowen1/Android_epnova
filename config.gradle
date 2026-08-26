@@ -19,8 +19,8 @@ ext {
             minSdkVersion     : 24,
             targetSdkVersion  : 36,
             buildToolsVersion : "35.0.0",
-            versionCodeRelease: 15,
-            versionCodeDebug  : 15,
+            versionCodeRelease: 16,
+            versionCodeDebug  : 16,
             //版本名称
             versionName       : "1.3.7",
 
