@@ -2,6 +2,7 @@ package com.kuaigeglobal.epnova.core.google.billing
 
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.Purchase
+import com.kuaigeglobal.epnova.core.Config
 import com.kuaigeglobal.epnova.core.Global
 import com.kuaigeglobal.epnova.core.network.apis.ApiFactory
 import com.kuaigeglobal.epnova.core.network.apis.request.GoogleMemberSubscriptionBody
@@ -227,6 +228,7 @@ object MemberSubscriptionRecoveryManager {
                             // 官方凭证恢复，不能复用或猜测历史 prepare/base plan。
                             purchasePrepareToken = null,
                             basePlanId = null,
+                            appsFlyerId = Config.get().appsFlyerId
                         )
                     )
                 }

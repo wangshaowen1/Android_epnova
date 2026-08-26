@@ -13,6 +13,7 @@ import com.kuaigeglobal.epnova.common.Constants
 import com.kuaigeglobal.epnova.common.adapter.QuickAdapter
 import com.kuaigeglobal.epnova.common.ext.topActivity
 import com.kuaigeglobal.epnova.core.AppRepository
+import com.kuaigeglobal.epnova.core.Config
 import com.kuaigeglobal.epnova.core.Global
 import com.kuaigeglobal.epnova.core.ext.requestWithLoading
 import com.kuaigeglobal.epnova.core.google.billing.BillingManager
@@ -682,6 +683,7 @@ class MemberIndexViewModel : AppRepositoryViewModel<AppRepository>() {
                         productId = context.productId,
                         purchasePrepareToken = context.purchasePrepareToken,
                         basePlanId = context.basePlanId,
+                        appsFlyerId = Config.get().appsFlyerId
                     )
                 )
             },
@@ -1058,6 +1060,7 @@ class MemberIndexViewModel : AppRepositoryViewModel<AppRepository>() {
                         // Product 内 Weekly→Monthly 切换时，不能把目标 basePlanId 猜成查询结果；
                         // sync 留空，由后端 subscriptionsv2.get 获取官方事实。
                         basePlanId = null,
+                        appsFlyerId = Config.get().appsFlyerId
                     )
                 )
             },

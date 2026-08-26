@@ -47,6 +47,8 @@ class Config : NetworkChangedListener {
 
     var isFirstOpenApp: Boolean by MmkvDelegate(FIRST_OPEN_APP, true) { mmkv }
         private set
+    var appsFlyerId: String by MmkvDelegate(APPSFLYER_ID, "") { mmkv }
+        private set
     var objectId: String? by MmkvDelegate(OBJECT_ID, "1") { mmkv }
         private set
     var isInReview: Boolean by MmkvDelegate(IN_REVIEW, ifInitialStatusInReview()) { mmkv }
@@ -208,6 +210,10 @@ class Config : NetworkChangedListener {
 
     fun storeInReview(inReview: Boolean) {
         this.isInReview = inReview
+    }
+
+    fun storeAppsFlyerId(appsFlyerId: String) {
+        this.appsFlyerId = appsFlyerId
     }
 
     fun storeDeviceToken(deviceToken: String?) {
@@ -429,6 +435,7 @@ class Config : NetworkChangedListener {
         const val UAT: Int = 2
         const val ONLINE: Int = 3
         const val DEVICE_TOKEN = "DEVICE_TOKEN"
+        const val APPSFLYER_ID: String = "appsFlyerId"
 
         /**
          * Application.attachBaseContext 阶段 App.instance.config 还未初始化，
