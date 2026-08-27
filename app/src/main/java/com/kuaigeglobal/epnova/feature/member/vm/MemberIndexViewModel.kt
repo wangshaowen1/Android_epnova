@@ -13,6 +13,7 @@ import com.kuaigeglobal.epnova.common.Constants
 import com.kuaigeglobal.epnova.common.adapter.QuickAdapter
 import com.kuaigeglobal.epnova.common.ext.topActivity
 import com.kuaigeglobal.epnova.core.AppRepository
+import com.kuaigeglobal.epnova.core.Config
 import com.kuaigeglobal.epnova.core.Global
 import com.kuaigeglobal.epnova.core.ext.requestWithLoading
 import com.kuaigeglobal.epnova.core.google.billing.BillingManager
@@ -20,6 +21,7 @@ import com.kuaigeglobal.epnova.core.google.billing.MemberBillingResult
 import com.kuaigeglobal.epnova.core.google.billing.MemberSubscriptionRecoveryManager
 import com.kuaigeglobal.epnova.core.google.billing.MemberSubscriptionRecoveryStore
 import com.kuaigeglobal.epnova.core.google.billing.MemberSubscriptionStorePreparationResult
+import com.kuaigeglobal.epnova.core.manager.AppsFlyerManager
 import com.kuaigeglobal.epnova.core.manager.EventManager
 import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
 import com.kuaigeglobal.epnova.core.network.apis.ApiException
@@ -464,6 +466,14 @@ class MemberIndexViewModel : AppRepositoryViewModel<AppRepository>() {
             is MemberSubscriptionStorePreparationResult.Ready -> {
                 // 必须先标记再调用：参数校验失败和 launchBillingFlow 同步失败都可能立即向 Flow
                 // 发事件，监听端需要知道该事件属于已经开始拉起的本次上下文。
+                val pricingPhase = result.launchParams.resolvedOffer.offerDetails
+                    .pricingPhases
+                    .pricingPhaseList
+                    .firstOrNull()
+                // 将预获取到的商店套餐金额和币种存到上下文中方便后续归因上报使用
+                context.priceAmountMicros = pricingPhase?.priceAmountMicros
+                context.priceCurrencyCode = pricingPhase?.priceCurrencyCode
+
                 context.billingLaunchStarted = true
                 BillingManager.launchMemberSubscription(
                     activity = topActivity,
@@ -673,6 +683,7 @@ class MemberIndexViewModel : AppRepositoryViewModel<AppRepository>() {
                         productId = context.productId,
                         purchasePrepareToken = context.purchasePrepareToken,
                         basePlanId = context.basePlanId,
+                        appsFlyerId = Config.get().appsFlyerId
                     )
                 )
             },
@@ -680,6 +691,18 @@ class MemberIndexViewModel : AppRepositoryViewModel<AppRepository>() {
                 memberPurchaseRequestJob = null
                 confirmingMemberPurchase = false
                 completeConfirmedMemberPurchase(context)
+                // 只上报PURCHASE订阅购买类型，订阅升级不上报
+                if (context.actionType == MemberActionEnum.PURCHASE.name) {
+                    // 未获取到金额和币种不进行归因上报
+                    if (context.priceAmountMicros != null && context.priceCurrencyCode != null) {
+                        AppsFlyerManager.logPurchase(
+                            productId = context.productId,
+                            orderId = purchase.orderId,
+                            priceAmountMicros = context.priceAmountMicros,
+                            currency = context.priceCurrencyCode
+                        )
+                    }
+                }
             },
             onError = { error ->
                 // 已取得 PURCHASED 后禁止 release。网络结果未知及 300185 先查询商店再 sync；
@@ -1037,6 +1060,7 @@ class MemberIndexViewModel : AppRepositoryViewModel<AppRepository>() {
                         // Product 内 Weekly→Monthly 切换时，不能把目标 basePlanId 猜成查询结果；
                         // sync 留空，由后端 subscriptionsv2.get 获取官方事实。
                         basePlanId = null,
+                        appsFlyerId = Config.get().appsFlyerId
                     )
                 )
             },
@@ -1452,6 +1476,10 @@ class MemberIndexViewModel : AppRepositoryViewModel<AppRepository>() {
         var recoveryQueryOnResume = false
         var releaseRequested = false
         var analyticsResultReported = false
+        // 微单位金额 例如 7_990_000  相当于 7.99
+        var priceAmountMicros: Long? = null
+        // 币种，例如 USD
+        var priceCurrencyCode: String? = null
 
         /** 只确认本次商品及账号绑定标识都匹配的 Google Purchase。 */
         fun matches(purchase: Purchase): Boolean {

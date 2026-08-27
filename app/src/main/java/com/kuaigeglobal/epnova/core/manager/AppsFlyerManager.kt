@@ -116,7 +116,9 @@ object AppsFlyerManager {
      */
     fun start(context: Context) {
         AppsFlyerLib.getInstance().start(context)
-        Logger.i(TAG, "AppsFlyer started")
+        val appsFlyerId = AppsFlyerLib.getInstance().getAppsFlyerUID(context) ?: ""
+        Config.get().storeAppsFlyerId(appsFlyerId)
+        Logger.i(TAG, "AppsFlyer started: $appsFlyerId")
     }
 
     fun logCompleteRegistration() {

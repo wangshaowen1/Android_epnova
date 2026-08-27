@@ -30,4 +30,6 @@ data class GoogleMemberSubscriptionBody(
     val purchasePrepareToken: String? = null,
     /** Google Base Plan ID；恢复同步时允许为空。 */
     val basePlanId: String? = null,
+    /** af归因id */
+    val appsFlyerId: String?
 )
