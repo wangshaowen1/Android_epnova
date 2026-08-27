@@ -169,6 +169,8 @@
 
             <!-- member -->
             <FrameLayout
+                android:id="@+id/mine_member_layout"
+                singleClick="@{layout.clickHandler::onClick}"
                 setVisible="@{layout.memberCard != null &amp;&amp; layout.memberCard.show()}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

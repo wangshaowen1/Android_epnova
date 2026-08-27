@@ -124,6 +124,17 @@ class MineFragment : BaseViewModelFragment<FragmentMineBinding, MineViewModel>()
                 CreditsBalanceActivity.start()
             }
 
+            R.id.mine_member_layout -> {
+                if (mRealVM.memberCard.get()?.hasEnable() == false) {
+                    return
+                }
+                if (AppNavigator.checkLoginIntercepted(false)) {
+                    return
+                }
+                // 会员页
+                MemberIndexActivity.start()
+            }
+
             R.id.mine_member_btn -> {
                 if (AppNavigator.checkLoginIntercepted(false)) {
                     return
