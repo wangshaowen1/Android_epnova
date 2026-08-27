@@ -717,6 +717,7 @@
     <string name="create_page_resource_center">Resource Center</string>
     <string name="create_page_published">Published</string>
     <string name="create_page_income">Income</string>
+    <string name="create_page_unlocks">unlocks</string>
     <string name="profile_recharge">Recharge</string>
     <string name="profile_credits">Credits</string>
     <string name="profile_income">Income</string>

@@ -115,18 +115,17 @@
                 android:layout_gravity="right"
                 android:orientation="horizontal">
 
-                <TextView
-                    style="@style/Text.Regular"
-                    android:textSize="11sp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="$"
-                    android:textColor="@color/color_f59e0b" />
+                <ImageView
+                    android:layout_marginEnd="2dp"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/icon_top_earners_unlock"
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"/>
 
                 <TextView
                     android:id="@+id/tv_income"
-                    style="@style/Text.Bold"
-                    android:textSize="18sp"
+                    style="@style/Text.Medium"
+                    android:textSize="16sp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/color_f59e0b"
@@ -141,7 +140,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
                 android:layout_marginStart="@dimen/spacing_xs"
-                android:text="@string/create_page_income"
+                android:text="@string/create_page_unlocks"
                 android:textColor="@color/color_30_ffffff" />
         </LinearLayout>
     </LinearLayout>
