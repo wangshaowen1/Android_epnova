@@ -144,11 +144,11 @@ class AssetManagementViewModel : AppRepositoryViewModel<AssetManagementRepositor
         super.onPause()
     }
 
-    override fun onCleared() {
+    override fun onDestroy() {
         loopAllAssetDescriptionStatusJob?.cancel()
         inputJob?.cancel()
         adapter.items.forEach { if (it is ItemAssetVM) it.clear() }
-        super.onCleared()
+        super.onDestroy()
     }
 
     fun retry() {

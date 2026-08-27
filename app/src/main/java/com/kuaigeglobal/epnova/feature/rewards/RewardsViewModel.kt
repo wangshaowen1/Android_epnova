@@ -99,8 +99,8 @@ class RewardsViewModel : AppRepositoryViewModel<AppRepository>() {
         balance.set(User.get().coins)
     }
 
-    override fun onCleared() {
-        super.onCleared()
+    override fun onDestroy() {
+        super.onDestroy()
         nextRefreshCountdownJob?.cancel()
         adManager.release()
     }

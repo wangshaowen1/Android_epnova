@@ -149,8 +149,8 @@ class CreatorPlayerViewModel : AppRepositoryViewModel<AppRepository>(), Download
         )
     }
 
-    override fun onCleared() {
+    override fun onDestroy() {
         cancelDownload()
-        super.onCleared()
+        super.onDestroy()
     }
 }

@@ -35,6 +35,8 @@ buildscript {
 
 allprojects {
     configurations.all {
+        // 全局排除第三方重复引入依赖
+        exclude group: 'org.jetbrains.kotlin', module: 'kotlin-android-extensions-runtime'
         resolutionStrategy {
             force 'org.xerial:sqlite-jdbc:3.34.0'
         }

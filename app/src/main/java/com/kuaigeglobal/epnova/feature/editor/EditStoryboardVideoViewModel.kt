@@ -113,12 +113,12 @@ class EditStoryboardVideoViewModel : AppRepositoryViewModel<EditStoryboardReposi
         storyboardPlayer.pause()
     }
 
-    override fun onCleared() {
+    override fun onDestroy() {
         cancelDownload()
         progressJob?.cancel()
         loopSynthesisStatusJob?.cancel()
         adapter.items.forEach { it.release() }
-        super.onCleared()
+        super.onDestroy()
         storyboardPlayer.release()
     }
 

@@ -182,7 +182,7 @@ class RewardedAdManager(
         )
     }
 
-    /** ViewModel.onCleared() 时调用，释放广告对象 */
+    /** ViewModel.onDestroy() 时调用，释放广告对象 */
     fun release() {
         prepareJob?.cancel()
         prepareJob = null

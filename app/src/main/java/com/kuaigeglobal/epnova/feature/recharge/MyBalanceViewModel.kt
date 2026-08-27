@@ -367,10 +367,10 @@ class MyBalanceViewModel(
         }
     }
 
-    override fun onCleared() {
+    override fun onDestroy() {
         BillingManager.markActivePage(false)
         countDownJob?.cancel()
         purchaseJob?.cancel()
-        super.onCleared()
+        super.onDestroy()
     }
 }

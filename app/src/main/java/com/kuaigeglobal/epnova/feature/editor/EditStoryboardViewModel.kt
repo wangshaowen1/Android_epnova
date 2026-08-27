@@ -114,14 +114,6 @@ class EditStoryboardViewModel : AppRepositoryViewModel<EditStoryboardRepository>
         storyboardPlayer.pause()
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        loopVideoJob?.cancel()
-        loopSubtitleGenStatusJob?.cancel()
-        progressJob?.cancel()
-        storyboardPlayer.release()
-    }
-
     fun play() {
         if (storyboardPlayer.isPlaying) {
             storyboardPlayer.pause()
@@ -359,6 +351,9 @@ class EditStoryboardViewModel : AppRepositoryViewModel<EditStoryboardRepository>
 
     override fun onDestroy() {
         loopVideoJob?.cancel()
+        loopSubtitleGenStatusJob?.cancel()
+        progressJob?.cancel()
+        storyboardPlayer.release()
         super.onDestroy()
     }
 

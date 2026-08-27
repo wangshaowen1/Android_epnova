@@ -62,9 +62,9 @@ class GuideStep4ViewModel : AppRepositoryViewModel<AppRepository>() {
         }
     }
 
-    override fun onCleared() {
+    override fun onDestroy() {
         player.release()
-        super.onCleared()
+        super.onDestroy()
     }
 
 }

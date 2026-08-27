@@ -590,8 +590,8 @@ class DramaGenerateStep2ViewModel : AppRepositoryViewModel<CreationRepository>()
     /**
      * 页面销毁或需要重置时调用
      */
-    override fun onCleared() {
-        super.onCleared()
+    override fun onDestroy() {
+        super.onDestroy()
         scriptPollingJob?.cancel()
         scriptSessionJob?.cancel()
         scriptStreamHandler?.cancel()

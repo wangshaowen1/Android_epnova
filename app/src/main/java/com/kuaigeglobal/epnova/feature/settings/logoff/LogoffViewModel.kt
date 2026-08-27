@@ -125,8 +125,8 @@ class LogoffViewModel : AppRepositoryViewModel<AppRepository>() {
         }
     }
 
-    override fun onCleared() {
-        super.onCleared()
+    override fun onDestroy() {
+        super.onDestroy()
         countDownTimer?.cancel()
     }
 }

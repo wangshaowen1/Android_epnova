@@ -127,10 +127,10 @@ class StoryboardDesignViewModel : AppRepositoryViewModel<AppRepository>() {
         super.onPause()
     }
 
-    override fun onCleared() {
+    override fun onDestroy() {
         loopAllStoryboardDescriptionStatusJob?.cancel()
         inputJob?.cancel()
-        super.onCleared()
+        super.onDestroy()
     }
 
     fun retry() {

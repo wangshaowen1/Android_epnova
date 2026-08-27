@@ -225,8 +225,8 @@ class CreationViewModel : AppRepositoryViewModel<CreationRepository>() {
     /**
      * 页面销毁或需要重置时调用
      */
-    override fun onCleared() {
-        super.onCleared()
+    override fun onDestroy() {
+        super.onDestroy()
         sseHandler?.cancel()
     }
 

@@ -215,13 +215,13 @@ class MemberIndexViewModel : AppRepositoryViewModel<AppRepository>() {
         }
     }
 
-    override fun onCleared() {
+    override fun onDestroy() {
         memberPurchaseRequestJob?.cancel()
         memberBillingResultJob?.cancel()
         memberProcessRecoveryJob?.cancel()
         memberResumeRecoveryJob?.cancel()
         BillingManager.markActivePage(false)
-        super.onCleared()
+        super.onDestroy()
     }
 
     private fun reportMemberPageShowIfNeeded(isUpgradeMode: Boolean) {

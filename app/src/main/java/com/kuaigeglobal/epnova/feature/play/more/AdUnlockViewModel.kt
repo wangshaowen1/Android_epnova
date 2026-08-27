@@ -45,8 +45,8 @@ class AdUnlockViewModel : AppRepositoryViewModel<AppRepository>() {
         adManager.showAd(activity)
     }
 
-    override fun onCleared() {
-        super.onCleared()
+    override fun onDestroy() {
+        super.onDestroy()
         adManager.release()
     }
 }

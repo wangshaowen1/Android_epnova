@@ -259,8 +259,8 @@ class MyWorksViewModel : AppRepositoryViewModel<AppRepository>() {
         checkGeneratingJob = null
     }
 
-    override fun onCleared() {
-        super.onCleared()
+    override fun onDestroy() {
+        super.onDestroy()
         stopCheckGenerating()
     }
 }

@@ -18,7 +18,7 @@ ext {
             applicationId     : "com.kuaigeglobal.epnova",
             minSdkVersion     : 24,
             targetSdkVersion  : 36,
-            buildToolsVersion : "35.0.0",
+            buildToolsVersion : "36.0.0",
             versionCodeRelease: 16,
             versionCodeDebug  : 16,
             //版本名称

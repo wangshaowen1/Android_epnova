@@ -92,11 +92,11 @@ class FirstRechargeViewModel : AppRepositoryViewModel<CoinRepository>() {
         }
     }
 
-    override fun onCleared() {
+    override fun onDestroy() {
         BillingManager.markActivePage(false)
         countDownJob?.cancel()
         purchaseJob?.cancel()
-        super.onCleared()
+        super.onDestroy()
     }
 
     fun googlePay() {

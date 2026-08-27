@@ -46,7 +46,7 @@ interface IRewardedAdPlatform {
     )
 
     /**
-     * 释放广告资源，在 ViewModel.onCleared() 中调用
+     * 释放广告资源，在 ViewModel.onDestroy() 中调用
      */
     fun release()
 }

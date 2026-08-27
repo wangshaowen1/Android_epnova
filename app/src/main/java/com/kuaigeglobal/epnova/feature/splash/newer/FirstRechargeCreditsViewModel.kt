@@ -180,11 +180,11 @@ class FirstRechargeCreditsViewModel : AppRepositoryViewModel<CoinRepository>() {
         return (num + give).toString()
     }
 
-    override fun onCleared() {
+    override fun onDestroy() {
         BillingManager.markActivePage(false)
         countDownJob?.cancel()
         purchaseJob?.cancel()
-        super.onCleared()
+        super.onDestroy()
     }
 
     private fun String?.ifNotBlank(): String? {
