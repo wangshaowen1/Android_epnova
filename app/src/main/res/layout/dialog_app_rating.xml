@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="layout"
+            type="com.kuaigeglobal.epnova.feature.rating.AppRatingViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="280dp"
+        android:layout_height="278dp"
+        android:background="@drawable/bg_121418_r20">
+
+        <View
+            android:id="@+id/viewHeader"
+            android:layout_width="0dp"
+            android:layout_height="184dp"
+            android:background="@drawable/bg_reward_dialog_header"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/ivClose"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginTop="@dimen/spacing_m"
+            android:layout_marginEnd="@dimen/spacing_m"
+            android:alpha="0.7"
+            android:contentDescription="@null"
+            android:src="@drawable/icon_close"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tvTitle"
+            style="@style/Text.Medium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:gravity="center"
+            android:includeFontPadding="false"
+            android:lineHeight="22sp"
+            android:text="@{layout.title}"
+            android:textColor="?attr/textColor1"
+            android:textSize="16sp"
+            tools:text="@string/app_rating_title_unrated"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tvSubtitle"
+            style="@style/Text.Regular"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_m"
+            android:gravity="center"
+            android:includeFontPadding="false"
+            android:lineHeight="21sp"
+            android:text="@{layout.subtitle}"
+            android:textColor="?attr/textColor3"
+            android:textSize="14sp"
+            tools:text="@string/app_rating_subtitle_unrated"
+            app:layout_constrainedWidth="true"
+            android:layout_marginHorizontal="44dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvTitle" />
+
+        <com.kuaigeglobal.epnova.widget.TooWhiteRatingBar
+            android:id="@+id/ratingBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvSubtitle"
+            app:rating="@{layout.rating}"
+            app:rating_fill_color="@color/color_ffbc1f"
+            app:rating_max="5.0"
+            app:rating_none_color="@color/white"
+            app:rating_shape="@drawable/icon_rating_star"
+            app:rating_star_height="24dp"
+            app:rating_star_num="5"
+            app:rating_star_space="@dimen/spacing_l"
+            app:rating_star_width="24dp" />
+
+        <Button
+            android:id="@+id/btnAction"
+            style="@style/Button.Bold"
+            android:layout_width="220dp"
+            android:layout_height="44dp"
+            android:layout_marginBottom="26dp"
+            android:background="@drawable/selector_app_rating_button"
+            android:enabled="@{layout.actionEnabled}"
+            android:gravity="center"
+            android:includeFontPadding="false"
+            android:text="@{layout.actionText}"
+            android:textColor="@color/sel_app_rating_button_text"
+            android:textStyle="normal"
+            tools:text="@string/app_rating_action_continue"
+            app:layout_constraintVertical_bias="1"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/ratingBar" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

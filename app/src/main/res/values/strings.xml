@@ -830,4 +830,12 @@
     <string name="member_membership_activated">Membership activated</string>
     <string name="member_upgrade_scheduled">Upgrade scheduled</string>
     <string name="member_service_and_policy">Terms of Service and Privacy Policy.</string>
+    <string name="app_rating_title_unrated">Enjoying your AI creations?</string>
+    <string name="app_rating_subtitle_unrated">Let us know what you think about EpNova.</string>
+    <string name="app_rating_title_rated">Thanks for your feedback!</string>
+    <string name="app_rating_subtitle_low">Your opinion helps us improve EpNova.</string>
+    <string name="app_rating_subtitle_high">Your review helps more creators discover EpNova.</string>
+    <string name="app_rating_action_continue">Continue</string>
+    <string name="app_rating_action_done">Done</string>
+    <string name="app_rating_action_rate_now">Rate now</string>
 </resources>

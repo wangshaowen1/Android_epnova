@@ -1071,4 +1071,25 @@
         <!--控件的圆角大小-->
         <attr name="svRadius" format="dimension" />
     </declare-styleable>
+
+    <declare-styleable name="TooWhiteRatingBar">
+        <!--   评分形状     -->
+        <attr name="rating_shape" format="reference"/>
+        <!--   填充颜色     -->
+        <attr name="rating_fill_color" format="color"/>
+        <!--   普通颜色     -->
+        <attr name="rating_none_color" format="color"/>
+        <!--   最大评分     -->
+        <attr name="rating_max" format="float"/>
+        <!--   当前评分     -->
+        <attr name="rating_current" format="float"/>
+        <!--   数量     -->
+        <attr name="rating_star_num" format="integer"/>
+        <!--   间距     -->
+        <attr name="rating_star_space" format="dimension"/>
+        <!--   形状宽     -->
+        <attr name="rating_star_width" format="dimension"/>
+        <!--   形状高     -->
+        <attr name="rating_star_height" format="dimension"/>
+    </declare-styleable>
 </resources>
