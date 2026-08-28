@@ -24,7 +24,7 @@ import com.kuaigeglobal.epnova.feature.creator.data.DramaGenerateConstants
 import com.kuaigeglobal.epnova.feature.creator.generate.StoryEditorActivity
 import com.kuaigeglobal.epnova.feature.download.DownloadingDialog
 import com.kuaigeglobal.epnova.feature.download.DownloadingViewModel
-import com.kuaigeglobal.epnova.feature.mine.child.MyCreationsFragment
+import com.kuaigeglobal.epnova.feature.works.MyCreationsFragment
 import com.kuaigeglobal.epnova.feature.play.more.DownloadMethodDialog
 import com.kuaigeglobal.epnova.feature.series.SeriesActivity
 import com.nhsd.basic.BaseViewModelActivity

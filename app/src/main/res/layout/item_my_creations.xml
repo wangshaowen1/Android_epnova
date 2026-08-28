@@ -12,17 +12,16 @@
 
     <com.kuaigeglobal.epnova.widget.BorderConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="252dp"
+        android:layout_height="wrap_content"
         android:clipChildren="false"
-        android:onClick="@{(view) -> item.onClick()}"
+        singleClick="@{(view) -> item.onAllListClick()}"
         app:backgroundEndColor="@color/color_06_ffffff"
         app:backgroundStartColor="@color/color_06_ffffff"
         app:borderAngle="90"
         app:borderEndColor="@color/color_00_ffffff"
         app:borderStartColor="@color/color_30_ffffff"
         app:borderWidth="1dp"
-        app:roundCornerRadius="@dimen/radius_l"
-        tools:layout_width="345dp">
+        app:roundCornerRadius="@dimen/radius_l">
 
         <com.google.android.material.imageview.ShapeableImageView
             android:layout_width="199dp"
@@ -34,59 +33,52 @@
             app:layout_constraintTop_toTopOf="parent"
             app:shapeAppearanceOverlay="@style/roundStyle_r12" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/contentLayout"
-            android:layout_width="0dp"
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/ivCover"
+            loadUri="@{item.data.workCoverUrl}"
+            placeHolder="@{@drawable/img_default_cover_3_4}"
+            android:layout_width="78dp"
             android:layout_height="104dp"
-            android:layout_marginHorizontal="@dimen/spacing_m"
+            android:contentDescription="@null"
+            android:scaleType="centerCrop"
+            android:layout_marginStart="@dimen/spacing_m"
             android:layout_marginTop="@dimen/spacing_m"
-            android:clipChildren="false"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            app:shapeAppearanceOverlay="@style/roundStyle_r8"
+            tools:src="@drawable/img_default_cover_3_4" />
 
-            <com.google.android.material.imageview.ShapeableImageView
-                android:id="@+id/ivCover"
-                loadUri="@{item.data.workCoverUrl}"
-                placeHolder="@{@drawable/img_default_cover_3_4}"
-                android:layout_width="78dp"
-                android:layout_height="104dp"
-                android:contentDescription="@null"
-                android:scaleType="centerCrop"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:shapeAppearanceOverlay="@style/roundStyle_r8"
-                tools:src="@drawable/img_default_cover_3_4" />
-
-            <TextView
-                android:id="@+id/tvTitle"
-                style="@style/Text.Medium"
-                android:layout_width="0dp"
-                android:layout_height="44dp"
-                android:layout_marginStart="@dimen/spacing_m"
-                android:ellipsize="end"
-                android:includeFontPadding="false"
-                android:maxLines="2"
-                android:text="@{item.data.workTitle}"
-                android:textColor="@color/fixed_white_1"
-                android:textSize="18sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/ivCover"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="Code Era: Awakening Command" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+            android:id="@+id/tvTitle"
+            style="@style/Text.Medium"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_m"
+            android:layout_marginEnd="@dimen/spacing_m"
+            android:ellipsize="end"
+            android:includeFontPadding="false"
+            android:maxLines="2"
+            android:text="@{item.data.workTitle}"
+            android:textColor="@color/fixed_white_1"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/ivCover"
+            app:layout_constraintTop_toTopOf="@id/ivCover"
+            tools:text="Code Era: Awakening Command" />
 
         <ProgressBar
             android:id="@+id/progressBar"
             style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-            android:layout_width="225dp"
+            android:layout_width="0dp"
             android:layout_height="6dp"
             android:layout_marginBottom="6dp"
+            android:layout_marginStart="18dp"
             android:importantForAccessibility="no"
             android:indeterminateOnly="false"
             android:max="100"
             android:progress="24"
             android:progressDrawable="@drawable/progress_my_creations"
+            app:layout_constraintStart_toEndOf="@id/ivCover"
             app:layout_constraintBottom_toTopOf="@id/tvEpisodeProgress"
             app:layout_constraintEnd_toEndOf="@id/tvEpisodeProgress" />
 
@@ -100,8 +92,8 @@
             android:textColor="@color/fixed_white_1"
             android:textSize="12sp"
             android:elevation="100dp"
-            app:layout_constraintBottom_toBottomOf="@id/contentLayout"
-            app:layout_constraintEnd_toEndOf="@id/contentLayout"
+            app:layout_constraintBottom_toBottomOf="@id/ivCover"
+            app:layout_constraintEnd_toEndOf="@id/tvTitle"
             tools:text="4/30 EP" />
 
         <ImageView
@@ -135,10 +127,12 @@
 
         <com.kuaigeglobal.epnova.widget.BorderConstraintLayout
             android:id="@+id/publishTipLayout"
+            singleClick="@{(view) -> item.onPublishTipClick()}"
             android:layout_width="0dp"
-            android:layout_height="32dp"
+            android:layout_height="wrap_content"
+            android:paddingVertical="8dp"
             android:layout_marginHorizontal="@dimen/spacing_m"
-            android:layout_marginTop="136dp"
+            android:layout_marginTop="20dp"
             app:backgroundAngle="0"
             app:backgroundEndColor="#335C1699"
             app:backgroundStartColor="#4D3F2EFF"
@@ -148,7 +142,7 @@
             app:borderWidth="0.5dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/ivCover"
             app:roundCornerRadius="@dimen/radius_m">
 
             <TextView
@@ -171,17 +165,24 @@
 
         <com.kuaigeglobal.epnova.widget.BorderConstraintLayout
             android:id="@+id/allListButton"
-            android:layout_width="109dp"
+            singleClick="@{(view) -> item.onAllListClick()}"
+            android:layout_width="0dp"
             android:layout_height="44dp"
             android:layout_marginStart="@dimen/spacing_m"
             android:layout_marginBottom="@dimen/spacing_l"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="14dp"
             app:backgroundStartColor="@color/color_12_3f2eff"
             app:borderCenterColor="@color/gradient_btn_center_dark"
             app:borderEndColor="@color/gradient_btn_end_dark"
             app:borderStartColor="@color/gradient_btn_start_dark"
             app:borderWidth="1dp"
+            app:layout_constraintHorizontal_chainStyle="spread_inside"
+            app:layout_constraintHorizontal_weight="0.35"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/continueCreatingButton"
+            app:layout_constraintTop_toBottomOf="@id/publishTipLayout"
             app:roundCornerRadius="22dp">
 
             <LinearLayout
@@ -213,12 +214,15 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/continueCreatingButton"
-            android:layout_width="198dp"
+            singleClick="@{(view) -> item.onContinueCreatingClick()}"
+            android:layout_width="0dp"
             android:layout_height="44dp"
             android:layout_marginEnd="@dimen/spacing_m"
-            android:layout_marginBottom="@dimen/spacing_l"
             android:background="@drawable/btn_creation_dark_normal"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/allListButton"
+            app:layout_constraintTop_toTopOf="@id/allListButton"
+            app:layout_constraintHorizontal_weight="0.65"
+            app:layout_constraintStart_toEndOf="@id/allListButton"
             app:layout_constraintEnd_toEndOf="parent">
 
             <LinearLayout

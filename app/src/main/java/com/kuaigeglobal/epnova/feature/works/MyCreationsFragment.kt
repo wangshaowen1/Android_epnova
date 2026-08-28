@@ -1,8 +1,10 @@
-package com.kuaigeglobal.epnova.feature.mine.child
+package com.kuaigeglobal.epnova.feature.works
 
 import android.os.Bundle
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.PagingData
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.blankj.utilcode.util.ActivityUtils
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.ext.startRefreshWithAdapter
@@ -14,22 +16,20 @@ import com.kuaigeglobal.epnova.core.network.apis.entity.CreatorEpisodeInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.CreatorPlaySource
 import com.kuaigeglobal.epnova.core.network.apis.entity.CreatorWorkInfo
 import com.kuaigeglobal.epnova.databinding.FragmentMyCreationsBinding
+import com.kuaigeglobal.epnova.feature.creator.continuewriting.ContinueWritingActivity
 import com.kuaigeglobal.epnova.feature.creator.generate.StoryEditorActivity
 import com.kuaigeglobal.epnova.feature.creatorplay.CreatorPlayerActivity
 import com.kuaigeglobal.epnova.feature.creatorplay.data.WorkSeriesCreatorFeedRepository
 import com.kuaigeglobal.epnova.feature.main.MainActivity
 import com.kuaigeglobal.epnova.feature.series.SeriesActivity
-import com.kuaigeglobal.epnova.feature.works.ItemMultipleChoiceEventsViewModel
-import com.kuaigeglobal.epnova.feature.works.MyWorksAdapter
-import com.kuaigeglobal.epnova.feature.works.MyWorksEvent
 import com.kuaigeglobal.epnova.feature.works.MyWorksFragment.Companion.CLICK_INTERVAL
-import com.kuaigeglobal.epnova.feature.works.MyWorksViewModel
 import com.kuaigeglobal.epnova.router.AppRouter
-import com.kuaigeglobal.epnova.widget.stateful.applyGridSpanSizeLookup
+import com.kuaigeglobal.epnova.widget.decoration.SpaceDecoration
 import com.kuaigeglobal.epnova.widget.stateful.paging.MyMultiStatePagingFooterAdapter
 import com.nhsd.basic.BaseViewModelFragment
 import com.nhsd.basic.bus.FlowEventBus
 import com.nhsd.basic.bus.observeEvents
+import com.nhsd.basic.ext.dp
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -54,9 +54,10 @@ class MyCreationsFragment :
         }
     }
 
-    private val myWorksAdapter by lazy {
-        MyWorksAdapter(eventVm = eventVm)
+    private val myCreationsAdapter by lazy {
+        MyCreationsAdapter(eventVm = eventVm)
     }
+
     private val eventVm by lazy {
         ItemMultipleChoiceEventsViewModel<MyWorksEvent, String>()
     }
@@ -107,7 +108,7 @@ class MyCreationsFragment :
     }
 
     private fun refresh() {
-        myWorksAdapter.refresh()
+        myCreationsAdapter.refresh()
     }
 
     private fun initView() {
@@ -115,18 +116,19 @@ class MyCreationsFragment :
             val noMoreThreshold = 2
             itemAnimator = null
             val myMultiStatePagingFooterAdapter = MyMultiStatePagingFooterAdapter(
-                myWorksAdapter,
+                myCreationsAdapter,
                 noMoreThreshold = noMoreThreshold,
                 loadMoreLoadEnd = "",
                 noData = getString(R.string.empty_creation_history)
             ) {
-                myWorksAdapter.retry()
+                myCreationsAdapter.retry()
             }
-            adapter = myWorksAdapter.withLoadStateFooter(myMultiStatePagingFooterAdapter)
-            binding.recyclerView.applyGridSpanSizeLookup()
+            adapter = myCreationsAdapter.withLoadStateFooter(myMultiStatePagingFooterAdapter)
+            layoutManager = LinearLayoutManager(mActivity, RecyclerView.VERTICAL, false)
+            addItemDecoration(SpaceDecoration(12.dp, SpaceDecoration.Direction.MIDDLE))
         }
         binding.srl.startRefreshWithAdapter(
-            pagingDataAdapter = myWorksAdapter,
+            pagingDataAdapter = myCreationsAdapter,
             loadStateHolder = binding.lsv,
             onRefreshListener = {
                 mRealVM.startChecking()
@@ -143,7 +145,7 @@ class MyCreationsFragment :
                 userId = User.get().id
 
                 lifecycleScope.launch {
-                    myWorksAdapter.submitData(PagingData.empty())
+                    myCreationsAdapter.submitData(PagingData.empty())
                 }
                 // 不管是退登还是换号，直接重置流
                 mRealVM.resetPagingForNewUser()
@@ -155,7 +157,7 @@ class MyCreationsFragment :
 
         lifecycleScope.launch {
             mRealVM.getWorkInformation().collectLatest {
-                myWorksAdapter.submitData(it)
+                myCreationsAdapter.submitData(it)
             }
         }
 
@@ -167,24 +169,19 @@ class MyCreationsFragment :
                         if (currentTime - lastClickTime < CLICK_INTERVAL) return@collect
                         lastClickTime = currentTime
 
-                        if (event.workInfo?.isNotCreatedEpisode() == true) {
-                            //作品类型：3-小说上传 且是草稿状态
-                            mRealVM.getWorkDtl(workId = event.workInfo.workId)
-                            return@collect
-                        }
-                        if (event.workInfo?.totalEpisodeCnt == 1) {
-                            //这个是单集的
-                            if (event.workInfo.workStatus == CreatorWorkInfo.COMPLETED_STATE) {
-                                //已经完成了，直接播放
-                                workInfo = event.workInfo
-                                mRealVM.getEpisodes(event.workInfo.workId)
-                                return@collect
+                        when (event.target) {
+                            MyWorksEvent.ViewDetails.Target.ITEM -> openWork(event.workInfo)
+                            MyWorksEvent.ViewDetails.Target.ALL_LIST -> {
+                                SeriesActivity.start(workId = event.workInfo?.workId)
                             }
-                            AppRouter.singleEpisodeSeriesDetails(event.workInfo)
-                            return@collect
+
+                            MyWorksEvent.ViewDetails.Target.PUBLISH_TIP -> {
+                                // 发布
+                            }
+                            MyWorksEvent.ViewDetails.Target.CONTINUE_CREATING -> {
+                                continueCreating(event.workInfo)
+                            }
                         }
-                        //查看详情
-                        SeriesActivity.start(workId = event.workInfo?.workId)
                     }
 
                     is MyWorksEvent.ComposeState -> {
@@ -217,11 +214,114 @@ class MyCreationsFragment :
             )
         }
 
+        mRealVM.continueEpisodeList.observe(this) { result ->
+            result ?: return@observe
+            mRealVM.continueEpisodeList.value = null
+            openContinueEditor(result.first, result.second)
+        }
+
         mRealVM.episodeList.observe(this) {
             if (it.isNullOrEmpty()) return@observe
             mRealVM.episodeList.value = null
             onPlayEpisodeClicked(workInfo = workInfo, episodes = it, clickPosition = 0)
         }
+    }
+
+    private fun openWork(workInfo: CreatorWorkInfo?) {
+        if (workInfo?.isNotCreatedEpisode() == true) {
+            //作品类型：3-小说上传且为草稿时，先获取详情再恢复创作。
+            mRealVM.getWorkDtl(workId = workInfo.workId)
+            return
+        }
+        if (workInfo?.totalEpisodeCnt == 1) {
+            if (workInfo.workStatus == CreatorWorkInfo.COMPLETED_STATE) {
+                //单集已完成时直接播放。
+                this.workInfo = workInfo
+                mRealVM.getEpisodes(workInfo.workId)
+                return
+            }
+            AppRouter.singleEpisodeSeriesDetails(workInfo)
+            return
+        }
+        SeriesActivity.start(workId = workInfo?.workId)
+    }
+
+    private fun continueCreating(workInfo: CreatorWorkInfo?) {
+        val info = workInfo ?: return
+        val total = info.totalEpisodeCnt ?: 0
+        val finished = info.finishedEpisodeCnt ?: 0
+        if (total > 0 && finished >= total) {
+            SeriesActivity.start(workId = info.workId)
+            return
+        }
+        if (info.isNotCreatedEpisode()) {
+            mRealVM.getWorkDtl(workId = info.workId)
+            return
+        }
+        if (info.totalEpisodeCnt == 1) {
+            AppRouter.singleEpisodeSeriesDetails(info)
+            return
+        }
+        mRealVM.getEpisodesForContinue(info)
+    }
+
+    private fun openContinueEditor(
+        workInfo: CreatorWorkInfo,
+        episodes: List<CreatorEpisodeInfo>
+    ) {
+        val sortedEpisodes = episodes.sortedBy { it.sortNo ?: Int.MAX_VALUE }
+        val targetIndex = sortedEpisodes.indexOfFirst {
+            it.stepProgress != CreatorEpisodeInfo.PROGRESS_COMPLETED
+        }
+        if (targetIndex < 0) {
+            SeriesActivity.start(workId = workInfo.workId)
+            return
+        }
+        val targetEpisode = sortedEpisodes[targetIndex]
+        if (!targetEpisode.isNotCreated()) {
+            if (targetEpisode.storyId.isNullOrEmpty()) {
+                SeriesActivity.start(workId = workInfo.workId)
+                return
+            }
+            AppRouter.startStory(
+                workId = workInfo.workId,
+                storyId = targetEpisode.storyId,
+                workTitle = workInfo.workTitle,
+                workType = workInfo.workType,
+                totalEpisodeCnt = workInfo.totalEpisodeCnt,
+                workRatio = workInfo.workRatio,
+                from = StoryEditorActivity.FROM_MY_WORKS
+            )
+            return
+        }
+
+        val episodeNo = targetEpisode.sortNo ?: targetIndex + 1
+        if (workInfo.workType == CreatorWorkInfo.NOVEL_CREATION && episodeNo > 1) {
+            ContinueWritingActivity.start(
+                context = topActivity,
+                workId = workInfo.workId,
+                storyId = targetEpisode.storyId,
+                workTitle = workInfo.workTitle
+            )
+            return
+        }
+        StoryEditorActivity.startContinue(
+            context = topActivity,
+            workId = workInfo.workId,
+            workTitle = workInfo.workTitle,
+            storyId = targetEpisode.storyId,
+            previousStoryId = sortedEpisodes.getOrNull(targetIndex - 1)?.storyId,
+            chapterIndex = episodeNo,
+            workType = workInfo.workType,
+            model = AppRouter.getModel(
+                totalEpisodeCnt = workInfo.totalEpisodeCnt,
+                workType = workInfo.workType,
+                sortNo = episodeNo,
+                firstCreated = targetEpisode.isFirstCreated()
+            ),
+            videoRatio = targetEpisode.workRatio ?: workInfo.workRatio,
+            from = StoryEditorActivity.FROM_MY_WORKS
+        )
     }
 
     fun onPlayEpisodeClicked(workInfo: CreatorWorkInfo?, episodes: List<CreatorEpisodeInfo>, clickPosition: Int) {

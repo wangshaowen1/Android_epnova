@@ -9,10 +9,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.Constants
 import com.kuaigeglobal.epnova.common.ext.applySmartFocusManager
-import com.kuaigeglobal.epnova.core.Config
 import com.kuaigeglobal.epnova.core.Events
 import com.kuaigeglobal.epnova.core.Global
-import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.manager.EventManager
 import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
 import com.kuaigeglobal.epnova.core.network.apis.entity.AssetInfo
@@ -22,9 +20,8 @@ import com.kuaigeglobal.epnova.feature.creator.data.DramaGenerateConstants
 import com.kuaigeglobal.epnova.feature.creator.generate.OnBackPressedHandler
 import com.kuaigeglobal.epnova.feature.creator.generate.StoryEditorActivity
 import com.kuaigeglobal.epnova.feature.creator.generate.StoryEditorViewModel
-import com.kuaigeglobal.epnova.feature.mine.child.MyCreationsFragment
+import com.kuaigeglobal.epnova.feature.works.MyCreationsFragment
 import com.kuaigeglobal.epnova.feature.series.SeriesActivity
-import com.kuaigeglobal.epnova.feature.splash.newer.FirstRechargeCreditsDialog
 import com.kuaigeglobal.epnova.feature.works.assetmanager.child.AssetSelectActivity
 import com.kuaigeglobal.epnova.feature.works.assetmanager.roleimage.RoleImageSelectActivity
 import com.nhsd.basic.BaseViewModelFragment

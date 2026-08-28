@@ -46,9 +46,25 @@ class ItemMyWorkVM(
     }
 
     fun onClick() {
+        handleClick(MyWorksEvent.ViewDetails.Target.ITEM)
+    }
+
+    fun onPublishTipClick() {
+        handleClick(MyWorksEvent.ViewDetails.Target.PUBLISH_TIP)
+    }
+
+    fun onAllListClick() {
+        handleClick(MyWorksEvent.ViewDetails.Target.ALL_LIST)
+    }
+
+    fun onContinueCreatingClick() {
+        handleClick(MyWorksEvent.ViewDetails.Target.CONTINUE_CREATING)
+    }
+
+    private fun handleClick(target: MyWorksEvent.ViewDetails.Target) {
         val info = data.get()
         if (isView.get()) {
-            eventVm.postEvent(MyWorksEvent.ViewDetails(info))
+            eventVm.postEvent(MyWorksEvent.ViewDetails(info, target))
             return
         }
         if (isSelected.get()) {

@@ -16,7 +16,6 @@ import com.kuaigeglobal.epnova.databinding.FragmentMyListBinding
 import com.kuaigeglobal.epnova.feature.main.MainActivity
 import com.kuaigeglobal.epnova.feature.main.MainViewModel
 import com.kuaigeglobal.epnova.feature.mine.child.MineChildFragment
-import com.kuaigeglobal.epnova.feature.mine.child.MyCreationsFragment
 import com.nhsd.basic.BaseViewModelFragment
 import com.nhsd.basic.bus.FlowEventBus
 import com.nhsd.basic.bus.observeEvents

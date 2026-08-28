@@ -13,7 +13,7 @@
     </data>
 
     <LinearLayout
-        android:paddingTop="16dp"
+        android:paddingTop="12dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
@@ -32,7 +32,7 @@
 
             <com.kuaigeglobal.epnova.widget.LoadStateViewHolder
                 android:id="@+id/lsv"
-                app:noData="@string/no_data"
+                app:noData="@string/empty_creation_history"
                 app:noDataSrc="@drawable/icon_state_no_data"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
@@ -44,10 +44,9 @@
                     android:layout_marginHorizontal="@dimen/spacing_m"
                     android:overScrollMode="never"
                     android:scrollbars="none"
-                    app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-                    app:spanCount="3"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     tools:itemCount="10"
-                    tools:listitem="@layout/item_my_work" />
+                    tools:listitem="@layout/item_my_creations" />
             </com.kuaigeglobal.epnova.widget.LoadStateViewHolder>
         </com.scwang.smart.refresh.layout.SmartRefreshLayout>
     </LinearLayout>

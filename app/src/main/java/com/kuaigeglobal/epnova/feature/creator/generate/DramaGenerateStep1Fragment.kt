@@ -27,7 +27,7 @@ import com.kuaigeglobal.epnova.databinding.FragmentDramaGenerateStep1Binding
 import com.kuaigeglobal.epnova.feature.creator.CreationRootActivity
 import com.kuaigeglobal.epnova.feature.creator.StoryReuploadDialog
 import com.kuaigeglobal.epnova.feature.editor.info.InputDialog
-import com.kuaigeglobal.epnova.feature.mine.child.MyCreationsFragment
+import com.kuaigeglobal.epnova.feature.works.MyCreationsFragment
 import com.kuaigeglobal.epnova.feature.recharge.PowerRechargeDialog
 import com.nhsd.basic.BaseViewModelFragment
 import com.nhsd.basic.ext.getViewModelOfActivity

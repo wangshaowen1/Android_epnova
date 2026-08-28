@@ -16,7 +16,7 @@ import com.kuaigeglobal.epnova.feature.creator.generate.StoryEditorActivity
 import com.kuaigeglobal.epnova.feature.creator.generate.StoryEditorViewModel
 import com.kuaigeglobal.epnova.feature.creator.set.ModelChooseDialog
 import com.kuaigeglobal.epnova.feature.editor.EditStoryboardVideoActivity
-import com.kuaigeglobal.epnova.feature.mine.child.MyCreationsFragment
+import com.kuaigeglobal.epnova.feature.works.MyCreationsFragment
 import com.kuaigeglobal.epnova.feature.series.SeriesActivity
 import com.nhsd.basic.BaseViewModelFragment
 import com.nhsd.basic.ext.getParentViewModel

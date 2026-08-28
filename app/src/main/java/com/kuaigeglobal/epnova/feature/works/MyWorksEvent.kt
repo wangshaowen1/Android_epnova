@@ -13,7 +13,18 @@ import com.kuaigeglobal.epnova.core.network.apis.entity.CreatorWorkInfo
  */
 sealed class MyWorksEvent {
     //查看详情
-    class ViewDetails(val workInfo: CreatorWorkInfo?):MyWorksEvent()
+    class ViewDetails(
+        val workInfo: CreatorWorkInfo?,
+        val target: Target = Target.ITEM
+    ) : MyWorksEvent() {
+        enum class Target {
+            ITEM,
+            PUBLISH_TIP,
+            ALL_LIST,
+            CONTINUE_CREATING
+        }
+    }
+
     //编制状态下 status是已经改变后的状态
     class ComposeState(status: Boolean,val workInfo: CreatorWorkInfo?):MyWorksEvent()
 }

@@ -57,6 +57,9 @@ class MyWorksViewModel : AppRepositoryViewModel<AppRepository>() {
     //剧集详情
     val episodeList = MutableLiveData<List<CreatorEpisodeInfo>?>()
 
+    //从 MyCreations 续创时使用的剧集列表
+    val continueEpisodeList = MutableLiveData<Pair<CreatorWorkInfo, List<CreatorEpisodeInfo>>?>()
+
     // 1. 创建一个重载触发器，初始发射一个 Unit 确保首次加载
     private val reloadTrigger = MutableSharedFlow<Unit>(replay = 1).apply { tryEmit(Unit) }
 
@@ -235,6 +238,17 @@ class MyWorksViewModel : AppRepositoryViewModel<AppRepository>() {
                 }
             }
         )
+    }
+
+    fun getEpisodesForContinue(workInfo: CreatorWorkInfo?) {
+        val info = workInfo ?: return
+        val workId = info.workId ?: return
+        val pageSize = info.totalEpisodeCnt?.takeIf { it > 0 } ?: 20
+        launchWithLoading {
+            response(mRepo.api.episodeList(WorkIdPagedBody(workId, 1, pageSize))) {
+                continueEpisodeList.value = info to data?.items.orEmpty()
+            }
+        }
     }
 
     /**
