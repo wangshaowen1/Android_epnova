@@ -21,5 +21,8 @@ data class BannerBody(
 
         //攻略咨询界面
         const val LOCATION_GUIDE_PAGE = "banner_guide_page"
+
+        // Create页面头部图片
+        const val LOCATION_CREATE_PAGE = "banner_create_page"
     }
 }
