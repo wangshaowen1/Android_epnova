@@ -41,7 +41,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_s"
-            android:text="Start your AI comic creation journey"
+            android:text="@string/login_ai_comic_journey"
             android:textColor="?attr/textColor3"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"

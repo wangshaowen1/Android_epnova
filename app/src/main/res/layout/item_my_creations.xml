@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="item"
+            type="com.kuaigeglobal.epnova.feature.works.ItemMyWorkVM" />
+    </data>
+
+    <com.kuaigeglobal.epnova.widget.BorderConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="252dp"
+        android:clipChildren="false"
+        android:onClick="@{(view) -> item.onClick()}"
+        app:backgroundEndColor="@color/color_06_ffffff"
+        app:backgroundStartColor="@color/color_06_ffffff"
+        app:borderAngle="90"
+        app:borderEndColor="@color/color_00_ffffff"
+        app:borderStartColor="@color/color_30_ffffff"
+        app:borderWidth="1dp"
+        app:roundCornerRadius="@dimen/radius_l"
+        tools:layout_width="345dp">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:layout_width="199dp"
+            android:layout_height="86dp"
+            android:importantForAccessibility="no"
+            android:scaleType="fitXY"
+            android:src="@drawable/icon_my_creations_right_top"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:shapeAppearanceOverlay="@style/roundStyle_r12" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/contentLayout"
+            android:layout_width="0dp"
+            android:layout_height="104dp"
+            android:layout_marginHorizontal="@dimen/spacing_m"
+            android:layout_marginTop="@dimen/spacing_m"
+            android:clipChildren="false"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/ivCover"
+                loadUri="@{item.data.workCoverUrl}"
+                placeHolder="@{@drawable/img_default_cover_3_4}"
+                android:layout_width="78dp"
+                android:layout_height="104dp"
+                android:contentDescription="@null"
+                android:scaleType="centerCrop"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:shapeAppearanceOverlay="@style/roundStyle_r8"
+                tools:src="@drawable/img_default_cover_3_4" />
+
+            <TextView
+                android:id="@+id/tvTitle"
+                style="@style/Text.Medium"
+                android:layout_width="0dp"
+                android:layout_height="44dp"
+                android:layout_marginStart="@dimen/spacing_m"
+                android:ellipsize="end"
+                android:includeFontPadding="false"
+                android:maxLines="2"
+                android:text="@{item.data.workTitle}"
+                android:textColor="@color/fixed_white_1"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/ivCover"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Code Era: Awakening Command" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+            android:layout_width="225dp"
+            android:layout_height="6dp"
+            android:layout_marginBottom="6dp"
+            android:importantForAccessibility="no"
+            android:indeterminateOnly="false"
+            android:max="100"
+            android:progress="24"
+            android:progressDrawable="@drawable/progress_my_creations"
+            app:layout_constraintBottom_toTopOf="@id/tvEpisodeProgress"
+            app:layout_constraintEnd_toEndOf="@id/tvEpisodeProgress" />
+
+        <TextView
+            android:id="@+id/tvEpisodeProgress"
+            style="@style/Text.Regular"
+            android:layout_width="wrap_content"
+            android:layout_height="16dp"
+            android:includeFontPadding="false"
+            android:text="@{@string/my_creations_episode_progress(item.data.finishedEpisodeCnt, item.data.totalEpisodeCnt)}"
+            android:textColor="@color/fixed_white_1"
+            android:textSize="12sp"
+            android:elevation="100dp"
+            app:layout_constraintBottom_toBottomOf="@id/contentLayout"
+            app:layout_constraintEnd_toEndOf="@id/contentLayout"
+            tools:text="4/30 EP" />
+
+        <ImageView
+            android:id="@+id/ivPublishThume"
+            setHorizontalBias="@{item.episodeProgressBias(item.data.finishedEpisodeCnt, item.data.totalEpisodeCnt)}"
+            android:layout_width="19dp"
+            android:layout_height="19dp"
+            android:layout_gravity="center"
+            android:background="@drawable/shape_publish_thume"
+            android:contentDescription="@null"
+            android:padding="3.5dp"
+            app:layout_constraintBottom_toBottomOf="@id/progressBar"
+            app:layout_constraintEnd_toEndOf="@id/progressBar"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toStartOf="@id/progressBar"
+            app:layout_constraintTop_toTopOf="@id/progressBar"
+            app:srcCompat="@drawable/ic_my_creations_publish" />
+
+        <TextView
+            android:id="@+id/tvPublish"
+            style="@style/Text.Regular"
+            android:layout_width="wrap_content"
+            android:layout_height="16dp"
+            android:includeFontPadding="false"
+            android:text="@string/drama_detail_publish"
+            android:textColor="@color/fixed_white_1"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="@id/ivPublishThume"
+            app:layout_constraintStart_toStartOf="@id/ivPublishThume"
+            app:layout_constraintTop_toBottomOf="@id/ivPublishThume" />
+
+        <com.kuaigeglobal.epnova.widget.BorderConstraintLayout
+            android:id="@+id/publishTipLayout"
+            android:layout_width="0dp"
+            android:layout_height="32dp"
+            android:layout_marginHorizontal="@dimen/spacing_m"
+            android:layout_marginTop="136dp"
+            app:backgroundAngle="0"
+            app:backgroundEndColor="#335C1699"
+            app:backgroundStartColor="#4D3F2EFF"
+            app:borderAngle="0"
+            app:borderEndColor="@color/color_10_ffffff"
+            app:borderStartColor="@color/color_30_ffffff"
+            app:borderWidth="0.5dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:roundCornerRadius="@dimen/radius_m">
+
+            <TextView
+                style="@style/Text.Regular"
+                android:layout_width="0dp"
+                android:layout_height="16dp"
+                android:gravity="center"
+                android:includeFontPadding="false"
+                android:textColor="@color/fixed_white_2"
+                android:textSize="12sp"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:singleLine="true"
+                tools:text="@{@string/my_creations_publish_tip(item.data.finishedEpisodeCnt)}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </com.kuaigeglobal.epnova.widget.BorderConstraintLayout>
+
+        <com.kuaigeglobal.epnova.widget.BorderConstraintLayout
+            android:id="@+id/allListButton"
+            android:layout_width="109dp"
+            android:layout_height="44dp"
+            android:layout_marginStart="@dimen/spacing_m"
+            android:layout_marginBottom="@dimen/spacing_l"
+            app:backgroundStartColor="@color/color_12_3f2eff"
+            app:borderCenterColor="@color/gradient_btn_center_dark"
+            app:borderEndColor="@color/gradient_btn_end_dark"
+            app:borderStartColor="@color/gradient_btn_start_dark"
+            app:borderWidth="1dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:roundCornerRadius="22dp">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    style="@style/Text.Medium"
+                    android:layout_width="wrap_content"
+                    android:layout_height="22dp"
+                    android:includeFontPadding="false"
+                    android:text="@string/my_creations_all_list"
+                    android:textColor="@color/fixed_white_1"
+                    android:textSize="16sp" />
+
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:contentDescription="@null"
+                    app:srcCompat="@drawable/arrow_right_gray36" />
+            </LinearLayout>
+        </com.kuaigeglobal.epnova.widget.BorderConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/continueCreatingButton"
+            android:layout_width="198dp"
+            android:layout_height="44dp"
+            android:layout_marginEnd="@dimen/spacing_m"
+            android:layout_marginBottom="@dimen/spacing_l"
+            android:background="@drawable/btn_creation_dark_normal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:contentDescription="@null"
+                    app:srcCompat="@drawable/ic_my_creations_publish" />
+
+                <TextView
+                    style="@style/Text.Medium"
+                    android:layout_width="wrap_content"
+                    android:layout_height="22dp"
+                    android:layout_marginStart="10dp"
+                    android:includeFontPadding="false"
+                    android:text="@string/my_creations_continue_creating"
+                    android:textColor="@color/fixed_white_1"
+                    android:textSize="16sp" />
+            </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.kuaigeglobal.epnova.widget.BorderConstraintLayout>
+</layout>

@@ -39,6 +39,12 @@ class ItemMyWorkVM(
         return data.get()?.publishBadgeBackground() ?: R.drawable.bg_60_000000_round
     }
 
+    fun episodeProgressBias(finishedEpisodeCnt: Int?, totalEpisodeCnt: Int?): Float {
+        val total = totalEpisodeCnt ?: return 0f
+        if (total <= 0) return 0f
+        return ((finishedEpisodeCnt ?: 0).toFloat() / total).coerceIn(0f, 1f)
+    }
+
     fun onClick() {
         val info = data.get()
         if (isView.get()) {

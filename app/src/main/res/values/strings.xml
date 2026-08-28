@@ -340,6 +340,10 @@
     <string name="help_center">Help Center</string>
     <string name="suggest_and_feedback">Suggestions &amp; Feedback</string>
     <string name="my_list_my_creations">My Creations</string>
+    <string name="my_creations_episode_progress">%1$d/%2$d EP</string>
+    <string name="my_creations_publish_tip">Complete <font color="#FFCE2C">%1$d more episodes</font> to publish your drama.</string>
+    <string name="my_creations_all_list">All List</string>
+    <string name="my_creations_continue_creating">Continue Creating</string>
     <string name="last_3_months_data_only">Showing last 3 months only. Data may be delayed.</string>
     <string name="limited_time_free">Free for Limited Time</string>
     <string name="to_be_created">Pending Creation</string>
