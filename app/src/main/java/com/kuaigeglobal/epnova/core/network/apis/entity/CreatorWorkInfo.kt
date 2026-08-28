@@ -3,6 +3,7 @@ package com.kuaigeglobal.epnova.core.network.apis.entity
 import android.os.Parcelable
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
+import androidx.room.Ignore
 import androidx.room.TypeConverters
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.ext.toUnitText
@@ -21,46 +22,46 @@ import kotlinx.parcelize.Parcelize
 @TypeConverters(CreatorConverters::class)
 data class CreatorWorkInfo(
     /**作品 ID。*/
-    val workId: String? = null,
+    var workId: String? = null,
 
     /**作品标题。*/
-    val workTitle: String? = null,
+    var workTitle: String? = null,
 
     /**作品简介。*/
-    val workDesc: String? = null,
+    var workDesc: String? = null,
 
     /**作品风格 code。*/
-    val workStyleCode: String? = null,
+    var workStyleCode: String? = null,
 
     /**作品默认视频比例，例如 16:9、3:4、9:16、adaptive。*/
-    val workRatio: String? = null,
+    var workRatio: String? = null,
 
     /**作品灵感，创作流程中用于继续编辑或详情展示。*/
-    val workInspiration: String? = null,
+    var workInspiration: String? = null,
 
     /**作品封面图 URL。*/
-    val workCoverUrl: String? = null,
+    var workCoverUrl: String? = null,
 
     /**作品类型：灵感创作、小说改编、小说上传等。*/
-    val workType: Int? = null,
+    var workType: Int? = null,
 
     /**作品创作状态，例如草稿、生成中、已完成、失败。*/
-    val workStatus: Int? = null,
+    var workStatus: Int? = null,
 
     /**规划或总集数。*/
-    val totalEpisodeCnt: Int? = null,
+    var totalEpisodeCnt: Int? = null,
 
     /**已完成集数。*/
-    val finishedEpisodeCnt: Int? = null,
+    var finishedEpisodeCnt: Int? = null,
 
     /**最近生成的集数编号。*/
-    val lastEpisodeNo: Int? = null,
+    var lastEpisodeNo: Int? = null,
 
     /**最近一次生成时间。*/
-    val lastGenerateTime: String? = null,
+    var lastGenerateTime: String? = null,
 
     /**播放量，TopEarners 和作品列表可展示。*/
-    val playCount: Int? = null,
+    var playCount: Int? = null,
 
     /**作者用户 ID。*/
     var userId: String? = null,
@@ -69,58 +70,66 @@ data class CreatorWorkInfo(
     var workStoryItemList: List<CreatorEpisodeInfo>? = null,
 
     /**签约状态，服务创作和发布流程。*/
-    val contractStatus: Int? = null,
+    var contractStatus: Int? = null,
 
     /**作品最新审核批次发布状态。*/
-    val publishStatus: Int? = null,
+    var publishStatus: Int? = null,
 
     /**审核失败或驳回原因，作品和剧集角标点击时展示。*/
-    val rejectReason: String? = null,
+    var rejectReason: String? = null,
 
     /**签约评级，例如 S/A/B/C。*/
-    val contractLevel: String? = null,
+    var contractLevel: String? = null,
 
     /**小说上传模式下第一集是否已有剧本。*/
-    val novelUploadIsOneStoryContentStatus: Int? = null,
+    var novelUploadIsOneStoryContentStatus: Int? = null,
 
     /**发行平台图片列表，作品详情发布区域使用。*/
-    val publishPlatformImageList: List<String>? = null,
+    var publishPlatformImageList: List<String>? = null,
 
     /**作品自发行流程 URL。*/
-    val workSelfPublishProcessUrl: String? = null,
+    var workSelfPublishProcessUrl: String? = null,
 
     /**作品发行页面完整 URL，用于跳转 H5。*/
-    val workContractPublishPageUrl: String? = null,
+    var workContractPublishPageUrl: String? = null,
 
     /**是否展示去发行按钮；1 表示展示。*/
-    val showPublishButton: Int? = null,
+    var showPublishButton: Int? = null,
 
     /**作品全局发布状态，聚合未发布、审核中、已发布、审核失败。*/
-    val globalPublishStatus: Int? = null,
+    var globalPublishStatus: Int? = null,
 
     /**已发布或审核通过的剧集数量。*/
-    val publishedEpisodeCnt: Int? = null,
+    var publishedEpisodeCnt: Int? = null,
 
     /**MyCreations 封面右上角发布角标类型。*/
-    val coverBadgeType: Int? = null,
+    var coverBadgeType: Int? = null,
 
     /**TopEarners/FastFilm 风格平台链接。*/
-    val platformLinks: List<CreatorPlatformInfo>? = null,
+    var platformLinks: List<CreatorPlatformInfo>? = null,
 
     /**TopEarners 累计收益展示字段。*/
-    val totalEarnings: String? = null,
+    var totalEarnings: String? = null,
 
     /**上架时间，预留给 FastFilm 风格数据。*/
-    val shelfTime: Long? = null,
+    var shelfTime: Long? = null,
 
     /**生成失败标记，预留给 FastFilm 风格数据。*/
-    val generationFailedFlag: Int? = null,
+    var generationFailedFlag: Int? = null,
 
     /**生成状态标记，预留给 FastFilm 风格数据。*/
-    val generationStatusFlag: Int? = null,
+    var generationStatusFlag: Int? = null,
 
     /**生成进度副标题。*/
-    val stepProgressSubTitle: String? = null
+    var stepProgressSubTitle: String? = null,
+
+    /** 2026-08-28 新增：Top Earners 数据展示类型（1-展示金额，2-展示解锁次数）。 */
+    @Ignore
+    val dataDisplayType: Int? = null,
+
+    /** 2026-08-28 新增：作品解锁次数；未配置历史数据时返回 0。 */
+    @Ignore
+    val unlockCount: String? = null,
 ) : Parcelable {
 
     companion object {

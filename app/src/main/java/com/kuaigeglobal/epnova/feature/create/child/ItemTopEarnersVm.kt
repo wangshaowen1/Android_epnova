@@ -1,8 +1,10 @@
 package com.kuaigeglobal.epnova.feature.create.child
 
+import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.base.item.AppItemViewModel
 import com.kuaigeglobal.epnova.common.ext.toUnitText
 import com.kuaigeglobal.epnova.core.network.apis.entity.CreatorWorkInfo
+import com.nhsd.basic.ext.getResString
 
 /**
  * TopEarners 列表 item VM。
@@ -28,6 +30,14 @@ class ItemTopEarnersVm(data: CreatorWorkInfo?) : AppItemViewModel<CreatorWorkInf
 
     /**TopEarners 累计收益文本，后端已处理格式。*/
     fun getTotalEarningsText(): String {
-        return data.get()?.totalEarnings.orEmpty()
+        return if (showIncome()) data.get()?.totalEarnings.orEmpty() else data.get()?.unlockCount.orEmpty()
+    }
+
+    fun showIncome(): Boolean {
+        return data.get()?.dataDisplayType == 1
+    }
+
+    fun displayText(): String {
+        return if (showIncome()) R.string.create_page_income.getResString() else R.string.create_page_unlocks.getResString()
     }
 }

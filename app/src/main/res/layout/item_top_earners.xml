@@ -115,12 +115,14 @@
                 android:layout_gravity="right"
                 android:orientation="horizontal">
 
-                <ImageView
-                    android:layout_marginEnd="2dp"
-                    android:layout_gravity="center_vertical"
-                    android:src="@drawable/icon_top_earners_unlock"
-                    android:layout_width="14dp"
-                    android:layout_height="14dp"/>
+                <TextView
+                    setVisible="@{item.showIncome()}"
+                    style="@style/Text.Regular"
+                    android:textSize="11sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="$"
+                    android:textColor="@color/color_f59e0b" />
 
                 <TextView
                     android:id="@+id/tv_income"
@@ -140,7 +142,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
                 android:layout_marginStart="@dimen/spacing_xs"
-                android:text="@string/create_page_unlocks"
+                android:text="@{item.displayText()}"
+                tools:text="@string/create_page_unlocks"
                 android:textColor="@color/color_30_ffffff" />
         </LinearLayout>
     </LinearLayout>
