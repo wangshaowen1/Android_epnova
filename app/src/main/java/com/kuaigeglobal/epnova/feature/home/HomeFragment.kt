@@ -9,6 +9,9 @@ import androidx.paging.LoadState
 import androidx.recyclerview.widget.ConcatAdapter
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.ext.startRefreshWithAdapter
+import com.kuaigeglobal.epnova.common.utils.DateUtil
+import com.kuaigeglobal.epnova.core.Config
+import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.databinding.loadUri
 import com.kuaigeglobal.epnova.core.manager.EventManager
 import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
@@ -16,6 +19,7 @@ import com.kuaigeglobal.epnova.core.network.apis.entity.BannerInfo
 import com.kuaigeglobal.epnova.core.network.apis.response.Section
 import com.kuaigeglobal.epnova.databinding.FragmentHomeBinding
 import com.kuaigeglobal.epnova.feature.home.search.SearchActivity
+import com.kuaigeglobal.epnova.feature.rewards.RewardWelcomeDialog
 import com.kuaigeglobal.epnova.feature.rewards.RewardsActivity
 import com.kuaigeglobal.epnova.router.AppRouter
 import com.kuaigeglobal.epnova.widget.decoration.StaggeredGridSpaceItemDecoration
@@ -69,11 +73,24 @@ class HomeFragment :
         super.onHiddenChanged(hidden)
         if (hidden) return
         mRealVM.getRewardUserUncheck()
+        triggerGuideLoginIfVisible()
     }
 
     override fun onResume() {
         super.onResume()
         mRealVM.getRewardUserUncheck()
+        triggerGuideLoginIfVisible()
+    }
+
+    private fun triggerGuideLoginIfVisible() {
+        if (!isResumed || isHidden || !isVisible) return
+        triggerGuideLogin()
+    }
+
+    private fun triggerGuideLogin() {
+        if (User.get().isGuest && mRealVM.loginTaskData.value == null) {
+            mRealVM.getLoginTaskData()
+        }
     }
 
     private fun initListener() {
@@ -175,6 +192,14 @@ class HomeFragment :
             if (error != null && shelfContainerAdapter.itemCount == 0 && homeAdapter.itemCount == 0) {
                 updateBannerVisible(false)
                 binding.lsv.showRetry(error)
+            }
+        }
+
+        mRealVM.loginTaskData.observe(viewLifecycleOwner) {
+            val todayDate = DateUtil.getDateTime()
+            if (Config.get().loginRewardsDialog != todayDate) {
+                RewardWelcomeDialog.newInstance(it).show(childFragmentManager)
+                Config.get().loginRewardsDialog = todayDate
             }
         }
     }

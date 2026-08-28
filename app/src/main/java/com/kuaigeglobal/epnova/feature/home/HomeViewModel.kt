@@ -11,6 +11,7 @@ import androidx.paging.cachedIn
 import androidx.paging.map
 import com.kuaigeglobal.epnova.base.viewmodel.AppRepositoryViewModel
 import com.kuaigeglobal.epnova.core.AppRepository
+import com.kuaigeglobal.epnova.core.Config
 import com.kuaigeglobal.epnova.core.EntityCache
 import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.db.mapper.toDomain
@@ -20,6 +21,7 @@ import com.kuaigeglobal.epnova.core.network.apis.entity.WorkVOInfo
 import com.kuaigeglobal.epnova.core.network.apis.request.BannerBody
 import com.kuaigeglobal.epnova.core.network.apis.request.UserTokenBody
 import com.kuaigeglobal.epnova.core.network.apis.response.HomeBookShelfData
+import com.kuaigeglobal.epnova.core.network.apis.response.LoginTaskData
 import com.kuaigeglobal.epnova.core.response
 import com.kuaigeglobal.epnova.feature.home.data.VideoRemoteMediator
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -42,6 +44,8 @@ class HomeViewModel : AppRepositoryViewModel<AppRepository>() {
     private val bookShelfCache: EntityCache<HomeBookShelfData> by lazy {
         object : EntityCache<HomeBookShelfData>("HomeBookShelfData") {}
     }
+
+    val loginTaskData = MutableLiveData<LoginTaskData>()
 
     override fun onCreate() {
         super.onCreate()
@@ -96,6 +100,19 @@ class HomeViewModel : AppRepositoryViewModel<AppRepository>() {
         }, onError = {
             unCheckNum.set(0)
         })
+    }
+
+    fun getLoginTaskData() {
+        launch {
+            response(mRepo.api.loginTaskPopup()) {
+                if (data == null || data?.rewardLabel == "0") return@response
+                if (data?.needShow == 1) {
+                    loginTaskData.value = data
+                    Config.get().loginRewards = data?.rewardLabel
+                }
+
+            }
+        }
     }
 
 

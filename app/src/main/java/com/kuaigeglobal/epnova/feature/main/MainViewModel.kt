@@ -35,8 +35,6 @@ class MainViewModel : ShareShortDramaViewModel<AppRepository>() {
     //设置编辑的回调
     var setIsEditing: ((Boolean) -> Unit)? = null
 
-    val loginTaskData = MutableLiveData<LoginTaskData>()
-
     fun initialization() {
         //获取用户主页信息接口
         fetchUserInfo()
@@ -67,11 +65,6 @@ class MainViewModel : ShareShortDramaViewModel<AppRepository>() {
                     result = {
                         fetchingUserInfo = false
                         User.get().updateFrom(this.data)
-
-                        if (User.get().isGuest && loginTaskData.value == null) {
-                            getLoginTaskData()
-                        }
-
                     },
                     error = { fetchingUserInfo = false }
                 )
@@ -96,18 +89,5 @@ class MainViewModel : ShareShortDramaViewModel<AppRepository>() {
 
     fun getTabColorSelector(showTab: Int): Int {
         return if (showTab == 0) R.color.main_tab_txt_color_dark else R.color.main_tab_txt_color
-    }
-
-    fun getLoginTaskData() {
-        launch {
-            response(mRepo.api.loginTaskPopup()) {
-                if (data == null || data?.rewardLabel == "0") return@response
-                if (data?.needShow == 1) {
-                    loginTaskData.value = data
-                    Config.get().loginRewards = data?.rewardLabel
-                }
-
-            }
-        }
     }
 }
