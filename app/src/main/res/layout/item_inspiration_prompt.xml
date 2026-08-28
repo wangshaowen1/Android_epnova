@@ -26,7 +26,7 @@
             android:maxLines="1"
             android:onClick="@{() -> item.onItemClick()}"
             android:paddingHorizontal="@dimen/spacing_s"
-            android:text="@{item.data.configCode}"
+            android:text="@{item.data.inspirationTitle}"
             android:textColor="?attr/textColor3"
             tools:text="萌宝出击" />
     </FrameLayout>

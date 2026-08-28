@@ -147,6 +147,7 @@ class CreationPageActionDelegate(
     fun deleteInput() {
         if (viewModel.isStreaming()) return
         viewModel.clearInspirationPromptUsage()
+        viewModel.clearCurrentUseInspiration()
         viewModel.input.value = ""
     }
 
@@ -165,6 +166,9 @@ class CreationPageActionDelegate(
         }
     }
 
+    /**
+     * Create 页面 点击 Next
+     */
     fun nextStep() {
         if (AppNavigator.checkLoginIntercepted(true) || viewModel.isStreaming()) return
         if (!hasEnoughInput()) return
@@ -178,8 +182,10 @@ class CreationPageActionDelegate(
         )
         fragment.lifecycleScope.launch {
             sensitiveWordCheck(viewModel.input.value, {
-                val title = viewModel.extractStoryName(viewModel.input.value)
-                showVideoSetDialog(title)
+                val title = viewModel.extractStoryName(viewModel.input.value) // 解析提示词内容提取标题
+                // 优先读取是否存在灵感示例
+                val tempTitle = viewModel.currentUseInspirationInfo?.inspirationTitle ?: title
+                showVideoSetDialog(tempTitle)
 //                if (isInspirationPage) showPackageDialogIfNeeded(title)
 //                else showVideoSetDialog(title)
             }, { it?.let(::showSensitiveContent) })

@@ -86,10 +86,10 @@ class CreationFragment :
             if (mRealVM.isStreaming()) {
                 return@setOnItemClickListener true
             }
-            val tagConfigCode = binding.lyricPrompts.tags.getOrNull(index)
-            mRealVM.inspirationPrompts.value?.forEach { (configCode, configValue) ->
-                if (configCode == tagConfigCode) {
-                    mRealVM.input.value = configValue
+            val tagPromptsTitle = binding.lyricPrompts.tags.getOrNull(index)
+            mRealVM.inspirationPrompts.value?.forEach { inspirationInfo ->
+                if (inspirationInfo.inspirationTitle == tagPromptsTitle) {
+                    mRealVM.input.value = inspirationInfo.inspirationContent
                     return@forEach
                 }
             }
@@ -105,7 +105,7 @@ class CreationFragment :
 
     private fun dataUpdate() {
         mRealVM.inspirationPrompts.observe(this) {
-            binding.lyricPrompts.setTags(it?.mapNotNull { it1 -> it1.configCode }, true)
+            binding.lyricPrompts.setTags(it?.mapNotNull { it1 -> it1.inspirationTitle }, true)
         }
 
         mRealVM.promptGenerating.observe(this) {

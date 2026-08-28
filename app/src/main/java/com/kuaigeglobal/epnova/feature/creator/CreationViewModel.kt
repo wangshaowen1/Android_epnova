@@ -88,6 +88,9 @@ class CreationViewModel : AppRepositoryViewModel<CreationRepository>() {
     private var selectedInspirationReportId: String? = null
     private var shouldShowInputFromStart = false
 
+    var currentUseInspirationInfo: InspirationInfo? = null
+        private set
+
     val creationHotCaseFlow: Flow<PagingData<CreationHotCaseInfo>> = Pager(
         config = PagingConfig(
             pageSize = 10,
@@ -126,8 +129,9 @@ class CreationViewModel : AppRepositoryViewModel<CreationRepository>() {
 
     fun selectInspirationPrompt(prompt: InspirationInfo) {
         shouldShowInputFromStart = true
-        input.value = prompt.configValue
+        input.value = prompt.inspirationContent
         selectedInspirationReportId = prompt.inspirationConfigId
+        currentUseInspirationInfo = prompt
     }
 
     fun consumeShouldShowInputFromStart(): Boolean {
@@ -141,6 +145,10 @@ class CreationViewModel : AppRepositoryViewModel<CreationRepository>() {
 
     fun clearInspirationPromptUsage() {
         selectedInspirationReportId = null
+    }
+
+    fun clearCurrentUseInspiration() {
+        currentUseInspirationInfo = null
     }
 
     fun getInspirationReportIdForTask(): String? = selectedInspirationReportId

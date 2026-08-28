@@ -167,7 +167,7 @@ class CreationInspirationFragment :
     private fun submitInspirationPrompts(prompts: List<InspirationInfo>?) {
         inspirationPromptAdapter.submitList(
             prompts.orEmpty()
-                .filter { !it.configCode.isNullOrBlank() }
+                .filter { !it.inspirationTitle.isNullOrBlank() }
                 .map { info ->
                     ItemInspirationPromptVM(info) { prompt ->
                         if (!mRealVM.isStreaming()) mRealVM.selectInspirationPrompt(prompt)
@@ -191,6 +191,9 @@ class CreationInspirationFragment :
         hotCaseStateAdapter.update(hotCaseRefreshState, hotCaseAdapter.itemCount == 0)
     }
 
+    /**
+     * 创作同款
+     */
     private fun onCreateSame(info: CreationHotCaseInfo) {
         // 点击爆款案例 Remake，Label1=爆款案例名字。
         EventManager.onFirebaseTrack(
@@ -210,7 +213,7 @@ class CreationInspirationFragment :
                 getString(R.string.page_load_error).showToast()
                 return@sameStylePrefill
             }
-            val workTitle = prefill?.workTitle?.takeIf { it.isNotBlank() }
+            val workTitle = prefill?.inspirationTitle?.takeIf { it.isNotBlank() }
             mRealVM.videoSetConfig(true) {
                 showPackageDialogForHotCase(workTitle, sameStory, info.id, info.title)
             }
