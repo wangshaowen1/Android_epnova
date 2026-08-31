@@ -124,12 +124,24 @@ data class CreatorWorkInfo(
     var stepProgressSubTitle: String? = null,
 
     /** 2026-08-28 新增：Top Earners 数据展示类型（1-展示金额，2-展示解锁次数）。 */
-    @Ignore
+
     val dataDisplayType: Int? = null,
 
     /** 2026-08-28 新增：作品解锁次数；未配置历史数据时返回 0。 */
-    @Ignore
+
     val unlockCount: String? = null,
+
+    /** 20260828 1.3.8新增发行最低集数 */
+
+    val publishMinEpisodeCnt: Int? = null,
+
+    /** 20260828 1.3.8新增继续创作目标剧集 */
+
+    val continueCreatingStoryId: String? = null,
+
+    /** 20260828 1.3.8新增创作进度条完成剧集数 */
+
+    val creationProgressEpisodeCnt: Int? = null
 ) : Parcelable {
 
     companion object {

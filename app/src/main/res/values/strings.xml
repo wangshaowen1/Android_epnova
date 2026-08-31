@@ -456,6 +456,7 @@
     <string name="upload_success">Uploaded</string>
     <string name="upload_fail">Upload Failed</string>
     <string name="redraw_cover_confirm">Redrawing will replace the current video for this episode. Continue?</string>
+    <string name="creator_player_next_episode">Keep Creating</string>
     <string name="download">Download</string>
     <string name="already_last_episode">This is the last episode</string>
     <string name="download_success_check_album">Downloaded. Check your photo library.</string>

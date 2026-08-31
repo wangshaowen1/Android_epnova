@@ -39,6 +39,9 @@ import com.nhsd.basic.ext.showToast
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
+/**
+ * Home页查看作品播放器
+ */
 class DramasPlayPagerActivity :
     BaseViewModelActivity<ActivityDramasPlayPagerBinding, DramasPlayPagerViewModel>(),
     VideoFeedAdapter.InteractionListener,

@@ -5,6 +5,10 @@
 
     <data>
 
+        <import type="com.blankj.utilcode.util.SizeUtils" />
+
+        <import type="com.kuaigeglobal.epnova.core.network.apis.entity.CreatorPlaySource" />
+
         <variable
             name="item"
             type="com.kuaigeglobal.epnova.feature.creatorplay.ItemCreatorVideoFeedVm" />
@@ -115,6 +119,7 @@
 
         <com.kuaigeglobal.epnova.widget.PlayerSeekbar
             android:id="@+id/seekbar"
+            marginBottomPx="@{(item.data.source == CreatorPlaySource.MY_CREATIONS || item.data.source == CreatorPlaySource.WORK_SERIES) ? SizeUtils.dp2px(90f) : SizeUtils.dp2px(16f)}"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/spacing_l"

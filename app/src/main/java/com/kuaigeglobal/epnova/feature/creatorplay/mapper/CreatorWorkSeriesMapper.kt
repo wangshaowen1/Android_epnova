@@ -73,6 +73,7 @@ object CreatorWorkSeriesMapper {
             workCoverUrl = workCoverUrl,
             workRatio = workRatio,
             totalEpisodeCnt = totalEpisodeCnt,
+            finishedEpisodeCnt = finishedEpisodeCnt,
             playCount = playCount,
             totalEarnings = totalEarnings,
             shelfTime = shelfTime,

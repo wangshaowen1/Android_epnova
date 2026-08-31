@@ -12,10 +12,14 @@ import com.kuaigeglobal.epnova.common.ext.topActivity
 import com.kuaigeglobal.epnova.common.permissions.requestRead2WritePermissions
 import com.kuaigeglobal.epnova.core.manager.EventManager
 import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
+import com.kuaigeglobal.epnova.core.network.apis.entity.CreatorEpisodeInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.CreatorPlaySource
 import com.kuaigeglobal.epnova.core.network.apis.entity.CreatorPlayableEpisode
+import com.kuaigeglobal.epnova.core.network.apis.entity.CreatorWorkInfo
 import com.kuaigeglobal.epnova.core.network.apis.response.PlayMenuInfo
 import com.kuaigeglobal.epnova.databinding.ActivityCreatorPlayerBinding
+import com.kuaigeglobal.epnova.feature.creator.continuewriting.ContinueWritingActivity
+import com.kuaigeglobal.epnova.feature.creator.generate.StoryEditorActivity
 import com.kuaigeglobal.epnova.feature.download.DownloadingDialog
 import com.kuaigeglobal.epnova.feature.download.DownloadingViewModel
 import com.kuaigeglobal.epnova.feature.editor.CreatorStoryboardEditorLauncher
@@ -24,6 +28,7 @@ import com.kuaigeglobal.epnova.feature.play.menu.OnItemSelectedListener
 import com.kuaigeglobal.epnova.feature.play.more.DownloadMethodDialog
 import com.kuaigeglobal.epnova.feature.settings.report.ReportDialog
 import com.kuaigeglobal.epnova.router.AppNavigator
+import com.kuaigeglobal.epnova.router.AppRouter
 import com.nhsd.basic.BaseViewModelActivity
 import com.nhsd.basic.ext.dp
 import com.nhsd.basic.ext.getResColor
@@ -167,7 +172,7 @@ class CreatorPlayerActivity :
         }
     }
 
-    /**绑定右上角操作：本人作品显示编辑按钮，更多菜单内按本人/非本人切换下载或举报。*/
+    /**绑定播放器操作按钮，续创条件由 ViewModel 查询并校验。*/
     private fun initActionButtons() {
         binding.btnMenu.setOnSingleClickListener {
             showPopupWindow()
@@ -179,6 +184,68 @@ class CreatorPlayerActivity :
             )
             showRedrawConfirm()
         }
+        binding.btnKeepCreating.setOnSingleClickListener {
+            mRealVM.keepCreating(::openCreationEpisode)
+        }
+        binding.btnDownload.setOnSingleClickListener {
+            // 下载
+            val item = mRealVM.currentPlayableEpisode.get() ?: return@setOnSingleClickListener
+            item.episode.videoUrl?.let {
+                downloadVideoUrl = it
+                if (item.episode.hasWatermark == true) {
+                    downloadVideo(false)
+                } else {
+                    DownloadMethodDialog.show(this@CreatorPlayerActivity)
+                }
+            }
+        }
+    }
+
+    private fun openCreationEpisode(
+        work: CreatorWorkInfo,
+        episode: CreatorEpisodeInfo,
+        previous: CreatorEpisodeInfo?
+    ) {
+        if (isFinishing || isDestroyed) return
+        val episodeNo = episode.sortNo ?: return
+        val from = if (mRealVM.playSource == CreatorPlaySource.MY_CREATIONS) {
+            StoryEditorActivity.FROM_MY_WORKS
+        } else {
+            StoryEditorActivity.FROM_SERIES
+        }
+        if (!episode.isNotCreated()) {
+            AppRouter.startStory(
+                workId = work.workId,
+                storyId = episode.storyId,
+                workTitle = work.workTitle,
+                workType = work.workType,
+                totalEpisodeCnt = work.totalEpisodeCnt,
+                workRatio = episode.workRatio ?: work.workRatio,
+                from = from
+            )
+            return
+        }
+        if (episodeNo > 1 && work.workType == CreatorWorkInfo.NOVEL_CREATION) {
+            ContinueWritingActivity.start(this, work.workId, episode.storyId, work.workTitle)
+            return
+        }
+        StoryEditorActivity.startContinue(
+            context = this,
+            workId = work.workId,
+            workTitle = work.workTitle,
+            storyId = episode.storyId,
+            previousStoryId = previous?.storyId,
+            chapterIndex = episodeNo,
+            workType = work.workType,
+            model = AppRouter.getModel(
+                totalEpisodeCnt = work.totalEpisodeCnt,
+                workType = work.workType,
+                sortNo = episodeNo,
+                firstCreated = episode.isFirstCreated()
+            ),
+            videoRatio = episode.workRatio ?: work.workRatio,
+            from = from
+        )
     }
 
     /**提交播放器 feed；阶段五 TopEarners 使用共享 work feed 派生出的播放单元。*/
@@ -349,11 +416,11 @@ class CreatorPlayerActivity :
                     reportText = getString(R.string.report),
                     reportIcon = R.drawable.icon_report
                 ) else null,
-                if (item.workContext.isMine()) PlayMenuInfo(
-                    reportTypeId = PlayMenuInfo.DOWNLOAD,
-                    reportText = getString(R.string.download),
-                    reportIcon = R.drawable.icon_menu_download
-                ) else null
+//                if (item.workContext.isMine()) PlayMenuInfo(
+//                    reportTypeId = PlayMenuInfo.DOWNLOAD,
+//                    reportText = getString(R.string.download),
+//                    reportIcon = R.drawable.icon_menu_download
+//                ) else null
             ),
             selectedItemId = PlayMenuInfo.REPORT
         )

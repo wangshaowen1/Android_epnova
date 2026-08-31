@@ -1,6 +1,7 @@
 package com.kuaigeglobal.epnova.core.network.apis.entity
 
 import android.os.Parcelable
+import androidx.room.Ignore
 import com.kuaigeglobal.epnova.core.User
 import kotlinx.parcelize.Parcelize
 
@@ -32,6 +33,9 @@ data class CreatorWorkContext(
     /**作品规划或总集数。*/
     val totalEpisodeCnt: Int? = null,
 
+    /**作品已完成集数，用于判断整部剧是否完结。*/
+    val finishedEpisodeCnt: Int? = null,
+
     /**作品播放量。*/
     val playCount: Int? = null,
 
@@ -44,6 +48,12 @@ data class CreatorWorkContext(
     /**发布平台列表。*/
     val platformLinks: List<CreatorPlatformInfo>? = null
 ) : Parcelable {
+
+    /**总集数有效且全部创作完成时，整部剧才算完结。*/
+    fun isAllEpisodesCompleted(): Boolean {
+        val total = totalEpisodeCnt ?: return false
+        return total > 0 && (finishedEpisodeCnt ?: 0) >= total
+    }
 
     /**是否当前登录用户自己的作品；新播放器据此切换举报菜单和创作者编辑/下载操作。*/
     fun isMine(): Boolean {

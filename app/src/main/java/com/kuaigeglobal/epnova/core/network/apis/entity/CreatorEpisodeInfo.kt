@@ -84,6 +84,12 @@ data class CreatorEpisodeInfo(
     /**剧集审核失败或驳回原因。*/
     val rejectReason: String? = null,
 
+    /** 20260828 1.3.8新增。创作阶段展示状态：0=不展示，1=Creating，2=Completed，3=Failed。 */
+    val creationStageStatus: Int? = null,
+
+    /** 20260828 1.3.8新增。创作阶段英文展示文案，由后端聚合返回，例如 Script Creating、Asset Failed、Ready to Generate。 */
+    val creationStageText: String? = null,
+
     /**剧集封面角标类型。*/
     val coverBadgeType: Int? = null
 ) : Parcelable {

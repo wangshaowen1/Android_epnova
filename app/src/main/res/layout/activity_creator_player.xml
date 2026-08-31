@@ -55,5 +55,79 @@
                 android:scaleType="center"
                 android:src="@drawable/icon_more_h" />
         </LinearLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/bottomLayout"
+            setVisible="@{layout.showBottomLayout}"
+            android:background="@drawable/bg_141414_tr20"
+            android:layout_gravity="bottom"
+            android:layout_width="match_parent"
+            android:layout_height="90dp">
+
+            <TextView
+                android:id="@+id/btnKeepCreating"
+                setVisible="@{layout.showKeepCreating}"
+                style="@style/Text.Medium"
+                android:layout_width="0dp"
+                android:layout_height="44dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="@dimen/spacing_m"
+                android:layout_marginEnd="15dp"
+                android:background="@drawable/btn_theme1_r50"
+                android:clickable="true"
+                android:ellipsize="end"
+                android:enabled="@{!layout.checkingNextEpisode}"
+                android:focusable="true"
+                android:gravity="center"
+                android:includeFontPadding="false"
+                android:maxLines="1"
+                android:paddingHorizontal="10dp"
+                android:text="@string/creator_player_next_episode"
+                android:textColor="?attr/textColor2"
+                android:textSize="14sp"
+                app:layout_constraintEnd_toStartOf="@id/btnDownload"
+                app:layout_constraintHorizontal_chainStyle="spread_inside"
+                app:layout_constraintHorizontal_weight="1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <LinearLayout
+                android:id="@+id/btnDownload"
+                android:layout_width="0dp"
+                android:layout_height="44dp"
+                android:layout_marginTop="@dimen/spacing_m"
+                android:layout_marginEnd="15dp"
+                android:background="@drawable/btn_creation_dark_normal"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingHorizontal="10dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_weight="1"
+                app:layout_constraintStart_toEndOf="@id/btnKeepCreating"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_goneMarginStart="15dp">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:contentDescription="@null"
+                    app:srcCompat="@drawable/icon_download" />
+
+                <TextView
+                    style="@style/Text.Medium"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:ellipsize="end"
+                    android:gravity="center"
+                    android:includeFontPadding="false"
+                    android:maxLines="1"
+                    android:text="@string/download"
+                    android:textColor="@color/fixed_white_1"
+                    android:textSize="16sp" />
+            </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </FrameLayout>
 </layout>
