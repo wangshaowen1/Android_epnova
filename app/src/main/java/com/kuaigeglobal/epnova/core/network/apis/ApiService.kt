@@ -115,6 +115,8 @@ import com.kuaigeglobal.epnova.core.network.apis.request.PollSummaryData
 import com.kuaigeglobal.epnova.core.network.apis.request.PopularRecommendDramasIdBody
 import com.kuaigeglobal.epnova.core.network.apis.request.PowerCalculateBody
 import com.kuaigeglobal.epnova.core.network.apis.request.PowerCalculateData
+import com.kuaigeglobal.epnova.core.network.apis.request.RatingPopupDisplayReportBody
+import com.kuaigeglobal.epnova.core.network.apis.request.RatingScoreReportBody
 import com.kuaigeglobal.epnova.core.network.apis.request.ReferenceImageBody
 import com.kuaigeglobal.epnova.core.network.apis.request.ReportSubmissionBody
 import com.kuaigeglobal.epnova.core.network.apis.request.ReportCreationUsageBody
@@ -214,6 +216,20 @@ interface ApiService {
      */
     @POST(ApiConstants.APP_CONFIG)
     suspend fun appConfig(@Body body: UserTokenBody): ApiResponse<AppConfigData>
+
+    /**
+     * 好评弹窗真实展示后上报。
+     * 服务端按用户时区每天最多记录一次，已评分用户不再记录展示。
+     */
+    @POST(ApiConstants.RATING_POPUP_DISPLAY_REPORT)
+    suspend fun reportRatingPopupDisplay(@Body body: RatingPopupDisplayReportBody): ApiResponse<Any?>
+
+    /**
+     * 好评评分上报。
+     * 服务端保留首次评分及入口，成功后该用户永久不再展示好评弹窗。
+     */
+    @POST(ApiConstants.RATING_SCORE_REPORT)
+    suspend fun reportRatingScore(@Body body: RatingScoreReportBody): ApiResponse<Any?>
 
     /**
      * 举报

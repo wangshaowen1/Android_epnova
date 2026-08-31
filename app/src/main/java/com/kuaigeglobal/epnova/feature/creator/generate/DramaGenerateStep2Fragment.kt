@@ -13,9 +13,11 @@ import com.kuaigeglobal.epnova.common.ext.showConfirmPrompt
 import com.kuaigeglobal.epnova.core.ext.sensitiveWordCheck
 import com.kuaigeglobal.epnova.core.manager.EventManager
 import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
+import com.kuaigeglobal.epnova.core.network.apis.request.RatingEnterEnum
 import com.kuaigeglobal.epnova.databinding.FragmentDramaGenerateStep2Binding
 import com.kuaigeglobal.epnova.feature.creator.data.DramaGenerateConstants
 import com.kuaigeglobal.epnova.feature.editor.info.InputDialog
+import com.kuaigeglobal.epnova.feature.rating.AppRatingDialog
 import com.kuaigeglobal.epnova.feature.works.MyCreationsFragment
 import com.kuaigeglobal.epnova.feature.series.SeriesActivity
 import com.nhsd.basic.BaseViewModelFragment
@@ -57,6 +59,14 @@ class DramaGenerateStep2Fragment :
         initView()
         //数据更新
         dataUpdate()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // 创作完第一集，进入第二集剧本生成页时判断，不等待生成完成；仅限第二集
+        if (mRealVM.chapterIndex == 2) {
+            AppRatingDialog.show(parentFragmentManager, RatingEnterEnum.SCRIPT)
+        }
     }
 
     private fun parseIntentData() {

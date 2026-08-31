@@ -13,6 +13,16 @@ object ApiConstants {
      */
     const val APP_CONFIG = "app/getAppConfigInfo"
 
+    /**
+     * 好评弹窗已展示上报
+     */
+    const val RATING_POPUP_DISPLAY_REPORT = "app/rating/popup/display/report"
+
+    /**
+     * 好评评分上报
+     */
+    const val RATING_SCORE_REPORT = "app/rating/score/report"
+
     //用户举报
     const val TIP_OFF = "user/tipOff"
 

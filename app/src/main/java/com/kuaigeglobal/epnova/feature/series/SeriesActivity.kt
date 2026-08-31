@@ -21,6 +21,7 @@ import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
 import com.kuaigeglobal.epnova.core.network.apis.entity.CreatorEpisodeInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.CreatorPlaySource
 import com.kuaigeglobal.epnova.core.network.apis.entity.CreatorWorkInfo
+import com.kuaigeglobal.epnova.core.network.apis.request.RatingEnterEnum
 import com.kuaigeglobal.epnova.core.network.apis.response.WorkPublishStatusData
 import com.kuaigeglobal.epnova.databinding.ActivitySeriesBinding
 import com.kuaigeglobal.epnova.databinding.PopupSeriesReleaseFailTipsBinding
@@ -31,6 +32,7 @@ import com.kuaigeglobal.epnova.feature.creatorplay.CreatorPlayerActivity
 import com.kuaigeglobal.epnova.feature.creatorplay.data.WorkSeriesCreatorFeedRepository
 import com.kuaigeglobal.epnova.feature.creatorplay.mapper.LegacyCreatorBridgeMapper
 import com.kuaigeglobal.epnova.feature.editor.info.DramaInfoEditActivity
+import com.kuaigeglobal.epnova.feature.rating.AppRatingDialog
 import com.kuaigeglobal.epnova.feature.series.management.WorksManagementActivity
 import com.kuaigeglobal.epnova.feature.web.SimpleBrowserActivity
 import com.kuaigeglobal.epnova.feature.works.ItemMultipleChoiceEventsViewModel
@@ -79,6 +81,11 @@ class SeriesActivity : BaseViewModelActivity<ActivitySeriesBinding, SeriesViewMo
         initView()
         //数据更新
         observeData()
+    }
+
+    override fun onPostResume() {
+        super.onPostResume()
+        AppRatingDialog.show(supportFragmentManager, RatingEnterEnum.SERIES)
     }
 
     private fun initView() {

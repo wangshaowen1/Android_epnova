@@ -5,9 +5,13 @@ import android.content.Intent
 import android.view.Gravity
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.net.toUri
-import androidx.fragment.app.FragmentActivity
+import androidx.core.os.bundleOf
+import androidx.fragment.app.FragmentManager
 import com.kuaigeglobal.epnova.R
-import com.kuaigeglobal.epnova.common.ext.topActivity
+import com.kuaigeglobal.epnova.common.Constants
+import com.kuaigeglobal.epnova.core.Config
+import com.kuaigeglobal.epnova.core.User
+import com.kuaigeglobal.epnova.core.network.apis.request.RatingEnterEnum
 import com.kuaigeglobal.epnova.databinding.DialogAppRatingBinding
 import com.nhsd.basic.BaseVMDialogFragment
 import com.nhsd.basic.ext.dp
@@ -16,9 +20,22 @@ import com.nhsd.basic.ext.setOnSingleClickListener
 class AppRatingDialog : BaseVMDialogFragment<DialogAppRatingBinding, AppRatingViewModel>() {
 
     companion object {
-        fun show() {
-            val activity = topActivity as? FragmentActivity ?: return
-            AppRatingDialog().show(activity.supportFragmentManager)
+        fun show(fragmentManager: FragmentManager, entrance: RatingEnterEnum) {
+            // 入口不符合
+            if (entrance != RatingEnterEnum.SCRIPT && entrance != RatingEnterEnum.SERIES) return
+            // 不符合后台配置条件
+            val configuredEntrance = Config.get().appConfig.appRatingPopupEntrance
+            if (configuredEntrance != entrance.ordinal && configuredEntrance != RatingEnterEnum.ALL.ordinal) return
+            // 用户是否需要弹出好评
+            if (!User.get().needAppRatingPopup) return
+
+            if (fragmentManager.isStateSaved || fragmentManager.isDestroyed) return
+
+            if (fragmentManager.findFragmentByTag(AppRatingDialog::class.java.name) != null) return
+
+            AppRatingDialog().apply {
+                arguments = bundleOf(Constants.Extra.TYPE to entrance.ordinal)
+            }.show(fragmentManager)
         }
     }
 
@@ -33,6 +50,7 @@ class AppRatingDialog : BaseVMDialogFragment<DialogAppRatingBinding, AppRatingVi
             }
         }
         dialog?.setCanceledOnTouchOutside(false)
+        if (dialog?.isShowing == true) mRealVM.reportDisplay()
     }
 
     override fun onPrepareView() {
@@ -46,13 +64,13 @@ class AppRatingDialog : BaseVMDialogFragment<DialogAppRatingBinding, AppRatingVi
 
         binding.ivClose.setOnClickListener { dismissAllowingStateLoss() }
         binding.btnAction.setOnSingleClickListener {
-            when (mRealVM.rating.get().toInt()) {
-                in 1..3 -> dismissAllowingStateLoss()
-                in 4..5 -> {
-                    openGooglePlay()
-                    dismissAllowingStateLoss()
-                }
-            }
+            mRealVM.submitRating()
+        }
+        mRealVM.submittedRating.observe(this) { submittedRating ->
+            val score = submittedRating ?: return@observe
+            mRealVM.submittedRating.value = null
+            if (score in 4..5) openGooglePlay()
+            dismissAllowingStateLoss()
         }
     }
 

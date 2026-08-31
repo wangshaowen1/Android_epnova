@@ -48,6 +48,10 @@ data class UserHomeData(
      * 260416新增登录奖励状态 0-无需弹窗 1=可以弹窗 2=登录成功未领取奖励 3=登录已领取奖励1-可以弹窗（弹窗接口/reward/onceTask/popup/info）2-已登录未领取奖励（触发奖励接口/reward/onceTask/record/save） 3-已登录已领取奖励
      */
     val rewardLoginStatus: Int? = null,
+    /**
+     * 20260828新增是否需要展示 App 好评弹窗（0-否，1-是）。
+     */
+    val needAppRatingPopup: Int? = null,
     //访问令牌
     val token: String? = null,
 ) : Parcelable {
@@ -56,4 +60,8 @@ data class UserHomeData(
     fun isNewRegistration(): Boolean {
         return registerStatus == 1
     }
+
+    // 是否需要展示 App 好评弹窗
+    fun isNeedRatingPopup(): Boolean = needAppRatingPopup == 1
+
 }

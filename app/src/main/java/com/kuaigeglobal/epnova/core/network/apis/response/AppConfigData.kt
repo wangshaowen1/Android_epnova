@@ -171,6 +171,11 @@ class AppConfigData {
      * 20260512新增作品-算力/权益类弹窗配置（先根据enableSwitch判断开关再跳转url）
      */
     val workPointPowerPopUpDto: WorkPointPowerPopUpDto? = null
+
+    /**
+     * 20260828新增好评弹窗入口 APP 好评弹窗入口（0-关闭，1-第二集剧本生成页，2-剧集列表页，3-两个入口）。
+     */
+    val appRatingPopupEntrance: Int? = null
 }
 
 data class SimpleBannerInfo(

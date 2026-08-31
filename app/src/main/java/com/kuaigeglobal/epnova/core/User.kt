@@ -67,6 +67,8 @@ class User : IUser {
         private set
     var fcmToken: String? by MmkvDelegate(FCM_TOKEN, "") { mmkv }
         private set
+    var needAppRatingPopup: Boolean by MmkvDelegate(APP_RATING_DIALOG, false) { mmkv }
+        private set
     var requestNotificationsPermissionEnable: Boolean by MmkvDelegate(REQUEST_NOTIFICATIONS_PERMISSION, true) { mmkv }
 
 
@@ -135,6 +137,7 @@ class User : IUser {
         userData.token?.apply { id = this }
         loginRewardsValid = userData.rewardLoginStatus
         firstRechargeDialog = userData.giftNewUserTriggerFlag == 1
+        needAppRatingPopup = userData.isNeedRatingPopup()
         notifyChange()
     }
 
@@ -256,6 +259,10 @@ class User : IUser {
         requestNotificationsPermissionEnable = false
     }
 
+    fun setRatingPopupDisable() {
+        needAppRatingPopup = false
+    }
+
     private fun clear() {
         AnalyticsHelper.setUserId(null)
         CrashlyticsHelper.setUserId(null)
@@ -263,7 +270,7 @@ class User : IUser {
             ID, LOGIN_REWARDS_VALID, USER_ID, PHONE_NUM, U_ID, NICK_NAME, GENDER, AVATAR_URL,
             USER_SOURCE, REGISTER_WAY, LAST_LOGIN_TIME, REGISTER_STATUS,
             PURCHASE_COURSE_STATUS, POINT_USER_TAG, COINS_USER_TAG, COINS, GIVE_COINS, POINTS, GIVE_POINTS,
-            FIRST_RECHARGE_DIALOG
+            FIRST_RECHARGE_DIALOG, APP_RATING_DIALOG
         )
         mmkv.removeValuesForKeys(keysToRemove)
     }
@@ -290,6 +297,7 @@ class User : IUser {
         const val GIVE_POINTS = "givePoints"
         const val PURCHASE_COURSE_STATUS = "purchaseCourseStatus"
         const val FIRST_RECHARGE_DIALOG = "firstRechargeDialog"
+        const val APP_RATING_DIALOG = "appRatingDialog"
         const val POINT_USER_TAG = "POINT_USER_TAG"
         const val COINS_USER_TAG = "COINS_USER_TAG"
         private const val PURCHASED_USER_TAG = 2
