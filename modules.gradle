@@ -6,8 +6,8 @@ ext {
             baselibrary: [
                     groupId   : 'com.kuaige',
                     artifactId: 'baselibrary',
-                    version   : '2.0.3',
-                    gav       : 'com.kuaige:baselibrary:2.0.3'
+                    version   : '2.0.4',
+                    gav       : 'com.kuaige:baselibrary:2.0.4'
             ],
             imageloader: [
                     groupId   : 'com.kuaige',
