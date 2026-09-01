@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.base.item.AppItemViewModel
 import com.kuaigeglobal.epnova.core.network.apis.entity.CreatorWorkInfo
+import com.nhsd.basic.ext.getResString
 import kotlinx.coroutines.launch
 
 class ItemMyWorkVM(
@@ -43,6 +44,41 @@ class ItemMyWorkVM(
         val total = totalEpisodeCnt ?: return 0f
         if (total <= 0) return 0f
         return ((finishedEpisodeCnt ?: 0).toFloat() / total).coerceIn(0f, 1f)
+    }
+
+    fun showPublishProgress(): Boolean {
+        data.get() ?: return false
+        return (data.get()?.totalEpisodeCnt ?: 0) > (data.get()?.publishMinEpisodeCnt ?: 0)
+    }
+
+    fun publishTip(): String {
+        data.get() ?: return ""
+        var tipStr = ""
+        data.get()?.let { workInfo ->
+            // 创作集数 == 总剧集数
+            if (workInfo.creationProgressEpisodeCnt == workInfo.totalEpisodeCnt) {
+                tipStr = R.string.my_creations_publish_tip_over.getResString()
+            } else if (
+                // 总集数＞发行集数（5集） 且 发行集数（5集）＜=创作剧集数＜总集数
+                ((workInfo.totalEpisodeCnt ?: 0) > (workInfo.publishMinEpisodeCnt ?: 0)) &&
+                (workInfo.creationProgressEpisodeCnt ?: 0) in ((workInfo.publishMinEpisodeCnt ?: 0) until (workInfo.totalEpisodeCnt ?: 0))
+            ) {
+                tipStr = R.string.my_creations_publish_tip_3.getResString()
+            } else if (
+                // 总集数＜=发行集数（5集）且 创作集数＜总集数
+                ((workInfo.totalEpisodeCnt ?: 0) <= (workInfo.publishMinEpisodeCnt ?: 0)) &&
+                ((workInfo.creationProgressEpisodeCnt ?: 0) < (workInfo.totalEpisodeCnt ?: 0))
+            ) {
+                tipStr = R.string.my_creations_publish_tip_2.getResString()
+            } else if (
+                // 作品必须满足总集数＞发行集数（5集） 且 作品创作集数＜发行集数（5集）
+                ((workInfo.totalEpisodeCnt ?: 0) > (workInfo.publishMinEpisodeCnt ?: 0)) &&
+                ((workInfo.creationProgressEpisodeCnt ?: 0) < (workInfo.publishMinEpisodeCnt ?: 0))
+            ) {
+                tipStr = R.string.my_creations_publish_tip.getResString(workInfo.creationProgressEpisodeCnt ?: 0)
+            }
+        }
+        return tipStr
     }
 
     fun onClick() {

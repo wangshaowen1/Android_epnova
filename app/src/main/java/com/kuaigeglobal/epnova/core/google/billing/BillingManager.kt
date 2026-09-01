@@ -213,7 +213,7 @@ object BillingManager {
 
                     BillingClient.BillingResponseCode.ITEM_ALREADY_OWNED, BillingClient.BillingResponseCode.SERVICE_DISCONNECTED, BillingClient.BillingResponseCode.ERROR -> {//已经拥有，超时，未知错误，均有可能支付成功
                         val reason =
-                            "Google购买异常===>PurchasesUpdatedListener: $billingResult , purchase:${purchases?.getOrNull(0)} order=$currentOrderId userId=${User.get().id}"
+                            "Google购买异常===>PurchasesUpdatedListener: $billingResult , purchase:${purchases?.getOrNull(0)} order=$currentOrderId userId=${User.get().userId}"
                         FirebaseCrashlytics.getInstance().recordException(Exception(reason))
                         // 第一次立即查
                         queryPendingPurchases { list, _, verifyFailedList, _ ->
@@ -251,7 +251,7 @@ object BillingManager {
 
                     else -> {
                         val reason =
-                            "Google购买失败：PurchasesUpdatedListener: $billingResult , purchase:${purchases?.getOrNull(0)} order=$currentOrderId  userId=${User.get().id}"
+                            "Google购买失败：PurchasesUpdatedListener: $billingResult , purchase:${purchases?.getOrNull(0)} order=$currentOrderId  userId=${User.get().userId}"
                         FirebaseCrashlytics.getInstance().recordException(
                             Exception(reason)
                         )
