@@ -29,6 +29,7 @@ import com.nhsd.basic.BaseViewModelFragment
 import com.nhsd.basic.bus.FlowEventBus
 import com.nhsd.basic.bus.observeEvents
 import com.nhsd.basic.ext.dp
+import com.nhsd.basic.ext.showToast
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -172,13 +173,8 @@ class MyCreationsFragment :
                         lastClickTime = currentTime
 
                         when (event.target) {
-                            MyWorksEvent.ViewDetails.Target.ITEM -> openWork(event.workInfo)
-                            MyWorksEvent.ViewDetails.Target.ALL_LIST -> {
+                            MyWorksEvent.ViewDetails.Target.ITEM, MyWorksEvent.ViewDetails.Target.ALL_LIST, MyWorksEvent.ViewDetails.Target.PUBLISH_TIP -> {
                                 SeriesActivity.start(workId = event.workInfo?.workId)
-                            }
-
-                            MyWorksEvent.ViewDetails.Target.PUBLISH_TIP -> {
-                                // 发布
                             }
                             MyWorksEvent.ViewDetails.Target.CONTINUE_CREATING -> {
                                 continueCreating(event.workInfo)
@@ -252,8 +248,9 @@ class MyCreationsFragment :
         val info = workInfo ?: return
         val total = info.totalEpisodeCnt ?: 0
         val finished = info.finishedEpisodeCnt ?: 0
-        if (total > 0 && finished >= total) {
-            SeriesActivity.start(workId = info.workId)
+        if (total in 1..finished) {
+            showToast(R.string.my_creations_all_over)
+//            SeriesActivity.start(workId = info.workId)
             return
         }
         if (info.isNotCreatedEpisode()) {

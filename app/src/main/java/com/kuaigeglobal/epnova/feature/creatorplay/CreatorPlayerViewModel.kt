@@ -224,6 +224,7 @@ class CreatorPlayerViewModel : AppRepositoryViewModel<AppRepository>(), Download
         var expectedCount = total
         do {
             var pageData: PagedList<CreatorEpisodeInfo>? = null
+            // 拿到所有剧集信息
             response(
                 block = { mRepo.api.episodeList(WorkIdPagedBody(workId, pageNumber, total)) },
                 result = { pageData = data },

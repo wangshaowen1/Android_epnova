@@ -345,6 +345,7 @@
     <string name="my_creations_publish_tip_2">Keep creating to bring your drama to life.</string>
     <string name="my_creations_publish_tip_3">Keep creating episodes to reach more viewers.</string>
     <string name="my_creations_publish_tip_over">🎉You did it! Your drama is now complete！</string>
+    <string name="my_creations_all_over">All episodes are complete. Create something new!</string>
     <string name="my_creations_all_list">All List</string>
     <string name="my_creations_continue_creating">Continue Creating</string>
     <string name="last_3_months_data_only">Showing last 3 months only. Data may be delayed.</string>
