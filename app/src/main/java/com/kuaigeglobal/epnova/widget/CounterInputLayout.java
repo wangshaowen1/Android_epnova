@@ -27,8 +27,14 @@ public class CounterInputLayout extends FrameLayout implements TextWatcher {
     private EditTextWithScrollView contentInput;
     private TextView inputLengthHint;
     private TextView inputLength;
+    private View hintLayout;
     private boolean noNextLine;
     private boolean contentBold;
+
+    private int contentPaddingLeft;
+    private int contentPaddingTop;
+    private int contentPaddingRight;
+    private int contentPaddingBottom;
 
     private int maxLength;
 
@@ -54,7 +60,7 @@ public class CounterInputLayout extends FrameLayout implements TextWatcher {
         contentInput = v.findViewById(R.id.contentInput);
         inputLengthHint = v.findViewById(R.id.inputLengthHint);
         inputLength = v.findViewById(R.id.inputLength);
-        View hintLayout = v.findViewById(R.id.hint_layout);
+        hintLayout = v.findViewById(R.id.hint_layout);
         contentInput.addTextChangedListener(this);
 //        contentInput.setText("123");
 
@@ -200,6 +206,50 @@ public class CounterInputLayout extends FrameLayout implements TextWatcher {
             a.recycle();
         }
 
+        contentPaddingLeft = contentInput.getPaddingLeft();
+        contentPaddingTop = contentInput.getPaddingTop();
+        contentPaddingRight = contentInput.getPaddingRight();
+        contentPaddingBottom = contentInput.getPaddingBottom();
+
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        if (updateContentPaddingForCounter()) {
+            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        }
+    }
+
+    /**
+     * 单行时让输入内容止于计数器左侧；多行时为右下角计数器预留一行空间。
+     */
+    private boolean updateContentPaddingForCounter() {
+        int left = contentPaddingLeft;
+        int top = contentPaddingTop;
+        int right = contentPaddingRight;
+        int bottom = contentPaddingBottom;
+
+        if (hintLayout.getVisibility() != GONE) {
+            MarginLayoutParams params = (MarginLayoutParams) hintLayout.getLayoutParams();
+            int counterWidth = hintLayout.getMeasuredWidth() + params.leftMargin + params.rightMargin;
+            int counterHeight = hintLayout.getMeasuredHeight() + params.topMargin + params.bottomMargin;
+
+            if (contentInput.getMaxLines() == 1) {
+                right = Math.max(right, counterWidth);
+            } else {
+                bottom = Math.max(bottom, counterHeight);
+            }
+        }
+
+        if (contentInput.getPaddingLeft() == left
+                && contentInput.getPaddingTop() == top
+                && contentInput.getPaddingRight() == right
+                && contentInput.getPaddingBottom() == bottom) {
+            return false;
+        }
+        contentInput.setPadding(left, top, right, bottom);
+        return true;
     }
 
 

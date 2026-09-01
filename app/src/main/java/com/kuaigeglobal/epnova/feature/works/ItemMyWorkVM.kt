@@ -75,7 +75,7 @@ class ItemMyWorkVM(
                 ((workInfo.totalEpisodeCnt ?: 0) > (workInfo.publishMinEpisodeCnt ?: 0)) &&
                 ((workInfo.creationProgressEpisodeCnt ?: 0) < (workInfo.publishMinEpisodeCnt ?: 0))
             ) {
-                tipStr = R.string.my_creations_publish_tip.getResString(workInfo.creationProgressEpisodeCnt ?: 0)
+                tipStr = R.string.my_creations_publish_tip.getResString((workInfo.publishMinEpisodeCnt ?: 0) - (workInfo.creationProgressEpisodeCnt ?: 0))
             }
         }
         return tipStr
