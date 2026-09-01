@@ -273,6 +273,8 @@ object FirebaseEvent {
         const val PAID_EPISODE = "paid_episode"
         /** 好评弹窗。 */
         const val RATING = "rating"
+        /** 合成播放页。 */
+        const val WORK_PLAY = "work_play"
     }
 
     /** GA4 事件参数 key，顺序与表格的 Action、Label 1～4 一致。 */
@@ -409,6 +411,12 @@ object FirebaseEvent {
         const val BUTTON_CLICK = "button_click"
         /** [rating] 评分弹窗关闭按钮点击；Label1=评分状态，Label2=评分分数。 */
         const val CLOSE_CLICK = "close_click"
+        /** [work_play] 合成播放页展示。 */
+        const val WORK_PLAY_SHOW = "work_play_show"
+        /** [work_play] Keep Creating 按钮点击。 */
+        const val CREATING_CLICK = "creating_click"
+        /** [work_play] Download 按钮点击。 */
+        const val DOWNLOAD_CLICK = "download_click"
         /** [my_list] My List 页面展示。 */
         const val MY_LIST_SHOW = "my_list_show"
         /** [my_list] 切换至 History Tab。 */

@@ -106,6 +106,12 @@ class CreatorPlayerActivity :
         mRealVM.initialPosition = intent.getIntExtra(EXTRA_POSITION, 0)
         mRealVM.sourceKey = intent.getStringExtra(EXTRA_SOURCE_KEY)
         pendingInitialPosition = mRealVM.initialPosition
+        if (mRealVM.playSource  == CreatorPlaySource.MY_CREATIONS || mRealVM.playSource  == CreatorPlaySource.WORK_SERIES) {
+            EventManager.onFirebaseTrack(
+                FirebaseEvent.Category.WORK_PLAY,
+                FirebaseEvent.Action.WORK_PLAY_SHOW
+            )
+        }
 
         initPlayerView()
         initActionButtons()
@@ -185,9 +191,17 @@ class CreatorPlayerActivity :
             showRedrawConfirm()
         }
         binding.btnKeepCreating.setOnSingleClickListener {
+            EventManager.onFirebaseTrack(
+                FirebaseEvent.Category.WORK_PLAY,
+                FirebaseEvent.Action.CREATING_CLICK
+            )
             mRealVM.keepCreating(::openCreationEpisode)
         }
         binding.btnDownload.setOnSingleClickListener {
+            EventManager.onFirebaseTrack(
+                FirebaseEvent.Category.WORK_PLAY,
+                FirebaseEvent.Action.DOWNLOAD_CLICK
+            )
             // 下载
             val item = mRealVM.currentPlayableEpisode.get() ?: return@setOnSingleClickListener
             item.episode.videoUrl?.let {
