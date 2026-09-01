@@ -231,7 +231,7 @@ object EventManager {
 /**
  * GA4 埋点定义，统一使用 Event-Action-Label 结构。
  *
- * 数据来源：EpNova GA埋点.xlsx（1.3.2 A1:M70；1.3.6 A1:M14）。
+ * 数据来源：EpNova GA埋点.xlsx（1.3.2 A1:M70；1.3.6 A1:M14；1.3.8 A1:M9，按业务批次接入）。
  */
 object FirebaseEvent {
 
@@ -271,6 +271,8 @@ object FirebaseEvent {
         const val MEMBERSHIP_UPGRADE = "membership_upgrade"
         /** 付费剧集解锁。 */
         const val PAID_EPISODE = "paid_episode"
+        /** 好评弹窗。 */
+        const val RATING = "rating"
     }
 
     /** GA4 事件参数 key，顺序与表格的 Action、Label 1～4 一致。 */
@@ -399,10 +401,14 @@ object FirebaseEvent {
         const val AD_PLAY_RESULT = "ad_play_result"
         /** [paid_episode] 剧集解锁结果；Label1=解锁状态，Label2=解锁来源。 */
         const val AD_UNLOCK_RESULT = "ad_unlock_result"
-        /** [first_purchase_credits]/[first_purchase_coin] 首充弹窗展示；Label1=触发场景。 */
+        /** [first_purchase_credits]/[first_purchase_coin]/[rating] 弹窗展示；首充事件 Label1=触发场景。 */
         const val POPUP_SHOW = "popup_show"
         /** [first_purchase_credits]/[first_purchase_coin] 首充购买按钮点击。 */
         const val PAY_NOW_CLICK = "pay_now_click"
+        /** [rating] 评分弹窗按钮点击；Label1=评分分数，Label2=按钮名称。 */
+        const val BUTTON_CLICK = "button_click"
+        /** [rating] 评分弹窗关闭按钮点击；Label1=评分状态，Label2=评分分数。 */
+        const val CLOSE_CLICK = "close_click"
         /** [my_list] My List 页面展示。 */
         const val MY_LIST_SHOW = "my_list_show"
         /** [my_list] 切换至 History Tab。 */
@@ -447,6 +453,14 @@ object FirebaseEvent {
         const val RESULT_SUCCESS = "success"
         /** 结果：失败。 */
         const val RESULT_FAIL = "fail"
+        /** 评分状态：未评分。 */
+        const val RATING_STATUS_UNSCORED = "unscored"
+        /** 评分状态：已评分。 */
+        const val RATING_STATUS_SCORED = "scored"
+        /** 评分按钮：低分完成。 */
+        const val RATING_BUTTON_DONE = "done"
+        /** 评分按钮：高分前往商店评分。 */
+        const val RATING_BUTTON_RATE_NOW = "rate now"
         /** 创作来源：故事灵感。 */
         const val CREATION_INSPIRATION = "inspiration"
         /** 创作来源：小说改编。 */

@@ -11,6 +11,8 @@ import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.Constants
 import com.kuaigeglobal.epnova.core.Config
 import com.kuaigeglobal.epnova.core.User
+import com.kuaigeglobal.epnova.core.manager.EventManager
+import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
 import com.kuaigeglobal.epnova.core.network.apis.request.RatingEnterEnum
 import com.kuaigeglobal.epnova.databinding.DialogAppRatingBinding
 import com.nhsd.basic.BaseVMDialogFragment
@@ -18,6 +20,8 @@ import com.nhsd.basic.ext.dp
 import com.nhsd.basic.ext.setOnSingleClickListener
 
 class AppRatingDialog : BaseVMDialogFragment<DialogAppRatingBinding, AppRatingViewModel>() {
+
+    private var hasReportedPopupShow = false
 
     companion object {
         fun show(fragmentManager: FragmentManager, entrance: RatingEnterEnum) {
@@ -50,7 +54,16 @@ class AppRatingDialog : BaseVMDialogFragment<DialogAppRatingBinding, AppRatingVi
             }
         }
         dialog?.setCanceledOnTouchOutside(false)
-        if (dialog?.isShowing == true) mRealVM.reportDisplay()
+        if (dialog?.isShowing == true) {
+            if (!hasReportedPopupShow) {
+                hasReportedPopupShow = true
+                EventManager.onFirebaseTrack(
+                    FirebaseEvent.Category.RATING,
+                    FirebaseEvent.Action.POPUP_SHOW
+                )
+            }
+            mRealVM.reportDisplay()
+        }
     }
 
     override fun onPrepareView() {
@@ -62,8 +75,32 @@ class AppRatingDialog : BaseVMDialogFragment<DialogAppRatingBinding, AppRatingVi
             updateActionTypeface()
         }
 
-        binding.ivClose.setOnClickListener { dismissAllowingStateLoss() }
+        binding.ivClose.setOnClickListener {
+            val score = mRealVM.rating.get().toInt()
+            EventManager.onFirebaseTrack(
+                FirebaseEvent.Category.RATING,
+                FirebaseEvent.Action.CLOSE_CLICK,
+                if (score == 0) {
+                    FirebaseEvent.Value.RATING_STATUS_UNSCORED
+                } else {
+                    FirebaseEvent.Value.RATING_STATUS_SCORED
+                },
+                score
+            )
+            dismissAllowingStateLoss()
+        }
         binding.btnAction.setOnSingleClickListener {
+            val score = mRealVM.rating.get().toInt()
+            EventManager.onFirebaseTrack(
+                FirebaseEvent.Category.RATING,
+                FirebaseEvent.Action.BUTTON_CLICK,
+                score,
+                if (score in 1..3) {
+                    FirebaseEvent.Value.RATING_BUTTON_DONE
+                } else {
+                    FirebaseEvent.Value.RATING_BUTTON_RATE_NOW
+                }
+            )
             mRealVM.submitRating()
         }
         mRealVM.submittedRating.observe(this) { submittedRating ->
