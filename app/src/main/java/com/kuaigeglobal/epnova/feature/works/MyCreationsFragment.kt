@@ -269,8 +269,9 @@ class MyCreationsFragment :
         episodes: List<CreatorEpisodeInfo>
     ) {
         val sortedEpisodes = episodes.sortedBy { it.sortNo ?: Int.MAX_VALUE }
+        val targetStoryId = workInfo.continueCreatingStoryId
         val targetIndex = sortedEpisodes.indexOfFirst {
-            it.stepProgress != CreatorEpisodeInfo.PROGRESS_COMPLETED
+            !targetStoryId.isNullOrEmpty() && it.storyId == targetStoryId
         }
         if (targetIndex < 0) {
             SeriesActivity.start(workId = workInfo.workId)
