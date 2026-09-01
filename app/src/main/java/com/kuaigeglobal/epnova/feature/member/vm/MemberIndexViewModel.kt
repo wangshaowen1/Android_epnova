@@ -691,18 +691,18 @@ class MemberIndexViewModel : AppRepositoryViewModel<AppRepository>() {
                 memberPurchaseRequestJob = null
                 confirmingMemberPurchase = false
                 completeConfirmedMemberPurchase(context)
-                // 只上报PURCHASE订阅购买类型，订阅升级不上报
-                if (context.actionType == MemberActionEnum.PURCHASE.name) {
-                    // 未获取到金额和币种不进行归因上报
-                    if (context.priceAmountMicros != null && context.priceCurrencyCode != null) {
-                        AppsFlyerManager.logPurchase(
-                            productId = context.productId,
-                            orderId = purchase.orderId,
-                            priceAmountMicros = context.priceAmountMicros,
-                            currency = context.priceCurrencyCode
-                        )
-                    }
-                }
+                // 只上报PURCHASE订阅购买类型，订阅升级不上报  1.3.8 统一后台上报af支付事件
+//                if (context.actionType == MemberActionEnum.PURCHASE.name) {
+//                    // 未获取到金额和币种不进行归因上报
+//                    if (context.priceAmountMicros != null && context.priceCurrencyCode != null) {
+//                        AppsFlyerManager.logPurchase(
+//                            productId = context.productId,
+//                            orderId = purchase.orderId,
+//                            priceAmountMicros = context.priceAmountMicros,
+//                            currency = context.priceCurrencyCode
+//                        )
+//                    }
+//                }
             },
             onError = { error ->
                 // 已取得 PURCHASED 后禁止 release。网络结果未知及 300185 先查询商店再 sync；

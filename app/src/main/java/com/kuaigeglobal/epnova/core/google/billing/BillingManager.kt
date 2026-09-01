@@ -1263,12 +1263,13 @@ object BillingManager {
                             )
                             if (response.isSuccess) {
                                 val priceParameters = productId?.let { id -> getPriceParameters(productCache[id]) }
-                                AppsFlyerManager.logPurchase(
-                                    productId = productId,
-                                    orderId = orderNo,
-                                    priceAmountMicros = priceParameters?.second,
-                                    currency = priceParameters?.third
-                                )
+                                // 1.3.8 统一后台上报af支付事件
+//                                AppsFlyerManager.logPurchase(
+//                                    productId = productId,
+//                                    orderId = orderNo,
+//                                    priceAmountMicros = priceParameters?.second,
+//                                    currency = priceParameters?.third
+//                                )
                             }
                             newlyVerified.add(it)
                         } catch (e: Exception) {
