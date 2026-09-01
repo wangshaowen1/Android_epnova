@@ -11,6 +11,7 @@ import com.kuaigeglobal.epnova.core.network.apis.entity.CreatorEpisodeInfo
 import com.kuaigeglobal.epnova.feature.works.ItemMultipleChoiceEventsViewModel
 import com.nhsd.basic.ext.showToast
 import kotlinx.coroutines.launch
+import kotlin.text.orEmpty
 
 /**
  * 剧集-item
@@ -61,6 +62,15 @@ class ItemSeriesEpisodeVM(
     @ColorRes
     fun publishBadgeTextColor(): Int {
         return data.get()?.publishBadgeTextColor() ?: R.color.fixed_white_1
+    }
+
+    @ColorRes
+    fun episodeStatusTextColor(): Int {
+        return data.get()?.episodeStatusTextColor() ?: R.color.fixed_white_1
+    }
+
+    fun episodeStatusText(): String {
+        return data.get()?.creationStageText.orEmpty()
     }
 
     @DrawableRes

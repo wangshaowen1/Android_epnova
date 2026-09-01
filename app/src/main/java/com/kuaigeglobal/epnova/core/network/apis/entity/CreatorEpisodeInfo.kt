@@ -150,7 +150,7 @@ data class CreatorEpisodeInfo(
     /**剧集发布角标文案。*/
     fun publishBadgeText(): String? {
         return when {
-            isDraft() -> R.string.drama_detail_draft.getResString()
+//            isDraft() -> R.string.drama_detail_draft.getResString()
             publishStatus == CreatorPublishStatus.UNPUBLISHED -> R.string.drama_detail_unpublished.getResString()
             publishStatus == CreatorPublishStatus.REVIEWING -> R.string.drama_detail_in_review.getResString()
             publishStatus == CreatorPublishStatus.PASSED -> R.string.drama_detail_live.getResString()
@@ -163,7 +163,7 @@ data class CreatorEpisodeInfo(
     @ColorRes
     fun publishBadgeTextColor(): Int {
         return when {
-            isDraft() -> R.color.fixed_black_1
+//            isDraft() -> R.color.fixed_black_1
             publishStatus == CreatorPublishStatus.REVIEWING -> R.color.func_warning_dark
             publishStatus == CreatorPublishStatus.PASSED -> R.color.func_success_dark
             publishStatus == CreatorPublishStatus.FAILED -> R.color.func_failure_dark
@@ -171,6 +171,20 @@ data class CreatorEpisodeInfo(
             else -> R.color.fixed_white_1
         }
     }
+
+    @ColorRes
+    fun episodeStatusTextColor(): Int {
+        return when (creationStageStatus) {
+            SeriesEpisodeStatus.CREATING -> R.color.color_ffce2c
+            SeriesEpisodeStatus.COMPLETED -> R.color.color_ffce2c
+            SeriesEpisodeStatus.FAILED -> R.color.color_ef4444
+            else -> R.color.fixed_white_1
+        }
+    }
+
+    fun episodeShowStatus(): Boolean = creationStageStatus == SeriesEpisodeStatus.NONE || creationStageStatus == SeriesEpisodeStatus.CREATING
+
+    fun episodeIsCreating(): Boolean = creationStageStatus == SeriesEpisodeStatus.CREATING
 
     /**剧集发布角标背景；草稿态使用浅底，其它发布态使用深色半透明底。*/
     @DrawableRes
@@ -208,7 +222,7 @@ data class CreatorEpisodeInfo(
 
     /**剧本、资产、分镜描述生成阶段在 UI 上按草稿态展示。*/
     fun isDraft(): Boolean {
-        return stepStatus != 2
+        return false
     }
 
     /**是否首次创建。*/

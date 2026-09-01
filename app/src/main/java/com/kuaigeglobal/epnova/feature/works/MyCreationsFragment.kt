@@ -22,7 +22,6 @@ import com.kuaigeglobal.epnova.feature.creatorplay.CreatorPlayerActivity
 import com.kuaigeglobal.epnova.feature.creatorplay.data.WorkSeriesCreatorFeedRepository
 import com.kuaigeglobal.epnova.feature.main.MainActivity
 import com.kuaigeglobal.epnova.feature.series.SeriesActivity
-import com.kuaigeglobal.epnova.feature.works.MyWorksFragment.Companion.CLICK_INTERVAL
 import com.kuaigeglobal.epnova.router.AppRouter
 import com.kuaigeglobal.epnova.widget.decoration.SpaceDecoration
 import com.kuaigeglobal.epnova.widget.stateful.paging.MyMultiStatePagingFooterAdapter
@@ -40,6 +39,9 @@ class MyCreationsFragment :
     BaseViewModelFragment<FragmentMyCreationsBinding, MyWorksViewModel>() {
 
     companion object {
+        private const val TAG = "MyCreationsFragment"
+        private const val CLICK_INTERVAL = 500L // 限制 500ms 内只能触发一次
+
         fun newInstance(): MyCreationsFragment {
             val fragment = MyCreationsFragment()
             val bundle = Bundle()

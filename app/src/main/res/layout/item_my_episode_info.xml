@@ -50,7 +50,7 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:background="@drawable/bg_60_000000_r8"
-            android:visibility="@{item.data.generating&amp;&amp;item.isView()?View.VISIBLE:View.GONE}"
+            setVisible="@{item.data.episodeIsCreating&amp;&amp;item.isView()}"
             app:layout_constraintBottom_toBottomOf="@+id/ivCover"
             android:gravity="center"
             android:orientation="vertical"
@@ -59,7 +59,7 @@
             app:layout_constraintTop_toTopOf="@+id/ivCover">
 
             <com.airbnb.lottie.LottieAnimationView
-                isVisibleWithAnimation="@{item.data.generating&amp;&amp;item.isView()}"
+                isVisibleWithAnimation="@{item.data.episodeIsCreating&amp;&amp;item.isView()}"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_marginBottom="@dimen/spacing_m"
@@ -73,7 +73,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="@{item.data.statusCopy}"
+                android:text="@{item.episodeStatusText()}"
                 android:textAppearance="@style/Text12"
                 android:textColor="@color/fixed_white_1"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -135,20 +135,6 @@
             android:layout_width="wrap_content"
             android:layout_height="16dp"
             android:layout_margin="4dp"
-            android:background="@drawable/bg_fixed_white_1_round"
-            android:gravity="center"
-            android:paddingHorizontal="6dp"
-            android:text="@string/drama_detail_draft"
-            android:textAppearance="@style/Text10"
-            android:textColor="@color/fixed_black_1"
-            android:visibility="@{(item.data.draft&amp;&amp;item.isView()&amp;&amp;!item.hasPublishBadge())?View.VISIBLE:View.GONE}"
-            app:layout_constraintEnd_toEndOf="@+id/ivCover"
-            app:layout_constraintTop_toTopOf="@+id/ivCover" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="16dp"
-            android:layout_margin="4dp"
             android:background="@drawable/bg_60_000000_round"
             android:gravity="center"
             android:paddingHorizontal="6dp"
@@ -171,6 +157,33 @@
             app:layout_constraintBottom_toBottomOf="@id/ivCover"
             app:layout_constraintEnd_toEndOf="@id/ivCover"
             tools:text="03:26" />
+        
+        <TextView
+            setVisible="@{!item.data.episodeShowStatus() &amp;&amp; !item.data.isCompleted}"
+            app:layout_constraintBottom_toBottomOf="@id/ivCover"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:background="@drawable/shape_episode_status"
+            style="@style/Text.Regular"
+            android:textSize="12sp"
+            textColorRes="@{item.episodeStatusTextColor()}"
+            android:gravity="center"
+            android:text="@{item.episodeStatusText()}"
+            tools:text="Ready to Generate"
+            tools:textColor="@color/color_ffce2c"
+            android:paddingVertical="6dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+        
+        <ImageView
+            app:layout_constraintTop_toTopOf="@id/ivCover"
+            app:layout_constraintBottom_toBottomOf="@id/ivCover"
+            app:layout_constraintStart_toStartOf="@id/ivCover"
+            app:layout_constraintEnd_toEndOf="@id/ivCover"
+            android:src="@drawable/icon_play_off"
+            setVisible="@{item.data.isCompleted}"
+            android:layout_width="30dp"
+            android:layout_height="30dp" />
 
         <View
             android:layout_width="0dp"

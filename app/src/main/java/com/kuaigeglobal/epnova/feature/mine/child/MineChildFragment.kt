@@ -12,7 +12,6 @@ import com.kuaigeglobal.epnova.core.network.apis.entity.WorkVOInfo
 import com.kuaigeglobal.epnova.databinding.FragmentMineChildBinding
 import com.kuaigeglobal.epnova.feature.play.DramasPlayPagerActivity
 import com.kuaigeglobal.epnova.feature.works.ItemMultipleChoiceEventsViewModel
-import com.kuaigeglobal.epnova.feature.works.MyWorksFragment.Companion.CLICK_INTERVAL
 import com.kuaigeglobal.epnova.widget.decoration.GridSpacingItemDecoration
 import com.kuaigeglobal.epnova.widget.stateful.applyGridSpanSizeLookup
 import com.kuaigeglobal.epnova.widget.stateful.paging.MyMultiStatePagingFooterAdapter
@@ -33,6 +32,9 @@ class MineChildFragment :
 
         //消耗明细
         const val TYPE_COLLECTION = 2
+
+        private const val CLICK_INTERVAL = 500L // 限制 500ms 内只能触发一次
+
         fun newInstance(type: Int = TYPE_HISTORY): MineChildFragment {
             val fragment = MineChildFragment()
             val bundle = Bundle()
