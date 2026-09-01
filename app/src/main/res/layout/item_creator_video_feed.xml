@@ -12,6 +12,10 @@
         <variable
             name="item"
             type="com.kuaigeglobal.epnova.feature.creatorplay.ItemCreatorVideoFeedVm" />
+
+        <variable
+            name="showPlaybackControls"
+            type="androidx.databinding.ObservableBoolean" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -75,6 +79,7 @@
         <TextView
             android:id="@+id/tvTitle"
             style="@style/Text18"
+            setVisible="@{showPlaybackControls}"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/spacing_l"
@@ -93,7 +98,7 @@
         <com.kuaigeglobal.epnova.widget.expandtextview.ExpandableTextView
             android:id="@+id/tvContent"
             expandContent="@{item.description()}"
-            setVisible="@{item.hasDescription()}"
+            setVisible="@{showPlaybackControls &amp;&amp; item.hasDescription()}"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/spacing_l"
@@ -120,6 +125,7 @@
         <com.kuaigeglobal.epnova.widget.PlayerSeekbar
             android:id="@+id/seekbar"
             marginBottomPx="@{(item.data.source == CreatorPlaySource.MY_CREATIONS || item.data.source == CreatorPlaySource.WORK_SERIES) ? SizeUtils.dp2px(90f) : SizeUtils.dp2px(16f)}"
+            setVisible="@{showPlaybackControls}"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/spacing_l"

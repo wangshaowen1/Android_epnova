@@ -5,6 +5,8 @@
 
     <data>
 
+        <import type="android.view.View" />
+
         <variable
             name="layout"
             type="com.kuaigeglobal.epnova.feature.creatorplay.CreatorPlayerViewModel" />
@@ -25,10 +27,12 @@
         <include
             android:id="@+id/toolbar"
             layout="@layout/view_model_toolbar"
+            android:visibility="@{layout.showPlaybackControls ? View.VISIBLE : View.GONE}"
             app:toolbar="@{layout.toolbar}" />
 
         <LinearLayout
             android:id="@+id/actionContainer"
+            setVisible="@{layout.showPlaybackControls}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="top|end"
@@ -58,7 +62,7 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/bottomLayout"
-            setVisible="@{layout.showBottomLayout}"
+            setVisible="@{layout.showBottomLayout &amp;&amp; layout.showPlaybackControls}"
             android:background="@drawable/bg_141414_tr20"
             android:layout_gravity="bottom"
             android:layout_width="match_parent"

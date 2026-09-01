@@ -33,6 +33,8 @@ import com.nhsd.basic.BaseViewModelActivity
 import com.nhsd.basic.ext.dp
 import com.nhsd.basic.ext.getResColor
 import com.nhsd.basic.ext.setOnSingleClickListener
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -57,6 +59,9 @@ class CreatorPlayerActivity :
         /**当前作品内播放 source 的作品 ID。*/
         private const val EXTRA_SOURCE_KEY = "creator_player_source_key"
 
+        /**真正进入播放态后，非必要控件保留 3 秒。*/
+        private const val AUTO_HIDE_CONTROLS_DELAY_MS = 3_000L
+
         /**启动新创作播放器；阶段五会从 TopEarners item 点击入口调用。*/
         fun start(source: CreatorPlaySource, position: Int = 0, sourceKey: String? = null) {
             val context = topActivity ?: return
@@ -71,7 +76,7 @@ class CreatorPlayerActivity :
     }
 
     /**播放器 feed adapter，只绑定 CreatorPlayableEpisode。*/
-    private val adapter = CreatorVideoFeedAdapter(this)
+    private lateinit var adapter: CreatorVideoFeedAdapter
 
     /**Creator 独立播放器 manager，不复用旧内容播放器 FeedPlayerManager。*/
     private lateinit var playerManager: CreatorFeedPlayerManager
@@ -100,11 +105,22 @@ class CreatorPlayerActivity :
     private val reportedProcessNodes = mutableSetOf<Int>()
     private var hasReportedComplete = false
 
+    /**自动隐藏任务；切集、暂停、拖动和离开页面时都要取消。*/
+    private var autoHideControlsJob: Job? = null
+
+    /**最近播放器状态，用于隐藏后点击恢复时判断是否需要重新计时。*/
+    private var currentPlayerState: CreatorFeedPlayerManager.CreatorPlayerState =
+        CreatorFeedPlayerManager.CreatorPlayerState.Idle
+
+    /**拖动期间不允许自动隐藏 seekbar。*/
+    private var isSeeking = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mRealVM.playSource = readPlaySource()
         mRealVM.initialPosition = intent.getIntExtra(EXTRA_POSITION, 0)
         mRealVM.sourceKey = intent.getStringExtra(EXTRA_SOURCE_KEY)
+        mRealVM.showPlaybackControls.set(true)
         pendingInitialPosition = mRealVM.initialPosition
         if (mRealVM.playSource  == CreatorPlaySource.MY_CREATIONS || mRealVM.playSource  == CreatorPlaySource.WORK_SERIES) {
             EventManager.onFirebaseTrack(
@@ -126,6 +142,9 @@ class CreatorPlayerActivity :
     }
 
     override fun onPause() {
+        cancelAutoHideControls()
+        isSeeking = false
+        mRealVM.showPlaybackControls.set(true)
         playerManager.pause()
         super.onPause()
     }
@@ -136,10 +155,29 @@ class CreatorPlayerActivity :
     }
 
     override fun onTogglePlay(position: Int) {
+        if (!isAutoHideControlsEnabled()) {
+            cancelAutoHideControls()
+            mRealVM.showPlaybackControls.set(true)
+            playerManager.togglePlay()
+            return
+        }
+        if (!mRealVM.showPlaybackControls.get()) {
+            mRealVM.showPlaybackControls.set(true)
+            scheduleAutoHideControlsIfPlaying()
+            return
+        }
+        cancelAutoHideControls()
         playerManager.togglePlay()
     }
 
+    override fun onSeekStart(position: Int) {
+        isSeeking = true
+        cancelAutoHideControls()
+        mRealVM.showPlaybackControls.set(true)
+    }
+
     override fun onSeek(position: Int, progress: Long) {
+        isSeeking = false
         playerManager.seekTo(progress)
     }
 
@@ -160,9 +198,11 @@ class CreatorPlayerActivity :
     /**初始化播放器 UI、adapter 和列表控制器。*/
     private fun initPlayerView() {
         playerManager = CreatorFeedPlayerManager(lifecycleScope)
+        adapter = CreatorVideoFeedAdapter(this, mRealVM.showPlaybackControls)
         binding.recyclerView.adapter = adapter
         listController = CreatorFeedListController(binding.recyclerView, adapter, playerManager).apply {
             onPageChanged = { item, _ ->
+                resetPlaybackControlsForNewPage()
                 mRealVM.updateCurrentPlayableEpisode(item)
                 resetAnalyticsReportStateIfNeeded(item)
                 EventManager.onPlayEvent(item)
@@ -277,9 +317,22 @@ class CreatorPlayerActivity :
     private fun observePlayer() {
         lifecycleScope.launch {
             playerManager.playerState.collectLatest { state ->
+                currentPlayerState = state
                 listController.getCurrentHolder()?.updatePlayerUiState(state)
-                if (state is CreatorFeedPlayerManager.CreatorPlayerState.Playing) {
-                    reportPlayerShowIfNeeded()
+                when (state) {
+                    CreatorFeedPlayerManager.CreatorPlayerState.Playing -> {
+                        reportPlayerShowIfNeeded()
+                        scheduleAutoHideControlsIfPlaying()
+                    }
+                    CreatorFeedPlayerManager.CreatorPlayerState.Pause,
+                    is CreatorFeedPlayerManager.CreatorPlayerState.Error -> {
+                        cancelAutoHideControls()
+                        mRealVM.showPlaybackControls.set(true)
+                    }
+                    CreatorFeedPlayerManager.CreatorPlayerState.Idle,
+                    CreatorFeedPlayerManager.CreatorPlayerState.Buffering -> {
+                        cancelAutoHideControls()
+                    }
                 }
             }
         }
@@ -308,6 +361,49 @@ class CreatorPlayerActivity :
                 }
             }
         }
+    }
+
+    /**切换播放单元时先恢复控件，新视频真正开始播放后再重新计时。*/
+    private fun resetPlaybackControlsForNewPage() {
+        cancelAutoHideControls()
+        isSeeking = false
+        currentPlayerState = CreatorFeedPlayerManager.CreatorPlayerState.Idle
+        mRealVM.showPlaybackControls.set(true)
+    }
+
+    /**只在实际播放且没有拖动时倒计时，避免缓冲时间和手势时间计入 3 秒。*/
+    private fun scheduleAutoHideControlsIfPlaying() {
+        cancelAutoHideControls()
+        if (!isAutoHideControlsEnabled()) {
+            mRealVM.showPlaybackControls.set(true)
+            return
+        }
+        if (!mRealVM.showPlaybackControls.get() ||
+            currentPlayerState !is CreatorFeedPlayerManager.CreatorPlayerState.Playing ||
+            isSeeking
+        ) {
+            return
+        }
+        autoHideControlsJob = lifecycleScope.launch {
+            delay(AUTO_HIDE_CONTROLS_DELAY_MS)
+            if (isAutoHideControlsEnabled() &&
+                currentPlayerState is CreatorFeedPlayerManager.CreatorPlayerState.Playing &&
+                !isSeeking
+            ) {
+                mRealVM.showPlaybackControls.set(false)
+            }
+        }
+    }
+
+    /**Top Earners 保持操作控件常驻，仅作品内播放入口启用自动隐藏。*/
+    private fun isAutoHideControlsEnabled(): Boolean {
+        return mRealVM.playSource == CreatorPlaySource.MY_CREATIONS ||
+            mRealVM.playSource == CreatorPlaySource.WORK_SERIES
+    }
+
+    private fun cancelAutoHideControls() {
+        autoHideControlsJob?.cancel()
+        autoHideControlsJob = null
     }
 
     private fun resetAnalyticsReportStateIfNeeded(item: CreatorPlayableEpisode) {

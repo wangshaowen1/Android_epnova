@@ -58,6 +58,9 @@ class CreatorPlayerViewModel : AppRepositoryViewModel<AppRepository>(), Download
     /**仅我的创作和作品剧集入口展示底部操作区，不按当前作品归属判断。*/
     val showBottomLayout = ObservableBoolean(false)
 
+    /**播放器非必要控件统一显隐；页面操作区和 feed item 共用这一状态。*/
+    val showPlaybackControls = ObservableBoolean(true)
+
     /**播放来源决定切换边界：TopEarners 可跨作品，MyCreations/作品详情只在当前作品内播放。*/
     var playSource: CreatorPlaySource = CreatorPlaySource.TOP_EARNERS
         set(value) {

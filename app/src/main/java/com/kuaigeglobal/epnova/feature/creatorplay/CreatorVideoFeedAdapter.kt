@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.view.animation.AnimationUtils
+import androidx.databinding.ObservableBoolean
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -20,13 +21,17 @@ import com.nhsd.basic.item.BindingViewHolder
  * Adapter 只绑定 CreatorPlayableEpisode，不接旧剧集模型、解锁、点赞、收藏或选集逻辑。
  */
 class CreatorVideoFeedAdapter(
-    private val interactionListener: InteractionListener
+    private val interactionListener: InteractionListener,
+    private val showPlaybackControls: ObservableBoolean
 ) : PagingDataAdapter<CreatorPlayableEpisode, CreatorVideoFeedAdapter.CreatorVideoViewHolder>(DIFF_CALLBACK) {
 
     /**播放器 item 的基础交互，只包含播放切换和进度拖动。*/
     interface InteractionListener {
-        /**点击播放区域或中心按钮时切换播放/暂停。*/
+        /**点击播放区域或中心按钮；页面决定恢复控件或切换播放状态。*/
         fun onTogglePlay(position: Int)
+
+        /**开始拖动时暂停自动隐藏，防止进度条在手势过程中消失。*/
+        fun onSeekStart(position: Int)
 
         /**拖动进度条结束后跳到指定毫秒。*/
         fun onSeek(position: Int, progress: Long)
@@ -63,7 +68,12 @@ class CreatorVideoFeedAdapter(
 
         init {
             binding.seekbar.onSeekListener = object : PlayerSeekbar.OnSeekListener {
-                override fun onDrag() = Unit
+                override fun onDrag() {
+                    val adapterPosition = bindingAdapterPosition
+                    if (adapterPosition != RecyclerView.NO_POSITION) {
+                        interactionListener.onSeekStart(adapterPosition)
+                    }
+                }
 
                 override fun onDragEnd(position: Long) {
                     val adapterPosition = bindingAdapterPosition
@@ -100,6 +110,7 @@ class CreatorVideoFeedAdapter(
             viewModel.updateData(item)
             viewModel.resetPlayerUi()
             binding.item = viewModel
+            binding.showPlaybackControls = showPlaybackControls
             binding.seekbar.currentPosition = 0L
             binding.seekbar.duration = viewModel.durationMs()
             binding.animBuffering.clearAnimation()
