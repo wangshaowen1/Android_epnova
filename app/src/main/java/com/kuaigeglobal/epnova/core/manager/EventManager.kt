@@ -415,6 +415,10 @@ object FirebaseEvent {
         const val HISTORY_CLICK = "history_click"
         /** [my_list] 切换至 Collection Tab。 */
         const val COLLECTION_CLICK = "collection_click"
+        /** [my_list] 进入作品剧集列表；Label1=入口来源。 */
+        const val GOTO_EPISODE_LIST = "goto_episode_list"
+        /** [my_list] Continue Creating 按钮点击。 */
+        const val CONTINUE_CREATING_CLICK = "continue_creating_click"
         /** [rewards] 福利中心页面展示。 */
         const val REWARDS_SHOW = "rewards_show"
         /** [rewards] 首页福利中心入口点击。 */
@@ -461,6 +465,10 @@ object FirebaseEvent {
         const val RATING_BUTTON_DONE = "done"
         /** 评分按钮：高分前往商店评分。 */
         const val RATING_BUTTON_RATE_NOW = "rate now"
+        /** My List 剧集列表入口：作品卡片。 */
+        const val MY_LIST_ENTRY_CARD = "card"
+        /** My List 剧集列表入口：All List 按钮。 */
+        const val MY_LIST_ENTRY_ALL_LIST_BTN = "all_list_btn"
         /** 创作来源：故事灵感。 */
         const val CREATION_INSPIRATION = "inspiration"
         /** 创作来源：小说改编。 */

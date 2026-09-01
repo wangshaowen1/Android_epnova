@@ -12,6 +12,8 @@ import com.kuaigeglobal.epnova.common.ext.topActivity
 import com.kuaigeglobal.epnova.core.Events
 import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.ext.onUserStatusChanged
+import com.kuaigeglobal.epnova.core.manager.EventManager
+import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
 import com.kuaigeglobal.epnova.core.network.apis.entity.CreatorEpisodeInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.CreatorPlaySource
 import com.kuaigeglobal.epnova.core.network.apis.entity.CreatorWorkInfo
@@ -173,10 +175,27 @@ class MyCreationsFragment :
                         lastClickTime = currentTime
 
                         when (event.target) {
-                            MyWorksEvent.ViewDetails.Target.ITEM, MyWorksEvent.ViewDetails.Target.ALL_LIST, MyWorksEvent.ViewDetails.Target.PUBLISH_TIP -> {
+                            MyWorksEvent.ViewDetails.Target.ITEM, MyWorksEvent.ViewDetails.Target.ALL_LIST -> {
+                                val entry = if (event.target == MyWorksEvent.ViewDetails.Target.ITEM) {
+                                    FirebaseEvent.Value.MY_LIST_ENTRY_CARD
+                                } else {
+                                    FirebaseEvent.Value.MY_LIST_ENTRY_ALL_LIST_BTN
+                                }
+                                EventManager.onFirebaseTrack(
+                                    FirebaseEvent.Category.MY_LIST,
+                                    FirebaseEvent.Action.GOTO_EPISODE_LIST,
+                                    entry
+                                )
                                 SeriesActivity.start(workId = event.workInfo?.workId)
                             }
+                            MyWorksEvent.ViewDetails.Target.PUBLISH_TIP -> {
+                                // 发布
+                            }
                             MyWorksEvent.ViewDetails.Target.CONTINUE_CREATING -> {
+                                EventManager.onFirebaseTrack(
+                                    FirebaseEvent.Category.MY_LIST,
+                                    FirebaseEvent.Action.CONTINUE_CREATING_CLICK
+                                )
                                 continueCreating(event.workInfo)
                             }
                         }

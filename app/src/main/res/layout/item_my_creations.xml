@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clipChildren="false"
-        singleClick="@{(view) -> item.onAllListClick()}"
+        singleClick="@{(view) -> item.onClick()}"
         app:backgroundEndColor="@color/color_06_ffffff"
         app:backgroundStartColor="@color/color_06_ffffff"
         app:borderAngle="90"
@@ -129,7 +129,6 @@
 
         <com.kuaigeglobal.epnova.widget.BorderConstraintLayout
             android:id="@+id/publishTipLayout"
-            singleClick="@{(view) -> item.onPublishTipClick()}"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:paddingVertical="8dp"
