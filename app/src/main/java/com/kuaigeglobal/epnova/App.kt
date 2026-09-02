@@ -35,6 +35,7 @@ import com.kuaigeglobal.epnova.widget.CustomizedRefreshHeader
 import com.kuaigeglobal.epnova.widget.LoadingDialog2
 import com.kuaigeglobal.epnova.widget.MyLoadViewFactory
 import com.nhsd.basic.BaseApp
+import com.nhsd.basic.BasicEdgeToEdgeConfig
 import com.nhsd.basic.manager.LoadingConfig
 import com.nhsd.basic.utils.Logger
 import com.nhsd.mvc.MVCHelper
@@ -144,6 +145,12 @@ class App : BaseApp() {
     }
 
     override fun onCreate() {
+        // 顶部继续由页面处理，迁移期统一为旧页面避让底部导航栏。
+        BasicEdgeToEdgeConfig.configure(
+            BasicEdgeToEdgeConfig.Strategy(
+                rootInsetsMode = BasicEdgeToEdgeConfig.RootInsetsMode.NAVIGATION_BAR,
+            ),
+        )
         super.onCreate()
         instance = this
 
