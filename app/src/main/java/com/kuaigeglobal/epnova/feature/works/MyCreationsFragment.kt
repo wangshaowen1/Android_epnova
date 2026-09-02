@@ -186,7 +186,8 @@ class MyCreationsFragment :
                                     FirebaseEvent.Action.GOTO_EPISODE_LIST,
                                     entry
                                 )
-                                SeriesActivity.start(workId = event.workInfo?.workId)
+                                openWork(event.workInfo)
+//                                SeriesActivity.start(workId = event.workInfo?.workId)
                             }
                             MyWorksEvent.ViewDetails.Target.PUBLISH_TIP -> {
                                 // 发布
@@ -244,6 +245,7 @@ class MyCreationsFragment :
         }
     }
 
+    // 老逻辑
     private fun openWork(workInfo: CreatorWorkInfo?) {
         if (workInfo?.isNotCreatedEpisode() == true) {
             //作品类型：3-小说上传且为草稿时，先获取详情再恢复创作。
