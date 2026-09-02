@@ -359,6 +359,7 @@ class VideoSetActivity : BaseViewModelActivity<ActivityVideoSetBinding, VideoSet
                 null
             },
             reportId = reportId,
+            workType = 1
 //            packageInstanceId = mRealVM.creationPackage?.packageInstanceId
         )
         val progressLogic = {

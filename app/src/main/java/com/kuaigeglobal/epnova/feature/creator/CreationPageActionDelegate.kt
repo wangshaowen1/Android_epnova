@@ -347,6 +347,7 @@ class CreationPageActionDelegate(
                                         else -> null
                                     },
                                     reportId = hotCaseId ?: inspirationId,
+                                    workType = workType
 //                                    packageInstanceId = creationPackage?.packageInstanceId
                                 ),
                                 startEditor

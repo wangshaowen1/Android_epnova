@@ -14,6 +14,8 @@ data class CreateTaskBody(
     val workStyleCode: String? = null,
     val reportType: Int? = null,
     val reportId: String? = null,
+    /** 作品类型：1-灵感创作;2-小说改编; */
+    val workType: Int?
 //    val packageInstanceId: String? = null,
 ) : Parcelable
 

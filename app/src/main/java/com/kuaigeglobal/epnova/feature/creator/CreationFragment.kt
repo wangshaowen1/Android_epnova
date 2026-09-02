@@ -228,7 +228,8 @@ class CreationFragment :
                                 totalEpisodeCntCode = range,
                                 totalEpisodeCnt = custom,
                                 workRatio = ratio,
-                                workStyleCode = style
+                                workStyleCode = style,
+                                workType = workType
                             )
                             this@CreationFragment.mRealVM.createTask(modelType, body) {
                                 startEditor(it)
