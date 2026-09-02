@@ -1,5 +1,8 @@
 package com.kuaigeglobal.epnova.feature.works
 
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.style.ForegroundColorSpan
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.databinding.ObservableBoolean
@@ -7,6 +10,7 @@ import androidx.lifecycle.viewModelScope
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.base.item.AppItemViewModel
 import com.kuaigeglobal.epnova.core.network.apis.entity.CreatorWorkInfo
+import com.nhsd.basic.ext.getResColor
 import com.nhsd.basic.ext.getResString
 import kotlinx.coroutines.launch
 
@@ -51,34 +55,54 @@ class ItemMyWorkVM(
         return (data.get()?.totalEpisodeCnt ?: 0) > (data.get()?.publishMinEpisodeCnt ?: 0)
     }
 
-    fun publishTip(): String {
+    fun publishTip(): CharSequence {
         data.get() ?: return ""
-        var tipStr = ""
+        var tipText: CharSequence = ""
         data.get()?.let { workInfo ->
             // 创作集数 == 总剧集数
             if (workInfo.creationProgressEpisodeCnt == workInfo.totalEpisodeCnt) {
-                tipStr = R.string.my_creations_publish_tip_over.getResString()
+                tipText = R.string.my_creations_publish_tip_over.getResString()
             } else if (
                 // 总集数＞发行集数（5集） 且 发行集数（5集）＜=创作剧集数＜总集数
                 ((workInfo.totalEpisodeCnt ?: 0) > (workInfo.publishMinEpisodeCnt ?: 0)) &&
                 (workInfo.creationProgressEpisodeCnt ?: 0) in ((workInfo.publishMinEpisodeCnt ?: 0) until (workInfo.totalEpisodeCnt ?: 0))
             ) {
-                tipStr = R.string.my_creations_publish_tip_3.getResString()
+                tipText = R.string.my_creations_publish_tip_3.getResString()
             } else if (
                 // 总集数＜=发行集数（5集）且 创作集数＜总集数
                 ((workInfo.totalEpisodeCnt ?: 0) <= (workInfo.publishMinEpisodeCnt ?: 0)) &&
                 ((workInfo.creationProgressEpisodeCnt ?: 0) < (workInfo.totalEpisodeCnt ?: 0))
             ) {
-                tipStr = R.string.my_creations_publish_tip_2.getResString()
+                tipText = R.string.my_creations_publish_tip_2.getResString()
             } else if (
                 // 作品必须满足总集数＞发行集数（5集） 且 作品创作集数＜发行集数（5集）
                 ((workInfo.totalEpisodeCnt ?: 0) > (workInfo.publishMinEpisodeCnt ?: 0)) &&
                 ((workInfo.creationProgressEpisodeCnt ?: 0) < (workInfo.publishMinEpisodeCnt ?: 0))
             ) {
-                tipStr = R.string.my_creations_publish_tip.getResString((workInfo.publishMinEpisodeCnt ?: 0) - (workInfo.creationProgressEpisodeCnt ?: 0))
+                val remainingEpisodeCount =
+                    (workInfo.publishMinEpisodeCnt ?: 0) -
+                        (workInfo.creationProgressEpisodeCnt ?: 0)
+                tipText = buildPublishTip(remainingEpisodeCount)
             }
         }
-        return tipStr
+        return tipText
+    }
+
+    private fun buildPublishTip(remainingEpisodeCount: Int): CharSequence {
+        val highlightText =
+            R.string.my_creations_publish_tip_highlight.getResString(remainingEpisodeCount)
+        val publishTip = R.string.my_creations_publish_tip.getResString(highlightText)
+        val highlightStart = publishTip.indexOf(highlightText)
+        if (highlightStart < 0) return publishTip
+
+        return SpannableString(publishTip).apply {
+            setSpan(
+                ForegroundColorSpan(R.color.color_ffce2c.getResColor()),
+                highlightStart,
+                highlightStart + highlightText.length,
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+        }
     }
 
     fun onClick() {

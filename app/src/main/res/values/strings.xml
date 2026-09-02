@@ -341,7 +341,8 @@
     <string name="suggest_and_feedback">Suggestions &amp; Feedback</string>
     <string name="my_list_my_creations">My Creations</string>
     <string name="my_creations_episode_progress">%1$d/%2$d EP</string>
-    <string name="my_creations_publish_tip">Complete <font color="#FFCE2C">%1$d more episodes</font> to publish your drama.</string>
+    <string name="my_creations_publish_tip">Complete %1$s to publish your drama.</string>
+    <string name="my_creations_publish_tip_highlight">%1$d more episodes</string>
     <string name="my_creations_publish_tip_2">Keep creating to bring your drama to life.</string>
     <string name="my_creations_publish_tip_3">Keep creating episodes to reach more viewers.</string>
     <string name="my_creations_publish_tip_over">🎉You did it! Your drama is now complete！</string>
