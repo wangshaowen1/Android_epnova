@@ -121,6 +121,10 @@ object AppsFlyerManager {
         Logger.i(TAG, "AppsFlyer started: $appsFlyerId")
     }
 
+    fun setUserId(userId: String) {
+        AppsFlyerLib.getInstance().setCustomerUserId(userId)
+    }
+
     fun logCompleteRegistration() {
         logEvent(AFInAppEventType.COMPLETE_REGISTRATION)
     }

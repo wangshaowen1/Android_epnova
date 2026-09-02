@@ -7,6 +7,7 @@ import com.kuaigeglobal.epnova.App
 import com.kuaigeglobal.epnova.common.utils.MmkvDelegate
 import com.kuaigeglobal.epnova.core.google.event.AnalyticsHelper
 import com.kuaigeglobal.epnova.core.google.event.CrashlyticsHelper
+import com.kuaigeglobal.epnova.core.manager.AppsFlyerManager
 import com.kuaigeglobal.epnova.core.network.apis.entity.CoinsAndWalletInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.CookieUserInfo
 import com.kuaigeglobal.epnova.core.network.apis.request.CompleteUserDataInfoBody
@@ -121,6 +122,7 @@ class User : IUser {
             storeUserId(this)
             AnalyticsHelper.setUserId(this)
             CrashlyticsHelper.setUserId(this)
+            AppsFlyerManager.setUserId(this)
         }
         storePhoneNum(userData.phoneNum)
         storeUid(userData.userUid)
