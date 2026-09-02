@@ -1,10 +1,9 @@
-package com.kuaigeglobal.epnova.feature.member.vm
+package com.kuaigeglobal.epnova.feature.member
 
 import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.base.item.AppItemViewModel
-import com.kuaigeglobal.epnova.core.network.apis.response.MemberActionEnum
 import com.kuaigeglobal.epnova.core.network.apis.response.MemberPlanInfo
 import com.nhsd.basic.ext.getResString
 

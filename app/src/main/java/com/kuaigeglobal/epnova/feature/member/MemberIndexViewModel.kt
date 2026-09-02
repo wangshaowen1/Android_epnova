@@ -1,4 +1,4 @@
-package com.kuaigeglobal.epnova.feature.member.vm
+package com.kuaigeglobal.epnova.feature.member
 
 import android.graphics.Color
 import androidx.databinding.ObservableBoolean
@@ -21,7 +21,6 @@ import com.kuaigeglobal.epnova.core.google.billing.MemberBillingResult
 import com.kuaigeglobal.epnova.core.google.billing.MemberSubscriptionRecoveryManager
 import com.kuaigeglobal.epnova.core.google.billing.MemberSubscriptionRecoveryStore
 import com.kuaigeglobal.epnova.core.google.billing.MemberSubscriptionStorePreparationResult
-import com.kuaigeglobal.epnova.core.manager.AppsFlyerManager
 import com.kuaigeglobal.epnova.core.manager.EventManager
 import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
 import com.kuaigeglobal.epnova.core.network.apis.ApiException
@@ -39,7 +38,6 @@ import com.nhsd.basic.ext.showToast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 /**

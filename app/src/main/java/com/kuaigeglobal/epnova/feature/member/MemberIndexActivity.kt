@@ -17,8 +17,6 @@ import com.kuaigeglobal.epnova.common.ext.topActivity
 import com.kuaigeglobal.epnova.core.Config
 import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
 import com.kuaigeglobal.epnova.databinding.ActivityMemberIndexBinding
-import com.kuaigeglobal.epnova.feature.member.vm.MemberIndexViewModel
-import com.kuaigeglobal.epnova.feature.recharge.MyBalanceViewModel
 import com.kuaigeglobal.epnova.feature.web.SimpleBrowserActivity
 import com.kuaigeglobal.epnova.widget.decoration.SpaceDecoration
 import com.nhsd.basic.BaseViewModelActivity

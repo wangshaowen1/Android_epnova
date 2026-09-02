@@ -1,4 +1,4 @@
-package com.kuaigeglobal.epnova.feature.member.vm
+package com.kuaigeglobal.epnova.feature.member
 
 import com.drake.spannable.replaceSpan
 import com.drake.spannable.span.CenterImageSpan

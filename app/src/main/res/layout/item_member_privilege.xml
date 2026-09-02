@@ -6,7 +6,7 @@
 
         <variable
             name="item"
-            type="com.kuaigeglobal.epnova.feature.member.vm.ItemMemberPrivilegeViewModel" />
+            type="com.kuaigeglobal.epnova.feature.member.ItemMemberPrivilegeViewModel" />
     </data>
 
     <LinearLayout
