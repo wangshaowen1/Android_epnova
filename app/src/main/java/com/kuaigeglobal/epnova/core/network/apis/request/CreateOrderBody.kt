@@ -11,5 +11,7 @@ package com.kuaigeglobal.epnova.core.network.apis.request
 data class CreateOrderBody(
     val goodsCode: String? = null,
     val goodsType: Int? = null,
-    val mobileType: Int? = null
+    val mobileType: Int? = null,
+    /** af归因id */
+    val appsFlyerId: String?
 )

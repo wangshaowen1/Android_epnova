@@ -1,6 +1,7 @@
 package com.kuaigeglobal.epnova.feature.recharge
 
 import com.kuaigeglobal.epnova.core.AppRepository
+import com.kuaigeglobal.epnova.core.Config
 import com.kuaigeglobal.epnova.core.network.apis.request.CreateOrderBody
 import com.kuaigeglobal.epnova.core.network.apis.request.CreatePointOrderBody
 import com.kuaigeglobal.epnova.core.network.apis.request.UserTokenBody
@@ -24,7 +25,7 @@ class CoinRepository : AppRepository() {
      * @param goodsCode 金币商品配置编码
      */
     suspend fun createGoogleOrder(goodsCode: String?) = withContext(Dispatchers.IO) {
-        api.createOrder(CreateOrderBody(goodsCode = goodsCode, goodsType = 1, mobileType = 1))
+        api.createOrder(CreateOrderBody(goodsCode = goodsCode, goodsType = 1, mobileType = 1, appsFlyerId = Config.get().appsFlyerId))
     }
 
     /**
@@ -32,7 +33,7 @@ class CoinRepository : AppRepository() {
      * @param goodsCode 算力商品配置编码
      */
     suspend fun createGoogleCreditsPreOrder(goodsCode: String?) = withContext(Dispatchers.IO) {
-        api.createGooglePreOrder(CreateOrderBody(goodsCode = goodsCode, goodsType = 1, mobileType = 1))
+        api.createGooglePreOrder(CreateOrderBody(goodsCode = goodsCode, goodsType = 1, mobileType = 1, appsFlyerId = Config.get().appsFlyerId))
     }
 
     /**

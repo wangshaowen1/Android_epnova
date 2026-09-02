@@ -15,6 +15,7 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.kuaigeglobal.epnova.App
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.ext.ioScope
+import com.kuaigeglobal.epnova.core.Config
 import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.manager.AppsFlyerManager
 import com.kuaigeglobal.epnova.core.network.apis.ApiFactory
@@ -1258,7 +1259,8 @@ object BillingManager {
                                 VerifyPurchasedBody(
                                     it.purchaseToken,
                                     orderNo,
-                                    productId
+                                    productId,
+                                    appsFlyerId = Config.get().appsFlyerId
                                 )
                             )
                             if (response.isSuccess) {

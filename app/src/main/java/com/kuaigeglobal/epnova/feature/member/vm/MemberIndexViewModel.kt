@@ -355,6 +355,7 @@ class MemberIndexViewModel : AppRepositoryViewModel<AppRepository>() {
                     MemberSubscriptionPrepareBody(
                         actionType = actionType,
                         planVersionCode = planVersionCode,
+                        appsFlyerId = Config.get().appsFlyerId
                     )
                 )
             },
@@ -744,7 +745,10 @@ class MemberIndexViewModel : AppRepositoryViewModel<AppRepository>() {
         memberPurchaseRequestJob = requestWithLoading(
             apiBlock = {
                 mRepo.api.releaseMemberSubscriptionPurchasePrepare(
-                    MemberSubscriptionPrepareReleaseBody(context.purchasePrepareToken)
+                    MemberSubscriptionPrepareReleaseBody(
+                            purchasePrepareToken = context.purchasePrepareToken,
+                            appsFlyerId = Config.get().appsFlyerId
+                        )
                 )
             },
             showLoading = false,

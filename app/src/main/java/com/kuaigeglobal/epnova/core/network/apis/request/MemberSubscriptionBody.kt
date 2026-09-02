@@ -8,6 +8,8 @@ data class MemberSubscriptionPrepareBody(
     val actionType: String,
     /** 套餐列表返回的不可变套餐版本编码。 */
     val planVersionCode: String,
+    /** af归因id */
+    val appsFlyerId: String?
 )
 
 /**
@@ -16,6 +18,8 @@ data class MemberSubscriptionPrepareBody(
 data class MemberSubscriptionPrepareReleaseBody(
     /** 购买准备接口返回的不透明令牌。 */
     val purchasePrepareToken: String,
+    /** af归因id */
+    val appsFlyerId: String?
 )
 
 /**

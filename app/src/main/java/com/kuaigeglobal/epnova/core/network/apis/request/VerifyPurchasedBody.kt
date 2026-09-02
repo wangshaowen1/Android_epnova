@@ -12,4 +12,6 @@ data class VerifyPurchasedBody(
     val orderNo: String? = null,
     //内购商品编码
     val googleProductId: String? = null,
+    /** af归因id */
+    val appsFlyerId: String?
 ) : UserTokenBody()
