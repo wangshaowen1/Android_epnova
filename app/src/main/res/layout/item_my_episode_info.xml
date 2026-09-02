@@ -123,7 +123,7 @@
             android:paddingHorizontal="6dp"
             android:text="@{item.publishBadgeText()}"
             android:textAppearance="@style/Text10"
-            android:visibility="@{(item.hasPublishBadge()&amp;&amp;item.isView()&amp;&amp;!item.data.notCreated&amp;&amp;!item.data.isPassed())?View.VISIBLE:View.GONE}"
+            android:visibility="@{(item.data.isCompleted&amp;&amp;item.hasPublishBadge()&amp;&amp;item.isView()&amp;&amp;!item.data.notCreated&amp;&amp;!item.data.isPassed())?View.VISIBLE:View.GONE}"
             app:layout_constraintEnd_toEndOf="@+id/ivCover"
             app:layout_constraintTop_toTopOf="@+id/ivCover"
             app:layout_constraintStart_toStartOf="@id/ivCover"
