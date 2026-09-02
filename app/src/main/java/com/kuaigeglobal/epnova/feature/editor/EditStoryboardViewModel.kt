@@ -9,6 +9,7 @@ import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.base.viewmodel.AppRepositoryViewModel
 import com.kuaigeglobal.epnova.common.Constants
 import com.kuaigeglobal.epnova.core.Events
+import com.kuaigeglobal.epnova.core.ext.handlePointInsufficientError
 import com.kuaigeglobal.epnova.core.ext.launch
 import com.kuaigeglobal.epnova.core.ext.launchWithLoading
 import com.kuaigeglobal.epnova.core.ext.sensitiveWordCheck
@@ -16,13 +17,13 @@ import com.kuaigeglobal.epnova.core.manager.EventManager
 import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
 import com.kuaigeglobal.epnova.core.network.apis.ApiFactory
 import com.kuaigeglobal.epnova.core.network.apis.entity.SimpleStoryboardInfo
+import com.kuaigeglobal.epnova.core.network.apis.request.CreationScene
 import com.kuaigeglobal.epnova.core.network.apis.request.GenerateStoryboardBody
 import com.kuaigeglobal.epnova.core.network.apis.request.SaveStoryboardBody
 import com.kuaigeglobal.epnova.core.network.apis.request.StoryboardIdBody
 import com.kuaigeglobal.epnova.core.network.apis.request.StrategyTypeBody
 import com.kuaigeglobal.epnova.core.network.apis.request.TaskIdBody
 import com.kuaigeglobal.epnova.core.response
-import com.kuaigeglobal.epnova.feature.recharge.PowerRechargeDialog
 import com.kuaigeglobal.epnova.kit.media.PlayerFactory
 import com.kuaigeglobal.epnova.kit.media.play
 import com.nhsd.basic.bus.FlowEventBus
@@ -194,7 +195,6 @@ class EditStoryboardViewModel : AppRepositoryViewModel<EditStoryboardRepository>
     }
 
     private fun generate(storyboard: SimpleStoryboardInfo, prompt: String, cost: Int, finish: Boolean = false) {
-//        if (PowerRechargeDialog.checkLowBalance(cost, PowerRechargeDialog.TAB_CREDITS)) return
         launchWithLoading {
             if (prompt != storyboard.storyBoardDesc) {
                 sensitiveWordCheck(prompt).let { (isPass, highlightText) ->
@@ -227,17 +227,29 @@ class EditStoryboardViewModel : AppRepositoryViewModel<EditStoryboardRepository>
                 storyId = storyboard.storyId,
                 operateType = if (isSynthesised) 3 else 2
             )
-            response(mRepo.api.workStoryboardVideoSingleGenerate(body)) {
-                FlowEventBus.postSync(Events.StoryboardVideoRegenerateEvent(storyboard.workId, storyboard.storyId, storyboard.storyboardId))
-                if (finish && data?.genStatus.let { it == 1 || it == 2 }) {
-                    finish()
-                    return@response
-                }
-                storyboard.taskId = data?.taskId
-                storyboard.genStatusVideo = data?.genStatus
-                this@EditStoryboardViewModel.storyboard.notifyChange()
-                loopVideo(data?.taskId)
-            }
+            response(
+                bean = mRepo.api.workStoryboardVideoSingleGenerate(body),
+                result = {
+                    FlowEventBus.postSync(Events.StoryboardVideoRegenerateEvent(storyboard.workId, storyboard.storyId, storyboard.storyboardId))
+                    if (finish && data?.genStatus.let { it == 1 || it == 2 }) {
+                        finish()
+                        return@response
+                    }
+                    storyboard.taskId = data?.taskId
+                    storyboard.genStatusVideo = data?.genStatus
+                    this@EditStoryboardViewModel.storyboard.notifyChange()
+                    loopVideo(data?.taskId)
+                },
+                error = {
+                    val handled = handlePointInsufficientError(
+                        creationScene = CreationScene.VIDEO_GENERATION,
+                        errorCode = this?.code,
+                    )
+                    if (!handled) {
+                        this?.msg?.showToast()
+                    }
+                },
+            )
         }
     }
 
