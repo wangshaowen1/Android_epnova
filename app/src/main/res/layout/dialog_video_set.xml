@@ -76,7 +76,7 @@
             app:inputHint="@string/name_your_creation"
             app:inputHorizontalPadding="@dimen/spacing_m"
             app:inputMaxLength="70"
-            app:inputMaxLines="1"
+            app:inputMaxLines="2"
             app:inputTextColor="?attr/textColor2"
             app:inputTextColorHint="?attr/textColor4"
             app:inputTextSize="14sp"

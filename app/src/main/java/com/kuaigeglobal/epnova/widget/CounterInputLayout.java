@@ -235,7 +235,7 @@ public class CounterInputLayout extends FrameLayout implements TextWatcher {
             int counterWidth = hintLayout.getMeasuredWidth() + params.leftMargin + params.rightMargin;
             int counterHeight = hintLayout.getMeasuredHeight() + params.topMargin + params.bottomMargin;
 
-            if (contentInput.getMaxLines() == 1) {
+            if (contentInput.getMaxLines() == 1 || contentInput.getMaxLines() == 2) {
                 right = Math.max(right, counterWidth);
             } else {
                 bottom = Math.max(bottom, counterHeight);
