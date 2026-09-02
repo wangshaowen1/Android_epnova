@@ -39,6 +39,15 @@
                 app:shapeAppearance="@style/roundStyle_r8"
                 tools:src="@drawable/img_default_cover_3_4" />
 
+            <View
+                android:background="@drawable/shape_top_earners_status"
+                app:layout_constraintStart_toStartOf="@id/ivCover"
+                app:layout_constraintEnd_toEndOf="@id/ivCover"
+                app:layout_constraintBottom_toBottomOf="@id/ivCover"
+                app:layout_constrainedWidth="true"
+                android:layout_width="match_parent"
+                android:layout_height="22dp"/>
+            
             <TextView
                 android:id="@+id/tv_views"
                 style="@style/Text.Medium"
