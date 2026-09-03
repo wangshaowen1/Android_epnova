@@ -226,7 +226,7 @@ class SeriesActivity : BaseViewModelActivity<ActivitySeriesBinding, SeriesViewMo
                 )
                 val snapshot = episodeAdapter.snapshot().items
                 // 1. 寻找前置阻断点
-                val blocker = findFirstBlocker(snapshot, position)
+                val blocker = findEligibleEpisode(snapshot, position)
 
                 if (blocker != null) {
                     // 2. 存在阻断，提示用户
@@ -273,6 +273,20 @@ class SeriesActivity : BaseViewModelActivity<ActivitySeriesBinding, SeriesViewMo
         val blockerIndex = if (lastValidIndex == -1) 0 else lastValidIndex + 1
 
         // 如果拦截点在当前点击位置之前，说明需要拦截
+        return if (blockerIndex < position) {
+            items.getOrNull(blockerIndex)
+        } else {
+            null
+        }
+    }
+
+    private fun findEligibleEpisode(items: List<CreatorEpisodeInfo>, position: Int): CreatorEpisodeInfo? {
+        if (position < 0) return null
+        val eligibleIndex = items.take(position).indexOfFirst {
+            it.stepProgress == CreatorEpisodeInfo.NOT_CREATED || (it.stepProgress ?: 0) < CreatorEpisodeInfo.PROGRESS_STORYBOARD_GENERATING
+        }
+        val blockerIndex = if (eligibleIndex == -1) 0 else eligibleIndex
+
         return if (blockerIndex < position) {
             items.getOrNull(blockerIndex)
         } else {

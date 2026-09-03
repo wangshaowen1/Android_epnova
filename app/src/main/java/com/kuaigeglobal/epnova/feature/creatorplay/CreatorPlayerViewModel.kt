@@ -170,9 +170,10 @@ class CreatorPlayerViewModel : AppRepositoryViewModel<AppRepository>(), Download
                     if (currentWorkId() != workId) return@launchWithLoading
 
                     // 优先找第一集待创建项；全部已开始制作时，恢复第一集未完成项。
-                    val targetIndex = episodes.indexOfFirst { it.isNotCreated() }
-                        .takeIf { it >= 0 }
-                        ?: episodes.indexOfFirst { !it.isCompleted() }
+//                    val targetIndex = episodes.indexOfFirst { it.isNotCreated() }
+//                        .takeIf { it >= 0 }
+//                        ?: episodes.indexOfFirst { !it.isCompleted() }
+                    val targetIndex = episodes.indexOfFirst { !it.isCompleted() }
                     if (targetIndex < 0) {
                         // 列表已全部完成时，即使作品汇总计数尚未刷新，也不再提供续创入口。
                         latestWorkContext = latestWorkContext?.copy(finishedEpisodeCnt = episodes.size)
