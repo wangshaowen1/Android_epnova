@@ -5,6 +5,7 @@ import androidx.annotation.DrawableRes
 import androidx.databinding.ObservableInt
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import androidx.paging.LoadState
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
@@ -31,15 +32,39 @@ import com.kuaigeglobal.epnova.widget.LoadStateViewHolder
 import com.nhsd.basic.bus.FlowEventBus
 import com.nhsd.basic.ext.getResString
 import com.nhsd.basic.ext.showToast
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
 
 /**
  * 剧集详情页
  */
 class SeriesViewModel : AppRepositoryViewModel<SeriesRepository>() {
+    companion object {
+        private const val EPISODE_POLLING_INTERVAL_MS = 3000L
+    }
+
     val workId by lazy { mBundle.getString(Constants.Extra.ID) }
     val loadState by lazy { ObservableInt(LoadStateViewHolder.CONTENT) }
     val workInfo by lazy { MutableLiveData<CreatorWorkInfo?>() }
+
+    private var episodePagingSource: EpisodePagingSource? = null
+    private var episodePollingJob: Job? = null
+    private var hasCreatingEpisode = false
+    private var isEpisodeListLoading = false
+    private var isPageResumed = false
+    private val episodeListFlow by lazy {
+        Pager(
+            config = PagingConfig(
+                initialLoadSize = PagedProxy.DEFAULT_PAGE_SIZE * 3,
+                pageSize = PagedProxy.DEFAULT_PAGE_SIZE
+            ),
+            pagingSourceFactory = {
+                EpisodePagingSource(workId).also { episodePagingSource = it }
+            }
+        ).flow.cachedIn(viewModelScope)
+    }
 
     //创建续集信息
     val episodeInfo = MutableLiveData<CreatorEpisodeInfo?>()
@@ -47,7 +72,21 @@ class SeriesViewModel : AppRepositoryViewModel<SeriesRepository>() {
 
     override fun onResume() {
         super.onResume()
+        isPageResumed = true
         getWorkDtl()
+        scheduleEpisodePolling()
+    }
+
+    override fun onPause() {
+        isPageResumed = false
+        cancelEpisodePolling()
+        super.onPause()
+    }
+
+    override fun onDestroy() {
+        isPageResumed = false
+        cancelEpisodePolling()
+        super.onDestroy()
     }
 
     /**
@@ -80,14 +119,38 @@ class SeriesViewModel : AppRepositoryViewModel<SeriesRepository>() {
         }
     }
 
-    fun episodeList(): Flow<PagingData<CreatorEpisodeInfo>> {
-        return Pager(
-            config = PagingConfig(
-                initialLoadSize = PagedProxy.DEFAULT_PAGE_SIZE * 3,
-                pageSize = PagedProxy.DEFAULT_PAGE_SIZE
-            ),
-            pagingSourceFactory = { EpisodePagingSource(workId) }
-        ).flow.cachedIn(viewModelScope)
+    fun episodeList(): Flow<PagingData<CreatorEpisodeInfo>> = episodeListFlow
+
+    fun onEpisodeListLoadStateChanged(
+        refreshState: LoadState,
+        episodes: List<CreatorEpisodeInfo>
+    ) {
+        isEpisodeListLoading = refreshState is LoadState.Loading
+        if (refreshState is LoadState.NotLoading) {
+            hasCreatingEpisode = episodes.any { it.episodeIsCreating() }
+        }
+        // 刷新失败时保留上一次的生成状态，恢复网络后继续同步进度。
+        if (isEpisodeListLoading || !hasCreatingEpisode) {
+            cancelEpisodePolling()
+        } else {
+            scheduleEpisodePolling()
+        }
+    }
+
+    /** 每轮刷新结束后再安排下一轮，避免慢请求被定时刷新反复取消。 */
+    private fun scheduleEpisodePolling() {
+        if (!isPageResumed || isEpisodeListLoading || !hasCreatingEpisode) return
+        if (episodePollingJob?.isActive == true) return
+        episodePollingJob = viewModelScope.launch {
+            delay(EPISODE_POLLING_INTERVAL_MS)
+            episodePollingJob = null
+            episodePagingSource?.invalidate()
+        }
+    }
+
+    private fun cancelEpisodePolling() {
+        episodePollingJob?.cancel()
+        episodePollingJob = null
     }
 
     /**

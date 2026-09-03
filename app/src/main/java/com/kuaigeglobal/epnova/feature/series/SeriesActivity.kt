@@ -49,6 +49,7 @@ import com.nhsd.basic.ext.isActive
 import com.nhsd.basic.ext.setOnSingleClickListener
 import com.nhsd.basic.ext.showToast
 import com.nhsd.basic.utils.Logger
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 /**
@@ -115,6 +116,9 @@ class SeriesActivity : BaseViewModelActivity<ActivitySeriesBinding, SeriesViewMo
             setNoDataPrompt(noDataAs)
         }
         binding.swipeRefreshLayout.startRefreshWithAdapter(pagingDataAdapter = episodeAdapter)
+        episodeAdapter.addLoadStateListener { loadStates ->
+            mRealVM.onEpisodeListLoadStateChanged(loadStates.refresh, episodeAdapter.snapshot().items)
+        }
     }
 
     private fun refresh() {
@@ -137,7 +141,7 @@ class SeriesActivity : BaseViewModelActivity<ActivitySeriesBinding, SeriesViewMo
         }
 
         lifecycleScope.launch {
-            mRealVM.episodeList().collect {
+            mRealVM.episodeList().collectLatest {
                 episodeAdapter.submitData(it)
             }
         }
@@ -282,11 +286,14 @@ class SeriesActivity : BaseViewModelActivity<ActivitySeriesBinding, SeriesViewMo
 
     private fun findEligibleEpisode(items: List<CreatorEpisodeInfo>, position: Int): CreatorEpisodeInfo? {
         if (position < 0) return null
+        // 找点击之前的item是否存在有未创建 or 未进分镜预览阶段的剧集
         val eligibleIndex = items.take(position).indexOfFirst {
             it.stepProgress == CreatorEpisodeInfo.NOT_CREATED || (it.stepProgress ?: 0) < CreatorEpisodeInfo.PROGRESS_STORYBOARD_GENERATING
         }
-        val blockerIndex = if (eligibleIndex == -1) 0 else eligibleIndex
+        // 存在则返回剧集下标 不存在则返回点击的下标
+        val blockerIndex = if (eligibleIndex == -1) position else eligibleIndex
 
+        // 小于点击下标则返回对应剧集信息
         return if (blockerIndex < position) {
             items.getOrNull(blockerIndex)
         } else {

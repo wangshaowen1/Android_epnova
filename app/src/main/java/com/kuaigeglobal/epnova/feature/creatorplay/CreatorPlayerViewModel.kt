@@ -173,7 +173,8 @@ class CreatorPlayerViewModel : AppRepositoryViewModel<AppRepository>(), Download
 //                    val targetIndex = episodes.indexOfFirst { it.isNotCreated() }
 //                        .takeIf { it >= 0 }
 //                        ?: episodes.indexOfFirst { !it.isCompleted() }
-                    val targetIndex = episodes.indexOfFirst { !it.isCompleted() }
+                    // 需要找到未完成并且未进分镜预览阶段的进去继续创作
+                    val targetIndex = episodes.indexOfFirst { !it.isCompleted() && (it.stepProgress ?: 0) < CreatorEpisodeInfo.PROGRESS_STORYBOARD_GENERATING }
                     if (targetIndex < 0) {
                         // 列表已全部完成时，即使作品汇总计数尚未刷新，也不再提供续创入口。
                         latestWorkContext = latestWorkContext?.copy(finishedEpisodeCnt = episodes.size)
