@@ -11,6 +11,7 @@ import com.kuaige.videoedit.ffmpeg.FFmpegCommandBuilder
 import com.kuaige.videoedit.ffmpeg.FFmpegHelper
 import com.kuaige.videoedit.resource.Resource
 import com.kuaige.videoedit.resource.UrlResource
+import com.kuaigeglobal.epnova.BuildConfig
 import com.kuaigeglobal.epnova.R
 import com.nhsd.basic.BaseApp
 import com.nhsd.basic.ext.getResString
@@ -28,7 +29,7 @@ class VideoStoryboardResource(private val url: String, private val storyboard: S
         FFmpegKitConfig.setFontDirectoryList(BaseApp.getInstance(), listOf("/system/fonts"), emptyMap())
     }
 
-    override val filename by lazy { "${url.urlToFilename()}_${storyboard.subtitle?.subtitleContent.hashCode()}_${watermark}.mp4" }
+    override val filename by lazy { "${url.urlToFilename()}_${storyboard.subtitle?.subtitleContent.hashCode()}_${watermark}_v${CACHE_VERSION}.mp4" }
     private val cacheFile by lazy {
         val path = "${PathUtils.getExternalAppCachePath()}${File.separator}source_material${File.separator}${filename}"
         File(path).apply {
@@ -89,7 +90,8 @@ class VideoStoryboardResource(private val url: String, private val storyboard: S
             mapV = "v_watermark"
             finalV = "[$mapV]"
         }
-        val extra = "-map $finalV -map 0:a? -c:v libx264 -preset veryfast -r 30 -pix_fmt yuv420p"
+        // concat 要求各段音频参数一致，必须在拼接前逐段重采样，避免混合采样率导致人声变速。
+        val extra = "-map $finalV -map 0:a? -c:v libx264 -preset veryfast -r 30 -pix_fmt yuv420p $AUDIO_ENCODING_OPTIONS"
         val command = builder.build(cacheFile.absolutePath, extra)
         val videoDuration = FFmpegHelper.parseDuration(videoFile.absolutePath) / 1000
         FFmpegHelper.execute(command, videoDuration) { ffmpegProgress ->
@@ -143,6 +145,11 @@ class VideoStoryboardResource(private val url: String, private val storyboard: S
     }
 
     companion object {
+        // 转码规格调整时同步更新版本，避免复用采样率未统一的旧分镜缓存。
+        private const val CACHE_VERSION = BuildConfig.VERSION_CODE
+        // 拼接前逐段统一为 AAC、48kHz、双声道
+        internal const val AUDIO_ENCODING_OPTIONS = "-c:a aac -b:a 128k -ar 48000 -ac 2"
+
         private val WATERMARK_FONT_PATHS = listOf(
             "/system/fonts/NotoSansCJK-Regular.ttc",
             "/system/fonts/NotoSansCJK-Regular.otf",

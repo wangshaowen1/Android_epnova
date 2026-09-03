@@ -31,7 +31,8 @@ class VideoSynthesisTransform(
         val builder = FFmpegCommandBuilder()
         val fileListFile = generateConcatFile(videos, outputFile)
         builder.addInput(fileListFile.absolutePath, "-fflags +genpts -f concat -safe 0")
-        val extra = "-map 0:v:0 -map 0:a? -vf 'fps=30' -c:v libx264 -preset veryfast -c:a aac -b:a 128k -pix_fmt yuv420p"
+        // 合成输出复用同一组音频参数
+        val extra = "-map 0:v:0 -map 0:a? -vf 'fps=30' -c:v libx264 -preset veryfast ${VideoStoryboardResource.AUDIO_ENCODING_OPTIONS} -pix_fmt yuv420p"
         val duration = videos.sumOf { FFmpegHelper.parseDuration(it.file.absolutePath) } / 1000
         return builder.build(outputFile.absolutePath, extra) to duration
     }
