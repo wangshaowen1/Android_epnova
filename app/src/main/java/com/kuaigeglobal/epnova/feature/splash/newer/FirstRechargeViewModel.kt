@@ -6,10 +6,11 @@ import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.base.viewmodel.AppRepositoryViewModel
 import com.kuaigeglobal.epnova.common.Constants
 import com.kuaigeglobal.epnova.common.ext.topActivity
-import com.kuaigeglobal.epnova.core.Global
 import com.kuaigeglobal.epnova.core.ext.launchWithLoading
 import com.kuaigeglobal.epnova.core.ext.parseMessage
 import com.kuaigeglobal.epnova.core.google.billing.BillingManager
+import com.kuaigeglobal.epnova.core.google.billing.OneTimePurchaseBusinessType
+import com.kuaigeglobal.epnova.core.google.billing.OneTimePurchaseRecoveryManager
 import com.kuaigeglobal.epnova.core.google.billing.PurchaseResult
 import com.kuaigeglobal.epnova.core.manager.EventManager
 import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
@@ -58,6 +59,7 @@ class FirstRechargeViewModel : AppRepositoryViewModel<CoinRepository>() {
 
     init {
         BillingManager.markActivePage(true)
+        OneTimePurchaseRecoveryManager.recoverIfNeeded()
     }
 
     override fun onCreate() {
@@ -119,28 +121,28 @@ class FirstRechargeViewModel : AppRepositoryViewModel<CoinRepository>() {
         purchaseJob?.cancel()
         purchaseJob = viewModelScope.launch {
             BillingManager.purchaseResultFlow.take(1).collect { result ->
-                val resultValue = if (result is PurchaseResult.Success) {
-                    FirebaseEvent.Value.RESULT_SUCCESS
-                } else {
-                    FirebaseEvent.Value.RESULT_FAIL
-                }
-                // purchase_result：Label1=支付状态。
-                EventManager.onFirebaseTrack(
-                    FirebaseEvent.Category.FIRST_PURCHASE_COIN,
-                    FirebaseEvent.Action.PURCHASE_RESULT,
-                    resultValue,
-                )
-                if (isFromPlayer()) {
+                if (result != PurchaseResult.Pending) {
+                    val resultValue = if (result is PurchaseResult.Success) {
+                        FirebaseEvent.Value.RESULT_SUCCESS
+                    } else {
+                        FirebaseEvent.Value.RESULT_FAIL
+                    }
+                    // purchase_result：Label1=支付状态。
                     EventManager.onFirebaseTrack(
-                        FirebaseEvent.Category.PAID_EPISODE,
-                        FirebaseEvent.Action.BUY_COIN_RESULT,
+                        FirebaseEvent.Category.FIRST_PURCHASE_COIN,
+                        FirebaseEvent.Action.PURCHASE_RESULT,
                         resultValue,
-                        data?.coinsNum?.toString(),
                     )
+                    if (isFromPlayer()) {
+                        EventManager.onFirebaseTrack(
+                            FirebaseEvent.Category.PAID_EPISODE,
+                            FirebaseEvent.Action.BUY_COIN_RESULT,
+                            resultValue,
+                            data?.coinsNum?.toString(),
+                        )
+                    }
                 }
-                if (result is PurchaseResult.Success) {
-                    refreshCoinsAndPoints()
-                } else if (result is PurchaseResult.Failed) {
+                if (result is PurchaseResult.Failed) {
                     R.string.first_recharge_payment_failed_retry.getResString().showToast()
                 }
                 _purchaseEvent.emit(result)
@@ -150,7 +152,14 @@ class FirstRechargeViewModel : AppRepositoryViewModel<CoinRepository>() {
         launchWithLoading(
             block = {
                 response(mRepo.createGoogleOrder(rechargeData.coinsConfigCode)) {
-                    BillingManager.launchPurchase(topActivity, rechargeData.googleProductId ?: "", data?.orderNo ?: "")
+                    val orderData = this.data
+                    BillingManager.launchPurchase(
+                        activity = topActivity,
+                        productId = orderData?.googleProductId.orEmpty()
+                            .ifBlank { rechargeData.googleProductId.orEmpty() },
+                        orderId = orderData?.orderNo.orEmpty(),
+                        businessType = OneTimePurchaseBusinessType.COINS,
+                    )
                 }
             },
             onError = { e ->
@@ -158,10 +167,6 @@ class FirstRechargeViewModel : AppRepositoryViewModel<CoinRepository>() {
                 parseMessage(e)?.showToast()
             }
         )
-    }
-
-    private fun refreshCoinsAndPoints() {
-        Global.refreshCoinsAndPoints()
     }
 
 }

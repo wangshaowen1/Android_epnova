@@ -1473,11 +1473,13 @@ interface ApiService {
     @POST(ApiConstants.CREATE_GOOGLE_PRE_ORDER)
     suspend fun createGooglePreOrder(@Body body: CreateOrderBody): ApiResponse<OrderNoData>
 
-    /**
-     * 验证票据
-     */
-    @POST(ApiConstants.VERIFY_PURCHASED)
-    suspend fun verifyPurchased(@Body body: VerifyPurchasedBody): ApiResponse<Any?>
+    /** Google 金币一次性商品验单。 */
+    @POST(ApiConstants.VERIFY_GOOGLE_COIN_PURCHASE)
+    suspend fun verifyGoogleCoinPurchase(@Body body: VerifyPurchasedBody): ApiResponse<Any?>
+
+    /** Google 算力一次性商品验单。请求体与金币验单保持一致。 */
+    @POST(ApiConstants.VERIFY_GOOGLE_CREDITS_PURCHASE)
+    suspend fun verifyGoogleCreditsPurchase(@Body body: VerifyPurchasedBody): ApiResponse<Any?>
 
     /**
      * 首页-搜索作品

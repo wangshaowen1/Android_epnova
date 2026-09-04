@@ -16,6 +16,8 @@ import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.ext.launch
 import com.kuaigeglobal.epnova.core.ext.launchWithLoading
 import com.kuaigeglobal.epnova.core.google.billing.BillingManager
+import com.kuaigeglobal.epnova.core.google.billing.OneTimePurchaseBusinessType
+import com.kuaigeglobal.epnova.core.google.billing.OneTimePurchaseRecoveryManager
 import com.kuaigeglobal.epnova.core.google.billing.PurchaseResult
 import com.kuaigeglobal.epnova.core.manager.EventManager
 import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
@@ -76,7 +78,7 @@ class MyBalanceViewModel(
 
     init {
         BillingManager.markActivePage(true)
-        BillingManager.queryPendingPurchases()
+        OneTimePurchaseRecoveryManager.recoverIfNeeded()
     }
 
     override fun onCreate() {
@@ -252,32 +254,33 @@ class MyBalanceViewModel(
         purchaseJob?.cancel()
         purchaseJob = viewModelScope.launch {
             BillingManager.purchaseResultFlow.take(1).collect { result ->
-                val resultValue = if (result is PurchaseResult.Success) {
-                    FirebaseEvent.Value.RESULT_SUCCESS
-                } else {
-                    FirebaseEvent.Value.RESULT_FAIL
-                }
-                if (isPaidEpisodeAnalytics && currentTab == TAB_COINS) {
-                    // buy_coin_result：Label1=支付状态，Label2=货币数量。
-                    EventManager.onFirebaseTrack(
-                        FirebaseEvent.Category.PAID_EPISODE,
-                        FirebaseEvent.Action.BUY_COIN_RESULT,
-                        resultValue,
-                        currencyAmount,
-                    )
-                } else {
-                    // purchase_result：Label1=货币类型，Label2=数量，Label3=支付状态。
-                    EventManager.onFirebaseTrack(
-                        FirebaseEvent.Category.STORE,
-                        FirebaseEvent.Action.PURCHASE_RESULT,
-                        currencyType,
-                        currencyAmount,
-                        resultValue,
-                    )
+                if (result != PurchaseResult.Pending) {
+                    val resultValue = if (result is PurchaseResult.Success) {
+                        FirebaseEvent.Value.RESULT_SUCCESS
+                    } else {
+                        FirebaseEvent.Value.RESULT_FAIL
+                    }
+                    if (isPaidEpisodeAnalytics && currentTab == TAB_COINS) {
+                        // buy_coin_result：Label1=支付状态，Label2=货币数量。
+                        EventManager.onFirebaseTrack(
+                            FirebaseEvent.Category.PAID_EPISODE,
+                            FirebaseEvent.Action.BUY_COIN_RESULT,
+                            resultValue,
+                            currencyAmount,
+                        )
+                    } else {
+                        // purchase_result：Label1=货币类型，Label2=数量，Label3=支付状态。
+                        EventManager.onFirebaseTrack(
+                            FirebaseEvent.Category.STORE,
+                            FirebaseEvent.Action.PURCHASE_RESULT,
+                            currencyType,
+                            currencyAmount,
+                            resultValue,
+                        )
+                    }
                 }
                 if (result is PurchaseResult.Success) {
                     loadConfig()
-                    refreshCoinsAndPoints()
                 }
                 _purchaseEvent.emit(result)
             }
@@ -300,7 +303,14 @@ class MyBalanceViewModel(
         launchWithLoading(
             block = {
                 response(mRepo.createGoogleOrder(item.coinsConfigCode)) {
-                    BillingManager.launchPurchase(topActivity, item.googleProductId ?: "", data?.orderNo ?: "")
+                    val orderData = data
+                    BillingManager.launchPurchase(
+                        activity = topActivity,
+                        productId = orderData?.googleProductId.orEmpty()
+                            .ifBlank { item.googleProductId.orEmpty() },
+                        orderId = orderData?.orderNo.orEmpty(),
+                        businessType = OneTimePurchaseBusinessType.COINS,
+                    )
                 }
             },
             onError = { purchaseJob?.cancel() }
@@ -317,7 +327,14 @@ class MyBalanceViewModel(
         launchWithLoading(
             block = {
                 response(mRepo.createGoogleCreditsPreOrder(item.pointConfigCode)) {
-                    BillingManager.launchPurchase(topActivity, item.googleProductId ?: "", data?.orderNo ?: "")
+                    val orderData = data
+                    BillingManager.launchPurchase(
+                        activity = topActivity,
+                        productId = orderData?.googleProductId.orEmpty()
+                            .ifBlank { item.googleProductId.orEmpty() },
+                        orderId = orderData?.orderNo.orEmpty(),
+                        businessType = OneTimePurchaseBusinessType.CREDITS,
+                    )
                 }
             },
             onError = { purchaseJob?.cancel() }

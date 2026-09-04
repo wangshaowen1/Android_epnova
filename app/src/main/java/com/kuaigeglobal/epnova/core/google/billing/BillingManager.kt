@@ -15,11 +15,7 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.kuaigeglobal.epnova.App
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.ext.ioScope
-import com.kuaigeglobal.epnova.core.Config
 import com.kuaigeglobal.epnova.core.User
-import com.kuaigeglobal.epnova.core.manager.AppsFlyerManager
-import com.kuaigeglobal.epnova.core.network.apis.ApiFactory
-import com.kuaigeglobal.epnova.core.network.apis.request.VerifyPurchasedBody
 import com.nhsd.basic.ext.getResString
 import com.nhsd.basic.ext.launchNoCrash
 import com.nhsd.basic.ext.showToast
@@ -28,12 +24,16 @@ import com.nhsd.basic.utils.Logger
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeoutOrNull
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
+import kotlin.coroutines.resume
 
 object BillingManager {
     //VIP 订阅 (基础)： dt_sub_vip1_month   基础id  vip1-month-plan1
@@ -50,6 +50,8 @@ object BillingManager {
     private const val MEMBER_ACTION_PURCHASE = "PURCHASE"
     private const val MEMBER_ACTION_SWITCH = "SWITCH"
     private const val GOOGLE_REPLACEMENT_MODE_WITHOUT_PRORATION = "WITHOUT_PRORATION"
+    private const val RECOVERY_CONNECTION_WAIT_MS = 5_000L
+    private const val RECOVERY_CONNECTION_POLL_MS = 50L
     private var billingClient: BillingClient? = null
 
     var isConnecting = AtomicBoolean(false)
@@ -73,7 +75,7 @@ object BillingManager {
     /**
      * 会员订阅的 Play Billing 原始结果流。
      *
-     * 此 Flow 与普通积分购买的 [purchaseResultFlow] 完全隔离。它只负责把 Google 的
+     * 此 Flow 与金币/算力购买的 [purchaseResultFlow] 完全隔离。它只负责把 Google 的
      * PURCHASED、PENDING、取消或不确定结果交给会员业务层，绝不在 BillingManager 内调用
      * 旧的一次性商品验单接口。会员权益最终是否生效，必须以后续 confirm/sync 为准。
      * Flow 不重放历史事件，会员 ViewModel 必须先启动收集，再允许用户点击购买。
@@ -90,7 +92,7 @@ object BillingManager {
      * 当前正在处理的会员 Subscription Product ID。
      *
      * BillingClient 全局只有一个 PurchasesUpdatedListener，必须用该字段先判断回调属于会员
-     * 订阅还是旧的一次性购买。它只是一段进程内的“回调路由上下文”，不是服务端订单状态，
+     * 订阅还是一次性商品购买。它只是一段进程内的“回调路由上下文”，不是服务端订单状态，
      * 也不承担进程重启后的恢复；进程重启场景要通过 [queryMemberSubscriptions] 查询 SUBS。
      *
      * PURCHASED、PENDING 和结果不确定时不能立即清空，否则用户快速二次点击可能覆盖尚未
@@ -133,7 +135,7 @@ object BillingManager {
      * 为进程重启、页面重建或 PENDING 恢复重新建立会员回调路由。
      *
      * 该方法不拉起支付、不查询商店，只把后续可能到达的 PurchasesUpdatedListener 回调继续
-     * 路由到 [memberBillingResultFlow]。若普通积分购买或另一个会员商品正在处理则拒绝绑定，
+     * 路由到 [memberBillingResultFlow]。若金币/算力购买或另一个会员商品正在处理则拒绝绑定，
      * 调用方应保留恢复标记并在下一次前台机会重试，不能覆盖现有支付上下文。
      */
     fun restoreMemberBillingContext(productId: String): Boolean {
@@ -167,101 +169,40 @@ object BillingManager {
 
         return BillingClient.newBuilder(App.instance)
             .setListener { billingResult, purchases ->
-                isPurchasing.set(false)
+                // PURCHASED 凭证先于任何回调路由和网络处理同步加密落盘。
+                val purchaseList = purchases.orEmpty()
+                val capturedOneTimeRecords = OneTimePurchaseStore.capturePurchased(purchaseList)
+                val wasPurchasing = isPurchasing.getAndSet(false)
 
                 // 会员订阅与普通一次性购买共用 BillingClient 的唯一回调入口，因此会员上下文
-                // 必须优先路由。若先判断 orderId，SUBS 会落入旧 verifyPurchased 验单链路。
+                // 必须优先路由。若会员流程期间收到迟到的 INAPP 成功回调，则先安全捕获能与
+                // 本地记录严格匹配的凭证，并避免把该回调误报给会员链路。
                 activeMemberProductId?.let { memberProductId ->
+                    if (capturedOneTimeRecords.isNotEmpty()) {
+                        OneTimePurchaseRecoveryManager.recoverIfNeeded()
+                    }
+                    if (
+                        billingResult.responseCode == BillingClient.BillingResponseCode.OK &&
+                        capturedOneTimeRecords.isNotEmpty() &&
+                        purchaseList.none { purchase -> memberProductId in purchase.products }
+                    ) {
+                        // 这是会员流程期间迟到的 INAPP 成功更新，不把它伪装成会员未知结果。
+                        isPurchasing.set(wasPurchasing)
+                        tryDisconnectAfterPurchase()
+                        return@setListener
+                    }
                     handleMemberPurchasesUpdated(
                         billingResult = billingResult,
-                        purchases = purchases,
+                        purchases = purchaseList,
                         expectedProductId = memberProductId
                     )
                     return@setListener
                 }
-
-                if (orderId == null) {
-                    // 进程重启后 orderId 和 activeMemberProductId 都可能丢失，而 Google 回调本身
-                    // 不提供可靠的业务链路标识。这里不能直接把 purchases 交给旧验单，否则其中
-                    // 的 SUBS 会被当成普通积分商品处理。改为显式只查询 INAPP 后再走旧补偿链路；
-                    // SUBS 由会员页面/恢复编排通过 queryMemberSubscriptions 单独处理。
-                    queryPendingPurchases { _, newlyVerified, _, allVerified ->
-                        if (allVerified && newlyVerified.isNotEmpty()) {
-                            App.instance.getString(R.string.system_payment_success).showToast()
-                            // 进程重启且没有 ViewModel 订阅时，emit 允许被丢弃，Toast 继续保留旧提示。
-                            _purchaseResult.tryEmit(
-                                PurchaseResult.Success(newlyVerified.firstOrNull())
-                            )
-                        }
-                    }
-                    return@setListener
-                }
-                val currentOrderId = orderId
-                when (billingResult.responseCode) {
-                    BillingClient.BillingResponseCode.OK -> {//购买成功
-                        Logger.d(TAG, "Purchases updated: $purchases")
-                        handlePurchases(purchases) { _, _, _, allVerified ->
-                            orderId = null
-                            if (allVerified) {
-                                showToast(R.string.system_payment_success)
-                                _purchaseResult.tryEmit(PurchaseResult.Success(purchases?.firstOrNull()))
-                            } else {
-                                _purchaseResult.tryEmit(PurchaseResult.Failed.BenefitFailed)
-                            }
-                            tryDisconnectAfterPurchase()
-                        }
-                    }
-
-                    BillingClient.BillingResponseCode.ITEM_ALREADY_OWNED, BillingClient.BillingResponseCode.SERVICE_DISCONNECTED, BillingClient.BillingResponseCode.ERROR -> {//已经拥有，超时，未知错误，均有可能支付成功
-                        val reason =
-                            "Google购买异常===>PurchasesUpdatedListener: $billingResult , purchase:${purchases?.getOrNull(0)} order=$currentOrderId userId=${User.get().userId}"
-                        FirebaseCrashlytics.getInstance().recordException(Exception(reason))
-                        // 第一次立即查
-                        queryPendingPurchases { list, _, verifyFailedList, _ ->
-                            val purchase = list?.find { it.accountIdentifiers?.obfuscatedAccountId == currentOrderId }
-                            if (purchase != null) {
-                                orderId = null
-                                val isCurrentVerifyFailed = verifyFailedList.any {
-                                    it.accountIdentifiers?.obfuscatedAccountId == currentOrderId
-                                }
-                                if (isCurrentVerifyFailed) {
-                                    _purchaseResult.tryEmit(PurchaseResult.Failed.BenefitFailed)
-                                } else {
-                                    R.string.system_payment_success.getResString().showToastDelay(500L)
-                                    _purchaseResult.tryEmit(PurchaseResult.Success(purchase))
-                                }
-                            } else {
-                                R.string.system_payment_failed.getResString().showToastDelay(500L)
-                                _purchaseResult.tryEmit(PurchaseResult.Failed.PaymentFailed)
-                                reportOrderStatus(currentOrderId, 2, reason)
-                            }
-                            tryDisconnectAfterPurchase()
-                        }
-                    }
-
-                    BillingClient.BillingResponseCode.USER_CANCELED -> {
-                        Logger.d(
-                            TAG,
-                            "Purchases failed: $billingResult ,purchase:${purchases?.getOrNull(0)?.toString()}"
-                        )
-                        reportOrderStatus(currentOrderId, 3)
-                        R.string.system_payment_cancel.getResString().showToastDelay(500L)
-                        _purchaseResult.tryEmit(PurchaseResult.Cancelled)
-                        tryDisconnectAfterPurchase()
-                    }
-
-                    else -> {
-                        val reason =
-                            "Google购买失败：PurchasesUpdatedListener: $billingResult , purchase:${purchases?.getOrNull(0)} order=$currentOrderId  userId=${User.get().userId}"
-                        FirebaseCrashlytics.getInstance().recordException(
-                            Exception(reason)
-                        )
-                        reportOrderStatus(currentOrderId, 2, reason)
-                        showToast(R.string.system_payment_failed)
-                        _purchaseResult.tryEmit(PurchaseResult.Failed.PaymentFailed)
-                        tryDisconnectAfterPurchase()
-                    }
-                }
+                handleOneTimePurchasesUpdated(
+                    billingResult = billingResult,
+                    purchases = purchaseList,
+                    capturedRecords = capturedOneTimeRecords,
+                )
             }
             .enablePendingPurchases(PendingPurchasesParams.newBuilder().apply {
                 enableOneTimeProducts()
@@ -269,6 +210,96 @@ object BillingManager {
             }.build())
             .enableAutoServiceReconnection()
             .build()
+    }
+
+    /**
+     * 处理一次性商品回调。Google 的 PURCHASED 事实先同步加密落盘，再进入应用级验单任务。
+     */
+    private fun handleOneTimePurchasesUpdated(
+        billingResult: BillingResult,
+        purchases: List<Purchase>,
+        capturedRecords: List<OneTimePurchaseRecord>,
+    ) {
+        val currentOrderNo = orderId
+        Logger.d(
+            TAG,
+            "One-time purchase update: code=${billingResult.responseCode}, count=${purchases.size}, hasActiveOrder=${currentOrderNo != null}"
+        )
+
+        if (currentOrderNo == null) {
+            if (capturedRecords.isNotEmpty()) {
+                OneTimePurchaseRecoveryManager.recoverIfNeeded()
+            }
+            tryDisconnectAfterPurchase()
+            return
+        }
+
+        val matchingPurchase = OneTimePurchaseStore.findMatchingPurchase(
+            orderNo = currentOrderNo,
+            purchases = purchases,
+        )
+        if (matchingPurchase?.purchaseState == Purchase.PurchaseState.PURCHASED) {
+            val record = capturedRecords.singleOrNull { it.orderNo == currentOrderNo }
+            if (record == null) {
+                finishOneTimeRouting(currentOrderNo)
+                _purchaseResult.tryEmit(PurchaseResult.Failed.BenefitFailed)
+                OneTimePurchaseRecoveryManager.recoverIfNeeded()
+                return
+            }
+            OneTimePurchaseRecoveryManager.verifyCurrentPurchase(
+                record = record,
+            ) { success ->
+                finishOneTimeRouting(currentOrderNo)
+                if (success) {
+                    showToast(R.string.system_payment_success)
+                    _purchaseResult.tryEmit(PurchaseResult.Success(matchingPurchase))
+                } else {
+                    _purchaseResult.tryEmit(PurchaseResult.Failed.BenefitFailed)
+                }
+                if (success || capturedRecords.any { record -> record.orderNo != currentOrderNo }) {
+                    OneTimePurchaseRecoveryManager.recoverIfNeeded()
+                }
+            }
+            return
+        }
+
+        when (billingResult.responseCode) {
+            BillingClient.BillingResponseCode.OK -> {
+                // PENDING、UNSPECIFIED 或 OK 但未返回当前订单都不是失败终态，保留 PREPARED。
+                finishOneTimeRouting(currentOrderNo)
+                _purchaseResult.tryEmit(PurchaseResult.Pending)
+                if (capturedRecords.isNotEmpty()) {
+                    OneTimePurchaseRecoveryManager.recoverIfNeeded()
+                }
+            }
+
+            BillingClient.BillingResponseCode.USER_CANCELED -> {
+                OneTimePurchaseStore.removePreparedForCurrentUser(currentOrderNo)
+                finishOneTimeRouting(currentOrderNo)
+                R.string.system_payment_cancel.getResString().showToastDelay(500L)
+                _purchaseResult.tryEmit(PurchaseResult.Cancelled)
+            }
+
+            BillingClient.BillingResponseCode.ITEM_ALREADY_OWNED,
+            BillingClient.BillingResponseCode.SERVICE_TIMEOUT,
+            BillingClient.BillingResponseCode.SERVICE_DISCONNECTED,
+            BillingClient.BillingResponseCode.SERVICE_UNAVAILABLE,
+            BillingClient.BillingResponseCode.NETWORK_ERROR,
+            BillingClient.BillingResponseCode.ERROR -> {
+                // 商店结果不确定，保留预下单记录并在应用级任务中查询官方购买。
+                finishOneTimeRouting(currentOrderNo)
+                _purchaseResult.tryEmit(PurchaseResult.Pending)
+                OneTimePurchaseRecoveryManager.recoverIfNeeded()
+            }
+
+            else -> {
+                // 商品不可用、开发者配置错误等明确未成交结果只清理尚无 token 的 PREPARED。
+                OneTimePurchaseStore.removePreparedForCurrentUser(currentOrderNo)
+                finishOneTimeRouting(currentOrderNo)
+                showToast(R.string.system_payment_failed)
+                _purchaseResult.tryEmit(PurchaseResult.Failed.PaymentFailed)
+            }
+        }
     }
 
     /**
@@ -817,40 +848,49 @@ object BillingManager {
     }
 
     /**
-     * 发起普通积分的一次性商品购买。结果通过 [purchaseResultFlow] 下发，调用方需提前订阅。
+     * 发起金币或算力的一次性商品购买。预下单上下文会先加密落盘，随后才连接并拉起 Google。
      *
-     * [productType] 暂时保留是为了兼容已有调用签名，但该旧入口只允许值 1。会员订阅必须调用
-     * [launchMemberSubscription]，不能再借用旧 orderId、验单和消费链路。
-     *
-     * @param productId Google INAPP 商品 ID。
-     * @param orderId 普通积分购买的自建预订单 ID。
-     * @param productType 兼容参数，仅允许 1（一次性商品）；2 会被明确拒绝。
+     * @param productId 后端预下单返回的 Google INAPP 商品 ID。
+     * @param orderId 后端创建的内部订单号。
+     * @param businessType 用于进程重启后选择与本次下单一致的验单接口。
      */
     fun launchPurchase(
         activity: Activity?,
         productId: String,
         orderId: String,
-        productType: Int = 1,
+        businessType: OneTimePurchaseBusinessType,
     ) {
-        if (activity == null) {
-            Logger.d(TAG, "activity is null")
-            return
-        }
-        if (productType != 1) {
-            // 从入口处关闭旧 SUBS 分支，保证会员购买不会写入 orderId 或进入 verifyPurchased。
-            Logger.d(TAG, "launchPurchase only supports INAPP products")
+        if (productId.isBlank() || orderId.isBlank()) {
             _purchaseResult.tryEmit(PurchaseResult.Failed.LaunchFailed)
             return
         }
+        if (!OneTimePurchaseStore.savePrepared(businessType, orderId, productId)) {
+            // 无法持久化时禁止拉起支付，避免付款成功后没有可恢复凭证。
+            _purchaseResult.tryEmit(PurchaseResult.Failed.LaunchFailed)
+            return
+        }
+        if (activity == null) {
+            OneTimePurchaseStore.removePreparedForCurrentUser(orderId)
+            _purchaseResult.tryEmit(PurchaseResult.Failed.LaunchFailed)
+            return
+        }
+
+        // 连接前先占用一次性商品回调路由，避免并发会员 prepare 或另一笔 INAPP 覆盖上下文。
+        if (this.orderId != null || activeMemberProductId != null) {
+            OneTimePurchaseStore.removePreparedForCurrentUser(orderId)
+            _purchaseResult.tryEmit(PurchaseResult.Failed.LaunchFailed)
+            return
+        }
+        this.orderId = orderId
+
         connectIfNeeded { state ->
-            // Google 只有一个购买回调：旧 orderId 未结清、会员上下文未收敛或 SDK 正在拉起时，
-            // 都禁止启动另一笔一次性购买，避免回调被错误路由到会员或旧验单链路。
             if (
                 state != 2 ||
-                this.orderId != null ||
+                this.orderId != orderId ||
                 activeMemberProductId != null ||
                 !isPurchasing.compareAndSet(false, true)
             ) {
+                finishDefinitiveOneTimeLaunchFailure(orderId)
                 return@connectIfNeeded
             }
             launchFlow(
@@ -885,7 +925,7 @@ object BillingManager {
      * 拉起会员订阅的 Google Play 支付页。
      *
      * 这是会员订阅专用的底层入口，与 [launchPurchase] 的一次性商品订单链路完全隔离：
-     * - 不写入旧链路的 [orderId]，避免回调进入 verifyPurchased；
+     * - 不写入一次性商品链路的 [orderId]，避免回调误入 INAPP 验单；
      * - 不在这里查询/猜测 offer，调用方必须先按 productId + basePlanId + offerId 严格匹配；
      * - 只下发 [memberBillingResultFlow]，PURCHASED 后仍需业务层调用会员 confirm；
      * - SWITCH 时由调用方传入包含旧 purchaseToken 和替换模式的 [subscriptionUpdateParams]。
@@ -1037,9 +1077,7 @@ object BillingManager {
                     productCache[productId] = list.productDetailsList[0]
                     launchBillingFlow(activity, list.productDetailsList[0], orderId)
                 } else {
-                    isPurchasing.set(false)
-                    _purchaseResult.tryEmit(PurchaseResult.Failed.LaunchFailed)
-                    tryDisconnectAfterPurchase()
+                    finishDefinitiveOneTimeLaunchFailure(orderId)
                     Logger.d(TAG, "查询商品信息失败")
                 }
             }
@@ -1049,16 +1087,14 @@ object BillingManager {
     }
 
     /**
-     * 调起普通积分 INAPP 的 Google 支付页。
+     * 调起金币/算力 INAPP 的 Google 支付页。
      *
      * 会员订阅已经迁移到 [launchMemberSubscription]。这里保留类型防御，即使未来调用方传错
-     * ProductDetails，也不会重新启用旧的 SUBS + verifyPurchased 链路。
+     * ProductDetails，也不会重新启用旧的 SUBS + 一次性商品验单链路。
      */
     private fun launchBillingFlow(activity: Activity, details: ProductDetails, orderId: String) {
         if (details.productType != BillingClient.ProductType.INAPP) {
-            isPurchasing.set(false)
-            _purchaseResult.tryEmit(PurchaseResult.Failed.LaunchFailed)
-            tryDisconnectAfterPurchase()
+            finishDefinitiveOneTimeLaunchFailure(orderId)
             return
         }
         val billingFlowParams = BillingFlowParams.newBuilder()
@@ -1074,82 +1110,81 @@ object BillingManager {
             .setIsOfferPersonalized(true) // 面向欧美市场的GDPR设置
             .build()
         try {
-            this.orderId = orderId
             val result = billingClient?.launchBillingFlow(activity, billingFlowParams)
             if (result?.responseCode != BillingClient.BillingResponseCode.OK) {
                 isPurchasing.set(false)
-                val reason = "Google购买失败：launchBillingFlow: $result ,productId:${details.productId}"
-                FirebaseCrashlytics.getInstance().recordException(
-                    Exception(reason)
-                )
-                // 购买流程启动失败，立即上报失败
-                reportOrderStatus(orderId, 2, reason)
-                _purchaseResult.tryEmit(PurchaseResult.Failed.LaunchFailed)
-                tryDisconnectAfterPurchase()
+                when (result?.responseCode) {
+                    BillingClient.BillingResponseCode.ITEM_ALREADY_OWNED,
+                    BillingClient.BillingResponseCode.SERVICE_TIMEOUT,
+                    BillingClient.BillingResponseCode.SERVICE_DISCONNECTED,
+                    BillingClient.BillingResponseCode.SERVICE_UNAVAILABLE,
+                    BillingClient.BillingResponseCode.NETWORK_ERROR,
+                    BillingClient.BillingResponseCode.ERROR -> {
+                        finishUncertainOneTimeLaunch(orderId)
+                    }
+
+                    else -> finishDefinitiveOneTimeLaunchFailure(orderId)
+                }
             }
         } catch (e: Exception) {
             isPurchasing.set(false)
-            Logger.e(TAG, "launchBillingFlow:${e.message}")
-            val reason = "Google购买失败：launchBillingFlow 异常: cause:${e.cause},message:${e.message},productId:${details.productId}"
+            Logger.e(TAG, "launchBillingFlow failed: ${e.javaClass.simpleName}")
             FirebaseCrashlytics.getInstance().recordException(
-                Exception(reason)
+                IllegalStateException("Google one-time purchase launch failed", e)
             )
-            // 购买流程启动失败，立即上报失败
-            reportOrderStatus(orderId, 2, reason)
-            _purchaseResult.tryEmit(PurchaseResult.Failed.LaunchFailed)
-            tryDisconnectAfterPurchase()
+            // Binder/SDK 异常无法证明商店一定未接受交易，保留 PREPARED 等待查询。
+            finishUncertainOneTimeLaunch(orderId)
         }
     }
 
     /**
-     * 查询并补偿普通积分的一次性商品历史购买。
+     * 为一次性商品恢复任务查询当前 Google 账号下的 INAPP 购买。
      *
-     * 该方法是旧 INAPP 链路的一部分，查询结果会进入 [handlePurchases] 并调用旧验单接口，
-     * 因此必须严格只查询 [BillingClient.ProductType.INAPP]。会员 SUBS 只能通过
-     * [queryMemberSubscriptions] 查询，禁止在这里合并两种商品类型。
-     *
-     * @param onConsumeOver newlyVerified 为本次新验签成功的 INAPP 列表，可用于后台补偿提示。
+     * 这里只读取商店事实，不验单、不 consume、不 acknowledge。null 表示连接或查询结果未知；
+     * 空列表才表示 Google 本次明确未返回任何 INAPP 购买。
      */
-    fun queryPendingPurchases(
-        onConsumeOver: ((
-            all: List<Purchase>?,
-            newlyVerified: List<Purchase>,
-            verifyFailedList: List<Purchase>,
-            allVerified: Boolean
-        ) -> Unit)? = null
-    ) {
-        connectIfNeeded { state ->
-            if (state != 2) {
-                Logger.d(TAG, "查询历史购买失败，连接状态: $state")
-                onConsumeOver?.invoke(null, emptyList(), emptyList(), false)
-                return@connectIfNeeded
+    internal suspend fun queryOneTimePurchasesForRecovery(): List<Purchase>? {
+        val connectionState = suspendCancellableCoroutine { continuation ->
+            connectIfNeeded { state ->
+                if (continuation.isActive) continuation.resume(state)
             }
-            ioScope.launchNoCrash {
-                val purchases = withContext(Dispatchers.IO) {
-                    try {
-                        billingClient?.queryPurchasesAsync(
-                            QueryPurchasesParams.newBuilder()
-                                .setProductType(BillingClient.ProductType.INAPP)
-                                .build()
-                        )?.purchasesList ?: listOf()
-                    } catch (cancellation: CancellationException) {
-                        throw cancellation
-                    } catch (exception: Exception) {
-                        // 首页会在该回调之后串行启动会员 SUBS 恢复，因此查询异常也必须回调，
-                        // 不能因为旧 INAPP 补偿失败而永久跳过会员进程恢复或泄漏页面计数。
-                        Logger.e(TAG, "queryPendingPurchases: ${exception.message}")
-                        null
-                    }
+        }
+        val connected = when (connectionState) {
+            2 -> true
+            1 -> withTimeoutOrNull(RECOVERY_CONNECTION_WAIT_MS) {
+                while (isConnecting.get() && billingClient?.isReady != true) {
+                    delay(RECOVERY_CONNECTION_POLL_MS)
                 }
-                withContext(Dispatchers.Main) {
-                    if (purchases == null) {
-                        onConsumeOver?.invoke(null, emptyList(), emptyList(), false)
-                    } else {
-                        handlePurchases(purchases) { list, newlyVerified, verifyFailedList, allVerified ->
-                            onConsumeOver?.invoke(list, newlyVerified, verifyFailedList, allVerified)
-                        }
-                    }
+                billingClient?.isReady == true
+            } == true
+            else -> false
+        }
+        if (!connected) {
+            Logger.d(TAG, "One-time purchase query skipped: connection unavailable")
+            return null
+        }
+
+        return withContext(Dispatchers.IO) {
+            try {
+                val result = billingClient?.queryPurchasesAsync(
+                    QueryPurchasesParams.newBuilder()
+                        .setProductType(BillingClient.ProductType.INAPP)
+                        .build()
+                ) ?: return@withContext null
+                if (result.billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
+                    result.purchasesList
+                } else {
+                    Logger.d(
+                        TAG,
+                        "One-time purchase query failed: code=${result.billingResult.responseCode}"
+                    )
+                    null
                 }
+            } catch (cancellation: CancellationException) {
+                throw cancellation
+            } catch (exception: Exception) {
+                Logger.e(TAG, "One-time purchase query failed: ${exception.javaClass.simpleName}")
+                null
             }
         }
     }
@@ -1159,7 +1194,7 @@ object BillingManager {
      *
      * 该方法是会员恢复/结果确认的“只读商店查询”能力：
      * - 只查询 SUBS，不查询 INAPP；
-     * - 不调用旧 verifyPurchased，不 consume，也不 acknowledge；
+     * - 不调用一次性商品验单接口，不 consume，也不 acknowledge；
      * - 不自动调用会员 confirm/sync，因为调用方还需要结合 prepare 上下文判断正确接口；
      * - 返回 PENDING 时调用方必须继续保留上下文，不能释放 prepare 或重复购买。
      *
@@ -1226,86 +1261,24 @@ object BillingManager {
             .build()
     }
 
-    /**
-     * 处理未消耗的订单
-     * @param onConsumeOver 回调参数：all purchases、新验签成功的列表（空表示无新验签或全部失败）、是否全部验签成功
-     */
-    private fun handlePurchases(
-        purchases: List<Purchase>?,
-        onConsumeOver: ((
-            all: List<Purchase>?,
-            newlyVerified: List<Purchase>,
-            verifyFailedList: List<Purchase>,
-            allVerified: Boolean
-        ) -> Unit)? = null
-    ) {
-        if (purchases.isNullOrEmpty()) {
-            Logger.d(TAG, "No purchases found")
-            onConsumeOver?.invoke(null, emptyList(), emptyList(), true)
-            return
-        }
-        ioScope.launchNoCrash {
-            var allVerified = true
-            val newlyVerified = mutableListOf<Purchase>()
-            val verifyFailedList = mutableListOf<Purchase>()
-            purchases.forEach {
-                if (it.purchaseState == Purchase.PurchaseState.PURCHASED) {
-                    if (!it.isAcknowledged) {
-                        Logger.d(TAG, "验券调用：${it.purchaseState}======>${it}")
-                        try {
-                            val orderNo = it.accountIdentifiers?.obfuscatedAccountId
-                            val productId = it.products.firstOrNull()
-                            val response = ApiFactory.apiService.verifyPurchased(
-                                VerifyPurchasedBody(
-                                    it.purchaseToken,
-                                    orderNo,
-                                    productId,
-                                    appsFlyerId = Config.get().appsFlyerId
-                                )
-                            )
-                            if (response.isSuccess) {
-                                val priceParameters = productId?.let { id -> getPriceParameters(productCache[id]) }
-                                // 1.3.8 统一后台上报af支付事件
-//                                AppsFlyerManager.logPurchase(
-//                                    productId = productId,
-//                                    orderId = orderNo,
-//                                    priceAmountMicros = priceParameters?.second,
-//                                    currency = priceParameters?.third
-//                                )
-                            }
-                            newlyVerified.add(it)
-                        } catch (e: Exception) {
-                            allVerified = false
-                            verifyFailedList.add(it)
-                            Logger.e(TAG, "验券失败: ${e.message}")
-                            FirebaseCrashlytics.getInstance().recordException(e)
-                        }
-                    } else {
-                        Logger.d(TAG, "已经验过券了：${it.purchaseState}======>${it}")
-                    }
-                } else {
-                    Logger.d(TAG, "异常验券调用：${it.purchaseState}======>${it}")
-                }
-            }
-            withContext(Dispatchers.Main) {
-                onConsumeOver?.invoke(purchases, newlyVerified, verifyFailedList, allVerified)
-            }
-        }
+    private fun finishOneTimeRouting(orderNo: String) {
+        if (orderId == orderNo) orderId = null
+        isPurchasing.set(false)
+        tryDisconnectAfterPurchase()
     }
 
-    /**
-     * 订单异常状态上报
-     * @param status 2-支付失败 3-取消订单"
-     */
-    fun reportOrderStatus(orderId: String?, status: Int, reason: String? = null) {
-        this.orderId = null
-        //订单状态 2-支付失败 3-取消订单"
-        Logger.d(TAG, "订单 $orderId 状态上报: ${(if (status == 2) "支付失败" else "取消订单")}")
-        ioScope.launchNoCrash {
-            withContext(Dispatchers.IO) {
-//                ApiFactory.apiService.reportOrderStatus(ReportOrderStatusBody(orderId, status, reason))
-            }
-        }
+    /** 明确没有进入交易时可清掉 PREPARED；已保存 token 的记录不会被该方法删除。 */
+    private fun finishDefinitiveOneTimeLaunchFailure(orderNo: String) {
+        OneTimePurchaseStore.removePreparedForCurrentUser(orderNo)
+        finishOneTimeRouting(orderNo)
+        _purchaseResult.tryEmit(PurchaseResult.Failed.LaunchFailed)
+    }
+
+    /** 无法确定商店是否已受理交易时保留本地记录，并立即安排一次有界恢复扫描。 */
+    private fun finishUncertainOneTimeLaunch(orderNo: String) {
+        finishOneTimeRouting(orderNo)
+        _purchaseResult.tryEmit(PurchaseResult.Pending)
+        OneTimePurchaseRecoveryManager.recoverIfNeeded()
     }
 
     /**

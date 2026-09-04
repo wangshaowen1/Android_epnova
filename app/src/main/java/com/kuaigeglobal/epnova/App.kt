@@ -20,6 +20,7 @@ import com.kuaigeglobal.epnova.core.Config
 import com.kuaigeglobal.epnova.core.Global
 import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.google.GoogleServices
+import com.kuaigeglobal.epnova.core.google.billing.OneTimePurchaseRecoveryManager
 import com.kuaigeglobal.epnova.core.google.event.AnalyticsHelper
 import com.kuaigeglobal.epnova.core.google.event.CrashlyticsHelper
 import com.kuaigeglobal.epnova.core.manager.AdStrategyManager
@@ -108,6 +109,8 @@ class App : BaseApp() {
                 isApiSecurityInit = true
                 Logger.i("starttime,api security use =" + (System.currentTimeMillis() - apiSecurityStartTime))
                 config.initAppConfig()
+                // 应用级启动兜底：已有 token 直接验单，只有 PREPARED 记录才查询 Google。
+                OneTimePurchaseRecoveryManager.recoverIfNeeded()
             }
 
             PermissionX.setRationaleFactory(object : DefaultRationaleFactory() {
@@ -240,9 +243,14 @@ class App : BaseApp() {
 
         override fun onActivityStarted(activity: Activity) {
             Logger.i(activity.javaClass.name)
+            val returnedToForeground = activityCount == 0 && isBackground
             activityCount++
             if (activity is SplashActivity) {
                 isColdStart = false // 冷启动状态结束
+            }
+            if (returnedToForeground) {
+                isBackground = false
+                OneTimePurchaseRecoveryManager.recoverIfNeeded()
             }
         }
 

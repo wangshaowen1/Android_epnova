@@ -2,7 +2,7 @@
 title: EpNova 项目文档
 type: overview
 status: active
-last_verified: 2026-08-14
+last_verified: 2026-09-04
 ---
 
 # EpNova 项目文档
@@ -35,11 +35,15 @@ last_verified: 2026-08-14
 | [AI Skill 与规则治理](architecture/ai-skill-governance.md) | 解释规则分层、Skill 准入、触发颗粒度和关键取舍 | active | 维护 `AGENTS.md`、`.agents` 规则和 Skill 时 |
 | [App 分层架构](architecture/app-layering.md) | 指导共享代码归属、依赖和渐进治理 | active | Android `app` 及本地库模块 |
 | [Matisse 媒体选择器接入契约](contracts/matisse-media-picker.md) | 说明依赖、选择器路由、主题优先级与本地化边界 | active | 所有媒体选择调用方 |
+| [Google Play 一次性商品支付流程](../.agents/project/google_play/google-play-one-time-purchase-flow.md) | 说明金币/算力预下单、凭证安全存储、验单和生命周期恢复 | active | Android Google `INAPP` 支付与补单 |
+| [Google Play 会员订阅流程](../.agents/project/google_play/google-play-member-subscription-flow.md) | 说明会员新购/切换、prepare、confirm、sync 与 SUBS 恢复 | active | Android Google 会员订阅 |
 
 ## 推荐阅读路径
 
 - 新开发者：先读 [`AGENTS.md`](../AGENTS.md)，需要理解设计原因时再读 [AI Skill 与规则治理](architecture/ai-skill-governance.md)。
 - 修改共享代码归属、跨层依赖或 `app/base`：只读 [App 分层架构](architecture/app-layering.md)。
 - 接入或升级媒体选择器：只读 [Matisse 媒体选择器接入契约](contracts/matisse-media-picker.md)。
+- 修改金币/算力 Google 支付、验单或补单：只读 [Google Play 一次性商品支付流程](../.agents/project/google_play/google-play-one-time-purchase-flow.md)。
+- 修改会员套餐购买、切换或恢复：只读 [Google Play 会员订阅流程](../.agents/project/google_play/google-play-member-subscription-flow.md)。
 - 任务型 AI：先按 `AGENTS.md` 判断档位，再由 [`.agents/android-codegen-quick-rules.md`](../.agents/android-codegen-quick-rules.md) 路由；不要默认加载架构文档。
 - 规则维护者：阅读 [AI Skill 与规则治理](architecture/ai-skill-governance.md) 后，再修改对应的唯一事实源。

@@ -125,3 +125,14 @@ STATIC：已核对恢复标记账号隔离、商品与混淆账号双重匹配�
 
 ### 验证结论
 STATIC：已检查逐段转码先于 concat 执行、两阶段共用音频编码参数、新缓存名避开旧处理结果，`git diff --check` 通过；未跑 Gradle或媒体转码，仍需用实际 32kHz/44.1kHz 素材验证人声速度和分镜切点同步。
+
+## 本轮 Google Play 一次性商品凭证兜底
+
+### 变更了什么
+金币与算力预下单后持久化账号、业务类型、orderNo 和 productId；Google 返回 PURCHASED 后先用 Android Keystore + AES-GCM 加密持久化 purchaseToken，再分别调用 `/trade/pay/google/coin/verifyReceipt` 与 `/trade/pay/google/payCallBack`。启动、回到前台及进入充值页都会触发同一应用级恢复任务。
+
+### 为什么
+页面级 orderId 会随进程退出丢失，旧链路还会把接口业务失败误计为已验单。服务端已保证成功 token 重复提交幂等，并负责 consume，因此客户端只负责保留并重试真实凭证，不调用 `consumeAsync` 或 `acknowledgePurchase`；只有服务端明确验单成功后才删除含 token 的本地记录。
+
+### 验证结论
+STATIC：已核对两类商品接口路由、回调落盘先于网络、账号与 orderNo/productId 交叉匹配、网络/业务失败保留凭证、生命周期恢复入口及无客户端 consume/ack 调用；`git diff --check` 通过。按项目规则未跑 Gradle，仍需使用 License Tester 验证杀进程恢复、接口超时重提、PENDING 转 PURCHASED 和服务端已发货 token 幂等响应。

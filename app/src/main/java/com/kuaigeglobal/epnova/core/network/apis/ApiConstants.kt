@@ -1002,10 +1002,11 @@ object ApiConstants {
      */
     const val CREATE_GOOGLE_PRE_ORDER = "trade/pay/google/createPreOrder"
 
-    /**
-     * 验证票据
-     */
-    const val VERIFY_PURCHASED = "trade/pay/google/coin/verifyReceipt"
+    /** Google 金币一次性商品验单。 */
+    const val VERIFY_GOOGLE_COIN_PURCHASE = "trade/pay/google/coin/verifyReceipt"
+
+    /** Google 算力一次性商品验单。 */
+    const val VERIFY_GOOGLE_CREDITS_PURCHASE = "trade/pay/google/payCallBack"
 
     /**
      * 首页-搜索作品

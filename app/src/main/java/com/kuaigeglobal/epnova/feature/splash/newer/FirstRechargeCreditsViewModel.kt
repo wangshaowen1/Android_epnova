@@ -6,9 +6,10 @@ import androidx.lifecycle.viewModelScope
 import com.kuaigeglobal.epnova.base.viewmodel.AppRepositoryViewModel
 import com.kuaigeglobal.epnova.common.Constants
 import com.kuaigeglobal.epnova.common.ext.topActivity
-import com.kuaigeglobal.epnova.core.Global
 import com.kuaigeglobal.epnova.core.ext.launchWithLoading
 import com.kuaigeglobal.epnova.core.google.billing.BillingManager
+import com.kuaigeglobal.epnova.core.google.billing.OneTimePurchaseBusinessType
+import com.kuaigeglobal.epnova.core.google.billing.OneTimePurchaseRecoveryManager
 import com.kuaigeglobal.epnova.core.google.billing.PurchaseResult
 import com.kuaigeglobal.epnova.core.manager.EventManager
 import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
@@ -56,6 +57,7 @@ class FirstRechargeCreditsViewModel : AppRepositoryViewModel<CoinRepository>() {
 
     init {
         BillingManager.markActivePage(true)
+        OneTimePurchaseRecoveryManager.recoverIfNeeded()
     }
 
     override fun onCreate() {
@@ -99,18 +101,17 @@ class FirstRechargeCreditsViewModel : AppRepositoryViewModel<CoinRepository>() {
         purchaseJob?.cancel()
         purchaseJob = viewModelScope.launch {
             BillingManager.purchaseResultFlow.take(1).collect { result ->
-                // purchase_result：Label1=支付状态。
-                EventManager.onFirebaseTrack(
-                    FirebaseEvent.Category.FIRST_PURCHASE_CREDITS,
-                    FirebaseEvent.Action.PURCHASE_RESULT,
-                    if (result is PurchaseResult.Success) {
-                        FirebaseEvent.Value.RESULT_SUCCESS
-                    } else {
-                        FirebaseEvent.Value.RESULT_FAIL
-                    }
-                )
-                if (result is PurchaseResult.Success) {
-                    refreshCoinsAndPoints()
+                if (result != PurchaseResult.Pending) {
+                    // purchase_result：Label1=支付状态。
+                    EventManager.onFirebaseTrack(
+                        FirebaseEvent.Category.FIRST_PURCHASE_CREDITS,
+                        FirebaseEvent.Action.PURCHASE_RESULT,
+                        if (result is PurchaseResult.Success) {
+                            FirebaseEvent.Value.RESULT_SUCCESS
+                        } else {
+                            FirebaseEvent.Value.RESULT_FAIL
+                        }
+                    )
                 }
                 _purchaseEvent.emit(result)
             }
@@ -119,7 +120,14 @@ class FirstRechargeCreditsViewModel : AppRepositoryViewModel<CoinRepository>() {
         launchWithLoading(
             block = {
                 response(mRepo.createGoogleCreditsPreOrder(pointConfig.pointConfigCode)) {
-                    BillingManager.launchPurchase(topActivity, data?.googleProductId ?: "", data?.orderNo ?: "")
+                    val orderData = this.data
+                    BillingManager.launchPurchase(
+                        activity = topActivity,
+                        productId = orderData?.googleProductId.orEmpty()
+                            .ifBlank { pointConfig.googleProductId.orEmpty() },
+                        orderId = orderData?.orderNo.orEmpty(),
+                        businessType = OneTimePurchaseBusinessType.CREDITS,
+                    )
                 }
             },
             onError = {
@@ -154,10 +162,6 @@ class FirstRechargeCreditsViewModel : AppRepositoryViewModel<CoinRepository>() {
         if (time == null || time <= 0) return 0L
         val now = System.currentTimeMillis()
         return if (time > now) time - now else 0L
-    }
-
-    private fun refreshCoinsAndPoints() {
-        Global.refreshCoinsAndPoints()
     }
 
     private fun getPriceText(): String {
