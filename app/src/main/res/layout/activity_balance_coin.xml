@@ -151,7 +151,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="@dimen/spacing_l"
                             android:layout_marginTop="24dp"
-                            android:text="@string/store_select_recharge_amount"
+                            android:text="@string/store_coin_subtitle"
                             android:textAppearance="@style/Text14"
                             android:textColor="?attr/textColor3"
                             android:textStyle="normal"

@@ -213,45 +213,36 @@
             </LinearLayout>
         </com.kuaigeglobal.epnova.widget.BorderConstraintLayout>
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <LinearLayout
             android:id="@+id/continueCreatingButton"
             singleClick="@{(view) -> item.onContinueCreatingClick()}"
             android:layout_width="0dp"
             android:layout_height="44dp"
             android:layout_marginEnd="@dimen/spacing_m"
             android:background="@drawable/btn_creation_dark_normal"
+            android:gravity="center"
+            android:orientation="horizontal"
             app:layout_constraintBottom_toBottomOf="@id/allListButton"
             app:layout_constraintTop_toTopOf="@id/allListButton"
             app:layout_constraintHorizontal_weight="0.65"
             app:layout_constraintStart_toEndOf="@id/allListButton"
             app:layout_constraintEnd_toEndOf="parent">
 
-            <LinearLayout
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:contentDescription="@null"
+                app:srcCompat="@drawable/ic_my_creations_publish" />
+
+            <TextView
+                style="@style/Text.Medium"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="horizontal"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <ImageView
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
-                    android:contentDescription="@null"
-                    app:srcCompat="@drawable/ic_my_creations_publish" />
-
-                <TextView
-                    style="@style/Text.Medium"
-                    android:layout_width="wrap_content"
-                    android:layout_height="22dp"
-                    android:layout_marginStart="10dp"
-                    android:includeFontPadding="false"
-                    android:text="@string/my_creations_continue_creating"
-                    android:textColor="@color/fixed_white_1"
-                    android:textSize="16sp" />
-            </LinearLayout>
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                android:layout_height="22dp"
+                android:layout_marginStart="10dp"
+                android:includeFontPadding="false"
+                android:text="@string/my_creations_continue_creating"
+                android:textColor="@color/fixed_white_1"
+                android:textSize="16sp" />
+        </LinearLayout>
     </com.kuaigeglobal.epnova.widget.BorderConstraintLayout>
 </layout>
