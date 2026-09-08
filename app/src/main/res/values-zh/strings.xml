@@ -616,6 +616,8 @@
     <string name="login_ai_comic_journey">开启你的 AI 漫画创作之旅</string>
     <string name="login_terms_privacy">继续即表示你同意服务条款和隐私政策</string>
     <string name="messages_title">消息</string>
+    <string name="notifications_empty_title">暂无消息</string>
+    <string name="notifications_empty_description">有新消息时，我们会通知你。</string>
     <string name="rewards_title">福利中心</string>
     <string name="rewards_rules">规则</string>
     <string name="rewards_balance">余额</string>

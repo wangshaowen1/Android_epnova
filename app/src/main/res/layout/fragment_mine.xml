@@ -713,7 +713,7 @@
                                android:layout_width="24dp"
                                android:layout_height="24dp"
                                android:importantForAccessibility="no"
-                               android:src="@drawable/icon_mine_rewards" />
+                               android:src="@drawable/icon_notice" />
 
                            <TextView
                                style="@style/Text.Regular"

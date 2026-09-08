@@ -217,6 +217,9 @@
         <activity
             android:name=".feature.settings.feedback.FeedbackActivity"
             android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
+            android:name=".feature.message.NotificationsActivity"
+            android:windowSoftInputMode="stateAlwaysHidden" />
         <!--举报-->
         <activity
             android:name=".feature.settings.report.ReportActivity"

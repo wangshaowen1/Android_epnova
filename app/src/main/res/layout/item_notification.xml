@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="item"
+            type="com.kuaigeglobal.epnova.feature.message.ItemNotificationVm" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/bg_06_ffffff_r12"
+        android:orientation="vertical"
+        android:padding="15dp">
+
+        <TextView
+            style="@style/Text16.Outfit.Medium"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="@{item.data.title}"
+            android:textColor="?attr/textColor1"
+            tools:text="🎉 Your First Viewer!" />
+
+        <TextView
+            style="@style/Text14.Outfit.Regular"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="@{item.data.content}"
+            android:textColor="?attr/textColor4"
+            tools:text="Your drama is live! EpNova is now finding your first viewers" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="10dp"
+            android:background="@color/border_color_2_dark" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/Text12.Outfit.Regular"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/spacing_s"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="@{item.data.workTitle}"
+                android:textColor="?attr/textColor3"
+                tools:text="《I Am Not a God》" />
+
+            <TextView
+                style="@style/Text12.Outfit.Regular"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{item.data.timeText}"
+                android:textColor="?attr/textColor4"
+                tools:text="July 23, 2026" />
+        </LinearLayout>
+    </LinearLayout>
+</layout>

@@ -623,6 +623,8 @@
     <string name="login_ai_comic_journey">เริ่มต้นการสร้างการ์ตูน AI ของคุณ</string>
     <string name="login_terms_privacy">หากคุณดำเนินการต่อ แสดงว่าคุณยอมรับเงื่อนไขการให้บริการและนโยบายความเป็นส่วนตัว</string>
     <string name="messages_title">แจ้งเตือน</string>
+    <string name="notifications_empty_title">ยังไม่มีการแจ้งเตือน</string>
+    <string name="notifications_empty_description">เราจะแจ้งให้คุณทราบเมื่อมีสิ่งใหม่</string>
     <string name="rewards_title">รางวัล</string>
     <string name="rewards_rules">กฎกติกา</string>
     <string name="rewards_balance">ยอดคงเหลือ</string>

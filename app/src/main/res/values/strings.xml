@@ -639,6 +639,8 @@
     <string name="login_ai_comic_journey">Start your AI drama creation journey</string>
     <string name="login_terms_privacy">If you continue, you agree to the Terms of service and Privacy Policy</string>
     <string name="messages_title">Notifications</string>
+    <string name="notifications_empty_title">No notifications yet</string>
+    <string name="notifications_empty_description">We\'ll let you know when there\'s something new.</string>
     <string name="rewards_title">Rewards</string>
     <string name="rewards_rules">Rules</string>
     <string name="rewards_balance">Balance</string>

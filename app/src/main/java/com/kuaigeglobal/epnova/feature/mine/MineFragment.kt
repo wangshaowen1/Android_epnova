@@ -15,6 +15,7 @@ import com.kuaigeglobal.epnova.databinding.FragmentMineBinding
 import com.kuaigeglobal.epnova.feature.income.IncomeActivity
 import com.kuaigeglobal.epnova.feature.main.MainViewModel
 import com.kuaigeglobal.epnova.feature.member.MemberIndexActivity
+import com.kuaigeglobal.epnova.feature.message.NotificationsActivity
 import com.kuaigeglobal.epnova.feature.recharge.CoinBalanceActivity
 import com.kuaigeglobal.epnova.feature.recharge.CreditsBalanceActivity
 import com.kuaigeglobal.epnova.feature.rewards.RewardsActivity
@@ -182,6 +183,13 @@ class MineFragment : BaseViewModelFragment<FragmentMineBinding, MineViewModel>()
             R.id.ll_languages -> {
                 //语言
                 LanguagesActivity.start(mActivity)
+            }
+
+            R.id.ll_messages -> {
+                if (AppNavigator.checkLoginIntercepted(false)) {
+                    return
+                }
+                NotificationsActivity.start(topActivity)
             }
 
             R.id.ll_suggestions_feedback -> {
