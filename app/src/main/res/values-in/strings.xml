@@ -621,6 +621,7 @@ Jika Anda memilih \"Tidak Setuju\", Anda tidak akan dapat menggunakan produk dan
     <string name="login_google">Masuk dengan Google</string>
     <string name="login_ai_comic_journey">Mulai perjalanan pembuatan komik AI Anda</string>
     <string name="login_terms_privacy">Jika melanjutkan, Anda menyetujui Ketentuan Layanan dan Kebijakan Privasi</string>
+    <string name="messages_title">Notifikasi</string>
     <string name="rewards_title">Hadiah</string>
     <string name="rewards_rules">Peraturan</string>
     <string name="rewards_balance">Saldo</string>

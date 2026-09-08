@@ -1,5 +1,6 @@
 package com.kuaigeglobal.epnova.feature.mine
 
+import android.util.Log
 import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableInt
@@ -35,6 +36,12 @@ class MineViewModel : AppRepositoryViewModel<AppRepository>() {
 
     //福利中心-未领取奖励总额
     val unCheckNum by lazy { ObservableInt() }
+
+    //通知消息数量-未读
+    val unMessageNum by lazy { ObservableInt() }
+
+    //反馈通知-未处理总额
+    val unFeedbackNum by lazy { ObservableInt() }
 
     val workCourseBanner by lazy { ObservableField<SimpleBannerInfo>() }
 
@@ -90,6 +97,8 @@ class MineViewModel : AppRepositoryViewModel<AppRepository>() {
             refreshUserInfo()
             //获取用户福利未领取奖励总额
             getRewardUserUncheck()
+            getUserUnFeedbackNum()
+            getUserUnMessageNum()
             Global.refreshCoinsAndPoints()
             launch {
                 response(
@@ -125,6 +134,55 @@ class MineViewModel : AppRepositoryViewModel<AppRepository>() {
             unCheckNum.set(0)
         })
     }
+
+    /**
+     * 获取用未读消息
+     */
+    private fun getUserUnMessageNum() {
+        if (!User.get().isLogin) {
+            unMessageNum.set(0)
+            return
+        }
+        launch(block = {
+            response(
+                bean = mRepo.api.rewardUserUncheck(UserTokenBody()),
+                result = {
+                    unMessageNum.set(data?.unCheckNum ?: 0)
+                },
+                error = {
+                    unMessageNum.set(0)
+                }
+            )
+        }, onError = {
+            unMessageNum.set(0)
+        })
+    }
+
+
+
+    /**
+     * 获取用户未处理反馈
+     */
+    private fun getUserUnFeedbackNum() {
+        if (!User.get().isLogin) {
+            unFeedbackNum.set(0)
+            return
+        }
+        launch(block = {
+            response(
+                bean = mRepo.api.rewardUserUncheck(UserTokenBody()),
+                result = {
+                    unFeedbackNum.set(data?.unCheckNum ?: 0)
+                },
+                error = {
+                    unFeedbackNum.set(0)
+                }
+            )
+        }, onError = {
+            unFeedbackNum.set(0)
+        })
+    }
+
 
     /**
      * 获取会员中心卡片
