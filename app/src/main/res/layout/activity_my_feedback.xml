@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="layout"
+            type="com.kuaigeglobal.epnova.feature.settings.feedback.FeedbackViewModel" />
+
+        <import type="android.view.View" />
+
+        <import type="com.kuaigeglobal.epnova.common.utils.Utils" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="?android:windowBackground"
+        android:fitsSystemWindows="true"
+        android:orientation="vertical">
+
+        <include
+            android:id="@+id/toolbar"
+            layout="@layout/view_model_toolbar"
+            app:layout_constraintTop_toTopOf="parent"
+            app:toolbar="@{layout.mToolbarVM}" />
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginHorizontal="15dp"
+                android:layout_marginTop="@dimen/spacing_m"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:paddingBottom="60dp">
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:id="@+id/ll_top"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                  <LinearLayout
+                      android:orientation="horizontal"
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content">
+                      
+                      <ImageView
+                          android:src="@drawable/ic_replied"
+                          android:layout_width="24dp"
+                          android:layout_height="24dp">
+                      </ImageView>
+
+                      <TextView
+                          tools:text="Replied"
+                          style="@style/Text20.Outfit.Medium"
+                          android:textColor="?attr/textColor1"
+                          android:layout_marginLeft="8dp"
+                          android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"/>
+
+                  </LinearLayout>
+
+
+
+                </LinearLayout>
+
+                <TextView
+                    tools:text="Thanks for your feedback.."
+                    android:layout_marginTop="12dp"
+                    android:layout_gravity="start"
+                    style="@style/Text14"
+                    android:textColor="?attr/textColor3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <LinearLayout
+                    android:padding="12dp"
+                    android:background="@drawable/bg_06_ffffff_r8"
+                    android:layout_marginTop="16dp"
+                    android:orientation="vertical"
+                    android:id="@+id/ll_user"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            style="@style/Text14"
+                            android:textColor="?attr/textColor4"
+                            tools:text="type"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+
+                        <View
+                            android:layout_weight="1"
+                            android:layout_width="@dimen/dp_0"
+                            android:layout_height="match_parent"/>
+
+
+                        <TextView
+                            style="@style/Text14"
+                            android:textColor="?attr/textColor2"
+                            tools:text="Other Issues"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_marginTop="12dp"
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            style="@style/Text14"
+                            android:textColor="?attr/textColor4"
+                            tools:text="Submitted On"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+
+                        <View
+                            android:layout_weight="1"
+                            android:layout_width="@dimen/dp_0"
+                            android:layout_height="match_parent"/>
+
+
+                        <TextView
+                            style="@style/Text14"
+                            android:textColor="?attr/textColor2"
+                            tools:text="2026/12/02 12:31:12"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_marginTop="12dp"
+                        style="@style/Text14"
+                        android:textColor="?attr/textColor4"
+                        tools:text="Description"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                    <TextView
+                        android:layout_marginTop="12dp"
+                        style="@style/Text14"
+                        android:textColor="?attr/textColor2"
+                        tools:text="Can I make original video make upload to reels or TikTok to make Money……"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                    <com.kuaigeglobal.epnova.widget.PhotoGridView
+                        android:id="@+id/photo1"
+                        android:layout_width="match_parent"
+                        android:layout_height="70dp"
+                        android:layout_marginTop="12dp"
+                        android:columnCount="1"
+                        android:minHeight="70dp"
+                        app:add_button_src="@drawable/icon_feedback_addpicture"
+                        app:add_button_visible="false"
+                        app:delete_button_src="@drawable/ic_feedback_close"
+                        app:divider_space="14dp"
+                        app:max_child_count="4" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:background="@drawable/bg_06_ffffff_r8"
+                    android:padding="12dp"
+                    android:layout_marginTop="16dp"
+                    android:orientation="vertical"
+                    android:id="@+id/ll_customer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+
+                        <TextView
+                            style="@style/Text14"
+                            android:textColor="?attr/textColor2"
+                            tools:text="Support Reply"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+
+                        <View
+                            android:layout_weight="1"
+                            android:layout_width="@dimen/dp_0"
+                            android:layout_height="match_parent"/>
+
+                        <TextView
+                            style="@style/Text14"
+                            android:textColor="?attr/textColor4"
+                            tools:text="Sep 3, 2026"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_marginTop="12dp"
+                        style="@style/Text14"
+                        android:textColor="?attr/textColor2"
+                        tools:text="Can I make original video make upload to reels or TikTok to make Money Can I make original video make upload to reels or TikTok to make Money Can I make original video make upload to reels or TikTok to make Money Can I make original video make upload to reels or TikTok to make Money"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                    <com.kuaigeglobal.epnova.widget.PhotoGridView
+                        android:id="@+id/photo2"
+                        android:layout_width="match_parent"
+                        android:layout_height="70dp"
+                        android:layout_marginTop="12dp"
+                        android:columnCount="1"
+                        android:minHeight="70dp"
+                        app:add_button_src="@drawable/icon_feedback_addpicture"
+                        app:add_button_visible="false"
+                        app:delete_button_src="@drawable/ic_feedback_close"
+                        app:divider_space="14dp"
+                        app:max_child_count="4" />
+
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+    </LinearLayout>
+</layout>

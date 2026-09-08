@@ -2,6 +2,11 @@ package com.kuaigeglobal.epnova.feature.settings.feedback
 
 import androidx.databinding.ObservableField
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.kuaigeglobal.epnova.App
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.base.viewmodel.AppRepositoryViewModel
@@ -15,9 +20,15 @@ import com.kuaigeglobal.epnova.core.network.apis.request.FeedbackBody
 import com.kuaigeglobal.epnova.core.network.apis.request.ImgUrlBody
 import com.kuaige.oss.OnUploadListener
 import com.kuaige.oss.OssClient
+import com.kuaigeglobal.epnova.common.Constant
+import com.kuaigeglobal.epnova.feature.message.NotificationItem
+import com.kuaigeglobal.epnova.feature.message.NotificationsPagingSource
 import com.nhsd.basic.ext.getResString
 import com.nhsd.basic.ext.showToast
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.withContext
 
 /**
@@ -34,6 +45,11 @@ class FeedbackViewModel : AppRepositoryViewModel<AppRepository>() {
     var mToolbarVM = ToolbarViewModel(
         navigationAction = { back() },
         title = R.string.profile_feedback_suggestions.getResString()
+    )
+
+    var mToolbarVMHistory = ToolbarViewModel(
+        navigationAction = { back() },
+        title = R.string.feedback_history.getResString()
     )
 
     val email = MutableLiveData<String>()
@@ -101,4 +117,18 @@ class FeedbackViewModel : AppRepositoryViewModel<AppRepository>() {
             setLoading(false)
         })
     }
+
+    private val feedbackHistoryItems = MutableStateFlow<List<FeedbackHistoryItem>>(emptyList())
+    val feedbackHistory: Flow<PagingData<FeedbackHistoryItem>> = feedbackHistoryItems
+        .flatMapLatest { items ->
+            Pager(
+                config = PagingConfig(
+                    initialLoadSize = Constant.Paged.PAGE_SIZE,
+                    pageSize = Constant.Paged.PAGE_SIZE,
+                    prefetchDistance = Constant.Paged.PREFETCH_DISTANCE,
+                ),
+                pagingSourceFactory = { FeedbackHistoryPagingSource(items) }
+            ).flow
+        }
+        .cachedIn(viewModelScope)
 }

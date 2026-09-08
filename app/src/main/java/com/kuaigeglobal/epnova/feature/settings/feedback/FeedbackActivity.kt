@@ -71,8 +71,7 @@ class FeedbackActivity :
     private fun initTitleBar() {
         binding.ivBack.setOnClickListener { finish() }
         binding.rlHistory.setOnClickListener {
-
-
+            FeedbackHistoryActivity.start(this)
         }
     }
 

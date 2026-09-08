@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="item"
+            type="com.kuaigeglobal.epnova.feature.settings.feedback.ItemFeedbackHistoryVm" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/bg_06_ffffff_r12"
+        android:orientation="vertical"
+        android:padding="15dp">
+
+        <TextView
+            android:ellipsize="end"
+            android:maxLines="2"
+            style="@style/Text14.Outfit.Regular"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@{item.data.content}"
+            android:textColor="?attr/textColor4"
+            tools:text="Your drama is live! EpNova is now finding your first viewers EpNova is now finding your first viewers" />
+
+        <com.kuaigeglobal.epnova.widget.PhotoGridView
+            android:id="@+id/photo"
+            android:layout_width="match_parent"
+            android:layout_height="34dp"
+            android:layout_marginTop="10dp"
+            android:columnCount="1"
+            android:minHeight="34dp"
+            app:add_button_src="@drawable/icon_feedback_addpicture"
+            app:add_button_visible="false"
+            app:delete_button_src="@drawable/ic_feedback_close"
+            app:divider_space="8dp"
+            app:max_child_count="4" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="10dp"
+            android:background="@color/border_color_2_dark" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/Text12.Outfit.Regular"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/spacing_s"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="@{item.data.workTitle}"
+                android:textColor="?attr/textColor3"
+                tools:text="《I Am Not a God》" />
+
+            <TextView
+                style="@style/Text12.Outfit.Regular"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{item.data.timeText}"
+                android:textColor="?attr/textColor4"
+                tools:text="July 23, 2026" />
+
+
+            <View
+                android:background="@color/color_8d8d8d"
+                android:layout_marginHorizontal="5dp"
+                android:layout_width="1dp"
+                android:layout_height="14dp"/>
+            
+            
+            <TextView
+                style="@style/Text12.Outfit.Regular"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{item.data.state}"
+                android:textColor="@{item.getStateTextColor}"
+                tools:text="Completed" />
+        </LinearLayout>
+    </LinearLayout>
+</layout>

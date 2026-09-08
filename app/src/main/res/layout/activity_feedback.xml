@@ -27,6 +27,12 @@
             app:layout_constraintTop_toTopOf="parent"
             app:toolbar="@{layout.mToolbarVM}" />-->
 
+        <com.kuaigeglobal.epnova.widget.StatusBarView
+            android:id="@+id/vStatusBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
