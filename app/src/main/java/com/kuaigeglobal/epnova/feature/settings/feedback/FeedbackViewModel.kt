@@ -37,6 +37,7 @@ class FeedbackViewModel : AppRepositoryViewModel<AppRepository>() {
     )
 
     val email = MutableLiveData<String>()
+    val isUnprocessed = MutableLiveData<Boolean>()
     val photoSize = MutableLiveData<Int>(0)
     val type = ObservableField<KeyValueInfo?>()
     val typeNames by lazy { Config.get().appConfig.userFeedBackTypeList }

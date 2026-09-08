@@ -52,6 +52,7 @@ class FeedbackActivity :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        initTitleBar()
         binding.photoGrid.setOnAddButtonClickedListener { requestAlbumsPermission() }
         binding.photoGrid.setOnPhotoChangedListener(object : PhotoGridView.OnPhotoChangedListener {
             override fun onPhotoAdded(photo: Uri?) {
@@ -65,6 +66,14 @@ class FeedbackActivity :
         })
         binding.feedbackInput.addTextChangedListener(this)
         binding.contact.addTextChangedListener(this)
+    }
+
+    private fun initTitleBar() {
+        binding.ivBack.setOnClickListener { finish() }
+        binding.rlHistory.setOnClickListener {
+
+
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -141,11 +150,12 @@ class FeedbackActivity :
     }
 
     private fun updateButtonEnable() {
-        binding.commit.alpha = if (mRealVM.type.get() != null && (binding.feedbackInput.text?.length ?: 0) >= 10) {
-            1f
-        } else {
-            0.5f
-        }
+        binding.commit.alpha =
+            if (mRealVM.type.get() != null && (binding.feedbackInput.text?.length ?: 0) >= 10) {
+                1f
+            } else {
+                0.5f
+            }
     }
 }
 

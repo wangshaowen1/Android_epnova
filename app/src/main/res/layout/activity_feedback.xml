@@ -21,11 +21,73 @@
         android:fitsSystemWindows="true"
         android:orientation="vertical">
 
-        <include
+        <!--<include
             android:id="@+id/toolbar"
             layout="@layout/view_model_toolbar"
             app:layout_constraintTop_toTopOf="parent"
-            app:toolbar="@{layout.mToolbarVM}" />
+            app:toolbar="@{layout.mToolbarVM}" />-->
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/action_bar_size"
+            app:layout_constraintTop_toBottomOf="@+id/vStatusBar">
+
+            <ImageView
+                android:id="@+id/ivBack"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:paddingHorizontal="@dimen/spacing_m"
+                android:src="@drawable/icon_back_left"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/title"
+                style="@style/Text.Medium"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="@string/profile_feedback_suggestions"
+                android:textColor="@color/text_color_1_dark"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/rl_history"
+                app:layout_constraintStart_toEndOf="@+id/ivBack"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/rl_history"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:paddingHorizontal="@dimen/spacing_l"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:id="@+id/iv_history"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/icon_feedback_history"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <View
+                    android:layout_width="8dp"
+                    android:layout_height="8dp"
+                    android:background="@drawable/bg_ff0000_r45"
+                    android:visibility="@{layout.isUnprocessed()?View.VISIBLE:View.GONE}"
+                    app:layout_constraintRight_toRightOf="@id/iv_history"
+                    app:layout_constraintTop_toTopOf="@id/iv_history" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
@@ -166,13 +228,12 @@
                     android:layout_marginTop="84dp"
                     android:alpha="0.5"
                     android:background="@drawable/bg_theme_color1_r50"
-                    android:textColor="?attr/textColor1"
+                    android:text="@string/submit_feedback"
                     android:textAllCaps="false"
-                    android:text="@string/submit_feedback" />
+                    android:textColor="?attr/textColor1" />
 
                 <LinearLayout
                     android:id="@+id/ll_contact_customer"
-                    android:visibility="gone"
                     singleClick="@{layout.clickHandler::onClick}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -180,7 +241,8 @@
                     android:layout_marginTop="12dp"
                     android:layout_marginBottom="30dp"
                     android:gravity="center"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:visibility="gone">
 
                     <TextView
                         style="@style/Text12.Outfit.Regular"
