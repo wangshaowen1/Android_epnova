@@ -66,13 +66,17 @@ class ShelfContainerAdapter : ListAdapter<Section, ShelfContainerAdapter.ShelfVi
 
         fun bind(data: Section, savedState: Parcelable?) {
             binding.tvShelfTitle.text = data.bookshelfName
-            binding.tvAll.setOnSingleClickListener {
+            val openShelfList = {
                 BookShelfListActivity.start(
                     activity = binding.root.context as? Activity,
                     bookshelfId = data.bookshelfId,
                     bookshelfName = data.bookshelfName
                 )
             }
+            binding.tvAll.setOnSingleClickListener {
+                openShelfList()
+            }
+            binding.rvInnerHorizontal.setOnReachEndListener { openShelfList() }
             // 使用带 callback 的 submitList，确保 Diff 计算并绑定完数据后再恢复位置
             innerAdapter.submitList(data.horizontalWorks) {
                 if (savedState != null) {

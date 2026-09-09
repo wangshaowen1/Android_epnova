@@ -1,6 +1,8 @@
 package com.kuaigeglobal.epnova.feature.home
 
+import android.util.Log
 import androidx.fragment.app.Fragment
+import androidx.viewpager2.widget.ViewPager2
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.adapter.FragmentStateCacheAdapter
 import com.kuaigeglobal.epnova.common.ext.removeTheRipples
@@ -25,8 +27,12 @@ import com.nhsd.magicindicator.buildins.commonnavigator.indicators.LinePagerIndi
 class HomeFragment : BaseViewModelFragment<FragmentHomeBinding, HomeTabsViewModel>() {
 
     companion object {
+        private const val TAG = "HomePagerTouch"
+
         fun newInstance(): HomeFragment = HomeFragment()
     }
+
+    private var pageChangeCallback: ViewPager2.OnPageChangeCallback? = null
 
     override fun onPrepareView() {
         super.onPrepareView()
@@ -89,6 +95,33 @@ class HomeFragment : BaseViewModelFragment<FragmentHomeBinding, HomeTabsViewMode
         }
         viewPager.offscreenPageLimit = fragments.size
         ViewPagerHelper.bind(binding.magicIndicator, viewPager)
+        pageChangeCallback = object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageScrolled(
+                position: Int,
+                positionOffset: Float,
+                positionOffsetPixels: Int
+            ) {
+                Log.d(
+                    TAG,
+                    "onPageScrolled position=$position offset=$positionOffset " +
+                        "offsetPx=$positionOffsetPixels current=${viewPager.currentItem}"
+                )
+            }
+
+            override fun onPageSelected(position: Int) {
+                Log.d(TAG, "onPageSelected position=$position")
+            }
+
+            override fun onPageScrollStateChanged(state: Int) {
+                Log.d(
+                    TAG,
+                    "onPageScrollStateChanged state=${pageScrollStateName(state)} " +
+                        "current=${viewPager.currentItem}"
+                )
+            }
+        }.also { callback ->
+            viewPager.registerOnPageChangeCallback(callback)
+        }
         viewPager.setCurrentItem(0, false)
         binding.magicIndicator.onPageSelected(0)
         binding.magicIndicator.onPageScrolled(0, 0f, 0)
@@ -114,7 +147,18 @@ class HomeFragment : BaseViewModelFragment<FragmentHomeBinding, HomeTabsViewMode
     }
 
     override fun onDestroy() {
+        pageChangeCallback?.let { binding.viewPager.unregisterOnPageChangeCallback(it) }
+        pageChangeCallback = null
         binding.viewPager.adapter = null
         super.onDestroy()
+    }
+
+    private fun pageScrollStateName(state: Int): String {
+        return when (state) {
+            ViewPager2.SCROLL_STATE_IDLE -> "IDLE"
+            ViewPager2.SCROLL_STATE_DRAGGING -> "DRAGGING"
+            ViewPager2.SCROLL_STATE_SETTLING -> "SETTLING"
+            else -> state.toString()
+        }
     }
 }
