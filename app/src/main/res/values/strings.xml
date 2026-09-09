@@ -354,6 +354,7 @@
     <string name="last_3_months_data_only">Showing last 3 months only. Data may be delayed.</string>
     <string name="limited_time_free">Free for Limited Time</string>
     <string name="to_be_created">Pending Creation</string>
+    <string name="create">Create</string>
     <string name="drama_detail_draft">Draft</string>
     <string name="waiting_to_synthesize">Pending Composition</string>
     <string name="vol_number">Ep.</string>

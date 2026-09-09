@@ -15,6 +15,7 @@ import com.kuaigeglobal.epnova.common.ext.showCommonDialog
 import com.kuaigeglobal.epnova.common.ext.showConfirmPrompt
 import com.kuaigeglobal.epnova.common.ext.startRefreshWithAdapter
 import com.kuaigeglobal.epnova.common.ext.topActivity
+import com.kuaigeglobal.epnova.core.Config
 import com.kuaigeglobal.epnova.core.Events
 import com.kuaigeglobal.epnova.core.manager.EventManager
 import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
@@ -90,6 +91,7 @@ class SeriesActivity : BaseViewModelActivity<ActivitySeriesBinding, SeriesViewMo
     }
 
     private fun initView() {
+        updateSwitchTypeIcon()
         val noDataButtonTextAs = getString(R.string.refresh)
         val noDataAs = getString(R.string.empty_creation_history)
         binding.recyclerView.apply {
@@ -119,6 +121,17 @@ class SeriesActivity : BaseViewModelActivity<ActivitySeriesBinding, SeriesViewMo
         episodeAdapter.addLoadStateListener { loadStates ->
             mRealVM.onEpisodeListLoadStateChanged(loadStates.refresh, episodeAdapter.snapshot().items)
         }
+    }
+
+    /** 根据当前剧集展示模式显示下一步可切换的图标。 */
+    private fun updateSwitchTypeIcon() {
+        binding.ivSwitchType.setImageResource(
+            if (Config.get().isGridMode) {
+                R.drawable.ic_type_list
+            } else {
+                R.drawable.ic_type_grid
+            }
+        )
     }
 
     private fun refresh() {
@@ -330,6 +343,11 @@ class SeriesActivity : BaseViewModelActivity<ActivitySeriesBinding, SeriesViewMo
     override fun <Data> onClick(view: View?, data: Data?) {
         super.onClick(view, data)
         when (view?.id) {
+            R.id.ivSwitchType -> {
+                Config.get().switchMode()
+                updateSwitchTypeIcon()
+            }
+
             R.id.btnMore -> {
                 mRealVM.workInfo.value ?: return
                 val popupView = SeriesMorePopupView(this)

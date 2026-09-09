@@ -57,6 +57,9 @@ class Config : NetworkChangedListener {
         private set
     var isDevelopmentMode: Boolean by MmkvDelegate(DEVELOPMENT_MODE, false) { mmkv }
         private set
+    /** 剧集详情页默认使用宫格布局，用户切换后通过 MMKV 持久化。 */
+    var isGridMode: Boolean by MmkvDelegate(IS_GRID_MODE, true) { mmkv }
+        private set
     var lang: String by MmkvDelegate(APP_LANG, LocaleHelper.resolveDefaultLanguage()) { mmkv }
         private set
     var episodeAutoUnlock: Boolean
@@ -248,6 +251,10 @@ class Config : NetworkChangedListener {
         this.episodeAutoUnlock = isAutoUnlock
     }
 
+    fun switchMode() {
+        this.isGridMode = !this.isGridMode
+    }
+
     fun getSavedLanguage(): String {
         val normalized = LocaleHelper.normalizeLanguageCode(this.lang)
         if (normalized != this.lang) {
@@ -417,6 +424,7 @@ class Config : NetworkChangedListener {
         private const val OBJECT_ID = "objectId"
         const val IN_REVIEW: String = "inReview"
         private const val DEVELOPMENT_MODE = "developmentMode"
+        private const val IS_GRID_MODE = "seriesEpisodeGridMode"
         private const val ENVIRONMENT: String = "environment"
         private const val APP_CONFIG = "app_config"
         private const val INSTALL_DATA = "install_data"

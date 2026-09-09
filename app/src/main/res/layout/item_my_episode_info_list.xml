@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="item"
+            type="com.kuaigeglobal.epnova.feature.series.ItemSeriesEpisodeVM" />
+
+        <import type="android.view.View" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="15dp"
+        android:layout_marginBottom="12dp"
+        android:background="@drawable/bg_06_ffffff_r12"
+        android:onClick="@{(v) -> item.onClick()}"
+        android:padding="12dp">
+
+        <!-- Both Figma states share this fixed 54x72 cover slot. -->
+        <FrameLayout
+            android:id="@+id/layoutCover"
+            android:layout_width="54dp"
+            android:layout_height="72dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <!-- Figma 20004:23035: not-created placeholder. -->
+            <com.kuaigeglobal.epnova.widget.BorderConstraintLayout
+                android:id="@+id/layoutCoverPlaceholder"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="@{item.data.notCreated ? View.VISIBLE : View.GONE}"
+                app:backgroundStartColor="?attr/fillColor1"
+                app:borderStartColor="?attr/borderColor2"
+                app:borderWidth="1dp"
+                app:roundCornerRadius="@dimen/radius_m">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/icon_add"
+                    app:tintMode="src_in"
+                    app:tint="@color/color_30_ffffff"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </com.kuaigeglobal.epnova.widget.BorderConstraintLayout>
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/ivCover"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:visibility="@{item.data.notCreated ? View.GONE : View.VISIBLE}"
+                loadUri="@{item.data.workCoverUrl}"
+                placeHolder="@{@drawable/img_default_cover_3_4}"
+                app:shapeAppearanceOverlay="@style/roundStyle_r8"
+                tools:src="@drawable/img_default_cover_3_4" />
+
+            <TextView
+                android:id="@+id/tvDuration"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_marginBottom="2dp"
+                android:background="@drawable/gradient_top_00_000000_bottom_60_000000_br8"
+                android:gravity="center"
+                android:text="@{item.formatDuration()}"
+                android:textColor="?attr/textColor1"
+                android:textSize="10sp"
+                android:visibility="@{item.data.isCompleted ? View.VISIBLE : View.GONE}"
+                tools:text="03:26" />
+
+        </FrameLayout>
+
+        <LinearLayout
+            android:id="@+id/layoutEpisodeInfo"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp"
+            android:gravity="center_vertical"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/actionSlot"
+            app:layout_constraintStart_toEndOf="@id/layoutCover"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/tvEpisodeNumber"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="@{@string/episode_number_format(item.data.sortNo)}"
+                android:textAppearance="@style/Text14"
+                android:textColor="?attr/textColor1"
+                tools:text="Episode 1" />
+
+            <TextView
+                android:id="@+id/tvStatus"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="@{item.episodeStatusText()}"
+                app:textColorRes="@{item.episodeStatusTextColor()}"
+                android:textSize="11sp"
+                tools:textColor="@color/white"
+                tools:text="Synopsis · Completed" />
+
+        </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/actionSlot"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="@id/layoutCover"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/layoutCover">
+
+            <TextView
+                tools:visibility="visible"
+                style="@style/Text.Medium"
+                android:id="@+id/btnCreate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/bg_5a6afe_r54"
+                android:gravity="center"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="4dp"
+                android:text="@string/create"
+                android:textColor="?attr/textColor1"
+                android:textSize="12sp"
+                android:visibility="@{item.data.notCreated ? View.VISIBLE : View.GONE}"
+                tools:text="create" />
+
+            <ImageView
+                android:id="@+id/ivDownload"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="end|center_vertical"
+                android:contentDescription="@string/download"
+                android:src="@drawable/icon_download"
+                setVisible="@{item.data.isCompleted}" />
+
+        </FrameLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
