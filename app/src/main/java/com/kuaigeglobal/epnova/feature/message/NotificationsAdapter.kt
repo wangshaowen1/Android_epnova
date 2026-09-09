@@ -6,9 +6,12 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.kuaigeglobal.epnova.databinding.ItemNotificationBinding
+import com.nhsd.basic.ext.setOnSingleClickListener
 import com.nhsd.basic.item.BindingViewHolder
 
-class NotificationsAdapter :
+class NotificationsAdapter(
+    private val onItemClick: (NotificationItem) -> Unit
+) :
     PagingDataAdapter<NotificationItem, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -31,7 +34,13 @@ class NotificationsAdapter :
         BindingViewHolder<ItemNotificationBinding>(binding) {
 
         override fun bind(position: Int) {
-            binding.item = getItem(position)?.let(::ItemNotificationVm)
+            val item = getItem(position)
+            binding.item = item?.let(::ItemNotificationVm)
+            binding.root.setOnClickListener(null)
+            binding.root.isClickable = item != null && item.type != NotificationItem.TYPE_NONE
+            if (item != null && item.type != NotificationItem.TYPE_NONE) {
+                binding.root.setOnSingleClickListener { onItemClick(item) }
+            }
             binding.executePendingBindings()
         }
     }

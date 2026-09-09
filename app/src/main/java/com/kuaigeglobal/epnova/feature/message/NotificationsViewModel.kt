@@ -34,9 +34,4 @@ class NotificationsViewModel : AppViewModel() {
             ).flow
         }
         .cachedIn(viewModelScope)
-
-    /** 通知接口接入前保留本地提交入口；接入后可替换为 Pager.flow。 */
-    fun showNotifications(notices: List<NotificationItem>) {
-        notificationItems.value = notices
-    }
 }
