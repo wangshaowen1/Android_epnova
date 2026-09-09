@@ -2,10 +2,20 @@ package com.kuaigeglobal.epnova.feature.settings.feedback
 
 import android.app.Activity
 import android.content.Intent
+import android.os.Bundle
+import androidx.databinding.Observable
 import com.kuaigeglobal.epnova.databinding.ActivityMyFeedbackBinding
 import com.nhsd.basic.BaseViewModelActivity
 
 class MyFeedbackActivity : BaseViewModelActivity<ActivityMyFeedbackBinding, FeedbackViewModel>() {
+    private val feedbackDetailObserver = object : Observable.OnPropertyChangedCallback() {
+        override fun onPropertyChanged(sender: Observable?, propertyId: Int) {
+            val detail = mRealVM.feedbackDetail.get()
+            binding.photo1.setAll(detail?.imageUrls ?: emptyList())
+            binding.photo2.setAll(detail?.replyImageUrls ?: emptyList())
+        }
+    }
+
     companion object {
         private const val EXTRA_FEEDBACK_ID = "extra_feedback_id"
 
@@ -18,13 +28,15 @@ class MyFeedbackActivity : BaseViewModelActivity<ActivityMyFeedbackBinding, Feed
         }
     }
 
-    override fun onResume() {
-        super.onResume()
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        mRealVM.feedbackDetail.addOnPropertyChangedCallback(feedbackDetailObserver)
         mRealVM.loadFeedbackDetail(intent.getStringExtra(EXTRA_FEEDBACK_ID))
-        mRealVM.feedbackDetail.get()?.let { detail ->
-            binding.photo1.setAll(detail.imageUrls)
-            binding.photo2.setAll(detail.replyImageUrls)
-        }
+    }
+
+    override fun onDestroy() {
+        mRealVM.feedbackDetail.removeOnPropertyChangedCallback(feedbackDetailObserver)
+        super.onDestroy()
     }
 }
 

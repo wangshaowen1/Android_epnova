@@ -15,6 +15,7 @@ import com.kuaigeglobal.epnova.core.network.apis.entity.CreatorWorkInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.DubbingGenStatusInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.EpisodeInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.ExampleWorkInfo
+import com.kuaigeglobal.epnova.core.network.apis.entity.FeedbackDetail
 import com.kuaigeglobal.epnova.core.network.apis.entity.IncomeDetailInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.IncomeSummaryInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.InspirationInfo
@@ -48,6 +49,7 @@ import com.kuaigeglobal.epnova.core.network.apis.entity.SensitiveWordCheckData
 import com.kuaigeglobal.epnova.core.network.apis.entity.SeriesPriceConfigInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.ShortDramaInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.SimpleStoryboardInfo
+import com.kuaigeglobal.epnova.core.network.apis.entity.SystemNoticeInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.StoryStreamSessionInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.StoryUnlockStatusData
 import com.kuaigeglobal.epnova.core.network.apis.entity.SubtitleTaskStatusInfo
@@ -86,6 +88,9 @@ import com.kuaigeglobal.epnova.core.network.apis.request.DramasIdBody
 import com.kuaigeglobal.epnova.core.network.apis.request.DramasSeriesId
 import com.kuaigeglobal.epnova.core.network.apis.request.DramasTimbreBody
 import com.kuaigeglobal.epnova.core.network.apis.request.FeedbackBody
+import com.kuaigeglobal.epnova.core.network.apis.request.FeedbackClearNoticeBody
+import com.kuaigeglobal.epnova.core.network.apis.request.FeedbackDetailBody
+import com.kuaigeglobal.epnova.core.network.apis.request.FeedbackPageBody
 import com.kuaigeglobal.epnova.core.network.apis.request.FcmTokenBody
 import com.kuaigeglobal.epnova.core.network.apis.request.FirstRechargeCreditsBody
 import com.kuaigeglobal.epnova.core.network.apis.request.GenerateStoryboardBody
@@ -184,6 +189,7 @@ import com.kuaigeglobal.epnova.core.network.apis.response.EpisodeDirectoryData
 import com.kuaigeglobal.epnova.core.network.apis.response.EpisodePlayData
 import com.kuaigeglobal.epnova.core.network.apis.response.FirstRechargeCreditsDialogData
 import com.kuaigeglobal.epnova.core.network.apis.response.FirstRechargeDialogData
+import com.kuaigeglobal.epnova.core.network.apis.response.FeedbackPageData
 import com.kuaigeglobal.epnova.core.network.apis.response.FollowingData
 import com.kuaigeglobal.epnova.core.network.apis.response.HomeBookShelfData
 import com.kuaigeglobal.epnova.core.network.apis.response.LikeData
@@ -326,6 +332,20 @@ interface ApiService {
     suspend fun feedback(@Body body: FeedbackBody): ApiResponse<Any?>
 
     /**
+     * 查询用户反馈详情
+     */
+    @POST(ApiConstants.FEEDBACK_DETAIL)
+    suspend fun feedbackDetail(@Body body: FeedbackDetailBody): ApiResponse<FeedbackDetail?>
+
+    /** 分页查询用户反馈。 */
+    @POST(ApiConstants.FEEDBACK_PAGE)
+    suspend fun feedbackPage(@Body body: FeedbackPageBody): ApiResponse<FeedbackPageData?>
+
+    /** 清除反馈列表对应的通知快照。 */
+    @POST(ApiConstants.FEEDBACK_CLEAR_NOTICE)
+    suspend fun clearFeedbackNotice(@Body body: FeedbackClearNoticeBody): ApiResponse<Any?>
+
+    /**
      * 查询用户未处理反馈数量
      */
     @POST(ApiConstants.GET_USER_UN_FEEDBACK_NUM)
@@ -336,6 +356,14 @@ interface ApiService {
      */
     @POST(ApiConstants.GET_USER_UN_MESSAGE_NUM)
     suspend fun getUserUnMessageNum(): ApiResponse<NoticeCountData?>
+
+    /** 分页查询用户消息 */
+    @POST(ApiConstants.MESSAGE_PAGE)
+    suspend fun messagePage(@Body body: PagedBody): ApiResponse<PagedList<SystemNoticeInfo>?>
+
+    /** 清除用户全部消息 */
+    @POST(ApiConstants.MESSAGE_READ_ALL)
+    suspend fun readAllMessages(): ApiResponse<Any?>
 
     /**
      * 会员配置

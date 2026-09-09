@@ -5,13 +5,14 @@ import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.kuaigeglobal.epnova.core.network.apis.entity.FeedbackDetail
 import com.kuaigeglobal.epnova.databinding.ItemFeedbackHistoryBinding
 import com.nhsd.basic.ext.setOnSingleClickListener
 import com.nhsd.basic.item.BindingViewHolder
 
 class FeedbackHistoryAdapter(
-    private val onItemClick: (FeedbackHistoryItem) -> Unit
-) : PagingDataAdapter<FeedbackHistoryItem, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
+    private val onItemClick: (FeedbackDetail) -> Unit
+) : PagingDataAdapter<FeedbackDetail, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
@@ -46,15 +47,15 @@ class FeedbackHistoryAdapter(
     }
 
     companion object {
-        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<FeedbackHistoryItem>() {
+        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<FeedbackDetail>() {
             override fun areItemsTheSame(
-                oldItem: FeedbackHistoryItem,
-                newItem: FeedbackHistoryItem
+                oldItem: FeedbackDetail,
+                newItem: FeedbackDetail
             ): Boolean = oldItem.id == newItem.id
 
             override fun areContentsTheSame(
-                oldItem: FeedbackHistoryItem,
-                newItem: FeedbackHistoryItem
+                oldItem: FeedbackDetail,
+                newItem: FeedbackDetail
             ): Boolean = oldItem == newItem
         }
     }

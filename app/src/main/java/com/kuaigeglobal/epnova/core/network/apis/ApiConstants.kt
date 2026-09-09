@@ -94,6 +94,21 @@ object ApiConstants {
     const val FEED_BACK = "app/feedback/save"
 
     /**
+     * 查询用户反馈详情
+     */
+    const val FEEDBACK_DETAIL = "app/feedback/detail"
+
+    /**
+     * 分页查询用户反馈
+     */
+    const val FEEDBACK_PAGE = "app/feedback/page"
+
+    /**
+     * 清除用户反馈通知
+     */
+    const val FEEDBACK_CLEAR_NOTICE = "app/feedback/clearNotice"
+
+    /**
      * 查询用户未处理反馈数量
      */
     const val GET_USER_UN_FEEDBACK_NUM = "app/feedback/noticeCount"
@@ -102,6 +117,16 @@ object ApiConstants {
      * 查询用户未读消息数量
      */
     const val GET_USER_UN_MESSAGE_NUM = "app/message/noticeCount"
+
+    /**
+     * 分页查询用户消息
+     */
+    const val MESSAGE_PAGE = "app/message/page"
+
+    /**
+     * 清除用户全部消息
+     */
+    const val MESSAGE_READ_ALL = "app/message/readAll"
 
     /**
      * 分页查询生成中状态的歌曲列表-轮询使用

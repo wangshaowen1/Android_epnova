@@ -2,37 +2,45 @@ package com.kuaigeglobal.epnova.feature.message
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
+import com.kuaigeglobal.epnova.core.network.apis.ApiException
+import com.kuaigeglobal.epnova.core.network.apis.ApiService
+import com.kuaigeglobal.epnova.core.network.apis.entity.SystemNoticeInfo
+import com.kuaigeglobal.epnova.core.network.apis.request.PagedBody
+import kotlinx.coroutines.CancellationException
 
-/**
- * 通知接口接入前的本地分页数据源。
- *
- * key 使用下一次加载的起始下标，而不是页码，这样即使 PagingConfig 的
- * initialLoadSize 大于 pageSize，也不会因为页大小变化而跳过或重复数据。
- */
+/** 消息列表分页数据源。 */
 class NotificationsPagingSource(
-    private val items: List<NotificationItem>
-) : PagingSource<Int, NotificationItem>() {
+    private val api: ApiService
+) : PagingSource<Int, SystemNoticeInfo>() {
 
-    override fun getRefreshKey(state: PagingState<Int, NotificationItem>): Int? = null
-
-    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, NotificationItem> {
-        val startIndex = (params.key ?: 0).coerceAtLeast(0)
-        if (startIndex >= items.size) {
-            return LoadResult.Page(
-                data = emptyList(),
-                prevKey = null,
-                nextKey = null
-            )
+    override fun getRefreshKey(state: PagingState<Int, SystemNoticeInfo>): Int? {
+        return state.anchorPosition?.let { anchor ->
+            val page = state.closestPageToPosition(anchor)
+            page?.prevKey?.plus(1) ?: page?.nextKey?.minus(1)
         }
+    }
 
-        val loadSize = params.loadSize.coerceAtLeast(1)
-        val endIndex = (startIndex + loadSize).coerceAtMost(items.size)
-        val data = items.subList(startIndex, endIndex)
+    override suspend fun load(
+        params: LoadParams<Int>
+    ): LoadResult<Int, SystemNoticeInfo> {
+        return try {
+            val pageNum = params.key ?: 1
+            val pageSize = params.loadSize
+            val response = api.messagePage(PagedBody(pageNum, pageSize))
+            if (!response.isSuccess) {
+                return LoadResult.Error(ApiException(response.code, response.msg))
+            }
 
-        return LoadResult.Page(
-            data = data,
-            prevKey = if (startIndex == 0) null else (startIndex - loadSize).coerceAtLeast(0),
-            nextKey = endIndex.takeIf { it < items.size }
-        )
+            val items = response.data?.items?.filterNotNull().orEmpty()
+            LoadResult.Page(
+                data = items,
+                prevKey = if (pageNum > 1) pageNum - 1 else null,
+                nextKey = if (items.isEmpty() || items.size < pageSize) null else pageNum + 1
+            )
+        } catch (error: CancellationException) {
+            throw error
+        } catch (error: Exception) {
+            LoadResult.Error(error)
+        }
     }
 }
