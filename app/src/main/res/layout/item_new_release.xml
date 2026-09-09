@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="item"
+            type="com.kuaigeglobal.epnova.feature.home.ItemHomeDramaVm" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        singleClick="@{(v)->item.onItemClick.invoke(v)}"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/spacing_m"
+        android:background="@drawable/bg_06_ffffff_r12"
+        android:minHeight="134dp"
+        android:padding="@dimen/spacing_m">
+
+        <FrameLayout
+            android:id="@+id/coverContainer"
+            android:layout_width="82dp"
+            android:layout_height="110dp"
+            android:clipToOutline="true"
+            android:foreground="?attr/selectableItemBackground"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/ivCover"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                loadHQThumbnailUri="@{item.data.workCoverUrl}"
+                placeHolder="@{@drawable/img_default_cover_3_4}"
+                app:shapeAppearance="@style/roundStyle_r8"
+                tools:src="@drawable/img_default_cover_3_4" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="46dp"
+                android:layout_gravity="bottom"
+                android:background="@drawable/gradient_top_00_000000_bottom_60_000000_br8" />
+
+            <TextView
+                style="@style/Text12.Outfit.Medium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|end"
+                android:layout_marginEnd="@dimen/spacing_s"
+                android:layout_marginBottom="@dimen/spacing_s"
+                android:drawablePadding="2dp"
+                android:text="@{item.data.getFormatPlaycount()}"
+                android:textColor="?attr/textColor1"
+                app:drawableStartCompat="@drawable/icon_play12"
+                tools:text="7.6k" />
+        </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="110dp"
+            android:layout_marginStart="@dimen/spacing_m"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/coverContainer"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                style="@style/Text14.Outfit.Regular"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:text="@{item.data.workTitle}"
+                android:textColor="?attr/textColor1"
+                tools:text="Bound by Vendetta: Sleeping with the Enemy" />
+
+            <TextView
+                style="@style/Text12.Outfit.Regular"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="@{item.data.nickName}"
+                android:textColor="?attr/textColor3"
+                tools:text="Sarah" />
+
+            <TextView
+                style="@style/Text12.Outfit.Regular"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="3"
+                android:text="@{item.data.workDesc}"
+                android:textColor="?attr/textColor4"
+                tools:text="When a hidden power awakens, a young hero begins a journey through a worlda young hero begins a journey through a" />
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
