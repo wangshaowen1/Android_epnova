@@ -10,6 +10,9 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import com.blankj.utilcode.util.FileUtils
+import com.blankj.utilcode.util.PathUtils
+import com.kuaige.videoedit.resource.UrlResource
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.base.viewmodel.AppRepositoryViewModel
 import com.kuaigeglobal.epnova.common.Constants
@@ -20,6 +23,7 @@ import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.ext.launch
 import com.kuaigeglobal.epnova.core.ext.launchWithLoading
 import com.kuaigeglobal.epnova.core.ext.requestWithLoading
+import com.kuaigeglobal.epnova.core.network.RetrofitClient
 import com.kuaigeglobal.epnova.core.network.apis.entity.CreatorCoverBadgeType
 import com.kuaigeglobal.epnova.core.network.apis.entity.CreatorEpisodeInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.CreatorWorkInfo
@@ -27,20 +31,25 @@ import com.kuaigeglobal.epnova.core.network.apis.request.DeleteWorkBody
 import com.kuaigeglobal.epnova.core.network.apis.request.LatestEpisodeBody
 import com.kuaigeglobal.epnova.core.network.apis.response.WorkPublishStatusData
 import com.kuaigeglobal.epnova.core.response
+import com.kuaigeglobal.epnova.feature.creatorplay.VideoWithWatermarkResource
 import com.kuaigeglobal.epnova.feature.creatorplay.mapper.LegacyCreatorBridgeMapper
+import com.kuaigeglobal.epnova.feature.download.DownloadingViewModel
 import com.kuaigeglobal.epnova.widget.LoadStateViewHolder
 import com.nhsd.basic.bus.FlowEventBus
 import com.nhsd.basic.ext.getResString
 import com.nhsd.basic.ext.showToast
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.io.File
 
 /**
  * 剧集详情页
  */
-class SeriesViewModel : AppRepositoryViewModel<SeriesRepository>() {
+class SeriesViewModel : AppRepositoryViewModel<SeriesRepository>(), DownloadingViewModel.DownloadStatusHolder {
     companion object {
         private const val EPISODE_POLLING_INTERVAL_MS = 3000L
     }
@@ -51,6 +60,7 @@ class SeriesViewModel : AppRepositoryViewModel<SeriesRepository>() {
 
     private var episodePagingSource: EpisodePagingSource? = null
     private var episodePollingJob: Job? = null
+    private var downloadJob: Job? = null
     private var hasCreatingEpisode = false
     private var isEpisodeListLoading = false
     private var isPageResumed = false
@@ -70,6 +80,9 @@ class SeriesViewModel : AppRepositoryViewModel<SeriesRepository>() {
     val episodeInfo = MutableLiveData<CreatorEpisodeInfo?>()
     val publishedPlatformAdapter by lazy { QuickAdapter<ItemStringVm>(R.layout.item_publish_platform, emptyList()) }
 
+    override val downloadProgress = ObservableInt()
+    val downloading = MutableLiveData(false)
+
     override fun onResume() {
         super.onResume()
         isPageResumed = true
@@ -86,6 +99,7 @@ class SeriesViewModel : AppRepositoryViewModel<SeriesRepository>() {
     override fun onDestroy() {
         isPageResumed = false
         cancelEpisodePolling()
+        cancelDownload()
         super.onDestroy()
     }
 
@@ -151,6 +165,48 @@ class SeriesViewModel : AppRepositoryViewModel<SeriesRepository>() {
     private fun cancelEpisodePolling() {
         episodePollingJob?.cancel()
         episodePollingJob = null
+    }
+
+    override fun cancelDownload() {
+        downloadJob?.cancel()
+        downloadJob = null
+        downloading.value = false
+    }
+
+    /** 下载当前剧集视频；任务归属页面 VM，页面销毁时会取消。 */
+    fun downloadVideo(videoUrl: String?, watermark: Boolean) {
+        if (videoUrl.isNullOrEmpty() || downloading.value == true) return
+        downloadProgress.set(0)
+        downloading.value = true
+        downloadJob = launch(
+            block = {
+                val resource = if (watermark) {
+                    VideoWithWatermarkResource(videoUrl, RetrofitClient.httpClient)
+                } else {
+                    UrlResource(videoUrl, RetrofitClient.httpClient)
+                }
+                resource.download { downloadProgress.set(it) }
+                val destFile = File(PathUtils.getExternalDownloadsPath(), resource.file.name)
+                val copied = if (destFile.exists()) {
+                    true
+                } else {
+                    withContext(Dispatchers.IO) { FileUtils.copy(resource.file, destFile) }
+                }
+                if (copied) {
+                    FileUtils.notifySystemToScan(destFile)
+                    showToast(R.string.download_success_check_album)
+                } else {
+                    showToast(R.string.video_download_failed_retry)
+                }
+                downloadJob = null
+                downloading.value = false
+            },
+            onError = {
+                downloadJob = null
+                downloading.value = false
+                showToast(R.string.video_download_failed_retry)
+            }
+        )
     }
 
     /**

@@ -8,13 +8,18 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupWindow
 import androidx.core.graphics.drawable.toDrawable
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.Constants
 import com.kuaigeglobal.epnova.common.ext.showCommonDialog
 import com.kuaigeglobal.epnova.common.ext.showConfirmPrompt
 import com.kuaigeglobal.epnova.common.ext.startRefreshWithAdapter
 import com.kuaigeglobal.epnova.common.ext.topActivity
+import com.kuaigeglobal.epnova.common.permissions.requestRead2WritePermissions
 import com.kuaigeglobal.epnova.core.Config
 import com.kuaigeglobal.epnova.core.Events
 import com.kuaigeglobal.epnova.core.manager.EventManager
@@ -32,7 +37,10 @@ import com.kuaigeglobal.epnova.feature.creator.generate.StoryEditorActivity
 import com.kuaigeglobal.epnova.feature.creatorplay.CreatorPlayerActivity
 import com.kuaigeglobal.epnova.feature.creatorplay.data.WorkSeriesCreatorFeedRepository
 import com.kuaigeglobal.epnova.feature.creatorplay.mapper.LegacyCreatorBridgeMapper
+import com.kuaigeglobal.epnova.feature.download.DownloadingDialog
+import com.kuaigeglobal.epnova.feature.download.DownloadingViewModel
 import com.kuaigeglobal.epnova.feature.editor.info.DramaInfoEditActivity
+import com.kuaigeglobal.epnova.feature.play.more.DownloadMethodDialog
 import com.kuaigeglobal.epnova.feature.rating.AppRatingDialog
 import com.kuaigeglobal.epnova.feature.series.management.WorksManagementActivity
 import com.kuaigeglobal.epnova.feature.web.SimpleBrowserActivity
@@ -56,7 +64,10 @@ import kotlinx.coroutines.launch
 /**
  * 剧集详情页
  */
-class SeriesActivity : BaseViewModelActivity<ActivitySeriesBinding, SeriesViewModel>() {
+class SeriesActivity :
+    BaseViewModelActivity<ActivitySeriesBinding, SeriesViewModel>(),
+    DownloadMethodDialog.DownloadTypeLauncher,
+    DownloadingViewModel.DownloadStatusHolderFactory {
     companion object {
         fun start(workId: String?) {
             val activity = topActivity ?: return
@@ -69,7 +80,9 @@ class SeriesActivity : BaseViewModelActivity<ActivitySeriesBinding, SeriesViewMo
     }
 
     private val eventVm by lazy { ItemMultipleChoiceEventsViewModel<SeriesEpisodeEvent, String>() }
-    private val episodeAdapter by lazy { EpisodeAdapter(eventVm) }
+    private val episodeAdapter by lazy { EpisodeAdapter(eventVm, Config.get().isGridMode) }
+    private var downloadVideoUrl: String? = null
+    private var downloadingDialog: DownloadingDialog? = null
     private var isShowPublishRejectReason = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -109,8 +122,8 @@ class SeriesActivity : BaseViewModelActivity<ActivitySeriesBinding, SeriesViewMo
                     requestButtonTextAndImg = false,
                 )
             )
-            binding.recyclerView.applyGridSpanSizeLookup()
         }
+        applyEpisodeLayout()
         binding.loadStateViewHolder.apply {
             setGravityHorizontalTop(100.dp)
             setRetryListener { refresh() }
@@ -134,9 +147,55 @@ class SeriesActivity : BaseViewModelActivity<ActivitySeriesBinding, SeriesViewMo
         )
     }
 
+    private fun applyEpisodeLayout(preserveScrollPosition: Boolean = false) {
+        val recyclerView = binding.recyclerView
+        val oldLayoutManager = recyclerView.layoutManager as? LinearLayoutManager
+        val firstVisiblePosition = if (preserveScrollPosition) {
+            oldLayoutManager?.findFirstVisibleItemPosition() ?: RecyclerView.NO_POSITION
+        } else {
+            RecyclerView.NO_POSITION
+        }
+        val firstVisibleView = if (firstVisiblePosition != RecyclerView.NO_POSITION) {
+            oldLayoutManager?.findViewByPosition(firstVisiblePosition)
+        } else {
+            null
+        }
+        val firstVisibleOffset = firstVisibleView?.top ?: 0
+        val gridMode = Config.get().isGridMode
+        val layoutManager = if (gridMode) {
+            GridLayoutManager(this, 3)
+        } else {
+            LinearLayoutManager(this)
+        }
+
+        recyclerView.layoutManager = layoutManager
+        episodeAdapter.setGridMode(gridMode)
+        if (gridMode) {
+            recyclerView.applyGridSpanSizeLookup()
+        }
+
+        if (firstVisiblePosition != RecyclerView.NO_POSITION) {
+            recyclerView.post {
+                layoutManager.scrollToPositionWithOffset(firstVisiblePosition, firstVisibleOffset)
+            }
+        }
+    }
+
     private fun refresh() {
         //作品详情
         mRealVM.getWorkDtl()
+    }
+
+    override fun fragmentManager(): FragmentManager? = supportFragmentManager
+
+    override fun getStatusHolder(): DownloadingViewModel.DownloadStatusHolder? = mRealVM
+
+    override fun downloadVideo(watermark: Boolean) {
+        requestRead2WritePermissions { granted ->
+            if (granted) {
+                mRealVM.downloadVideo(downloadVideoUrl, watermark)
+            }
+        }
     }
 
     private fun observeData() {
@@ -148,8 +207,31 @@ class SeriesActivity : BaseViewModelActivity<ActivitySeriesBinding, SeriesViewMo
                         clickToView(event.item.data.get(), event.position)
                     }
 
+                    is SeriesEpisodeEvent.Download -> {
+                        val episode = event.item.data.get() ?: return@collect
+                        val videoUrl = episode.videoUrl?.takeIf { it.isNotEmpty() }
+                            ?: return@collect
+                        downloadVideoUrl = videoUrl
+                        if (episode.hasWatermark == true) {
+                            downloadVideo(false)
+                        } else {
+                            DownloadMethodDialog.show(this@SeriesActivity)
+                        }
+                    }
+
                     else -> {}
                 }
+            }
+        }
+
+        mRealVM.downloading.observe(this) { downloading ->
+            if (downloading) {
+                if (downloadingDialog == null) {
+                    downloadingDialog = DownloadingDialog.show(this)
+                }
+            } else {
+                downloadingDialog?.dismissAllowingStateLoss()
+                downloadingDialog = null
             }
         }
 
@@ -345,6 +427,7 @@ class SeriesActivity : BaseViewModelActivity<ActivitySeriesBinding, SeriesViewMo
         when (view?.id) {
             R.id.ivSwitchType -> {
                 Config.get().switchMode()
+                applyEpisodeLayout(preserveScrollPosition = true)
                 updateSwitchTypeIcon()
             }
 

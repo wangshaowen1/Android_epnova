@@ -293,8 +293,6 @@
                                 android:overScrollMode="never"
                                 android:paddingHorizontal="9dp"
                                 android:scrollbars="none"
-                                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-                                app:spanCount="3"
                                 tools:listitem="@layout/item_my_episode_info" />
 
                         </com.kuaigeglobal.epnova.widget.LoadStateViewHolder>

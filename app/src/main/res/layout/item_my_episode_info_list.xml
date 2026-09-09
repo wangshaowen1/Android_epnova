@@ -15,7 +15,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="15dp"
+        android:layout_marginHorizontal="6dp"
         android:layout_marginBottom="12dp"
         android:background="@drawable/bg_06_ffffff_r12"
         android:onClick="@{(v) -> item.onClick()}"
@@ -111,10 +111,11 @@
                 android:layout_marginTop="12dp"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:text="@{item.episodeStatusText()}"
-                app:textColorRes="@{item.episodeStatusTextColor()}"
+                android:text="@{item.episodeStatusListText()}"
+                app:textColorRes="@{item.episodeStatusListTextColor()}"
                 android:textSize="11sp"
-                tools:textColor="@color/white"
+                setVisible="@{!item.data.notCreated}"
+                tools:textColor="@color/text_color_3_dark"
                 tools:text="Synopsis · Completed" />
 
         </LinearLayout>
@@ -141,7 +142,7 @@
                 android:text="@string/create"
                 android:textColor="?attr/textColor1"
                 android:textSize="12sp"
-                android:visibility="@{item.data.notCreated ? View.VISIBLE : View.GONE}"
+                setVisible="@{!item.data.isCompleted}"
                 tools:text="create" />
 
             <ImageView
@@ -151,6 +152,7 @@
                 android:layout_gravity="end|center_vertical"
                 android:contentDescription="@string/download"
                 android:src="@drawable/icon_download"
+                singleClick="@{(v) -> item.onDownloadClick()}"
                 setVisible="@{item.data.isCompleted}" />
 
         </FrameLayout>

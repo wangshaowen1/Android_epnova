@@ -47,6 +47,12 @@ class ItemSeriesEpisodeVM(
         eventVm.postEvent(SeriesEpisodeEvent.ComposeState(isSelected.get(), this))
     }
 
+    fun onDownloadClick() {
+        if (data.get()?.isCompleted() == true) {
+            eventVm.postEvent(SeriesEpisodeEvent.Download(this))
+        }
+    }
+
     fun isDeleteLocked(): Boolean {
         return data.get()?.isPublishedOrUnderReview() == true
     }
@@ -69,8 +75,21 @@ class ItemSeriesEpisodeVM(
         return data.get()?.episodeStatusTextColor() ?: R.color.fixed_white_1
     }
 
+    @ColorRes
+    fun episodeStatusListTextColor(): Int {
+        return data.get()?.episodeStatusListTextColor() ?: R.color.text_color_3_dark
+    }
+
     fun episodeStatusText(): String {
         return data.get()?.creationStageText.orEmpty()
+    }
+
+    fun episodeStatusListText(): String {
+        return if (data.get()?.isCompleted() == true) {
+            data.get()?.publishBadgeText().orEmpty()
+        } else {
+            data.get()?.creationStageText.orEmpty()
+        }
     }
 
     @DrawableRes

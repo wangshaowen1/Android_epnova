@@ -182,6 +182,26 @@ data class CreatorEpisodeInfo(
         }
     }
 
+    @ColorRes
+    fun episodeStatusListTextColor(): Int {
+        if (isCompleted()) {
+            return when (publishStatus) {
+                CreatorPublishStatus.REVIEWING -> R.color.func_warning_dark
+                CreatorPublishStatus.PASSED -> R.color.func_success_dark
+                CreatorPublishStatus.FAILED -> R.color.func_failure_dark
+                CreatorPublishStatus.UNPUBLISHED -> R.color.func_special_dark
+                else -> R.color.text_color_3_dark
+            }
+        } else {
+            return when (creationStageStatus) {
+                SeriesEpisodeStatus.CREATING -> R.color.text_color_3_dark
+                SeriesEpisodeStatus.COMPLETED -> R.color.func_warning_dark
+                SeriesEpisodeStatus.FAILED -> R.color.color_ef4444
+                else -> R.color.text_color_3_dark
+            }
+        }
+    }
+
     fun episodeShowStatus(): Boolean = creationStageStatus == SeriesEpisodeStatus.NONE || creationStageStatus == SeriesEpisodeStatus.CREATING
 
     fun episodeIsCreating(): Boolean = creationStageStatus == SeriesEpisodeStatus.CREATING
