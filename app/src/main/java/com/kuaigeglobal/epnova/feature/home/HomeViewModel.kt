@@ -1,6 +1,5 @@
 package com.kuaigeglobal.epnova.feature.home
 
-import androidx.databinding.ObservableInt
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.paging.ExperimentalPagingApi
@@ -11,17 +10,13 @@ import androidx.paging.cachedIn
 import androidx.paging.map
 import com.kuaigeglobal.epnova.base.viewmodel.AppRepositoryViewModel
 import com.kuaigeglobal.epnova.core.AppRepository
-import com.kuaigeglobal.epnova.core.Config
 import com.kuaigeglobal.epnova.core.EntityCache
-import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.db.mapper.toDomain
 import com.kuaigeglobal.epnova.core.ext.launch
 import com.kuaigeglobal.epnova.core.network.apis.entity.BannerInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.WorkVOInfo
 import com.kuaigeglobal.epnova.core.network.apis.request.BannerBody
-import com.kuaigeglobal.epnova.core.network.apis.request.UserTokenBody
 import com.kuaigeglobal.epnova.core.network.apis.response.HomeBookShelfData
-import com.kuaigeglobal.epnova.core.network.apis.response.LoginTaskData
 import com.kuaigeglobal.epnova.core.response
 import com.kuaigeglobal.epnova.feature.home.data.VideoRemoteMediator
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -34,7 +29,6 @@ import kotlinx.coroutines.flow.map
 class HomeViewModel : AppRepositoryViewModel<AppRepository>() {
 
     val bannerData = MutableLiveData<List<BannerInfo>>()
-    val unCheckNum = ObservableInt()
     private val bannerCache: EntityCache<List<BannerInfo>> by lazy {
         object : EntityCache<List<BannerInfo>>("HomeBannerList") {}
     }
@@ -45,15 +39,12 @@ class HomeViewModel : AppRepositoryViewModel<AppRepository>() {
         object : EntityCache<HomeBookShelfData>("HomeBookShelfData") {}
     }
 
-    val loginTaskData = MutableLiveData<LoginTaskData>()
-
     override fun onCreate() {
         super.onCreate()
         bannerCache.cache?.let { bannerData.value = it }
         bookShelfCache.cache?.let { bookShelfData.value = it }
         getData()
         loadData()
-        getRewardUserUncheck()
     }
 
     fun getData() {
@@ -80,39 +71,6 @@ class HomeViewModel : AppRepositoryViewModel<AppRepository>() {
                 bookShelfError.value = it
             }
         )
-    }
-
-    fun getRewardUserUncheck() {
-        if (User.get().isVisitor) {
-            unCheckNum.set(0)
-            return
-        }
-        launch(block = {
-            response(
-                bean = mRepo.api.rewardUserUncheck(UserTokenBody()),
-                result = {
-                    unCheckNum.set(data?.unCheckNum ?: 0)
-                },
-                error = {
-                    unCheckNum.set(0)
-                }
-            )
-        }, onError = {
-            unCheckNum.set(0)
-        })
-    }
-
-    fun getLoginTaskData() {
-        launch {
-            response(mRepo.api.loginTaskPopup()) {
-                if (data == null || data?.rewardLabel == "0") return@response
-                if (data?.needShow == 1) {
-                    loginTaskData.value = data
-                    Config.get().loginRewards = data?.rewardLabel
-                }
-
-            }
-        }
     }
 
 

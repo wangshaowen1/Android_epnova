@@ -1,5 +1,6 @@
 package com.kuaigeglobal.epnova.feature.home
 
+import android.app.Activity
 import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -10,6 +11,8 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.kuaigeglobal.epnova.core.network.apis.response.Section
 import com.kuaigeglobal.epnova.databinding.ItemShelfContainerBinding
+import com.kuaigeglobal.epnova.feature.home.bookshelf.BookShelfListActivity
+import com.nhsd.basic.ext.setOnSingleClickListener
 
 class ShelfContainerAdapter : ListAdapter<Section, ShelfContainerAdapter.ShelfViewHolder>(DIFF_CALLBACK) {
 
@@ -63,7 +66,13 @@ class ShelfContainerAdapter : ListAdapter<Section, ShelfContainerAdapter.ShelfVi
 
         fun bind(data: Section, savedState: Parcelable?) {
             binding.tvShelfTitle.text = data.bookshelfName
-
+            binding.tvAll.setOnSingleClickListener {
+                BookShelfListActivity.start(
+                    activity = binding.root.context as? Activity,
+                    bookshelfId = data.bookshelfId,
+                    bookshelfName = data.bookshelfName
+                )
+            }
             // 使用带 callback 的 submitList，确保 Diff 计算并绑定完数据后再恢复位置
             innerAdapter.submitList(data.horizontalWorks) {
                 if (savedState != null) {

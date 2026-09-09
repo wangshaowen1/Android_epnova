@@ -47,13 +47,17 @@ public class HorizontalRecyclerView extends RecyclerView {
             case MotionEvent.ACTION_MOVE:
                 float dx = Math.abs(event.getX() - mDownX);
                 float dy = Math.abs(event.getY() - mDownY);
+                float moveX = event.getX() - mDownX;
                 if (viewPagerParent == null) {
                     viewPagerParent = findViewPagerParent();
                 }
                 if (dx >= dy) {
-                    getParent().requestDisallowInterceptTouchEvent(true);
+                    // 书架仍可继续滚动时由自身消费；到达边界后释放给父 ViewPager2 切 Tab。
+                    int direction = moveX > 0 ? -1 : 1;
+                    boolean childCanScroll = canScrollHorizontally(direction);
+                    getParent().requestDisallowInterceptTouchEvent(childCanScroll);
                     if (viewPagerParent != null) {
-                        viewPagerParent.requestDisallowInterceptTouchEvent(true);
+                        viewPagerParent.requestDisallowInterceptTouchEvent(childCanScroll);
                     }
                 } else {
                     getParent().requestDisallowInterceptTouchEvent(false);

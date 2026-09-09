@@ -197,7 +197,7 @@ class MineFragment : BaseViewModelFragment<FragmentMineBinding, MineViewModel>()
                     return
                 }
                 //建议与反馈
-                FeedbackActivity.start(topActivity)
+                FeedbackActivity.start(topActivity, mRealVM.unFeedbackNum.get() > 0)
             }
 
             R.id.ll_settings -> {
