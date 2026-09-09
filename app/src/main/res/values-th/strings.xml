@@ -473,6 +473,14 @@
     <string name="storyboard_generating">กำลังสร้างสตอรี่บอร์ด…</string>
     <string name="video_redrawing">กำลังวาดวิดีโอใหม่…</string>
     <string name="feedback_success">ส่งข้อเสนอแนะเรียบร้อย</string>
+    <string name="my_feedback">ความคิดเห็นของฉัน</string>
+    <string name="feedback_type">ประเภท</string>
+    <string name="feedback_type_value">ประเภท · %1$s</string>
+    <string name="feedback_submitted_on">ส่งเมื่อ</string>
+    <string name="feedback_description">รายละเอียด</string>
+    <string name="feedback_support_reply">การตอบกลับจากฝ่ายสนับสนุน</string>
+    <string name="feedback_thanks">ขอบคุณสำหรับความคิดเห็นของคุณ..</string>
+    <string name="feedback_waiting_reply">เราจะตอบกลับภายใน 1–3 วันทำการ</string>
     <string name="ten_thousand_format">%sW</string>
     <string name="saved_to_album">บันทึกลงแกลเลอรีเรียบร้อย</string>
     <string name="prop_description">คำอธิบายอุปกรณ์</string>
@@ -625,6 +633,7 @@
     <string name="messages_title">แจ้งเตือน</string>
     <string name="notifications_empty_title">ยังไม่มีการแจ้งเตือน</string>
     <string name="notifications_empty_description">เราจะแจ้งให้คุณทราบเมื่อมีสิ่งใหม่</string>
+    <string name="feedback_history_empty_description">ยังไม่มีประวัติ\nข้อเสนอแนะ</string>
     <string name="rewards_title">รางวัล</string>
     <string name="rewards_rules">กฎกติกา</string>
     <string name="rewards_balance">ยอดคงเหลือ</string>
@@ -665,6 +674,7 @@
     <string name="profile_credits">เครดิต</string>
     <string name="profile_income">รายได้</string>
     <string name="profile_feedback_suggestions">ข้อเสนอแนะและความคิดเห็น</string>
+    <string name="feedback_history">ประวัติความคิดเห็น</string>
     <string name="credits_popup_instructions">เครดิตสามารถใช้สร้างละครสั้นของคุณเองได้</string>
     <string name="coins_popup_instructions">เหรียญสามารถใช้ปลดล็อกตอนละครตามลำดับได้</string>
     <string name="income_available_balance">ยอดคงเหลือที่ใช้ได้</string>

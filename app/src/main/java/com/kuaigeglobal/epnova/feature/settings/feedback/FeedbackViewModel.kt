@@ -21,8 +21,6 @@ import com.kuaigeglobal.epnova.core.network.apis.request.ImgUrlBody
 import com.kuaige.oss.OnUploadListener
 import com.kuaige.oss.OssClient
 import com.kuaigeglobal.epnova.common.Constant
-import com.kuaigeglobal.epnova.feature.message.NotificationItem
-import com.kuaigeglobal.epnova.feature.message.NotificationsPagingSource
 import com.nhsd.basic.ext.getResString
 import com.nhsd.basic.ext.showToast
 import kotlinx.coroutines.Dispatchers
@@ -42,6 +40,20 @@ import kotlinx.coroutines.withContext
  */
 
 class FeedbackViewModel : AppRepositoryViewModel<AppRepository>() {
+    companion object {
+        const val STATUS_IN_PROGRESS = "In Progress"
+        const val STATUS_REPLIED = "Replied"
+        const val STATUS_COMPLETED = "Completed"
+
+        private const val DEMO_PACKAGE = "com.kuaigeglobal.epnova"
+        private val DEMO_IMAGES = listOf(
+            "android.resource://$DEMO_PACKAGE/drawable/img_default_cover_1_1",
+            "android.resource://$DEMO_PACKAGE/drawable/img_default_cover_3_4",
+            "android.resource://$DEMO_PACKAGE/drawable/img_default_cover_4_3",
+            "android.resource://$DEMO_PACKAGE/drawable/img_default_cover_16_9"
+        )
+    }
+
     var mToolbarVM = ToolbarViewModel(
         navigationAction = { back() },
         title = R.string.profile_feedback_suggestions.getResString()
@@ -50,6 +62,11 @@ class FeedbackViewModel : AppRepositoryViewModel<AppRepository>() {
     var mToolbarVMHistory = ToolbarViewModel(
         navigationAction = { back() },
         title = R.string.feedback_history.getResString()
+    )
+
+    var mToolbarVMDetail = ToolbarViewModel(
+        navigationAction = { back() },
+        title = R.string.my_feedback.getResString()
     )
 
     val email = MutableLiveData<String>()
@@ -118,17 +135,113 @@ class FeedbackViewModel : AppRepositoryViewModel<AppRepository>() {
         })
     }
 
-    private val feedbackHistoryItems = MutableStateFlow<List<FeedbackHistoryItem>>(emptyList())
-    val feedbackHistory: Flow<PagingData<FeedbackHistoryItem>> = feedbackHistoryItems
-        .flatMapLatest { items ->
+    private val feedbackHistoryRefresh = MutableStateFlow(0)
+    val feedbackHistory: Flow<PagingData<FeedbackHistoryItem>> = feedbackHistoryRefresh
+        .flatMapLatest {
             Pager(
                 config = PagingConfig(
                     initialLoadSize = Constant.Paged.PAGE_SIZE,
                     pageSize = Constant.Paged.PAGE_SIZE,
                     prefetchDistance = Constant.Paged.PREFETCH_DISTANCE,
                 ),
-                pagingSourceFactory = { FeedbackHistoryPagingSource(items) }
+                pagingSourceFactory = {
+                    FeedbackHistoryPagingSource(
+                        demoHistory.sortedByDescending(FeedbackHistoryItem::submittedAtMillis)
+                    )
+                }
             ).flow
         }
         .cachedIn(viewModelScope)
+
+    val feedbackDetail = ObservableField<FeedbackDetail?>()
+
+
+    fun refreshFeedbackHistory() {
+        feedbackHistoryRefresh.value += 1
+    }
+
+    fun loadFeedbackDetail(id: String?) {
+        feedbackDetail.set(demoDetails.firstOrNull { it.id == id } ?: demoDetails.first())
+    }
+
+    fun statusIconRes(status: String?): Int {
+        return when (status) {
+            STATUS_IN_PROGRESS -> R.drawable.ic_feedback_in_progress
+            STATUS_COMPLETED -> R.drawable.ic_feedback_completed
+            else -> R.drawable.ic_replied
+        }
+    }
+
+    fun statusColorRes(status: String?): Int {
+        return when (status) {
+            STATUS_IN_PROGRESS -> R.color.color_ea9800
+            STATUS_COMPLETED -> R.color.color_00cf18
+            else -> R.color.fixed_white_1
+        }
+    }
+
+    fun hasReply(detail: FeedbackDetail?): Boolean = !detail?.reply.isNullOrBlank()
+
+    // 临时假数据，仅用于按 Figma 验证列表、空状态和详情状态；接入接口后替换这里的数据源。
+    private val demoHistory = listOf(
+        FeedbackHistoryItem(
+            id = "feedback-001",
+            type = "Other Issues",
+            submittedOn = "July 23, 2026",
+            description = "Can I make original video make upload to reels or TikTok to make Money……",
+            status = STATUS_REPLIED,
+            submittedAtMillis = 3L
+        ),
+        FeedbackHistoryItem(
+            id = "feedback-002",
+            type = "Other Issues",
+            submittedOn = "July 23, 2026",
+            description = "Can I make original video make upload to reels or TikTok to make Money……",
+            status = STATUS_IN_PROGRESS,
+            submittedAtMillis = 2L,
+            imageUrls = DEMO_IMAGES.take(2)
+        ),
+        FeedbackHistoryItem(
+            id = "feedback-003",
+            type = "Other Issues",
+            submittedOn = "July 23, 2026",
+            description = "Can I make original video make upload to reels or TikTok to make Money……",
+            status = STATUS_COMPLETED,
+            submittedAtMillis = 1L,
+            imageUrls = DEMO_IMAGES.take(2)
+        )
+    )
+
+    private val demoDetails = listOf(
+        FeedbackDetail(
+            id = "feedback-001",
+            type = "Other Issues",
+            submittedOn = "2026/12/02 12:31:12",
+            description = "Can I make original video make upload to reels or TikTok to make Money……",
+            imageUrls = DEMO_IMAGES,
+            status = STATUS_REPLIED,
+            reply = "Can I make original video make upload to reels or TikTok to make Money Can I make original video make upload to reels or TikTok to make Money Can I make original video make upload to reels or TikTok to make Money Can I make original video make upload to reels or TikTok to make Money",
+            replyOn = "Sep 3, 2026",
+            replyImageUrls = DEMO_IMAGES
+        ),
+        FeedbackDetail(
+            id = "feedback-002",
+            type = "Other Issues",
+            submittedOn = "2026/12/02 12:31:12",
+            description = "Can I make original video make upload to reels or TikTok to make Money……",
+            imageUrls = DEMO_IMAGES.take(2),
+            status = STATUS_IN_PROGRESS
+        ),
+        FeedbackDetail(
+            id = "feedback-003",
+            type = "Other Issues",
+            submittedOn = "2026/12/02 12:31:12",
+            description = "Can I make original video make upload to reels or TikTok to make Money……",
+            imageUrls = DEMO_IMAGES.take(2),
+            status = STATUS_COMPLETED,
+            reply = "Thanks for helping us improve EpNova. We have completed the review of your feedback.",
+            replyOn = "Sep 3, 2026",
+            replyImageUrls = DEMO_IMAGES.take(2)
+        )
+    )
 }

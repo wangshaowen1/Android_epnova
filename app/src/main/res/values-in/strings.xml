@@ -473,6 +473,14 @@ Untuk mengkonfirmasi, ketuk [Minta Penghapusan].</string>
     <string name="storyboard_generating">Membuat storyboard…</string>
     <string name="video_redrawing">Menggambar ulang video…</string>
     <string name="feedback_success">Masukan Terkirim</string>
+    <string name="my_feedback">Feedback Saya</string>
+    <string name="feedback_type">Jenis</string>
+    <string name="feedback_type_value">Jenis · %1$s</string>
+    <string name="feedback_submitted_on">Dikirim Pada</string>
+    <string name="feedback_description">Deskripsi</string>
+    <string name="feedback_support_reply">Balasan Dukungan</string>
+    <string name="feedback_thanks">Terima kasih atas masukan Anda..</string>
+    <string name="feedback_waiting_reply">Kami akan membalas dalam 1–3 hari kerja.</string>
     <string name="ten_thousand_format">%sW</string>
     <string name="saved_to_album">Tersimpan ke galeri foto</string>
     <string name="prop_description">Prompt Properti</string>
@@ -624,6 +632,7 @@ Jika Anda memilih \"Tidak Setuju\", Anda tidak akan dapat menggunakan produk dan
     <string name="messages_title">Notifikasi</string>
     <string name="notifications_empty_title">Belum ada notifikasi</string>
     <string name="notifications_empty_description">Kami akan memberi tahu Anda jika ada sesuatu yang baru.</string>
+    <string name="feedback_history_empty_description">Belum ada riwayat\numpan balik</string>
     <string name="rewards_title">Hadiah</string>
     <string name="rewards_rules">Peraturan</string>
     <string name="rewards_balance">Saldo</string>
@@ -664,6 +673,7 @@ Jika Anda memilih \"Tidak Setuju\", Anda tidak akan dapat menggunakan produk dan
     <string name="profile_credits">Kredit</string>
     <string name="profile_income">Penghasilan</string>
     <string name="profile_feedback_suggestions">Saran dan Masukan</string>
+    <string name="feedback_history">Riwayat Masukan</string>
     <string name="credits_popup_instructions">Kredit dapat digunakan untuk membuat drama pendek buatan Anda sendiri.</string>
     <string name="coins_popup_instructions">Koin dapat digunakan untuk membuka kunci episode secara berurutan.</string>
     <string name="income_available_balance">Saldo Tersedia</string>

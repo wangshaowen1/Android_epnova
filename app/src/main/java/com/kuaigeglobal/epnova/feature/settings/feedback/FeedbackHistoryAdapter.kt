@@ -6,9 +6,12 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.kuaigeglobal.epnova.databinding.ItemFeedbackHistoryBinding
+import com.nhsd.basic.ext.setOnSingleClickListener
 import com.nhsd.basic.item.BindingViewHolder
 
-class FeedbackHistoryAdapter : PagingDataAdapter<FeedbackHistoryItem, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
+class FeedbackHistoryAdapter(
+    private val onItemClick: (FeedbackHistoryItem) -> Unit
+) : PagingDataAdapter<FeedbackHistoryItem, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
@@ -30,7 +33,14 @@ class FeedbackHistoryAdapter : PagingDataAdapter<FeedbackHistoryItem, RecyclerVi
         BindingViewHolder<ItemFeedbackHistoryBinding>(binding) {
 
         override fun bind(position: Int) {
-            binding.item = getItem(position)?.let(::ItemFeedbackHistoryVm)
+            val item = getItem(position)
+            binding.item = item?.let(::ItemFeedbackHistoryVm)
+            binding.photo.setAll(item?.imageUrls ?: emptyList())
+            binding.root.setOnClickListener(null)
+            binding.root.isClickable = item != null
+            if (item != null) {
+                binding.root.setOnSingleClickListener { onItemClick(item) }
+            }
             binding.executePendingBindings()
         }
     }
@@ -40,7 +50,7 @@ class FeedbackHistoryAdapter : PagingDataAdapter<FeedbackHistoryItem, RecyclerVi
             override fun areItemsTheSame(
                 oldItem: FeedbackHistoryItem,
                 newItem: FeedbackHistoryItem
-            ): Boolean = oldItem == newItem
+            ): Boolean = oldItem.id == newItem.id
 
             override fun areContentsTheSame(
                 oldItem: FeedbackHistoryItem,

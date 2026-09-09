@@ -33,12 +33,16 @@ class FeedbackActivity :
     companion object {
         private const val REQUEST_CODE_CHOOSE = 0x110
         private const val MAX_PHOTO_COUNT = 4
+        private const val EXTRA_IS_UNPROCESSED = "extra_is_unprocessed"
 
         fun start(
-            activity: Activity?
+            activity: Activity?,
+            isUnprocessed: Boolean = false
         ) {
             activity ?: return
-            val intent = Intent(activity, FeedbackActivity::class.java)
+            val intent = Intent(activity, FeedbackActivity::class.java).apply {
+                putExtra(EXTRA_IS_UNPROCESSED, isUnprocessed)
+            }
             activity.startActivity(intent)
         }
     }
@@ -52,6 +56,7 @@ class FeedbackActivity :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        mRealVM.isUnprocessed.value = intent.getBooleanExtra(EXTRA_IS_UNPROCESSED, false)
         initTitleBar()
         binding.photoGrid.setOnAddButtonClickedListener { requestAlbumsPermission() }
         binding.photoGrid.setOnPhotoChangedListener(object : PhotoGridView.OnPhotoChangedListener {

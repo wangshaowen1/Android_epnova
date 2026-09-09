@@ -3,7 +3,7 @@ package com.kuaigeglobal.epnova.feature.settings.feedback
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 
-/** 暂无通知接口，先把本地数据按 Paging3 结构提供给页面。 */
+/** 临时使用本地假数据，后续接入反馈历史接口时替换数据来源。 */
 class FeedbackHistoryPagingSource(
     private val items: List<FeedbackHistoryItem>
 ) : PagingSource<Int, FeedbackHistoryItem>() {

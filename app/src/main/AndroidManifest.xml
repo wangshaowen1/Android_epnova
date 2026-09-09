@@ -205,6 +205,10 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize"></activity>
 
+        <activity
+            android:name=".feature.home.bookshelf.BookShelfListActivity"
+            android:screenOrientation="portrait" />
+
         <!--设置-->
         <activity
             android:name=".feature.settings.SettingsActivity"

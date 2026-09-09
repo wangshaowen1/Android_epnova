@@ -15,7 +15,12 @@ import kotlinx.coroutines.launch
 class FeedbackHistoryActivity :
     BaseViewModelActivity<ActivityFeedbackHistoryBinding, FeedbackViewModel>() {
 
-    private val feedbackHistoryAdapter by lazy { FeedbackHistoryAdapter() }
+    private val feedbackHistoryAdapter by lazy {
+        FeedbackHistoryAdapter { item ->
+            MyFeedbackActivity.start(this, item.id)
+        }
+    }
+    private var hasResumed = false
 
     companion object {
         fun start(activity: Activity?) {
@@ -30,6 +35,14 @@ class FeedbackHistoryActivity :
         super.onCreate(savedInstanceState)
         initView()
         dataUpdate()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (hasResumed) {
+            mRealVM.refreshFeedbackHistory()
+        }
+        hasResumed = true
     }
 
     private fun initView() {

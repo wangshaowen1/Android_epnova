@@ -34,6 +34,7 @@
     <string name="wav">WAV</string>
     <string name="tab_home">Home</string>
     <string name="tab_hot">Trending</string>
+    <string name="tab_all_dramas">All Dramas</string>
     <string name="tab_message">Messages</string>
     <string name="tab_mine">Me</string>
     <string name="creation">Create</string>
@@ -485,6 +486,14 @@
     <string name="storyboard_generating">Generating storyboard…</string>
     <string name="video_redrawing">Redrawing video…</string>
     <string name="feedback_success">Feedback Submitted</string>
+    <string name="my_feedback">My Feedback</string>
+    <string name="feedback_type">Type</string>
+    <string name="feedback_type_value">Type · %1$s</string>
+    <string name="feedback_submitted_on">Submitted On</string>
+    <string name="feedback_description">Description</string>
+    <string name="feedback_support_reply">Support Reply</string>
+    <string name="feedback_thanks">Thanks for your feedback..</string>
+    <string name="feedback_waiting_reply">We’ll reply within 1–3 business days.</string>
     <string name="ten_thousand_format">%sW</string>
     <string name="saved_to_album">Saved to photo library</string>
     <string name="prop_description">Prop Prompt</string>
