@@ -91,6 +91,16 @@ object ApiConstants {
     const val FEED_BACK = "app/feedback/save"
 
     /**
+     * 查询用户未处理反馈数量
+     */
+    const val GET_USER_UN_FEEDBACK_NUM = "app/feedback/noticeCount"
+
+    /**
+     * 查询用户未读消息数量
+     */
+    const val GET_USER_UN_MESSAGE_NUM = "app/message/noticeCount"
+
+    /**
      * 分页查询生成中状态的歌曲列表-轮询使用
      */
     const val GENERATING_BOOK_LIST = "userPictureBook/current/list"

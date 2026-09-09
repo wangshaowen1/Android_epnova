@@ -189,6 +189,7 @@ import com.kuaigeglobal.epnova.core.network.apis.response.MemberCardData
 import com.kuaigeglobal.epnova.core.network.apis.response.MemberPlanListData
 import com.kuaigeglobal.epnova.core.network.apis.response.MemberSubscriptionPrepareData
 import com.kuaigeglobal.epnova.core.network.apis.response.MemberSubscriptionPrepareReleaseData
+import com.kuaigeglobal.epnova.core.network.apis.response.NoticeCountData
 import com.kuaigeglobal.epnova.core.network.apis.response.OrderNoData
 import com.kuaigeglobal.epnova.core.network.apis.response.PictureBook
 import com.kuaigeglobal.epnova.core.network.apis.response.PointAmountData
@@ -315,6 +316,18 @@ interface ApiService {
      */
     @POST(ApiConstants.FEED_BACK)
     suspend fun feedback(@Body body: FeedbackBody): ApiResponse<Any?>
+
+    /**
+     * 查询用户未处理反馈数量
+     */
+    @POST(ApiConstants.GET_USER_UN_FEEDBACK_NUM)
+    suspend fun getUserUnFeedbackNum(): ApiResponse<NoticeCountData?>
+
+    /**
+     * 查询用户未读消息数量
+     */
+    @POST(ApiConstants.GET_USER_UN_MESSAGE_NUM)
+    suspend fun getUserUnMessageNum(): ApiResponse<NoticeCountData?>
 
     /**
      * 会员配置

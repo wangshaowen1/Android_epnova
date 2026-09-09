@@ -145,9 +145,9 @@ class MineViewModel : AppRepositoryViewModel<AppRepository>() {
         }
         launch(block = {
             response(
-                bean = mRepo.api.rewardUserUncheck(UserTokenBody()),
+                bean = mRepo.api.getUserUnMessageNum(),
                 result = {
-                    unMessageNum.set(data?.unCheckNum ?: 0)
+                    unMessageNum.set(data?.noticeCount ?: 0)
                 },
                 error = {
                     unMessageNum.set(0)
@@ -170,9 +170,9 @@ class MineViewModel : AppRepositoryViewModel<AppRepository>() {
         }
         launch(block = {
             response(
-                bean = mRepo.api.rewardUserUncheck(UserTokenBody()),
+                bean = mRepo.api.getUserUnFeedbackNum(),
                 result = {
-                    unFeedbackNum.set(data?.unCheckNum ?: 0)
+                    unFeedbackNum.set(data?.noticeCount ?: 0)
                 },
                 error = {
                     unFeedbackNum.set(0)
