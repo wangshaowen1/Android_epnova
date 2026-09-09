@@ -28,6 +28,7 @@ import com.kuaigeglobal.epnova.core.network.apis.entity.OrderStatusInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.OverseasDeviceFingerprint
 import com.kuaigeglobal.epnova.core.network.apis.entity.PaymentData
 import com.kuaigeglobal.epnova.core.network.apis.entity.PaymentInfo
+import com.kuaigeglobal.epnova.core.network.apis.entity.PopupClaimInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.ReferenceImageInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.RewardAdCompleteData
 import com.kuaigeglobal.epnova.core.network.apis.entity.RewardAdPrepareData
@@ -117,6 +118,7 @@ import com.kuaigeglobal.epnova.core.network.apis.request.PowerCalculateBody
 import com.kuaigeglobal.epnova.core.network.apis.request.PowerCalculateData
 import com.kuaigeglobal.epnova.core.network.apis.request.RatingPopupDisplayReportBody
 import com.kuaigeglobal.epnova.core.network.apis.request.RatingScoreReportBody
+import com.kuaigeglobal.epnova.core.network.apis.request.PopupDisplayBody
 import com.kuaigeglobal.epnova.core.network.apis.request.ReferenceImageBody
 import com.kuaigeglobal.epnova.core.network.apis.request.ReportSubmissionBody
 import com.kuaigeglobal.epnova.core.network.apis.request.ReportCreationUsageBody
@@ -211,6 +213,12 @@ import retrofit2.http.Headers
 import retrofit2.http.POST
 
 interface ApiService {
+
+    @POST(ApiConstants.POPUP_CLAIM)
+    suspend fun claimPopup(): ApiResponse<PopupClaimInfo?>
+
+    @POST(ApiConstants.POPUP_DISPLAY)
+    suspend fun confirmPopupDisplay(@Body body: PopupDisplayBody): ApiResponse<Any?>
 
     /**
      * 获取APP配置接口

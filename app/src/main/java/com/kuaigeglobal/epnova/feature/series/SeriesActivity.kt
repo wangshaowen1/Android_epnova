@@ -92,7 +92,7 @@ class SeriesActivity :
             FirebaseEvent.Category.PUBLISH,
             FirebaseEvent.Action.WORK_DETAIL_SHOW
         )
-        binding.toolbarLayout.minimumHeight = 32.dp
+        binding.toolbarLayout.minimumHeight = (32 + 62 + 12).dp
         initView()
         //数据更新
         observeData()

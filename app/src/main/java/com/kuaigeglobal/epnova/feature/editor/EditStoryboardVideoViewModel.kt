@@ -368,6 +368,9 @@ class EditStoryboardVideoViewModel : AppRepositoryViewModel<EditStoryboardReposi
         }
     }
 
+    /**
+     * 把分镜视频合成上传
+     */
     private fun doSynthesis(storyboards: List<SimpleStoryboardInfo>) {
         topActivity?.let {
             val dialog = GeneratingDialog(it, R.string.video_synthesizing.getResString(), R.string.do_not_exit_or_lock_screen.getResString())
