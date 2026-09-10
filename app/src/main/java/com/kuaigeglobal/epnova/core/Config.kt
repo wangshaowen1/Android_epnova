@@ -4,17 +4,20 @@ import android.content.Context
 import android.text.TextUtils
 import com.blankj.utilcode.util.NetworkUtils
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.kuaigeglobal.epnova.App
 import com.kuaigeglobal.epnova.BuildConfig
 import com.kuaigeglobal.epnova.common.Constants
 import com.kuaigeglobal.epnova.common.ext.ioScope
 import com.kuaigeglobal.epnova.common.utils.DateUtil
 import com.kuaigeglobal.epnova.common.utils.MmkvDelegate
+import com.kuaigeglobal.epnova.common.utils.MmkvListDelegate
 import com.kuaigeglobal.epnova.core.manager.LocaleHelper
 import com.kuaigeglobal.epnova.core.manager.EventManager
 import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
 import com.kuaigeglobal.epnova.core.model.StoryOutlineStreamCache
 import com.kuaigeglobal.epnova.core.network.apis.ApiFactory.apiService
+import com.kuaigeglobal.epnova.core.network.apis.entity.BookShelfConfigInfo
 import com.kuaigeglobal.epnova.core.network.apis.request.UserTokenBody
 import com.kuaigeglobal.epnova.core.network.apis.response.AppConfigData
 import com.nhsd.basic.Session
@@ -86,6 +89,13 @@ class Config : NetworkChangedListener {
     var loginRewardsDialog: String? by MmkvDelegate(TODAY_LOGIN_REWARDS_DIALOG, null) { mmkv }
     var loginRewards: String? by MmkvDelegate(LOGIN_REWARDS, null) { mmkv }
 
+    /** 首页 Tab 书架配置，启动时可直接读取上次保存的结果。 */
+    var bookShelfConfigList: List<BookShelfConfigInfo> by MmkvListDelegate(
+        BOOKSHELF_CONFIG_LIST,
+        object : TypeToken<List<BookShelfConfigInfo>>() {}
+    ) { mmkv }
+        private set
+
     /**
      * 数据迁移初始化，建议在 App.onCreate() 中调用: Config.get().init(this)
      */
@@ -156,6 +166,11 @@ class Config : NetworkChangedListener {
     fun storeAppConfig(data: AppConfigData?) {
         this.appConfigData = data
         mmkv.encode(APP_CONFIG, gson.toJson(data))
+    }
+
+    fun storeBookShelfConfig(data: List<BookShelfConfigInfo>) {
+        bookShelfConfigList = data
+        notifyChange(BOOKSHELF_CONFIG_LIST)
     }
 
     val serviceUrl: String?
@@ -427,6 +442,7 @@ class Config : NetworkChangedListener {
         private const val IS_GRID_MODE = "seriesEpisodeGridMode"
         private const val ENVIRONMENT: String = "environment"
         private const val APP_CONFIG = "app_config"
+        const val BOOKSHELF_CONFIG_LIST = "bookshelf_config_list"
         private const val INSTALL_DATA = "install_data"
         private const val OPID = "opid"
         private const val REG_CHANNEL_CODE = "reg_channel_code"

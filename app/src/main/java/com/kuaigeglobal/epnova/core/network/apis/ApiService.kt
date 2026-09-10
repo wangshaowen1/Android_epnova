@@ -196,6 +196,7 @@ import com.kuaigeglobal.epnova.core.network.apis.response.FirstRechargeDialogDat
 import com.kuaigeglobal.epnova.core.network.apis.response.FeedbackDetailData
 import com.kuaigeglobal.epnova.core.network.apis.response.FeedbackPageData
 import com.kuaigeglobal.epnova.core.network.apis.response.FollowingData
+import com.kuaigeglobal.epnova.core.network.apis.entity.BookShelfConfigInfo
 import com.kuaigeglobal.epnova.core.network.apis.response.HomeBookShelfData
 import com.kuaigeglobal.epnova.core.network.apis.response.LikeData
 import com.kuaigeglobal.epnova.core.network.apis.response.MemberCardData
@@ -1449,6 +1450,10 @@ interface ApiService {
      */
     @POST(ApiConstants.BOOKSHELF_HOME)
     suspend fun bookShelfHome(): ApiResponse<HomeBookShelfData?>
+
+    /** 首页-查询一级 Tab 及其可见书架区块配置。 */
+    @POST(ApiConstants.BOOKSHELF_CONFIG_LIST)
+    suspend fun bookShelfConfigList(): ApiResponse<List<BookShelfConfigInfo>?>
 
     /**
      * 首页-分页查询书架瀑布流

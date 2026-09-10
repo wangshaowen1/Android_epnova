@@ -1,17 +1,20 @@
 package com.kuaigeglobal.epnova.feature.home
 
+import android.os.Bundle
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.ConcatAdapter
 import com.kuaigeglobal.epnova.common.ext.startRefreshWithAdapter
+import com.kuaigeglobal.epnova.core.network.apis.entity.BookShelfSectionInfo
 import com.kuaigeglobal.epnova.core.network.apis.response.Section
 import com.kuaigeglobal.epnova.databinding.FragmentHomeAllDramasBinding
 import com.kuaigeglobal.epnova.widget.decoration.StaggeredGridSpaceItemDecoration
 import com.kuaigeglobal.epnova.widget.stateful.paging.MyMultiStatePagingFooterAdapter
 import com.nhsd.basic.BaseViewModelFragment
 import com.nhsd.basic.ext.dp
+import com.nhsd.basic.ext.getParcelableArrayListValue
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -21,7 +24,21 @@ class AllDramasFragment :
     BaseViewModelFragment<FragmentHomeAllDramasBinding, HomeAllDramasViewModel>() {
 
     companion object {
-        fun newInstance(): AllDramasFragment = AllDramasFragment()
+        private const val ARG_BOOKSHELF_SECTION_LIST = "bookshelfSectionList"
+
+        fun newInstance(bookshelfSectionList: List<BookShelfSectionInfo>): AllDramasFragment =
+            AllDramasFragment().apply {
+                arguments = Bundle().apply {
+                    putParcelableArrayList(ARG_BOOKSHELF_SECTION_LIST, ArrayList(bookshelfSectionList))
+                }
+            }
+    }
+
+    val bookshelfSectionList: List<BookShelfSectionInfo> by lazy {
+        arguments?.getParcelableArrayListValue(
+            ARG_BOOKSHELF_SECTION_LIST,
+            BookShelfSectionInfo::class.java
+        ).orEmpty()
     }
 
     private val homeAdapter by lazy { HomeAdapter() }

@@ -4,10 +4,12 @@ import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import com.kuaigeglobal.epnova.R
+import com.kuaigeglobal.epnova.common.LoadState
 import com.kuaigeglobal.epnova.common.adapter.FragmentStateCacheAdapter
 import com.kuaigeglobal.epnova.common.ext.removeTheRipples
 import com.kuaigeglobal.epnova.common.utils.CommonNavigatorUtils
 import com.kuaigeglobal.epnova.core.Config
+import com.kuaigeglobal.epnova.core.Events
 import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.manager.EventManager
 import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
@@ -16,6 +18,7 @@ import com.kuaigeglobal.epnova.feature.home.search.SearchActivity
 import com.kuaigeglobal.epnova.feature.rewards.RewardWelcomeDialog
 import com.kuaigeglobal.epnova.feature.rewards.RewardsActivity
 import com.nhsd.basic.BaseViewModelFragment
+import com.nhsd.basic.bus.observeEvents
 import com.nhsd.basic.ext.dp
 import com.nhsd.basic.ext.setOnSingleClickListener
 import com.nhsd.magicindicator.ViewPagerHelper
@@ -50,11 +53,14 @@ class HomeFragment : BaseViewModelFragment<FragmentHomeBinding, HomeTabsViewMode
 
     override fun onResume() {
         super.onResume()
+        initViewPager()
         mRealVM.getRewardUserUncheck()
         triggerGuideLoginIfVisible()
     }
 
     private fun initListener() {
+        binding.lsv.setRetryListener { mRealVM.loadBookShelfConfig() }
+        binding.lsv.setNoDataButton(getString(R.string.retry)) { mRealVM.loadBookShelfConfig() }
         binding.btnSearch.setOnSingleClickListener {
             SearchActivity.start(mActivity)
         }
@@ -69,12 +75,31 @@ class HomeFragment : BaseViewModelFragment<FragmentHomeBinding, HomeTabsViewMode
 
     private fun initViewPager() {
         val viewPager = binding.viewPager
+        // 已有可展示的页面时，后台刷新失败也继续使用缓存内容。
+        if (viewPager.adapter != null) {
+            binding.lsv.showContent()
+            return
+        }
+        val pages = Config.get().bookShelfConfigList.mapNotNull { config ->
+            val sections = config.bookshelfSectionList.orEmpty()
+            val fragment: Fragment = when (config.bookshelfTab) {
+                1 -> TrendingFragment.newInstance(sections)
+                2 -> AllDramasFragment.newInstance(sections)
+                else -> return@mapNotNull null
+            }
+            config.bookshelfTabName.orEmpty() to fragment
+        }
+        if (pages.isEmpty()) {
+            when (val state = mRealVM.bookShelfConfigLoadState.value) {
+                null, LoadState.Loading -> binding.lsv.showLoading()
+                is LoadState.Error -> binding.lsv.showRetry(state.error)
+                else -> binding.lsv.showEmpty()
+            }
+            return
+        }
         val navigator = CommonNavigatorUtils.getCommonNavigatorVp2(
             context = mActivity,
-            data = listOf(
-                getString(R.string.tab_hot),
-                getString(R.string.tab_all_dramas)
-            ),
+            data = pages.map { it.first },
             isAdjustMode = true,
             vp = viewPager,
             indicatorView = CommonNavigatorUtils.getLinePagerIndicatorGradient(mActivity)?.also {
@@ -86,10 +111,7 @@ class HomeFragment : BaseViewModelFragment<FragmentHomeBinding, HomeTabsViewMode
         )
         binding.magicIndicator.navigator = navigator
 
-        val fragments = listOf<Fragment>(
-            TrendingFragment.newInstance(),
-            AllDramasFragment.newInstance()
-        )
+        val fragments = pages.map { it.second }
         viewPager.adapter = FragmentStateCacheAdapter(childFragmentManager, lifecycle).apply {
             setFragments(fragments)
         }
@@ -126,10 +148,20 @@ class HomeFragment : BaseViewModelFragment<FragmentHomeBinding, HomeTabsViewMode
         binding.magicIndicator.onPageSelected(0)
         binding.magicIndicator.onPageScrolled(0, 0f, 0)
         viewPager.removeTheRipples()
-
+        binding.lsv.showContent()
     }
 
     private fun dataUpdate() {
+        mRealVM.bookShelfConfigLoadState.observe(viewLifecycleOwner) {
+            initViewPager()
+        }
+        observeEvents {
+            on<Events.ConfigChangeEvent> { event ->
+                if (event.contain(Config.BOOKSHELF_CONFIG_LIST)) {
+                    initViewPager()
+                }
+            }
+        }
         mRealVM.loginTaskData.observe(viewLifecycleOwner) {
             val todayDate = com.kuaigeglobal.epnova.common.utils.DateUtil.getDateTime()
             if (Config.get().loginRewardsDialog != todayDate) {

@@ -985,6 +985,9 @@ object ApiConstants {
      */
     const val BOOKSHELF_HOME = "app/bookshelf/home"
 
+    /** 首页-按 Tab 查询可见书架区块配置。 */
+    const val BOOKSHELF_CONFIG_LIST = "app/bookshelf/v2/config/list"
+
     /**
      * 播放器-作品剧集目录分集分页
      */

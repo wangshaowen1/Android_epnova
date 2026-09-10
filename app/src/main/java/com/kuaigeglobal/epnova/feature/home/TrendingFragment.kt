@@ -1,5 +1,6 @@
 package com.kuaigeglobal.epnova.feature.home
 
+import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
 import androidx.lifecycle.Lifecycle
@@ -13,6 +14,7 @@ import com.kuaigeglobal.epnova.core.databinding.loadUri
 import com.kuaigeglobal.epnova.core.manager.EventManager
 import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
 import com.kuaigeglobal.epnova.core.network.apis.entity.BannerInfo
+import com.kuaigeglobal.epnova.core.network.apis.entity.BookShelfSectionInfo
 import com.kuaigeglobal.epnova.core.network.apis.response.Section
 import com.kuaigeglobal.epnova.databinding.FragmentTrendingBinding
 import com.kuaigeglobal.epnova.router.AppRouter
@@ -20,6 +22,7 @@ import com.kuaigeglobal.epnova.widget.decoration.StaggeredGridSpaceItemDecoratio
 import com.kuaigeglobal.epnova.widget.stateful.paging.MyMultiStatePagingFooterAdapter
 import com.nhsd.basic.BaseViewModelFragment
 import com.nhsd.basic.ext.dp
+import com.nhsd.basic.ext.getParcelableArrayListValue
 import com.nhsd.basic.ext.getResColor
 import com.nhsd.basic.ext.getResDrawable
 import com.nhsd.basic.ext.setOnSingleClickListener
@@ -35,7 +38,21 @@ import kotlin.math.abs
 class TrendingFragment : BaseViewModelFragment<FragmentTrendingBinding, HomeViewModel>() {
 
     companion object {
-        fun newInstance(): TrendingFragment = TrendingFragment()
+        private const val ARG_BOOKSHELF_SECTION_LIST = "bookshelfSectionList"
+
+        fun newInstance(bookshelfSectionList: List<BookShelfSectionInfo>): TrendingFragment =
+            TrendingFragment().apply {
+                arguments = Bundle().apply {
+                    putParcelableArrayList(ARG_BOOKSHELF_SECTION_LIST, ArrayList(bookshelfSectionList))
+                }
+            }
+    }
+
+    val bookshelfSectionList: List<BookShelfSectionInfo> by lazy {
+        arguments?.getParcelableArrayListValue(
+            ARG_BOOKSHELF_SECTION_LIST,
+            BookShelfSectionInfo::class.java
+        ).orEmpty()
     }
 
     private val homeAdapter by lazy { HomeAdapter() }

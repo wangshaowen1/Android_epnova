@@ -2,7 +2,6 @@ package com.kuaigeglobal.epnova.feature.main
 
 import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableInt
-import androidx.lifecycle.MutableLiveData
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.Constants
 import com.kuaigeglobal.epnova.core.AppRepository
@@ -38,6 +37,19 @@ class MainViewModel : ShareShortDramaViewModel<AppRepository>() {
     fun initialization() {
         //获取用户主页信息接口
         fetchUserInfo()
+        //首页书架配置（前置）
+        loadBookShelfConfig()
+    }
+
+    private fun loadBookShelfConfig() {
+        launch {
+            response(
+                bean = mRepo.api.bookShelfConfigList(),
+                result = { data?.let { Config.get().storeBookShelfConfig(it) } },
+                // 前置请求仅更新缓存，页面加载与重试由 HomeTabsViewModel 负责。
+                error = {}
+            )
+        }
     }
 
 
