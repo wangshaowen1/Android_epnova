@@ -17,7 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.kuaigeglobal.epnova.R;
 import com.kuaigeglobal.epnova.widget.decoration.GridSpacingItemDecoration;
-import com.kuaigeglobal.epnova.widget.decoration.HorSpaceDecoration;
+import com.kuaigeglobal.epnova.widget.decoration.SpaceDecoration;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -135,7 +135,8 @@ public class TagRecycleView extends FrameLayout {
         if (orientation == HORIZONTAL) {
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
             tagsView.setLayoutManager(linearLayoutManager);
-            tagsView.addItemDecoration(new HorSpaceDecoration(horizontalSpace,spaceIncludeEdge? HorSpaceDecoration.Direction.LEFT_WITH_RIGHT: HorSpaceDecoration.Direction.MIDDLE));
+            tagsView.addItemDecoration(new SpaceDecoration(horizontalSpace, RecyclerView.HORIZONTAL,
+                    spaceIncludeEdge ? SpaceDecoration.Direction.BOTH : SpaceDecoration.Direction.MIDDLE));
         } else {
             GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), columnCount);
             tagsView.setLayoutManager(gridLayoutManager);
