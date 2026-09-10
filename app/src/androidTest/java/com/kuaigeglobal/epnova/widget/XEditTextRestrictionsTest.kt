@@ -16,6 +16,47 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class XEditTextRestrictionsTest {
     @Test
+    fun emoji_allowsSupplementaryHanAndMusicSymbols() = withActivity { activity ->
+        val view = XEditText(activity)
+        view.inputRestrictions = XEditText.RESTRICTION_NO_EMOJI
+        val text = "中文\uD842\uDFB7\uD834\uDD1E♪♫♭♯0123#*"
+        view.setText(text)
+        assertEquals(text, view.text.toString())
+    }
+
+    @Test
+    fun emoji_rejectsKeycapAndCombinedEmojiWithoutDeletingSelection() = withActivity { activity ->
+        val view = XEditText(activity)
+        view.inputRestrictions = XEditText.RESTRICTION_NO_EMOJI
+        view.setMaxLength(10)
+        for (emoji in listOf("1️⃣", "👍🏽", "🇨🇳", "👨‍👩‍👧‍👦", "\uD83E\uDEEA")) {
+            view.setText("keep")
+            view.text!!.replace(1, 3, emoji)
+            assertEquals("keep", view.text.toString())
+        }
+    }
+
+    @Test
+    fun emoji_checksSplitInputAndDoesNotBlockEditsAroundExistingEmoji() = withActivity { activity ->
+        val view = XEditText(activity)
+        view.setText("😀")
+        view.inputRestrictions = XEditText.RESTRICTION_NO_EMOJI
+        view.text!!.append("ok")
+        assertEquals("😀ok", view.text.toString())
+        view.setText("1\uFE0F")
+        view.text!!.append("\u20E3")
+        assertEquals("1\uFE0F", view.text.toString())
+        view.setText("\uD83D")
+        view.text!!.append("\uDE00")
+        assertEquals("\uD83D", view.text.toString())
+        view.text!!.clear()
+        assertEquals("", view.text.toString())
+        view.inputRestrictions = XEditText.RESTRICTION_NONE
+        view.setText("1️⃣")
+        assertEquals("1️⃣", view.text.toString())
+    }
+
+    @Test
     fun flags_allCombinationsRestrictOnlySelectedKinds() = withActivity { activity ->
         val view = XEditText(activity)
         val inputs = listOf(

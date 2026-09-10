@@ -165,3 +165,9 @@ STATIC：已核对两类商品接口路由、回调落盘先于网络、账号�
 - 基于现有 baselibrary 2.0.4 的实际 AAR 确认策略覆写、Policy.ALWAYS、RootInsetsMode.NONE 和系统栏控制接口可用，无需升级依赖。浏览器单独取消全局 NAVIGATION_BAR 根 padding，防止重复避让；同步无原生标题 H5 的导航栏明暗修复并补根布局白色背景。
 - 新处理器及五个仪器用例通过缓存依赖离线 Kotlin 类型检查；Activity 通过 Kotlin 语法解析；源码/资源/构建目录删除符号残留为零，相关 XML 及 git diff --check 通过。遵循仓库默认规则未运行 Gradle、资源链接或设备用例。实际回归检查帮助中心/协议 H5、输入和连续开关键盘、导航栏明暗、视频全屏退出；仪器用例仅覆盖 API 30+ 手动 Insets 回调。
 - 同轮已同步 Povie；Epnova 的 gradle.properties 原有修改保持不变。历史代码目录快照不改写为当前事实，使用时仍需现场搜索。
+
+## 2026-09-10 修正 XEditText emoji 识别
+
+- 用户授权修复并同步 Template、快歌、Povie、Epnova。用 Unicode 17.0 Emoji 属性码点表替代 SURROGATE/OTHER_SYMBOL 分类；放行扩展汉字、非 emoji 音乐符号，数字/#/* 仅组成键帽序列时限制。Unicode 本身列为 emoji 的文本样式符号仍受 noEmoji 限制，不按字体实际渲染判断。
+- 冻结数据版本以保持不同 Android 版本一致；类内保留数据来源和 Unicode License V3，升级需重新生成区间并验证官方样例。输入过滤只检查新增内容和邻接边界，不追溯拒绝旧 emoji 或删除；快歌粘贴歌词入口改用统一 inputRestrictions，避免单独过滤器绕过边界和选区保护。
+- 4 工程分别通过 7 条纯 Java 单元测试，新增 3 条仪器用例完成离线类型检查。共享算法通过全部 1,112,064 个 Unicode 标量、5,225 条官方 emoji 样例和 100,000 组随机插入边界检查；生产/测试源码类型与语法检查通过。未运行 Gradle 或设备测试，既有无关工作区改动保留。

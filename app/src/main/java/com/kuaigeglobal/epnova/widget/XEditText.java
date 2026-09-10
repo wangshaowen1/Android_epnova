@@ -71,7 +71,7 @@ public class XEditText extends AppCompatEditText {
         if (start == end) return null;
         int restrictions = getInputRestrictions();
         boolean rejected = (restrictions & RESTRICTION_NO_EMOJI) != 0
-                && isEmoji(source.subSequence(start, end));
+                && EmojiDetector.containsEmojiOnInsertion(source, start, end, dest, dstart, dend);
         for (int i = start; !rejected && i < end; i++) {
             char ch = source.charAt(i);
             boolean nextLine = ch == '\n' || ch == '\r';
@@ -225,25 +225,11 @@ public class XEditText extends AppCompatEditText {
         this.onEditorActionListener = l;
     }
 
-//    private static boolean isEmojiCharacter(char codePoint) {
-//        return (codePoint == 0x0) || (codePoint == 0x9) || (codePoint == 0xA) || (codePoint == 0xD)
-//                || ((codePoint >= 0x20) && (codePoint <= 0xD7FF)) || ((codePoint >= 0xE000) && (codePoint <= 0xFFFD))
-//                || ((codePoint >= 0x10000) && (codePoint <= 0x10FFFF));
-//    }
-
-    /**
-     * 判断 emoji 表情（沿用现有字符类型规则）
-     */
-    protected boolean isEmoji(CharSequence CharSequence) {
-        for (int i = 0; i < CharSequence.length(); i++) {
-            int type = Character.getType(CharSequence.charAt(i));
-            // 检查字符类型是否属于“其他符号”或“代理字符”
-            if (type == Character.SURROGATE || type == Character.OTHER_SYMBOL) {
-                return true;
-            }
-        }
-        return false;
+    /** 是否含 Unicode emoji 字符或键帽序列；不按字体的实际显示效果判断。 */
+    protected boolean isEmoji(CharSequence text) {
+        return EmojiDetector.containsEmoji(text);
     }
+
     /**
      * Here you can catch paste, copy and cut events
      */
