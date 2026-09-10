@@ -43,8 +43,6 @@
     <dimen name="dp1">1dp</dimen>
     <dimen name="dp20">20dp</dimen>
     <dimen name="music_hub_divider_height">19dp</dimen>
-    <integer name="blur_dialog_animation_duration">300</integer>
-    <bool name="blur_dialog_has_bottom_navigation_bar">true</bool>
 
     <dimen name="sp_16">16sp</dimen>
     <dimen name="sp_20">20sp</dimen>

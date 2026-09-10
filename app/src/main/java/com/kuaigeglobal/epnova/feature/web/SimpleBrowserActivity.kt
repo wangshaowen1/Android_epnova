@@ -18,6 +18,8 @@ import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.activity.OnBackPressedCallback
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import com.blankj.utilcode.util.GsonUtils
 import com.blankj.utilcode.util.NetworkUtils
@@ -58,8 +60,8 @@ import com.kuaigeglobal.epnova.feature.PhotoPagerActivity
 import com.kuaigeglobal.epnova.feature.recharge.PaySuccessDialog
 import com.kuaigeglobal.epnova.router.AppNavigator
 import com.kuaigeglobal.epnova.router.AppRouter
-import com.kuaigeglobal.epnova.widget.AndroidBug5497Workaround
 import com.nhsd.basic.BaseViewModelActivity
+import com.nhsd.basic.BasicEdgeToEdgeConfig
 import com.nhsd.basic.Session
 import com.nhsd.basic.bus.observeEvents
 import com.nhsd.basic.ext.getResString
@@ -70,6 +72,14 @@ import com.nhsd.basic.utils.Logger
 import org.json.JSONObject
 
 class SimpleBrowserActivity : BaseViewModelActivity<ActivityBrowserBinding, BrowserViewModel>() {
+
+    override val edgeToEdgeStrategy: BasicEdgeToEdgeConfig.Strategy
+        get() = super.edgeToEdgeStrategy.copy(
+            policy = BasicEdgeToEdgeConfig.Policy.ALWAYS,
+            rootInsetsMode = BasicEdgeToEdgeConfig.RootInsetsMode.NONE,
+        )
+
+    private var browserInsetsHandler: BrowserWindowInsetsHandler? = null
 
     private val backPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
@@ -261,6 +271,8 @@ class SimpleBrowserActivity : BaseViewModelActivity<ActivityBrowserBinding, Brow
             }
 
             customView = view
+            WindowCompat.getInsetsController(window, binding.root).hide(WindowInsetsCompat.Type.ime())
+            browserInsetsHandler?.refresh()
             customViewCallback = callback
 
             // 1. 隐藏 WebView，显示视频容器
@@ -286,6 +298,7 @@ class SimpleBrowserActivity : BaseViewModelActivity<ActivityBrowserBinding, Brow
             binding.webview.visibility = View.VISIBLE
 
             customView = null
+            browserInsetsHandler?.refresh()
             customViewCallback?.onCustomViewHidden()
 
             // 3. 恢复竖屏
@@ -296,12 +309,16 @@ class SimpleBrowserActivity : BaseViewModelActivity<ActivityBrowserBinding, Brow
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         onBackPressedDispatcher.addCallback(this, backPressedCallback)
-        AndroidBug5497Workaround.assistActivity(this)
 //        mRealVM.shareManagerFactory = this
 //        mRealVM.getFragmentManager = { supportFragmentManager }
         initUI()
         setupObservers()
         setTrans()
+        // 根布局自行处理导航栏与 IME，避免与基础库的导航栏兼容 padding 叠加。
+        if (isEdgeToEdgeEnabled) {
+            browserInsetsHandler = BrowserWindowInsetsHandler(binding.root) { customView != null }
+                .also { it.attach() }
+        }
     }
 
 
@@ -739,6 +756,7 @@ class SimpleBrowserActivity : BaseViewModelActivity<ActivityBrowserBinding, Brow
             ImmersionBar.with(this)
                 .statusBarDarkFont(false)
                 .navigationBarColor(R.color.bg_color_1_dark)
+                .navigationBarDarkIcon(false)
                 .init()
         } else {
             if (!TextUtils.isEmpty(mRealVM.title)) {
@@ -751,12 +769,18 @@ class SimpleBrowserActivity : BaseViewModelActivity<ActivityBrowserBinding, Brow
                 ImmersionBar.with(this)
                     .statusBarDarkFont(true)
                     .statusBarColor(R.color.transparent)
+                    .navigationBarColor(R.color.white)
+                    .navigationBarDarkIcon(true)
                     .init()
             }
         }
+        // 导航栏明暗跟随浏览器样式，无原生标题的 H5 也需要明确设置。
+        WindowCompat.getInsetsController(window, binding.root).isAppearanceLightNavigationBars = !mRealVM.darkStyle
     }
 
     override fun onDestroy() {
+        browserInsetsHandler?.release()
+        browserInsetsHandler = null
         binding.webview.destroy()
         super.onDestroy()
     }

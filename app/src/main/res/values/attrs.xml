@@ -709,10 +709,6 @@
         <attr name="progress_startAngle" format="integer" /> <!--开始角度-->
         <attr name="progress_drawAngle" format="integer" /> <!--绘制角度,默认360, 例如:180时为一个半圆-->
     </declare-styleable>
-    <declare-styleable name="StickyScrollView">
-        <attr name="stuckShadowHeight" format="dimension" />
-        <attr name="stuckShadowDrawable" format="reference" />
-    </declare-styleable>
     <declare-styleable name="HorizontalScrollRecyclerView">
         <attr name="distancePerSecond" format="dimension" />
     </declare-styleable>

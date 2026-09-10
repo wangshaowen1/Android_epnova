@@ -33,7 +33,6 @@ retrofit = "2.11.0"
 rxbinding = "2.2.0"
 rxjava = "2.2.21"
 squareupOkhttp = "4.12.0"
-ultraPtr = "1.0.11"
 utilcodex = "1.31.1"
 playServicesAdsIdentifier = "18.2.0"
 playServicesAuth = "21.4.0"
@@ -79,7 +78,6 @@ retrofit2-converter-gson = { module = "com.squareup.retrofit2:converter-gson", v
 retrofit2-adapter-rxjava2 = { module = "com.squareup.retrofit2:adapter-rxjava2", version.ref = "retrofit" }
 rxbinding = { module = "com.jakewharton.rxbinding2:rxbinding", version.ref = "rxbinding" }
 rxjava = { module = "io.reactivex.rxjava2:rxjava", version.ref = "rxjava" }
-ultra-ptr = { module = "in.srain.cube:ultra-ptr", version.ref = "ultraPtr" }
 play-services-ads-identifier = { group = "com.google.android.gms", name = "play-services-ads-identifier", version.ref = "playServicesAdsIdentifier" }
 play-services-auth = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "playServicesAuth" }
 play-app-update-core = { module = "com.google.android.play:app-update", version.ref = "playAppUpdate" }

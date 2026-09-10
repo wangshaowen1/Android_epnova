@@ -157,3 +157,11 @@ STATIC：已核对两类商品接口路由、回调落盘先于网络、账号�
 - 遵循用户不保留旧接口兼容的决定，统一 inputRestrictions flags 并迁移 RecyclerEditText 与复合控件属性。现有业务页面没有旧 setter/属性引用，不额外增加输入限制。
 - 同步 17 条常用控件及 13 条输入限制仪器回归用例，复用既有 debug 宿主并保留已有测试布局内容。6 个生产类和新增测试通过本地缓存依赖的离线类型检查；新 R 符号由 XML 临时补齐，8 个源码语法解析、4 个 XML、直接资源引用和旧符号检查通过。未运行 Gradle、资源链接或设备测试。
 - 验证入口：主界面底部 Tab、创作/续写输入、剧名与作品信息编辑、反馈输入。gradle.properties 原有工作区修改保持不变。
+
+## 2026-09-10 同步第三轮闲置控件治理与浏览器 Insets
+
+- 在已同步前两轮控件修复基础上，逐项确认当前 Kotlin/Java、XML 和测试引用，移除 27 个旧源码文件及 3 个专属资源；覆盖旧面板、FlipViewPager/Scroller、闲置动画/Banner/AppBar/Sticky 控件、BaseBlur/blurdialog 与 refreshrecycleview 链路。ultra-ptr 已无使用，一并移除版本与依赖声明。
+- AndroidBug5497Workaround 的唯一浏览器调用迁移至 BrowserWindowInsetsHandler，使用 navigationBars/displayCutout/IME 和动画回调，负责导航栏避让、输入区高度以及销毁清理；保留原视频全屏/旋转/支付/选图逻辑，全屏时隐藏 IME 并刷新安全区。
+- 基于现有 baselibrary 2.0.4 的实际 AAR 确认策略覆写、Policy.ALWAYS、RootInsetsMode.NONE 和系统栏控制接口可用，无需升级依赖。浏览器单独取消全局 NAVIGATION_BAR 根 padding，防止重复避让；同步无原生标题 H5 的导航栏明暗修复并补根布局白色背景。
+- 新处理器及五个仪器用例通过缓存依赖离线 Kotlin 类型检查；Activity 通过 Kotlin 语法解析；源码/资源/构建目录删除符号残留为零，相关 XML 及 git diff --check 通过。遵循仓库默认规则未运行 Gradle、资源链接或设备用例。实际回归检查帮助中心/协议 H5、输入和连续开关键盘、导航栏明暗、视频全屏退出；仪器用例仅覆盖 API 30+ 手动 Insets 回调。
+- 同轮已同步 Povie；Epnova 的 gradle.properties 原有修改保持不变。历史代码目录快照不改写为当前事实，使用时仍需现场搜索。

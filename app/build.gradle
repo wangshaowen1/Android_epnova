@@ -246,7 +246,6 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
-    implementation libs.ultra.ptr
     implementation libs.androidx.constraintlayout
     implementation libs.legacy.support.v4
     implementation libs.multidex
