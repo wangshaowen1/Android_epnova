@@ -64,42 +64,10 @@ public class MultRadioGroup extends LinearLayout {
     /**
      * set the default checked radio button, without notification the listeners
      *
-     * @param mCheckedId the default checked radio button's id, if none use -1
+     * @param id the default checked radio button's id, if none use -1
      */
     public void setCheckWithoutNotif(int id) {
-        if (id != -1 && (id == mCheckedId)) {
-            return;
-        }
-
-        mProtectFromCheckedChange = true;
-        if (mCheckedId != -1) {
-            setCheckedStateForView(mCheckedId, false);
-        }
-
-        if (id != -1) {
-            setCheckedStateForView(id, true);
-        }
-
-        mCheckedId = id;
-        mProtectFromCheckedChange = false;
-    }
-
-    @Override
-    public void addView(View child, int index, ViewGroup.LayoutParams params) {
-        List<RadioButton> buttonList = getAllRadioButton(child);
-        if (buttonList != null && buttonList.size() > 0) {
-            for (RadioButton button : buttonList) {
-                if (button.isChecked()) {
-                    mProtectFromCheckedChange = true;
-                    if (mCheckedId != -1) {
-                        setCheckedStateForView(mCheckedId, false);
-                    }
-                    mProtectFromCheckedChange = false;
-                    setCheckedId(button.getId());
-                }
-            }
-        }
-        super.addView(child, index, params);
+        updateCheckedState(id, false);
     }
 
     /**
@@ -130,20 +98,30 @@ public class MultRadioGroup extends LinearLayout {
      * @see #clearCheck()
      */
     public void check(int id) {
-        // don't even bother
-        if (id != -1 && (id == mCheckedId)) {
+        updateCheckedState(id, true);
+    }
+
+    private void updateCheckedState(int id, boolean notify) {
+        if (id == mCheckedId || (id != View.NO_ID && !(findViewById(id) instanceof RadioButton))) {
             return;
         }
-
-        if (mCheckedId != -1) {
-            setCheckedStateForView(mCheckedId, false);
+        mProtectFromCheckedChange = true;
+        try {
+            if (mCheckedId != View.NO_ID) {
+                setCheckedStateForView(mCheckedId, false);
+            }
+            if (id != View.NO_ID) {
+                setCheckedStateForView(id, true);
+            }
+        } finally {
+            mProtectFromCheckedChange = false;
         }
-
-        if (id != -1) {
-            setCheckedStateForView(id, true);
+        // 先完成按钮互斥，再通知；业务回调可以安全地再次选择其它按钮。
+        if (notify) {
+            setCheckedId(id);
+        } else {
+            mCheckedId = id;
         }
-
-        setCheckedId(id);
     }
 
     private void setCheckedId(int id) {
@@ -332,14 +310,11 @@ public class MultRadioGroup extends LinearLayout {
                 return;
             }
 
-            mProtectFromCheckedChange = true;
-            if (mCheckedId != -1) {
-                setCheckedStateForView(mCheckedId, false);
+            if (isChecked) {
+                check(buttonView.getId());
+            } else if (buttonView.getId() == mCheckedId) {
+                setCheckedId(View.NO_ID);
             }
-            mProtectFromCheckedChange = false;
-
-            int id = buttonView.getId();
-            setCheckedId(id);
         }
     }
 
@@ -358,7 +333,8 @@ public class MultRadioGroup extends LinearLayout {
         public void onChildViewAdded(View parent, View child) {
             if (parent == MultRadioGroup.this) {
                 List<RadioButton> btns = getAllRadioButton(child);
-                if (btns != null && btns.size() > 0) {
+                if (!btns.isEmpty()) {
+                    int checkedId = View.NO_ID;
                     for (RadioButton btn : btns) {
                         int id = btn.getId();
                         // generates an id if it's missing
@@ -368,6 +344,19 @@ public class MultRadioGroup extends LinearLayout {
                         }
                         btn.setOnCheckedChangeListener(
                                 mChildOnCheckedChangeListener);
+                        if (btn.isChecked()) checkedId = btn.getId();
+                    }
+                    // 在子树挂载并生成 id 后同步预选状态，多个预选项只保留最后一个。
+                    if (checkedId != View.NO_ID) {
+                        mProtectFromCheckedChange = true;
+                        try {
+                            for (RadioButton btn : btns) {
+                                if (btn.getId() != checkedId) btn.setChecked(false);
+                            }
+                        } finally {
+                            mProtectFromCheckedChange = false;
+                        }
+                        check(checkedId);
                     }
                 }
             }
@@ -383,10 +372,13 @@ public class MultRadioGroup extends LinearLayout {
         public void onChildViewRemoved(View parent, View child) {
             if (parent == MultRadioGroup.this) {
                 List<RadioButton> btns = getAllRadioButton(child);
-                if (btns != null && btns.size() > 0) {
+                if (!btns.isEmpty()) {
+                    boolean removedChecked = false;
                     for (RadioButton btn : btns) {
                         btn.setOnCheckedChangeListener(null);
+                        removedChecked |= btn.getId() == mCheckedId;
                     }
+                    if (removedChecked) setCheckedId(View.NO_ID);
                 }
             }
 

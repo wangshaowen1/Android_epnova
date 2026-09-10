@@ -6,6 +6,7 @@ import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.util.AttributeSet
+import android.view.View
 import android.widget.CompoundButton
 import androidx.appcompat.widget.AppCompatRadioButton
 import com.kuaigeglobal.epnova.R
@@ -34,6 +35,8 @@ class FixedAnimatedRadioButton : AppCompatRadioButton, ValueAnimator.AnimatorUpd
      * 默认图标drawable的Rect位置
      */
     private var mDefaultDrawableBounds: Array<Rect?>? = null
+    private var appliedDrawableBounds: Array<Rect?>? = null
+    private var animatedDrawables: Array<Drawable?>? = null
     private lateinit var valueAnimator: ValueAnimator
 
     constructor(context: Context?) : super(context) {
@@ -62,7 +65,10 @@ class FixedAnimatedRadioButton : AppCompatRadioButton, ValueAnimator.AnimatorUpd
             checkedDrawable = getDrawable(R.styleable.FixedAnimatedRadioButton_checkedDrawable)
             recycle()
         }
-        valueAnimator = ValueAnimator()
+        valueAnimator = ValueAnimator.ofFloat(1f, 0.75f, 0.95f, 0.85f, 0.95f, 1f).apply {
+            duration = 1000
+            addUpdateListener(this@FixedAnimatedRadioButton)
+        }
     }
 
     override fun setButtonDrawable(buttonDrawable: Drawable?) {
@@ -82,92 +88,91 @@ class FixedAnimatedRadioButton : AppCompatRadioButton, ValueAnimator.AnimatorUpd
     }
 
     private fun startAnimator() {
-        valueAnimator.setFloatValues(1f, 0.75f, 0.95f, 0.85f, 0.95f, 1f)
-        valueAnimator.addUpdateListener(this)
-        valueAnimator.duration = 1000
+        resetAnimation()
+        val drawables = compoundDrawables
+        if (drawables.all { it == null }) return
+        animatedDrawables = drawables
+        mDefaultDrawableBounds = Array(4) { index -> drawables[index]?.let { Rect(it.bounds) } }
+        appliedDrawableBounds = Array(4) { index -> drawables[index]?.let { Rect(it.bounds) } }
         valueAnimator.start()
+    }
+
+    override fun setCompoundDrawables(left: Drawable?, top: Drawable?, right: Drawable?, bottom: Drawable?) {
+        // 在 TextView 缓存图标占位前复原仍被复用的图标，而不是等下一帧才清理。
+        resetAnimation()
+        super.setCompoundDrawables(left, top, right, bottom)
+    }
+
+    override fun setCompoundDrawablesRelative(start: Drawable?, top: Drawable?, end: Drawable?, bottom: Drawable?) {
+        resetAnimation()
+        super.setCompoundDrawablesRelative(start, top, end, bottom)
     }
 
 
     override fun setChecked(checked: Boolean) {
+        val wasChecked = isChecked
         super.setChecked(checked)
-        if (width == 0 || height == 0) {
-            return
-        }
-
-
-        if (checked) {
+        // CompoundButton 构造期间也会调用此方法，此时动画尚未初始化。
+        if (!::valueAnimator.isInitialized) return
+        if (!isChecked) {
+            resetAnimation()
+        } else if (!wasChecked && animationOpen && isAttachedToWindow && isShown && width > 0 && height > 0) {
             startAnimator()
-        } else {
-            if (valueAnimator.isRunning) {
-                valueAnimator.end()
-            }
         }
     }
 
 
     override fun onAnimationUpdate(animation: ValueAnimator) {
-        animatedScaleRate = animation?.animatedValue as Float
-        try {
-            //1.保存图标默认位置
-            if (mDefaultDrawableBounds == null) {
-                mDefaultDrawableBounds = arrayOfNulls(4)
-                compoundDrawables.forEachIndexed { index, drawable ->
-                    drawable?.let {
-                        val rect = Rect(drawable.bounds)
-                        mDefaultDrawableBounds?.set(index, rect)
-                    }
-                }
-            }
-            var leftDrawable: Drawable? = null
-            var rightDrawable: Drawable? = null
-            var topDrawable: Drawable? = null
-            var bottomDrawable: Drawable? = null
-            //2.获取radioButton中设置的图标的drawable
-            compoundDrawables.forEachIndexed { index, drawable ->
-                drawable?.let {
-                    mDefaultDrawableBounds?.get(index)?.let { mDefaultDrawableBounds ->
-                        val copyBounds = Rect(mDefaultDrawableBounds)
-                        //3.动态缩放RadioButton的图标
-                        copyBounds.let {
-                            copyBounds.left = mDefaultDrawableBounds.left
-                            copyBounds.right =
-                                mDefaultDrawableBounds.right - (mDefaultDrawableBounds.width() * (1 - animatedScaleRate)).toInt()
-                            copyBounds.top =
-                                mDefaultDrawableBounds.top + (mDefaultDrawableBounds.height() * (1 - animatedScaleRate)).toInt() / 2
-                            copyBounds.bottom =
-                                mDefaultDrawableBounds.bottom - (mDefaultDrawableBounds.height() * (1 - animatedScaleRate)).toInt() / 2
-                            when (index) {
-                                0 -> {
-                                    leftDrawable = drawable
-                                    leftDrawable?.bounds = copyBounds
-
-                                }
-
-                                1 -> {
-                                    topDrawable = drawable
-                                    topDrawable?.bounds = copyBounds
-                                }
-
-                                2 -> {
-                                    rightDrawable = drawable
-                                    rightDrawable?.bounds = copyBounds
-                                }
-
-                                3 -> {
-                                    bottomDrawable = drawable
-                                    bottomDrawable?.bounds = copyBounds
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            //4.更新图标大小和位置
-            setCompoundDrawables(leftDrawable, topDrawable, rightDrawable, bottomDrawable)
-
-        } catch (e: Exception) {
+        val drawables = animatedDrawables ?: return
+        val bounds = mDefaultDrawableBounds ?: return
+        val current = compoundDrawables
+        // 运行中更换图标时结束旧动画，避免把旧尺寸施加到新图标。
+        if (drawables.indices.any { current[it] !== drawables[it] }) {
+            resetAnimation()
+            return
         }
+        animatedScaleRate = animation.animatedValue as Float
+        for (index in drawables.indices) {
+            val drawable = drawables[index] ?: continue
+            val original = bounds[index] ?: continue
+            val dx = (original.width() * (1 - animatedScaleRate)).toInt() / 2
+            val dy = (original.height() * (1 - animatedScaleRate)).toInt() / 2
+            val applied = appliedDrawableBounds?.get(index) ?: continue
+            applied.set(original.left + dx, original.top + dy, original.right - dx, original.bottom - dy)
+            drawable.bounds = applied
+        }
+        // 图标占位保持不变，只重绘；避免每帧设置 compound drawable 触发重新布局。
+        invalidate()
     }
 
+    private fun resetAnimation() {
+        if (!::valueAnimator.isInitialized) return
+        valueAnimator.cancel()
+        animatedDrawables?.forEachIndexed { index, drawable ->
+            // 调用方可能已为同一个 Drawable 设置新尺寸，仅复原动画自身写入的 bounds。
+            if (drawable != null && drawable.bounds == appliedDrawableBounds?.get(index)) {
+                mDefaultDrawableBounds?.get(index)?.let { drawable.bounds = it }
+            }
+        }
+        animatedDrawables = null
+        mDefaultDrawableBounds = null
+        appliedDrawableBounds = null
+        animatedScaleRate = 1f
+        invalidate()
+    }
+
+    override fun onDetachedFromWindow() {
+        resetAnimation()
+        super.onDetachedFromWindow()
+    }
+
+    override fun onVisibilityChanged(changedView: View, visibility: Int) {
+        super.onVisibilityChanged(changedView, visibility)
+        if (!isShown) resetAnimation()
+    }
+
+    override fun onWindowVisibilityChanged(visibility: Int) {
+        super.onWindowVisibilityChanged(visibility)
+        if (visibility != VISIBLE) resetAnimation()
+    }
 }

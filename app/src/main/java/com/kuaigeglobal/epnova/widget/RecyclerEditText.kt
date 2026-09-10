@@ -38,7 +38,7 @@ class RecyclerEditText : XEditText {
     }
 
     private fun init(context: Context, attrs: AttributeSet?) {
-        setNoNextLine(true)
+        inputRestrictions = inputRestrictions or RESTRICTION_NO_NEXT_LINE
         removeTextChangedListener(textWatcher)
         addTextChangedListener(textWatcher)
     }

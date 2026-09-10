@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="WidgetInputRestrictionsTest" parent="Widget.AppCompat.EditText">
+        <item name="inputRestrictions">noEmoji|noSpace</item>
+        <item name="android:maxLength">5</item>
+    </style>
+
+    <style name="ThemeInputRestrictionsTest" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="editTextStyle">@style/WidgetInputRestrictionsTest</item>
+    </style>
+</resources>

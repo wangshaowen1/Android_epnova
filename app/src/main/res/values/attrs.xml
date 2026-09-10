@@ -420,13 +420,23 @@
         <attr name="filter_edit_text_max_integer_digits" format="integer" /><!--最大整数位-->
         <attr name="filter_edit_text_max_point_digits" format="integer" /><!--最大小数位-->
     </declare-styleable>
+    <declare-styleable name="XEditText">
+        <!-- 可按位或组合；noSpace 不包含 CR/LF，长度仍由 android:maxLength 设置。 -->
+        <attr name="inputRestrictions" format="flags">
+            <flag name="none" value="0" />
+            <flag name="noEmoji" value="1" />
+            <flag name="noSpace" value="2" />
+            <flag name="noNextLine" value="4" />
+        </attr>
+    </declare-styleable>
+
     <declare-styleable name="CounterInputLayout">
         <attr name="inputMaxLength" format="integer" /><!--最大输入文本长度-->
         <attr name="inputLines" format="integer" /><!--行数-->
         <attr name="inputMinLines" format="integer" />
         <attr name="inputMaxLines" format="integer" />
         <attr name="inputHint" format="string" /><!--hint-->
-        <attr name="inputNoNextLine" format="boolean" />
+        <attr name="inputRestrictions" />
         <attr name="inputTextSize" format="dimension" />
         <attr name="inputTextBold" format="boolean" />
         <attr name="inputTextColor" format="color" />

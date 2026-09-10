@@ -28,7 +28,6 @@ public class CounterInputLayout extends FrameLayout implements TextWatcher {
     private TextView inputLengthHint;
     private TextView inputLength;
     private View hintLayout;
-    private boolean noNextLine;
     private boolean contentBold;
 
     private int contentPaddingLeft;
@@ -83,8 +82,9 @@ public class CounterInputLayout extends FrameLayout implements TextWatcher {
                 int maxLines = a.getInt(R.styleable.CounterInputLayout_inputMaxLines, 0);
                 contentInput.setMaxLines(maxLines);
             }
-            noNextLine = a.getBoolean(R.styleable.CounterInputLayout_inputNoNextLine, false);
-            contentInput.setNoNextLine(noNextLine);
+            if (a.hasValue(R.styleable.CounterInputLayout_inputRestrictions)) {
+                setInputRestrictions(a.getInt(R.styleable.CounterInputLayout_inputRestrictions, XEditText.RESTRICTION_NONE));
+            }
             if (!TextUtils.isEmpty(hint)) {
                 setHint(hint);
             }
@@ -314,15 +314,24 @@ public class CounterInputLayout extends FrameLayout implements TextWatcher {
         return contentInput;
     }
 
+    public int getInputRestrictions() {
+        return contentInput.getInputRestrictions();
+    }
+
+    public void setInputRestrictions(int restrictions) {
+        contentInput.setInputRestrictions(restrictions);
+    }
+
     /**
      * 最大输入字数
      *
      * @param maxLength
      */
     public void setMaxLength(int maxLength) {
-        contentInput.setMaxLength(maxLength);
-        inputLength.setText("0");
-        inputLengthHint.setText("/" + maxLength);
+        this.maxLength = Math.max(0, maxLength);
+        contentInput.setMaxLength(this.maxLength);
+        inputLength.setText(String.valueOf(contentInput.length()));
+        inputLengthHint.setText("/" + this.maxLength);
     }
 
     @Override
@@ -337,11 +346,7 @@ public class CounterInputLayout extends FrameLayout implements TextWatcher {
 
     @Override
     public void afterTextChanged(Editable s) {
-        //inputLengthHint.setText(s.toString().length() + "/" + maxLength);
-        int length = s.toString().length();
-        inputLength.setText(length + "");
-//        inputLength.setTextColor(length > 0 ? getResources().getColor(R.color.textColorGray) : getResources().getColor(R.color.textColorSecondary));
-//        inputLengthHint.setTextColor(length > 0 ? getResources().getColor(R.color.textColorGray) : getResources().getColor(R.color.textColorSecondary));
+        inputLength.setText(String.valueOf(s.length()));
     }
 
     public void setText(CharSequence text) {

@@ -3,99 +3,80 @@ package com.kuaigeglobal.epnova.widget;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
+import android.view.ViewConfiguration;
+import android.view.ViewParent;
 
 /**
  * 用于解决嵌套Scrollview的时候由于多行而产生的滑动冲突问题
  */
 public class EditTextWithScrollView extends XEditText {
 
-    //滑动距离的最大边界
-    private int mOffsetHeight;
-
-    //是否到顶或者到底的标志
-    private boolean mBottomFlag = false;
-    private boolean mCanVerticalScroll;
+    private final int touchSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
+    private int activePointerId = MotionEvent.INVALID_POINTER_ID;
+    private float lastTouchY;
+    private boolean dragging;
 
     public EditTextWithScrollView(Context context) {
         super(context);
-        init();
     }
 
     public EditTextWithScrollView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init();
     }
 
     public EditTextWithScrollView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init();
-    }
-
-    private void init() {
-        //setMovementMethod(ScrollingMovementMethod.getInstance());
-    }
-
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        mCanVerticalScroll = canVerticalScroll();
-    }
-
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent event) {
-        if (event.getAction() == MotionEvent.ACTION_DOWN)
-            //如果是新的按下事件，则对mBottomFlag重新初始化
-            mBottomFlag = false;
-        //如果已经不要这次事件，则传出取消的信号，这里的作用不大
-        if (mBottomFlag)
-            event.setAction(MotionEvent.ACTION_CANCEL);
-
-        return super.dispatchTouchEvent(event);
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         boolean result = super.onTouchEvent(event);
-        if (mCanVerticalScroll) {
-            //如果是需要拦截，则再拦截，这个方法会在onScrollChanged方法之后再调用一次
-            if (!mBottomFlag)
-                getParent().requestDisallowInterceptTouchEvent(true);
-        } else {
-            getParent().requestDisallowInterceptTouchEvent(false);
+        switch (event.getActionMasked()) {
+            case MotionEvent.ACTION_DOWN:
+                activePointerId = event.getPointerId(0);
+                lastTouchY = event.getY();
+                dragging = false;
+                requestParentIntercept(result && (canScroll(-1) || canScroll(1)));
+                break;
+            case MotionEvent.ACTION_MOVE:
+                int index = event.findPointerIndex(activePointerId);
+                if (index < 0) {
+                    requestParentIntercept(false);
+                    break;
+                }
+                float y = event.getY(index);
+                float delta = lastTouchY - y;
+                if (dragging || Math.abs(delta) > touchSlop) {
+                    dragging = true;
+                    // 只在当前拖动方向已经到边界时交给父布局，不修改原始事件。
+                    if (delta != 0) requestParentIntercept(result && canScroll(delta > 0 ? 1 : -1));
+                    lastTouchY = y;
+                }
+                break;
+            case MotionEvent.ACTION_POINTER_UP:
+                int liftedIndex = event.getActionIndex();
+                if (event.getPointerId(liftedIndex) == activePointerId) {
+                    int nextIndex = liftedIndex == 0 ? 1 : 0;
+                    activePointerId = event.getPointerId(nextIndex);
+                    lastTouchY = event.getY(nextIndex);
+                }
+                break;
+            case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_CANCEL:
+                activePointerId = MotionEvent.INVALID_POINTER_ID;
+                dragging = false;
+                requestParentIntercept(false);
+                break;
         }
         return result;
     }
 
-    @Override
-    protected void onScrollChanged(int horiz, int vert, int oldHoriz, int oldVert) {
-        super.onScrollChanged(horiz, vert, oldHoriz, oldVert);
-        if (vert == mOffsetHeight || vert == 0) {
-            //这里触发父布局或祖父布局的滑动事件
-            getParent().requestDisallowInterceptTouchEvent(false);
-            mBottomFlag = true;
-        }
+    private boolean canScroll(int direction) {
+        return getLayout() != null && canScrollVertically(direction);
     }
 
-    /**
-     * EditText竖直方向是否可以滚动
-     *
-     * @return true：可以滚动   false：不可以滚动
-     */
-    private boolean canVerticalScroll() {
-        //滚动的距离
-        int scrollY = getScrollY();
-        //控件内容的总高度
-        int scrollRange = getLayout().getHeight();
-        //控件实际显示的高度
-        int scrollExtent = getMeasuredHeight() - getCompoundPaddingTop() - getCompoundPaddingBottom();
-        //控件内容总高度与实际显示高度的差值
-        mOffsetHeight = scrollRange - scrollExtent;
-
-        if (mOffsetHeight == 0) {
-
-            return false;
-        }
-
-        return (scrollY > 0) || (scrollY < mOffsetHeight - 1);
+    private void requestParentIntercept(boolean disallow) {
+        ViewParent parent = getParent();
+        if (parent != null) parent.requestDisallowInterceptTouchEvent(disallow);
     }
 }

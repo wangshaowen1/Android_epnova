@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <com.kuaigeglobal.epnova.widget.XEditText
+        android:id="@+id/test_input_restrictions_combined"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxLength="5"
+        app:inputRestrictions="noEmoji|noSpace|noNextLine" />
+
+    <com.kuaigeglobal.epnova.widget.XEditText
+        android:id="@+id/test_input_restrictions_style"
+        style="@style/WidgetInputRestrictionsTest"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <com.kuaigeglobal.epnova.widget.XEditText
+        android:id="@+id/test_input_restrictions_none"
+        style="@style/WidgetInputRestrictionsTest"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:inputRestrictions="none" />
+
+    <com.kuaigeglobal.epnova.widget.EditTextWithScrollView
+        android:id="@+id/test_input_restrictions_override"
+        style="@style/WidgetInputRestrictionsTest"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:inputRestrictions="noNextLine" />
+
+    <com.kuaigeglobal.epnova.widget.CounterInputLayout
+        android:id="@+id/test_counter_input_restrictions"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        app:inputMaxLength="20"
+        app:inputRestrictions="noNextLine" />
+</LinearLayout>

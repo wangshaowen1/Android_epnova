@@ -28,4 +28,11 @@
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:textColor="@color/widget_regression_text_colors" />
+    <com.kuaigeglobal.epnova.widget.FixedAnimatedRadioButton
+        android:id="@+id/test_radio_animation_disabled"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:button="@null"
+        android:drawableTop="@drawable/cb_main_tab_home"
+        app:animation_open="false" />
 </FrameLayout>
