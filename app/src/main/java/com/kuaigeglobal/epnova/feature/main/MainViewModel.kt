@@ -2,6 +2,8 @@ package com.kuaigeglobal.epnova.feature.main
 
 import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableInt
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.Constants
 import com.kuaigeglobal.epnova.core.AppRepository
@@ -9,6 +11,8 @@ import com.kuaigeglobal.epnova.core.Config
 import com.kuaigeglobal.epnova.core.Global
 import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.ext.launch
+import com.kuaigeglobal.epnova.core.ext.request
+import com.kuaigeglobal.epnova.core.network.apis.entity.PopupClaimInfo
 import com.kuaigeglobal.epnova.core.network.apis.request.UserTokenBody
 import com.kuaigeglobal.epnova.core.network.apis.response.LoginTaskData
 import com.kuaigeglobal.epnova.core.response
@@ -24,12 +28,17 @@ class MainViewModel : ShareShortDramaViewModel<AppRepository>() {
     val fromPage by lazy { mBundle.getString(Constants.Extra.FROM_PAGE) }
 
     private var fetchingUserInfo = false
+    private var claimingPopup = false
+    private var claimedPopupUserId: String? = null
 
     //当前显示的tab是第几个
     val showTab = ObservableInt(0)
 
     //作品中是否是编辑状态
     val isEditing = ObservableBoolean(false)
+
+    private val _creatingEncouragementPopup = MutableLiveData<PopupClaimInfo?>()
+    val creatingEncouragementPopup: LiveData<PopupClaimInfo?> = _creatingEncouragementPopup
 
     //设置编辑的回调
     var setIsEditing: ((Boolean) -> Unit)? = null
@@ -39,6 +48,30 @@ class MainViewModel : ShareShortDramaViewModel<AppRepository>() {
         fetchUserInfo()
         //首页书架配置（前置）
         loadBookShelfConfig()
+    }
+
+    fun claimCreatingEncouragementPopup() {
+        val userId = User.get().id?.takeIf { it.isNotBlank() } ?: return
+        if (claimingPopup || claimedPopupUserId == userId) return
+
+        claimingPopup = true
+        request(
+            apiBlock = { mRepo.api.claimPopup() },
+            showToast = false,
+            onError = { claimingPopup = false }
+        ) {
+            claimingPopup = false
+            claimedPopupUserId = userId
+            if (User.get().id == userId) {
+                data?.takeIf { it.showPopup == 1 }?.let {
+                    _creatingEncouragementPopup.value = it
+                }
+            }
+        }
+    }
+
+    fun consumeCreatingEncouragementPopup() {
+        _creatingEncouragementPopup.value = null
     }
 
     private fun loadBookShelfConfig() {

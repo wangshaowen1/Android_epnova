@@ -28,6 +28,7 @@ import com.kuaigeglobal.epnova.databinding.ActivityMainBinding
 import com.kuaigeglobal.epnova.feature.aicompose.generating.GeneratingViewModel
 import com.kuaigeglobal.epnova.feature.create.CreateFragment
 import com.kuaigeglobal.epnova.feature.creation.CreationFragment
+import com.kuaigeglobal.epnova.feature.creator.CreatingEncouragementDialog
 import com.kuaigeglobal.epnova.feature.home.HomeFragment
 import com.kuaigeglobal.epnova.feature.mine.MineFragment
 import com.kuaigeglobal.epnova.feature.rewards.RewardWelcomeDialog
@@ -279,6 +280,7 @@ class MainActivity : BaseViewModelActivity<ActivityMainBinding, MainViewModel>()
     override fun onResume() {
         super.onResume()
         GeneratingViewModel.visible = false
+        mRealVM.claimCreatingEncouragementPopup()
         upgradeManager.resumeImmediateUpdate()
         if (memberRecoveryStartupReady && App.instance.isApiSecurityInit) {
             // PENDING 可能在 App 留在后台期间转为 PURCHASED。每次主页面重新前台化都给恢复
@@ -500,6 +502,13 @@ class MainActivity : BaseViewModelActivity<ActivityMainBinding, MainViewModel>()
                         }
                     }
                 }
+            }
+        }
+
+        mRealVM.creatingEncouragementPopup.observe(this) { popup ->
+            if (popup == null) return@observe
+            if (CreatingEncouragementDialog.show(supportFragmentManager, popup)) {
+                mRealVM.consumeCreatingEncouragementPopup()
             }
         }
     }

@@ -2,8 +2,13 @@ package com.kuaigeglobal.epnova.feature.creator
 
 import android.view.Gravity
 import android.view.View
+import androidx.core.os.bundleOf
+import androidx.fragment.app.FragmentManager
 import com.kuaigeglobal.epnova.R
+import com.kuaigeglobal.epnova.common.Constants
+import com.kuaigeglobal.epnova.core.network.apis.entity.PopupClaimInfo
 import com.kuaigeglobal.epnova.databinding.DialogCreatingEncouragementBinding
+import com.kuaigeglobal.epnova.router.AppRouter
 import com.nhsd.basic.BaseVMDialogFragment
 import com.nhsd.basic.ext.dp
 
@@ -18,8 +23,19 @@ class CreatingEncouragementDialog : BaseVMDialogFragment<DialogCreatingEncourage
         private const val DESIGN_HEIGHT_DP = 408
         private const val DESIGN_WIDTH_DP = 295
 
-        fun show() {
+        fun newInstance(data: PopupClaimInfo): CreatingEncouragementDialog {
+            return CreatingEncouragementDialog().apply {
+                arguments = bundleOf(Constants.Extra.DATA to data)
+            }
+        }
 
+        fun show(fragmentManager: FragmentManager, data: PopupClaimInfo): Boolean {
+            if (fragmentManager.isStateSaved || fragmentManager.isDestroyed) return false
+            if (fragmentManager.findFragmentByTag(CreatingEncouragementDialog::class.java.name) != null) {
+                return true
+            }
+            newInstance(data).show(fragmentManager)
+            return true
         }
     }
 
@@ -45,7 +61,10 @@ class CreatingEncouragementDialog : BaseVMDialogFragment<DialogCreatingEncourage
                 dismissAllowingStateLoss()
             }
             R.id.btnNext -> {
-                // 下一步
+                mRealVM.reportDisplay {
+                    AppRouter.jump(mRealVM.data?.jumpUri)
+                    dismissAllowingStateLoss()
+                }
             }
         }
     }

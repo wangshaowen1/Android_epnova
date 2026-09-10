@@ -37,6 +37,7 @@
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/ivCover"
+            loadUri="@{layout.data.imageUrl}"
             placeHolder="@{@drawable/img_default_cover_3_4}"
             android:layout_width="136dp"
             android:layout_height="180dp"
@@ -56,6 +57,7 @@
             android:layout_marginHorizontal="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginBottom="12dp"
+            android:text="@{layout.data.title}"
             android:textColor="@color/text_color_1_dark"
             android:textSize="20sp"
             app:layout_constrainedWidth="true"
@@ -73,6 +75,7 @@
             android:layout_marginHorizontal="16dp"
             android:layout_marginBottom="16dp"
             android:gravity="center"
+            android:text="@{layout.data.content}"
             android:textColor="@color/text_color_1_dark"
             android:textSize="16sp"
             app:layout_constrainedWidth="true"

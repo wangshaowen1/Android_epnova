@@ -1,5 +1,9 @@
 package com.kuaigeglobal.epnova.core.network.apis.entity
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
 data class PopupClaimInfo(
     val showPopup: Int,
     val popupEventId: String?,
@@ -10,4 +14,4 @@ data class PopupClaimInfo(
     val workTitle: String?,
     val jumpType: Int?,
     val jumpUri: String?
-)
+) : Parcelable
