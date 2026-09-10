@@ -4,16 +4,16 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.kuaigeglobal.epnova.core.network.apis.ApiException
 import com.kuaigeglobal.epnova.core.network.apis.ApiService
-import com.kuaigeglobal.epnova.core.network.apis.entity.SystemNoticeInfo
+import com.kuaigeglobal.epnova.core.network.apis.entity.MessagePageInfo
 import com.kuaigeglobal.epnova.core.network.apis.request.PagedBody
 import kotlinx.coroutines.CancellationException
 
 /** 消息列表分页数据源。 */
 class NotificationsPagingSource(
     private val api: ApiService
-) : PagingSource<Int, SystemNoticeInfo>() {
+) : PagingSource<Int, MessagePageInfo>() {
 
-    override fun getRefreshKey(state: PagingState<Int, SystemNoticeInfo>): Int? {
+    override fun getRefreshKey(state: PagingState<Int, MessagePageInfo>): Int? {
         return state.anchorPosition?.let { anchor ->
             val page = state.closestPageToPosition(anchor)
             page?.prevKey?.plus(1) ?: page?.nextKey?.minus(1)
@@ -22,7 +22,7 @@ class NotificationsPagingSource(
 
     override suspend fun load(
         params: LoadParams<Int>
-    ): LoadResult<Int, SystemNoticeInfo> {
+    ): LoadResult<Int, MessagePageInfo> {
         return try {
             val pageNum = params.key ?: 1
             val pageSize = params.loadSize

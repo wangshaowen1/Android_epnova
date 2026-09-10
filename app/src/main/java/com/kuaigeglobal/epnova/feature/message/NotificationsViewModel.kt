@@ -11,7 +11,7 @@ import com.kuaigeglobal.epnova.base.viewmodel.ToolbarViewModel
 import com.kuaigeglobal.epnova.common.Constant
 import com.kuaigeglobal.epnova.core.AppRepository
 import com.kuaigeglobal.epnova.core.ext.request
-import com.kuaigeglobal.epnova.core.network.apis.entity.SystemNoticeInfo
+import com.kuaigeglobal.epnova.core.network.apis.entity.MessagePageInfo
 import com.nhsd.basic.ext.getResString
 import kotlinx.coroutines.flow.Flow
 
@@ -22,7 +22,7 @@ class NotificationsViewModel : AppRepositoryViewModel<AppRepository>() {
         title = R.string.messages_title.getResString()
     )
 
-    val notifications: Flow<PagingData<SystemNoticeInfo>> = Pager(
+    val notifications: Flow<PagingData<MessagePageInfo>> = Pager(
         config = PagingConfig(
             initialLoadSize = Constant.Paged.PAGE_SIZE,
             pageSize = Constant.Paged.PAGE_SIZE,

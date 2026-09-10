@@ -22,6 +22,7 @@ import com.kuaigeglobal.epnova.core.network.apis.entity.InspirationInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.SameStyleHotCaseInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.SameStylePrefillInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.LogOffStatusInfo
+import com.kuaigeglobal.epnova.core.network.apis.entity.MessagePageInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.MyTvSeriesListInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.OnceTaskListData
 import com.kuaigeglobal.epnova.core.network.apis.entity.OfficialConsultationInfo
@@ -49,7 +50,6 @@ import com.kuaigeglobal.epnova.core.network.apis.entity.SensitiveWordCheckData
 import com.kuaigeglobal.epnova.core.network.apis.entity.SeriesPriceConfigInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.ShortDramaInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.SimpleStoryboardInfo
-import com.kuaigeglobal.epnova.core.network.apis.entity.SystemNoticeInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.StoryStreamSessionInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.StoryUnlockStatusData
 import com.kuaigeglobal.epnova.core.network.apis.entity.SubtitleTaskStatusInfo
@@ -360,7 +360,7 @@ interface ApiService {
 
     /** 分页查询用户消息 */
     @POST(ApiConstants.MESSAGE_PAGE)
-    suspend fun messagePage(@Body body: PagedBody): ApiResponse<PagedList<SystemNoticeInfo>?>
+    suspend fun messagePage(@Body body: PagedBody): ApiResponse<PagedList<MessagePageInfo>?>
 
     /** 清除用户全部消息 */
     @POST(ApiConstants.MESSAGE_READ_ALL)

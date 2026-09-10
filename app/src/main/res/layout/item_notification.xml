@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="1"
-            android:text="@{item.data.messagesTitle}"
+            android:text="@{item.data.title}"
             android:textColor="?attr/textColor1"
             tools:text="🎉 Your First Viewer!" />
 
@@ -32,7 +32,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:text="@{item.data.messagesContent}"
+            android:text="@{item.data.content}"
             android:textColor="?attr/textColor4"
             tools:text="Your drama is live! EpNova is now finding your first viewers" />
 

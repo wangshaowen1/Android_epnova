@@ -5,15 +5,15 @@ import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.kuaigeglobal.epnova.core.network.apis.entity.SystemNoticeInfo
+import com.kuaigeglobal.epnova.core.network.apis.entity.MessagePageInfo
 import com.kuaigeglobal.epnova.databinding.ItemNotificationBinding
 import com.nhsd.basic.ext.setOnSingleClickListener
 import com.nhsd.basic.item.BindingViewHolder
 
 class NotificationsAdapter(
-    private val onItemClick: (SystemNoticeInfo) -> Unit
+    private val onItemClick: (MessagePageInfo) -> Unit
 ) :
-    PagingDataAdapter<SystemNoticeInfo, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
+    PagingDataAdapter<MessagePageInfo, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
@@ -36,7 +36,9 @@ class NotificationsAdapter(
 
         override fun bind(position: Int) {
             val item = getItem(position)
-            val clickableItem = item?.takeIf { it.showViewDetail }
+            val clickableItem = item?.takeIf {
+                it.canJump == 1 && !it.jumpUri.isNullOrEmpty()
+            }
             binding.item = item?.let(::ItemNotificationVm)
             binding.root.setOnClickListener(null)
             binding.root.isClickable = clickableItem != null
@@ -48,21 +50,21 @@ class NotificationsAdapter(
     }
 
     companion object {
-        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<SystemNoticeInfo>() {
+        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<MessagePageInfo>() {
             override fun areItemsTheSame(
-                oldItem: SystemNoticeInfo,
-                newItem: SystemNoticeInfo
+                oldItem: MessagePageInfo,
+                newItem: MessagePageInfo
             ): Boolean {
-                return if (oldItem.messagesId != null || newItem.messagesId != null) {
-                    oldItem.messagesId != null && oldItem.messagesId == newItem.messagesId
+                return if (oldItem.messageId != null || newItem.messageId != null) {
+                    oldItem.messageId != null && oldItem.messageId == newItem.messageId
                 } else {
-                    oldItem.createTime != null && oldItem.createTime == newItem.createTime
+                    oldItem.sendTime != null && oldItem.sendTime == newItem.sendTime
                 }
             }
 
             override fun areContentsTheSame(
-                oldItem: SystemNoticeInfo,
-                newItem: SystemNoticeInfo
+                oldItem: MessagePageInfo,
+                newItem: MessagePageInfo
             ): Boolean = oldItem == newItem
         }
     }
