@@ -20,7 +20,10 @@ class ToastView : AppCompatTextView {
             text = value
             if (value.isEmpty()) {
                 removeCallbacks(hideRunnable)
+                showAnimator?.cancel()
+                showAnimator = null
                 hideAnimator?.cancel()
+                hideAnimator = null
                 alpha = 0f
             } else {
                 show()
@@ -53,5 +56,15 @@ class ToastView : AppCompatTextView {
                 start()
             }
         }
+    }
+
+    override fun onDetachedFromWindow() {
+        removeCallbacks(hideRunnable)
+        showAnimator?.cancel()
+        showAnimator = null
+        hideAnimator?.cancel()
+        hideAnimator = null
+        alpha = 0f
+        super.onDetachedFromWindow()
     }
 }

@@ -44,8 +44,10 @@ class GradientBorderView : View {
         }
     var borderWidth = 0f
         set(value) {
-            if (field != value) {
-                field = value
+            val safeWidth = value.takeIf { it.isFinite() }?.coerceAtLeast(0f) ?: 0f
+            if (field != safeWidth) {
+                field = safeWidth
+                if (width > 0 && height > 0) rebuildGeometry(width, height)
                 invalidate()
             }
         }
@@ -94,6 +96,10 @@ class GradientBorderView : View {
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)
+        rebuildGeometry(w, h)
+    }
+
+    private fun rebuildGeometry(w: Int, h: Int) {
         if (borderWidth > 0) {
             if (borderStartColor == Color.TRANSPARENT) {
                 borderWidth = 0f
@@ -109,10 +115,10 @@ class GradientBorderView : View {
                 } else if (borderAngle >= 90) {
                     endPosition = 0f to h.toFloat()
                 } else {
-                    val degree = borderAngle / 180f
+                    val degree = Math.toRadians(borderAngle.toDouble())
                     var endX = w.toDouble()
                     //tan(degree) = endY/endX
-                    val tan = tan(degree.toDouble())
+                    val tan = tan(degree)
                     var endY = endX * tan
                     if (endY > h) {
                         endY = h.toDouble()
@@ -141,10 +147,10 @@ class GradientBorderView : View {
             } else if (backgroundAngle >= 90) {
                 endPosition = 0f to bgHeight
             } else {
-                val degree = backgroundAngle / 180f
+                val degree = Math.toRadians(backgroundAngle.toDouble())
                 var endX = bgWidth.toDouble()
                 //tan(degree) = endY/endX
-                val tan = tan(degree.toDouble())
+                val tan = tan(degree)
                 var endY = endX * tan
                 if (endY > bgHeight) {
                     endY = bgHeight.toDouble()

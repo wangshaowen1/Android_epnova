@@ -20,21 +20,20 @@ class AtMostScrollView : FadeScrollView {
         defStyle
     ) {
         val a =
-            context.obtainStyledAttributes(attributeSet, R.styleable.AtMostRecyclerView, defStyle, 0)
-        maxHeight = a.getDimensionPixelSize(R.styleable.AtMostRecyclerView_maxHeight, maxHeight)
-        maxWidth = a.getDimensionPixelSize(R.styleable.AtMostRecyclerView_maxWidth, maxWidth)
+            context.obtainStyledAttributes(attributeSet, R.styleable.AtMostScrollView, defStyle, 0)
+        maxHeight = a.getDimensionPixelSize(R.styleable.AtMostScrollView_maxHeight, maxHeight)
+        maxWidth = a.getDimensionPixelSize(R.styleable.AtMostScrollView_maxWidth, maxWidth)
         a.recycle()
     }
 
     override fun onMeasure(widthSpec: Int, heightSpec: Int) {
-        var tempWidthSpec = widthSpec
-        if (maxWidth > 0) {
-            tempWidthSpec = MeasureSpec.makeMeasureSpec(maxWidth, MeasureSpec.AT_MOST)
-        }
-        var tempHeightSpec = heightSpec
-        if (maxHeight > 0) {
-            tempHeightSpec = MeasureSpec.makeMeasureSpec(maxHeight, MeasureSpec.AT_MOST)
-        }
-        super.onMeasure(tempWidthSpec, tempHeightSpec)
+        super.onMeasure(constrainSpec(widthSpec, maxWidth), constrainSpec(heightSpec, maxHeight))
+    }
+
+    private fun constrainSpec(spec: Int, maximum: Int): Int {
+        val mode = MeasureSpec.getMode(spec)
+        if (maximum <= 0 || mode == MeasureSpec.EXACTLY) return spec
+        val size = if (mode == MeasureSpec.AT_MOST) minOf(MeasureSpec.getSize(spec), maximum) else maximum
+        return MeasureSpec.makeMeasureSpec(size, MeasureSpec.AT_MOST)
     }
 }

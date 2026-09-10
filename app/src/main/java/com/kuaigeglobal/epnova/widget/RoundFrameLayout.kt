@@ -2,7 +2,6 @@ package com.kuaigeglobal.epnova.widget
 
 import android.content.Context
 import android.graphics.Canvas
-import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.RectF
 import android.util.AttributeSet
@@ -12,12 +11,7 @@ import com.kuaigeglobal.epnova.R
 class RoundFrameLayout(context: Context) : FrameLayout(context) {
 
 
-    /**
-     * 开启描边，便于演示效果
-     */
-    private val mOpenStroke = false
     private val mPath = Path()
-    private val mPaint = Paint(Paint.ANTI_ALIAS_FLAG)
 
     /**
      * 左上角 圆角大小
@@ -57,16 +51,21 @@ class RoundFrameLayout(context: Context) : FrameLayout(context) {
         obtainStyledAttributes.recycle()
     }
 
+    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
+        super.onSizeChanged(w, h, oldw, oldh)
+        mPath.reset()
+        val radii = floatArrayOf(leftTopRound, leftTopRound, rightTopRound, rightTopRound, rightBottomRound, rightBottomRound, leftBottomRound, leftBottomRound)
+        mPath.addRoundRect(RectF(0f, 0f, w.toFloat(), h.toFloat()), radii, Path.Direction.CW)
+    }
+
     override fun dispatchDraw(canvas: Canvas) {
-        //1.
-        //dx,dy 成对出现，控制上右下左，四个位置圆角
-        val array = floatArrayOf(leftTopRound, leftTopRound, rightTopRound, rightTopRound, rightBottomRound, rightBottomRound, leftBottomRound, leftBottomRound);
-        mPath.addRoundRect(RectF(0f, 0f, width.toFloat(), height.toFloat()), array, Path.Direction.CW)
-        //2.
-        //3.
-        canvas.clipPath(mPath)
-        //4.
-        super.dispatchDraw(canvas)
+        val saveCount = canvas.save()
+        try {
+            canvas.clipPath(mPath)
+            super.dispatchDraw(canvas)
+        } finally {
+            canvas.restoreToCount(saveCount)
+        }
     }
 
     /**

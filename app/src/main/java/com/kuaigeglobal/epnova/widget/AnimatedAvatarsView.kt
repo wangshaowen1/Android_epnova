@@ -24,7 +24,7 @@ class AnimatedAvatarsView : FrameLayout {
         set(value) {
             if (field != value) {
                 field = value
-                reset()
+                if (value) reset() else cancelAnimation()
             }
         }
     private var animator: Animator? = null
@@ -48,19 +48,27 @@ class AnimatedAvatarsView : FrameLayout {
     }
 
     private fun reset() {
-        animator?.cancel()
-        removeCallbacks(animateNext)
+        cancelAnimation()
         setCurrent(0)
     }
 
+    private fun cancelAnimation() {
+        removeCallbacks(animateNext)
+        // cancel() 也会触发 onEnd，先移除监听，防止清理时又加载图片和安排下一轮。
+        animator?.removeAllListeners()
+        animator?.cancel()
+        animator = null
+    }
+
     private fun setCurrent(index: Int) {
-        this.index = index
         val avatars = avatars
         val size = avatars?.size
         if (size == null || size == 0) {
+            this.index = 0
             visibility = GONE
             return
         }
+        this.index = index % size
         visibility = VISIBLE
         avatarViews.forEachIndexed { idx, avatarView ->
             avatarView.translationX = 0f
@@ -75,26 +83,30 @@ class AnimatedAvatarsView : FrameLayout {
         }
         binding.ivNext.alpha = 0f
         if (size > avatarViews.size && attached) {
-            val next = (index + 3) % size
+            val next = (this.index + 3) % size
             loadThumbnailUri(binding.ivNext, avatars[next], R.drawable.ic_default_avatar_big.getResDrawable())
             postDelayed(animateNext, 1000)
         }
     }
 
     private fun animateNext() {
-        animator?.cancel()
+        cancelAnimation()
+        if (!attached || (avatars?.size ?: 0) <= avatarViews.size) return
         ValueAnimator.ofFloat(0f, 1f).apply {
             interpolator = LinearInterpolator()
             duration = 500
             addUpdateListener {
                 val animatedValue = it.animatedValue as Float
                 binding.ivNext.alpha = animatedValue
-                avatarViews.forEachIndexed { idx, avatarView ->
+                avatarViews.forEach { avatarView ->
                     avatarView.translationX = animatedValue * animateDistance
                 }
                 avatarViews.first().alpha = 1f - animatedValue
             }
-            addListener(onEnd = { setCurrent(index + 1) })
+            addListener(onEnd = {
+                animator = null
+                if (attached) setCurrent(index + 1)
+            })
         }.let {
             animator = it
             it.start()

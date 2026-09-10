@@ -1702,10 +1702,11 @@ fun pop(view: View, _in: Boolean, @FloatRange(from = 0.0, to = 1.0) centerX: Flo
 
 @BindingAdapter("setInputDecimal", "maxIntegerDigits", "maxDecimalDigits")
 fun setInputDecimal(editText: EditText, decimal: Boolean, maxIntegerDigits: Int, maxDecimalDigits: Int) {
+    val otherFilters = editText.filters.filterNot { it is DecimalInputFilter }
     if (decimal) {
-        editText.filters = arrayOf(DecimalInputFilter(maxIntegerDigits, maxDecimalDigits))
+        editText.filters = (otherFilters + DecimalInputFilter(maxIntegerDigits, maxDecimalDigits)).toTypedArray()
     } else {
-        editText.filters = editText.filters.filterNot { it is DecimalInputFilter }.toTypedArray()
+        editText.filters = otherFilters.toTypedArray()
     }
 }
 

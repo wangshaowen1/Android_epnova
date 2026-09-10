@@ -31,6 +31,7 @@ public class SelectorGradientTextView extends GradientTextView {
     public void setGradientColorEnabled(boolean gradientColorEnabled) {
         this.mGradientColorEnabled = gradientColorEnabled;
         gradientText();
+        invalidate();
     }
 
     @Override

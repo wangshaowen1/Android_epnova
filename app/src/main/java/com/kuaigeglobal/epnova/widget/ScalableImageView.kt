@@ -1,9 +1,7 @@
 package com.kuaigeglobal.epnova.widget
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
-import android.view.MotionEvent
 import androidx.appcompat.widget.AppCompatImageView
 
 /**
@@ -21,29 +19,17 @@ class ScalableImageView @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : AppCompatImageView(context, attrs, defStyleAttr) {
 
-    private val scaleFactor = 0.95f // 缩放比例
+    private var pressEffect: PressScaleEffect? = null
 
-    @SuppressLint("ClickableViewAccessibility")
-    override fun onTouchEvent(event: MotionEvent): Boolean {
-        when (event.action) {
-            MotionEvent.ACTION_DOWN -> {
-                // 缩小 ImageView
-                animate()
-                    .scaleX(scaleFactor)
-                    .scaleY(scaleFactor)
-                    .setDuration(150)
-                    .start()
-            }
+    override fun drawableStateChanged() {
+        super.drawableStateChanged()
+        val pressed = isEnabled && isPressed
+        if (pressed && pressEffect == null) pressEffect = PressScaleEffect(this)
+        pressEffect?.update(pressed)
+    }
 
-            MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
-                // 还原 ImageView
-                animate()
-                    .scaleX(1f)
-                    .scaleY(1f)
-                    .setDuration(150)
-                    .start()
-            }
-        }
-        return super.onTouchEvent(event)
+    override fun onDetachedFromWindow() {
+        pressEffect?.reset()
+        super.onDetachedFromWindow()
     }
 }

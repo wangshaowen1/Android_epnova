@@ -16,7 +16,10 @@ class DecimalInputFilter(
     // 正则表达式逻辑：
     // ^\\d{0,M}             -> 匹配 0 到 M 位整数
     // (\\.\\d{0,N})?        -> 匹配可选的小数点和 0 到 N 位小数
-    private val pattern = Pattern.compile("^\\d{0,$maxIntegerDigits}(\\.\\d{0,$maxDecimalDigits})?$")
+    private val pattern = Pattern.compile(
+        "^\\d{0,${maxIntegerDigits.coerceAtLeast(0)}}" +
+            if (maxDecimalDigits > 0) "(\\.\\d{0,$maxDecimalDigits})?$" else "$"
+    )
 
     override fun filter(
         source: CharSequence, // 新输入的字符串
@@ -33,7 +36,9 @@ class DecimalInputFilter(
         val result = builder.toString()
 
         // 2. 特殊处理：如果用户第一位输入小数点 "."，自动补全为 "0."
-        if (result == ".") {
+        if (result == "." && start < end && dstart == 0 && dend == dest.length &&
+            maxIntegerDigits > 0 && maxDecimalDigits > 0
+        ) {
             return "0."
         }
         
@@ -41,7 +46,8 @@ class DecimalInputFilter(
         return if (pattern.matcher(result).matches()) {
             null // 返回 null 表示接受输入
         } else {
-            "" // 返回空字符串表示拒绝输入（即输入无效，不显示）
+            // 拒绝选区替换或删除时保留原片段，返回空串会误删选中的内容。
+            dest.subSequence(dstart, dend)
         }
     }
 }

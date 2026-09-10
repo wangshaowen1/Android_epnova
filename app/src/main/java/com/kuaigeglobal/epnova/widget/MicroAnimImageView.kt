@@ -2,8 +2,10 @@ package com.kuaigeglobal.epnova.widget
 
 import android.content.Context
 import android.graphics.*
+import android.os.SystemClock
 import android.util.AttributeSet
 import android.util.Log
+import android.view.View
 import android.view.animation.Interpolator
 import android.view.animation.LinearInterpolator
 import androidx.appcompat.widget.AppCompatImageView
@@ -19,6 +21,7 @@ class MicroAnimImageView @JvmOverloads constructor(
 ) : AppCompatImageView(context, attrs, defStyleAttr) {
     private var microAnimationConfig: MicroAnimationConfig? = null
     private var isAnimationRunning = false
+    private var pendingStart: View.OnLayoutChangeListener? = null
     // 动画相关变量
     var currentProgress = 0f
     private var animStartTime = 0L
@@ -109,7 +112,10 @@ class MicroAnimImageView @JvmOverloads constructor(
         }
         if (width == 0 || height == 0) {
             if (DEBUG) Logger.d("MicroAnim", "View not measured, delaying...")
-            post { startMicroAnimation(customDuration) }
+            // 等待一次有效布局；停止、重配或离屏都能撤销，不在消息队列中忙等。
+            pendingStart = View.OnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
+                if (width > 0 && height > 0) startMicroAnimation(customDuration)
+            }.also { addOnLayoutChangeListener(it) }
             return
         }
         // 确保初始绘制区域已计算
@@ -135,7 +141,7 @@ class MicroAnimImageView @JvmOverloads constructor(
             baseDuration
         }
         isAnimationRunning = true
-        animStartTime = System.currentTimeMillis()
+        animStartTime = SystemClock.uptimeMillis()
         frameCount = 0
         if (DEBUG) Logger.d("MicroAnim",
             "Animation started - " +
@@ -144,16 +150,22 @@ class MicroAnimImageView @JvmOverloads constructor(
                     "duration: $animationDuration")
         // 立即重绘，显示起始位置
         invalidate()
-        post(animationRunnable)
+        postOnAnimation(animationRunnable)
     }
 
     /** * 停止微动画 */
     fun stopMicroAnimation() {
+        cancelPendingStart()
         isAnimationRunning = false
         isAnimationCompleted = false
         removeCallbacks(animationRunnable)
         resetAnimation()
         invalidate()
+    }
+
+    private fun cancelPendingStart() {
+        pendingStart?.let { removeOnLayoutChangeListener(it) }
+        pendingStart = null
     }
 
     fun resetToInitialState() {
@@ -554,7 +566,7 @@ class MicroAnimImageView @JvmOverloads constructor(
     private val animationRunnable = object : Runnable {
         override fun run() {
             if (!isAnimationRunning) return
-            val currentTime = System.currentTimeMillis()
+            val currentTime = SystemClock.uptimeMillis()
             val elapsed = currentTime - animStartTime
             val effectiveDuration = animationDuration.coerceAtLeast(16L)
             if (elapsed >= effectiveDuration) {
@@ -579,7 +591,7 @@ class MicroAnimImageView @JvmOverloads constructor(
             }
             val config = microAnimationConfig ?: return
             updateAnimation(config)
-            postDelayed(this, 16)
+            postOnAnimation(this)
         }
     }
 
@@ -642,6 +654,7 @@ class MicroAnimImageView @JvmOverloads constructor(
 
     /** * 暂停微动画 - 停留在当前帧 */
     fun pauseMicroAnimation() {
+        cancelPendingStart()
         if (!isAnimationRunning) return
 
         isAnimationRunning = false
@@ -649,7 +662,7 @@ class MicroAnimImageView @JvmOverloads constructor(
 
         // 计算并保存当前进度
         if (animStartTime > 0) {
-            val elapsed = System.currentTimeMillis() - animStartTime
+            val elapsed = SystemClock.uptimeMillis() - animStartTime
             val effectiveDuration = animationDuration.coerceAtLeast(16L)
             currentProgress = (elapsed.toFloat() / effectiveDuration).coerceIn(0f, 1f)
 
@@ -689,7 +702,7 @@ class MicroAnimImageView @JvmOverloads constructor(
         val remainingDuration = (animationDuration * (1 - currentProgress)).toLong().coerceAtLeast(16L)
 
         isAnimationRunning = true
-        animStartTime = System.currentTimeMillis() - (animationDuration * currentProgress).toLong()
+        animStartTime = SystemClock.uptimeMillis() - (animationDuration * currentProgress).toLong()
 
         if (DEBUG) Log.d("MicroAnim",
             "Animation resumed - " +
@@ -699,7 +712,7 @@ class MicroAnimImageView @JvmOverloads constructor(
 
         // 立即重绘，然后继续动画
         invalidate()
-        post(animationRunnable)
+        postOnAnimation(animationRunnable)
     }
 
     /** * 是否处于暂停状态 */

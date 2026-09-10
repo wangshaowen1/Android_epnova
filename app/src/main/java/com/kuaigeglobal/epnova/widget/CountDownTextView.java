@@ -36,6 +36,8 @@ public class CountDownTextView extends AppCompatTextView {
     private OnTimeListener mOnTimeListener;
 
     private boolean clickAble = false;
+    private boolean enabledBeforeCountDown;
+    private boolean disabledByCountDown;
 
     public CountDownTextView(Context context) {
         this(context, null);
@@ -75,45 +77,48 @@ public class CountDownTextView extends AppCompatTextView {
     /**
      * 开始倒计时
      *
-     * @param countDownTimeCount 调用次数
+     * @param countDownTimeCount 总时长，单位：秒
      * @param countDownTime      事件间隔 单位:秒
-     * @param isOrder            是否是正序  true表示正序列(例:1,2,3,4...) false表示反序(例:5,4,3,2...)
+     * @param isOrder            true 返回已过去的秒数，false 返回剩余秒数
      */
     public void startCountDown(int countDownTimeCount, int countDownTime, boolean isOrder) {
         if (this.mCountDownTimer != null) {
             Logger.d("当前正在倒计时...");
             return;
         }
-        if (!clickAble) {
+        enabledBeforeCountDown = isEnabled();
+        disabledByCountDown = !clickAble;
+        if (disabledByCountDown) {
             setEnabled(false);
         }
-        int totalTimeCount = countDownTimeCount * 1000;
-        int time = countDownTime * 1000;
-        this.mCountDownTimer = new CountDownTimer(totalTimeCount + 500, time) {
+        int totalSeconds = Math.max(0, countDownTimeCount);
+        long totalTimeCount = totalSeconds * 1000L;
+        long intervalMillis = Math.max(1, countDownTime) * 1000L;
+        CountDownTimer timer = new CountDownTimer(totalTimeCount == 0 ? 0 : totalTimeCount + 500, intervalMillis) {
             @Override
             public void onTick(long millisUntilFinished) {
-                if (mOnTimeListener == null) {
+                if (mCountDownTimer != this || mOnTimeListener == null) {
                     return;
                 }
-                int time = (int) (millisUntilFinished / 1000);
-                mOnTimeListener.onTime(isOrder ? totalTimeCount - time : time);
+                int remainingSeconds = (int) Math.min(totalSeconds, millisUntilFinished / 1000);
+                mOnTimeListener.onTime(isOrder ? totalSeconds - remainingSeconds : remainingSeconds);
             }
 
             @Override
             public void onFinish() {
-                stopCountDown();
-                if (mOnTimeListener == null) {
-                    return;
-                }
-                if (!clickAble) {
-                    setEnabled(true);
+                if (mCountDownTimer == this) {
+                    stopCountDown();
                 }
             }
         };
+        this.mCountDownTimer = timer;
         if (mOnTimeListener != null) {
             mOnTimeListener.onStartCountTime();
         }
-        this.mCountDownTimer.start(); //开始倒计时
+        // 监听器可能同步停止或重启倒计时，只启动仍归本次调用所有的 Timer。
+        if (this.mCountDownTimer == timer) {
+            timer.start();
+        }
     }
 
     public boolean isCountDowning() {
@@ -128,16 +133,32 @@ public class CountDownTextView extends AppCompatTextView {
      * 停止倒计时
      */
     public void stopCountDown() {
-        if (this.mCountDownTimer != null) {
-            Logger.d("停止倒计时...");
-            this.mCountDownTimer.cancel();
-            this.mCountDownTimer = null;
+        if (this.mCountDownTimer == null) {
+            return;
         }
+        cancelCountDown();
         if (this.mOnTimeListener != null) {
             this.mOnTimeListener.onComplete();
         }
     }
 
+    private void cancelCountDown() {
+        if (mCountDownTimer != null) {
+            mCountDownTimer.cancel();
+            mCountDownTimer = null;
+        }
+        if (disabledByCountDown) {
+            disabledByCountDown = false;
+            setEnabled(enabledBeforeCountDown);
+        }
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        // 离开窗口只取消，不把生命周期清理误报为业务完成。
+        cancelCountDown();
+        super.onDetachedFromWindow();
+    }
 
     public void setOnTimeListener(OnTimeListener mOnTimeListener) {
         this.mOnTimeListener = mOnTimeListener;

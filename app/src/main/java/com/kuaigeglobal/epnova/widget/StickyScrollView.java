@@ -54,6 +54,9 @@ public class StickyScrollView extends NestedScrollView {
  
         @Override
         public void run() {
+            if (!isAttachedToWindow() || currentlyStickingView == null) {
+                return;
+            }
             if (currentlyStickingView != null) {
                 int l = getLeftForViewRelativeOnlyChild(currentlyStickingView);
                 int t = getBottomForViewRelativeOnlyChild(currentlyStickingView);
@@ -316,7 +319,8 @@ public class StickyScrollView extends NestedScrollView {
         if (getStringTagForView(currentlyStickingView).contains(FLAG_HASTRANSPARANCY)) {
             hideView(currentlyStickingView);
         }
-        if (((String) currentlyStickingView.getTag()).contains(FLAG_NONCONSTANT)) {
+        if (getStringTagForView(currentlyStickingView).contains(FLAG_NONCONSTANT)) {
+            removeCallbacks(invalidateRunnable);
             post(invalidateRunnable);
         }
     }
@@ -347,6 +351,7 @@ public class StickyScrollView extends NestedScrollView {
     }
  
     private void findStickyViews(View v) {
+        if (v == null) return;
         if (v instanceof ViewGroup) {
             ViewGroup vg = (ViewGroup) v;
             for (int i = 0; i < vg.getChildCount(); i++) {
@@ -358,7 +363,7 @@ public class StickyScrollView extends NestedScrollView {
                 }
             }
         } else {
-            String tag = (String) v.getTag();
+            String tag = getStringTagForView(v);
             if (tag != null && tag.contains(STICKY_TAG)) {
                 stickyViews.add(v);
             }
@@ -390,5 +395,20 @@ public class StickyScrollView extends NestedScrollView {
             anim.setFillAfter(true);
             v.startAnimation(anim);
         }
+    }
+
+    @Override
+    public void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        doTheStickyThing();
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        removeCallbacks(invalidateRunnable);
+        if (currentlyStickingView != null) {
+            stopStickingCurrentlyStickingView();
+        }
+        super.onDetachedFromWindow();
     }
 }

@@ -25,6 +25,7 @@ class RestrictedEditText @JvmOverloads constructor(
 
     //特殊支持字符
     val specialCharacters = listOf('-', '_', '.',' ')
+    private var restrictionWatcher: TextWatcher? = null
 
 
     /**
@@ -34,15 +35,18 @@ class RestrictedEditText @JvmOverloads constructor(
      * @return InputFilter
      */
     fun createInputFilter(noSpace: Boolean, maxLength: Int) {
+        restrictionWatcher?.let { removeTextChangedListener(it) }
+        restrictionWatcher = null
         if (noSpace) {
             textRestrictions()
         }
-        filters = arrayOf(InputFilter.LengthFilter(maxLength))
+        filters = (filters.filterNot { it is InputFilter.LengthFilter } +
+            InputFilter.LengthFilter(maxLength.coerceAtLeast(0))).toTypedArray()
     }
 
     private fun textRestrictions() {
         // 添加文本变化监听器执行额外过滤
-        this.addTextChangedListener(object : TextWatcher {
+        val watcher = object : TextWatcher {
             private var selfChange = false
 
             override fun beforeTextChanged(
@@ -55,7 +59,7 @@ class RestrictedEditText @JvmOverloads constructor(
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
 
             override fun afterTextChanged(editable: Editable?) {
-                if (selfChange) return
+                if (selfChange || editable == null) return
 
                 val validChars = StringBuilder()
                 editable?.forEach { char ->
@@ -71,11 +75,16 @@ class RestrictedEditText @JvmOverloads constructor(
                 val filteredText = validChars.toString()
                 if (editable.toString() != filteredText) {
                     selfChange = true
-                    editable?.replace(0, editable.length, filteredText)
-                    selfChange = false
+                    try {
+                        editable.replace(0, editable.length, filteredText)
+                    } finally {
+                        selfChange = false
+                    }
                 }
             }
-        })
+        }
+        restrictionWatcher = watcher
+        addTextChangedListener(watcher)
     }
 
 

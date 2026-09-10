@@ -35,30 +35,30 @@ class RingProgressView : View {
     var startColor = Color.TRANSPARENT
         set(value) {
             field = value
-            if (init && value!=Color.TRANSPARENT) {
-                useGradient = true
+            if (init) {
+                if (value != Color.TRANSPARENT) useGradient = true else init()
             }
         }
     //中间颜色
     private var centerColor = Color.TRANSPARENT
         set(value) {
             field = value
-            if (init && value!=Color.TRANSPARENT) {
-                useGradient = true
+            if (init) {
+                if (value != Color.TRANSPARENT) useGradient = true else init()
             }
         }
     //结束颜色
     private var endColor = Color.TRANSPARENT
         set(value) {
             field = value
-            if (init && value!=Color.TRANSPARENT) {
-                useGradient = true
+            if (init) {
+                if (value != Color.TRANSPARENT) useGradient = true else init()
             }
         }
     //线宽
     var roundWidth = 8
         set(value) {
-            field = value
+            field = value.coerceAtLeast(0)
             init()
         }
 
@@ -103,37 +103,38 @@ class RingProgressView : View {
     //更新动画时长
     var duration = 250L
         set(value) {
-            field = value
-            va.duration = value
-            postInvalidate()
+            field = value.coerceAtLeast(0L)
+            va.duration = field
         }
     //起始进度(最小进度)
     var startProgress = 0f
         set(value) {
+            if (!value.isFinite() || field == value) return
             field = value
-            tempProgress = startProgress
-            progress = progress
+            resetProgressRange()
         }
     //结束进度(最大进度)
     var endProgress = 100f
         set(value) {
+            if (!value.isFinite() || field == value) return
             field = value
-            tempProgress = startProgress
-            progress = progress
+            resetProgressRange()
         }
     //目标进度
     var progress = 50f
         set(value) {
-            //合法性检查
-            field = when {
-                value in startProgress..endProgress -> value
-
-                value > max(startProgress, endProgress) -> Math.max(startProgress, endProgress)
-
-                else -> min(startProgress, endProgress)
+            if (!value.isFinite()) return
+            val target = value.coerceIn(min(startProgress, endProgress), max(startProgress, endProgress))
+            if (field == target) return
+            field = target
+            va.cancel()
+            if (isAttachedToWindow && isShown && duration > 0L && tempProgress != target) {
+                va.setFloatValues(tempProgress, target)
+                va.start()
+            } else {
+                tempProgress = target
+                invalidate()
             }
-            va.setFloatValues(tempProgress, progress)
-            va.start()
         }
     //插值器
     private val va = ValueAnimator()
@@ -158,7 +159,7 @@ class RingProgressView : View {
         centerColor = ta.getColor(R.styleable.RingProgressView_f_centerColor, centerColor)
         endColor = ta.getColor(R.styleable.RingProgressView_f_endColor, endColor)
         //渐变色设置检查
-        if (startColor != Color.TRANSPARENT || startColor != Color.TRANSPARENT || startColor != Color.TRANSPARENT) {
+        if (startColor != Color.TRANSPARENT || centerColor != Color.TRANSPARENT || endColor != Color.TRANSPARENT) {
             useGradient = true
         }
         useGradient = ta.getBoolean(R.styleable.RingProgressView_f_useGradient, useGradient)
@@ -193,14 +194,30 @@ class RingProgressView : View {
             tempProgress = it.animatedValue as Float
             postInvalidate()
         }
-        va.start()
+    }
+
+    private fun resetProgressRange() {
+        va.cancel()
+        progress = progress.coerceIn(min(startProgress, endProgress), max(startProgress, endProgress))
+        va.cancel()
+        tempProgress = progress
+        invalidate()
+    }
+
+    override fun onDetachedFromWindow() {
+        va.cancel()
+        tempProgress = progress
+        super.onDetachedFromWindow()
     }
 
     override fun onDraw(canvas: Canvas) {
         //画背景环形
         canvas.drawArc(rectF, startBgAngle, endBgAngle - startBgAngle, false, bgPaint)
         //计算前景环形角度
-        sweepAngle = tempProgress / (endProgress - startProgress) * (endAngle - startAngle)
+        val range = endProgress.toDouble() - startProgress
+        val fraction = if (range == 0.0) 0f else
+            ((tempProgress.toDouble() - startProgress) / range).toFloat().coerceIn(0f, 1f)
+        sweepAngle = fraction * (endAngle - startAngle)
         //画前景环形
         canvas.drawArc(rectF, startAngle, sweepAngle, false, forePaint)
     }
@@ -220,13 +237,13 @@ class RingProgressView : View {
         //设置画笔参数
         bgPaint.strokeWidth = roundWidth.toFloat()
         bgPaint.strokeCap = strokeCap
-        bgPaint.strokeJoin = Paint.Join.ROUND
+        bgPaint.strokeJoin = strokeJoin
         bgPaint.style = Paint.Style.STROKE
         bgPaint.isAntiAlias = true
         bgPaint.color = ringBgColor
         forePaint.strokeWidth = roundWidth.toFloat()
         forePaint.strokeCap = strokeCap
-        forePaint.strokeJoin = Paint.Join.ROUND
+        forePaint.strokeJoin = strokeJoin
         forePaint.style = Paint.Style.STROKE
         forePaint.isAntiAlias = true
         //着色器颜色筛选

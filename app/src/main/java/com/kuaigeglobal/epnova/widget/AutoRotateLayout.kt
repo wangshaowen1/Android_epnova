@@ -5,6 +5,7 @@ import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.content.Context
 import android.util.AttributeSet
+import android.view.View
 import android.view.animation.LinearInterpolator
 import android.widget.FrameLayout
 import com.kuaigeglobal.epnova.R
@@ -15,17 +16,13 @@ import com.kuaigeglobal.epnova.R
 class AutoRotateLayout : FrameLayout {
 
     /**
-     * 是否石洞旋转
+     * 是否自动旋转
      */
     var autoRotate = false
         set(value) {
             if (field != value) {
                 field = value
-                if (value) {
-                    startRotate()
-                } else {
-                    stopRotate()
-                }
+                updateRotation()
             }
         }
     private var duration = 5000L
@@ -45,7 +42,7 @@ class AutoRotateLayout : FrameLayout {
 
     private fun init(context: Context, attrs: AttributeSet?) {
         val typedArray = context.obtainStyledAttributes(attrs, R.styleable.AutoRotateLayout)
-        duration = typedArray.getInt(R.styleable.AutoRotateLayout_duration, 5000).toLong()
+        duration = typedArray.getInt(R.styleable.AutoRotateLayout_duration, 5000).toLong().coerceAtLeast(1L)
         typedArray.recycle()
     }
 
@@ -64,8 +61,36 @@ class AutoRotateLayout : FrameLayout {
     }
 
     private fun stopRotate() {
-        rotation = 0f
         rotateAnimator?.cancel()
         rotateAnimator = null
+        rotation = 0f
+    }
+
+    private fun updateRotation() {
+        if (autoRotate && isAttachedToWindow && isShown && windowVisibility == VISIBLE) {
+            startRotate()
+        } else {
+            stopRotate()
+        }
+    }
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        updateRotation()
+    }
+
+    override fun onDetachedFromWindow() {
+        stopRotate()
+        super.onDetachedFromWindow()
+    }
+
+    override fun onVisibilityChanged(changedView: View, visibility: Int) {
+        super.onVisibilityChanged(changedView, visibility)
+        updateRotation()
+    }
+
+    override fun onWindowVisibilityChanged(visibility: Int) {
+        super.onWindowVisibilityChanged(visibility)
+        updateRotation()
     }
 }

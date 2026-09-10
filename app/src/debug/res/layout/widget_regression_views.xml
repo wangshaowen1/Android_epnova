@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.kuaigeglobal.epnova.widget.MoveFrameLayout
+        android:id="@+id/test_drag_disabled"
+        android:layout_width="120dp"
+        android:layout_height="60dp"
+        app:IsDrag="false">
+
+        <Button
+            android:id="@+id/test_drag_child"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </com.kuaigeglobal.epnova.widget.MoveFrameLayout>
+
+    <com.kuaigeglobal.epnova.widget.GradientBorderView
+        android:id="@+id/test_gradient_border"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        app:borderWidth="2dp"
+        app:borderStartColor="#FFFF0000"
+        app:backgroundStartColor="#FF0000FF" />
+    <com.kuaigeglobal.epnova.widget.GradientTextView
+        android:id="@+id/test_gradient_text"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:textColor="@color/widget_regression_text_colors" />
+</FrameLayout>

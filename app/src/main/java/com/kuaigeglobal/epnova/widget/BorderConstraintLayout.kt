@@ -72,7 +72,7 @@ class BorderConstraintLayout : ConstraintLayout {
         context.withStyledAttributes(attrs, R.styleable.BorderConstraintLayout) {
             borderWidth = getDimensionPixelSize(R.styleable.BorderConstraintLayout_borderWidth, 0).toFloat()
             borderStartColor = getColor(R.styleable.BorderConstraintLayout_borderStartColor, Color.TRANSPARENT)
-            borderCenterColor = getColor(R.styleable.GradientBorderView_borderCenterColor, Color.TRANSPARENT)
+            borderCenterColor = getColor(R.styleable.BorderConstraintLayout_borderCenterColor, Color.TRANSPARENT)
             borderEndColor = getColor(R.styleable.BorderConstraintLayout_borderEndColor, Color.TRANSPARENT)
             borderAngle = getInteger(R.styleable.BorderConstraintLayout_borderAngle, 0)
             backgroundStartColor = getColor(R.styleable.BorderConstraintLayout_backgroundStartColor, Color.TRANSPARENT)
@@ -99,10 +99,10 @@ class BorderConstraintLayout : ConstraintLayout {
                 } else if (borderAngle >= 90) {
                     endPosition = 0f to h.toFloat()
                 } else {
-                    val degree = borderAngle / 180f
+                    val degree = Math.toRadians(borderAngle.toDouble())
                     var endX = w.toDouble()
                     //tan(degree) = endY/endX
-                    val tan = tan(degree.toDouble())
+                    val tan = tan(degree)
                     var endY = endX * tan
                     if (endY > h) {
                         endY = h.toDouble()
@@ -131,10 +131,10 @@ class BorderConstraintLayout : ConstraintLayout {
             } else if (backgroundAngle >= 90) {
                 endPosition = 0f to bgHeight
             } else {
-                val degree = backgroundAngle / 180f
+                val degree = Math.toRadians(backgroundAngle.toDouble())
                 var endX = bgWidth.toDouble()
                 //tan(degree) = endY/endX
-                val tan = tan(degree.toDouble())
+                val tan = tan(degree)
                 var endY = endX * tan
                 if (endY > bgHeight) {
                     endY = bgHeight.toDouble()

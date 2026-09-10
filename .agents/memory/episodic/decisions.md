@@ -136,3 +136,11 @@ STATIC：已检查逐段转码先于 concat 执行、两阶段共用音频编码
 
 ### 验证结论
 STATIC：已核对两类商品接口路由、回调落盘先于网络、账号与 orderNo/productId 交叉匹配、网络/业务失败保留凭证、生命周期恢复入口及无客户端 consume/ack 调用；`git diff --check` 通过。按项目规则未跑 Gradle，仍需使用 License Tester 验证杀进程恢复、接口超时重提、PENDING 转 PURCHASED 和服务端已发货 token 幂等响应。
+
+## 2026-09-10 同步会话控件优化
+
+### 变更与兼容取舍
+以 Template 的 c239de3c 为来源，将 27 个既有控件、按压缩放辅助类及小数输入 BindingAdapter 优化同步到 EpNova。保留项目专属 BindingAdapter；GradientTextView 保留不透明文字效果，改用 ColorStateList.withAlpha 保留颜色状态，并删除不必要的 setText 延迟回调；AutoScrollRecyclerView 分离临时 detach 暂停与显式 stop，重新挂载可恢复已启动滚动。TransitionImageView 默认仍整组预加载，缓存窗口仅显式开启。StickyScrollView 的 onAttachedToWindow 保持 public，以兼容当前 AndroidX 父类可见性。
+
+### 验证范围
+28 个控件及辅助文件通过本地缓存依赖下的 Kotlin/Java 离线类型检查；33 个 Kotlin/Java 文件语法检查通过，109 个生产控件资源引用可解析，debug XML 与 diff 空白检查通过。同步 34 条仪器回归用例并补充 EpNova 颜色状态、滚动重新挂载 2 条用例，配置 AndroidJUnitRunner。未运行 Gradle、仪器测试或实机交互；上述结果仅说明静态检查未发现阻断问题。保留原有 gradle.properties 工作区修改。

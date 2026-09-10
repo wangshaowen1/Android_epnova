@@ -47,6 +47,7 @@ android {
         versionName rootProject.ext.android.versionName
         versionCode rootProject.ext.android.versionCodeRelease
         multiDexEnabled true
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField "long", "BUILD_TIMESTAMP", System.currentTimeMillis() + "L"
         //指定room.schemaLocation生成的文件路径
         javaCompileOptions {

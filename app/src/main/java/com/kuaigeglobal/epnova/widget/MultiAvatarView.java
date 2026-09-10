@@ -5,6 +5,7 @@ import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.util.AttributeSet;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -19,8 +20,17 @@ import com.kuaigeglobal.epnova.R;
 import com.kuaige.imageloader.GlideImageLoader;
 
 import java.util.List;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Objects;
+import com.bumptech.glide.Glide;
 
 public class MultiAvatarView<T> extends FrameLayout {
+
+    private String[] boundAvatars = new String[0];
+    private boolean shapeChanged;
+    private int renderedMaxCount = -1;
+    private boolean renderedShowMore;
 
     private boolean isCircle;//圆或是false圆角
     private final float cornerRadius;
@@ -66,38 +76,65 @@ public class MultiAvatarView<T> extends FrameLayout {
     }
 
     public void setCircle(boolean isCircle) {
+        if (this.isCircle == isCircle) return;
         this.isCircle = isCircle;
+        shapeChanged = true;
+        setImage(boundAvatars);
     }
 
-    public void setAvatars(String[] mAvatars) {
-        if (getChildCount() > 0) {
-            removeAllViews();
-        }
-        if (mAvatars == null) {
-            return;
-        }
-        setImage(mAvatars);
+    public void setAvatars(String[] avatars) {
+        setImage(avatars == null ? new String[0] : avatars);
     }
 
-    private void setImage(String[] mAvatars) {
-        if (getChildCount() > 0) {
-            removeAllViews();
+    private void setImage(String[] avatars) {
+        int count = Math.min(Math.max(0, maxCount), avatars.length);
+        if (!shapeChanged && renderedMaxCount == maxCount && renderedShowMore == needShowMore
+                && getChildCount() == count && Arrays.equals(boundAvatars, avatars)) return;
+        int previousCount = getChildCount();
+        List<View> previous = new ArrayList<>(previousCount);
+        for (int i = 0; i < previousCount; i++) {
+            previous.add(getChildAt(reverseShow ? previousCount - 1 - i : i));
         }
-
-        int count = Math.min(maxCount, mAvatars.length);
-        if (reverseShow) {
-            for (int i = count - 1; i >= 0; i--) {
-                addImageView(i, count, mAvatars);
+        for (int i = previousCount - 1; i >= count; i--) {
+            clearImage(previous.get(i));
+            removeView(previous.get(i));
+        }
+        for (int i = 0; i < count; i++) {
+            boolean masked = i == count - 1 && needShowMore && avatars.length > maxCount;
+            View oldView = i < previousCount ? previous.get(i) : null;
+            boolean oldMasked = oldView != null && !(oldView instanceof ShapeableImageView);
+            if (oldView != null && !shapeChanged && masked == oldMasked) {
+                if (i >= boundAvatars.length || !Objects.equals(boundAvatars[i], avatars[i])) {
+                    ShapeableImageView image = imageOf(oldView);
+                    GlideImageLoader.with(image).thumbnail()
+                            .load(avatars[i], R.drawable.ic_default_avatar_big)
+                            .centerCrop().dontAnimate().into(image);
+                }
+            } else {
+                int position = oldView == null ? (reverseShow ? 0 : getChildCount()) : indexOfChild(oldView);
+                if (oldView != null) {
+                    clearImage(oldView);
+                    removeView(oldView);
+                }
+                addView(createImageView(i, count, avatars), position);
             }
-        } else {
-            for (int i = 0; i < count; i++) {
-                addImageView(i, count, mAvatars);
-            }
         }
-
+        boundAvatars = avatars.clone();
+        shapeChanged = false;
+        renderedMaxCount = maxCount;
+        renderedShowMore = needShowMore;
     }
 
-    private void addImageView(int i, int count, String[] mAvatars) {
+    private ShapeableImageView imageOf(View view) {
+        return view instanceof ShapeableImageView ? (ShapeableImageView) view
+                : (ShapeableImageView) ((FrameLayout) view).getChildAt(0);
+    }
+
+    private void clearImage(View view) {
+        Glide.with(view).clear(imageOf(view));
+    }
+
+    private View createImageView(int i, int count, String[] mAvatars) {
         if (i == count - 1 && needShowMore && (mAvatars.length > maxCount)) {
             LayoutParams lp = getLp(i);
             FrameLayout frameLayout = new FrameLayout(getContext());
@@ -125,13 +162,14 @@ public class MultiAvatarView<T> extends FrameLayout {
             }
             frameLayout.addView(ivMask);
 
-            addView(frameLayout);
+            return frameLayout;
         } else {
             ShapeableImageView iv = getRoundImageView();
             LayoutParams lp = getLp(i);
             setBoard(iv);
             GlideImageLoader.with(iv).thumbnail().load(mAvatars[i], R.drawable.ic_default_avatar_big).centerCrop().dontAnimate().into(iv);
-            addView(iv, lp);
+            iv.setLayoutParams(lp);
+            return iv;
         }
     }
 
@@ -181,9 +219,7 @@ public class MultiAvatarView<T> extends FrameLayout {
 
     public void setAvatars(List<T> list, Convert<T> tConvert) {
         if (list == null) {
-            if (getChildCount() > 0) {
-                removeAllViews();
-            }
+            setImage(new String[0]);
             return;
         }
 
@@ -204,11 +240,13 @@ public class MultiAvatarView<T> extends FrameLayout {
     }
 
     public void setMaxCount(int maxCount) {
-        this.maxCount = maxCount;
+        this.maxCount = Math.max(0, maxCount);
+        setImage(boundAvatars);
     }
 
     public void setNeedShowMore(boolean needShowMore) {
         this.needShowMore = needShowMore;
+        setImage(boundAvatars);
     }
 
     public interface Convert<T> {

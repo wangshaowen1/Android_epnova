@@ -1,5 +1,7 @@
 package com.kuaigeglobal.epnova.widget;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -60,6 +62,63 @@ public class ExpandableTextView extends LinearLayout {
     private int originalHeight = 0;
     private int collapsedHeight = 0;
     private int currentHeight = 0;
+    private ValueAnimator heightAnimator;
+    private Integer heightBeforeAnimation;
+    private final Runnable contentCheck = this::checkIfExpandable;
+
+    private void scheduleContentCheck() {
+        removeCallbacks(contentCheck);
+        post(contentCheck);
+    }
+
+    private void cancelHeightAnimation(boolean restoreHeight) {
+        if (heightAnimator != null) {
+            heightAnimator.removeAllListeners();
+            heightAnimator.cancel();
+            heightAnimator = null;
+        }
+        if (restoreHeight) restoreLayoutHeight();
+    }
+
+    private void restoreLayoutHeight() {
+        if (heightBeforeAnimation != null) {
+            ViewGroup.LayoutParams params = getLayoutParams();
+            if (params != null) {
+                params.height = heightBeforeAnimation;
+                setLayoutParams(params);
+            }
+            heightBeforeAnimation = null;
+        }
+    }
+
+    private void animateHeight(int startHeight, int endHeight, boolean expanded) {
+        cancelHeightAnimation(false);
+        if (heightBeforeAnimation == null) {
+            ViewGroup.LayoutParams params = getLayoutParams();
+            heightBeforeAnimation = params == null ? ViewGroup.LayoutParams.WRAP_CONTENT : params.height;
+        }
+        heightAnimator = ValueAnimator.ofInt(Math.max(0, startHeight), Math.max(0, endHeight));
+        heightAnimator.addUpdateListener(animation -> setViewHeight((int) animation.getAnimatedValue()));
+        heightAnimator.setDuration(Math.max(0, animationDuration));
+        heightAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
+        heightAnimator.addListener(new AnimatorListenerAdapter() {
+            @Override public void onAnimationEnd(Animator animation) {
+                heightAnimator = null;
+                tvContent.setMaxLines(expanded ? Integer.MAX_VALUE : collapseMaxLines);
+                restoreLayoutHeight();
+                scheduleContentCheck();
+            }
+        });
+        heightAnimator.start();
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        removeCallbacks(contentCheck);
+        cancelHeightAnimation(true);
+        tvContent.setMaxLines(isExpanded ? Integer.MAX_VALUE : collapseMaxLines);
+        super.onDetachedFromWindow();
+    }
 
     public ExpandableTextView(Context context) {
         super(context);
@@ -86,7 +145,7 @@ public class ExpandableTextView extends LinearLayout {
         if (attrs != null) {
             TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ExpandableTextView);
 
-            collapseMaxLines = a.getInt(R.styleable.ExpandableTextView_collapseMaxLines, DEFAULT_COLLAPSE_LINES);
+            collapseMaxLines = Math.max(1, a.getInt(R.styleable.ExpandableTextView_collapseMaxLines, DEFAULT_COLLAPSE_LINES));
             expandText = a.getString(R.styleable.ExpandableTextView_expandText);
             collapseText = a.getString(R.styleable.ExpandableTextView_collapseText);
             expandDirection = a.getInt(R.styleable.ExpandableTextView_expandDirection, DIRECTION_TOP_TO_BOTTOM);
@@ -154,6 +213,7 @@ public class ExpandableTextView extends LinearLayout {
         if (!isExpandable) {
             button.setVisibility(GONE);
             adjustContentLayout(true);
+            updateClickability();
             return;
         }
 
@@ -169,6 +229,7 @@ public class ExpandableTextView extends LinearLayout {
             if (expandIcon != null && collapseIcon == null) {
                 button.setVisibility(GONE);
                 adjustContentLayout(true);
+                updateClickability();
                 return;
             }
         } else {
@@ -200,6 +261,7 @@ public class ExpandableTextView extends LinearLayout {
 
         // 强制刷新按钮
         button.invalidate();
+        updateClickability();
     }
 
 
@@ -209,6 +271,9 @@ public class ExpandableTextView extends LinearLayout {
      */
     private void adjustContentLayout(boolean fillSpace) {
         LayoutParams contentParams = (LayoutParams) tvContent.getLayoutParams();
+        int targetWidth = fillSpace ? LayoutParams.MATCH_PARENT : 0;
+        float targetWeight = fillSpace ? 0f : 1f;
+        if (contentParams.width == targetWidth && contentParams.weight == targetWeight) return;
 
         if (fillSpace) {
             // 按钮隐藏时，内容区域占据全部空间
@@ -263,28 +328,25 @@ public class ExpandableTextView extends LinearLayout {
     }
     // 强制刷新控件状态
     public void refresh() {
-        post(() -> {
-            checkIfExpandable();
-            updateButtonAppearance();
-            requestLayout();
-            invalidate();
-        });
+        updateButtonAppearance();
+        updateClickability();
+        requestLayout();
+        scheduleContentCheck();
     }
 
     /**
      * 重置控件状态，用于在复用场景下清理状态
      */
     public void reset() {
+        cancelHeightAnimation(true);
         isExpanded = false;
         isExpandable = false;
         originalHeight = 0;
         collapsedHeight = 0;
         currentHeight = 0;
         setCollapsedState();
-        post(() -> {
-            checkIfExpandable();
-            updateButtonAppearance();
-        });
+        updateButtonAppearance();
+        scheduleContentCheck();
     }
 
     private void setIconSize(TextView button, Drawable icon) {
@@ -351,17 +413,15 @@ public class ExpandableTextView extends LinearLayout {
 
     // 在 setText 方法中确保布局正确
     public void setText(CharSequence text) {
+        cancelHeightAnimation(true);
         tvContent.setText(text);
         originalHeight = 0;
         collapsedHeight = 0;
         isExpanded = false;
         setCollapsedState();
-        post(() -> {
-            checkIfExpandable();
-            updateButtonAppearance();
-            // 确保布局更新
-            requestLayout();
-        });
+        updateButtonAppearance();
+        updateClickability();
+        scheduleContentCheck();
     }
     // 添加重载版本，支持资源ID
     public void setText(int resId) {
@@ -375,7 +435,7 @@ public class ExpandableTextView extends LinearLayout {
         if ((expandText == null || expandText.isEmpty()) &&
                 (collapseText == null || collapseText.isEmpty()) &&
                 expandIcon == null && collapseIcon == null) {
-//            tvContent.setOnClickListener(v -> toggleExpand());
+            tvContent.setOnClickListener(v -> toggleExpand());
         } else {
             tvContent.setOnClickListener(null);
         }
@@ -386,11 +446,7 @@ public class ExpandableTextView extends LinearLayout {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
         // 确保在测量后检查可展开性
-        post(() -> {
-            checkIfExpandable();
-            // 强制更新按钮外观
-            updateButtonAppearance();
-        });
+        scheduleContentCheck();
     }
 
     @Override
@@ -434,7 +490,7 @@ public class ExpandableTextView extends LinearLayout {
         if (!hasButtonContent && isExpandable) {
             // 没有按钮但需要展开，让内容可点击
             tvContent.setClickable(true);
-//            tvContent.setOnClickListener(v -> toggleExpand());
+            tvContent.setOnClickListener(v -> toggleExpand());
         } else {
             tvContent.setClickable(false);
             tvContent.setOnClickListener(null);
@@ -456,6 +512,7 @@ public class ExpandableTextView extends LinearLayout {
     }
 
     private void expand() {
+        cancelHeightAnimation(false);
         if (originalHeight == 0) {
             // 第一次展开，保存原始高度
             tvContent.setMaxLines(Integer.MAX_VALUE);
@@ -473,22 +530,17 @@ public class ExpandableTextView extends LinearLayout {
         updateButtonAppearance();
 
         // 关键修改：展开后重新检查布局
-        post(() -> {
-            requestLayout();
-            invalidate();
-        });
+        scheduleContentCheck();
     }
 
     private void collapse() {
+        cancelHeightAnimation(false);
         performCollapseAnimation();
         isExpanded = false;
         updateButtonAppearance();
 
         // 关键修改：收起后重新检查布局
-        post(() -> {
-            requestLayout();
-            invalidate();
-        });
+        scheduleContentCheck();
     }
 
     private void performExpandAnimation() {
@@ -498,14 +550,7 @@ public class ExpandableTextView extends LinearLayout {
         int startHeight = currentHeight;
         int endHeight = originalHeight;
 
-        ValueAnimator animator = ValueAnimator.ofInt(startHeight, endHeight);
-        animator.addUpdateListener(valueAnimator -> {
-            int value = (int) valueAnimator.getAnimatedValue();
-            setViewHeight(value);
-        });
-        animator.setDuration(animationDuration);
-        animator.setInterpolator(new AccelerateDecelerateInterpolator());
-        animator.start();
+        animateHeight(startHeight, endHeight, true);
     }
 
     private void performCollapseAnimation() {
@@ -522,17 +567,8 @@ public class ExpandableTextView extends LinearLayout {
         int startHeight = currentHeight;
         int endHeight = collapsedHeight;
 
-        ValueAnimator animator = ValueAnimator.ofInt(startHeight, endHeight);
-        animator.addUpdateListener(valueAnimator -> {
-            int value = (int) valueAnimator.getAnimatedValue();
-            setViewHeight(value);
-        });
-        animator.setDuration(animationDuration);
-        animator.setInterpolator(new AccelerateDecelerateInterpolator()); // 添加插值器
-        animator.start();
+        animateHeight(startHeight, endHeight, false);
 
-        // 动画结束后设置最大行数
-        postDelayed(() -> tvContent.setMaxLines(collapseMaxLines), animationDuration);
     }
     private void setCollapsedState() {
         tvContent.setMaxLines(collapseMaxLines);
@@ -562,16 +598,14 @@ public class ExpandableTextView extends LinearLayout {
 
     // 在 setCollapseMaxLines 方法中也确保正确更新状态
     public void setCollapseMaxLines(int lines) {
-        this.collapseMaxLines = lines;
+        cancelHeightAnimation(true);
+        this.collapseMaxLines = Math.max(1, lines);
         originalHeight = 0;
         collapsedHeight = 0;
         if (!isExpanded) {
             setCollapsedState();
         }
-        post(() -> {
-            checkIfExpandable();
-            updateButtonAppearance();
-        });
+        scheduleContentCheck();
     }
 
     public int getCollapseMaxLines() {
@@ -671,7 +705,7 @@ public class ExpandableTextView extends LinearLayout {
     }
 
     public void setAnimationDuration(int duration) {
-        this.animationDuration = duration;
+        this.animationDuration = Math.max(0, duration);
     }
 
     public int getAnimationDuration() {
