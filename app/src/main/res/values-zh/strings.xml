@@ -112,6 +112,7 @@
     <string name="request_notification_permission_reason">用于接收应用通知。</string>
     <string name="generated_on">生成时间: %s</string>
     <string name="all">全部</string>
+    <string name="swipe_left_more">左滑更多</string>
 
     <string name="sure">确认</string>
     <string name="allow">去开启</string>

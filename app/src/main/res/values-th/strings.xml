@@ -102,6 +102,7 @@
     <string name="request_notification_permission_reason">ใช้เพื่อรับการแจ้งเตือนจากแอป</string>
     <string name="generated_on">สร้างเมื่อ: %s</string>
     <string name="all">ทั้งหมด</string>
+    <string name="swipe_left_more">ปัดซ้ายเพื่อดูเพิ่มเติม</string>
     <string name="sure">ยืนยัน</string>
     <string name="allow">เปิดใช้งาน</string>
     <string name="permission_application_failed">การขอสิทธิ์ล้มเหลว</string>

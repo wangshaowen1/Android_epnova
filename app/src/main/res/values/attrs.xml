@@ -420,23 +420,13 @@
         <attr name="filter_edit_text_max_integer_digits" format="integer" /><!--最大整数位-->
         <attr name="filter_edit_text_max_point_digits" format="integer" /><!--最大小数位-->
     </declare-styleable>
-    <declare-styleable name="XEditText">
-        <!-- 可按位或组合；noSpace 不包含 CR/LF，长度仍由 android:maxLength 设置。 -->
-        <attr name="inputRestrictions" format="flags">
-            <flag name="none" value="0" />
-            <flag name="noEmoji" value="1" />
-            <flag name="noSpace" value="2" />
-            <flag name="noNextLine" value="4" />
-        </attr>
-    </declare-styleable>
-
     <declare-styleable name="CounterInputLayout">
         <attr name="inputMaxLength" format="integer" /><!--最大输入文本长度-->
         <attr name="inputLines" format="integer" /><!--行数-->
         <attr name="inputMinLines" format="integer" />
         <attr name="inputMaxLines" format="integer" />
         <attr name="inputHint" format="string" /><!--hint-->
-        <attr name="inputRestrictions" />
+        <attr name="inputNoNextLine" format="boolean" />
         <attr name="inputTextSize" format="dimension" />
         <attr name="inputTextBold" format="boolean" />
         <attr name="inputTextColor" format="color" />
@@ -708,6 +698,10 @@
         <attr name="progress_outCircleSize" format="dimension" /><!--进度条 外层大小-->
         <attr name="progress_startAngle" format="integer" /> <!--开始角度-->
         <attr name="progress_drawAngle" format="integer" /> <!--绘制角度,默认360, 例如:180时为一个半圆-->
+    </declare-styleable>
+    <declare-styleable name="StickyScrollView">
+        <attr name="stuckShadowHeight" format="dimension" />
+        <attr name="stuckShadowDrawable" format="reference" />
     </declare-styleable>
     <declare-styleable name="HorizontalScrollRecyclerView">
         <attr name="distancePerSecond" format="dimension" />
@@ -1033,9 +1027,19 @@
     </declare-styleable>
 
     <declare-styleable name="DragContainer">
-        <!-- 回弹时间（毫秒）及拖动位移系数（0, 1]；提示样式由子布局提供。 -->
+        <!--<attr name="dc_icon_drawable" format="reference"/>-->
+        <!--<attr name="dc_icon_size" format="dimension|reference"/>-->
+        <attr name="dc_text_normal" format="string|reference" />
+        <attr name="dc_text_event" format="string|reference" />
+        <!--<attr name="dc_text_size" format="dimension|reference"/>-->
+        <!--<attr name="dc_text_color" format="color|reference"/>-->
+        <!--<attr name="dc_text_icon_gap" format="dimension|reference"/>-->
+        <!--<attr name="dc_footer_height" format="dimension|reference"/>-->
+        <attr name="dc_footer_color" format="color|reference" />
         <attr name="dc_reset_animator_duration" format="integer|reference" />
         <attr name="dc_drag_damp" format="float|reference" />
+        <attr name="dc_text_top_margin" format="dimension|reference" />
+        <!--<attr name="dc_bezier_threshold" format="dimension|reference"/>-->
     </declare-styleable>
 
     <declare-styleable name="PillIndicatorView">

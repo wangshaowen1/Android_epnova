@@ -118,6 +118,7 @@
     <string name="request_notification_permission_reason">Used to receive app notifications.</string>
     <string name="generated_on">Generated: %s</string>
     <string name="all">All</string>
+    <string name="swipe_left_more">Swipe left for more</string>
 
     <string name="sure">Confirm</string>
     <string name="allow">Enable</string>

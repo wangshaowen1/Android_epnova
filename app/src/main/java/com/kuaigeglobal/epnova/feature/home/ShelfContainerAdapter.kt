@@ -76,7 +76,7 @@ class ShelfContainerAdapter : ListAdapter<Section, ShelfContainerAdapter.ShelfVi
             binding.tvAll.setOnSingleClickListener {
                 openShelfList()
             }
-            binding.rvInnerHorizontal.setOnReachEndListener { openShelfList() }
+            binding.dragContainer.setDragListener { openShelfList() }
             // 使用带 callback 的 submitList，确保 Diff 计算并绑定完数据后再恢复位置
             innerAdapter.submitList(data.horizontalWorks) {
                 if (savedState != null) {

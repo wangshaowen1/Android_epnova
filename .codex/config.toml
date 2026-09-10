@@ -1,0 +1,11 @@
+# Epnova 的 API 文档 MCP；令牌通过本机环境变量读取。
+[mcp_servers.apikit-api-docs]
+url = "https://api.eolink.com/apikit/py-server/apikit-mcp"
+
+[mcp_servers.apikit-api-docs.http_headers]
+X-Space-ID = "space-nzj9og"
+X-Project-ID = "gI4jaWbe0e865148b96408f14b797ceaf8556f846f3f5ff"
+X-Branch-Name = "base"
+
+[mcp_servers.apikit-api-docs.env_http_headers]
+X-Access-Token = "APIKIT_ACCESS_TOKEN"

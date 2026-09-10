@@ -102,6 +102,7 @@
     <string name="request_notification_permission_reason">Digunakan untuk menerima notifikasi aplikasi.</string>
     <string name="generated_on">Dibuat: % s</string>
     <string name="all">Semua</string>
+    <string name="swipe_left_more">Geser kiri untuk lainnya</string>
     <string name="sure">Konfirmasi</string>
     <string name="allow">Aktifkan</string>
     <string name="permission_application_failed">Gagal Meminta Izin</string>

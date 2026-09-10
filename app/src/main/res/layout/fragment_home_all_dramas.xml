@@ -26,6 +26,7 @@
                 android:id="@+id/lsv"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                app:setLoadState="@{layout.pageLoadState}"
                 android:overScrollMode="never">
 
                 <androidx.recyclerview.widget.RecyclerView

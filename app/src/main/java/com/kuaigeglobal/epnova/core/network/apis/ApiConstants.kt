@@ -988,6 +988,12 @@ object ApiConstants {
     /** 首页-按 Tab 查询可见书架区块配置。 */
     const val BOOKSHELF_CONFIG_LIST = "app/bookshelf/v2/config/list"
 
+    /** 首页-按区块编码查询横滑书架前 8 部作品。 */
+    const val BOOKSHELF_HORIZONTAL_PREVIEW = "app/bookshelf/v2/horizontal/preview"
+
+    /** 首页-All Dramas 全部作品分页，不依赖书架配置。 */
+    const val BOOKSHELF_ALL_DRAMAS_PAGE = "app/bookshelf/v2/all/dramas/page"
+
     /**
      * 播放器-作品剧集目录分集分页
      */

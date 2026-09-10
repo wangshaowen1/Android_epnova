@@ -70,6 +70,7 @@ import com.kuaigeglobal.epnova.core.network.apis.request.AssetUnlinkBody
 import com.kuaigeglobal.epnova.core.network.apis.request.BannerBody
 import com.kuaigeglobal.epnova.core.network.apis.request.BindPhoneBody
 import com.kuaigeglobal.epnova.core.network.apis.request.BookShelfIdPagedBody
+import com.kuaigeglobal.epnova.core.network.apis.request.BookShelfSectionCodeBody
 import com.kuaigeglobal.epnova.core.network.apis.request.BookShelfSectionCodePagedBody
 import com.kuaigeglobal.epnova.core.network.apis.request.CompleteUserDataInfoBody
 import com.kuaigeglobal.epnova.core.network.apis.request.ContentBody
@@ -1454,6 +1455,14 @@ interface ApiService {
     /** 首页-查询一级 Tab 及其可见书架区块配置。 */
     @POST(ApiConstants.BOOKSHELF_CONFIG_LIST)
     suspend fun bookShelfConfigList(): ApiResponse<List<BookShelfConfigInfo>?>
+
+    /** 首页-按区块编码查询横滑书架预览作品。 */
+    @POST(ApiConstants.BOOKSHELF_HORIZONTAL_PREVIEW)
+    suspend fun bookShelfHorizontalPreview(@Body body: BookShelfSectionCodeBody): ApiResponse<List<WorkVOInfo>?>
+
+    /** 首页-All Dramas 全部作品分页。 */
+    @POST(ApiConstants.BOOKSHELF_ALL_DRAMAS_PAGE)
+    suspend fun bookShelfAllDramasPage(@Body body: PagedBody): ApiResponse<PagedList<WorkVOInfo>?>
 
     /**
      * 首页-分页查询书架瀑布流

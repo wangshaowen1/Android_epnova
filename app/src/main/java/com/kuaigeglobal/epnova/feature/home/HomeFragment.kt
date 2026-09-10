@@ -104,7 +104,7 @@ class HomeFragment : BaseViewModelFragment<FragmentHomeBinding, HomeTabsViewMode
             vp = viewPager,
             indicatorView = CommonNavigatorUtils.getLinePagerIndicatorGradient(mActivity)?.also {
                 it.lineWidth = 24.dp.toFloat()
-                it.lineHeight = 2.dp.toFloat()
+                it.lineHeight = 4.dp.toFloat()
                 it.mode = LinePagerIndicator.MODE_EXACTLY
             },
             titleHorizontalPaddingDp = 16
