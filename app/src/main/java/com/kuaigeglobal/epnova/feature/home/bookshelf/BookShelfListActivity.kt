@@ -2,14 +2,15 @@ package com.kuaigeglobal.epnova.feature.home.bookshelf
 
 import android.app.Activity
 import android.content.Intent
-import androidx.paging.PagingData
+import androidx.lifecycle.lifecycleScope
 import com.kuaigeglobal.epnova.common.ext.startRefreshWithAdapter
 import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
-import com.kuaigeglobal.epnova.core.network.apis.entity.WorkVOInfo
 import com.kuaigeglobal.epnova.databinding.ActivityAllListBinding
 import com.kuaigeglobal.epnova.feature.play.DramasPlayPagerActivity
 import com.kuaigeglobal.epnova.widget.stateful.paging.MyMultiStatePagingFooterAdapter
 import com.nhsd.basic.BaseViewModelActivity
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 /**
  * 书架作品列表页。
@@ -17,42 +18,6 @@ import com.nhsd.basic.BaseViewModelActivity
  * 入口可传入书架 ID；未传入时由页面从首页书架配置中选择目标书架。
  */
 class BookShelfListActivity : BaseViewModelActivity<ActivityAllListBinding, BookshelfListViewModel>() {
-
-    /** 接口联调前用于预览书架列表的本地数据。 */
-    private val demoWorks = listOf(
-        WorkVOInfo(
-            workId = "demo-work-001",
-            workTitle = "Bound by Vendetta: Sleeping with the Enemy",
-            nickName = "Sarah",
-            workDesc = "A hidden power awakens, pulling a young hero into a dangerous promise.",
-            playCount = 7600,
-            totalEpisodeCnt = 12
-        ),
-        WorkVOInfo(
-            workId = "demo-work-002",
-            workTitle = "Midnight Promise",
-            nickName = "Emily",
-            workDesc = "One promise, two hearts, and a secret that changes everything.",
-            playCount = 12800,
-            totalEpisodeCnt = 16
-        ),
-        WorkVOInfo(
-            workId = "demo-work-003",
-            workTitle = "The Last Wish",
-            nickName = "Olivia",
-            workDesc = "She gets one final wish and uses it to rewrite her unfinished story.",
-            playCount = 4300,
-            totalEpisodeCnt = 10
-        ),
-        WorkVOInfo(
-            workId = "demo-work-004",
-            workTitle = "A Contract with the CEO",
-            nickName = "Lily",
-            workDesc = "A temporary contract brings an unexpected romance into focus.",
-            playCount = 21500,
-            totalEpisodeCnt = 20
-        )
-    )
 
     private val adapter by lazy {
         BookshelfListAdapter { work ->
@@ -78,8 +43,15 @@ class BookShelfListActivity : BaseViewModelActivity<ActivityAllListBinding, Book
             pagingDataAdapter = adapter,
             loadStateHolder = binding.lsv
         )
-        adapter.submitData(lifecycle, PagingData.from(demoWorks))
-        binding.lsv.showContent()
+        val bookshelfId = intent.getStringExtra(EXTRA_BOOKSHELF_ID)
+        val bookshelfName = intent.getStringExtra(EXTRA_BOOKSHELF_NAME)
+        bookshelfName?.takeIf { it.isNotBlank() }?.let(mRealVM.toolbar.mTitle::set)
+        mRealVM.load(bookshelfId, bookshelfName)
+        lifecycleScope.launch {
+            mRealVM.works.collectLatest { pagingData ->
+                adapter.submitData(pagingData)
+            }
+        }
     }
 
     companion object {

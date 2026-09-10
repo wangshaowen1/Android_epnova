@@ -976,6 +976,11 @@ object ApiConstants {
     const val HOME_WATERFALL_PAGE = "app/bookshelf/waterfall/page"
 
     /**
+     * 首页-分页查询横滑书架作品
+     */
+    const val HOME_HORIZONTAL_PAGE = "app/bookshelf/v2/horizontal/page"
+
+    /**
      * 首页-书架首页聚合（横滑全部作品，和瀑布流id）
      */
     const val BOOKSHELF_HOME = "app/bookshelf/home"

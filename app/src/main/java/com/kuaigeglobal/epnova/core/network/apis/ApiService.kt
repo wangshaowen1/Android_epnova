@@ -69,6 +69,7 @@ import com.kuaigeglobal.epnova.core.network.apis.request.AssetUnlinkBody
 import com.kuaigeglobal.epnova.core.network.apis.request.BannerBody
 import com.kuaigeglobal.epnova.core.network.apis.request.BindPhoneBody
 import com.kuaigeglobal.epnova.core.network.apis.request.BookShelfIdPagedBody
+import com.kuaigeglobal.epnova.core.network.apis.request.BookShelfSectionCodePagedBody
 import com.kuaigeglobal.epnova.core.network.apis.request.CompleteUserDataInfoBody
 import com.kuaigeglobal.epnova.core.network.apis.request.ContentBody
 import com.kuaigeglobal.epnova.core.network.apis.request.ContinueTaskBody
@@ -1449,6 +1450,12 @@ interface ApiService {
      */
     @POST(ApiConstants.HOME_WATERFALL_PAGE)
     suspend fun homeWaterfallPage(@Body body: BookShelfIdPagedBody): ApiResponse<PagedList<WorkVOInfo>?>
+
+    /**
+     * 首页-分页查询横滑书架作品
+     */
+    @POST(ApiConstants.HOME_HORIZONTAL_PAGE)
+    suspend fun homeHorizontalPage(@Body body: BookShelfSectionCodePagedBody): ApiResponse<PagedList<WorkVOInfo>?>
 
     /**
      * 播放器-作品剧集目录分集分页

@@ -5,7 +5,7 @@ import androidx.paging.PagingState
 import com.kuaigeglobal.epnova.core.network.apis.ApiException
 import com.kuaigeglobal.epnova.core.network.apis.ApiService
 import com.kuaigeglobal.epnova.core.network.apis.entity.WorkVOInfo
-import com.kuaigeglobal.epnova.core.network.apis.request.BookShelfIdPagedBody
+import com.kuaigeglobal.epnova.core.network.apis.request.BookShelfSectionCodePagedBody
 import kotlin.coroutines.cancellation.CancellationException
 
 /** 首页书架作品分页数据源。 */
@@ -25,8 +25,8 @@ class BookshelfPagingSource(
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, WorkVOInfo> {
         return try {
             val pageNum = params.key ?: 1
-            if (!bookshelfId.isNullOrBlank() || bookshelfName.isNullOrBlank()) {
-                loadPagedWorks(pageNum, params.loadSize)
+            if (!bookshelfId.isNullOrBlank()) {
+                loadPagedWorks(bookshelfId, pageNum, params.loadSize)
             } else {
                 loadNamedShelfWorks(pageNum)
             }
@@ -37,8 +37,18 @@ class BookshelfPagingSource(
         }
     }
 
-    private suspend fun loadPagedWorks(pageNum: Int, pageSize: Int): LoadResult<Int, WorkVOInfo> {
-        val response = api.homeWaterfallPage(BookShelfIdPagedBody(bookshelfId, pageNum, pageSize))
+    private suspend fun loadPagedWorks(
+        bookshelfId: String,
+        pageNum: Int,
+        pageSize: Int
+    ): LoadResult<Int, WorkVOInfo> {
+        val response = api.homeHorizontalPage(
+            BookShelfSectionCodePagedBody(
+                bookshelfSectionCode = bookshelfId,
+                pageNum = pageNum,
+                pageSize = pageSize
+            )
+        )
         if (!response.isSuccess) {
             return LoadResult.Error(ApiException(response.code, response.msg))
         }
