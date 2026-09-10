@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <com.kuaigeglobal.epnova.widget.PhotoGridView
+        android:id="@+id/regression_photo_auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:columnCount="4"
+        app:delete_button_src="@drawable/ic_feedback_close"
+        app:divider_space="5dp"
+        app:max_child_count="4" />
+
+    <com.kuaigeglobal.epnova.widget.PhotoGridView
+        android:id="@+id/regression_photo_fixed"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:columnCount="2"
+        app:add_button_auto_hide="false"
+        app:child_width="64dp"
+        app:child_height="48dp"
+        app:divider_space="5dp"
+        app:max_child_count="2" />
+
+    <com.kuaigeglobal.epnova.widget.PhotoGridView
+        android:id="@+id/regression_photo_zero"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:max_child_count="0" />
+
+    <com.kuaigeglobal.epnova.widget.PhotoGridView
+        android:id="@+id/regression_photo_readonly"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:columnCount="2"
+        app:add_button_visible="false"
+        app:max_child_count="2" />
+</LinearLayout>

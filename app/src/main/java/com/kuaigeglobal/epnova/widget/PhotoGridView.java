@@ -1,347 +1,309 @@
 package com.kuaigeglobal.epnova.widget;
 
 import android.animation.LayoutTransition;
-import android.app.Activity;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.net.Uri;
-import android.os.Build;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.ImageView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.blankj.utilcode.util.SizeUtils;
 import com.kuaigeglobal.epnova.R;
-import com.kuaigeglobal.epnova.common.utils.Utils;
 import com.kuaigeglobal.epnova.feature.PhotoPagerActivity;
-import com.kuaigeglobal.epnova.widget.roundedimageview.RoundedImageView;
 import com.kuaige.imageloader.GlideImageLoader;
 import com.nhsd.basic.ext.ViewUtils;
-import com.nhsd.basic.utils.Logger;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.ListIterator;
 
-
-
-@SuppressWarnings("RestrictedApi")
+/** 少量图片的编辑网格。数据接口在主线程调用，数量上限不包含添加按钮。 */
 public class PhotoGridView extends GridLayout {
-    private static final int NULL = 0;
-    private LayoutTransition mTransition;
-    private int itemLayoutResId = R.layout.item_photo;
-    private Activity mContext;
-    private ArrayList<Uri> photoUris = new ArrayList<>();
-    private int maxChildCount = 8;
-    private OnPhotoChangedListener onPhotoChangedListener;
-    private Button addButton;
-    private int itemWidth;
-    private int dividerSpace = SizeUtils.dp2px(10);
-    private int addButtonSrcId = R.drawable.icon_feedback_addpicture;
+    private final ArrayList<Uri> photos = new ArrayList<>();
+    private final ArrayList<View> photoViews = new ArrayList<>();
+    private int maxPhotoCount;
+    private int itemLayoutResId;
+    private int configuredWidth;
+    private int configuredHeight;
+    private int dividerSpace;
     private int deleteButtonSrcId;
-    private boolean deleteButtonVisible;
-    private boolean addButtonVisible = true;
-    private boolean autoHide = true;
-    private int itemHeight;
-    private boolean autoWith = false;
+    private boolean autoHideAddButton;
+    private Button addButton;
+    private OnClickListener onAddButtonClickedListener;
+    private OnPhotosChangedListener onPhotosChangedListener;
 
-    public ArrayList<Uri> setAll(List<String> urls) {
-        ArrayList<Uri> uris = new ArrayList<>();
-        for (String url : urls) {
-            uris.add(Uri.parse(url));
-        }
-        setAll(uris, false);
-        return uris;
-    }
-
-    public void addAll(ArrayList<Uri> uris) {
-        int storage = (addButton == null || addButton.getParent() == null) ? maxChildCount : maxChildCount + 1;
-        int max = Math.min(uris.size(), storage - getChildCount());
-        for (int i = 0; i < max; i++) {
-            Uri photo = uris.get(i);
-            add(photo);
-        }
-    }
-
-    public void setAll(ArrayList<Uri> uris, boolean append) {
-        if (!Utils.equals(photoUris, uris, maxChildCount)) {
-            if (append) {
-                ListIterator<Uri> iterator = photoUris.listIterator();
-                while (iterator.hasNext()) {
-                    Uri photo = iterator.next();
-                    if (!uris.contains(photo)) {
-                        iterator.remove();
-                        removeViewByTag(photo);
-//                        notifyPhotoRemoved(photo);
-                    } else {
-                        uris.remove(photo);
-                    }
-
-                }
-                int storage = (addButton == null || addButton.getParent() == null) ? maxChildCount : maxChildCount + 1;
-                int max = Math.min(uris.size(), storage - getChildCount());
-                for (int i = 0; i < max; i++) {
-                    Uri photo = uris.get(i);
-                    add(photo);
-                }
-            } else {
-
-                photoUris.clear();
-                removeAllViews();
-//        int storage = addButton.getParent() == null ? maxChildCount : maxChildCount + 1;
-                int max = Math.min(uris.size(), maxChildCount);
-                for (int i = 0; i < max; i++) {
-                    Uri photo = uris.get(i);
-                    add(photo);
-                }
-                resetLayoutParams();
-            }
-        }
-    }
-
-    private void removeViewByTag(Uri tag) {
-        for (int i = 0; i < getChildCount(); i++) {
-            if (tag.equals(getChildAt(i).getTag())) {
-                removeView(getChildAt(i));
-            }
-        }
-    }
-
-    public void removeViewByUri(Uri uri) {
-        removeViewByTag(uri);
-        photoUris.remove(uri);
-    }
-
-
-    public void removeAllPhotos() {
-        removeAllViews();
-        requestLayout();
-
-    }
-
-    public interface OnPhotoChangedListener {
-        void onPhotoAdded(Uri photo);
-
-        void onPhotoRemoved(Uri photo);
-    }
-
-    public PhotoGridView(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
-        mContext = (Activity) context;
-        init(attrs);
+    public PhotoGridView(Context context) {
+        this(context, null);
     }
 
     public PhotoGridView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        mContext = (Activity) context;
-        init(attrs);
+        this(context, attrs, 0);
     }
 
-    public PhotoGridView(Context context) {
-        super(context);
-        mContext = (Activity) context;
-        init(null);
-    }
-
-    private OnClickListener onAddBtnClickListener;
-
-
-    public void setOnAddButtonClickedListener(OnClickListener onClickListener) {
-        this.onAddBtnClickListener = onClickListener;
-    }
-
-    public void init(AttributeSet attrs) {
-        if (attrs == null) {
-            setColumnCount(4);
-        }
-
-        TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.PhotoGridView);
-        if (a != null) {
-            addButtonSrcId = a.getResourceId(R.styleable.PhotoGridView_add_button_src, R.drawable.icon_feedback_addpicture);
-            deleteButtonSrcId = a.getResourceId(R.styleable.PhotoGridView_delete_button_src, 0);
-            dividerSpace = a.getDimensionPixelOffset(R.styleable.PhotoGridView_divider_space, SizeUtils.dp2px(10));
-            maxChildCount = a.getInt(R.styleable.PhotoGridView_max_child_count, 8);
+    public PhotoGridView(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.PhotoGridView,
+                defStyleAttr, 0);
+        boolean addButtonVisible;
+        int addButtonSrcId;
+        try {
+            maxPhotoCount = Math.max(0, a.getInt(R.styleable.PhotoGridView_max_child_count, 8));
             itemLayoutResId = a.getResourceId(R.styleable.PhotoGridView_item_layout_resource, R.layout.item_photo);
-            autoHide = a.getBoolean(R.styleable.PhotoGridView_add_button_auto_hide, true);
-            itemWidth = a.getDimensionPixelOffset(R.styleable.PhotoGridView_child_width, 0);
-            itemHeight = a.getDimensionPixelOffset(R.styleable.PhotoGridView_child_height, 0);
+            configuredWidth = Math.max(0, a.getDimensionPixelOffset(R.styleable.PhotoGridView_child_width, 0));
+            configuredHeight = Math.max(0, a.getDimensionPixelOffset(R.styleable.PhotoGridView_child_height, 0));
+            dividerSpace = Math.max(0, a.getDimensionPixelOffset(R.styleable.PhotoGridView_divider_space, SizeUtils.dp2px(10)));
+            deleteButtonSrcId = a.getResourceId(R.styleable.PhotoGridView_delete_button_src, 0);
+            autoHideAddButton = a.getBoolean(R.styleable.PhotoGridView_add_button_auto_hide, true);
             addButtonVisible = a.getBoolean(R.styleable.PhotoGridView_add_button_visible, true);
+            addButtonSrcId = a.getResourceId(R.styleable.PhotoGridView_add_button_src, R.drawable.icon_feedback_addpicture);
+        } finally {
+            a.recycle();
         }
-        if (itemWidth == 0) {
-            autoWith = true;
-        }
-        deleteButtonVisible = deleteButtonSrcId != 0;
         if (addButtonVisible) {
-            addButton = new Button(getContext());
-            addButton.setBackgroundResource(addButtonSrcId);
+            addButton = new Button(context);
             addButton.setId(R.id.add_photo);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                addButton.setForeground(getResources().getDrawable(R.drawable.selector_item_background));
-            }
-            ViewUtils.setOnSingleClickListener(addButton, new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (onAddBtnClickListener != null) {
-                        onAddBtnClickListener.onClick(v);
-                    }
+            addButton.setBackgroundResource(addButtonSrcId);
+            addButton.setForeground(context.getDrawable(R.drawable.selector_item_background));
+            ViewUtils.setOnSingleClickListener(addButton, view -> {
+                if (onAddButtonClickedListener != null) {
+                    onAddButtonClickedListener.onClick(view);
                 }
-
             });
         }
+        updateAddButton();
+        setLayoutTransition(new LayoutTransition());
+    }
 
-        mTransition = new LayoutTransition();
-        mTransition.setAnimator(LayoutTransition.APPEARING, (mTransition.getAnimator(LayoutTransition.APPEARING)));
-        mTransition.setAnimator(LayoutTransition.CHANGE_APPEARING,
-                (mTransition.getAnimator(LayoutTransition.CHANGE_APPEARING)));
-        mTransition.setAnimator(LayoutTransition.DISAPPEARING, (mTransition.getAnimator(LayoutTransition.DISAPPEARING)));
-//        mTransition.setAnimator(LayoutTransition.CHANGE_DISAPPEARING,
-//                (mTransition.getAnimator(LayoutTransition.CHANGE_DISAPPEARING)));
-        setLayoutTransition(mTransition);
+    /** 完整替换；忽略 null/空 URI，按输入顺序截取上限，保留重复 URI。 */
+    public void setPhotos(@Nullable List<Uri> uris) {
+        ArrayList<Uri> next = new ArrayList<>();
+        if (uris != null) {
+            for (Uri uri : uris) {
+                if (next.size() >= maxPhotoCount) break;
+                if (uri != null && !uri.toString().trim().isEmpty()) next.add(uri);
+            }
+        }
+        if (photos.equals(next)) return;
 
+        // 按出现次数匹配旧 View，删除、调序和重复 URI 都不会重新加载未变化的图片。
+        ArrayList<View> unused = new ArrayList<>(photoViews);
+        ArrayList<View> nextViews = new ArrayList<>();
+        for (Uri uri : next) {
+            View reused = null;
+            for (int i = 0; i < unused.size(); i++) {
+                if (uri.equals(unused.get(i).getTag())) {
+                    reused = unused.remove(i);
+                    break;
+                }
+            }
+            nextViews.add(reused != null ? reused : createPhotoView(uri));
+        }
+        applyPhotos(next, nextViews);
+    }
+
+    private void applyPhotos(ArrayList<Uri> next, ArrayList<View> nextViews) {
+        ArrayList<View> removed = new ArrayList<>(photoViews);
+        removed.removeAll(nextViews);
+        photos.clear();
+        photos.addAll(next);
+        photoViews.clear();
+        photoViews.addAll(nextViews);
+        for (View view : removed) removeView(view);
+        for (int i = 0; i < nextViews.size(); i++) {
+            View view = nextViews.get(i);
+            if (indexOfChild(view) != i) {
+                if (view.getParent() == this) removeView(view);
+                addView(view, i, createLayoutParams(i, configuredWidth));
+            }
+        }
+        updateAddButton();
+        requestLayout();
+        if (onPhotosChangedListener != null) {
+            onPhotosChangedListener.onPhotosChanged(getPhotos());
+        }
+    }
+
+    public void addPhoto(@Nullable Uri uri) {
+        addPhotos(Collections.singletonList(uri));
+    }
+
+    /** 服务端图片地址的完整替换入口，与 setPhotos 使用相同的过滤和容量规则。 */
+    public void setPhotoUrls(@Nullable List<String> urls) {
+        ArrayList<Uri> next = new ArrayList<>();
+        if (urls != null) {
+            for (String url : urls) {
+                if (next.size() >= maxPhotoCount) break;
+                if (url != null && !url.trim().isEmpty()) next.add(Uri.parse(url));
+            }
+        }
+        setPhotos(next);
+    }
+
+    /** 追加只占用剩余容量，不修改调用方列表。 */
+    public void addPhotos(@Nullable List<Uri> uris) {
+        if (uris == null || photos.size() >= maxPhotoCount) return;
+        ArrayList<Uri> next = getPhotos();
+        for (Uri uri : uris) {
+            if (next.size() >= maxPhotoCount) break;
+            if (uri != null && !uri.toString().trim().isEmpty()) next.add(uri);
+        }
+        setPhotos(next);
+    }
+
+    /** 按位置删除，重复 URI 也只移除指定的一项。 */
+    public void removePhotoAt(int position) {
+        if (position < 0 || position >= photos.size()) return;
+        ArrayList<Uri> next = getPhotos();
+        next.remove(position);
+        ArrayList<View> nextViews = new ArrayList<>(photoViews);
+        nextViews.remove(position);
+        applyPhotos(next, nextViews);
+    }
+
+    /** 删除首个匹配的 URI；需要区分重复项时使用 removePhotoAt。 */
+    public void removePhoto(@Nullable Uri uri) {
+        removePhotoAt(photos.indexOf(uri));
+    }
+
+    public void clearPhotos() {
+        setPhotos(Collections.emptyList());
+    }
+
+    /** 始终返回非 null 快照，外部修改不会影响控件。 */
+    @NonNull
+    public ArrayList<Uri> getPhotos() {
+        return new ArrayList<>(photos);
+    }
+
+    public int getPhotoCount() {
+        return photos.size();
+    }
+
+    public int getMaxPhotoCount() {
+        return maxPhotoCount;
+    }
+
+    public void setOnAddButtonClickedListener(@Nullable OnClickListener listener) {
+        onAddButtonClickedListener = listener;
+    }
+
+    /** 注册时同步当前快照；随后每次有效变更完成后回调一次，包括清空和调序。 */
+    public void setOnPhotosChangedListener(@Nullable OnPhotosChangedListener listener) {
+        onPhotosChangedListener = listener;
+        if (listener != null) listener.onPhotosChanged(getPhotos());
+    }
+
+    public interface OnPhotosChangedListener {
+        void onPhotosChanged(@NonNull List<Uri> photos);
+    }
+
+    private View createPhotoView(Uri uri) {
+        View itemView = LayoutInflater.from(getContext()).inflate(itemLayoutResId, this, false);
+        ImageView image = itemView.findViewById(R.id.grid_item_picture);
+        View delete = itemView.findViewById(R.id.grid_item_delete_button);
+        ImageView deleteIcon = itemView.findViewById(R.id.grid_item_delete_icon);
+        if (image == null || (deleteButtonSrcId != 0 && (delete == null || deleteIcon == null))) {
+            throw new IllegalArgumentException("PhotoGridView item layout requires grid_item_picture; "
+                    + "deletion also requires grid_item_delete_button and grid_item_delete_icon");
+        }
+        itemView.setTag(uri);
+        GlideImageLoader.with(image).display(uri, R.drawable.ic_gallery_v21);
+        if (delete != null) {
+            delete.setVisibility(deleteButtonSrcId != 0 ? VISIBLE : GONE);
+            if (deleteButtonSrcId != 0) deleteIcon.setImageResource(deleteButtonSrcId);
+            delete.setOnClickListener(view -> removePhotoAt(photoViews.indexOf(itemView)));
+        }
+        itemView.setOnClickListener(view -> {
+            int position = photoViews.indexOf(itemView);
+            if (position < 0 || position >= photos.size()) return;
+            ArrayList<String> urls = new ArrayList<>();
+            for (Uri photo : photos) urls.add(photo.toString());
+            PhotoPagerActivity.launch(getContext(), this, urls, position,
+                    (index, child) -> child == addButton ? null : child.findViewById(R.id.grid_item_picture));
+        });
+        return itemView;
+    }
+
+    private void updateAddButton() {
+        if (addButton == null) return;
+        boolean show = !autoHideAddButton || photos.size() < maxPhotoCount;
+        // 退场动画期间 parent 仍可能是 this；以真实子项索引判断是否需要重新加入。
+        // addView 会先取消退场动画，完成旧 parent 的释放。
+        if (show && indexOfChild(addButton) < 0) {
+            addView(addButton, createLayoutParams(photos.size(), configuredWidth));
+        } else if (!show && indexOfChild(addButton) >= 0) {
+            removeView(addButton);
+        }
+    }
+
+    @Override
+    public void setColumnCount(int columnCount) {
+        // GridLayout 构造期间也会调用此方法；未配置列数时统一使用四列。
+        int columns = columnCount == UNDEFINED ? 4 : Math.max(1, columnCount);
+        if (getColumnCount() == columns) return;
+        // 先清除旧位置，避免缩减列数时 GridLayout 拒绝越界的旧 columnSpec。
+        for (int i = 0; i < getChildCount(); i++) {
+            LayoutParams params = (LayoutParams) getChildAt(i).getLayoutParams();
+            params.columnSpec = spec(UNDEFINED);
+            params.rowSpec = spec(UNDEFINED);
+            getChildAt(i).setLayoutParams(params);
+        }
+        super.setColumnCount(columns);
     }
 
     @Override
     protected void onMeasure(int widthSpec, int heightSpec) {
-        super.onMeasure(widthSpec, heightSpec);
-        if (autoWith) {
-            int maxWidth = MeasureSpec.getSize(widthSpec)
-                    - getPaddingStart() - getPaddingEnd();
-            int itemWidth = (maxWidth - dividerSpace * (getColumnCount() - 1)) / getColumnCount();
-//        Logger.i("itemsiez", "screen widht:"+ScreenUtil.getScreenWidth()+"margin:"+ ((MarginLayoutParams) getLayoutParams()).leftMargin+","+ ((MarginLayoutParams) getLayoutParams()).rightMargin+
-//                "padding  :"+getPaddingStart()+","+getPaddingEnd()
-//                        +",maxWidth:"+maxWidth+",itemsize:" + itemSize+",dividerSpace:"+dividerSpace);
-            if (this.itemWidth != itemWidth) {
-                this.itemWidth = itemWidth;
-                if (getChildCount() == 0 && addButtonVisible) {
-                    addView(addButton, generateLayoutParams(0));
-                } else {
-                    resetLayoutParams();
+        int width = configuredWidth;
+        if (width == 0) {
+            if (MeasureSpec.getMode(widthSpec) == MeasureSpec.UNSPECIFIED) {
+                // 无宽度约束时先取得子项自然尺寸，再统一为网格尺寸。
+                updateItemLayoutParams(LayoutParams.WRAP_CONTENT);
+                super.onMeasure(widthSpec, heightSpec);
+                width = configuredHeight;
+                for (int i = 0; i < getChildCount(); i++) {
+                    width = Math.max(width, getChildAt(i).getMeasuredWidth());
                 }
+            } else {
+                int available = Math.max(0, MeasureSpec.getSize(widthSpec) - getPaddingLeft() - getPaddingRight());
+                long gaps = (long) dividerSpace * (getColumnCount() - 1);
+                width = (int) Math.max(0, (available - gaps) / getColumnCount());
             }
         }
-
+        // 在父类测量前更新，首帧、宽度变化和删除后的行高都使用当前尺寸。
+        updateItemLayoutParams(width);
+        super.onMeasure(widthSpec, heightSpec);
     }
 
-    private void resetLayoutParams() {
-        if ((hasStorage() || !autoHide) && addButton != null && addButton.getParent() == null) {
-            addView(addButton);
-        }
+    private void updateItemLayoutParams(int width) {
         for (int i = 0; i < getChildCount(); i++) {
-            getChildAt(i).setLayoutParams(generateLayoutParams(i));
-        }
-    }
-
-    private boolean hasStorage() {
-        return getChildCount() <= maxChildCount - 1;
-    }
-
-    private LayoutParams generateLayoutParams(int index) {
-        MarginLayoutParams params = new MarginLayoutParams(itemWidth, itemHeight > 0 ? itemHeight : itemWidth);
-        if (index % getColumnCount() != 0) {
-            params.leftMargin = dividerSpace;
-        }
-        Logger.i("itemsize", "index:" + index + ",leftMargin:" + params.leftMargin);
-        if (index / getColumnCount() > 0) {
-            params.topMargin = dividerSpace;
-        }
-        return new LayoutParams(params);
-    }
-
-    public void add(String url) {
-        add(Uri.parse(url));
-    }
-
-    public void add(Uri uri) {
-        final View itemView = inflate(getContext(), itemLayoutResId, null);
-        View delete = itemView.findViewById(R.id.grid_item_delete_button);
-        ImageView deleteIcon = itemView.findViewById(R.id.grid_item_delete_icon);
-        if (deleteButtonVisible) {
-            delete.setVisibility(View.VISIBLE);
-            deleteIcon.setImageResource(deleteButtonSrcId);
-        } else {
-            delete.setVisibility(View.GONE);
-        }
-        RoundedImageView image = itemView.findViewById(R.id.grid_item_picture);
-        GlideImageLoader.with(image).display(uri, R.drawable.ic_gallery_v21);
-        itemView.setTag(uri);
-        final int position = addButton != null ? (getChildCount() - 1) : getChildCount();
-        addView(itemView, position);
-        photoUris.add(uri);
-        resetLayoutParams();
-        notifyPhotoAdded(uri);
-        itemView.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                PhotoPagerActivity.launch(getContext(), PhotoGridView.this, getPhotosUris(), indexOfChild(view), new PhotoPagerActivity.ImageGetterFromItemView() {
-                    @Override
-                    public View getImage(int position, View itemView) {
-                        if (itemView == addButton) {
-                            return null;
-                        }
-                        return itemView.findViewById(R.id.grid_item_picture);
-                    }
-                });
-            }
-        });
-        delete.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                removeView(itemView);
-                //makeMainPicture();
-                resetLayoutParams();
-                photoUris.remove(uri);
-                notifyPhotoRemoved(uri);
-            }
-
-        });
-        if (getChildCount() > maxChildCount) {
-            if (autoHide && addButton != null) {
-                removeView(addButton);
+            View child = getChildAt(i);
+            LayoutParams next = createLayoutParams(i, width);
+            LayoutParams old = (LayoutParams) child.getLayoutParams();
+            if (old.width != next.width || old.height != next.height
+                    || old.getMarginStart() != next.getMarginStart() || old.getMarginEnd() != 0
+                    || old.topMargin != next.topMargin || old.bottomMargin != 0
+                    || !old.rowSpec.equals(next.rowSpec) || !old.columnSpec.equals(next.columnSpec)) {
+                child.setLayoutParams(next);
             }
         }
     }
 
-    public ArrayList<String> getPhotosUris() {
-        ArrayList<String> uris = new ArrayList<>();
-        for (Uri uri : photoUris) {
-            uris.add(uri.toString());
-        }
-        return uris;
+    private LayoutParams createLayoutParams(int index, int width) {
+        int columns = getColumnCount();
+        LayoutParams params = new LayoutParams(spec(index / columns), spec(index % columns));
+        params.width = width;
+        params.height = configuredHeight > 0 ? configuredHeight : width;
+        params.setMarginStart(index % columns == 0 ? 0 : dividerSpace);
+        params.setMarginEnd(0);
+        params.topMargin = index >= columns ? dividerSpace : 0;
+        params.bottomMargin = 0;
+        return params;
     }
-
-    public ArrayList<Uri> getOriginalPhotos() {
-        return photoUris;
-    }
-
-    public ArrayList<Uri> getCopiedPhotos() {
-        if (!Utils.isEmpty(photoUris)) {
-            ArrayList<Uri> uris = new ArrayList<>();
-            for (Uri uri : photoUris) {
-                uris.add(uri);
-            }
-            return uris;
-        }
-        return null;
-    }
-
-    public void setOnPhotoChangedListener(OnPhotoChangedListener onPhotoChangedListener) {
-        this.onPhotoChangedListener = onPhotoChangedListener;
-    }
-
-    private void notifyPhotoAdded(Uri uri) {
-        if (onPhotoChangedListener != null)
-            onPhotoChangedListener.onPhotoAdded(uri);
-    }
-
-
-    private void notifyPhotoRemoved(Uri uri) {
-        if (onPhotoChangedListener != null)
-            onPhotoChangedListener.onPhotoRemoved(uri);
-    }
-
-
 }

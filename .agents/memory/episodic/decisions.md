@@ -188,3 +188,10 @@ STATIC：已核对两类商品接口路由、回调落盘先于网络、账号�
 
 - 从 Template 同步 TagLayout、TagGridLayout、TagRecycleView 的测量、选择状态、数据增删及末行间距缓存修复，保留 Epnova 包名、创建页布局/颜色/间距配置。三个控件分别保留独立用途。
 - 同步 14 条仪器回归用例和 debug XML。生产与测试通过缓存依赖离线类型检查，XML/属性引用及差异检查通过；未运行 Gradle、资源链接或设备测试，已有 gradle.properties 改动未纳入。
+
+
+### 2026-09-10 同步 PhotoGridView 重构
+
+- 同步 Template 的图片快照、容量限制、统一回调、局部 View 复用、测量及动画期间添加按钮恢复修复；反馈/举报页迁移新接口，保留 AppImagePicker、去重与 4 张限制。
+- 反馈历史及反馈详情（反馈图片、回复图片）通过 setPhotoUrls 替换原 setAll(String 列表)，空列表会清空旧图片；保留原只读入口、34dp/70dp 尺寸、8dp/14dp 间距及 feature.PhotoPagerActivity。item_photo 仅将正方形比例改为四边约束，原资源、圆角和删除区域保持不变。
+- 生产 Java、13 条仪器测试 Kotlin 源码离线类型检查和 4 处调用文件语法检查通过，XML/资源、旧接口残留及本地化文件摘要检查通过。预览 API 与新增测试 R 用临时声明辅助；未运行 Gradle、资源链接或设备测试。

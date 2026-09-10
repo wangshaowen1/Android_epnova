@@ -13,7 +13,6 @@ import com.kuaigeglobal.epnova.common.picker.AppImagePicker
 import com.kuaigeglobal.epnova.common.utils.Utils
 import com.kuaigeglobal.epnova.databinding.ActivityReportBinding
 import com.kuaigeglobal.epnova.router.AppNavigator
-import com.kuaigeglobal.epnova.widget.PhotoGridView
 import com.kuaigeglobal.epnova.widget.actionsheet.ActionSheetDialog
 import com.kuaigeglobal.epnova.widget.actionsheet.ActionSheetHelper
 import com.nhsd.basic.BaseViewModelActivity
@@ -60,16 +59,9 @@ class ReportActivity :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding.photoGrid.setOnAddButtonClickedListener { requestAlbumsPermission() }
-        binding.photoGrid.setOnPhotoChangedListener(object : PhotoGridView.OnPhotoChangedListener {
-            override fun onPhotoAdded(photo: Uri?) {
-                mRealVM.photoSize.value = binding.photoGrid.originalPhotos.size
-            }
-
-            override fun onPhotoRemoved(photo: Uri?) {
-                mRealVM.photoSize.value = binding.photoGrid.originalPhotos.size
-            }
-
-        })
+        binding.photoGrid.setOnPhotosChangedListener { photos ->
+            mRealVM.photoSize.value = photos.size
+        }
         binding.feedbackInput.addTextChangedListener(this)
         binding.contact.addTextChangedListener(this)
     }
@@ -97,7 +89,7 @@ class ReportActivity :
                 }
                 mRealVM.report(
                     binding.feedbackInput.text.toString(),
-                    Utils.toPathList(binding.photoGrid.originalPhotos)
+                    Utils.toPathList(binding.photoGrid.photos)
                 )
             }
 
@@ -117,11 +109,11 @@ class ReportActivity :
 
 
     private fun requestAlbumsPermission() {
-        imagePicker.pick(binding.photoGrid.copiedPhotos)
+        imagePicker.pick(binding.photoGrid.photos)
     }
 
     private fun handleSelectedImages(uris: List<Uri>) {
-        binding.photoGrid.setAll(ArrayList(uris.distinct().take(MAX_PHOTO_COUNT)), false)
+        binding.photoGrid.setPhotos(uris.distinct().take(MAX_PHOTO_COUNT))
     }
 
     override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {

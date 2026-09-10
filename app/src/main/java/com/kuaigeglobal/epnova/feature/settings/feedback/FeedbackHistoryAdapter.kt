@@ -36,7 +36,7 @@ class FeedbackHistoryAdapter(
         override fun bind(position: Int) {
             val item = getItem(position)
             binding.item = item?.let(::ItemFeedbackHistoryVm)
-            binding.photo.setAll(item?.imagesUrl.orEmpty())
+            binding.photo.setPhotoUrls(item?.imagesUrl.orEmpty())
             val clickableItem = item?.takeIf { !it.feedbackId.isNullOrBlank() }
             binding.root.setOnClickListener(null)
             binding.root.isClickable = clickableItem != null
