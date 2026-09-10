@@ -11,7 +11,7 @@ import android.text.StaticLayout;
 import android.text.TextPaint;
 
 import com.kuaigeglobal.epnova.widget.dragfooterview.DimenUtil;
-import com.kuaigeglobal.epnova.widget.dragfooterview.DragContainer;
+import com.kuaigeglobal.epnova.widget.HorizontalDragContainer;
 import com.nhsd.basic.utils.Logger;
 
 /**
@@ -127,9 +127,9 @@ public class BezierFooterDrawer extends BaseFooterDrawer {
     }
 
     @Override
-    public void updateDragState(@DragContainer.DragState int dragState) {
+    public void updateDragState(@HorizontalDragContainer.DragState int dragState) {
         super.updateDragState(dragState);
-        if (dragState == DragContainer.RELEASE) {
+        if (dragState == HorizontalDragContainer.RELEASE) {
             iconRotateController.reset();
         }
     }
