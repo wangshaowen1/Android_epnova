@@ -144,3 +144,9 @@ STATIC：已核对两类商品接口路由、回调落盘先于网络、账号�
 
 ### 验证范围
 28 个控件及辅助文件通过本地缓存依赖下的 Kotlin/Java 离线类型检查；33 个 Kotlin/Java 文件语法检查通过，109 个生产控件资源引用可解析，debug XML 与 diff 空白检查通过。同步 34 条仪器回归用例并补充 EpNova 颜色状态、滚动重新挂载 2 条用例，配置 AndroidJUnitRunner。未运行 Gradle、仪器测试或实机交互；上述结果仅说明静态检查未发现阻断问题。保留原有 gradle.properties 工作区修改。
+
+## 2026-09-10 补齐 DragContainer 的遗漏同步
+
+上一轮同步只覆盖 Template c239de3c，遗漏了用户此前已更新的 4fa9bcc6。现补齐 DragContainer 的 Kotlin 替换和属性定义，移除旧 Java 实现及六个无外部引用的专属类；DimenUtil 仍被 SpanExtTagHandler 使用，保留。新版要求提示 View + RecyclerView 两个直接子 View；已确认当前 EpNova 没有业务页面使用旧接口或旧布局。
+
+源码与 Template/Povie 一致；离线 Kotlin 类型检查、语法、XML 契约与旧符号残留检查通过。新增四条仪器用例覆盖取消、触发保持、detach 复位、禁用监听器；未运行 Gradle或设备测试。跨项目同步应同时核对本会话各次控件提交，不能仅凭后一笔优化提交的文件清单声明全部对齐。
