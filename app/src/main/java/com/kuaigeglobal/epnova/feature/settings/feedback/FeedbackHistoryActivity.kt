@@ -17,7 +17,7 @@ class FeedbackHistoryActivity :
 
     private val feedbackHistoryAdapter by lazy {
         FeedbackHistoryAdapter { item ->
-            MyFeedbackActivity.start(this, item.id)
+            item.feedbackId?.let { MyFeedbackActivity.start(this, it) }
         }
     }
     private var hasResumed = false

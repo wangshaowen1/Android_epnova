@@ -15,7 +15,6 @@ import com.kuaigeglobal.epnova.core.network.apis.entity.CreatorWorkInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.DubbingGenStatusInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.EpisodeInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.ExampleWorkInfo
-import com.kuaigeglobal.epnova.core.network.apis.entity.FeedbackDetail
 import com.kuaigeglobal.epnova.core.network.apis.entity.IncomeDetailInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.IncomeSummaryInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.InspirationInfo
@@ -190,6 +189,7 @@ import com.kuaigeglobal.epnova.core.network.apis.response.EpisodeDirectoryData
 import com.kuaigeglobal.epnova.core.network.apis.response.EpisodePlayData
 import com.kuaigeglobal.epnova.core.network.apis.response.FirstRechargeCreditsDialogData
 import com.kuaigeglobal.epnova.core.network.apis.response.FirstRechargeDialogData
+import com.kuaigeglobal.epnova.core.network.apis.response.FeedbackDetailData
 import com.kuaigeglobal.epnova.core.network.apis.response.FeedbackPageData
 import com.kuaigeglobal.epnova.core.network.apis.response.FollowingData
 import com.kuaigeglobal.epnova.core.network.apis.response.HomeBookShelfData
@@ -333,10 +333,11 @@ interface ApiService {
     suspend fun feedback(@Body body: FeedbackBody): ApiResponse<Any?>
 
     /**
-     * 查询用户反馈详情
+     * 使用反馈雪花业务 ID 查询当前用户的反馈及当前回复。
+     * 查询本身不会标记回复已读，也不会清除反馈角标。
      */
     @POST(ApiConstants.FEEDBACK_DETAIL)
-    suspend fun feedbackDetail(@Body body: FeedbackDetailBody): ApiResponse<FeedbackDetail?>
+    suspend fun feedbackDetail(@Body body: FeedbackDetailBody): ApiResponse<FeedbackDetailData?>
 
     /** 分页查询用户反馈。 */
     @POST(ApiConstants.FEEDBACK_PAGE)

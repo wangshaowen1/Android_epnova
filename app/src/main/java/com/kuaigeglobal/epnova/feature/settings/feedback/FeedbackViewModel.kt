@@ -16,15 +16,17 @@ import com.kuaigeglobal.epnova.core.Config
 import com.kuaigeglobal.epnova.core.ext.launch
 import com.kuaigeglobal.epnova.core.ext.request
 import com.kuaigeglobal.epnova.core.network.apis.ApiFactory
-import com.kuaigeglobal.epnova.core.network.apis.entity.FeedbackDetail
+import com.kuaigeglobal.epnova.core.network.apis.entity.FeedbackPageInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.KeyValueInfo
 import com.kuaigeglobal.epnova.core.network.apis.request.FeedbackBody
 import com.kuaigeglobal.epnova.core.network.apis.request.FeedbackClearNoticeBody
 import com.kuaigeglobal.epnova.core.network.apis.request.FeedbackDetailBody
 import com.kuaigeglobal.epnova.core.network.apis.request.ImgUrlBody
+import com.kuaigeglobal.epnova.core.network.apis.response.FeedbackDetailData
 import com.kuaige.oss.OnUploadListener
 import com.kuaige.oss.OssClient
 import com.kuaigeglobal.epnova.common.Constant
+import com.kuaigeglobal.epnova.common.utils.DateUtil
 import com.nhsd.basic.ext.getResString
 import com.nhsd.basic.ext.showToast
 import kotlinx.coroutines.Dispatchers
@@ -48,7 +50,6 @@ class FeedbackViewModel : AppRepositoryViewModel<AppRepository>() {
     companion object {
         const val STATUS_IN_PROGRESS = "In Progress"
         const val STATUS_REPLIED = "Replied"
-        const val STATUS_COMPLETED = "Completed"
     }
 
     var mToolbarVM = ToolbarViewModel(
@@ -134,7 +135,7 @@ class FeedbackViewModel : AppRepositoryViewModel<AppRepository>() {
 
     private val feedbackHistoryRefresh = MutableStateFlow(0)
     private val feedbackNoticeCleared = AtomicBoolean(false)
-    val feedbackHistory: Flow<PagingData<FeedbackDetail>> = feedbackHistoryRefresh
+    val feedbackHistory: Flow<PagingData<FeedbackPageInfo>> = feedbackHistoryRefresh
         .flatMapLatest {
             Pager(
                 config = PagingConfig(
@@ -152,7 +153,7 @@ class FeedbackViewModel : AppRepositoryViewModel<AppRepository>() {
         }
         .cachedIn(viewModelScope)
 
-    val feedbackDetail = ObservableField<FeedbackDetail?>()
+    val feedbackDetail = ObservableField<FeedbackDetailData?>()
 
 
     fun refreshFeedbackHistory() {
@@ -171,13 +172,14 @@ class FeedbackViewModel : AppRepositoryViewModel<AppRepository>() {
         )
     }
 
-    fun loadFeedbackDetail(id: String?) {
-        if (id.isNullOrBlank()) {
+    /** 使用反馈历史条目携带的雪花业务 ID 查询详情。 */
+    fun loadFeedbackDetail(feedbackId: String?) {
+        if (feedbackId.isNullOrBlank()) {
             feedbackDetail.set(null)
             return
         }
         request(
-            apiBlock = { mRepo.api.feedbackDetail(FeedbackDetailBody(id)) },
+            apiBlock = { mRepo.api.feedbackDetail(FeedbackDetailBody(feedbackId)) },
             showToast = true,
             onError = { feedbackDetail.set(null) }
         ) {
@@ -185,21 +187,46 @@ class FeedbackViewModel : AppRepositoryViewModel<AppRepository>() {
         }
     }
 
-    fun statusIconRes(status: String?): Int {
-        return when (status) {
-            STATUS_IN_PROGRESS -> R.drawable.ic_feedback_in_progress
-            STATUS_COMPLETED -> R.drawable.ic_feedback_completed
-            else -> R.drawable.ic_replied
-        }
+    fun feedbackTypeText(problemType: Int?): String {
+        return typeNames?.firstOrNull { it.key == problemType }?.value
+            ?: problemType?.toString().orEmpty()
     }
 
-    fun statusColorRes(status: String?): Int {
-        return when (status) {
-            STATUS_IN_PROGRESS -> R.color.color_ea9800
-            STATUS_COMPLETED -> R.color.color_00cf18
-            else -> R.color.fixed_white_1
-        }
+    /** 接口未定义状态码文案映射，按是否存在当前回复展示页面状态。 */
+    fun feedbackStatusText(detail: FeedbackDetailData?): String {
+        return if (hasReply(detail)) STATUS_REPLIED else STATUS_IN_PROGRESS
     }
 
-    fun hasReply(detail: FeedbackDetail?): Boolean = !detail?.reply.isNullOrBlank()
+    fun statusIconRes(detail: FeedbackDetailData?): Int {
+        return if (hasReply(detail)) R.drawable.ic_replied else R.drawable.ic_feedback_in_progress
+    }
+
+    fun statusColorRes(detail: FeedbackDetailData?): Int {
+        return if (hasReply(detail)) R.color.fixed_white_1 else R.color.color_ea9800
+    }
+
+    fun feedbackSubmittedTime(createTime: String?): String {
+        return formatFeedbackTime(createTime, DateUtil.FORMAT_DATETIME2)
+    }
+
+    fun feedbackReplyTime(replyTime: String?): String {
+        return formatFeedbackTime(replyTime, DateUtil.FORMAT_EN_DAY)
+    }
+
+    fun feedbackReplyText(detail: FeedbackDetailData?): String {
+        return detail?.replyContent?.content.orEmpty()
+    }
+
+    fun hasFeedbackImages(detail: FeedbackDetailData?): Boolean =
+        !detail?.imagesUrl.isNullOrEmpty()
+
+    fun hasReplyImages(detail: FeedbackDetailData?): Boolean =
+        !detail?.replyContent?.imagesUrl.isNullOrEmpty()
+
+    fun hasReply(detail: FeedbackDetailData?): Boolean = detail?.replyContent != null
+
+    private fun formatFeedbackTime(value: String?, format: String): String {
+        val rawValue = value?.trim().orEmpty()
+        return rawValue.toLongOrNull()?.let { DateUtil.format(it, format) } ?: rawValue
+    }
 }

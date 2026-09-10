@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -28,7 +28,7 @@
             style="@style/Text14.Outfit.Regular"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@{item.data.description}"
+            android:text="@{item.descriptionText}"
             android:textColor="?attr/textColor4"
             tools:text="Your drama is live! EpNova is now finding your first viewers EpNova is now finding your first viewers" />
 
@@ -39,13 +39,13 @@
             android:layout_marginTop="10dp"
             android:columnCount="1"
             android:minHeight="34dp"
-            android:visibility="@{item.data.imageUrls.size() > 0 ? View.VISIBLE : View.GONE}"
+            android:visibility="@{item.data.imagesUrl.size() > 0 ? View.VISIBLE : View.GONE}"
             app:add_button_src="@drawable/icon_feedback_addpicture"
             app:add_button_visible="false"
-            app:divider_space="8dp"
-            app:max_child_count="4"
+            app:child_height="34dp"
             app:child_width="34dp"
-            app:child_height="34dp" />
+            app:divider_space="8dp"
+            app:max_child_count="4" />
 
         <View
             android:layout_width="match_parent"
@@ -68,7 +68,7 @@
                 android:layout_weight="1"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:text="@{@string/feedback_type_value(item.data.type)}"
+                android:text="@{@string/feedback_type_value(item.typeText)}"
                 android:textColor="?attr/textColor3"
                 tools:text="Type · Other Issues" />
 
@@ -76,7 +76,7 @@
                 style="@style/Text12.Outfit.Regular"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@{item.data.submittedOn}"
+                android:text="@{item.submittedOnText}"
                 android:textColor="?attr/textColor4"
                 tools:text="July 23, 2026" />
 
@@ -92,7 +92,7 @@
                 style="@style/Text12.Outfit.Regular"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@{item.data.status}"
+                android:text="@{item.statusText}"
                 textColorRes="@{item.stateTextColor}"
                 tools:text="Completed" />
         </LinearLayout>

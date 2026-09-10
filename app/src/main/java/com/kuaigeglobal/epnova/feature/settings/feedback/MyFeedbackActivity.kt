@@ -11,8 +11,8 @@ class MyFeedbackActivity : BaseViewModelActivity<ActivityMyFeedbackBinding, Feed
     private val feedbackDetailObserver = object : Observable.OnPropertyChangedCallback() {
         override fun onPropertyChanged(sender: Observable?, propertyId: Int) {
             val detail = mRealVM.feedbackDetail.get()
-            binding.photo1.setAll(detail?.imageUrls ?: emptyList())
-            binding.photo2.setAll(detail?.replyImageUrls ?: emptyList())
+            binding.photo1.setAll(detail?.imagesUrl.orEmpty())
+            binding.photo2.setAll(detail?.replyContent?.imagesUrl.orEmpty())
         }
     }
 

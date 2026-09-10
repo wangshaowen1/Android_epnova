@@ -50,7 +50,7 @@
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:contentDescription="@null"
-                        imageResource="@{layout.statusIconRes(layout.feedbackDetail.status)}"
+                        imageResource="@{layout.statusIconRes(layout.feedbackDetail)}"
                         tools:src="@drawable/ic_replied" />
 
                     <TextView
@@ -58,8 +58,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
-                        android:text="@{layout.feedbackDetail.status}"
-                        textColorRes="@{layout.statusColorRes(layout.feedbackDetail.status)}"
+                        android:text="@{layout.feedbackStatusText(layout.feedbackDetail)}"
+                        textColorRes="@{layout.statusColorRes(layout.feedbackDetail)}"
                         tools:text="Replied" />
                 </LinearLayout>
 
@@ -100,7 +100,7 @@
                             android:layout_marginStart="8dp"
                             android:layout_weight="1"
                             android:gravity="end"
-                            android:text="@{layout.feedbackDetail.type}"
+                            android:text="@{layout.feedbackTypeText(layout.feedbackDetail.problemType)}"
                             android:textColor="?attr/textColor2"
                             tools:text="Other Issues" />
                     </LinearLayout>
@@ -126,7 +126,7 @@
                             android:layout_marginStart="8dp"
                             android:layout_weight="1"
                             android:gravity="end"
-                            android:text="@{layout.feedbackDetail.submittedOn}"
+                            android:text="@{layout.feedbackSubmittedTime(layout.feedbackDetail.createTime)}"
                             android:textColor="?attr/textColor2"
                             tools:text="2026/12/02 12:31:12" />
                     </LinearLayout>
@@ -144,7 +144,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
-                        android:text="@{layout.feedbackDetail.description}"
+                        android:text="@{layout.feedbackDetail.problemDesc}"
                         android:textColor="?attr/textColor2"
                         tools:text="Can I make original video make upload to reels or TikTok to make Money……" />
 
@@ -155,7 +155,7 @@
                         android:layout_marginTop="12dp"
                         android:columnCount="4"
                         android:minHeight="70dp"
-                        android:visibility="@{layout.feedbackDetail.imageUrls.size() > 0 ? View.VISIBLE : View.GONE}"
+                        android:visibility="@{layout.hasFeedbackImages(layout.feedbackDetail) ? View.VISIBLE : View.GONE}"
                         app:add_button_visible="false"
                         app:child_height="70dp"
                         app:child_width="70dp"
@@ -200,7 +200,7 @@
                             style="@style/Text14.Outfit.Regular"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@{layout.feedbackDetail.replyOn}"
+                            android:text="@{layout.feedbackReplyTime(layout.feedbackDetail.replyTime)}"
                             android:textColor="?attr/textColor4"
                             tools:text="Sep 3, 2026" />
                     </LinearLayout>
@@ -210,7 +210,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
-                        android:text="@{layout.feedbackDetail.reply}"
+                        android:text="@{layout.feedbackReplyText(layout.feedbackDetail)}"
                         android:textColor="?attr/textColor2"
                         tools:text="Can I make original video make upload to reels or TikTok to make Money" />
 
@@ -221,7 +221,7 @@
                         android:layout_marginTop="12dp"
                         android:columnCount="4"
                         android:minHeight="70dp"
-                        android:visibility="@{layout.feedbackDetail.replyImageUrls.size() > 0 ? View.VISIBLE : View.GONE}"
+                        android:visibility="@{layout.hasReplyImages(layout.feedbackDetail) ? View.VISIBLE : View.GONE}"
                         app:add_button_visible="false"
                         app:child_height="70dp"
                         app:child_width="70dp"
