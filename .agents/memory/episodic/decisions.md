@@ -182,3 +182,9 @@ STATIC：已核对两类商品接口路由、回调落盘先于网络、账号�
 - 用户明确：具备特定用途的控件不能仅因当前没有引用而删除。清理先判断功能是否可等价替代，独立且可复用的能力保留；是否被页面引用不单独作为删除依据。
 - 按 com.kuaigeglobal.epnova 本地包名补回 EdgeSpaceDecoration 与 LinearLayoutManagerSpacingDecoration：前者以 px 设置首/尾 N 项物理边缘留白（默认 12dp），后者保留 dp 入参与首项两侧独立间距。Epnova 在用的 Top/Bottom 留白及其它装饰器不变，Yeno（Povie 目录）同步补回同样能力。
 - 两仓新增源码与 Template 按包名归一后一致，离线 Java 类型检查、既有装饰器逐字节比对通过；遵循仓库默认规则未运行 Gradle，未实机验证。
+
+
+## 2026-09-10 同步 Tag 控件优化
+
+- 从 Template 同步 TagLayout、TagGridLayout、TagRecycleView 的测量、选择状态、数据增删及末行间距缓存修复，保留 Epnova 包名、创建页布局/颜色/间距配置。三个控件分别保留独立用途。
+- 同步 14 条仪器回归用例和 debug XML。生产与测试通过缓存依赖离线类型检查，XML/属性引用及差异检查通过；未运行 Gradle、资源链接或设备测试，已有 gradle.properties 改动未纳入。

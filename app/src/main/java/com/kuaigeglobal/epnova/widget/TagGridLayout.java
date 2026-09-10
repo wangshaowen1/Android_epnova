@@ -14,7 +14,6 @@ import android.widget.GridLayout;
 import android.widget.TextView;
 
 
-import com.nhsd.basic.utils.Logger;
 import com.kuaigeglobal.epnova.R;
 
 import java.util.ArrayList;
@@ -38,7 +37,9 @@ public class TagGridLayout extends GridLayout {
     private int mMaximumSelectionCount = Integer.MAX_VALUE;
     private int mSelectedChildCount;
     private TagView mCurrentSelected;
-    private List<String> mTags;
+    private List<String> mTags = new ArrayList<>();
+    private int mLaidOutColumnCount;
+    private long mDataVersion;
 
     public TagGridLayout(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
@@ -53,6 +54,7 @@ public class TagGridLayout extends GridLayout {
 
     public TagGridLayout(Context context) {
         super(context);
+        initWithAttr(context, null);
     }
 
 
@@ -115,10 +117,13 @@ public class TagGridLayout extends GridLayout {
             mTagTextVerticalPadding = a.getDimensionPixelOffset(R.styleable.TagGridView_tagTextVerticalPadding, 0);
         }
         a.recycle();
+        mMaximumSelectionCount = Math.max(0, mMaximumSelectionCount);
+        if (getColumnCount() <= 0) setColumnCount(1);
     }
 
     public void setTagSelectMode(int tagSelectMode) {
-        this.mTagSelectMode = tagSelectMode;
+        mTagSelectMode = tagSelectMode;
+        reconcileSelection();
     }
 
     public interface OnTagViewAttachedListener<T> {
@@ -133,30 +138,44 @@ public class TagGridLayout extends GridLayout {
 
 
     public void setTags(String... tagsList) {
-        setTags(Arrays.asList(tagsList),null);
+        setTags(tagsList == null ? null : Arrays.asList(tagsList), null);
     }
     public  void setTags(List<String> tagsList){
         setTags(tagsList,null);
     }
     public <T> void setTags(List<String> tagsList, OnTagViewAttachedListener<T> onTagViewAttachedListener) {
-        removeAllViews();
-        if (tagsList != null && tagsList.size() > 0) {
-            for (int i = 0; i < tagsList.size(); i++) {
-                String tag=tagsList.get(i);
-                TagView tagView = addTag(tag);
-                if (onTagViewAttachedListener != null) {
-                    onTagViewAttachedListener.onTagViewAttached(tagView.getTagHost(), i);
+        List<String> nextTags = tagsList == null ? new ArrayList<>() : new ArrayList<>(tagsList);
+        if (getColumnCount() <= 0) setColumnCount(1);
+        int columns = getColumnCount();
+        int paddingCount = (columns - nextTags.size() % columns) % columns;
+        mDataVersion++;
+        // DataBinding 仅更新选中项时复用当前格子，避免整组重建和布局闪动。
+        if (nextTags.equals(mTags) && mLaidOutColumnCount == columns
+                && getChildCount() == nextTags.size() + paddingCount) {
+            if (onTagViewAttachedListener != null) {
+                for (int i = 0; i < nextTags.size(); i++) {
+                    onTagViewAttachedListener.onTagViewAttached(getChildAt(i), i);
                 }
             }
+            reconcileSelection();
+            return;
         }
-
-        if (tagsList != null && tagsList.size() % getColumnCount() != 0) {
-            int spaceCount = getColumnCount() - tagsList.size() % getColumnCount();
-            for(int i=0;i<spaceCount;i++) {
-                addSpaceTag();
+        List<Integer> selected = nextTags.equals(mTags) ? getSelectedTagPositions() : new ArrayList<>();
+        removeAllViews();
+        mSelectedChildCount = 0;
+        mCurrentSelected = null;
+        mTags = nextTags;
+        mLaidOutColumnCount = columns;
+        for (int i = 0; i < mTags.size(); i++) {
+            TagView tagView = addTag(mTags.get(i));
+            if (onTagViewAttachedListener != null) {
+                onTagViewAttachedListener.onTagViewAttached(tagView.getTagHost(), i);
+            } else {
+                tagView.setTagSelected(selected.contains(i));
             }
         }
-        this.mTags = tagsList;
+        for (int i = 0; i < paddingCount; i++) addSpaceTag();
+        reconcileSelection();
     }
 
     public static TagView toTagView(View view) {
@@ -171,31 +190,14 @@ public class TagGridLayout extends GridLayout {
 
                 @Override
                 public TextView getTagText() {
-                    if (view instanceof TextView) {
-                        return (TextView) view;
-                    }
-                    if (view instanceof ViewGroup) {
-                        for (int i = 0; i < ((ViewGroup) view).getChildCount(); i++) {
-                            View child = ((ViewGroup) view).getChildAt(i);
-                            if (child instanceof TextView) {
-                                return (TextView) child;
-                            }
-                        }
-                    }
-                    throw new NullPointerException("can not find TextView in " + view);
+                    TextView text = findFirstTextView(view);
+                    if (text != null) return text;
+                    throw new IllegalArgumentException("Tag layout must contain a TextView");
                 }
 
                 @Override
                 public void setTagSelected(boolean selected) {
-                    if (view != null) {
-                        view.setSelected(selected);
-                        if (view instanceof ViewGroup) {
-                            for (int i = 0; i < ((ViewGroup) view).getChildCount(); i++) {
-                                View child = ((ViewGroup) view).getChildAt(i);
-                                child.setSelected(selected);
-                            }
-                        }
-                    }
+                    setSelectedState(view, selected);
                 }
 
                 @Override
@@ -262,13 +264,15 @@ public class TagGridLayout extends GridLayout {
         tagView.getTagHost().setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (tagView.getTagHost().getVisibility() != View.VISIBLE)
-                    return;
+                int position = indexOfChild(tagView.getTagHost());
+                if (!isTagPosition(position)) return;
+                long version = mDataVersion;
                 if (onItemClickListener != null) {
                     if (onItemClickListener.onItemClick(tagView, position)) {
                         return;
                     }
                 }
+                if (version != mDataVersion || indexOfChild(tagView.getTagHost()) != position) return;
                 if (mTagSelectMode == SELECT_MODE_MULTIPLE) {
                     if (mSelectedChildCount >= mMaximumSelectionCount && !tagView.isTagSelected()) {
                         if (onSelectOutRangeListener != null) {
@@ -286,6 +290,12 @@ public class TagGridLayout extends GridLayout {
                         onSelectChangeListener.onSelectChange(TagGridLayout.this, tagView.getTagHost(), position, tagView.isTagSelected());
                     }
                 } else if (mTagSelectMode == SELECT_MODE_SINGLE) {
+                    if (mMaximumSelectionCount == 0) {
+                        if (onSelectOutRangeListener != null) {
+                            onSelectOutRangeListener.onSelectOutRange(TagGridLayout.this, tagView.getTagHost(), position);
+                        }
+                        return;
+                    }
                     if (mCurrentSelected != null) {
                         mCurrentSelected.setTagSelected(false);
                     }
@@ -317,91 +327,51 @@ public class TagGridLayout extends GridLayout {
     }
 
     public void selectTagPositions(Integer... selectedPos) {
-        selectTagPositions(Arrays.asList(selectedPos));
+        selectTagPositions(selectedPos == null ? null : Arrays.asList(selectedPos));
     }
     public void selectTags(List<String> tags) {
-        if(this.mTags==null){
-            Logger.i("call filter tags is null");
-            return;
-        }
-        Logger.i("call filter= selected tags="+tags+", this tags="+mTags);
-        ArrayList<Integer> selectedPos=new ArrayList<>();
-        if(tags!=null) {
+        List<Integer> positions = new ArrayList<>();
+        if (tags != null) {
             for (int i = 0; i < mTags.size(); i++) {
-                if (tags.contains(mTags.get(i))) {
-                    selectedPos.add(i);
-                }
+                if (tags.contains(mTags.get(i))) positions.add(i);
             }
         }
-        selectTagPositions(selectedPos);
+        selectTagPositions(positions);
     }
 
 
 
 
     public void selectTagPositions(List<Integer> selectedPos) {
-        if (selectedPos.size()>1&&mTagSelectMode == SELECT_MODE_SINGLE) {
-//            throw new UnsupportedOperationException("select at most 1 tag in SELECT_MODE_SINGLE!");
-            return;
+        for (int i = 0; i < getChildCount(); i++) {
+            toTagView(getChildAt(i)).setTagSelected(isTagPosition(i)
+                    && selectedPos != null && selectedPos.contains(i));
         }
-        int childCount = getChildCount();
-        int selectedCount = 0;
-        for (int i = 0; i < childCount; i++) {
-            TagView tagView = toTagView(getChildAt(i));
-            if (selectedPos.contains(i)) {
-                tagView.setTagSelected(true);
-                if(mTagSelectMode==SELECT_MODE_SINGLE){
-                    mCurrentSelected=tagView;
-                }
-                selectedCount++;
-            } else {
-                tagView.setTagSelected(false);
-            }
-        }
-        mSelectedChildCount = selectedCount;
+        reconcileSelection();
     }
     public void unSelectAllTags() {
         selectTagPosition(-1);
     }
     public void selectTagPosition(int index) {
         if (index == -1) {
-            if (mTagSelectMode == SELECT_MODE_SINGLE) {
-                if (mCurrentSelected != null) {
-                    mCurrentSelected.setTagSelected(false);
-                }
-                mCurrentSelected = null;
-                mSelectedChildCount = 0;
-            }else {
-                if (mSelectedChildCount > 0) {
-                    for (int i = 0; i < getChildCount(); i++) {
-                        TagView tagView = toTagView(getChildAt(i));
-                        tagView.setTagSelected(false);
-                    }
-                    mSelectedChildCount = 0;
-                }
-            }
-        } else {
-            TagView tagView = toTagView(getChildAt(index));
-            if (mTagSelectMode == SELECT_MODE_SINGLE) {
-                if (mCurrentSelected != tagView) {
-                    if (mCurrentSelected != null) {
-                        mCurrentSelected.setTagSelected(false);
-                    }
-                    mCurrentSelected = tagView;
-                    mCurrentSelected.setTagSelected(true);
-                    mSelectedChildCount = 1;
-                }
-            }else if (mTagSelectMode == SELECT_MODE_MULTIPLE) {
-                if (mSelectedChildCount < mMaximumSelectionCount) {
-                    tagView.setTagSelected(true);
-                    mSelectedChildCount++;
-                }
-            }
+            selectTagPositions((List<Integer>) null);
+            return;
         }
+        if (!isTagPosition(index)) return;
+        TagView tagView = toTagView(getChildAt(index));
+        if (tagView.isTagSelected()) return;
+        if (mTagSelectMode == SELECT_MODE_SINGLE && mMaximumSelectionCount > 0) {
+            selectTagPositions((List<Integer>) null);
+            tagView.setTagSelected(true);
+        } else if (mTagSelectMode == SELECT_MODE_MULTIPLE && mSelectedChildCount < mMaximumSelectionCount) {
+            tagView.setTagSelected(true);
+        }
+        reconcileSelection();
     }
 
     public void setMaximumSelectionCount(int maximumSelectionCount) {
-        this.mMaximumSelectionCount = maximumSelectionCount;
+        mMaximumSelectionCount = Math.max(0, maximumSelectionCount);
+        reconcileSelection();
     }
 
     public TagView getCurrentSelected() {
@@ -409,17 +379,50 @@ public class TagGridLayout extends GridLayout {
     }
 
     public List<Integer> getSelectedTagPositions() {
-        List<Integer> selectedList = new ArrayList<>();
-        if (mTagSelectMode == SELECT_MODE_SINGLE && mCurrentSelected != null) {
-            selectedList.add(indexOfChild(mCurrentSelected.getTagHost()));
-        } else {
-            for (int i = 0; i < getChildCount(); i++) {
-                if (getChildAt(i).getVisibility() == View.VISIBLE && getChildAt(i).isSelected()) {
-                    selectedList.add(i);
-                }
+        List<Integer> selected = new ArrayList<>();
+        for (int i = 0; i < getChildCount(); i++) {
+            if (isTagPosition(i) && toTagView(getChildAt(i)).isTagSelected()) selected.add(i);
+        }
+        return selected;
+    }
+
+    private boolean isTagPosition(int position) {
+        return position >= 0 && position < mTags.size() && position < getChildCount()
+                && getChildAt(position).getVisibility() == View.VISIBLE;
+    }
+
+    private void reconcileSelection() {
+        mSelectedChildCount = 0;
+        mCurrentSelected = null;
+        int limit = mTagSelectMode == SELECT_MODE_SINGLE ? Math.min(1, mMaximumSelectionCount) : mMaximumSelectionCount;
+        for (int i = 0; i < getChildCount(); i++) {
+            TagView tag = toTagView(getChildAt(i));
+            if (!isTagPosition(i) || mSelectedChildCount >= limit) tag.setTagSelected(false);
+            if (tag.isTagSelected()) {
+                mSelectedChildCount++;
+                if (mTagSelectMode == SELECT_MODE_SINGLE) mCurrentSelected = tag;
             }
         }
-        return selectedList;
+    }
+
+    private static void setSelectedState(View view, boolean selected) {
+        view.setSelected(selected);
+        if (view instanceof ViewGroup) {
+            ViewGroup group = (ViewGroup) view;
+            for (int i = 0; i < group.getChildCount(); i++) setSelectedState(group.getChildAt(i), selected);
+        }
+    }
+
+    private static TextView findFirstTextView(View view) {
+        if (view instanceof TextView) return (TextView) view;
+        if (view instanceof ViewGroup) {
+            ViewGroup group = (ViewGroup) view;
+            for (int i = 0; i < group.getChildCount(); i++) {
+                TextView text = findFirstTextView(group.getChildAt(i));
+                if (text != null) return text;
+            }
+        }
+        return null;
     }
 
     private boolean hasValue(Object value) {
@@ -428,6 +431,6 @@ public class TagGridLayout extends GridLayout {
 
 
     public List<String> getTags() {
-        return mTags;
+        return new ArrayList<>(mTags);
     }
 }

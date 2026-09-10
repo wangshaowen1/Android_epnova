@@ -21,7 +21,9 @@ import com.kuaigeglobal.epnova.widget.decoration.SpaceDecoration;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import jp.wasabeef.recyclerview.adapters.SlideInLeftAnimationAdapter;
 
@@ -31,12 +33,12 @@ public class TagRecycleView extends FrameLayout {
     private int tagTextId;
     private int tagDeleteId;
     private int tagResId = R.layout.item_selected_tag;
-    private ArrayList<String> tags = new ArrayList<>();
+    private final ArrayList<String> tags = new ArrayList<>();
 
-    private ArrayList<String> selectedTags = new ArrayList<>();
+    private final Set<Integer> selectedPositions = new HashSet<>();
+    private long dataVersion;
     private int maxChildCount = 8;
     private OnTagChangedListener onTagChangedListener;
-    private boolean deleteButtonVisible;
 
     private RecyclerView tagsView;
     private RecyclerView.Adapter adapter;
@@ -51,8 +53,10 @@ public class TagRecycleView extends FrameLayout {
     private static final int SELECT_MODE_SINGLE = 1;
     private static final int SELECT_MODE_MULTIPLE = 2;
     private int tagSelectMode = SELECT_MODE_NONE;
-    private View currentSelected;
     private boolean spaceIncludeEdge;
+    private final Runnable scrollToEndAction = () -> {
+        if (!tags.isEmpty()) tagsView.scrollToPosition(tags.size() - 1);
+    };
 
     public TagRecycleView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
@@ -71,8 +75,13 @@ public class TagRecycleView extends FrameLayout {
 
 
     public void clear() {
+        int count = tags.size();
+        if (count == 0) return;
+        dataVersion++;
         tags.clear();
-        adapter.notifyDataSetChanged();
+        selectedPositions.clear();
+        removeCallbacks(scrollToEndAction);
+        adapter.notifyItemRangeRemoved(0, count);
     }
 
     private OnSelectOutRangeListener onSelectOutRangeListener;
@@ -119,76 +128,82 @@ public class TagRecycleView extends FrameLayout {
 
     public void init(AttributeSet attrs) {
         TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.TagRecycleView);
-        maxChildCount = a.getInt(R.styleable.TagRecycleView_max_child_count, 8);
-        tagResId = a.getResourceId(R.styleable.TagRecycleView_tagResId, R.layout.item_selected_tag);
-        tagTextId = a.getResourceId(R.styleable.TagRecycleView_tagTextId, R.id.text);
-        tagDeleteId = a.getResourceId(R.styleable.TagRecycleView_tagDeleteId, R.id.delete);
-        horizontalSpace = a.getDimensionPixelOffset(R.styleable.TagRecycleView_horizontalSpace, 0);
-        verticalSpace = a.getDimensionPixelOffset(R.styleable.TagRecycleView_verticalSpace, 0);
-        columnCount = a.getInt(R.styleable.TagRecycleView_columnCount, 0);
-        orientation = a.getInt(R.styleable.TagRecycleView_orientation, HORIZONTAL);
-        maximumSelectionCount = a.getInteger(R.styleable.TagLayout_maximumSelectionCount, Integer.MAX_VALUE);
-        spaceIncludeEdge=a.getBoolean(R.styleable.TagRecycleView_spaceIncludeEdge,false);
-        tagSelectMode = a.getInt(R.styleable.TagLayout_tagSelectMode, SELECT_MODE_NONE);
+        try {
+            maxChildCount = Math.max(0, a.getInt(R.styleable.TagRecycleView_max_child_count, 8));
+            tagResId = a.getResourceId(R.styleable.TagRecycleView_tagResId, R.layout.item_selected_tag);
+            tagTextId = a.getResourceId(R.styleable.TagRecycleView_tagTextId, R.id.text);
+            tagDeleteId = a.getResourceId(R.styleable.TagRecycleView_tagDeleteId, R.id.delete);
+            horizontalSpace = a.getDimensionPixelOffset(R.styleable.TagRecycleView_horizontalSpace, 0);
+            verticalSpace = a.getDimensionPixelOffset(R.styleable.TagRecycleView_verticalSpace, 0);
+            columnCount = Math.max(1, a.getInt(R.styleable.TagRecycleView_columnCount, 1));
+            orientation = a.getInt(R.styleable.TagRecycleView_orientation, HORIZONTAL);
+            maximumSelectionCount = Math.max(0, a.getInteger(R.styleable.TagRecycleView_maximumSelectionCount, Integer.MAX_VALUE));
+            spaceIncludeEdge = a.getBoolean(R.styleable.TagRecycleView_spaceIncludeEdge, false);
+            tagSelectMode = a.getInt(R.styleable.TagRecycleView_tagSelectMode, SELECT_MODE_NONE);
+        } finally {
+            a.recycle();
+        }
+        if (tagsView != null) removeView(tagsView);
+        dataVersion++;
+        selectedPositions.clear();
+        if (tags.size() > maxChildCount) tags.subList(maxChildCount, tags.size()).clear();
         tagsView = new RecyclerView(getContext());
         addView(tagsView);
         if (orientation == HORIZONTAL) {
-            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
-            tagsView.setLayoutManager(linearLayoutManager);
+            tagsView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
             tagsView.addItemDecoration(new SpaceDecoration(horizontalSpace, RecyclerView.HORIZONTAL,
                     spaceIncludeEdge ? SpaceDecoration.Direction.BOTH : SpaceDecoration.Direction.MIDDLE));
         } else {
-            GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), columnCount);
-            tagsView.setLayoutManager(gridLayoutManager);
-            tagsView.addItemDecoration(new GridSpacingItemDecoration(columnCount, horizontalSpace, verticalSpace,spaceIncludeEdge? GridSpacingItemDecoration.Direction.All:GridSpacingItemDecoration.Direction.Middle));
+            tagsView.setLayoutManager(new GridLayoutManager(getContext(), columnCount));
+            tagsView.addItemDecoration(new GridSpacingItemDecoration(columnCount, horizontalSpace, verticalSpace,
+                    spaceIncludeEdge ? GridSpacingItemDecoration.Direction.All : GridSpacingItemDecoration.Direction.Middle));
         }
         tagsView.setItemAnimator(new NoAlphaItemAnimator());
         tagsView.setAdapter(adapter = new SlideInLeftAnimationAdapter(new TagsAdapter(getContext())));
     }
 
 
-    public void scrollToPosition(int position){
-        post(() -> tagsView.scrollToPosition(position));
+    public void scrollToPosition(int position) {
+        post(() -> {
+            if (position >= 0 && position < tags.size()) tagsView.scrollToPosition(position);
+        });
     }
 
     public void addTags(List<String> tags) {
-        int storage = maxChildCount;
-        int max = Math.min(tags.size(), storage - tagsView.getChildCount());
-        for (int i = 0; i < max; i++) {
-            String tag = tags.get(i);
-            addToList(tag);
-        }
-        adapter.notifyDataSetChanged();
+        if (tags == null || tags.isEmpty()) return;
+        int start = this.tags.size();
+        int count = Math.min(tags.size(), Math.max(0, maxChildCount - start));
+        if (count == 0) return;
+        List<String> added = new ArrayList<>(tags.subList(0, count));
+        dataVersion++;
+        this.tags.addAll(added);
+        adapter.notifyItemRangeInserted(start, count);
+        // 末行留白依赖总数量，局部通知不会使位置未变的旧行间距缓存失效。
+        tagsView.invalidateItemDecorations();
         scrollToEnd();
+        for (String tag : added) notifyTagAdded(tag);
     }
     public void setTags(String... tags) {
-        setTags(Arrays.asList(tags));
+        setTags(tags == null ? null : Arrays.asList(tags));
 
     }
     public void setTags(@Nullable List<String> tags) {
-        this.tags.clear();
-        if (tags != null) {
-            int max = Math.min(tags.size(), maxChildCount);
-            for (int i = 0; i < max; i++) {
-                String tag = tags.get(i);
-                addToList(tag);
-            }
+        List<String> nextTags = tags == null ? new ArrayList<>()
+                : new ArrayList<>(tags.subList(0, Math.min(tags.size(), maxChildCount)));
+        if (!this.tags.equals(nextTags)) {
+            dataVersion++;
+            this.tags.clear();
+            this.tags.addAll(nextTags);
+            selectedPositions.clear();
+            adapter.notifyDataSetChanged();
         }
-        adapter.notifyDataSetChanged();
         scrollToEnd();
+        // 保留原有 setTags 的逐项添加通知，通知前先完成数据与 Adapter 同步。
+        for (String tag : nextTags) notifyTagAdded(tag);
     }
 
     public void add(String tag) {
-        int index = tags.size();
-        addToList(tag);
-        adapter.notifyItemInserted(index);
-        adapter.notifyDataSetChanged();
-        scrollToEnd();
-    }
-
-    private void addToList(String tag) {
-        tags.add(tag);
-        notifyTagAdded(tag);
+        addTags(Arrays.asList(tag));
     }
 
     private int tagSize() {
@@ -196,11 +211,12 @@ public class TagRecycleView extends FrameLayout {
     }
 
     private void scrollToEnd() {
-        post(() -> tagsView.scrollToPosition(tagSize() - 1));
+        removeCallbacks(scrollToEndAction);
+        if (!tags.isEmpty()) post(scrollToEndAction);
     }
 
     public ArrayList<String> getTags() {
-        return tags;
+        return new ArrayList<>(tags);
     }
 
 
@@ -214,11 +230,39 @@ public class TagRecycleView extends FrameLayout {
     }
 
     public void remove(String tag) {
-        tags.remove(tag);
-        notifyTagRemoved(tag);
-        adapter.notifyDataSetChanged();
+        removeAt(tags.indexOf(tag));
     }
 
+
+    private String removeAt(int position) {
+        if (position < 0 || position >= tags.size()) return null;
+        dataVersion++;
+        String removed = tags.remove(position);
+        Set<Integer> shifted = new HashSet<>();
+        for (int selected : selectedPositions) {
+            if (selected != position) shifted.add(selected > position ? selected - 1 : selected);
+        }
+        selectedPositions.clear();
+        selectedPositions.addAll(shifted);
+        adapter.notifyItemRemoved(position);
+        tagsView.invalidateItemDecorations();
+        notifyTagRemoved(removed);
+        return removed;
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        removeCallbacks(scrollToEndAction);
+        super.onDetachedFromWindow();
+    }
+
+    private static void setSelectedState(View view, boolean selected) {
+        view.setSelected(selected);
+        if (view instanceof ViewGroup) {
+            ViewGroup group = (ViewGroup) view;
+            for (int i = 0; i < group.getChildCount(); i++) setSelectedState(group.getChildAt(i), selected);
+        }
+    }
 
     private void notifyTagRemoved(String tag) {
         if (onTagChangedListener != null)
@@ -252,79 +296,67 @@ public class TagRecycleView extends FrameLayout {
 
 
         class ViewHolder extends RecyclerView.ViewHolder {
-            TextView tagTextView;
-            View delete;
+            private final TextView tagTextView;
 
             public ViewHolder() {
+                // 保持旧实现由 LayoutManager 决定根尺寸，避免横向标签突然按 match_parent 铺满。
                 super(LayoutInflater.from(context).inflate(tagResId, null));
                 tagTextView = itemView.findViewById(tagTextId);
-                delete = itemView.findViewById(tagDeleteId);
-                delete.setOnClickListener(v -> {
-                    int position = getBindingAdapterPosition();
-                    if (tags.size() > position) {
-                        String tag=tags.get(position);
-                        remove(tag);
-                        if(onTagRemoveListener!=null){
-                            onTagRemoveListener.onTagRemoved(itemView,position,tag);
+                if (tagTextView == null) {
+                    throw new IllegalArgumentException("Tag layout must contain the configured TextView");
+                }
+                View delete = itemView.findViewById(tagDeleteId);
+                if (delete != null) {
+                    delete.setOnClickListener(v -> {
+                        int position = getBindingAdapterPosition();
+                        if (position == RecyclerView.NO_POSITION || position >= tags.size()) return;
+                        String removed = removeAt(position);
+                        if (onTagRemoveListener != null) {
+                            onTagRemoveListener.onTagRemoved(itemView, position, removed);
                         }
+                    });
+                }
+                itemView.setOnClickListener(v -> {
+                    int position = getBindingAdapterPosition();
+                    if (position == RecyclerView.NO_POSITION || position >= tags.size()) return;
+                    long version = dataVersion;
+                    if (onItemClickListener != null && onItemClickListener.onItemClick(tagTextView, position)) return;
+                    if (version != dataVersion || getBindingAdapterPosition() != position) return;
+                    if (tagSelectMode == SELECT_MODE_NONE) return;
+                    boolean selected = selectedPositions.contains(position);
+                    if (!selected && (maximumSelectionCount == 0
+                            || (tagSelectMode == SELECT_MODE_MULTIPLE && selectedPositions.size() >= maximumSelectionCount))) {
+                        if (onSelectOutRangeListener != null) onSelectOutRangeListener.onSelectOutRange(tagTextView, position);
+                        return;
                     }
-
+                    if (tagSelectMode == SELECT_MODE_SINGLE) {
+                        Set<Integer> previous = new HashSet<>(selectedPositions);
+                        selectedPositions.clear();
+                        selectedPositions.add(position);
+                        for (int oldPosition : previous) {
+                            if (oldPosition != position) {
+                                RecyclerView.ViewHolder oldHolder = tagsView.findViewHolderForAdapterPosition(oldPosition);
+                                if (oldHolder != null) setSelectedState(oldHolder.itemView, false);
+                                adapter.notifyItemChanged(oldPosition);
+                            }
+                        }
+                    } else if (tagSelectMode == SELECT_MODE_MULTIPLE) {
+                        if (selected) selectedPositions.remove(position);
+                        else selectedPositions.add(position);
+                    } else {
+                        return;
+                    }
+                    setSelectedState(itemView, selectedPositions.contains(position));
+                    if (onSelectChangeListener != null) {
+                        onSelectChangeListener.onSelectChange(itemView, position, itemView.isSelected());
+                    }
                 });
             }
 
             public void bind(int position) {
-                String tag = tags.get(position);
-                tagTextView.setText(tag);
-                if (tagSelectMode == SELECT_MODE_MULTIPLE) {
-                    setItemViewSelected(selectedTags.contains(tag));
-                }
-                itemView.setOnClickListener(v -> {
-                    if (onItemClickListener != null) {
-                        if(onItemClickListener.onItemClick(tagTextView, position)){
-                            return;
-                        }
-                    }
-                    if (tagSelectMode == SELECT_MODE_MULTIPLE) {
-                        if (selectedTags.size() >= maximumSelectionCount && !itemView.isSelected()) {
-                            if (onSelectOutRangeListener != null) {
-                                onSelectOutRangeListener.onSelectOutRange(tagTextView, position);
-                            }
-                            return;
-                        }
-                        setItemViewSelected(!itemView.isSelected());
-                        if (itemView.isSelected()) {
-                            selectedTags.add(tag);
-                        } else {
-                            selectedTags.remove(tag);
-                        }
-                        if (onSelectChangeListener != null) {
-                            onSelectChangeListener.onSelectChange(itemView, position, itemView.isSelected());
-                        }
-                    } else if (tagSelectMode == SELECT_MODE_SINGLE) {
-                        if (currentSelected != null) {
-                            currentSelected.setSelected(false);
-                        }
-                        setItemViewSelected(true);
-                        currentSelected = itemView;
-                        if (onSelectChangeListener != null) {
-                            onSelectChangeListener.onSelectChange(itemView, position, itemView.isSelected());
-                        }
-
-                    }
-                });
-
-            }
-
-            public void setItemViewSelected(boolean selected) {
-                itemView.setSelected(selected);
-                if (itemView instanceof ViewGroup) {
-                    for (int i = 0; i < ((ViewGroup) itemView).getChildCount(); i++) {
-                        ((ViewGroup) itemView).getChildAt(i).setSelected(selected);
-                    }
-                }
+                tagTextView.setText(tags.get(position));
+                setSelectedState(itemView, tagSelectMode != SELECT_MODE_NONE && selectedPositions.contains(position));
             }
         }
     }
-
-
 }

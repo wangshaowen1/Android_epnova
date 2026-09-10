@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <com.kuaigeglobal.epnova.widget.TagLayout
+        android:id="@+id/regression_tag_flow"
+        android:layout_width="240dp"
+        android:layout_height="48dp"
+        app:cacheMode="lazy"
+        app:preCache="true"
+        app:maxTags="3"
+        app:maxLines="2"
+        app:maximumSelectionCount="2"
+        app:tagSelectMode="multiple"
+        app:horizontalSpace="7dp"
+        app:verticalSpace="9dp"
+        app:tagTextColor="@android:color/black"
+        app:tagTextSize="14sp" />
+
+    <com.kuaigeglobal.epnova.widget.TagLayout
+        android:id="@+id/regression_tag_no_cache"
+        android:layout_width="240dp"
+        android:layout_height="wrap_content"
+        app:cacheMode="none"
+        app:maxTags="2"
+        app:tagSelectMode="multiple" />
+
+    <com.kuaigeglobal.epnova.widget.TagGridLayout
+        android:id="@+id/regression_tag_grid"
+        android:layout_width="240dp"
+        android:layout_height="wrap_content"
+        android:columnCount="3"
+        app:maximumSelectionCount="2"
+        app:tagSelectMode="multiple"
+        app:horizontalSpace="7dp"
+        app:verticalSpace="9dp" />
+
+    <com.kuaigeglobal.epnova.widget.TagRecycleView
+        android:id="@+id/regression_tag_recycler"
+        android:layout_width="240dp"
+        android:layout_height="160dp"
+        app:orientation="vertical"
+        app:columnCount="2"
+        app:max_child_count="4"
+        app:maximumSelectionCount="1"
+        app:tagSelectMode="multiple" />
+
+    <com.kuaigeglobal.epnova.widget.TagRecycleView
+        android:id="@+id/regression_tag_single"
+        android:layout_width="240dp"
+        android:layout_height="160dp"
+        app:orientation="vertical"
+        app:verticalSpace="9dp"
+        app:spaceIncludeEdge="true"
+        app:tagSelectMode="single" />
+</LinearLayout>
