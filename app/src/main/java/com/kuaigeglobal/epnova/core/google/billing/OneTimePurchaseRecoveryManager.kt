@@ -4,6 +4,7 @@ import com.kuaigeglobal.epnova.App
 import com.kuaigeglobal.epnova.core.Config
 import com.kuaigeglobal.epnova.core.Global
 import com.kuaigeglobal.epnova.core.network.apis.ApiFactory
+import com.kuaigeglobal.epnova.core.network.apis.request.GoogleV2ConfirmBody
 import com.kuaigeglobal.epnova.core.network.apis.request.VerifyPurchasedBody
 import com.nhsd.basic.utils.Logger
 import kotlinx.coroutines.CancellationException
@@ -140,23 +141,30 @@ object OneTimePurchaseRecoveryManager {
         if (!OneTimePurchaseStore.isForCurrentUser(record)) return false
         // 在主线程完成账号归属检查后立刻冻结请求体中的鉴权 token，避免 IO 切线程期间登录态
         // 切换后把原账号订单提交到新账号。
-        val body = VerifyPurchasedBody(
-            verifyData = purchaseToken,
+//        val body = VerifyPurchasedBody(
+//            verifyData = purchaseToken,
+//            orderNo = record.orderNo,
+//            googleProductId = record.productId,
+//            appsFlyerId = Config.get().appsFlyerId,
+//        )
+        val bodyV2 = GoogleV2ConfirmBody(
             orderNo = record.orderNo,
-            googleProductId = record.productId,
-            appsFlyerId = Config.get().appsFlyerId,
+            productId = record.productId,
+            purchaseToken = purchaseToken,
+            appsFlyerId = Config.get().appsFlyerId
         )
         val apiResponse = try {
             withContext(Dispatchers.IO) {
-                when (record.businessType) {
-                    OneTimePurchaseBusinessType.COINS -> {
-                        ApiFactory.apiService.verifyGoogleCoinPurchase(body)
-                    }
-
-                    OneTimePurchaseBusinessType.CREDITS -> {
-                        ApiFactory.apiService.verifyGoogleCreditsPurchase(body)
-                    }
-                }
+//                when (record.businessType) {
+//                    OneTimePurchaseBusinessType.COINS -> {
+//                        ApiFactory.apiService.verifyGoogleCoinPurchase(body)
+//                    }
+//
+//                    OneTimePurchaseBusinessType.CREDITS -> {
+//                        ApiFactory.apiService.verifyGoogleCreditsPurchase(body)
+//                    }
+//                }
+                ApiFactory.apiService.googleV2ConfirmOrder(bodyV2)
             }
         } catch (cancellation: CancellationException) {
             throw cancellation

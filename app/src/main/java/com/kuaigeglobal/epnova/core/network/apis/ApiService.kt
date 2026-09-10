@@ -30,6 +30,8 @@ import com.kuaigeglobal.epnova.core.network.apis.entity.OverseasDeviceFingerprin
 import com.kuaigeglobal.epnova.core.network.apis.entity.PaymentData
 import com.kuaigeglobal.epnova.core.network.apis.entity.PaymentInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.PopupClaimInfo
+import com.kuaigeglobal.epnova.core.network.apis.entity.GoogleV2PreOrderInfo
+import com.kuaigeglobal.epnova.core.network.apis.entity.GoogleV2ConfirmInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.ReferenceImageInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.RewardAdCompleteData
 import com.kuaigeglobal.epnova.core.network.apis.entity.RewardAdPrepareData
@@ -124,6 +126,8 @@ import com.kuaigeglobal.epnova.core.network.apis.request.PowerCalculateData
 import com.kuaigeglobal.epnova.core.network.apis.request.RatingPopupDisplayReportBody
 import com.kuaigeglobal.epnova.core.network.apis.request.RatingScoreReportBody
 import com.kuaigeglobal.epnova.core.network.apis.request.PopupDisplayBody
+import com.kuaigeglobal.epnova.core.network.apis.request.GoogleV2PreOrderBody
+import com.kuaigeglobal.epnova.core.network.apis.request.GoogleV2ConfirmBody
 import com.kuaigeglobal.epnova.core.network.apis.request.ReferenceImageBody
 import com.kuaigeglobal.epnova.core.network.apis.request.ReportSubmissionBody
 import com.kuaigeglobal.epnova.core.network.apis.request.ReportCreationUsageBody
@@ -1537,6 +1541,18 @@ interface ApiService {
     /** Google 算力一次性商品验单。请求体与金币验单保持一致。 */
     @POST(ApiConstants.VERIFY_GOOGLE_CREDITS_PURCHASE)
     suspend fun verifyGoogleCreditsPurchase(@Body body: VerifyPurchasedBody): ApiResponse<Any?>
+
+    /**
+     * Google一次性算力V2预下单
+     */
+    @POST(ApiConstants.GOOGLE_V2_PRE_ORDER)
+    suspend fun googleV2PreOrder(@Body body: GoogleV2PreOrderBody): ApiResponse<GoogleV2PreOrderInfo?>
+
+    /**
+     * Google一次性算力V2确认购买
+     */
+    @POST(ApiConstants.GOOGLE_V2_CONFIRM)
+    suspend fun googleV2ConfirmOrder(@Body body: GoogleV2ConfirmBody): ApiResponse<GoogleV2ConfirmInfo?>
 
     /**
      * 首页-搜索作品

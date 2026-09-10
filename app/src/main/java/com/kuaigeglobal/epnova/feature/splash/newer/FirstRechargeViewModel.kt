@@ -155,7 +155,7 @@ class FirstRechargeViewModel : AppRepositoryViewModel<CoinRepository>() {
                     val orderData = this.data
                     BillingManager.launchPurchase(
                         activity = topActivity,
-                        productId = orderData?.googleProductId.orEmpty()
+                        productId = orderData?.productId.orEmpty()
                             .ifBlank { rechargeData.googleProductId.orEmpty() },
                         orderId = orderData?.orderNo.orEmpty(),
                         businessType = OneTimePurchaseBusinessType.COINS,

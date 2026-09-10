@@ -1052,6 +1052,16 @@ object ApiConstants {
     const val VERIFY_GOOGLE_CREDITS_PURCHASE = "trade/pay/google/payCallBack"
 
     /**
+     * Google一次性算力/金币V2预下单
+     */
+    const val GOOGLE_V2_PRE_ORDER = "trade/pay/google/v2/preOrder"
+
+    /**
+     * Google一次性算力/金币V2确认购买
+     */
+    const val GOOGLE_V2_CONFIRM = "trade/pay/google/v2/confirm"
+
+    /**
      * 首页-搜索作品
      */
     const val HOME_SEARCH = "app/bookshelf/work/search"

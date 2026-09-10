@@ -1,9 +1,11 @@
 package com.kuaigeglobal.epnova.feature.recharge
 
+import com.kuaigeglobal.epnova.common.Constant
 import com.kuaigeglobal.epnova.core.AppRepository
 import com.kuaigeglobal.epnova.core.Config
 import com.kuaigeglobal.epnova.core.network.apis.request.CreateOrderBody
 import com.kuaigeglobal.epnova.core.network.apis.request.CreatePointOrderBody
+import com.kuaigeglobal.epnova.core.network.apis.request.GoogleV2PreOrderBody
 import com.kuaigeglobal.epnova.core.network.apis.request.UserTokenBody
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -25,7 +27,11 @@ class CoinRepository : AppRepository() {
      * @param goodsCode 金币商品配置编码
      */
     suspend fun createGoogleOrder(goodsCode: String?) = withContext(Dispatchers.IO) {
-        api.createOrder(CreateOrderBody(goodsCode = goodsCode, goodsType = 1, mobileType = 1, appsFlyerId = Config.get().appsFlyerId))
+        api.googleV2PreOrder(GoogleV2PreOrderBody(
+            goodsCode = goodsCode,
+            goodsType = Constant.GoogleGoodsType.COIN,
+            appsFlyerId = Config.get().appsFlyerId
+        ))
     }
 
     /**
@@ -33,7 +39,25 @@ class CoinRepository : AppRepository() {
      * @param goodsCode 算力商品配置编码
      */
     suspend fun createGoogleCreditsPreOrder(goodsCode: String?) = withContext(Dispatchers.IO) {
-        api.createGooglePreOrder(CreateOrderBody(goodsCode = goodsCode, goodsType = 1, mobileType = 1, appsFlyerId = Config.get().appsFlyerId))
+        api.googleV2PreOrder(GoogleV2PreOrderBody(
+            goodsCode = goodsCode,
+            goodsType = Constant.GoogleGoodsType.CREDITS,
+            appsFlyerId = Config.get().appsFlyerId
+        ))
+    }
+
+    /**
+     * 创建google预下单
+     *
+     * @param goodsCode 商品配置编码
+     * @param goodsType 1算力、2金币
+     */
+    suspend fun createGooglePreOrder(goodsCode: String, goodsType: Int) = withContext(Dispatchers.IO) {
+        api.googleV2PreOrder(GoogleV2PreOrderBody(
+            goodsCode = goodsCode,
+            goodsType = goodsType,
+            appsFlyerId = Config.get().appsFlyerId
+        ))
     }
 
     /**

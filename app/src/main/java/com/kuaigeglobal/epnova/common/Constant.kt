@@ -23,4 +23,9 @@ object Constant {
         //拉取底部预数量
         const val PREFETCH_DISTANCE = 5
     }
+
+    object GoogleGoodsType {
+        const val CREDITS = 1
+        const val COIN = 2
+    }
 }

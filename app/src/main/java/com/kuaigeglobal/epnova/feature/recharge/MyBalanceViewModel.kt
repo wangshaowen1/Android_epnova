@@ -306,7 +306,7 @@ class MyBalanceViewModel(
                     val orderData = data
                     BillingManager.launchPurchase(
                         activity = topActivity,
-                        productId = orderData?.googleProductId.orEmpty()
+                        productId = orderData?.productId.orEmpty()
                             .ifBlank { item.googleProductId.orEmpty() },
                         orderId = orderData?.orderNo.orEmpty(),
                         businessType = OneTimePurchaseBusinessType.COINS,
@@ -330,7 +330,7 @@ class MyBalanceViewModel(
                     val orderData = data
                     BillingManager.launchPurchase(
                         activity = topActivity,
-                        productId = orderData?.googleProductId.orEmpty()
+                        productId = orderData?.productId.orEmpty()
                             .ifBlank { item.googleProductId.orEmpty() },
                         orderId = orderData?.orderNo.orEmpty(),
                         businessType = OneTimePurchaseBusinessType.CREDITS,
