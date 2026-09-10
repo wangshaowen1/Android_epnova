@@ -429,6 +429,7 @@
     <string name="btn_next_step_storyboard">Next: Storyboard Design</string>
     <string name="toast_save_fail">Save Failed</string>
     <string name="video_file_missing">Composition file not found</string>
+    <string name="storyboard_video_resource_missing">There is a missing video resource in the current episode, please re-enter the current page to refresh.</string>
     <string name="video_composition_failed">Video Composition Failed</string>
     <string name="enter_content">Enter content</string>
     <string name="change_phone">Change Phone Number</string>

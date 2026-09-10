@@ -350,6 +350,11 @@ class EditStoryboardVideoViewModel : AppRepositoryViewModel<EditStoryboardReposi
         if (storyboards.isEmpty()) {
             return
         }
+        // 校验分镜videoUrl是否不为空，防止合成丢失分镜片段
+        if (storyboards.any { it.videoUrl.isNullOrBlank() }) {
+            showToast(R.string.storyboard_video_resource_missing)
+            return
+        }
         getStoryInfo {
             //重绘已完成
             if (it?.stepProgress == EpisodeInfo.EPISODE_REPAINT_COMPLETED) {
