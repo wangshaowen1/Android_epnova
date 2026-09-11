@@ -37,7 +37,7 @@
             android:layout_width="match_parent"
             android:layout_height="34dp"
             android:layout_marginTop="10dp"
-            android:columnCount="1"
+            android:columnCount="4"
             android:minHeight="34dp"
             android:visibility="@{item.data.imagesUrl.size() > 0 ? View.VISIBLE : View.GONE}"
             app:add_button_src="@drawable/icon_feedback_addpicture"
