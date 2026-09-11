@@ -139,7 +139,7 @@ class MineViewModel : AppRepositoryViewModel<AppRepository>() {
      * 获取用未读消息
      */
     private fun getUserUnMessageNum() {
-        if (!User.get().isLogin) {
+        if (User.get().isVisitor) {
             unMessageNum.set(0)
             return
         }
@@ -164,7 +164,7 @@ class MineViewModel : AppRepositoryViewModel<AppRepository>() {
      * 获取用户未处理反馈
      */
     private fun getUserUnFeedbackNum() {
-        if (!User.get().isLogin) {
+        if (User.get().isVisitor) {
             unFeedbackNum.set(0)
             return
         }
