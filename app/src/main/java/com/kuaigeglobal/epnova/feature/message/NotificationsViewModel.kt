@@ -12,6 +12,7 @@ import com.kuaigeglobal.epnova.common.Constant
 import com.kuaigeglobal.epnova.core.AppRepository
 import com.kuaigeglobal.epnova.core.ext.request
 import com.kuaigeglobal.epnova.core.network.apis.entity.MessagePageInfo
+import com.kuaigeglobal.epnova.core.network.apis.request.MessageReadAllBody
 import com.nhsd.basic.ext.getResString
 import kotlinx.coroutines.flow.Flow
 
@@ -28,13 +29,19 @@ class NotificationsViewModel : AppRepositoryViewModel<AppRepository>() {
             pageSize = Constant.Paged.PAGE_SIZE,
             prefetchDistance = Constant.Paged.PREFETCH_DISTANCE,
         ),
-        pagingSourceFactory = { NotificationsPagingSource(mRepo.api) }
+        pagingSourceFactory = {
+            NotificationsPagingSource(
+                api = mRepo.api,
+                onReadSnapshotToken = ::readAllMessages
+            )
+        }
     ).flow.cachedIn(viewModelScope)
 
-    /** 进入消息页时将服务端消息统一标记为已读。 */
-    fun readAllMessages() {
+    /** 首次加载或刷新成功后，按返回的有效快照标记已读。 */
+    private fun readAllMessages(readSnapshotToken: String?) {
+        val token = readSnapshotToken?.takeIf(String::isNotBlank) ?: return
         request(
-            apiBlock = { mRepo.api.readAllMessages() },
+            apiBlock = { mRepo.api.readAllMessages(MessageReadAllBody(token)) },
             showToast = false,
             onSuccess = {}
         )

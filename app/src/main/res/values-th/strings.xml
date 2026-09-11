@@ -634,6 +634,7 @@
     <string name="messages_title">แจ้งเตือน</string>
     <string name="notifications_empty_title">ยังไม่มีการแจ้งเตือน</string>
     <string name="notifications_empty_description">เราจะแจ้งให้คุณทราบเมื่อมีสิ่งใหม่</string>
+    <string name="message_cannot_open">ไม่สามารถเปิดข้อความนี้ได้</string>
     <string name="feedback_history_empty_description">ยังไม่มีประวัติ\nข้อเสนอแนะ</string>
     <string name="rewards_title">รางวัล</string>
     <string name="rewards_rules">กฎกติกา</string>

@@ -633,6 +633,7 @@ Jika Anda memilih \"Tidak Setuju\", Anda tidak akan dapat menggunakan produk dan
     <string name="messages_title">Notifikasi</string>
     <string name="notifications_empty_title">Belum ada notifikasi</string>
     <string name="notifications_empty_description">Kami akan memberi tahu Anda jika ada sesuatu yang baru.</string>
+    <string name="message_cannot_open">Pesan ini tidak dapat dibuka.</string>
     <string name="feedback_history_empty_description">Belum ada riwayat\numpan balik</string>
     <string name="rewards_title">Hadiah</string>
     <string name="rewards_rules">Peraturan</string>

@@ -21,7 +21,6 @@ import com.kuaigeglobal.epnova.core.network.apis.entity.InspirationInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.SameStyleHotCaseInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.SameStylePrefillInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.LogOffStatusInfo
-import com.kuaigeglobal.epnova.core.network.apis.entity.MessagePageInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.MyTvSeriesListInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.OnceTaskListData
 import com.kuaigeglobal.epnova.core.network.apis.entity.OfficialConsultationInfo
@@ -111,6 +110,8 @@ import com.kuaigeglobal.epnova.core.network.apis.request.LoginByPhoneBody
 import com.kuaigeglobal.epnova.core.network.apis.request.LoginByThirdBody
 import com.kuaigeglobal.epnova.core.network.apis.request.MemberSubscriptionPrepareBody
 import com.kuaigeglobal.epnova.core.network.apis.request.MemberSubscriptionPrepareReleaseBody
+import com.kuaigeglobal.epnova.core.network.apis.request.MessagePageBody
+import com.kuaigeglobal.epnova.core.network.apis.request.MessageReadAllBody
 import com.kuaigeglobal.epnova.core.network.apis.request.MusicGenerateSourceBody
 import com.kuaigeglobal.epnova.core.network.apis.request.MyWorkBody
 import com.kuaigeglobal.epnova.core.network.apis.request.OptimizeContentData
@@ -204,6 +205,7 @@ import com.kuaigeglobal.epnova.core.network.apis.response.MemberCardData
 import com.kuaigeglobal.epnova.core.network.apis.response.MemberPlanListData
 import com.kuaigeglobal.epnova.core.network.apis.response.MemberSubscriptionPrepareData
 import com.kuaigeglobal.epnova.core.network.apis.response.MemberSubscriptionPrepareReleaseData
+import com.kuaigeglobal.epnova.core.network.apis.response.MessagePageData
 import com.kuaigeglobal.epnova.core.network.apis.response.NoticeCountData
 import com.kuaigeglobal.epnova.core.network.apis.response.OrderNoData
 import com.kuaigeglobal.epnova.core.network.apis.response.PictureBook
@@ -367,11 +369,11 @@ interface ApiService {
 
     /** 分页查询用户消息 */
     @POST(ApiConstants.MESSAGE_PAGE)
-    suspend fun messagePage(@Body body: PagedBody): ApiResponse<PagedList<MessagePageInfo>?>
+    suspend fun messagePage(@Body body: MessagePageBody): ApiResponse<MessagePageData?>
 
-    /** 清除用户全部消息 */
+    /** 按消息分页返回的快照标记全部已读。 */
     @POST(ApiConstants.MESSAGE_READ_ALL)
-    suspend fun readAllMessages(): ApiResponse<Any?>
+    suspend fun readAllMessages(@Body body: MessageReadAllBody): ApiResponse<Any?>
 
     /**
      * 会员配置

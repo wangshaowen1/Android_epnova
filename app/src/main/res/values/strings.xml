@@ -653,6 +653,7 @@
     <string name="messages_title">Notifications</string>
     <string name="notifications_empty_title">No notifications yet</string>
     <string name="notifications_empty_description">We\'ll let you know when there\'s something new.</string>
+    <string name="message_cannot_open">This message can\'t be opened.</string>
     <string name="feedback_history_empty_description">You don\'t have any Feedback \n records yet.</string>
     <string name="rewards_title">Rewards</string>
     <string name="rewards_rules">Rules</string>

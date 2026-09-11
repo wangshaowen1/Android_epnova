@@ -11,4 +11,6 @@ class ItemNotificationVm(notice: MessagePageInfo?) : AppItemViewModel<MessagePag
         get() = data.get()?.sendTime?.let {
             DateUtil.format(it, DateUtil.FORMAT_EN_DAY)
         }.orEmpty()
+
+    val isWorkTitle: Boolean = data.get()?.workTitle.isNullOrEmpty()
 }

@@ -7,6 +7,8 @@
         <variable
             name="item"
             type="com.kuaigeglobal.epnova.feature.message.ItemNotificationVm" />
+
+        <import type="android.view.View" />
     </data>
 
     <LinearLayout
@@ -48,6 +50,22 @@
             android:layout_marginTop="10dp"
             android:gravity="center_vertical|end"
             android:orientation="horizontal">
+
+            <TextView
+                style="@style/Text12.Outfit.Regular"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="@{item.isWorkTitle ? View.GONE : View.VISIBLE}"
+                android:text="@{item.data.workTitle}"
+                android:textColor="?attr/textColor3"
+                tools:text="《I Am Not a God》" />
+
+
+            <View
+                android:layout_width="@dimen/dp_0"
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
+
 
             <TextView
                 style="@style/Text12.Outfit.Regular"

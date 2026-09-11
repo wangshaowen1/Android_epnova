@@ -627,6 +627,7 @@
     <string name="messages_title">消息</string>
     <string name="notifications_empty_title">暂无消息</string>
     <string name="notifications_empty_description">有新消息时，我们会通知你。</string>
+    <string name="message_cannot_open">此消息无法打开。</string>
     <string name="feedback_history_empty_description">暂无反馈\n记录</string>
     <string name="rewards_title">福利中心</string>
     <string name="rewards_rules">规则</string>
