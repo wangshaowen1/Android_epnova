@@ -39,7 +39,7 @@
             android:layout_marginTop="10dp"
             android:columnCount="4"
             android:minHeight="34dp"
-            android:visibility="@{item.data.imagesUrl.size() > 0 ? View.VISIBLE : View.GONE}"
+            android:visibility="@{item.data.imagesUrls.size() > 0 ? View.VISIBLE : View.GONE}"
             app:add_button_src="@drawable/icon_feedback_addpicture"
             app:add_button_visible="false"
             app:child_height="34dp"

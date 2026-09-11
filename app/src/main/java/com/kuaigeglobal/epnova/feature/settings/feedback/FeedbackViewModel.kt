@@ -218,10 +218,10 @@ class FeedbackViewModel : AppRepositoryViewModel<AppRepository>() {
     }
 
     fun hasFeedbackImages(detail: FeedbackDetailData?): Boolean =
-        !detail?.imagesUrl.isNullOrEmpty()
+        !detail?.imagesUrls.isNullOrEmpty()
 
     fun hasReplyImages(detail: FeedbackDetailData?): Boolean =
-        !detail?.replyContent?.imagesUrl.isNullOrEmpty()
+        !detail?.replyContent?.imagesUrls.isNullOrEmpty()
 
     fun hasReply(detail: FeedbackDetailData?): Boolean = detail?.replyContent != null
 

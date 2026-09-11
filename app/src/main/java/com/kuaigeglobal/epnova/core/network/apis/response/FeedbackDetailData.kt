@@ -9,7 +9,7 @@ data class FeedbackDetailData(
     /** 用户提交的完整反馈描述。 */
     val problemDesc: String? = null,
     /** 用户提交的反馈图片 URL，最多 4 张。 */
-    val imagesUrl: List<String>? = null,
+    val imagesUrls: List<String>? = null,
     /** 用户提交反馈时填写的联系邮箱。 */
     val contactEmail: String? = null,
     /**
@@ -44,5 +44,5 @@ data class FeedbackReplyContentData(
     /** 客服回复正文。 */
     val content: String? = null,
     /** 客服回复图片 URL，最多 4 张。 */
-    val imagesUrl: List<String>? = null,
+    val imagesUrls: List<String>? = null,
 )

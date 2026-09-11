@@ -9,7 +9,7 @@ data class FeedbackPageInfo(
     /** 反馈内容摘要，最多 120 个字符。 */
     val problemDescSummary: String? = null,
     /** 用户提交的反馈图片 URL，最多 4 张，按提交顺序返回。 */
-    val imagesUrl: List<String>? = null,
+    val imagesUrls: List<String>? = null,
     /**
      * 反馈提交时间。
      * 接口 Schema 声明为 string/date，字段说明约定内容为 Unix 毫秒时间戳。
