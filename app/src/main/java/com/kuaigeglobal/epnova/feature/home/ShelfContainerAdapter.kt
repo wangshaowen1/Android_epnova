@@ -39,6 +39,7 @@ class ShelfContainerAdapter : ListAdapter<Section, ShelfContainerAdapter.ShelfVi
 
     override fun onViewRecycled(holder: ShelfViewHolder) {
         super.onViewRecycled(holder)
+        holder.recycle()
         val position = holder.bindingAdapterPosition
         if (position != RecyclerView.NO_POSITION) {
             val item = getItem(position)
@@ -76,13 +77,35 @@ class ShelfContainerAdapter : ListAdapter<Section, ShelfContainerAdapter.ShelfVi
             binding.tvAll.setOnSingleClickListener {
                 openShelfList()
             }
-            binding.dragContainer.setDragListener { openShelfList() }
+            binding.dragContainer.setOnPullTriggerListener({
+                // 末尾仍能向左滚动才说明内容超过一屏，避免短列表触发跳转。
+                if (!binding.rvInnerHorizontal.canScrollHorizontally(-1)) {
+                    false
+                } else {
+                    openShelfList()
+                    true
+                }
+            })
+            binding.dragContainer.setOnDragStateChangedListener { readyToTrigger, isReset ->
+                binding.ivShelfPullArrow.animate().cancel()
+                val rotation = if (readyToTrigger) 180f else 0f
+                if (isReset) {
+                    binding.ivShelfPullArrow.rotation = rotation
+                } else {
+                    binding.ivShelfPullArrow.animate().rotation(rotation).setDuration(100L).start()
+                }
+            }
             // 使用带 callback 的 submitList，确保 Diff 计算并绑定完数据后再恢复位置
             innerAdapter.submitList(data.horizontalWorks) {
                 if (savedState != null) {
                     innerLayoutManager.onRestoreInstanceState(savedState)
                 }
             }
+        }
+
+        fun recycle() {
+            binding.dragContainer.setOnPullTriggerListener(null)
+            binding.dragContainer.setOnDragStateChangedListener(null)
         }
     }
 

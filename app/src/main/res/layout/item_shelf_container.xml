@@ -41,23 +41,55 @@
                 android:textColor="?attr/textColor4" />
         </LinearLayout>
 
-        <com.kuaigeglobal.epnova.widget.HorizontalDragContainer
-            android:id="@+id/dragContainer"
+        <com.kuaigeglobal.epnova.widget.dragfooterview.ShelfDragConflictLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_m"
-            android:background="@color/transparent"
-            app:dc_text_normal="@string/swipe_left_more"
-            app:dc_text_event="@string/swipe_left_more">
+            android:layout_marginTop="@dimen/spacing_m">
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvInnerHorizontal"
+            <com.kuaigeglobal.epnova.widget.dragfooterview.DragContainer
+                android:id="@+id/dragContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:nestedScrollingEnabled="false"
-                android:overScrollMode="never"
-                tools:itemCount="1"
-                tools:listitem="@layout/item_book_shelf_child" />
-        </com.kuaigeglobal.epnova.widget.HorizontalDragContainer>
+                android:background="@color/transparent"
+                app:dc_drag_damp="0.5"
+                app:dc_reset_animator_duration="700">
+
+                <LinearLayout
+                    android:layout_width="63dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="end"
+                    android:gravity="center"
+                    android:importantForAccessibility="noHideDescendants"
+                    android:orientation="vertical"
+                    android:paddingStart="@dimen/spacing_xs"
+                    android:paddingEnd="@dimen/spacing_xs">
+
+                    <ImageView
+                        android:id="@+id/ivShelfPullArrow"
+                        android:layout_width="10dp"
+                        android:layout_height="10dp"
+                        android:contentDescription="@null"
+                        android:src="@drawable/ic_left2" />
+
+                    <TextView
+                        style="@style/Text10"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_xs"
+                        android:gravity="center"
+                        android:text="@string/swipe_left_more"
+                        android:textColor="?attr/textColor4" />
+                </LinearLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvInnerHorizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false"
+                    android:overScrollMode="never"
+                    tools:itemCount="1"
+                    tools:listitem="@layout/item_book_shelf_child" />
+            </com.kuaigeglobal.epnova.widget.dragfooterview.DragContainer>
+        </com.kuaigeglobal.epnova.widget.dragfooterview.ShelfDragConflictLayout>
     </LinearLayout>
 </layout>

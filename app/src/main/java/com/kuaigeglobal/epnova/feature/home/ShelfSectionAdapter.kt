@@ -66,7 +66,24 @@ class ShelfSectionAdapter(
             val savedState = scrollStates[sectionCode]
             viewBinding.tvShelfTitle.text = item.config.bookshelfName
             viewBinding.tvAll.setOnSingleClickListener { onOpenShelf(item.config) }
-            viewBinding.dragContainer.setDragListener { onOpenShelf(item.config) }
+            viewBinding.dragContainer.setOnPullTriggerListener({
+                // 末尾仍能向左滚动才说明内容超过一屏，避免短列表触发跳转。
+                if (!viewBinding.rvInnerHorizontal.canScrollHorizontally(-1)) {
+                    false
+                } else {
+                    onOpenShelf(item.config)
+                    true
+                }
+            })
+            viewBinding.dragContainer.setOnDragStateChangedListener { readyToTrigger, isReset ->
+                viewBinding.ivShelfPullArrow.animate().cancel()
+                val rotation = if (readyToTrigger) 180f else 0f
+                if (isReset) {
+                    viewBinding.ivShelfPullArrow.rotation = rotation
+                } else {
+                    viewBinding.ivShelfPullArrow.animate().rotation(rotation).setDuration(100L).start()
+                }
+            }
             innerAdapter.submitList(item.works) {
                 if (boundSectionCode == sectionCode && changedSection) {
                     if (savedState != null) {
@@ -79,6 +96,8 @@ class ShelfSectionAdapter(
         }
 
         fun recycle() {
+            viewBinding.dragContainer.setOnPullTriggerListener(null)
+            viewBinding.dragContainer.setOnDragStateChangedListener(null)
             saveScrollState()
             boundSectionCode = null
         }
