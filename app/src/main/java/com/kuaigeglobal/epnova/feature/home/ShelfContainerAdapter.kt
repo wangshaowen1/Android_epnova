@@ -69,7 +69,7 @@ class ShelfContainerAdapter : ListAdapter<Section, ShelfContainerAdapter.ShelfVi
             val openShelfList = {
                 BookShelfListActivity.start(
                     activity = binding.root.context as? Activity,
-                    bookshelfId = data.bookshelfId,
+                    bookshelfSectionCode = data.bookshelfSectionCode,
                     bookshelfName = data.bookshelfName
                 )
             }

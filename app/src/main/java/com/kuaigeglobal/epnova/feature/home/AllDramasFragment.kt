@@ -51,7 +51,7 @@ class AllDramasFragment :
             section.bookshelfSectionCode?.let { sectionCode ->
                 BookShelfListActivity.start(
                     activity = activity,
-                    bookshelfId = sectionCode.toString(),
+                    bookshelfSectionCode = sectionCode.toString(),
                     bookshelfName = section.bookshelfName
                 )
             }

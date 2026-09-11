@@ -29,6 +29,7 @@ data class HomeBookShelfData(
 
 data class Section(
     val bookshelfId: String? = null,
+    val bookshelfSectionCode: String? = null,
     val bookshelfName: String? = null,
     val bookshelfType: Int? = null,
     val horizontalWorks: List<WorkVOInfo>? = null,

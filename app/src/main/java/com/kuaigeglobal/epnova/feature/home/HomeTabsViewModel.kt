@@ -26,60 +26,11 @@ class HomeTabsViewModel : AppRepositoryViewModel<AppRepository>() {
     override fun onCreate() {
         super.onCreate()
         getRewardUserUncheck()
-        Config.get().storeBookShelfConfig(mockBookShelfConfigList) //现在没数据 临时测试数据
         if (Config.get().bookShelfConfigList.any { it.bookshelfTab == 1 || it.bookshelfTab == 2 }) {
             bookShelfConfigLoadState.value = LoadState.NotLoading(true)
         } else {
             loadBookShelfConfig()
         }
-    }
-
-
-    private val mockBookShelfConfigList by lazy {
-        listOf(
-            BookShelfConfigInfo(
-                bookshelfTab = 1,
-                bookshelfTabName = "Trending",
-                bookshelfSectionList = listOf(
-                    BookShelfSectionInfo(
-                        bookshelfName = "New Release",
-                        bookshelfSectionCode = 1001,
-                        bookshelfType = 1,
-                        sortNo = 3
-                    ),
-                    BookShelfSectionInfo(
-                        bookshelfName = "Most Popular",
-                        bookshelfSectionCode = 1002,
-                        bookshelfType = 1,
-                        sortNo = 2
-                    ),
-                    BookShelfSectionInfo(
-                        bookshelfName = "Recommended",
-                        bookshelfSectionCode = 1003,
-                        bookshelfType = 2,
-                        sortNo = 1
-                    )
-                )
-            ),
-            BookShelfConfigInfo(
-                bookshelfTab = 2,
-                bookshelfTabName = "All Dramas",
-                bookshelfSectionList = listOf(
-                    BookShelfSectionInfo(
-                        bookshelfName = "Weekly Top",
-                        bookshelfSectionCode = 2001,
-                        bookshelfType = 1,
-                        sortNo = 2
-                    ),
-                    BookShelfSectionInfo(
-                        bookshelfName = "Weekly New",
-                        bookshelfSectionCode = 2002,
-                        bookshelfType = 1,
-                        sortNo = 1
-                    )
-                )
-            )
-        )
     }
 
     fun loadBookShelfConfig() {

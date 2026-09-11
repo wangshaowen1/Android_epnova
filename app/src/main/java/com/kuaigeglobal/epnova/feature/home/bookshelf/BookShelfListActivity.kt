@@ -15,7 +15,7 @@ import kotlinx.coroutines.launch
 /**
  * 书架作品列表页。
  *
- * 入口可传入书架 ID；未传入时由页面从首页书架配置中选择目标书架。
+ * 入口可传入书架分区编码；未传入时由页面从首页书架配置中选择目标书架。
  */
 class BookShelfListActivity : BaseViewModelActivity<ActivityAllListBinding, BookshelfListViewModel>() {
 
@@ -43,10 +43,10 @@ class BookShelfListActivity : BaseViewModelActivity<ActivityAllListBinding, Book
             pagingDataAdapter = adapter,
             loadStateHolder = binding.lsv
         )
-        val bookshelfId = intent.getStringExtra(EXTRA_BOOKSHELF_ID)
+        val bookshelfSectionCode = intent.getStringExtra(EXTRA_BOOKSHELF_SECTION_CODE)
         val bookshelfName = intent.getStringExtra(EXTRA_BOOKSHELF_NAME)
         bookshelfName?.takeIf { it.isNotBlank() }?.let(mRealVM.toolbar.mTitle::set)
-        mRealVM.load(bookshelfId, bookshelfName)
+        mRealVM.load(bookshelfSectionCode, bookshelfName)
         lifecycleScope.launch {
             mRealVM.works.collectLatest { pagingData ->
                 adapter.submitData(pagingData)
@@ -55,18 +55,18 @@ class BookShelfListActivity : BaseViewModelActivity<ActivityAllListBinding, Book
     }
 
     companion object {
-        private const val EXTRA_BOOKSHELF_ID = "extra_bookshelf_id"
+        private const val EXTRA_BOOKSHELF_SECTION_CODE = "extra_bookshelf_section_code"
         private const val EXTRA_BOOKSHELF_NAME = "extra_bookshelf_name"
 
         fun start(
             activity: Activity?,
-            bookshelfId: String? = null,
+            bookshelfSectionCode: String? = null,
             bookshelfName: String? = null
         ) {
             activity ?: return
             activity.startActivity(
                 Intent(activity, BookShelfListActivity::class.java).apply {
-                    bookshelfId?.let { putExtra(EXTRA_BOOKSHELF_ID, it) }
+                    bookshelfSectionCode?.let { putExtra(EXTRA_BOOKSHELF_SECTION_CODE, it) }
                     bookshelfName?.let { putExtra(EXTRA_BOOKSHELF_NAME, it) }
                 }
             )
