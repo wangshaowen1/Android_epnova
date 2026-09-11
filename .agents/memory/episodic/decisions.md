@@ -195,3 +195,13 @@ STATIC：已核对两类商品接口路由、回调落盘先于网络、账号�
 - 同步 Template 的图片快照、容量限制、统一回调、局部 View 复用、测量及动画期间添加按钮恢复修复；反馈/举报页迁移新接口，保留 AppImagePicker、去重与 4 张限制。
 - 反馈历史及反馈详情（反馈图片、回复图片）通过 setPhotoUrls 替换原 setAll(String 列表)，空列表会清空旧图片；保留原只读入口、34dp/70dp 尺寸、8dp/14dp 间距及 feature.PhotoPagerActivity。item_photo 仅将正方形比例改为四边约束，原资源、圆角和删除区域保持不变。
 - 生产 Java、13 条仪器测试 Kotlin 源码离线类型检查和 4 处调用文件语法检查通过，XML/资源、旧接口残留及本地化文件摘要检查通过。预览 API 与新增测试 R 用临时声明辅助；未运行 Gradle、资源链接或设备测试。
+
+### 2026-09-11 同步 GridImageLayout 通用控件治理
+
+- 同步 Template 最终控件、尺寸计算、20 项 attr 和 37 条回归用例源码，默认保留原单图固定/最小/最大尺寸、裁剪、按列独立边长、间距与点击语义；autoWidth/fitInside 显式启用。当前无业务调用需要迁移。
+- 保留本工程 feature.PhotoPagerActivity、img_default_cover_1_1、圆角图片依赖及既有资源；新图片描述补至现有英文、中文、泰语、印尼语目录，旧翻译不变。
+- 生产 Java、测试 Java/Kotlin 离线类型检查和 XML/引用/跨工程归一化比对通过；未运行 Gradle、资源链接或运行用例，未提交。保留原有 gradle.properties 改动。
+
+### 2026-09-11 GridImageLayout 尺寸计算内聚
+
+- 按用户要求，将仅服务当前控件的 GridImageGeometry 移为 GridImageLayout 内包级可见的 static final class Geometry，删除独立生产文件；测试改引用 GridImageLayout.Geometry，计算代码保持不变。同步四工程，提交仍暂停。

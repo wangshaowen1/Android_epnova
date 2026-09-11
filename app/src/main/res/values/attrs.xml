@@ -257,34 +257,45 @@
     <attr name="verticalDividerSize" format="dimension" />
 
     <declare-styleable name="GridImageLayout">
-        <!-- 单张图片固定尺寸（实用角度可忽略）-->
-        <attr name="singleImageWidth" format="dimension" />
-        <attr name="singleImageHeight" format="dimension" />
-        <!-- 单张图片限制尺寸-->
-        <attr name="singleImageMaxWidth" format="dimension" />
-        <attr name="singleImageMaxHeight" format="dimension" />
-        <attr name="singleImageMinWidth" format="dimension" />
-        <attr name="singleImageMinHeight" format="dimension" />
-        <!-- 单行图片尺寸（实用角度可忽略）-->
-        <attr name="singleColumnImageSize" format="dimension" />
-        <!-- 两行图片尺寸-->
-        <attr name="doubleColumnImageSize" format="dimension" />
-        <!-- 三行及以上图片尺寸(看作3行即可，超过3行实用角度可忽略)-->
-        <attr name="multColumnImageSize" format="dimension" />
-        <!-- 图片圆角大小-->
-        <attr name="cornerRadius" format="dimension" />
-        <!-- 自适应，图片宽度根据布局宽度自动均分，图片高度==均分后的宽度-->
-        <attr name="imageSizeAutoFit" format="boolean" />
-        <!-- 横向间距-->
-        <attr name="horizontalDividerSize" />
-        <!-- 纵向间距-->
-        <attr name="verticalDividerSize" />
-        <!-- 最大行数-->
-        <attr name="maxColumnCount" format="integer" />
-        <!-- 最大列数-->
-        <attr name="maxRowCount" format="integer" />
-        <!-- 缺省图-->
-        <attr name="placeHolder" format="reference" />
+        <!-- 最大列数，默认 3，小于 1 按 1 处理 -->
+        <attr name="gridImageColumnCount" format="integer" />
+        <!-- 最大展示行数，默认 3；0 隐藏缩略图但保留数据 -->
+        <attr name="gridImageMaxRowCount" format="integer" />
+        <!-- 多图公共方格边长，默认 93dp；不隐式启用自适应 -->
+        <attr name="gridImageCellSize" format="dimension" />
+        <!-- 分别配置一列、两列、多列；未配置时使用公共方格尺寸 -->
+        <attr name="gridImageSingleColumnSize" format="dimension" />
+        <attr name="gridImageDoubleColumnSize" format="dimension" />
+        <attr name="gridImageMultiColumnSize" format="dimension" />
+        <!-- 默认保留旧尺寸规则；新增自适应行为必须显式选择 -->
+        <attr name="gridImageSizeMode" format="enum">
+            <enum name="original" value="0" />
+            <!-- 均分可用宽度，保持间距，不根据高度缩小 -->
+            <enum name="autoWidth" value="1" />
+            <!-- 单图等比适配，固定宽高作为上限；多图仅收缩配置边长，极窄时允许收缩间距 -->
+            <enum name="fitInside" value="2" />
+        </attr>
+        <!-- 间距默认 6dp；original/autoWidth 不因空间不足而修改间距 -->
+        <attr name="gridImageHorizontalSpacing" format="dimension" />
+        <attr name="gridImageVerticalSpacing" format="dimension" />
+        <!-- 两边均大于 0 时生效：original 沿用旧规则，fitInside 作为上限，autoWidth 忽略 -->
+        <attr name="gridImageSingleWidth" format="dimension" />
+        <attr name="gridImageSingleHeight" format="dimension" />
+        <!-- 旧规则中的占位/缩放最小尺寸，默认各 180dp；最大值冲突时最大值优先 -->
+        <attr name="gridImageSingleMinWidth" format="dimension" />
+        <attr name="gridImageSingleMinHeight" format="dimension" />
+        <!-- 单图最大尺寸默认 0，不额外设限；fitInside 还会遵从父容器约束 -->
+        <attr name="gridImageSingleMaxWidth" format="dimension" />
+        <attr name="gridImageSingleMaxHeight" format="dimension" />
+        <attr name="gridImageCornerRadius" format="dimension" />
+        <!-- 加载中和失败时使用的占位图 -->
+        <attr name="gridImagePlaceholder" format="reference" />
+        <!-- 默认从左起排；显式启用后跟随 RTL 镜像 -->
+        <attr name="gridImageMirrorInRtl" format="boolean" />
+        <!-- 默认 0 不额外限制解码请求目标尺寸，按需设置如 2048 -->
+        <attr name="gridImageMaxDecodeEdge" format="integer" />
+        <!-- 默认启用点击预览；不影响自定义点击回调及主动 previewImage -->
+        <attr name="gridImagePreviewEnabled" format="boolean" />
     </declare-styleable>
 
 
