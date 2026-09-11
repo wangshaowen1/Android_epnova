@@ -159,6 +159,7 @@ class FirstRechargeViewModel : AppRepositoryViewModel<CoinRepository>() {
                             .ifBlank { rechargeData.googleProductId.orEmpty() },
                         orderId = orderData?.orderNo.orEmpty(),
                         businessType = OneTimePurchaseBusinessType.COINS,
+                        obfuscatedAccountId = orderData?.obfuscatedAccountId.orEmpty()
                     )
                 }
             },

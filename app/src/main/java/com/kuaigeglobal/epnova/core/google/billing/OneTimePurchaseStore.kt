@@ -30,8 +30,8 @@ import javax.crypto.spec.GCMParameterSpec
 internal object OneTimePurchaseStore {
 
     private const val TAG = "OneTimePurchaseStore"
-    private const val FILE_NAME = "one_time_purchase_v1.bin"
-    private const val KEY_ALIAS = "epnova_one_time_purchase_v1"
+    private const val FILE_NAME = "one_time_purchase_v2.bin"
+    private const val KEY_ALIAS = "epnova_one_time_purchase_v2"
     private const val KEYSTORE_PROVIDER = "AndroidKeyStore"
     private const val CIPHER_TRANSFORMATION = "AES/GCM/NoPadding"
     private const val FILE_VERSION = 1
@@ -50,6 +50,7 @@ internal object OneTimePurchaseStore {
         businessType: OneTimePurchaseBusinessType,
         orderNo: String,
         productId: String,
+        obfuscatedAccountId: String
     ): Boolean = synchronized(lock) {
         val ownerUserId = currentOwnerUserId() ?: return@synchronized false
         if (orderNo.isBlank() || productId.isBlank()) return@synchronized false
@@ -63,6 +64,7 @@ internal object OneTimePurchaseStore {
             return@synchronized existing.ownerUserId == ownerUserId &&
                 existing.businessType == businessType &&
                 existing.productId == productId &&
+                existing.obfuscatedAccountId == obfuscatedAccountId &&
                 existing.purchaseToken == null
         }
 
@@ -73,6 +75,7 @@ internal object OneTimePurchaseStore {
             productId = productId,
             purchaseToken = null,
             createdAt = System.currentTimeMillis(),
+            obfuscatedAccountId = obfuscatedAccountId
         )
         writeRecords(records)
     }
@@ -100,7 +103,7 @@ internal object OneTimePurchaseStore {
             val orderNo = purchase.accountIdentifiers?.obfuscatedAccountId ?: return@forEach
             val matchingIndices = records.indices.filter { index ->
                 val record = records[index]
-                record.orderNo == orderNo &&
+                record.obfuscatedAccountId == orderNo &&
                     record.productId in purchase.products
             }
             if (matchingIndices.size != 1) return@forEach
@@ -108,7 +111,7 @@ internal object OneTimePurchaseStore {
             val index = matchingIndices.single()
             val existing = records[index]
             val matchingPurchases = purchased.count { candidate ->
-                candidate.accountIdentifiers?.obfuscatedAccountId == existing.orderNo &&
+                candidate.accountIdentifiers?.obfuscatedAccountId == existing.obfuscatedAccountId &&
                     existing.productId in candidate.products
             }
             if (matchingPurchases != 1) {
@@ -138,7 +141,7 @@ internal object OneTimePurchaseStore {
             ?.singleOrNull { it.orderNo == orderNo }
             ?: return@synchronized null
         purchases.distinctBy { purchase -> purchase.purchaseToken }.singleOrNull { purchase ->
-            purchase.accountIdentifiers?.obfuscatedAccountId == record.orderNo &&
+            purchase.accountIdentifiers?.obfuscatedAccountId == record.obfuscatedAccountId &&
                 record.productId in purchase.products
         }
     }
@@ -171,6 +174,7 @@ internal object OneTimePurchaseStore {
         val removed = records.removeAll { stored ->
             stored.ownerUserId == record.ownerUserId &&
                 stored.orderNo == record.orderNo &&
+                stored.obfuscatedAccountId == record.obfuscatedAccountId &&
                 stored.purchaseToken == purchaseToken
         }
         !removed || writeRecords(records)
@@ -284,6 +288,7 @@ internal data class OneTimePurchaseRecord(
     val productId: String = "",
     val purchaseToken: String? = null,
     val createdAt: Long = 0L,
+    val obfuscatedAccountId: String? = null
 ) {
     fun isValid(): Boolean {
         return ownerUserId.isNotBlank() &&
@@ -292,6 +297,7 @@ internal data class OneTimePurchaseRecord(
             orderNo.isNotBlank() &&
             productId.isNotBlank() &&
             purchaseToken?.isNotBlank() != false &&
+            obfuscatedAccountId?.isNotBlank() != false &&
             createdAt > 0L
     }
 

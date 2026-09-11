@@ -859,12 +859,13 @@ object BillingManager {
         productId: String,
         orderId: String,
         businessType: OneTimePurchaseBusinessType,
+        obfuscatedAccountId: String
     ) {
         if (productId.isBlank() || orderId.isBlank()) {
             _purchaseResult.tryEmit(PurchaseResult.Failed.LaunchFailed)
             return
         }
-        if (!OneTimePurchaseStore.savePrepared(businessType, orderId, productId)) {
+        if (!OneTimePurchaseStore.savePrepared(businessType, orderId, productId, obfuscatedAccountId)) {
             // 无法持久化时禁止拉起支付，避免付款成功后没有可恢复凭证。
             _purchaseResult.tryEmit(PurchaseResult.Failed.LaunchFailed)
             return
@@ -897,7 +898,8 @@ object BillingManager {
                 activity,
                 productId,
                 orderId,
-                BillingClient.ProductType.INAPP
+                BillingClient.ProductType.INAPP,
+                obfuscatedAccountId
             )
         }
     }
@@ -1053,7 +1055,7 @@ object BillingManager {
     /**
      * 购买获取商品详情
      */
-    private fun launchFlow(activity: Activity, productId: String, orderId: String, productType: String) {
+    private fun launchFlow(activity: Activity, productId: String, orderId: String, productType: String, obfuscatedAccountId: String) {
         // 缓存同时服务价格展示，可能包含 SUBS。旧购买入口只能复用类型完全匹配的 INAPP，
         // 防止同 ID 的错误缓存让一次性购买意外走到订阅商品。
         val details = productCache[productId]?.takeIf { it.productType == productType }
@@ -1075,14 +1077,14 @@ object BillingManager {
                 Logger.i(TAG, "result:${result}")
                 if (result.responseCode == BillingClient.BillingResponseCode.OK && list.productDetailsList.isNotEmpty()) {
                     productCache[productId] = list.productDetailsList[0]
-                    launchBillingFlow(activity, list.productDetailsList[0], orderId)
+                    launchBillingFlow(activity, list.productDetailsList[0], orderId, obfuscatedAccountId)
                 } else {
                     finishDefinitiveOneTimeLaunchFailure(orderId)
                     Logger.d(TAG, "查询商品信息失败")
                 }
             }
         } else {
-            launchBillingFlow(activity, details, orderId)
+            launchBillingFlow(activity, details, orderId, obfuscatedAccountId)
         }
     }
 
@@ -1092,7 +1094,7 @@ object BillingManager {
      * 会员订阅已经迁移到 [launchMemberSubscription]。这里保留类型防御，即使未来调用方传错
      * ProductDetails，也不会重新启用旧的 SUBS + 一次性商品验单链路。
      */
-    private fun launchBillingFlow(activity: Activity, details: ProductDetails, orderId: String) {
+    private fun launchBillingFlow(activity: Activity, details: ProductDetails, orderId: String, obfuscatedAccountId: String) {
         if (details.productType != BillingClient.ProductType.INAPP) {
             finishDefinitiveOneTimeLaunchFailure(orderId)
             return
@@ -1105,7 +1107,7 @@ object BillingManager {
                         .build()
                 )
             )
-            .setObfuscatedAccountId(orderId)
+            .setObfuscatedAccountId(obfuscatedAccountId) // 1.5.0 orderId换成obfuscatedAccountId，后续匹配按obfuscatedAccountId，orderId做接口请求
             .setObfuscatedProfileId(User.get().userId ?: "")
             .setIsOfferPersonalized(true) // 面向欧美市场的GDPR设置
             .build()

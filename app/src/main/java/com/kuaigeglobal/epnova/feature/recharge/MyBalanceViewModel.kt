@@ -310,6 +310,7 @@ class MyBalanceViewModel(
                             .ifBlank { item.googleProductId.orEmpty() },
                         orderId = orderData?.orderNo.orEmpty(),
                         businessType = OneTimePurchaseBusinessType.COINS,
+                        obfuscatedAccountId = orderData?.obfuscatedAccountId.orEmpty()
                     )
                 }
             },
@@ -334,6 +335,7 @@ class MyBalanceViewModel(
                             .ifBlank { item.googleProductId.orEmpty() },
                         orderId = orderData?.orderNo.orEmpty(),
                         businessType = OneTimePurchaseBusinessType.CREDITS,
+                        obfuscatedAccountId = orderData?.obfuscatedAccountId.orEmpty()
                     )
                 }
             },

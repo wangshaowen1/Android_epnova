@@ -127,6 +127,7 @@ class FirstRechargeCreditsViewModel : AppRepositoryViewModel<CoinRepository>() {
                             .ifBlank { pointConfig.googleProductId.orEmpty() },
                         orderId = orderData?.orderNo.orEmpty(),
                         businessType = OneTimePurchaseBusinessType.CREDITS,
+                        obfuscatedAccountId = orderData?.obfuscatedAccountId.orEmpty()
                     )
                 }
             },
