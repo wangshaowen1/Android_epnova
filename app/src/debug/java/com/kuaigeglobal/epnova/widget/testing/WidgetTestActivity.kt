@@ -13,5 +13,6 @@ class WidgetTestActivity : Activity() {
         super.onCreate(savedInstanceState)
         container = FrameLayout(this)
         setContentView(container)
+        if (intent.getBooleanExtra("widget_showcase", false)) showWidgetShowcase()
     }
 }

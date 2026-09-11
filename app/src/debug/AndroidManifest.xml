@@ -3,7 +3,7 @@
     <application>
         <activity
             android:name="com.kuaigeglobal.epnova.widget.testing.WidgetTestActivity"
-            android:exported="false"
+            android:exported="true"
             android:theme="@android:style/Theme.Material.Light.NoActionBar" />
     </application>
 </manifest>

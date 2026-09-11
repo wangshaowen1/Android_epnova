@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical" android:layout_width="match_parent" android:layout_height="wrap_content">
+    <com.kuaigeglobal.epnova.widget.EdgeTransparentView
+        android:id="@+id/regressionEdge" android:layout_width="120dp" android:layout_height="40dp"
+        app:edge_position="left|right" app:edge_width="16dp" app:edge_min_show_width="100dp">
+        <View android:layout_width="50dp" android:layout_height="match_parent" android:background="#FF3366CC" />
+    </com.kuaigeglobal.epnova.widget.EdgeTransparentView>
+    <com.kuaigeglobal.epnova.widget.MarqueeTextView
+        android:id="@+id/regressionMarquee" android:layout_width="160dp" android:layout_height="40dp"
+        android:text="@string/widget_audit_long_text" android:textSize="18sp" android:textColor="#FF112233"
+        android:marqueeRepeatLimit="marquee_forever" app:mtv_space="48dp" app:mtv_speed="1" app:mtv_repeat_delay="500" />
+    <com.kuaigeglobal.epnova.widget.LoadStateViewHolder
+        android:id="@+id/regressionState" android:layout_width="match_parent" android:layout_height="200dp"
+        app:networkAnomalySrc="@android:drawable/ic_delete" app:requestExceptionSrc="@android:drawable/ic_dialog_info">
+        <View android:layout_width="match_parent" android:layout_height="match_parent" />
+    </com.kuaigeglobal.epnova.widget.LoadStateViewHolder>
+    <com.kuaigeglobal.epnova.widget.roundedimageview.RoundedImageView
+        android:id="@+id/regressionRounded" android:layout_width="120dp" android:layout_height="80dp"
+        app:riv_preserve_drawable_state="true" app:riv_corner_radius="12dp" />
+    <com.kuaigeglobal.epnova.widget.NavBarView android:id="@+id/regressionNav"
+        android:layout_width="match_parent" android:layout_height="wrap_content" app:navBarInsetMode="window" />
+</LinearLayout>

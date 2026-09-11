@@ -30,6 +30,7 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Shader;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Animatable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.widget.ImageView.ScaleType;
@@ -103,14 +104,20 @@ public class RoundedDrawable extends Drawable {
         // just return if it's already a RoundedDrawable
         return drawable;
       } else if (drawable instanceof LayerDrawable) {
-        LayerDrawable ld = (LayerDrawable) drawable;
+        Drawable.ConstantState state = drawable.getConstantState();
+        LayerDrawable ld = (LayerDrawable) (state == null ? drawable.mutate() : state.newDrawable().mutate());
         int num = ld.getNumberOfLayers();
 
         // loop through layers to and change to RoundedDrawables if possible
         for (int i = 0; i < num; i++) {
-          Drawable d = ld.getDrawable(i);
-          ld.setDrawableByLayerId(ld.getId(i), fromDrawable(d));
+          // 以原层的当前状态取快照，避免 ConstantState 副本回到默认选中/level 状态。
+          Drawable d = ((LayerDrawable) drawable).getDrawable(i);
+          ld.setDrawable(i, fromDrawable(d));
         }
+        ld.setLayoutDirection(drawable.getLayoutDirection());
+        ld.setLevel(drawable.getLevel());
+        ld.setState(drawable.getState());
+        ld.setBounds(drawable.getBounds());
         return ld;
       }
 
@@ -131,15 +138,16 @@ public class RoundedDrawable extends Drawable {
     Bitmap bitmap;
     int width = Math.max(drawable.getIntrinsicWidth(), 2);
     int height = Math.max(drawable.getIntrinsicHeight(), 2);
+    Rect previousBounds = new Rect(drawable.getBounds());
     try {
       bitmap = Bitmap.createBitmap(width, height, Config.ARGB_8888);
       Canvas canvas = new Canvas(bitmap);
-      drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+      drawable.setBounds(0, 0, width, height);
       drawable.draw(canvas);
     } catch (Exception e) {
-      e.printStackTrace();
-//      Log.w(TAG, "Failed to create bitmap from drawable!");
       bitmap = null;
+    } finally {
+      drawable.setBounds(previousBounds);
     }
 
     return bitmap;
@@ -258,6 +266,8 @@ public class RoundedDrawable extends Drawable {
     }
 
     mDrawableRect.set(mBorderRect);
+    // 尺寸、边框或 scaleType 变化后，已有 BitmapShader 也必须使用新矩阵。
+    mRebuildShader = true;
   }
 
   @Override
@@ -330,7 +340,7 @@ public class RoundedDrawable extends Drawable {
     }
 
     if (!mCornersRounded[Corner.TOP_RIGHT]) {
-      mSquareCornersRect.set(right - radius, top, right, radius);
+      mSquareCornersRect.set(right - radius, top, right, top + radius);
       canvas.drawRect(mSquareCornersRect, mBitmapPaint);
     }
 
@@ -530,8 +540,13 @@ public class RoundedDrawable extends Drawable {
   }
 
   public RoundedDrawable setBorderWidth(float width) {
-    mBorderWidth = width;
-    mBorderPaint.setStrokeWidth(mBorderWidth);
+    if (!Float.isFinite(width) || width < 0) throw new IllegalArgumentException("Invalid border width");
+    if (mBorderWidth != width) {
+      mBorderWidth = width;
+      mBorderPaint.setStrokeWidth(width);
+      updateShaderMatrix();
+      invalidateSelf();
+    }
     return this;
   }
 
@@ -582,6 +597,7 @@ public class RoundedDrawable extends Drawable {
   }
 
   public RoundedDrawable setTileModeX(Shader.TileMode tileModeX) {
+    if (tileModeX == null) tileModeX = Shader.TileMode.CLAMP;
     if (mTileModeX != tileModeX) {
       mTileModeX = tileModeX;
       mRebuildShader = true;
@@ -595,6 +611,7 @@ public class RoundedDrawable extends Drawable {
   }
 
   public RoundedDrawable setTileModeY(Shader.TileMode tileModeY) {
+    if (tileModeY == null) tileModeY = Shader.TileMode.CLAMP;
     if (mTileModeY != tileModeY) {
       mTileModeY = tileModeY;
       mRebuildShader = true;
@@ -621,9 +638,98 @@ public class RoundedDrawable extends Drawable {
 
   private static boolean all(boolean[] booleans) {
     for (boolean b : booleans) {
-      if (b) { return false; }
+      if (!b) { return false; }
     }
     return true;
+  }
+
+  /** 可选保留 Drawable 状态与动画；共享原圆角/边框/缩放/平铺算法。 */
+  public static Drawable fromDrawable(Drawable drawable, boolean preserveState) {
+    if (!preserveState || drawable == null || drawable instanceof BitmapDrawable
+        || drawable instanceof RoundedDrawable) return fromDrawable(drawable);
+    return new LiveDrawable(drawable);
+  }
+
+  /** 图片替换时释放可选动画包装，不回收调用方持有的图片。 */
+  static void release(Drawable drawable) {
+    if (drawable instanceof LiveDrawable) {
+      LiveDrawable live = (LiveDrawable) drawable;
+      live.stop();
+      if (live.source.getCallback() == live) live.source.setCallback(null);
+    }
+  }
+
+  /** 复用一块栅格缓存，仅在源 Drawable 失效时重绘，不为动画的每一帧分配 Bitmap。 */
+  private static final class LiveDrawable extends RoundedDrawable implements Drawable.Callback, Animatable {
+    private final Drawable source;
+    private final Canvas bufferCanvas;
+    private boolean dirty = true;
+    private boolean resumeAnimation;
+
+    LiveDrawable(Drawable source) {
+      super(Bitmap.createBitmap(Math.max(2, source.getIntrinsicWidth()),
+          Math.max(2, source.getIntrinsicHeight()), Config.ARGB_8888));
+      this.source = source;
+      bufferCanvas = new Canvas(getSourceBitmap());
+      source.setBounds(0, 0, getIntrinsicWidth(), getIntrinsicHeight());
+      source.setCallback(this);
+    }
+    @Override public void draw(@NonNull Canvas canvas) {
+      if (dirty) {
+        dirty = false;
+        getSourceBitmap().eraseColor(Color.TRANSPARENT);
+        int save = bufferCanvas.save();
+        try {
+          source.draw(bufferCanvas);
+        } finally {
+          bufferCanvas.restoreToCount(save);
+        }
+      }
+      super.draw(canvas);
+    }
+    @Override public boolean isStateful() { return super.isStateful() || source.isStateful(); }
+    @Override protected boolean onStateChange(int[] state) {
+      boolean changed = super.onStateChange(state);
+      if (source != null) changed |= source.setState(state);
+      dirty = true;
+      invalidateSelf();
+      return changed;
+    }
+    @Override protected boolean onLevelChange(int level) {
+      boolean changed = source.setLevel(level);
+      dirty = true;
+      invalidateSelf();
+      return changed;
+    }
+    @Override public boolean onLayoutDirectionChanged(int direction) {
+      boolean changed = source.setLayoutDirection(direction);
+      dirty = true;
+      invalidateSelf();
+      return changed;
+    }
+    @Override public void jumpToCurrentState() { source.jumpToCurrentState(); dirty = true; invalidateSelf(); }
+    @Override public boolean setVisible(boolean visible, boolean restart) {
+      if (!visible && isRunning()) {
+        resumeAnimation = true;
+        // 隐藏只是临时暂停；显式 stop() 则必须取消恢复意图。
+        ((Animatable) source).stop();
+      }
+      boolean changed = super.setVisible(visible, restart) | source.setVisible(visible, restart);
+      if (visible && resumeAnimation) { resumeAnimation = false; start(); }
+      return changed;
+    }
+    @Override public void invalidateDrawable(@NonNull Drawable who) { dirty = true; invalidateSelf(); }
+    @Override public void scheduleDrawable(@NonNull Drawable who, @NonNull Runnable what, long when) { scheduleSelf(what, when); }
+    @Override public void unscheduleDrawable(@NonNull Drawable who, @NonNull Runnable what) { unscheduleSelf(what); }
+    @Override public void start() {
+      resumeAnimation = false;
+      if (source instanceof Animatable) ((Animatable) source).start();
+    }
+    @Override public void stop() {
+      resumeAnimation = false;
+      if (source instanceof Animatable) ((Animatable) source).stop();
+    }
+    @Override public boolean isRunning() { return source instanceof Animatable && ((Animatable) source).isRunning(); }
   }
 
   public Bitmap toBitmap() {

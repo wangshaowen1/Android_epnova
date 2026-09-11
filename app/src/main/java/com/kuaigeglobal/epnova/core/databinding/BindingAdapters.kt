@@ -1505,7 +1505,7 @@ fun setMinHeightMatchParent(view: TextView, value: Boolean) {
 
 @BindingAdapter("bindToLifeCycle")
 fun bindToLifeCycle(view: MarqueeTextView, lifecycle: Lifecycle?) {
-    lifecycle?.let { view.bindToLifeCycle(it) }
+    view.bindToLifeCycle(lifecycle)
 }
 
 @BindingAdapter("changeText")

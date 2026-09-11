@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="widget_audit_title">Common widget checks (Debug only)</string>
+    <string name="widget_audit_note">Use each button to check size, color, direction and state. Leave and return to check recovery. The green area marks the navigation bar inset.</string>
+    <string name="widget_audit_long_text">Long marquee text: speed, delay, repeat count, font and direction. Long text 123 — مرحبا بالعالم</string>
+    <string name="widget_audit_short_text">Short text</string>
+    <string name="widget_audit_marquee">MarqueeTextView: text, direction, font, pause and reattach</string>
+    <string name="widget_audit_toggle_text">Long / short text</string>
+    <string name="widget_audit_toggle_direction">LTR / RTL</string>
+    <string name="widget_audit_toggle_size">Change font size and color</string>
+    <string name="widget_audit_pause_resume">Pause / resume</string>
+    <string name="widget_audit_reattach">Remove / reattach</string>
+    <string name="widget_audit_crop">CropShapeImageView: center crop and rounded corners; normal images keep their resolution</string>
+    <string name="widget_audit_round">RoundedImageView: scale, border, oval and tiling; the state and animation samples enable the optional mode</string>
+    <string name="widget_audit_scale">Next scale type</string>
+    <string name="widget_audit_border">Toggle border width</string>
+    <string name="widget_audit_oval">Rounded / oval</string>
+    <string name="widget_audit_tile">CLAMP / REPEAT / MIRROR</string>
+    <string name="widget_audit_state">Toggle image state</string>
+    <string name="widget_audit_edge">EdgeTransparentView: four edges, zero width and restore</string>
+    <string name="widget_audit_edge_width">Toggle fade width</string>
+    <string name="widget_audit_edge_color">Toggle fade strength</string>
+    <string name="widget_audit_load">LoadStateViewHolder: loading, no-text loading, content, empty and error; check error images offline too</string>
+    <string name="widget_audit_load_next">Next state</string>
+    <string name="widget_audit_content">Content area</string>
+    <string name="widget_audit_nav">NavBarView: window / legacy inset (compare gestures, three buttons and landscape)</string>
+</resources>

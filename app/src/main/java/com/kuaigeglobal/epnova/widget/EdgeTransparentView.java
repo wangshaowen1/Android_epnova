@@ -82,50 +82,59 @@ public class EdgeTransparentView extends FrameLayout {
     private float[] mGradientPosition = new float[]{0, 1};
 
     public void setGradientColors(int[] mGradientColors) {
-        this.mGradientColors = mGradientColors;
+        if (mGradientColors == null || mGradientColors.length != 2) {
+            throw new IllegalArgumentException("Exactly two gradient colors are required");
+        }
+        this.mGradientColors = mGradientColors.clone();
+        initShader();
+        invalidate();
     }
 
     private void initShader() {
-        mPaint.setShader(new LinearGradient(0, 0, 0, drawSize, mGradientColors, mGradientPosition, Shader.TileMode.CLAMP));
+        mPaint.setShader(new LinearGradient(0, 0, 0, Math.max(1f, drawSize), mGradientColors, mGradientPosition, Shader.TileMode.CLAMP));
     }
 
     @Override
     protected boolean drawChild(Canvas canvas, View child, long drawingTime) {
-        int layerSave = canvas.saveLayer(0, 0, getWidth(), getHeight(), null, Canvas.ALL_SAVE_FLAG);
-        boolean drawChild = super.drawChild(canvas, child, drawingTime);
-        if (mMinShowWidth > 0 && child.getWidth() < mMinShowWidth) {
+        if (drawSize <= 0 || (mMinShowWidth > 0 && child.getWidth() < mMinShowWidth)) {
+            return super.drawChild(canvas, child, drawingTime);
+        }
+        // 保留逐个子 View 渐隐的叠加语义；提前跳过无需渐隐的分支。
+        int layerSave = canvas.saveLayer(0, 0, getWidth(), getHeight(), null);
+        try {
+            boolean drawChild = super.drawChild(canvas, child, drawingTime);
+            if (position == 0 || (position & topMask) != 0) {
+                canvas.drawRect(0, 0, mWidth, drawSize, mPaint);
+            }
+
+            if (position == 0 || (position & bottomMask) != 0) {
+                int save = canvas.save();
+                canvas.rotate(180, mWidth / 2f, mHeight / 2f);
+                canvas.drawRect(0, 0, mWidth, drawSize, mPaint);
+                canvas.restoreToCount(save);
+            }
+
+            float offset = (mHeight - mWidth) / 2f;
+            if (position == 0 || (position & leftMask) != 0) {
+                int saveCount = canvas.save();
+                canvas.rotate(270, mWidth / 2f, mHeight / 2f);
+                canvas.translate(0, offset);
+                canvas.drawRect(0 - offset, 0, mWidth + offset, drawSize, mPaint);
+                canvas.restoreToCount(saveCount);
+            }
+
+            if (position == 0 || (position & rightMask) != 0) {
+                int saveCount = canvas.save();
+                canvas.rotate(90, mWidth / 2f, mHeight / 2f);
+                canvas.translate(0, offset);
+                canvas.drawRect(0 - offset, 0, mWidth + offset, drawSize, mPaint);
+                canvas.restoreToCount(saveCount);
+            }
+
             return drawChild;
+        } finally {
+            canvas.restoreToCount(layerSave);
         }
-        if (position == 0 || (position & topMask) != 0) {
-            canvas.drawRect(0, 0, mWidth, drawSize, mPaint);
-        }
-
-        if (position == 0 || (position & bottomMask) != 0) {
-            int save = canvas.save();
-            canvas.rotate(180, mWidth / 2f, mHeight / 2f);
-            canvas.drawRect(0, 0, mWidth, drawSize, mPaint);
-            canvas.restoreToCount(save);
-        }
-
-        float offset = (mHeight - mWidth) / 2f;
-        if (position == 0 || (position & leftMask) != 0) {
-            int saveCount = canvas.save();
-            canvas.rotate(270, mWidth / 2f, mHeight / 2f);
-            canvas.translate(0, offset);
-            canvas.drawRect(0 - offset, 0, mWidth + offset, drawSize, mPaint);
-            canvas.restoreToCount(saveCount);
-        }
-
-        if (position == 0 || (position & rightMask) != 0) {
-            int saveCount = canvas.save();
-            canvas.rotate(90, mWidth / 2f, mHeight / 2f);
-            canvas.translate(0, offset);
-            canvas.drawRect(0 - offset, 0, mWidth + offset, drawSize, mPaint);
-            canvas.restoreToCount(saveCount);
-        }
-
-        canvas.restoreToCount(layerSave);
-        return drawChild;
     }
 
     @Override
@@ -134,6 +143,9 @@ public class EdgeTransparentView extends FrameLayout {
     }
 
     public void setDrawSize(float drawSize) {
+        if (Float.isNaN(drawSize) || Float.isInfinite(drawSize) || drawSize < 0) {
+            throw new IllegalArgumentException("drawSize must be finite and nonnegative");
+        }
         if (this.drawSize - drawSize != 0) {
             this.drawSize = drawSize;
             initShader();

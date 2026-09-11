@@ -71,6 +71,8 @@ public class RoundedImageView extends AppCompatImageView {
     private ColorFilter mColorFilter = null;
     private boolean mColorMod = false;
     private Drawable mDrawable;
+    private Drawable mSourceDrawable;
+    private boolean mPreserveDrawableState;
     private boolean mHasColorFilter = false;
     private boolean mIsOval = false;
     private boolean mMutateBackground = false;
@@ -81,7 +83,7 @@ public class RoundedImageView extends AppCompatImageView {
     private Shader.TileMode mTileModeY = DEFAULT_TILE_MODE;
 
     public RoundedImageView(Context context) {
-        super(context);
+        this(context, null);
     }
 
     public RoundedImageView(Context context, AttributeSet attrs) {
@@ -94,7 +96,7 @@ public class RoundedImageView extends AppCompatImageView {
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.RoundedImageView, defStyle, 0);
 
         int index = a.getInt(R.styleable.RoundedImageView_android_scaleType, -1);
-        if (index >= 0) {
+        if (index >= 0 && index < SCALE_TYPES.length) {
             setScaleType(SCALE_TYPES[index]);
         } else {
             // default scaletype to FIT_CENTER
@@ -162,6 +164,11 @@ public class RoundedImageView extends AppCompatImageView {
             setTileModeY(parseTileMode(tileModeY));
         }
 
+        mPreserveDrawableState = a.getBoolean(R.styleable.RoundedImageView_riv_preserve_drawable_state, false);
+        if (mSourceDrawable != null && mPreserveDrawableState) {
+            mDrawable = RoundedDrawable.fromDrawable(mSourceDrawable, true);
+            super.setImageDrawable(mDrawable);
+        }
         updateDrawableAttrs();
         updateBackgroundDrawableAttrs(true);
 
@@ -231,15 +238,20 @@ public class RoundedImageView extends AppCompatImageView {
 
     @Override
     public void setImageDrawable(Drawable drawable) {
+        if (drawable != null && drawable == mDrawable) return;
+        RoundedDrawable.release(mDrawable);
         mResource = 0;
-        mDrawable = RoundedDrawable.fromDrawable(drawable);
+        mSourceDrawable = drawable;
+        mDrawable = RoundedDrawable.fromDrawable(drawable, mPreserveDrawableState);
         updateDrawableAttrs();
         super.setImageDrawable(mDrawable);
     }
 
     @Override
     public void setImageBitmap(Bitmap bm) {
+        RoundedDrawable.release(mDrawable);
         mResource = 0;
+        mSourceDrawable = bm == null ? null : new android.graphics.drawable.BitmapDrawable(getResources(), bm);
         mDrawable = RoundedDrawable.fromBitmap(bm);
         updateDrawableAttrs();
         super.setImageDrawable(mDrawable);
@@ -248,8 +260,10 @@ public class RoundedImageView extends AppCompatImageView {
     @Override
     public void setImageResource(@DrawableRes int resId) {
         if (mResource != resId) {
+            RoundedDrawable.release(mDrawable);
             mResource = resId;
-            mDrawable = resolveResource();
+            mSourceDrawable = resolveResource();
+            mDrawable = RoundedDrawable.fromDrawable(mSourceDrawable, mPreserveDrawableState);
             updateDrawableAttrs();
             super.setImageDrawable(mDrawable);
         }
@@ -271,14 +285,14 @@ public class RoundedImageView extends AppCompatImageView {
 
         if (mResource != 0) {
             try {
-                d = rsrc.getDrawable(mResource);
+                d = androidx.appcompat.content.res.AppCompatResources.getDrawable(getContext(), mResource);
             } catch (Exception e) {
 //        Log.w(TAG, "Unable to find resource: " + mResource, e);
                 // Don't try again.
                 mResource = 0;
             }
         }
-        return RoundedDrawable.fromDrawable(d);
+        return d;
     }
 
     @Override
@@ -401,6 +415,18 @@ public class RoundedImageView extends AppCompatImageView {
         super.setBackgroundDrawable(mBackgroundDrawable);
     }
 
+    /** 默认 false 保留原静态快照；true 额外支持状态图、矢量动画和动图。 */
+    public void setPreserveDrawableState(boolean preserve) {
+        if (mPreserveDrawableState == preserve) return;
+        RoundedDrawable.release(mDrawable);
+        mPreserveDrawableState = preserve;
+        mDrawable = RoundedDrawable.fromDrawable(mSourceDrawable, preserve);
+        updateDrawableAttrs();
+        super.setImageDrawable(mDrawable);
+    }
+
+    public boolean isPreserveDrawableState() { return mPreserveDrawableState; }
+
     /**
      * @return the largest corner radius.
      */
@@ -511,6 +537,7 @@ public class RoundedImageView extends AppCompatImageView {
     }
 
     public void setBorderWidth(float width) {
+        if (!Float.isFinite(width) || width < 0) throw new IllegalArgumentException("Invalid border width");
         if (mBorderWidth == width) {
             return;
         }
@@ -564,6 +591,7 @@ public class RoundedImageView extends AppCompatImageView {
     }
 
     public void setTileModeX(Shader.TileMode tileModeX) {
+        if (tileModeX == null) tileModeX = DEFAULT_TILE_MODE;
         if (this.mTileModeX == tileModeX) {
             return;
         }
@@ -579,6 +607,7 @@ public class RoundedImageView extends AppCompatImageView {
     }
 
     public void setTileModeY(Shader.TileMode tileModeY) {
+        if (tileModeY == null) tileModeY = DEFAULT_TILE_MODE;
         if (this.mTileModeY == tileModeY) {
             return;
         }

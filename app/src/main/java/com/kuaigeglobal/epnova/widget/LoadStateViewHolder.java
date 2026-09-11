@@ -2,7 +2,7 @@ package com.kuaigeglobal.epnova.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.text.SpannableString;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.Gravity;
@@ -34,7 +34,6 @@ public class LoadStateViewHolder extends ViewAnimator {
     public static final int NO_DATA = 2;
     public static final int CONTENT = 3;
     private boolean retryInNoData = false;
-    private static final int CHILD_SIZE = 4;
     private ContentViewHolderBinding binding;
 
     //网络异常提示内容
@@ -53,12 +52,14 @@ public class LoadStateViewHolder extends ViewAnimator {
     public LoadStateViewHolder(Context context) {
         super(context);
         initView();
+        noData = context.getString(R.string.page_empty);
     }
 
     //private ViewCo
     public LoadStateViewHolder(Context context, AttributeSet attrs) {
         super(context, attrs);
         initView();
+        noData = context.getString(R.string.page_empty);
         initAttrs(context, attrs);
     }
 
@@ -104,7 +105,7 @@ public class LoadStateViewHolder extends ViewAnimator {
         }
         //网络异常提示图片,无网络
         networkAnomalySrc = typedArray.getResourceId(
-                R.styleable.LoadStateViewHolder_requestExceptionSrc,
+                R.styleable.LoadStateViewHolder_networkAnomalySrc,
                 R.drawable.icon_state_network_error
         );
         //请求异常提示图片，服务器异常
@@ -145,19 +146,23 @@ public class LoadStateViewHolder extends ViewAnimator {
     }
 
     public void makeScrollable() {
+        int state = getDisplayedChild();
         for (int i = 0; i < getChildCount(); i++) {
             View child = getChildAt(i);
             if (!(child instanceof NestedScrollView) && !(child instanceof RecyclerView) && !(child instanceof ListView)) {
                 removeView(child);
                 NestedScrollView nestedScrollView = new NestedScrollView(getContext());
-                child.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+                child.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
                 child.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
                         View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
                 child.setMinimumHeight(ScreenUtils.getScreenWidth());
                 nestedScrollView.addView(child);
+                // 切换状态由外层 wrapper 控制，移入的原状态 View 不能残留 GONE。
+                child.setVisibility(VISIBLE);
                 addView(nestedScrollView, i, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
             }
         }
+        setDisplayedChild(state);
     }
 
 
@@ -188,15 +193,9 @@ public class LoadStateViewHolder extends ViewAnimator {
         binding.loadingLayout.setGravity(gravity);
         binding.retryLayout.setGravity(gravity);
         binding.emptyLayout.setGravity(gravity);
-        LayoutParams ladingLayoutParams = (LayoutParams) binding.loadingLayout.getLayoutParams();
-        ladingLayoutParams.gravity = gravity;
-        binding.loadingLayout.setPadding(binding.loadingLayout.getPaddingLeft(), topPadding, binding.loadingLayout.getPaddingRight(), binding.loadingLayout.getPaddingBottom());
-        LayoutParams retryLayoutParams = (LayoutParams) binding.retryLayout.getLayoutParams();
-        retryLayoutParams.gravity = gravity;
-        binding.retryLayout.setPadding(binding.loadingLayout.getPaddingLeft(), topPadding, binding.loadingLayout.getPaddingRight(), binding.loadingLayout.getPaddingBottom());
-        LayoutParams emptyLayoutParams = (LayoutParams) binding.emptyLayout.getLayoutParams();
-        emptyLayoutParams.gravity = gravity;
-        binding.emptyLayout.setPadding(binding.loadingLayout.getPaddingLeft(), topPadding, binding.loadingLayout.getPaddingRight(), binding.loadingLayout.getPaddingBottom());
+        setStateGravity(binding.loadingLayout, gravity, topPadding);
+        setStateGravity(binding.retryLayout, gravity, topPadding);
+        setStateGravity(binding.emptyLayout, gravity, topPadding);
     }
 
     private void setChildGravity(View child, int gravity) {
@@ -214,37 +213,28 @@ public class LoadStateViewHolder extends ViewAnimator {
     }
 
     public void setContent(View content) {
-        if (getChildCount() == CHILD_SIZE) {
-            removeViewAt(CONTENT);
+        if (content == null) throw new IllegalArgumentException("content must not be null");
+        if (content == getContent()) return;
+        for (android.view.ViewParent p = this; p != null; p = p.getParent()) {
+            if (p == content) throw new IllegalArgumentException("content cannot contain this holder");
         }
+        if (content.getParent() == this) throw new IllegalArgumentException("content is a state view");
         ViewGroup parent = (ViewGroup) content.getParent();
-        ViewGroup.LayoutParams contentLayoutParams = content.getLayoutParams();
-        int index = parent.indexOfChild(content);
-        parent.removeView(content);
-        LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        addView(content, CONTENT, params);
-        parent.addView(this, index, contentLayoutParams);
+        boolean wrap = getParent() == null && parent != null;
+        ViewGroup.LayoutParams originalParams = content.getLayoutParams();
+        int index = parent == null ? -1 : parent.indexOfChild(content);
+        if (parent != null) parent.removeView(content);
+        int state = getDisplayedChild();
+        View old = getContent();
+        if (old != null) removeView(old);
+        addView(content, CONTENT, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+        setDisplayedChild(state);
+        if (wrap) parent.addView(this, index, originalParams);
     }
 
-    public void setEmptyView(View emptyView) {
-        removeViewAt(NO_DATA);
-        if (emptyView.getParent() != null) {
-            throw new IllegalArgumentException("child already has parent");
-        }
-        LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT);
-        addView(emptyView, NO_DATA, params);
-    }
+    public void setEmptyView(View emptyView) { replaceStateView(NO_DATA, emptyView); }
 
-    public void setRetryView(View retryView) {
-        removeViewAt(RETRY);
-        if (retryView.getParent() != null) {
-            throw new IllegalArgumentException("child already has parent");
-        }
-        LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT);
-        addView(retryView, RETRY, params);
-    }
+    public void setRetryView(View retryView) { replaceStateView(RETRY, retryView); }
 
     protected ContentViewHolderBinding inflateLayout() {
         return ContentViewHolderBinding.inflate(LayoutInflater.from(getContext()), this);
@@ -255,6 +245,7 @@ public class LoadStateViewHolder extends ViewAnimator {
     }
 
     public void showLoading() {
+        binding.loadingText.setVisibility(VISIBLE);
         setDisplayedChild(LOADING);
     }
 
@@ -327,11 +318,10 @@ public class LoadStateViewHolder extends ViewAnimator {
 
 
     public void setNoDataPrompt(CharSequence noDataPrompt) {
-        this.noData = noDataPrompt.toString();
+        this.noData = noDataPrompt == null ? "" : noDataPrompt.toString();
         binding.noData.setText(noDataPrompt);
-        if (noDataPrompt instanceof SpannableString) {
-            binding.noData.setMovementMethod(OverLinkMovementMethod.getInstance());
-        }
+        binding.noData.setMovementMethod(noDataPrompt instanceof Spanned
+                ? OverLinkMovementMethod.getInstance() : null);
     }
 
     public TextView getNoDataTextView() {
@@ -356,5 +346,33 @@ public class LoadStateViewHolder extends ViewAnimator {
 
     public int getCurrentViewIndex() {
         return indexOfChild(getCurrentView());
+    }
+
+    private void setStateGravity(View view, int gravity, int topPadding) {
+        LayoutParams params = new LayoutParams((ViewGroup.MarginLayoutParams) view.getLayoutParams());
+        params.gravity = gravity;
+        view.setLayoutParams(params);
+        view.setPadding(view.getPaddingLeft(), topPadding, view.getPaddingRight(), view.getPaddingBottom());
+    }
+
+    private void replaceStateView(int index, View replacement) {
+        View old = getChildAt(index);
+        if (replacement == old) return;
+        // 先验证，再修改子树，拒绝参数时不能破坏原来的状态顺序。
+        if (replacement == null || replacement == this || replacement.getParent() != null) {
+            throw new IllegalArgumentException("replacement must be an unattached view");
+        }
+        for (android.view.ViewParent p = this; p != null; p = p.getParent()) {
+            if (p == replacement) throw new IllegalArgumentException("replacement cannot contain this holder");
+        }
+        int state = getDisplayedChild();
+        removeViewAt(index);
+        addView(replacement, index, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+        setDisplayedChild(state);
+    }
+
+    public void showLoadingNoText() {
+        binding.loadingText.setVisibility(GONE);
+        setDisplayedChild(LOADING);
     }
 }

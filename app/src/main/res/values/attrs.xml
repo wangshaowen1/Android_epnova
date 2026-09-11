@@ -172,6 +172,8 @@
     </declare-styleable>
 
     <declare-styleable name="RoundedImageView">
+        <!-- 默认静态快照；开启后保留源 Drawable 状态/动画，复用栅格缓存。 -->
+        <attr name="riv_preserve_drawable_state" format="boolean" />
         <attr name="riv_corner_radius" format="dimension" />
         <attr name="riv_corner_radius_top_left" format="dimension" />
         <attr name="riv_corner_radius_top_right" format="dimension" />
@@ -1113,4 +1115,12 @@
         <!--   形状高     -->
         <attr name="rating_star_height" format="dimension"/>
     </declare-styleable>
+    <declare-styleable name="NavBarView">
+        <!-- 默认保留旧占位；window 使用当前窗口剩余导航栏 Insets，不包含键盘高度。 -->
+        <attr name="navBarInsetMode">
+            <enum name="legacy" value="0" />
+            <enum name="window" value="1" />
+        </attr>
+    </declare-styleable>
+
 </resources>
