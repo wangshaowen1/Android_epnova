@@ -6,6 +6,7 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.FragmentManager
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.Constants
+import com.kuaigeglobal.epnova.common.ext.topActivity
 import com.kuaigeglobal.epnova.core.network.apis.entity.PopupClaimInfo
 import com.kuaigeglobal.epnova.databinding.DialogCreatingEncouragementBinding
 import com.kuaigeglobal.epnova.router.AppRouter
@@ -62,7 +63,16 @@ class CreatingEncouragementDialog : BaseVMDialogFragment<DialogCreatingEncourage
             }
             R.id.btnNext -> {
                 mRealVM.reportDisplay {
-                    AppRouter.jump(mRealVM.data?.jumpUri)
+                    when (mRealVM.data?.jumpType) {
+                        1 -> { // 站内跳转
+                            AppRouter.jump(mRealVM.data?.jumpUri)
+                        }
+                        else -> {
+                            topActivity?.let { context ->
+                                AppRouter.jump(context, mRealVM.data?.jumpUri.orEmpty(), true)
+                            }
+                        }
+                    }
                     dismissAllowingStateLoss()
                 }
             }
