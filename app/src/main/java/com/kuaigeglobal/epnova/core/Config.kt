@@ -60,8 +60,8 @@ class Config : NetworkChangedListener {
         private set
     var isDevelopmentMode: Boolean by MmkvDelegate(DEVELOPMENT_MODE, false) { mmkv }
         private set
-    /** 剧集详情页默认使用宫格布局，用户切换后通过 MMKV 持久化。 */
-    var isGridMode: Boolean by MmkvDelegate(IS_GRID_MODE, true) { mmkv }
+    /** 剧集详情页默认使用列表布局，用户切换后通过 MMKV 持久化。 */
+    var isGridMode: Boolean by MmkvDelegate(IS_GRID_MODE, false) { mmkv }
         private set
     var lang: String by MmkvDelegate(APP_LANG, LocaleHelper.resolveDefaultLanguage()) { mmkv }
         private set

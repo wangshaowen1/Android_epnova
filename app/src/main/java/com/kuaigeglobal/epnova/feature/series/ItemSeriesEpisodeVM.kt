@@ -97,6 +97,16 @@ class ItemSeriesEpisodeVM(
         return data.get()?.publishBadgeBackground() ?: R.drawable.bg_60_000000_round
     }
 
+    @DrawableRes
+    fun createBackground(): Int {
+        return data.get()?.createBackground() ?: R.drawable.bg_333333_r54
+    }
+
+    @ColorRes
+    fun createTextColor(): Int {
+        return data.get()?.createTextColor() ?: R.color.text_color_3_dark
+    }
+
     init {
         viewModelScope.launch {
             eventVm.switchStatus.collect {

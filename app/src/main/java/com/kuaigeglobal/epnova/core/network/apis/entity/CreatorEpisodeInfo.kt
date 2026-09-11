@@ -91,7 +91,10 @@ data class CreatorEpisodeInfo(
     val creationStageText: String? = null,
 
     /**剧集封面角标类型。*/
-    val coverBadgeType: Int? = null
+    val coverBadgeType: Int? = null,
+
+    /** 是否可创作 1.5.0 列表模式下使用 */
+    var nextCreate: Boolean? = null
 ) : Parcelable {
 
     /**剧集生成任务结果，查询单集时可能返回资产或分镜生成结果。*/
@@ -213,6 +216,24 @@ data class CreatorEpisodeInfo(
             R.drawable.bg_fixed_white_1_round
         } else {
             R.drawable.bg_60_000000_round
+        }
+    }
+
+    @DrawableRes
+    fun createBackground(): Int {
+        return if (nextCreate == true) {
+            R.drawable.bg_5a6afe_r54
+        } else {
+            R.drawable.bg_333333_r54
+        }
+    }
+
+    @ColorRes
+    fun createTextColor(): Int {
+        return if (nextCreate == true) {
+            R.color.white
+        } else {
+            R.color.text_color_4_dark
         }
     }
 
