@@ -47,7 +47,9 @@ class Config : NetworkChangedListener {
     }
 
     // --- 使用 MmkvDelegate 代理所有基础属性 ---
-
+    /** 将与隐私协议同意区分开，1.5.0埋点改动 首次打开app上报 */
+    var reportFirstOpenApp: Boolean by MmkvDelegate(REPORT_FIRST_OPEN_APP, true) { mmkv }
+        private set
     var isFirstOpenApp: Boolean by MmkvDelegate(FIRST_OPEN_APP, true) { mmkv }
         private set
     var appsFlyerId: String by MmkvDelegate(APPSFLYER_ID, "") { mmkv }
@@ -209,11 +211,18 @@ class Config : NetworkChangedListener {
     }
 
     fun markAppOpenedWithNotify() {
-        if (this.isFirstOpenApp) {
-            EventManager.onFirebaseTrack(FirebaseEvent.Category.FIRST_OPEN, FirebaseEvent.Action.OPEN)
-        }
+//        if (this.isFirstOpenApp) {
+//            EventManager.onFirebaseTrack(FirebaseEvent.Category.FIRST_OPEN, FirebaseEvent.Action.OPEN)
+//        }
         this.isFirstOpenApp = false
         notifyChange(FIRST_OPEN_APP)
+    }
+
+    fun reportFirstOpenApp() {
+        if (this.reportFirstOpenApp) {
+            EventManager.onFirebaseTrack(FirebaseEvent.Category.FIRST_OPEN, FirebaseEvent.Action.OPEN)
+        }
+        this.reportFirstOpenApp = false
     }
 
     // --- 保留对外的方法名，由于用了委托，大部分直接赋值即可自动写入 MMKV ---
@@ -435,6 +444,7 @@ class Config : NetworkChangedListener {
 
     companion object {
         private const val PREF_ID = "CONFIG_DATA" // 修正：原来 SP 传入的名称就是这个
+        const val REPORT_FIRST_OPEN_APP = "reportFirstOpenApp"
         const val FIRST_OPEN_APP: String = "firstOpenApp"
         private const val OBJECT_ID = "objectId"
         const val IN_REVIEW: String = "inReview"

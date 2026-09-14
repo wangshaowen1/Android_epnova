@@ -238,6 +238,7 @@ class App : BaseApp() {
             topActivityRef?.clear()
             activityStacks.addLast(activity.javaClass.name)
             topActivityRef = WeakReference(activity)
+            Config.get().reportFirstOpenApp()
             Logger.i("activities=$activityStacks")
         }
 

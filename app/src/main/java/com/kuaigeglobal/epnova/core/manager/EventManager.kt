@@ -226,6 +226,13 @@ object EventManager {
         AnalyticsHelper.logEvent(event, params)
     }
 
+    fun reportRegister() {
+        onFirebaseTrack(
+            FirebaseEvent.Category.REGISTER,
+            FirebaseEvent.Action.REGISTER
+        )
+    }
+
 }
 
 /**
@@ -241,6 +248,8 @@ object FirebaseEvent {
         const val FIRST_OPEN = "app_first_open"
         /** 登录。 */
         const val LOGIN = "login"
+        /** 注册 */
+        const val REGISTER = " register"
         /** 首页。 */
         const val HOME = "home"
         /** 创作流程。 */
@@ -295,6 +304,8 @@ object FirebaseEvent {
 
     /** Action：同名 Action 可在不同 Event 下复用，具体 Label 规则见各常量注释。 */
     object Action {
+        /** [register] 用户首次生成uid时上报*/
+        const val REGISTER = "register"
         /** [first_open] 新用户首次打开 App。 */
         const val OPEN = "open"
         /** [login] 欢迎弹窗展示；值按表格保留为 welcom_popup_show。 */

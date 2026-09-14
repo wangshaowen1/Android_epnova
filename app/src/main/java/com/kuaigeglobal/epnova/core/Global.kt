@@ -3,6 +3,7 @@ package com.kuaigeglobal.epnova.core
 import com.kuaigeglobal.epnova.App
 import com.kuaigeglobal.epnova.common.ext.ioScope
 import com.kuaigeglobal.epnova.core.manager.AppsFlyerManager
+import com.kuaigeglobal.epnova.core.manager.EventManager
 import com.kuaigeglobal.epnova.core.manager.OverseasFingerprintManager
 import com.kuaigeglobal.epnova.core.network.apis.ApiException
 import com.kuaigeglobal.epnova.core.network.apis.ApiFactory
@@ -74,7 +75,7 @@ object Global {
             val fingerprint = OverseasFingerprintManager.getFingerprint(App.instance)
             response(ApiFactory.apiService.loginBygGuest(fingerprint), {
                 if (data?.isNewRegistration() == true) {
-                    AppsFlyerManager.logCompleteRegistration()
+                    EventManager.reportRegister()
                 }
                 onSuccess?.invoke(data)
             }, {
