@@ -9,9 +9,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.core.network.apis.response.Section
 import com.kuaigeglobal.epnova.databinding.ItemShelfContainerBinding
 import com.kuaigeglobal.epnova.feature.home.bookshelf.BookShelfListActivity
+import com.nhsd.basic.ext.getResString
 import com.nhsd.basic.ext.setOnSingleClickListener
 
 class ShelfContainerAdapter : ListAdapter<Section, ShelfContainerAdapter.ShelfViewHolder>(DIFF_CALLBACK) {
@@ -88,6 +90,11 @@ class ShelfContainerAdapter : ListAdapter<Section, ShelfContainerAdapter.ShelfVi
             })
             binding.dragContainer.setOnDragStateChangedListener { readyToTrigger, isReset ->
                 binding.ivShelfPullArrow.animate().cancel()
+                binding.tvShelfPull.text = (if (readyToTrigger) {
+                    R.string.release_to_view_more
+                } else {
+                    R.string.pull_to_view_more
+                }).getResString()
                 val rotation = if (readyToTrigger) 180f else 0f
                 if (isReset) {
                     binding.ivShelfPullArrow.rotation = rotation

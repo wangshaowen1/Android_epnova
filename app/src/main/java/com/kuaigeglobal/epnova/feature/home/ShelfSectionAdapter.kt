@@ -7,8 +7,10 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.core.network.apis.entity.BookShelfSectionInfo
 import com.kuaigeglobal.epnova.databinding.ItemShelfContainerBinding
+import com.nhsd.basic.ext.getResString
 import com.nhsd.basic.ext.setOnSingleClickListener
 import com.nhsd.basic.item.BindingViewHolder
 
@@ -77,6 +79,11 @@ class ShelfSectionAdapter(
             })
             viewBinding.dragContainer.setOnDragStateChangedListener { readyToTrigger, isReset ->
                 viewBinding.ivShelfPullArrow.animate().cancel()
+                viewBinding.tvShelfPull.text = (if (readyToTrigger) {
+                    R.string.release_to_view_more
+                } else {
+                    R.string.pull_to_view_more
+                }).getResString()
                 val rotation = if (readyToTrigger) 180f else 0f
                 if (isReset) {
                     viewBinding.ivShelfPullArrow.rotation = rotation

@@ -113,6 +113,8 @@
     <string name="generated_on">生成时间: %s</string>
     <string name="all">全部</string>
     <string name="swipe_left_more">左滑更多</string>
+    <string name="pull_to_view_more">拉动查看更多</string>
+    <string name="release_to_view_more">松开查看更多</string>
 
     <string name="sure">确认</string>
     <string name="allow">去开启</string>
