@@ -59,10 +59,7 @@ class RewardWelcomeDialog : BaseDialogFragment<DialogRewardWelcomeBinding>() {
                 FirebaseEvent.Category.LOGIN,
                 FirebaseEvent.Action.WELCOME_CONFIRM_CLICK
             )
-            if (User.get().isLogin) {
-                dismissAllowingStateLoss()
-                return@setOnSingleClickListener
-            }
+            dismissAllowingStateLoss()
             AppNavigator.checkRealLogin(false)
         }
 
