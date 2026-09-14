@@ -3,6 +3,7 @@ package com.kuaigeglobal.epnova.feature.main
 import android.Manifest.permission.POST_NOTIFICATIONS
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.util.SparseArray
@@ -447,7 +448,7 @@ class MainActivity : BaseViewModelActivity<ActivityMainBinding, MainViewModel>()
 
 
     override fun setTranslucentStatus() {
-        setupTranslucentStatus(false, getThemeColor(R.attr.bgColor2))
+        setupTranslucentStatus(false, Color.TRANSPARENT)
     }
 
     private fun checkUpgrade() {
