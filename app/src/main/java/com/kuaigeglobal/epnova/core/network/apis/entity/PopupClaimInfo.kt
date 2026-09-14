@@ -13,5 +13,6 @@ data class PopupClaimInfo(
     val imageUrl: String?,
     val workTitle: String?,
     val jumpType: Int?,
-    val jumpUri: String?
+    val jumpUri: String?,
+    val workId: String?
 ) : Parcelable
