@@ -192,7 +192,7 @@ data class CreatorEpisodeInfo(
                 CreatorPublishStatus.REVIEWING -> R.color.func_warning_dark
                 CreatorPublishStatus.PASSED -> R.color.func_success_dark
                 CreatorPublishStatus.FAILED -> R.color.func_failure_dark
-                CreatorPublishStatus.UNPUBLISHED -> R.color.func_special_dark
+                CreatorPublishStatus.UNPUBLISHED -> R.color.func_warning_dark
                 else -> R.color.text_color_3_dark
             }
         } else {
