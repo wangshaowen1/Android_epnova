@@ -12,13 +12,13 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
         android:orientation="horizontal">
 
         <ImageView
             android:layout_width="16dp"
             android:layout_height="16dp"
             android:importantForAccessibility="no"
+            android:layout_gravity="top"
             android:src="@drawable/icon_member_privilege_no" />
 
         <TextView
@@ -31,6 +31,6 @@
             android:text="@{item.content()}"
             android:textColor="?attr/textColor1"
             android:textSize="15sp"
-            tools:text="Includes 600 monthly bonus" />
+            tools:text="Includes 600 monthly bonus\nIncludes 600 monthly bonus\nIncludes 600 monthly bonus" />
     </LinearLayout>
 </layout>
