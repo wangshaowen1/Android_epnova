@@ -104,7 +104,7 @@
     <string name="all">ทั้งหมด</string>
     <string name="swipe_left_more">ปัดซ้ายเพื่อดูเพิ่มเติม</string>
     <string name="pull_to_view_more">ดึงเพื่อดูเพิ่มเติม</string>
-    <string name="release_to_view_more">ปล่อยเพื่อดูเพิ่มเติม</string>
+    <string name="release_to_view_more">ปล่อยเพื่อดู\nเพิ่มเติม</string>
     <string name="sure">ยืนยัน</string>
     <string name="allow">เปิดใช้งาน</string>
     <string name="permission_application_failed">การขอสิทธิ์ล้มเหลว</string>

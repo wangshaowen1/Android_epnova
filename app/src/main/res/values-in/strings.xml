@@ -104,7 +104,7 @@
     <string name="all">Semua</string>
     <string name="swipe_left_more">Geser kiri untuk lainnya</string>
     <string name="pull_to_view_more">Tarik untuk melihat lebih banyak</string>
-    <string name="release_to_view_more">Lepaskan untuk melihat lebih banyak</string>
+    <string name="release_to_view_more">Lepaskan untuk melihat\nlebih banyak</string>
     <string name="sure">Konfirmasi</string>
     <string name="allow">Aktifkan</string>
     <string name="permission_application_failed">Gagal Meminta Izin</string>
