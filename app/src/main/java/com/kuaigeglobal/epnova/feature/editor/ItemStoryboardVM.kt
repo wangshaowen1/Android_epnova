@@ -172,10 +172,6 @@ class ItemStoryboardVM(
                 val subtitleInfo = withContext(Dispatchers.IO) {
                     ApiFactory.apiService.subtitleTaskStatus(StoryboardIdBody(storyboardId)).data
                 }
-                // 轮询结果回写
-                subtitleInfo?.videoUrl?.takeIf { it.isNotEmpty() }?.let {
-                    storyboard.videoUrl = it
-                }
                 storyboard.subtitle = subtitleInfo
                 data.notifyChange()
                 if (subtitleInfo?.generateFailed == true) {
