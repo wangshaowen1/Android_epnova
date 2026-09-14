@@ -254,6 +254,8 @@ object FirebaseEvent {
         const val HOME = "home"
         /** 创作流程。 */
         const val CREATE = "create"
+        /** 剧集列表 */
+        const val EPISODE_LIST = "episode_list"
         /** 发布。 */
         const val PUBLISH = "publish"
         /** 精选。 */
@@ -428,7 +430,7 @@ object FirebaseEvent {
         const val WORK_PLAY_SHOW = "work_play_show"
         /** [work_play] Keep Creating 按钮点击。 */
         const val CREATING_CLICK = "creating_click"
-        /** [work_play] Download 按钮点击。 */
+        /** [work_play]/[episode_list] Download 按钮点击。 */
         const val DOWNLOAD_CLICK = "download_click"
         /** [my_list] My List 页面展示。 */
         const val MY_LIST_SHOW = "my_list_show"
@@ -468,14 +470,18 @@ object FirebaseEvent {
         const val CREATE_SIMILAR_BTN_CLICK = "create_similar_btn_click"
         /** [encouragement_popup] 点击 Watch now 时 */
         const val WATCH_NOW_CLICK = "watch_now_click"
+        /** [episode_list] 剧集列表页曝光 */
+        const val EPISODE_LIST_SHOW = "episode_list_show"
+        /** [episode_list] 视图切换 */
+        const val VIEW_SWITCH_CLICK = "view_switch_click"
+        /** [episode_list] 点击创作 */
+        const val CREATE_CLICK = "create_click"
     }
 
     /** 表格中已枚举的固定 Label 值；ID、数量、自定义集数和风格名等动态值由调用处传入。 */
     object Value {
         /** 登录方式：Google。 */
         const val LOGIN_GOOGLE = "google"
-        /** 登录方式：Apple。 */
-        const val LOGIN_APPLE = "apple"
         /** 结果：成功。 */
         const val RESULT_SUCCESS = "success"
         /** 结果：失败。 */
@@ -496,16 +502,6 @@ object FirebaseEvent {
         const val CREATION_INSPIRATION = "inspiration"
         /** 创作来源：小说改编。 */
         const val CREATION_NOVEL = "novel"
-        /** 固定集数：30。 */
-        const val EPISODES_30 = "30"
-        /** 固定集数：45。 */
-        const val EPISODES_45 = "45"
-        /** 固定集数：60。 */
-        const val EPISODES_60 = "60"
-        /** 视频比例：16:9。 */
-        const val VIDEO_RATIO_16_9 = "16:9"
-        /** 视频比例：9:16。 */
-        const val VIDEO_RATIO_9_16 = "9:16"
         /** 分镜模型：Dynamic Comic。 */
         const val MODEL_DYNAMIC_COMIC = "dynamic_comic"
         /** 分镜模型；大小写按表格原值保留。 */
@@ -514,24 +510,6 @@ object FirebaseEvent {
         const val CURRENCY_COINS = "coins"
         /** 货币类型：Credits。 */
         const val CURRENCY_CREDITS = "credits"
-        /** 商品货币数量：500。 */
-        const val CURRENCY_AMOUNT_500 = "500"
-        /** 商品货币数量：1000。 */
-        const val CURRENCY_AMOUNT_1000 = "1000"
-        /** 商品货币数量：1500。 */
-        const val CURRENCY_AMOUNT_1500 = "1500"
-        /** 商品货币数量：2000。 */
-        const val CURRENCY_AMOUNT_2000 = "2000"
-        /** 商品货币数量：3000。 */
-        const val CURRENCY_AMOUNT_3000 = "3000"
-        /** 商品货币数量：4000。 */
-        const val CURRENCY_AMOUNT_4000 = "4000"
-        /** 商品货币数量：5000。 */
-        const val CURRENCY_AMOUNT_5000 = "5000"
-        /** 商品货币数量：8000。 */
-        const val CURRENCY_AMOUNT_8000 = "8000"
-        /** 商品货币数量：10000。 */
-        const val CURRENCY_AMOUNT_10000 = "10000"
         /** 页面/弹窗触发场景：点击创作按钮。 */
         const val TRIGGER_CREATE_BTN = "create_btn"
         /** 页面/弹窗触发场景：余额不足。 */
@@ -586,5 +564,9 @@ object FirebaseEvent {
         const val PUSH_TYPE_CREATION_PROCESS = "creation_process"
         /** 推送类型：发布成功。 */
         const val PUSH_TYPE_PUBLISH_SUCCESS = "publish_success"
+        /** 列表模式 - 宫格 */
+        const val SWITCH_GRID = "grid"
+        /** 列表模式 - 列表 */
+        const val SWITCH_LIST = "list"
     }
 }

@@ -165,6 +165,11 @@ class SeriesActivity :
         val layoutManager = if (gridMode) {
             GridLayoutManager(this, 3)
         } else {
+            EventManager.onFirebaseTrack(
+                FirebaseEvent.Category.EPISODE_LIST,
+                FirebaseEvent.Action.EPISODE_LIST_SHOW,
+                mRealVM.workId
+            )
             LinearLayoutManager(this)
         }
 
@@ -212,6 +217,14 @@ class SeriesActivity :
                         val videoUrl = episode.videoUrl?.takeIf { it.isNotEmpty() }
                             ?: return@collect
                         downloadVideoUrl = videoUrl
+
+                        EventManager.onFirebaseTrack(
+                            FirebaseEvent.Category.EPISODE_LIST,
+                            FirebaseEvent.Action.DOWNLOAD_CLICK,
+                            episode.workId,
+                            episode.storyId
+                        )
+
                         if (episode.hasWatermark == true) {
                             downloadVideo(false)
                         } else {
@@ -429,6 +442,11 @@ class SeriesActivity :
                 Config.get().switchMode()
                 applyEpisodeLayout(preserveScrollPosition = true)
                 updateSwitchTypeIcon()
+                EventManager.onFirebaseTrack(
+                    FirebaseEvent.Category.EPISODE_LIST,
+                    FirebaseEvent.Action.VIEW_SWITCH_CLICK,
+                    if (Config.get().isGridMode) FirebaseEvent.Value.SWITCH_GRID else FirebaseEvent.Value.SWITCH_LIST
+                )
             }
 
             R.id.btnMore -> {

@@ -7,6 +7,8 @@ import androidx.databinding.ObservableBoolean
 import androidx.lifecycle.viewModelScope
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.base.item.AppItemViewModel
+import com.kuaigeglobal.epnova.core.manager.EventManager
+import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
 import com.kuaigeglobal.epnova.core.network.apis.entity.CreatorEpisodeInfo
 import com.kuaigeglobal.epnova.feature.works.ItemMultipleChoiceEventsViewModel
 import com.nhsd.basic.ext.showToast
@@ -51,6 +53,16 @@ class ItemSeriesEpisodeVM(
         if (data.get()?.isCompleted() == true) {
             eventVm.postEvent(SeriesEpisodeEvent.Download(this))
         }
+    }
+
+    fun onCreateClick() {
+        EventManager.onFirebaseTrack(
+            FirebaseEvent.Category.EPISODE_LIST,
+            FirebaseEvent.Action.CREATE_CLICK,
+            data.get()?.workId,
+            data.get()?.storyId
+        )
+        onClick()
     }
 
     fun isDeleteLocked(): Boolean {
