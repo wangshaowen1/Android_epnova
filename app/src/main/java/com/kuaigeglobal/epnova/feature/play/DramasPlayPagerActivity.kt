@@ -537,7 +537,8 @@ class DramasPlayPagerActivity :
             FirebaseEvent.Category.PLAYER,
             FirebaseEvent.Action.PLAYER_SHOW,
             workId,
-            source
+            source,
+            mRealVM.currentWorkContext.value?.isMine()
         )
     }
 
@@ -556,7 +557,8 @@ class DramasPlayPagerActivity :
                 FirebaseEvent.Category.PLAYER,
                 FirebaseEvent.Action.PLAYER_VALID_PLAY,
                 workId,
-                storyId
+                storyId,
+                mRealVM.currentWorkContext.value?.isMine()
             )
         }
         reportPlayerProcessIfNeeded(progressPercent, 25, FirebaseEvent.Value.PROCESS_25, workId, storyId)

@@ -426,7 +426,8 @@ class CreatorPlayerActivity :
             FirebaseEvent.Category.PLAYER,
             FirebaseEvent.Action.PLAYER_SHOW,
             workId,
-            FirebaseEvent.Value.SOURCE_TOP_EARNERS
+            FirebaseEvent.Value.SOURCE_TOP_EARNERS,
+            mRealVM.showOwnerActions.get()
         )
     }
 
@@ -446,7 +447,8 @@ class CreatorPlayerActivity :
                 FirebaseEvent.Category.PLAYER,
                 FirebaseEvent.Action.PLAYER_VALID_PLAY,
                 workId,
-                storyId
+                storyId,
+                mRealVM.showOwnerActions.get()
             )
         }
         reportPlayerProcessIfNeeded(progressPercent, 25, FirebaseEvent.Value.PROCESS_25, workId, storyId)
