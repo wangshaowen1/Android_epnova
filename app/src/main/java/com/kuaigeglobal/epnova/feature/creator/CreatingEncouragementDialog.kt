@@ -7,6 +7,8 @@ import androidx.fragment.app.FragmentManager
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.Constants
 import com.kuaigeglobal.epnova.common.ext.topActivity
+import com.kuaigeglobal.epnova.core.manager.EventManager
+import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
 import com.kuaigeglobal.epnova.core.network.apis.entity.PopupClaimInfo
 import com.kuaigeglobal.epnova.databinding.DialogCreatingEncouragementBinding
 import com.kuaigeglobal.epnova.router.AppRouter
@@ -53,6 +55,12 @@ class CreatingEncouragementDialog : BaseVMDialogFragment<DialogCreatingEncourage
 
     override fun onPrepareView() {
         super.onPrepareView()
+        EventManager.onFirebaseTrack(
+            FirebaseEvent.Category.ENCOURAGEMENT_POPUP,
+            FirebaseEvent.Action.POPUP_SHOW,
+            mRealVM.data?.title,
+            mRealVM.data?.workId
+        )
     }
 
     override fun <Data> onClick(view: View, data: Data?) {
@@ -62,6 +70,7 @@ class CreatingEncouragementDialog : BaseVMDialogFragment<DialogCreatingEncourage
                 dismissAllowingStateLoss()
             }
             R.id.btnNext -> {
+                EventManager.onFirebaseTrack(FirebaseEvent.Category.ENCOURAGEMENT_POPUP, FirebaseEvent.Action.WATCH_NOW_CLICK)
                 mRealVM.reportDisplay {
                     when (mRealVM.data?.jumpType) {
                         1 -> { // 站内跳转

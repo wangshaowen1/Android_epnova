@@ -275,6 +275,8 @@ object FirebaseEvent {
         const val RATING = "rating"
         /** 合成播放页。 */
         const val WORK_PLAY = "work_play"
+        /** 鼓励发行弹窗 */
+        const val ENCOURAGEMENT_POPUP = "encouragement_popup"
     }
 
     /** GA4 事件参数 key，顺序与表格的 Action、Label 1～4 一致。 */
@@ -403,7 +405,7 @@ object FirebaseEvent {
         const val AD_PLAY_RESULT = "ad_play_result"
         /** [paid_episode] 剧集解锁结果；Label1=解锁状态，Label2=解锁来源。 */
         const val AD_UNLOCK_RESULT = "ad_unlock_result"
-        /** [first_purchase_credits]/[first_purchase_coin]/[rating] 弹窗展示；首充事件 Label1=触发场景。 */
+        /** [first_purchase_credits]/[first_purchase_coin]/[rating]/[encouragement_popup] 弹窗展示；首充事件 Label1=触发场景。 */
         const val POPUP_SHOW = "popup_show"
         /** [first_purchase_credits]/[first_purchase_coin] 首充购买按钮点击。 */
         const val PAY_NOW_CLICK = "pay_now_click"
@@ -453,6 +455,8 @@ object FirebaseEvent {
         const val CREATE_SIMILAR_PAGE_SHOW = "create_similar_page_show"
         /** [hit_scripts] 开始创作同款；Label1=案例名，Label2=集数，Label3=比例，Label4=风格英文名。 */
         const val CREATE_SIMILAR_BTN_CLICK = "create_similar_btn_click"
+        /** [encouragement_popup] 点击 Watch now 时 */
+        const val WATCH_NOW_CLICK = "watch_now_click"
     }
 
     /** 表格中已枚举的固定 Label 值；ID、数量、自定义集数和风格名等动态值由调用处传入。 */
