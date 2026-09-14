@@ -24,11 +24,13 @@ class AllDramasFragment :
 
     companion object {
         private const val ARG_BOOKSHELF_SECTION_LIST = "bookshelfSectionList"
+        private const val ARG_TAB_NAME = "tabName"
 
-        fun newInstance(bookshelfSectionList: List<BookShelfSectionInfo>): AllDramasFragment =
+        fun newInstance(bookshelfSectionList: List<BookShelfSectionInfo>, tabName: String): AllDramasFragment =
             AllDramasFragment().apply {
                 arguments = Bundle().apply {
                     putParcelableArrayList(ARG_BOOKSHELF_SECTION_LIST, ArrayList(bookshelfSectionList))
+                    putString(ARG_TAB_NAME, tabName)
                 }
             }
     }
@@ -40,19 +42,22 @@ class AllDramasFragment :
         ).orEmpty()
     }
 
+    private val tabName by lazy { arguments?.getString(ARG_TAB_NAME) }
+
     // 底部 All Dramas 作品分页列表：展示封面、标题和播放量，点击作品进入播放页。
     // 数据来自 /app/bookshelf/v2/all/dramas/page，经 ViewModel.feedFlow 提交给此 Adapter。
-    private val homeAdapter by lazy { HomeAdapter() }
+    private val homeAdapter by lazy { HomeAdapter(tabName, getString(R.string.tab_all_dramas)) }
     // 底部作品列表上方固定的 All Dramas 标题。
     private val titleAdapter by lazy { WaterfallTitleAdapter() }
     // 上方配置区块：每个区块展示自己的标题和横滑预览作品。
     private val shelfSectionAdapter by lazy {
-        ShelfSectionAdapter { section ->
+        ShelfSectionAdapter(tabName) { section, entryType ->
             section.bookshelfSectionCode?.let { sectionCode ->
                 BookShelfListActivity.start(
                     activity = activity,
                     bookshelfSectionCode = sectionCode.toString(),
-                    bookshelfName = section.bookshelfName
+                    bookshelfName = section.bookshelfName,
+                    entryType = entryType
                 )
             }
         }

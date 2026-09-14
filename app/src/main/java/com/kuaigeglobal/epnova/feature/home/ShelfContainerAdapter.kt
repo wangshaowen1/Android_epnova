@@ -16,7 +16,9 @@ import com.kuaigeglobal.epnova.feature.home.bookshelf.BookShelfListActivity
 import com.nhsd.basic.ext.getResString
 import com.nhsd.basic.ext.setOnSingleClickListener
 
-class ShelfContainerAdapter : ListAdapter<Section, ShelfContainerAdapter.ShelfViewHolder>(DIFF_CALLBACK) {
+class ShelfContainerAdapter(
+    private val tabName: String?
+) : ListAdapter<Section, ShelfContainerAdapter.ShelfViewHolder>(DIFF_CALLBACK) {
 
     // 性能优化：共享内部 RecyclerView 的 ViewPool，减少对象创建
     private val viewPool = RecyclerView.RecycledViewPool()
@@ -53,7 +55,7 @@ class ShelfContainerAdapter : ListAdapter<Section, ShelfContainerAdapter.ShelfVi
     inner class ShelfViewHolder(private val binding: ItemShelfContainerBinding) : RecyclerView.ViewHolder(binding.root) {
 
         // 优化：每个 ViewHolder 只初始化一次 InnerAdapter
-        private val innerAdapter = InnerHorizontalAdapter()
+        private val innerAdapter = InnerHorizontalAdapter(tabName)
         val innerLayoutManager = LinearLayoutManager(binding.root.context, LinearLayoutManager.HORIZONTAL, false).apply {
             // 优化：预加载几个屏幕外的 Item，提升横滑流畅度
             initialPrefetchItemCount = 4
@@ -68,23 +70,25 @@ class ShelfContainerAdapter : ListAdapter<Section, ShelfContainerAdapter.ShelfVi
         }
 
         fun bind(data: Section, savedState: Parcelable?) {
+            innerAdapter.bookshelfName = data.bookshelfName
             binding.tvShelfTitle.text = data.bookshelfName
-            val openShelfList = {
+            val openShelfList = { entryType: String ->
                 BookShelfListActivity.start(
                     activity = binding.root.context as? Activity,
                     bookshelfSectionCode = data.bookshelfSectionCode,
-                    bookshelfName = data.bookshelfName
+                    bookshelfName = data.bookshelfName,
+                    entryType = entryType
                 )
             }
             binding.tvAll.setOnSingleClickListener {
-                openShelfList()
+                openShelfList(BookShelfListActivity.ENTRY_CLICK_ALL)
             }
             binding.dragContainer.setOnPullTriggerListener({
                 // 末尾仍能向左滚动才说明内容超过一屏，避免短列表触发跳转。
                 if (!binding.rvInnerHorizontal.canScrollHorizontally(-1)) {
                     false
                 } else {
-                    openShelfList()
+                    openShelfList(BookShelfListActivity.ENTRY_SWIPE)
                     true
                 }
             })

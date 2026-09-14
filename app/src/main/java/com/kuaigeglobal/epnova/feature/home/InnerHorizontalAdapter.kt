@@ -13,7 +13,10 @@ import com.kuaigeglobal.epnova.databinding.ItemBookShelfChildBinding
 import com.kuaigeglobal.epnova.feature.play.DramasPlayPagerActivity
 import com.nhsd.basic.item.BindingViewHolder
 
-class InnerHorizontalAdapter : ListAdapter<WorkVOInfo, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
+class InnerHorizontalAdapter(
+    private val tabName: String?,
+    var bookshelfName: String? = null
+) : ListAdapter<WorkVOInfo, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
     private val viewedDramaIds = mutableSetOf<String>()
 
     init {
@@ -43,8 +46,10 @@ class InnerHorizontalAdapter : ListAdapter<WorkVOInfo, RecyclerView.ViewHolder>(
     inner class ViewHolder(binding: ItemBookShelfChildBinding) : BindingViewHolder<ItemBookShelfChildBinding>(binding) {
 
         override fun bind(position: Int) {
+            // 横滑书架共享回收池时，从当前绑定的 Adapter 获取作品及埋点上下文。
+            val ownerAdapter = bindingAdapter as? InnerHorizontalAdapter ?: return
             val item = try {
-                getItem(position)
+                ownerAdapter.getItem(position)
             } catch (e: IndexOutOfBoundsException) {
                 null
             }
@@ -65,7 +70,9 @@ class InnerHorizontalAdapter : ListAdapter<WorkVOInfo, RecyclerView.ViewHolder>(
                         EventManager.onFirebaseTrack(
                             FirebaseEvent.Category.HOME,
                             FirebaseEvent.Action.DRAMA_CLICK,
-                            validItem.workId
+                            label1 = validItem.workId,
+                            label2 = ownerAdapter.tabName,
+                            label3 = ownerAdapter.bookshelfName
                         )
                         DramasPlayPagerActivity.start(
                             workId = validItem.workId,

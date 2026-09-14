@@ -10,13 +10,15 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.core.network.apis.entity.BookShelfSectionInfo
 import com.kuaigeglobal.epnova.databinding.ItemShelfContainerBinding
+import com.kuaigeglobal.epnova.feature.home.bookshelf.BookShelfListActivity
 import com.nhsd.basic.ext.getResString
 import com.nhsd.basic.ext.setOnSingleClickListener
 import com.nhsd.basic.item.BindingViewHolder
 
 /** 配置驱动的横滑区块，复用现有书架布局和作品 Adapter。 */
 class ShelfSectionAdapter(
-    private val onOpenShelf: (BookShelfSectionInfo) -> Unit
+    private val tabName: String?,
+    private val onOpenShelf: (BookShelfSectionInfo, String) -> Unit
 ) : ListAdapter<ShelfSectionUiModel, ShelfSectionAdapter.ShelfViewHolder>(DIFF_CALLBACK) {
 
     private val scrollStates = mutableMapOf<Int, Parcelable?>()
@@ -45,7 +47,7 @@ class ShelfSectionAdapter(
         private val viewBinding: ItemShelfContainerBinding
     ) : BindingViewHolder<ItemShelfContainerBinding>(viewBinding) {
 
-        private val innerAdapter = InnerHorizontalAdapter()
+        private val innerAdapter = InnerHorizontalAdapter(tabName)
         private val innerLayoutManager = LinearLayoutManager(
             viewBinding.root.context, LinearLayoutManager.HORIZONTAL, false
         ).apply { initialPrefetchItemCount = 4 }
@@ -66,14 +68,17 @@ class ShelfSectionAdapter(
             if (changedSection) saveScrollState()
             boundSectionCode = sectionCode
             val savedState = scrollStates[sectionCode]
+            innerAdapter.bookshelfName = item.config.bookshelfName
             viewBinding.tvShelfTitle.text = item.config.bookshelfName
-            viewBinding.tvAll.setOnSingleClickListener { onOpenShelf(item.config) }
+            viewBinding.tvAll.setOnSingleClickListener {
+                onOpenShelf(item.config, BookShelfListActivity.ENTRY_CLICK_ALL)
+            }
             viewBinding.dragContainer.setOnPullTriggerListener({
                 // 末尾仍能向左滚动才说明内容超过一屏，避免短列表触发跳转。
                 if (!viewBinding.rvInnerHorizontal.canScrollHorizontally(-1)) {
                     false
                 } else {
-                    onOpenShelf(item.config)
+                    onOpenShelf(item.config, BookShelfListActivity.ENTRY_SWIPE)
                     true
                 }
             })

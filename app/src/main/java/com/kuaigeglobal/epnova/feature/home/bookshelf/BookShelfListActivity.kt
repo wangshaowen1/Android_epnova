@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import androidx.lifecycle.lifecycleScope
 import com.kuaigeglobal.epnova.common.ext.startRefreshWithAdapter
+import com.kuaigeglobal.epnova.core.manager.EventManager
 import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
 import com.kuaigeglobal.epnova.databinding.ActivityAllListBinding
 import com.kuaigeglobal.epnova.feature.play.DramasPlayPagerActivity
@@ -45,7 +46,16 @@ class BookShelfListActivity : BaseViewModelActivity<ActivityAllListBinding, Book
         )
         val bookshelfSectionCode = intent.getStringExtra(EXTRA_BOOKSHELF_SECTION_CODE)
         val bookshelfName = intent.getStringExtra(EXTRA_BOOKSHELF_NAME)
+        val entryType = intent.getStringExtra(EXTRA_ENTRY_TYPE)
         bookshelfName?.takeIf { it.isNotBlank() }?.let(mRealVM.toolbar.mTitle::set)
+        if (!entryType.isNullOrBlank()) {
+            EventManager.onFirebaseTrack(
+                FirebaseEvent.Category.HOME,
+                FirebaseEvent.Action.HOME_SHELF_ALL_ENTER,
+                bookshelfName,
+                entryType
+            )
+        }
         mRealVM.load(bookshelfSectionCode, bookshelfName)
         lifecycleScope.launch {
             mRealVM.works.collectLatest { pagingData ->
@@ -57,17 +67,23 @@ class BookShelfListActivity : BaseViewModelActivity<ActivityAllListBinding, Book
     companion object {
         private const val EXTRA_BOOKSHELF_SECTION_CODE = "extra_bookshelf_section_code"
         private const val EXTRA_BOOKSHELF_NAME = "extra_bookshelf_name"
+        private const val EXTRA_ENTRY_TYPE = "extra_shelf_entry_type"
+
+        const val ENTRY_CLICK_ALL = "click all"
+        const val ENTRY_SWIPE = "swipe"
 
         fun start(
             activity: Activity?,
             bookshelfSectionCode: String? = null,
-            bookshelfName: String? = null
+            bookshelfName: String? = null,
+            entryType: String? = null
         ) {
             activity ?: return
             activity.startActivity(
                 Intent(activity, BookShelfListActivity::class.java).apply {
                     bookshelfSectionCode?.let { putExtra(EXTRA_BOOKSHELF_SECTION_CODE, it) }
                     bookshelfName?.let { putExtra(EXTRA_BOOKSHELF_NAME, it) }
+                    entryType?.let { putExtra(EXTRA_ENTRY_TYPE, it) }
                 }
             )
         }

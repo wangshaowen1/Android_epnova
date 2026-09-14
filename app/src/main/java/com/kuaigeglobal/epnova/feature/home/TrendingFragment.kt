@@ -39,11 +39,13 @@ class TrendingFragment : BaseViewModelFragment<FragmentTrendingBinding, HomeView
 
     companion object {
         private const val ARG_BOOKSHELF_SECTION_LIST = "bookshelfSectionList"
+        private const val ARG_TAB_NAME = "tabName"
 
-        fun newInstance(bookshelfSectionList: List<BookShelfSectionInfo>): TrendingFragment =
+        fun newInstance(bookshelfSectionList: List<BookShelfSectionInfo>, tabName: String): TrendingFragment =
             TrendingFragment().apply {
                 arguments = Bundle().apply {
                     putParcelableArrayList(ARG_BOOKSHELF_SECTION_LIST, ArrayList(bookshelfSectionList))
+                    putString(ARG_TAB_NAME, tabName)
                 }
             }
     }
@@ -55,9 +57,10 @@ class TrendingFragment : BaseViewModelFragment<FragmentTrendingBinding, HomeView
         ).orEmpty()
     }
 
-    private val homeAdapter by lazy { HomeAdapter() }
+    private val tabName by lazy { arguments?.getString(ARG_TAB_NAME) }
+    private val homeAdapter by lazy { HomeAdapter(tabName) }
     private val titleAdapter by lazy { WaterfallTitleAdapter() }
-    private val shelfContainerAdapter by lazy { ShelfContainerAdapter() }
+    private val shelfContainerAdapter by lazy { ShelfContainerAdapter(tabName) }
     private lateinit var bannerAdapter: BaseBannerAdapter<BannerInfo>
 
     override fun onPrepareView() {
@@ -183,6 +186,7 @@ class TrendingFragment : BaseViewModelFragment<FragmentTrendingBinding, HomeView
 
     private fun updateWaterfallSection(sections: List<Section>) {
         val waterfallSection = sections.find { it.bookshelfType == 2 }
+        homeAdapter.bookshelfName = waterfallSection?.bookshelfName
         waterfallSection?.let { titleAdapter.setTitle(it.bookshelfName) }
         titleAdapter.isVisible = waterfallSection != null
         mRealVM.currentWaterfallId.value = waterfallSection?.bookshelfId ?: ""

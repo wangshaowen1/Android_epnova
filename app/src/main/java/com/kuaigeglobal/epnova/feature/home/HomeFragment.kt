@@ -82,12 +82,13 @@ class HomeFragment : BaseViewModelFragment<FragmentHomeBinding, HomeTabsViewMode
         }
         val pages = Config.get().bookShelfConfigList.mapNotNull { config ->
             val sections = config.bookshelfSectionList.orEmpty()
+            val tabName = config.bookshelfTabName.orEmpty()
             val fragment: Fragment = when (config.bookshelfTab) {
-                1 -> TrendingFragment.newInstance(sections)
-                2 -> AllDramasFragment.newInstance(sections)
+                1 -> TrendingFragment.newInstance(sections, tabName)
+                2 -> AllDramasFragment.newInstance(sections, tabName)
                 else -> return@mapNotNull null
             }
-            config.bookshelfTabName.orEmpty() to fragment
+            tabName to fragment
         }
         if (pages.isEmpty()) {
             when (val state = mRealVM.bookShelfConfigLoadState.value) {
@@ -132,6 +133,7 @@ class HomeFragment : BaseViewModelFragment<FragmentHomeBinding, HomeTabsViewMode
 
             override fun onPageSelected(position: Int) {
                 Log.d(TAG, "onPageSelected position=$position")
+                pages.getOrNull(position)?.first?.let(::reportTabExposure)
             }
 
             override fun onPageScrollStateChanged(state: Int) {
@@ -147,8 +149,17 @@ class HomeFragment : BaseViewModelFragment<FragmentHomeBinding, HomeTabsViewMode
         viewPager.setCurrentItem(0, false)
         binding.magicIndicator.onPageSelected(0)
         binding.magicIndicator.onPageScrolled(0, 0f, 0)
+        reportTabExposure(pages.first().first)
         viewPager.removeTheRipples()
         binding.lsv.showContent()
+    }
+
+    private fun reportTabExposure(tabName: String) {
+        EventManager.onFirebaseTrack(
+            FirebaseEvent.Category.HOME,
+            FirebaseEvent.Action.HOME_TAB_SHOW,
+            tabName
+        )
     }
 
     private fun dataUpdate() {

@@ -13,7 +13,10 @@ import com.kuaigeglobal.epnova.databinding.ItemHomeDramaBinding
 import com.kuaigeglobal.epnova.feature.play.DramasPlayPagerActivity
 import com.nhsd.basic.item.BindingViewHolder
 
-class HomeAdapter : PagingDataAdapter<WorkVOInfo, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
+class HomeAdapter(
+    private val tabName: String?,
+    var bookshelfName: String? = null
+) : PagingDataAdapter<WorkVOInfo, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
     private val viewedDramaIds = mutableSetOf<String>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -47,7 +50,9 @@ class HomeAdapter : PagingDataAdapter<WorkVOInfo, RecyclerView.ViewHolder>(DIFF_
                         EventManager.onFirebaseTrack(
                             FirebaseEvent.Category.HOME,
                             FirebaseEvent.Action.DRAMA_CLICK,
-                            item.workId
+                            label1 = item.workId,
+                            label2 = tabName,
+                            label3 = bookshelfName
                         )
                         DramasPlayPagerActivity.start(
                             workId = item.workId,
