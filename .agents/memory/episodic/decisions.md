@@ -205,3 +205,7 @@ STATIC：已核对两类商品接口路由、回调落盘先于网络、账号�
 ### 2026-09-11 GridImageLayout 尺寸计算内聚
 
 - 按用户要求，将仅服务当前控件的 GridImageGeometry 移为 GridImageLayout 内包级可见的 static final class Geometry，删除独立生产文件；测试改引用 GridImageLayout.Geometry，计算代码保持不变。同步四工程，提交仍暂停。
+
+### 2026-09-14 分镜预览切回生成中项的播放器回跳原因
+
+静态定位 `EditStoryboardVideoViewModel`：选择非完成分镜时直接 `clearMediaItems()`，Media3 清空最后一个媒体项可能回调 `STATE_ENDED`；监听器无条件调用 `playNext()`，而 `playNext()` 只判断 `videoUrl` 非空，没有判断 `videoGenerated`。重绘/生成中项可能保留旧 `videoUrl`，因此清空已完成项后会被误判为可播放并自动选回下一个已完成分镜，表现为点击生成中分镜后预览切不回去。本轮已将 `playNext()` 门禁收紧为仅 `videoGenerated == true` 且 `videoUrl` 非空才允许自动切换，避免 `clearMediaItems()` 触发的结束回调回跳；同时为视频轮询完成及外部分镜数据更新增加当前条目回调，仅当前分镜完成时重新执行 `select()` 装载新播放器媒体项；按项目规则未跑 Gradle。

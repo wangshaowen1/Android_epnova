@@ -175,7 +175,11 @@ class EditStoryboardVideoViewModel : AppRepositoryViewModel<EditStoryboardReposi
                     loadState.set(LoadStateViewHolder.NO_DATA)
                 } else {
                     list.mapIndexed { index, info ->
-                        ItemStoryboardVM(workId, storyId, info).apply {
+                        ItemStoryboardVM(workId, storyId, info) { item ->
+                            if (item === currentStoryboard.get()) {
+                                item.select()
+                            }
+                        }.apply {
                             onItemClick.value = { v ->
                                 if (this != currentStoryboard.get()) {
                                     select()
@@ -246,7 +250,8 @@ class EditStoryboardVideoViewModel : AppRepositoryViewModel<EditStoryboardReposi
     private fun playNext() {
         val current = currentStoryboard.get()
         val storyboard = current?.data?.get()
-        if (storyboard?.videoUrl.isNullOrEmpty()) return
+        // clearMediaItems 也可能触发 STATE_ENDED，生成中分镜即使保留旧 URL 也不能自动切下一个分镜
+        if (storyboard?.videoGenerated != true || storyboard.videoUrl.isNullOrEmpty()) return
         val currentIndex = adapter.items.indexOf(current)
         val next = if (currentIndex > -1 && currentIndex < adapter.items.size - 1) adapter.getItem(currentIndex + 1) else adapter.getItem(0)
         next.select()
@@ -389,7 +394,17 @@ class EditStoryboardVideoViewModel : AppRepositoryViewModel<EditStoryboardReposi
     }
 
     fun updateStoryboard(storyboardInfo: SimpleStoryboardInfo) {
-        adapter.items.firstOrNull { it.data.get()?.storyboardId == storyboardInfo.storyboardId }?.data?.set(storyboardInfo)
+        val item = adapter.items.firstOrNull { it.data.get()?.storyboardId == storyboardInfo.storyboardId }
+        val wasGenerated = item?.data?.get()?.videoGenerated == true
+        item?.data?.set(storyboardInfo)
+        if (
+            item === currentStoryboard.get() &&
+            !wasGenerated &&
+            storyboardInfo.videoGenerated &&
+            storyboardInfo.videoUrl.isNullOrEmpty().not()
+        ) {
+            item.select()
+        }
     }
 
     fun getStoryInfo(callback: (story: EpisodeInfo?) -> Unit) {

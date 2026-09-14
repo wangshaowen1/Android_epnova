@@ -31,7 +31,8 @@ class ItemStoryboardVM(
      * 剧集 id
      */
     val storyId: String?,
-    data: SimpleStoryboardInfo?
+    data: SimpleStoryboardInfo?,
+    private val onVideoGenerated: ((ItemStoryboardVM) -> Unit)? = null
 ) : AppItemViewModel<SimpleStoryboardInfo>(data) {
     val selected by lazy { ObservableBoolean(false) }
     private var loopGenStatusJob: Job? = null
@@ -116,6 +117,7 @@ class ItemStoryboardVM(
         val taskId = storyboard?.taskId
         if (taskId.isNullOrEmpty()) return
         loopGenStatusJob = launch {
+            val wasGenerating = storyboard.videoGenerating
             runCatching {
                 val taskStatus = withContext(Dispatchers.IO) { ApiFactory.apiService.workStoryboardSingleStatus(TaskIdBody(taskId, 72)).data }
                 storyboard.genStatusVideo = taskStatus?.genStatus
@@ -131,6 +133,10 @@ class ItemStoryboardVM(
                 delay(3000)
                 loopGenStatus()
             } else if (storyboard.videoGenerated) {
+                if (wasGenerating) {
+                    // 轮询只更新数据，当前分镜需重新走 select 才会更新播放器媒体项
+                    onVideoGenerated?.invoke(this@ItemStoryboardVM)
+                }
                 loopGenSubtitleStatus()
             }
         }
