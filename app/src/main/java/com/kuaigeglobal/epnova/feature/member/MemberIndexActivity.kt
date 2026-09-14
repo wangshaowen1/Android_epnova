@@ -20,8 +20,10 @@ import com.kuaigeglobal.epnova.databinding.ActivityMemberIndexBinding
 import com.kuaigeglobal.epnova.feature.web.SimpleBrowserActivity
 import com.kuaigeglobal.epnova.widget.decoration.SpaceDecoration
 import com.nhsd.basic.BaseViewModelActivity
+import com.nhsd.basic.BasicEdgeToEdgeConfig
 import com.nhsd.basic.ext.dp
 import com.nhsd.basic.ext.getResString
+import com.nhsd.basic.ext.setupTranslucentStatus
 
 /** 会员订阅首页
  * @createtime 2026年08月17日 09:50
@@ -29,6 +31,17 @@ import com.nhsd.basic.ext.getResString
  */
 
 class MemberIndexActivity : BaseViewModelActivity<ActivityMemberIndexBinding, MemberIndexViewModel>() {
+
+    // 单独设置当前页面内容可延伸到导航栏区域
+    override val edgeToEdgeStrategy: BasicEdgeToEdgeConfig.Strategy
+        get() = super.edgeToEdgeStrategy.copy(
+            rootInsetsMode = BasicEdgeToEdgeConfig.RootInsetsMode.NONE,
+        )
+
+    override fun setTranslucentStatus() {
+        // 导航栏图标浅色、背景透明
+        setupTranslucentStatus(false, Color.TRANSPARENT)
+    }
 
     companion object {
         fun start(

@@ -3,6 +3,7 @@ package com.kuaigeglobal.epnova.feature.member
 import android.graphics.Color
 import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
+import androidx.databinding.ObservableInt
 import androidx.lifecycle.viewModelScope
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.Purchase
@@ -76,6 +77,9 @@ class MemberIndexViewModel : AppRepositoryViewModel<AppRepository>() {
             300189,
             300191,
         )
+
+        private const val SUBSCRIBE_NOW_TOP_MARGIN_MIN = 24
+        private const val SUBSCRIBE_NOW_TOP_MARGIN_MAX = 36
     }
 
     val mToolbarVM = ToolbarViewModel(
@@ -123,6 +127,12 @@ class MemberIndexViewModel : AppRepositoryViewModel<AppRepository>() {
      * PENDING、结果未知及恢复同步期间也保持 true，不能只覆盖网络 Loading 阶段。
      */
     val isSubscribing = ObservableBoolean(false)
+
+    /**
+     * subscribe_now顶部间距
+     * bottomHint 有文案则24dp 没有文案则36dp
+     */
+    val subscribeNowTopMargin = ObservableInt(SUBSCRIBE_NOW_TOP_MARGIN_MAX)
 
     /**
      * 底部补充描述文案
@@ -1325,6 +1335,7 @@ class MemberIndexViewModel : AppRepositoryViewModel<AppRepository>() {
         val plan = item?.data?.get()
         if (item == null || plan == null) {
             bottomHint.set("")
+            subscribeNowTopMargin.set(SUBSCRIBE_NOW_TOP_MARGIN_MAX)
             return
         }
 
@@ -1336,6 +1347,7 @@ class MemberIndexViewModel : AppRepositoryViewModel<AppRepository>() {
             else -> ""
         }
         bottomHint.set(hint)
+        subscribeNowTopMargin.set(if (hint.isBlank()) SUBSCRIBE_NOW_TOP_MARGIN_MAX else SUBSCRIBE_NOW_TOP_MARGIN_MIN)
     }
 
     private fun submitPrivileges(item: ItemMemberRechargeViewModel?) {

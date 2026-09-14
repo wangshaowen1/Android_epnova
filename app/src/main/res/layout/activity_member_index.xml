@@ -8,6 +8,7 @@
         <variable
             name="layout"
             type="com.kuaigeglobal.epnova.feature.member.MemberIndexViewModel" />
+        <import type="android.text.TextUtils"/>
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -146,42 +147,52 @@
                 tools:itemCount="2"
                 tools:listitem="@layout/item_member_recharge" />
 
-            <TextView
-                style="@style/Text.Regular"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="34dp"
-                android:textColor="@color/text_color_3_dark"
-                android:textSize="12sp"
-                android:text="@{layout.bottomHint}"
-                tools:text="@string/member_cancel_anytime" />
-
-            <TextView
-                android:id="@+id/btn_member_subscribe"
-                singleClick="@{layout.clickHandler::onClick}"
-                style="@style/Text.Bold"
+            <LinearLayout
+                marginTopDp="@{layout.subscribeNowTopMargin}"
+                tools:layout_marginTop="36dp"
+                android:orientation="vertical"
+                android:paddingTop="10dp"
                 android:layout_width="match_parent"
-                android:layout_height="44dp"
-                android:layout_marginTop="12dp"
-                android:background="@drawable/selector_creation_button"
-                android:enabled="@{layout.canSubscribe}"
-                android:gravity="center"
-                android:textColor="@color/text_color_1_dark"
-                android:textSize="16sp"
-                android:text="@{layout.planMode ? @string/member_upgrade_now : @string/member_subscribe_now}"
-                tools:text="@string/member_subscribe_now" />
+                android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/tv_member_service"
-                style="@style/Text.Regular"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="12dp"
-                android:textColor="@color/text_color_3_dark"
-                android:textSize="12sp"
-                android:text="@string/member_service_and_policy" />
+                <TextView
+                    style="@style/Text.Regular"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:textColor="@color/text_color_3_dark"
+                    android:textSize="12sp"
+                    android:text="@{layout.bottomHint}"
+                    android:layout_marginBottom="12dp"
+                    setVisible="@{!TextUtils.isEmpty(layout.bottomHint)}"
+                    tools:visibility="visible"
+                    tools:text="@string/member_cancel_anytime" />
+
+                <TextView
+                    android:id="@+id/btn_member_subscribe"
+                    singleClick="@{layout.clickHandler::onClick}"
+                    style="@style/Text.Bold"
+                    android:layout_width="match_parent"
+                    android:layout_height="44dp"
+                    android:background="@drawable/selector_creation_button"
+                    android:enabled="@{layout.canSubscribe}"
+                    android:gravity="center"
+                    android:textColor="@color/text_color_1_dark"
+                    android:textSize="16sp"
+                    android:text="@{layout.planMode ? @string/member_upgrade_now : @string/member_subscribe_now}"
+                    tools:text="@string/member_subscribe_now" />
+
+                <TextView
+                    android:id="@+id/tv_member_service"
+                    style="@style/Text.Regular"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="12dp"
+                    android:textColor="@color/text_color_3_dark"
+                    android:textSize="12sp"
+                    android:text="@string/member_service_and_policy" />
+            </LinearLayout>
         </LinearLayout>
 
         <include
