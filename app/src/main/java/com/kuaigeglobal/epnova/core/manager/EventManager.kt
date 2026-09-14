@@ -478,8 +478,6 @@ object FirebaseEvent {
         const val CREATE_CLICK = "create_click"
         /** [home] 首页home曝光。 */
         const val HOME_TAB_SHOW = "home_tab_show"
-        /** [home] 首页剧封面点击。 */
-        const val HOME_DRAMA_CLICK = "home_drama_click"
         /** [home] 书架列表详情页曝光；Label1=书架名称，Label2=进入方式（click all/swipe）。 */
         const val HOME_SHELF_ALL_ENTER = "shelf_all_enter"
     }
