@@ -520,7 +520,8 @@ class EditStoryboardVideoViewModel : AppRepositoryViewModel<EditStoryboardReposi
     }
 
     private fun updatePublishLocked() {
-        publishLocked.set(storyInfo?.isPublishedOrUnderReview() == true)
+        // 已上架作品可直接重绘，不进行拦截
+//        publishLocked.set(storyInfo?.isPublishedOrUnderReview() == true)
     }
 
 }

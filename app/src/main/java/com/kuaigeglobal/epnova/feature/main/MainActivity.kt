@@ -416,7 +416,7 @@ class MainActivity : BaseViewModelActivity<ActivityMainBinding, MainViewModel>()
         if (interceptor?.invoke() == true) {
             return
         }
-
+        mRealVM.claimCreatingEncouragementPopup()
         // 4. 【执行切换】
         action()
     }

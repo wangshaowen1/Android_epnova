@@ -20,6 +20,11 @@ import com.kuaigeglobal.epnova.feature.play.more.ShareShortDramaViewModel
 
 class MainViewModel : ShareShortDramaViewModel<AppRepository>() {
 
+    companion object {
+        // 请求限制15s内一次
+        private const val CLAIM_POPUP_REQUEST_INTERVAL_MS = 15_000L
+    }
+
     //显示隐藏底部
     val showBottomBar = ObservableBoolean(true)
 
@@ -29,7 +34,7 @@ class MainViewModel : ShareShortDramaViewModel<AppRepository>() {
 
     private var fetchingUserInfo = false
     private var claimingPopup = false
-    private var claimedPopupUserId: String? = null
+    private var lastClaimPopupRequestTime = 0L
 
     //当前显示的tab是第几个
     val showTab = ObservableInt(0)
@@ -51,21 +56,18 @@ class MainViewModel : ShareShortDramaViewModel<AppRepository>() {
     }
 
     fun claimCreatingEncouragementPopup() {
-        val userId = User.get().id?.takeIf { it.isNotBlank() } ?: return
-        if (claimingPopup || claimedPopupUserId == userId) return
-
+        val currentTime = System.currentTimeMillis()
+        if (claimingPopup || (currentTime - lastClaimPopupRequestTime < CLAIM_POPUP_REQUEST_INTERVAL_MS)) return
+        lastClaimPopupRequestTime = currentTime
         claimingPopup = true
         request(
             apiBlock = { mRepo.api.claimPopup() },
-            showToast = false,
+            showToast = true,
             onError = { claimingPopup = false }
         ) {
             claimingPopup = false
-            claimedPopupUserId = userId
-            if (User.get().id == userId) {
-                data?.takeIf { it.showPopup == 1 }?.let {
-                    _creatingEncouragementPopup.value = it
-                }
+            data?.takeIf { it.showPopup == 1 }?.let {
+                _creatingEncouragementPopup.value = it
             }
         }
     }

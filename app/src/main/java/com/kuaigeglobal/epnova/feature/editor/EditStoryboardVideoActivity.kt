@@ -2,6 +2,7 @@ package com.kuaigeglobal.epnova.feature.editor
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import androidx.activity.OnBackPressedCallback
@@ -28,8 +29,10 @@ import com.kuaigeglobal.epnova.feature.works.MyCreationsFragment
 import com.kuaigeglobal.epnova.feature.play.more.DownloadMethodDialog
 import com.kuaigeglobal.epnova.feature.series.SeriesActivity
 import com.nhsd.basic.BaseViewModelActivity
+import com.nhsd.basic.BasicEdgeToEdgeConfig
 import com.nhsd.basic.bus.observeEvents
 import com.nhsd.basic.ext.isActive
+import com.nhsd.basic.ext.setupTranslucentStatus
 import com.nhsd.basic.ext.showToast
 
 /**
@@ -41,6 +44,17 @@ class EditStoryboardVideoActivity : BaseViewModelActivity<ActivityEditStoryboard
         override fun handleOnBackPressed() {
             handleBackPressed()
         }
+    }
+
+    // 单独设置当前页面内容可延伸到导航栏区域
+    override val edgeToEdgeStrategy: BasicEdgeToEdgeConfig.Strategy
+        get() = super.edgeToEdgeStrategy.copy(
+            rootInsetsMode = BasicEdgeToEdgeConfig.RootInsetsMode.NONE,
+        )
+
+    override fun setTranslucentStatus() {
+        // 导航栏图标浅色、背景透明
+        setupTranslucentStatus(false, Color.TRANSPARENT)
     }
 
     companion object {
