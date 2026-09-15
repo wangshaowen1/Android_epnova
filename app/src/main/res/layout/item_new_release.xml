@@ -77,9 +77,10 @@
                 android:maxLines="2"
                 android:text="@{item.data.workTitle}"
                 android:textColor="?attr/textColor1"
-                tools:text="Bound by Vendetta: Sleeping with the Enemy" />
+                tools:text="Bound by Vendetta: Sleeping with the Enemyby Vendetta: Sleeping with the Enemy" />
 
             <TextView
+                android:layout_marginTop="2dp"
                 style="@style/Text12.Outfit.Regular"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -88,6 +89,11 @@
                 android:text="@{item.data.nickName}"
                 android:textColor="?attr/textColor3"
                 tools:text="Sarah" />
+
+            <View
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_0"/>
 
             <TextView
                 style="@style/Text12.Outfit.Regular"

@@ -31,7 +31,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:shapeAppearance="@style/roundStyle_tr12"
+            app:shapeAppearance="@style/roundStyle_r8"
             tools:src="@drawable/img_default_cover_3_4" />
 
         <TextView
@@ -53,7 +53,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="30dp"
-            android:background="@drawable/gradient_top_00_000000_bottom_60_000000"
+            android:background="@drawable/gradient_top_00_000000_bottom_60_000000_br8"
             app:layout_constraintBottom_toBottomOf="@id/ivCover" />
 
         <TextView
@@ -70,21 +70,21 @@
             app:layout_constraintEnd_toEndOf="@id/ivCover"
             tools:text="7.6k" />
 
+       <!-- android:background="@drawable/bg_fill_color_1_br8"-->
         <TextView
             android:id="@+id/tv_name"
             style="@style/Text.Regular"
             android:textSize="13sp"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:background="@drawable/bg_fill_color_1_br8"
             android:ellipsize="end"
             android:maxLines="2"
-            android:padding="@dimen/spacing_m"
+            android:layout_marginTop="@dimen/spacing_s"
             android:text="@{item.data.workTitle}"
             android:textColor="?attr/textColor1"
             app:layout_constraintEnd_toEndOf="@id/ivCover"
             app:layout_constraintStart_toStartOf="@id/ivCover"
             app:layout_constraintTop_toBottomOf="@id/ivCover"
-            tools:text="都市丽人柳如烟" />
+            tools:text="都市丽人柳如烟都市丽人柳如烟都市丽人柳如烟都市丽人柳如烟都市丽人柳如烟都市丽人柳如烟" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

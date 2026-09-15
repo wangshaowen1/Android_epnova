@@ -29,7 +29,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@{item.descriptionText}"
-            android:textColor="?attr/textColor4"
+            android:textColor="?attr/textColor1"
             tools:text="Your drama is live! EpNova is now finding your first viewers EpNova is now finding your first viewers" />
 
         <com.kuaigeglobal.epnova.widget.PhotoGridView
