@@ -119,7 +119,7 @@
     <string name="generated_on">Generated: %s</string>
     <string name="all">All</string>
     <string name="swipe_left_more">Swipe left for more</string>
-    <string name="pull_to_view_more">Pull to view more</string>
+    <string name="pull_to_view_more">Pull to view\nmore</string>
     <string name="release_to_view_more">Release to view \n more</string>
 
     <string name="sure">Confirm</string>
