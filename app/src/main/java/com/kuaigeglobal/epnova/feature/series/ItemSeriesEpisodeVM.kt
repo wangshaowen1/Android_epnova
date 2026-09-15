@@ -56,12 +56,6 @@ class ItemSeriesEpisodeVM(
     }
 
     fun onCreateClick() {
-        EventManager.onFirebaseTrack(
-            FirebaseEvent.Category.EPISODE_LIST,
-            FirebaseEvent.Action.CREATE_CLICK,
-            data.get()?.workId,
-            data.get()?.storyId
-        )
         onClick()
     }
 

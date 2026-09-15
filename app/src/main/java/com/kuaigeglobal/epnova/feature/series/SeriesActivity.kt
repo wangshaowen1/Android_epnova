@@ -208,6 +208,12 @@ class SeriesActivity :
             eventVm.events.collect { event ->
                 when (event) {
                     is SeriesEpisodeEvent.Click -> {
+                        EventManager.onFirebaseTrack(
+                            FirebaseEvent.Category.EPISODE_LIST,
+                            FirebaseEvent.Action.CREATE_CLICK,
+                            event.item.data.get()?.workId,
+                            event.item.data.get()?.storyId
+                        )
                         //点击查看
                         clickToView(event.item.data.get(), event.position)
                     }

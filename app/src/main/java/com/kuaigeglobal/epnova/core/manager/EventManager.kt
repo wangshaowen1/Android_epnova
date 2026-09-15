@@ -572,5 +572,9 @@ object FirebaseEvent {
         const val SWITCH_GRID = "grid"
         /** 列表模式 - 列表 */
         const val SWITCH_LIST = "list"
+        /** 公司创作 */
+        const val SYSTEM_CREATED = "system_created"
+        /** 用户创作 */
+        const val USER_CREATED = "user_created"
     }
 }

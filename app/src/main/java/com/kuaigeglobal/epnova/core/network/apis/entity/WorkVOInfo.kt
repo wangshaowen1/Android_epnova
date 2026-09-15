@@ -32,9 +32,15 @@ data class WorkVOInfo(
     val totalEpisodeCnt: Int? = null,
     val lastPlayTime: Long? = null,
     val collectionTime: Long? = null,
+    /** 作品来源：1-公司创作，2-用户创作' */
+    val workSource: Int? = null,
 ) {
     fun isMine(): Boolean {
         return User.get().isSameId(userId)
+    }
+
+    fun isUserCreated(): Boolean {
+        return (workSource ?: 0) == 2
     }
 
     fun getFormatPlaycount(): String? {

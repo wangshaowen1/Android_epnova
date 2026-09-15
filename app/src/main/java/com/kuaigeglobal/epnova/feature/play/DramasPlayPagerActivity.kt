@@ -538,7 +538,7 @@ class DramasPlayPagerActivity :
             FirebaseEvent.Action.PLAYER_SHOW,
             workId,
             source,
-            mRealVM.currentWorkContext.value?.isMine()
+            if (mRealVM.currentWorkContext.value?.isUserCreated() == true) FirebaseEvent.Value.USER_CREATED else FirebaseEvent.Value.SYSTEM_CREATED
         )
     }
 
@@ -558,7 +558,7 @@ class DramasPlayPagerActivity :
                 FirebaseEvent.Action.PLAYER_VALID_PLAY,
                 workId,
                 storyId,
-                mRealVM.currentWorkContext.value?.isMine()
+                if (mRealVM.currentWorkContext.value?.isUserCreated() == true) FirebaseEvent.Value.USER_CREATED else FirebaseEvent.Value.SYSTEM_CREATED
             )
         }
         reportPlayerProcessIfNeeded(progressPercent, 25, FirebaseEvent.Value.PROCESS_25, workId, storyId)
