@@ -736,7 +736,7 @@
                                android:gravity="center"
                                android:minHeight="22dp"
                                android:paddingHorizontal="6dp"
-                               android:text="@{`+`+layout.unMessageNum}"
+                               android:text="@{layout.unMessageNum > 99 ? `+99` : `+` + layout.unMessageNum}"
                                android:textColor="?attr/textColor1"
                                android:textSize="12sp"
                                tools:text="+1000" />
@@ -785,7 +785,7 @@
                                android:gravity="center"
                                android:minHeight="22dp"
                                android:paddingHorizontal="6dp"
-                               android:text="@{`+`+layout.unFeedbackNum}"
+                               android:text="@{layout.unFeedbackNum > 99 ? `+99` : `+` + layout.unFeedbackNum}"
                                android:textColor="?attr/textColor1"
                                android:textSize="12sp"
                                tools:text="+1000" />
