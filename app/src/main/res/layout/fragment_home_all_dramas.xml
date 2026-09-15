@@ -36,8 +36,8 @@
                     android:layout_marginHorizontal="@dimen/spacing_l"
                     android:orientation="vertical"
                     android:overScrollMode="never"
-                    app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
-                    app:spanCount="2"
+                    app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                    app:spanCount="3"
                     tools:listitem="@layout/item_home_drama" />
             </com.kuaigeglobal.epnova.widget.LoadStateViewHolder>
 

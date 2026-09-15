@@ -1,17 +1,18 @@
 package com.kuaigeglobal.epnova.feature.home
 
+import android.graphics.Rect
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.ConcatAdapter
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.core.network.apis.entity.BookShelfSectionInfo
 import com.kuaigeglobal.epnova.databinding.FragmentHomeAllDramasBinding
 import com.kuaigeglobal.epnova.feature.home.bookshelf.BookShelfListActivity
-import com.kuaigeglobal.epnova.widget.decoration.StaggeredGridSpaceItemDecoration
 import com.nhsd.basic.BaseViewModelFragment
 import com.nhsd.basic.ext.dp
 import com.nhsd.basic.ext.getParcelableArrayListValue
@@ -153,7 +154,32 @@ class AllDramasFragment :
         binding.recyclerView.apply {
             isFocusable = false
             itemAnimator = null
-            addItemDecoration(StaggeredGridSpaceItemDecoration(2, 10.dp, 0, 0))
+            val gridLayoutManager = layoutManager as GridLayoutManager
+            gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+                override fun getSpanSize(position: Int): Int {
+                    val itemAdapter = concatAdapter.getWrappedAdapterAndPosition(position).first
+                    // 作品每项占一列，其余书架、标题和页脚占满整行。
+                    return if (itemAdapter === homeAdapter) 1 else gridLayoutManager.spanCount
+                }
+            }
+            addItemDecoration(object : RecyclerView.ItemDecoration() {
+                override fun getItemOffsets(
+                    outRect: Rect,
+                    view: View,
+                    parent: RecyclerView,
+                    state: RecyclerView.State
+                ) {
+                    outRect.set(0, 0, 0, 0)
+                    val params = view.layoutParams as? GridLayoutManager.LayoutParams ?: return
+                    if (params.spanSize == 1) {
+                        val spacing = 8.dp
+                        val spanCount = gridLayoutManager.spanCount
+                        // 分摊列间距，保持三列卡片等宽且外侧不额外留白。
+                        outRect.left = params.spanIndex * spacing / spanCount
+                        outRect.right = spacing - (params.spanIndex + 1) * spacing / spanCount
+                    }
+                }
+            })
             adapter = concatAdapter
         }
 
