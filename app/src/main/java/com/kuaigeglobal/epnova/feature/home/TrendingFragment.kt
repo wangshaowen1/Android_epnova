@@ -160,6 +160,7 @@ class TrendingFragment : BaseViewModelFragment<FragmentTrendingBinding, HomeView
             MyMultiStatePagingFooterAdapter(
                 hostAdapter = homeAdapter,
                 displayEmptyState = false,
+                noMoreThreshold = 1,
                 refresh = { homeAdapter.retry() }
             )
         )
