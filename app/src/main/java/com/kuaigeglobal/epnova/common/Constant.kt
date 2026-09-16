@@ -28,4 +28,9 @@ object Constant {
         const val CREDITS = 1
         const val COIN = 2
     }
+
+    object Switch {
+        const val SHOW = 1
+        const val HIDE = 0
+    }
 }

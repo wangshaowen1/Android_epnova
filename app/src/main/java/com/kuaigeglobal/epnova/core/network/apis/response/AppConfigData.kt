@@ -176,6 +176,11 @@ class AppConfigData {
      * 20260828新增好评弹窗入口 APP 好评弹窗入口（0-关闭，1-第二集剧本生成页，2-剧集列表页，3-两个入口）。
      */
     val appRatingPopupEntrance: Int? = null
+
+    /**
+     * 20260916 1.5.0新增作品列表按钮展示开关，返回0-不展示、1-展示。
+     */
+    val workListButtonSwitch: Int? = null
 }
 
 data class SimpleBannerInfo(

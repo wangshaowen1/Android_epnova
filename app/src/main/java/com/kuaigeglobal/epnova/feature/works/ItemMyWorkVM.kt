@@ -9,6 +9,8 @@ import androidx.databinding.ObservableBoolean
 import androidx.lifecycle.viewModelScope
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.base.item.AppItemViewModel
+import com.kuaigeglobal.epnova.common.Constant
+import com.kuaigeglobal.epnova.core.Config
 import com.kuaigeglobal.epnova.core.network.apis.entity.CreatorWorkInfo
 import com.nhsd.basic.ext.getResColor
 import com.nhsd.basic.ext.getResString
@@ -25,6 +27,9 @@ class ItemMyWorkVM(
 
     //是否选中
     val isSelected = ObservableBoolean(false)
+
+    // 是否显示按钮
+    val switchShow = ObservableBoolean((Config.get().appConfig.workListButtonSwitch ?: 0) == Constant.Switch.SHOW)
 
     fun hasPublishBadge(): Boolean {
         return !data.get()?.publishBadgeText().isNullOrEmpty()
