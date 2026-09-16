@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
@@ -27,7 +28,7 @@
             android:maxLines="1"
             android:text="@{item.data.title}"
             android:textColor="?attr/textColor1"
-            tools:text="🎉 Your First Viewer!" />
+            tools:text="&#x1F389; Your First Viewer!" />
 
         <TextView
             style="@style/Text14.Outfit.Regular"
@@ -51,23 +52,60 @@
             android:gravity="center_vertical|end"
             android:orientation="horizontal">
 
-            <TextView
-                style="@style/Text12.Outfit.Regular"
-                android:layout_width="wrap_content"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:visibility="@{item.isWorkTitle ? View.GONE : View.VISIBLE}"
-                android:text="@{item.data.workTitle}"
-                android:textColor="?attr/textColor3"
-                tools:text="《I Am Not a God》" />
+                android:layout_weight="1"
+                android:visibility="@{item.isWorkTitle ? View.GONE : View.VISIBLE}">
 
+                <TextView
+                    android:id="@+id/tv_work_title_start"
+                    style="@style/Text12.Outfit.Regular"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="&#x300A;"
+                    android:textColor="?attr/textColor3"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/tv_work_title"
+                    app:layout_constraintHorizontal_bias="0"
+                    app:layout_constraintHorizontal_chainStyle="packed"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-            <View
-                android:layout_width="@dimen/dp_0"
-                android:layout_height="match_parent"
-                android:layout_weight="1" />
+                <TextView
+                    android:id="@+id/tv_work_title"
+                    style="@style/Text12.Outfit.Regular"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:text="@{item.data.workTitle}"
+                    android:textColor="?attr/textColor3"
+                    app:layout_constrainedWidth="true"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/tv_work_title_end"
+                    app:layout_constraintHorizontal_bias="0"
+                    app:layout_constraintHorizontal_chainStyle="packed"
+                    app:layout_constraintStart_toEndOf="@id/tv_work_title_start"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="I Am Not a God" />
 
+                <TextView
+                    android:id="@+id/tv_work_title_end"
+                    style="@style/Text12.Outfit.Regular"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="&#x300B;"
+                    android:textColor="?attr/textColor3"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/tv_work_title"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <TextView
+                android:layout_marginLeft="4dp"
                 style="@style/Text12.Outfit.Regular"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

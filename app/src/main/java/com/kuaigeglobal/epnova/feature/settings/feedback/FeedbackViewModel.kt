@@ -202,7 +202,7 @@ class FeedbackViewModel : AppRepositoryViewModel<AppRepository>() {
     }
 
     fun statusColorRes(detail: FeedbackDetailData?): Int {
-        return if (hasReply(detail)) R.color.fixed_white_1 else R.color.color_ea9800
+        return if (hasReply(detail)) R.color.fixed_white_1 else R.color.fixed_white_1
     }
 
     fun feedbackSubmittedTime(createTime: String?): String {

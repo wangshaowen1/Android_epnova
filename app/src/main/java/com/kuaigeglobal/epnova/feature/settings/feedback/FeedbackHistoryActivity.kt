@@ -54,8 +54,7 @@ class FeedbackHistoryActivity :
             adapter = feedbackHistoryAdapter.withLoadStateFooter(
                 MyMultiStatePagingFooterAdapter(
                     hostAdapter = feedbackHistoryAdapter,
-                    loadMoreLoadEnd = "",
-                    displayEmptyState = false
+                    displayEmptyState = false,
                 ) {
                     feedbackHistoryAdapter.retry()
                 }

@@ -52,8 +52,7 @@ class NotificationsActivity :
             adapter = notificationsAdapter.withLoadStateFooter(
                 MyMultiStatePagingFooterAdapter(
                     hostAdapter = notificationsAdapter,
-                    loadMoreLoadEnd = "",
-                    displayEmptyState = false
+                    displayEmptyState = false,
                 ) {
                     notificationsAdapter.retry()
                 }
