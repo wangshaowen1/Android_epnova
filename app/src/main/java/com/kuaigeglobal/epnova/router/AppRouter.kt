@@ -197,7 +197,9 @@ object AppRouter : IRouter {
                 }
             }
 
-            else -> {}
+            else -> {
+                showToast(R.string.message_cannot_open)
+            }
         }
     }
 
