@@ -36,6 +36,7 @@ class BookShelfListActivity : BaseViewModelActivity<ActivityAllListBinding, Book
         binding.rvWorks.adapter = adapter.withLoadStateFooter(
             MyMultiStatePagingFooterAdapter(
                 hostAdapter = adapter,
+                noMoreThreshold = 1,
                 displayEmptyState = false,
                 refresh = { adapter.retry() }
             )

@@ -55,6 +55,7 @@ class FeedbackHistoryActivity :
                 MyMultiStatePagingFooterAdapter(
                     hostAdapter = feedbackHistoryAdapter,
                     displayEmptyState = false,
+                    noMoreThreshold = 1,
                 ) {
                     feedbackHistoryAdapter.retry()
                 }

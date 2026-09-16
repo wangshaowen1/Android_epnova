@@ -53,6 +53,7 @@ class NotificationsActivity :
                 MyMultiStatePagingFooterAdapter(
                     hostAdapter = notificationsAdapter,
                     displayEmptyState = false,
+                    noMoreThreshold = 1,
                 ) {
                     notificationsAdapter.retry()
                 }
