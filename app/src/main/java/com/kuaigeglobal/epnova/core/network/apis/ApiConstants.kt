@@ -1068,6 +1068,11 @@ object ApiConstants {
     const val GOOGLE_V2_CONFIRM = "trade/pay/google/v2/confirm"
 
     /**
+     * 支付失败事件上报
+     */
+    const val REPORT_PAYMENT_FAILURE = "trade/pay/order/reportFailure"
+
+    /**
      * 首页-搜索作品
      */
     const val HOME_SEARCH = "app/bookshelf/work/search"

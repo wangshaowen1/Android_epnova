@@ -27,6 +27,7 @@ import com.kuaigeglobal.epnova.core.network.apis.entity.OfficialConsultationInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.OrderStatusInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.OverseasDeviceFingerprint
 import com.kuaigeglobal.epnova.core.network.apis.entity.PaymentData
+import com.kuaigeglobal.epnova.core.network.apis.entity.PaymentFailureReportInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.PaymentInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.PopupClaimInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.GoogleV2PreOrderInfo
@@ -117,6 +118,7 @@ import com.kuaigeglobal.epnova.core.network.apis.request.MyWorkBody
 import com.kuaigeglobal.epnova.core.network.apis.request.OptimizeContentData
 import com.kuaigeglobal.epnova.core.network.apis.request.OptimizeRoleImageDescBody
 import com.kuaigeglobal.epnova.core.network.apis.request.OrderStatusBody
+import com.kuaigeglobal.epnova.core.network.apis.request.PaymentFailureReportBody
 import com.kuaigeglobal.epnova.core.network.apis.request.PagedBody
 import com.kuaigeglobal.epnova.core.network.apis.request.PlayEventBody
 import com.kuaigeglobal.epnova.core.network.apis.request.PollScriptBody
@@ -1569,6 +1571,12 @@ interface ApiService {
      */
     @POST(ApiConstants.GOOGLE_V2_CONFIRM)
     suspend fun googleV2ConfirmOrder(@Body body: GoogleV2ConfirmBody): ApiResponse<GoogleV2ConfirmInfo?>
+
+    /**
+     * 上报商店拉起失败、商品不可用或支付方式不可用事件。
+     */
+    @POST(ApiConstants.REPORT_PAYMENT_FAILURE)
+    suspend fun reportPaymentFailure(@Body body: PaymentFailureReportBody): ApiResponse<PaymentFailureReportInfo?>
 
     /**
      * 首页-搜索作品
