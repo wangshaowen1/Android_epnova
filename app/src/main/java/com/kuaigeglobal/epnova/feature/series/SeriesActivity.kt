@@ -120,6 +120,7 @@ class SeriesActivity :
                     displayedHeight = 400.dp,
                     refresh = { refresh() },
                     requestButtonTextAndImg = false,
+                    noMoreThreshold = Int.MAX_VALUE
                 )
             )
         }

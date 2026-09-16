@@ -64,6 +64,23 @@
                 app:shapeAppearanceOverlay="@style/roundStyle_r8"
                 tools:src="@drawable/img_default_cover_3_4" />
 
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/bg_60_000000_r8"
+                setVisible="@{item.data.episodeIsCreating}">
+                <com.airbnb.lottie.LottieAnimationView
+                    android:layout_gravity="center"
+                    isVisibleWithAnimation="@{item.data.episodeIsCreating}"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    app:lottie_autoPlay="true"
+                    app:lottie_fileName="loading_star/loading_star.json"
+                    app:lottie_imageAssetsFolder="loading_star/images"
+                    app:lottie_loop="true"
+                    app:lottie_repeatMode="reverse" />
+            </FrameLayout>
+
             <TextView
                 android:id="@+id/tvDuration"
                 android:layout_width="match_parent"
