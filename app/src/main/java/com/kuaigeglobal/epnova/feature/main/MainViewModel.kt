@@ -33,7 +33,6 @@ class MainViewModel : ShareShortDramaViewModel<AppRepository>() {
     val fromPage by lazy { mBundle.getString(Constants.Extra.FROM_PAGE) }
 
     private var fetchingUserInfo = false
-    private var claimingPopup = false
     private var lastClaimPopupRequestTime = 0L
 
     //当前显示的tab是第几个
@@ -56,16 +55,14 @@ class MainViewModel : ShareShortDramaViewModel<AppRepository>() {
     }
 
     fun claimCreatingEncouragementPopup() {
+        if (!User.get().isLogged) return
         val currentTime = System.currentTimeMillis()
-        if (claimingPopup || (currentTime - lastClaimPopupRequestTime < CLAIM_POPUP_REQUEST_INTERVAL_MS)) return
+        if (currentTime - lastClaimPopupRequestTime < CLAIM_POPUP_REQUEST_INTERVAL_MS) return
         lastClaimPopupRequestTime = currentTime
-        claimingPopup = true
         request(
             apiBlock = { mRepo.api.claimPopup() },
-            showToast = true,
-            onError = { claimingPopup = false }
+            showToast = true
         ) {
-            claimingPopup = false
             data?.takeIf { it.showPopup == 1 }?.let {
                 _creatingEncouragementPopup.value = it
             }

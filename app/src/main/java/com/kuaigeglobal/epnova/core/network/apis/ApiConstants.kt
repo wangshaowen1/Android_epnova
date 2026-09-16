@@ -4,9 +4,6 @@ import com.kuaigeglobal.epnova.BuildConfig
 
 object ApiConstants {
 
-    const val POPUP_CLAIM = "app/popup/claim"
-    const val POPUP_DISPLAY = "app/popup/display"
-
     //改地址
     //"http://hk308942lu51.vicp.fun"
     val BASE_URL: String = BuildConfig.SERVER_URL
@@ -1192,4 +1189,14 @@ object ApiConstants {
      * 角色形象列表
      */
     const val WORK_ASSET_ROLE_IMAGE_PAGE = "v2/work/asset/role/appearance/list"
+
+    /**
+     * 领取一个待展示弹窗
+     */
+    const val POPUP_CLAIM = "app/popup/claim"
+
+    /**
+     * 确认弹窗已展示
+     */
+    const val POPUP_DISPLAY = "app/popup/display"
 }
