@@ -14,6 +14,7 @@ data class PointConfigInfo(
     val pointNum: Long?,
     val givePointNum: Long?,
     val selectedStatus: Int?,
+    val isDefault: Int?,
     val pointMarketingTime: Long?,
     val pointMarketingTag: String?,
 ) : Parcelable {

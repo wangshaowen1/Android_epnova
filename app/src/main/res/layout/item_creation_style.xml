@@ -52,7 +52,7 @@
                 android:ellipsize="end"
                 android:gravity="center"
                 android:paddingVertical="@dimen/spacing_s"
-                android:singleLine="true"
+                android:maxLines="2"
                 android:text="@{item.data.styleName}"
                 android:textColor="?attr/textColor1"
                 app:layout_constraintBottom_toBottomOf="parent"

@@ -61,6 +61,10 @@ class CreatingEncouragementDialog : BaseVMDialogFragment<DialogCreatingEncourage
             mRealVM.data?.title,
             mRealVM.data?.workId
         )
+        // 弹出就上报
+        mRealVM.data?.popupDeliveryId?.let {
+            mRealVM.reportDisplay()
+        }
     }
 
     override fun <Data> onClick(view: View, data: Data?) {

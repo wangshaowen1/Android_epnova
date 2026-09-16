@@ -128,6 +128,11 @@ class MyBalanceViewModel(
                 data?.coinsBalanceNum?.let { User.get().storeCoins(it) }
                 updateBalance()
                 data?.items?.map { ItemRechargePowerVM(it).apply { onItemClick.value = { selectCoins() } } }.let { vms ->
+                    // 默认选中
+                    currentCoinsItem = vms
+                        ?.firstOrNull { it.data.get()?.selectedStatus == 1 }
+                        ?.apply { isChecked.set(true) }
+
                     coinsAdapter.submitList(vms)
                     loadGoogleProductsForCoins(vms)
                     vms?.find { it.data.get()?.isDiscountValid() == true }?.let { startGlobalCountDown() }
@@ -149,6 +154,11 @@ class MyBalanceViewModel(
                     if (currentTab == TAB_CREDITS) displayBalance.set(it.toString())
                 }
                 data?.items?.map { ItemRechargeCreditsVM(it).apply { onItemClick.value = { selectCredits() } } }.let { vms ->
+                    // 默认选中
+                    currentCreditsItem = vms
+                        ?.firstOrNull { it.data.get()?.isDefault == 1 }
+                        ?.apply { isChecked.set(true) }
+
                     creditsAdapter.submitList(vms)
                     loadGoogleProductsForCredits(vms)
                     vms?.find { it.data.get()?.isDiscountValid() == true }?.let { startGlobalCountDown() }
