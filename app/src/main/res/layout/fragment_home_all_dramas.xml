@@ -9,38 +9,44 @@
             name="layout"
             type="com.kuaigeglobal.epnova.feature.home.HomeAllDramasViewModel" />
     </data>
-
-    <com.scwang.smart.refresh.layout.SmartRefreshLayout
-        android:id="@+id/srl"
+    <RelativeLayout
+        android:paddingTop="20dp"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:srlEnableLoadMore="false"
-        app:srlPrimaryColor="@color/transparent">
+        android:layout_height="wrap_content">
 
-        <androidx.coordinatorlayout.widget.CoordinatorLayout
+        <com.scwang.smart.refresh.layout.SmartRefreshLayout
+            android:id="@+id/srl"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:descendantFocusability="blocksDescendants">
+            app:srlEnableLoadMore="false"
+            android:background="@color/color_0A0A0C">
 
-            <com.kuaigeglobal.epnova.widget.LoadStateViewHolder
-                android:id="@+id/lsv"
+            <androidx.coordinatorlayout.widget.CoordinatorLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:setLoadState="@{layout.pageLoadState}"
-                android:overScrollMode="never">
+                android:descendantFocusability="blocksDescendants">
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recyclerView"
+                <com.kuaigeglobal.epnova.widget.LoadStateViewHolder
+                    android:id="@+id/lsv"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginHorizontal="@dimen/spacing_l"
-                    android:orientation="vertical"
-                    android:overScrollMode="never"
-                    app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-                    app:spanCount="3"
-                    tools:listitem="@layout/item_home_drama" />
-            </com.kuaigeglobal.epnova.widget.LoadStateViewHolder>
+                    app:setLoadState="@{layout.pageLoadState}"
+                    android:overScrollMode="never">
 
-        </androidx.coordinatorlayout.widget.CoordinatorLayout>
-    </com.scwang.smart.refresh.layout.SmartRefreshLayout>
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recyclerView"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginHorizontal="@dimen/spacing_l"
+                        android:orientation="vertical"
+                        android:overScrollMode="never"
+                        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                        app:spanCount="3"
+                        tools:listitem="@layout/item_home_drama" />
+                </com.kuaigeglobal.epnova.widget.LoadStateViewHolder>
+
+            </androidx.coordinatorlayout.widget.CoordinatorLayout>
+        </com.scwang.smart.refresh.layout.SmartRefreshLayout>
+
+    </RelativeLayout>
 </layout>
