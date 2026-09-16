@@ -117,7 +117,7 @@
     <string name="report_content">Report details:</string>
     <string name="request_notification_permission_reason">Used to receive app notifications.</string>
     <string name="generated_on">Generated: %s</string>
-    <string name="all">All</string>
+    <string name="all">ALL</string>
     <string name="swipe_left_more">Swipe left for more</string>
     <string name="pull_to_view_more">Pull to view\nmore</string>
     <string name="release_to_view_more">Release to view \n more</string>
