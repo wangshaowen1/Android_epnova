@@ -13,6 +13,7 @@ import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.core.network.apis.entity.BookShelfSectionInfo
 import com.kuaigeglobal.epnova.databinding.FragmentHomeAllDramasBinding
 import com.kuaigeglobal.epnova.feature.home.bookshelf.BookShelfListActivity
+import com.kuaigeglobal.epnova.widget.stateful.paging.MyMultiStatePagingFooterAdapter
 import com.nhsd.basic.BaseViewModelFragment
 import com.nhsd.basic.ext.dp
 import com.nhsd.basic.ext.getParcelableArrayListValue
@@ -65,13 +66,29 @@ class AllDramasFragment :
     }
     // 统一展示横滑预览和底部分页的加载状态、局部失败及没有更多。
     private val footerAdapter by lazy {
+        MyMultiStatePagingFooterAdapter(
+            hostAdapter = homeAdapter,
+            displayEmptyState = false,
+            noMoreThreshold = 1,
+            refresh = {
+                allowInitialScrollToTop = false
+                mRealVM.retrySections()
+                // retry 只重试失败的分页请求，保留已经加载的作品。
+                homeAdapter.retry()
+            }
+        )
+    }
+
+/*    // 统一展示横滑预览和底部分页的加载状态、局部失败及没有更多。
+    private val footerAdapter by lazy {
         AllDramasFooterAdapter {
             allowInitialScrollToTop = false
             mRealVM.retrySections()
             // retry 只重试失败的分页请求，保留已经加载的作品。
             homeAdapter.retry()
         }
-    }
+    }*/
+
     private var scrollToTopAfterRefresh = false
     private var allowInitialScrollToTop = true
     private val initialScrollListener = object : RecyclerView.OnScrollListener() {

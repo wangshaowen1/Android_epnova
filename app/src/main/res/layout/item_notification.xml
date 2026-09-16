@@ -89,7 +89,7 @@
                     app:layout_constraintHorizontal_chainStyle="packed"
                     app:layout_constraintStart_toEndOf="@id/tv_work_title_start"
                     app:layout_constraintTop_toTopOf="parent"
-                    tools:text="I Am Not a God" />
+                    tools:text="I Am Not a " />
 
                 <TextView
                     android:id="@+id/tv_work_title_end"
@@ -105,7 +105,7 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <TextView
-                android:layout_marginLeft="4dp"
+                android:layout_marginLeft="2dp"
                 style="@style/Text12.Outfit.Regular"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
