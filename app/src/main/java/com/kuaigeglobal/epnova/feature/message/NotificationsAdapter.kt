@@ -36,14 +36,11 @@ class NotificationsAdapter(
 
         override fun bind(position: Int) {
             val item = getItem(position)
-            val clickableItem = item?.takeIf {
-                it.canJump == 1 && !it.jumpUri.isNullOrEmpty()
-            }
             binding.item = item?.let(::ItemNotificationVm)
             binding.root.setOnClickListener(null)
-            binding.root.isClickable = clickableItem != null
-            if (clickableItem != null) {
-                binding.root.setOnSingleClickListener { onItemClick(clickableItem) }
+            binding.root.isClickable = item != null
+            if (item != null) {
+                binding.root.setOnSingleClickListener { onItemClick(item) }
             }
             binding.executePendingBindings()
         }

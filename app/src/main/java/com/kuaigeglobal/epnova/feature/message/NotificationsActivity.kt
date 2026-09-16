@@ -3,6 +3,7 @@ package com.kuaigeglobal.epnova.feature.message
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 import com.kuaigeglobal.epnova.R
@@ -20,7 +21,8 @@ class NotificationsActivity :
 
     private val notificationsAdapter by lazy {
         NotificationsAdapter { item ->
-            if(item.jumpUri.isNullOrEmpty()){
+            Log.d("NotificationsAdapter",item.jumpUri+"")
+            if(item.jumpUri.isNullOrEmpty() ||  item.canJump == 0){
                 showToast(R.string.message_cannot_open)
                 return@NotificationsAdapter
             }
