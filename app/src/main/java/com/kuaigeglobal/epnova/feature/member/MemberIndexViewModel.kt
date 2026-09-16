@@ -394,6 +394,8 @@ class MemberIndexViewModel : AppRepositoryViewModel<AppRepository>() {
         currentProductId: String?,
         prepareData: MemberSubscriptionPrepareData?,
     ) {
+        // 56700820 要求平台内部 orderNo；当前会员 purchase/prepare 契约只返回
+        // purchasePrepareToken，不能把 opaque token 当作 orderNo 进行失败上报。
         val prepareToken = prepareData?.purchasePrepareToken?.takeIf { it.isNotBlank() }
         val preparedProductId = prepareData?.productId?.takeIf { it.isNotBlank() }
         val preparedBasePlanId = prepareData?.basePlanId?.takeIf { it.isNotBlank() }

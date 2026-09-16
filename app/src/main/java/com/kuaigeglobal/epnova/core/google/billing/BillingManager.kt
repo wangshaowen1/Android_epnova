@@ -16,6 +16,7 @@ import com.kuaigeglobal.epnova.App
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.ext.ioScope
 import com.kuaigeglobal.epnova.core.User
+import com.kuaigeglobal.epnova.core.network.apis.request.PaymentFailureReasonEnum
 import com.nhsd.basic.ext.getResString
 import com.nhsd.basic.ext.launchNoCrash
 import com.nhsd.basic.ext.showToast
@@ -293,7 +294,15 @@ object BillingManager {
             }
 
             else -> {
-                // 商品不可用、开发者配置错误等明确未成交结果只清理尚无 token 的 PREPARED。
+                // Google 明确返回 PaymentFailed 时按原型统一映射为“支付方式不可用”；
+                // 商品查询阶段的失败已经在 launchFlow 中单独映射为 PRODUCT_UNAVAILABLE。
+                if (OneTimePurchaseStore.hasRecordForCurrentUser(currentOrderNo)) {
+                    PaymentFailureReportManager.report(
+                        orderNo = currentOrderNo,
+                        reasonCode = PaymentFailureReasonEnum.PAYMENT_METHOD_UNAVAILABLE,
+                        platformErrorCode = billingResult.responseCode.toString(),
+                    )
+                }
                 OneTimePurchaseStore.removePreparedForCurrentUser(currentOrderNo)
                 finishOneTimeRouting(currentOrderNo)
                 showToast(R.string.system_payment_failed)
@@ -862,24 +871,44 @@ object BillingManager {
         obfuscatedAccountId: String
     ) {
         if (productId.isBlank() || orderId.isBlank()) {
-            _purchaseResult.tryEmit(PurchaseResult.Failed.LaunchFailed)
+            _purchaseResult.tryEmit(
+                PurchaseResult.Failed.LaunchFailed(
+                    reasonCode = if (productId.isBlank()) {
+                        PaymentFailureReasonEnum.PRODUCT_UNAVAILABLE
+                    } else {
+                        PaymentFailureReasonEnum.STORE_LAUNCH_FAILED
+                    }
+                )
+            )
             return
         }
         if (!OneTimePurchaseStore.savePrepared(businessType, orderId, productId, obfuscatedAccountId)) {
             // 无法持久化时禁止拉起支付，避免付款成功后没有可恢复凭证。
-            _purchaseResult.tryEmit(PurchaseResult.Failed.LaunchFailed)
+            _purchaseResult.tryEmit(
+                PurchaseResult.Failed.LaunchFailed(
+                    PaymentFailureReasonEnum.STORE_LAUNCH_FAILED
+                )
+            )
             return
         }
         if (activity == null) {
             OneTimePurchaseStore.removePreparedForCurrentUser(orderId)
-            _purchaseResult.tryEmit(PurchaseResult.Failed.LaunchFailed)
+            _purchaseResult.tryEmit(
+                PurchaseResult.Failed.LaunchFailed(
+                    PaymentFailureReasonEnum.STORE_LAUNCH_FAILED
+                )
+            )
             return
         }
 
         // 连接前先占用一次性商品回调路由，避免并发会员 prepare 或另一笔 INAPP 覆盖上下文。
         if (this.orderId != null || activeMemberProductId != null) {
             OneTimePurchaseStore.removePreparedForCurrentUser(orderId)
-            _purchaseResult.tryEmit(PurchaseResult.Failed.LaunchFailed)
+            _purchaseResult.tryEmit(
+                PurchaseResult.Failed.LaunchFailed(
+                    PaymentFailureReasonEnum.STORE_LAUNCH_FAILED
+                )
+            )
             return
         }
         this.orderId = orderId
@@ -891,7 +920,10 @@ object BillingManager {
                 activeMemberProductId != null ||
                 !isPurchasing.compareAndSet(false, true)
             ) {
-                finishDefinitiveOneTimeLaunchFailure(orderId)
+                finishDefinitiveOneTimeLaunchFailure(
+                    orderNo = orderId,
+                    reasonCode = PaymentFailureReasonEnum.STORE_LAUNCH_FAILED,
+                )
                 return@connectIfNeeded
             }
             launchFlow(
@@ -1079,7 +1111,20 @@ object BillingManager {
                     productCache[productId] = list.productDetailsList[0]
                     launchBillingFlow(activity, list.productDetailsList[0], orderId, obfuscatedAccountId)
                 } else {
-                    finishDefinitiveOneTimeLaunchFailure(orderId)
+                    finishDefinitiveOneTimeLaunchFailure(
+                        orderNo = orderId,
+                        reasonCode = PaymentFailureReasonEnum.PRODUCT_UNAVAILABLE,
+                        platformErrorCode = result.responseCode
+                            .takeIf { it != BillingClient.BillingResponseCode.OK }
+                            ?.toString(),
+                        reportFailure = result.responseCode !in setOf(
+                            BillingClient.BillingResponseCode.SERVICE_TIMEOUT,
+                            BillingClient.BillingResponseCode.SERVICE_DISCONNECTED,
+                            BillingClient.BillingResponseCode.SERVICE_UNAVAILABLE,
+                            BillingClient.BillingResponseCode.NETWORK_ERROR,
+                            BillingClient.BillingResponseCode.ERROR,
+                        ),
+                    )
                     Logger.d(TAG, "查询商品信息失败")
                 }
             }
@@ -1096,7 +1141,10 @@ object BillingManager {
      */
     private fun launchBillingFlow(activity: Activity, details: ProductDetails, orderId: String, obfuscatedAccountId: String) {
         if (details.productType != BillingClient.ProductType.INAPP) {
-            finishDefinitiveOneTimeLaunchFailure(orderId)
+            finishDefinitiveOneTimeLaunchFailure(
+                orderNo = orderId,
+                reasonCode = PaymentFailureReasonEnum.PRODUCT_UNAVAILABLE,
+            )
             return
         }
         val billingFlowParams = BillingFlowParams.newBuilder()
@@ -1125,7 +1173,19 @@ object BillingManager {
                         finishUncertainOneTimeLaunch(orderId)
                     }
 
-                    else -> finishDefinitiveOneTimeLaunchFailure(orderId)
+                    BillingClient.BillingResponseCode.ITEM_UNAVAILABLE -> {
+                        finishDefinitiveOneTimeLaunchFailure(
+                            orderNo = orderId,
+                            reasonCode = PaymentFailureReasonEnum.PRODUCT_UNAVAILABLE,
+                            platformErrorCode = result?.responseCode?.toString(),
+                        )
+                    }
+
+                    else -> finishDefinitiveOneTimeLaunchFailure(
+                        orderNo = orderId,
+                        reasonCode = PaymentFailureReasonEnum.STORE_LAUNCH_FAILED,
+                        platformErrorCode = result?.responseCode?.toString(),
+                    )
                 }
             }
         } catch (e: Exception) {
@@ -1270,10 +1330,22 @@ object BillingManager {
     }
 
     /** 明确没有进入交易时可清掉 PREPARED；已保存 token 的记录不会被该方法删除。 */
-    private fun finishDefinitiveOneTimeLaunchFailure(orderNo: String) {
+    private fun finishDefinitiveOneTimeLaunchFailure(
+        orderNo: String,
+        reasonCode: PaymentFailureReasonEnum,
+        platformErrorCode: String? = null,
+        reportFailure: Boolean = true,
+    ) {
+        if (reportFailure && OneTimePurchaseStore.hasRecordForCurrentUser(orderNo)) {
+            PaymentFailureReportManager.report(
+                orderNo = orderNo,
+                reasonCode = reasonCode,
+                platformErrorCode = platformErrorCode,
+            )
+        }
         OneTimePurchaseStore.removePreparedForCurrentUser(orderNo)
         finishOneTimeRouting(orderNo)
-        _purchaseResult.tryEmit(PurchaseResult.Failed.LaunchFailed)
+        _purchaseResult.tryEmit(PurchaseResult.Failed.LaunchFailed(reasonCode))
     }
 
     /** 无法确定商店是否已受理交易时保留本地记录，并立即安排一次有界恢复扫描。 */

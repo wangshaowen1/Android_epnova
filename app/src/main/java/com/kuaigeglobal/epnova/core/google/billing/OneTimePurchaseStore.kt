@@ -151,6 +151,14 @@ internal object OneTimePurchaseStore {
         readRecords()?.filter { it.ownerUserId == ownerUserId }.orEmpty()
     }
 
+    /** 支付失败上报前确认订单仍属于当前账号，避免切账号后复用旧的进程内 orderId。 */
+    fun hasRecordForCurrentUser(orderNo: String): Boolean = synchronized(lock) {
+        val ownerUserId = currentOwnerUserId() ?: return@synchronized false
+        readRecords()?.any { record ->
+            record.ownerUserId == ownerUserId && record.orderNo == orderNo
+        } == true
+    }
+
     fun isForCurrentUser(record: OneTimePurchaseRecord): Boolean = synchronized(lock) {
         currentOwnerUserId() == record.ownerUserId
     }

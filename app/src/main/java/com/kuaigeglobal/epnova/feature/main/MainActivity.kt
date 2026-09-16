@@ -22,6 +22,7 @@ import com.kuaigeglobal.epnova.core.Events
 import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.google.billing.MemberSubscriptionRecoveryManager
 import com.kuaigeglobal.epnova.core.google.billing.OneTimePurchaseRecoveryManager
+import com.kuaigeglobal.epnova.core.google.billing.PaymentFailureReportManager
 import com.kuaigeglobal.epnova.core.manager.EventManager
 import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
 import com.kuaigeglobal.epnova.core.manager.UpgradeManager
@@ -283,6 +284,10 @@ class MainActivity : BaseViewModelActivity<ActivityMainBinding, MainViewModel>()
         GeneratingViewModel.visible = false
         mRealVM.claimCreatingEncouragementPopup()
         upgradeManager.resumeImmediateUpdate()
+        if (App.instance.isApiSecurityInit) {
+            // 前台化时补发上次进程留下的支付失败事件；上报本身不阻塞支付恢复。
+            PaymentFailureReportManager.drainPending()
+        }
         if (memberRecoveryStartupReady && App.instance.isApiSecurityInit) {
             // PENDING 可能在 App 留在后台期间转为 PURCHASED。每次主页面重新前台化都给恢复
             // 管理器一次有界查询机会；先收敛 INAPP，再查询会员 SUBS，避免争用 Billing 连接。
