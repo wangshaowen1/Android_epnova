@@ -1,9 +1,20 @@
 package com.kuaigeglobal.epnova.feature.creator.set
 
+import android.app.Dialog
+import android.graphics.Color
+import android.os.Build
+import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.ViewGroup
+import android.view.WindowInsetsController
+import android.view.WindowManager
 import androidx.core.os.bundleOf
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.lifecycleScope
+import com.google.android.material.internal.EdgeToEdgeUtils
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.Constants
 import com.kuaigeglobal.epnova.common.ext.applySmartFocusManager
@@ -37,6 +48,20 @@ class VideoSetDialog : BaseBottomPushVMDialogFragment<DialogVideoSetBinding, Vid
      * 按顺序依次是：集数范围，自定义集数，视频比例，视频风格,作品名称
      */
     var onSuccess: ((VideoSetDialog?, String?, String?, String?, String?, String?) -> Unit)? = null
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        return super.onCreateDialog(savedInstanceState).also {
+            // 隐藏底部导航栏或手势条
+            it.window?.let { window ->
+                WindowCompat.setDecorFitsSystemWindows(window, false) // 设置全屏
+                val windowInsetsController = WindowCompat.getInsetsController(window, window.decorView)
+//                    windowInsetsController.hide(WindowInsetsCompat.Type.systemBars()) // 隐藏system bars
+                windowInsetsController.hide(WindowInsetsCompat.Type.navigationBars()) // 隐藏navigation bars
+                // 上滑显示后自动隐藏行为
+                windowInsetsController.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+            }
+        }
+    }
 
     override fun onPrepareView() {
         super.onPrepareView()

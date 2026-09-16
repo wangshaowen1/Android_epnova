@@ -2,6 +2,7 @@ package com.kuaigeglobal.epnova.feature.creator.set
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.view.View
@@ -31,11 +32,13 @@ import com.kuaigeglobal.epnova.feature.splash.newer.FirstRechargeDialog
 import com.kuaigeglobal.epnova.router.AppNavigator
 import com.kuaigeglobal.epnova.widget.GeneratingDialog
 import com.nhsd.basic.BaseViewModelActivity
+import com.nhsd.basic.BasicEdgeToEdgeConfig
 import com.nhsd.basic.bus.AppEvent
 import com.nhsd.basic.ext.dp
 import com.nhsd.basic.ext.getResString
 import com.nhsd.basic.ext.getThemeColor
 import com.nhsd.basic.ext.setOnSingleClickListener
+import com.nhsd.basic.ext.setupTranslucentStatus
 import com.nhsd.basic.ext.showToast
 import kotlinx.coroutines.launch
 import kotlin.collections.set
@@ -71,6 +74,17 @@ class VideoSetActivity : BaseViewModelActivity<ActivityVideoSetBinding, VideoSet
 //            creationPackage?.let { starter.putExtra(VideoSetViewModel.ARG_CREATION_PACKAGE, it) }
             current.startActivity(starter)
         }
+    }
+
+    // 单独设置当前页面内容可延伸到导航栏区域
+    override val edgeToEdgeStrategy: BasicEdgeToEdgeConfig.Strategy
+        get() = super.edgeToEdgeStrategy.copy(
+            rootInsetsMode = BasicEdgeToEdgeConfig.RootInsetsMode.NONE,
+        )
+
+    override fun setTranslucentStatus() {
+        // 导航栏图标浅色、背景透明
+        setupTranslucentStatus(false, Color.TRANSPARENT)
     }
 
     private var sameStoryContent = ""
