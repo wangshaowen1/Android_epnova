@@ -212,7 +212,13 @@ class DramasPlayPagerActivity :
         binding.btnEdit.setOnSingleClickListener {
             val story = listController.getCurrentItem() ?: return@setOnSingleClickListener
             showCommonDialog(tip = getString(R.string.redraw_cover_confirm), confirmText = getString(R.string.confirm_ok)) {
-                EditStoryboardVideoActivity.start(mRealVM.currentWorkContext.value?.workTitle, story.workId, story.storyId, story.workRatio, story)
+                EditStoryboardVideoActivity.start(
+                    mRealVM.currentWorkContext.value?.workTitle,
+                    story.workId ?: mRealVM.currentWorkContext.value?.workId,
+                    story.storyId,
+                    story.workRatio ?: mRealVM.currentWorkContext.value?.workRatio,
+                    story
+                )
             }
         }
         binding.btnMenu.setOnSingleClickListener {
