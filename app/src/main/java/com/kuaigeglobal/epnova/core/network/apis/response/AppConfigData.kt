@@ -181,6 +181,11 @@ class AppConfigData {
      * 20260916 1.5.0新增作品列表按钮展示开关，返回0-不展示、1-展示。
      */
     val workListButtonSwitch: Int? = null
+
+    /**
+     * 20260917 1.5.0 提现最小额度 分单位
+     */
+    val incomeWithdrawMinLimit: Long? = null
 }
 
 data class SimpleBannerInfo(

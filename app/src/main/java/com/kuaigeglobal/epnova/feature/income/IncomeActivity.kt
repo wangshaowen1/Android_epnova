@@ -8,10 +8,13 @@ import androidx.lifecycle.lifecycleScope
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.ext.startRefreshWithAdapter
 import com.kuaigeglobal.epnova.common.ext.showConfirmDialog
+import com.kuaigeglobal.epnova.core.Config
 import com.kuaigeglobal.epnova.databinding.ActivityIncomeBinding
+import com.kuaigeglobal.epnova.feature.income.IncomeViewModel.Companion.BALANCE_UNIT
 import com.kuaigeglobal.epnova.widget.BottomYearMonthPickerDialog
 import com.kuaigeglobal.epnova.widget.stateful.paging.MyMultiStatePagingFooterAdapter
 import com.nhsd.basic.BaseViewModelActivity
+import com.nhsd.basic.ext.getResString
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -77,11 +80,14 @@ class IncomeActivity : BaseViewModelActivity<ActivityIncomeBinding, IncomeViewMo
             }
 
             R.id.tv_withdraw -> {
+                val limit = Config.get().appConfig.incomeWithdrawMinLimit ?: 0L
+                val availableBalance = mRealVM.availableBalance.get()
+                val flag = availableBalance >= limit
                 //提现-tooltip
                 showConfirmDialog(
-                    title = getString(R.string.income_withdraw),
-                    tips = getString(R.string.income_withdraw_request_guide),
-                    positiveButtonText = getString(R.string.confirm_ok)
+                    title = if (flag) getString(R.string.income_withdraw) else getString(R.string.income_withdraw_minium),
+                    tips = if (flag) getString(R.string.income_withdraw_request_guide) else R.string.income_withdraw_minium_tips.getResString(limit / BALANCE_UNIT),
+                    positiveButtonText = if (flag) getString(R.string.confirm_ok) else getString(R.string.income_withdraw_minium_confirm)
                 )
             }
 
