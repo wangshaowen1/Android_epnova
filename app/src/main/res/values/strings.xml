@@ -561,6 +561,7 @@
     <string name="drama_detail_published">Published</string>
     <string name="full_screen">Full Screen</string>
     <string name="drama_has_ended">This drama has ended.</string>
+    <string name="drama_delete_work_confirm_title">Delete this work?</string>
     <string name="drama_delete_work_confirm">Are you sure you want to delete this work?</string>
     <string name="compute_power_validity_period">Computing power value validity period: 1 year</string>
     <string name="deselect_all">Deselect All</string>
