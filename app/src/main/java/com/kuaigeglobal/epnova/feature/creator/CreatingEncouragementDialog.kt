@@ -75,19 +75,17 @@ class CreatingEncouragementDialog : BaseVMDialogFragment<DialogCreatingEncourage
             }
             R.id.btnNext -> {
                 EventManager.onFirebaseTrack(FirebaseEvent.Category.ENCOURAGEMENT_POPUP, FirebaseEvent.Action.WATCH_NOW_CLICK)
-                mRealVM.reportDisplay {
-                    when (mRealVM.data?.jumpType) {
-                        1 -> { // 站内跳转
-                            AppRouter.jump(mRealVM.data?.jumpUri)
-                        }
-                        else -> {
-                            topActivity?.let { context ->
-                                AppRouter.jump(context, mRealVM.data?.jumpUri.orEmpty(), true)
-                            }
+                when (mRealVM.data?.jumpType) {
+                    1 -> { // 站内跳转
+                        AppRouter.jump(mRealVM.data?.jumpUri)
+                    }
+                    else -> {
+                        topActivity?.let { context ->
+                            AppRouter.jump(context, mRealVM.data?.jumpUri.orEmpty(), true)
                         }
                     }
-                    dismissAllowingStateLoss()
                 }
+                dismissAllowingStateLoss()
             }
         }
     }
