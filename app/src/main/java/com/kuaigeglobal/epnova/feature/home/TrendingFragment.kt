@@ -138,7 +138,7 @@ class TrendingFragment : BaseViewModelFragment<FragmentTrendingBinding, HomeView
         mRealVM.bookShelfData.observe(viewLifecycleOwner) { data ->
             val sections = data?.sections.orEmpty()
             shelfContainerAdapter.submitList(
-               sections.filter { it.bookshelfType == 1 && !it.horizontalWorks.isNullOrEmpty() }.sortedByDescending { it.sortNo }
+               sections.filter { it.bookshelfType == 1 && !it.horizontalWorks.isNullOrEmpty() }
             )
             updateWaterfallSection(sections)
         }
