@@ -485,7 +485,10 @@ class SeriesActivity :
                         showToast(R.string.drama_delete_failed)
                         return@setOnSingleClickListener
                     }
-                    showCommonDialog(title = getString(R.string.drama_delete_work_confirm)) {
+                    showCommonDialog(
+                        title = getString(R.string.drama_delete_work_confirm_title),
+                        tip = getString(R.string.drama_delete_work_confirm)
+                    ) {
                         mRealVM.delete()
                     }
                 }

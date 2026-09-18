@@ -1,6 +1,8 @@
 package com.kuaigeglobal.epnova.feature.income
 
 import androidx.databinding.ObservableField
+import androidx.databinding.ObservableInt
+import androidx.databinding.ObservableLong
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -26,6 +28,9 @@ class IncomeViewModel : AppRepositoryViewModel<AppRepository>() {
     companion object {
         //默认金额文本
         private const val DEFAULT_AMOUNT_TEXT = "\$0.00"
+        private const val DEFAULT_BALANCE = 0L
+        // 分单位
+        const val BALANCE_UNIT = 100L
     }
 
     val mToolbarVM = ToolbarViewModel(
@@ -36,6 +41,7 @@ class IncomeViewModel : AppRepositoryViewModel<AppRepository>() {
     //------------------页面数据绑定参数------------------
     //可提现余额
     val availableBalanceText = ObservableField(DEFAULT_AMOUNT_TEXT)
+    val availableBalance = ObservableLong(DEFAULT_BALANCE)
     //累计收益
     val totalEarnedText = ObservableField(DEFAULT_AMOUNT_TEXT)
     //本月待结算金额
@@ -72,6 +78,7 @@ class IncomeViewModel : AppRepositoryViewModel<AppRepository>() {
                 val d = data ?: return@request
                 //可提现余额
                 availableBalanceText.set(d.availableBalanceText ?: DEFAULT_AMOUNT_TEXT)
+                availableBalance.set(d.availableBalanceCent ?: DEFAULT_BALANCE)
                 //累计收益
                 totalEarnedText.set(d.totalEarnedText ?: DEFAULT_AMOUNT_TEXT)
                 //本月待结算金额
