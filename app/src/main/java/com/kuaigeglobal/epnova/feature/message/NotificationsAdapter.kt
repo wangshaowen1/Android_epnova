@@ -10,6 +10,7 @@ import com.kuaigeglobal.epnova.databinding.ItemNotificationBinding
 import com.nhsd.basic.ext.setOnSingleClickListener
 import com.nhsd.basic.item.BindingViewHolder
 
+/** 消息中心分页适配器，负责实体到 DataBinding 展示包装的绑定和点击转发。 */
 class NotificationsAdapter(
     private val onItemClick: (MessagePageInfo) -> Unit
 ) :
@@ -34,6 +35,7 @@ class NotificationsAdapter(
     inner class ViewHolder(binding: ItemNotificationBinding) :
         BindingViewHolder<ItemNotificationBinding>(binding) {
 
+        /** 处理 Paging 的占位项，并清理复用 ViewHolder 上一条消息的点击状态。 */
         override fun bind(position: Int) {
             val item = getItem(position)
             binding.item = item?.let(::ItemNotificationVm)
@@ -47,6 +49,7 @@ class NotificationsAdapter(
     }
 
     companion object {
+        // 优先使用消息 ID 判断同一条记录，旧数据缺少 ID 时再用发送时间兜底。
         private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<MessagePageInfo>() {
             override fun areItemsTheSame(
                 oldItem: MessagePageInfo,
