@@ -20,9 +20,9 @@ import com.nhsd.basic.ext.showToast
 
 /**
  * *****************************************
- * 项目名称: KidsTales
+ * 项目名称: Epnova
  * @Author: SZYMN
- * @Introduce:投诉建议+举报
+ * @Introduce: 反馈提交页，负责反馈类型、图片选择、输入校验和历史记录入口。
  * @Data: 2024/7/19 星期五 19:44
  * @Version: 1.0
  * *****************************************
@@ -34,6 +34,7 @@ class FeedbackActivity :
         private const val MAX_PHOTO_COUNT = 4
         private const val EXTRA_IS_UNPROCESSED = "extra_is_unprocessed"
 
+        /** 打开反馈页，isUnprocessed 用于初始化历史入口的未读提醒红点。 */
         fun start(
             activity: Activity?,
             isUnprocessed: Boolean = false
@@ -58,6 +59,7 @@ class FeedbackActivity :
         mRealVM.isUnprocessed.value = intent.getBooleanExtra(EXTRA_IS_UNPROCESSED, false)
         initTitleBar()
         binding.photoGrid.setOnAddButtonClickedListener { requestAlbumsPermission() }
+        // 添加或删除图片后同步数量，更新表单中的已选图片提示。
         binding.photoGrid.setOnPhotosChangedListener { photos ->
             mRealVM.photoSize.value = photos.size
         }
@@ -87,6 +89,7 @@ class FeedbackActivity :
     override fun <Data> onClick(view: View?, data: Data?) {
         super.onClick(view, data)
         when (view?.id) {
+            // 提交时校验类型、至少 10 个字符的描述和邮箱，校验通过后再上传图片。
             R.id.commit -> {
                 if (mRealVM.type.get() == null) {
                     getString(R.string.select_type_please).showToast()
@@ -126,10 +129,12 @@ class FeedbackActivity :
     }
 
 
+    /** 将已选图片交给选择器回显，权限申请和选择结果由 AppImagePicker 处理。 */
     private fun requestAlbumsPermission() {
         imagePicker.pick(binding.photoGrid.photos)
     }
 
+    /** 选择结果去重并限制为最多 4 张，再同步到图片网格。 */
     private fun handleSelectedImages(uris: List<Uri>) {
         binding.photoGrid.setPhotos(uris.distinct().take(MAX_PHOTO_COUNT))
     }
@@ -145,6 +150,7 @@ class FeedbackActivity :
         updateButtonEnable()
     }
 
+    /** 仅用透明度提示类型和描述是否满足要求，完整校验仍在提交点击时执行。 */
     private fun updateButtonEnable() {
         binding.commit.alpha =
             if (mRealVM.type.get() != null && (binding.feedbackInput.text?.length ?: 0) >= 10) {

@@ -12,6 +12,7 @@ import com.nhsd.basic.BaseViewModelActivity
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
+/** 反馈历史列表页，负责分页展示、空态、刷新和详情入口。 */
 class FeedbackHistoryActivity :
     BaseViewModelActivity<ActivityFeedbackHistoryBinding, FeedbackViewModel>() {
 
@@ -20,6 +21,7 @@ class FeedbackHistoryActivity :
             item.feedbackId?.let { MyFeedbackActivity.start(this, it) }
         }
     }
+    // 首次展示由分页流自动加载，后续恢复前台时再主动刷新，避免首次重复请求。
     private var hasResumed = false
 
     companion object {
@@ -45,6 +47,7 @@ class FeedbackHistoryActivity :
         hasResumed = true
     }
 
+    /** 将整页状态、分页页脚重试和下拉刷新接入同一个历史列表。 */
     private fun initView() {
         binding.lsv.setEmptyView(
             layoutInflater.inflate(R.layout.layout_feedback_history_empty, binding.lsv, false)
@@ -54,6 +57,7 @@ class FeedbackHistoryActivity :
             adapter = feedbackHistoryAdapter.withLoadStateFooter(
                 MyMultiStatePagingFooterAdapter(
                     hostAdapter = feedbackHistoryAdapter,
+                    // 空列表由页面级空态展示，页脚不重复显示空态。
                     displayEmptyState = false,
                     noMoreThreshold = 1,
                 ) {
@@ -67,6 +71,7 @@ class FeedbackHistoryActivity :
         )
     }
 
+    /** 持续提交最新分页数据，收集任务随 Activity 销毁取消。 */
     private fun dataUpdate() {
         lifecycleScope.launch {
             mRealVM.feedbackHistory.collectLatest {

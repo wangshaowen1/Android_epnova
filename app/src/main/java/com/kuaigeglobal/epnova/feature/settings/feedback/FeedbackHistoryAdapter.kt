@@ -10,6 +10,7 @@ import com.kuaigeglobal.epnova.databinding.ItemFeedbackHistoryBinding
 import com.nhsd.basic.ext.setOnSingleClickListener
 import com.nhsd.basic.item.BindingViewHolder
 
+/** 反馈历史分页适配器，负责条目绑定，并向页面转发有有效反馈 ID 的点击。 */
 class FeedbackHistoryAdapter(
     private val onItemClick: (FeedbackPageInfo) -> Unit
 ) : PagingDataAdapter<FeedbackPageInfo, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
@@ -36,8 +37,10 @@ class FeedbackHistoryAdapter(
         override fun bind(position: Int) {
             val item = getItem(position)
             binding.item = item?.let(::ItemFeedbackHistoryVm)
+            // 无图片时也传入空列表，清除 ViewHolder 复用时可能残留的上一条图片。
             binding.photo.setPhotoUrls(item?.imagesUrls.orEmpty())
             val clickableItem = item?.takeIf { !it.feedbackId.isNullOrBlank() }
+            // 先清除复用的点击回调，再按当前条目是否有有效 ID 重新设置。
             binding.root.setOnClickListener(null)
             binding.root.isClickable = clickableItem != null
             if (clickableItem != null) {
@@ -48,6 +51,7 @@ class FeedbackHistoryAdapter(
     }
 
     companion object {
+        // 优先用反馈业务 ID 识别条目，只有两条记录都缺少 ID 时才用创建时间兜底。
         private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<FeedbackPageInfo>() {
             override fun areItemsTheSame(
                 oldItem: FeedbackPageInfo,

@@ -38,9 +38,9 @@ import java.util.concurrent.atomic.AtomicBoolean
 
 /**
  * *****************************************
- * 项目名称: KidsTales
+ * 项目名称: Epnova
  * @Author: SZYMN
- * @Introduce:
+ * @Introduce: 提供反馈提交、历史分页、详情数据及对应的页面展示状态。
  * @Data: 2024/7/19 星期五 19:44
  * @Version: 1.0
  * *****************************************
@@ -67,16 +67,23 @@ class FeedbackViewModel : AppRepositoryViewModel<AppRepository>() {
         title = R.string.my_feedback.getResString()
     )
 
+    /** 联系邮箱，与反馈表单输入双向绑定。 */
     val email = MutableLiveData<String>()
+    /** 历史入口的未读提醒红点，由打开反馈页时传入的参数初始化。 */
     val isUnprocessed = MutableLiveData<Boolean>()
     val photoSize = MutableLiveData<Int>(0)
     val type = ObservableField<KeyValueInfo?>()
+    /** 反馈类型来自应用配置，页面展示 value，提交时使用所选类型的 key。 */
     val typeNames by lazy { Config.get().appConfig.userFeedBackTypeList }
     override fun onCreate() {
         super.onCreate()
         photoSize.value = 0
     }
 
+    /**
+     * 提交反馈：无图时直接进入提交流程，有图时先上传，再使用返回的 URL 继续提交。
+     * @param images 用户选择的本地图片路径，尚未转换为服务器 URL。
+     */
     fun feedback(content: String?, images: List<String>?) {
         setLoading(true)
         if (images.isNullOrEmpty()) {
@@ -87,6 +94,7 @@ class FeedbackViewModel : AppRepositoryViewModel<AppRepository>() {
         ossClient.uploadFile(images, OssClient.TYPE_NORMAL, object : OnUploadListener() {
             override fun onUploadSuccess(uploadSuccess: List<String?>) {
                 val images = uploadSuccess.filterNotNull()
+                // 上传回调没有返回可用 URL 时按失败处理，避免继续提交空图片结果。
                 if (images.isEmpty()) {
                     onUploadFail(null)
                 } else {
@@ -102,6 +110,7 @@ class FeedbackViewModel : AppRepositoryViewModel<AppRepository>() {
         })
     }
 
+    /** 逐张审核上传后的图片 URL，遇到敏感图片或审核失败时终止本次提交。 */
     private fun submit(content: String?, images: List<String>?) {
         launch(apiBlock@{
             images?.forEach { image ->
@@ -119,6 +128,7 @@ class FeedbackViewModel : AppRepositoryViewModel<AppRepository>() {
                     return@apiBlock
                 }
             }
+            // 保存反馈时将图片 URL 列表转为接口接收的逗号分隔字符串。
             val body = FeedbackBody(type.get()?.key, content, images?.joinToString(separator = ","), email.value)
             val response = withContext(Dispatchers.IO) { mRepo.api.feedback(body) }
             setLoading(false)
@@ -133,8 +143,11 @@ class FeedbackViewModel : AppRepositoryViewModel<AppRepository>() {
         })
     }
 
+    // 递增值驱动 flatMapLatest 重建 Pager，主动刷新时切换到新的分页流。
     private val feedbackHistoryRefresh = MutableStateFlow(0)
+    // 标记本实例是否已发起通知清除请求；请求失败也不重置，后续刷新不会重复请求。
     private val feedbackNoticeCleared = AtomicBoolean(false)
+    /** 历史记录分页流，分页数据缓存在当前 ViewModel 生命周期内。 */
     val feedbackHistory: Flow<PagingData<FeedbackPageInfo>> = feedbackHistoryRefresh
         .flatMapLatest {
             Pager(
@@ -153,13 +166,16 @@ class FeedbackViewModel : AppRepositoryViewModel<AppRepository>() {
         }
         .cachedIn(viewModelScope)
 
+    /** 当前详情同时供 XML 文本绑定和 Activity 图片观察回调使用。 */
     val feedbackDetail = ObservableField<FeedbackDetailData?>()
 
 
+    /** 重新创建分页流，例如从详情页返回历史列表时获取最新记录。 */
     fun refreshFeedbackHistory() {
         feedbackHistoryRefresh.value += 1
     }
 
+    /** 收到首个非空白快照令牌后尝试清除通知，每个 ViewModel 实例最多发起一次。 */
     private fun clearFeedbackNoticeIfNeeded(noticeSnapshotToken: String?) {
         val token = noticeSnapshotToken?.takeIf(String::isNotBlank) ?: return
         if (!feedbackNoticeCleared.compareAndSet(false, true)) return
@@ -187,12 +203,13 @@ class FeedbackViewModel : AppRepositoryViewModel<AppRepository>() {
         }
     }
 
+    /** 优先展示配置中的类型名称，未知类型回退为编号，空类型显示空文本。 */
     fun feedbackTypeText(problemType: Int?): String {
         return typeNames?.firstOrNull { it.key == problemType }?.value
             ?: problemType?.toString().orEmpty()
     }
 
-    /** 接口未定义状态码文案映射，按是否存在当前回复展示页面状态。 */
+    /** 详情页按当前回复对象是否存在展示状态文案，与状态图标使用相同判断。 */
     fun feedbackStatusText(detail: FeedbackDetailData?): String {
         return if (hasReply(detail)) STATUS_REPLIED else STATUS_IN_PROGRESS
     }
@@ -223,8 +240,10 @@ class FeedbackViewModel : AppRepositoryViewModel<AppRepository>() {
     fun hasReplyImages(detail: FeedbackDetailData?): Boolean =
         !detail?.replyContent?.imagesUrls.isNullOrEmpty()
 
+    /** 回复对象存在即视为已回复，也支持只有图片而没有正文的回复。 */
     fun hasReply(detail: FeedbackDetailData?): Boolean = detail?.replyContent != null
 
+    /** 数字字符串按毫秒时间戳格式化，其余内容保留原文，兼容已格式化的时间。 */
     private fun formatFeedbackTime(value: String?, format: String): String {
         val rawValue = value?.trim().orEmpty()
         return rawValue.toLongOrNull()?.let { DateUtil.format(it, format) } ?: rawValue
