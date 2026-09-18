@@ -37,6 +37,7 @@ class HomeFragment : BaseViewModelFragment<FragmentHomeBinding, HomeTabsViewMode
     }
 
     private var pageChangeCallback: ViewPager2.OnPageChangeCallback? = null
+    private var lastReportedTabPosition: Int? = null
 
     /** 初始化固定的搜索栏、Tab 容器和主页状态监听。 */
     override fun onPrepareView() {
@@ -123,32 +124,14 @@ class HomeFragment : BaseViewModelFragment<FragmentHomeBinding, HomeTabsViewMode
         viewPager.adapter = FragmentStateCacheAdapter(childFragmentManager, lifecycle).apply {
             setFragments(fragments)
         }
-        viewPager.offscreenPageLimit = fragments.size
+        viewPager.offscreenPageLimit = 2
         ViewPagerHelper.bind(binding.magicIndicator, viewPager)
         pageChangeCallback = object : ViewPager2.OnPageChangeCallback() {
-            override fun onPageScrolled(
-                position: Int,
-                positionOffset: Float,
-                positionOffsetPixels: Int
-            ) {
-                Log.d(
-                    TAG,
-                    "onPageScrolled position=$position offset=$positionOffset " +
-                        "offsetPx=$positionOffsetPixels current=${viewPager.currentItem}"
-                )
-            }
-
             override fun onPageSelected(position: Int) {
                 Log.d(TAG, "onPageSelected position=$position")
-                pages.getOrNull(position)?.first?.let(::reportTabExposure)
-            }
-
-            override fun onPageScrollStateChanged(state: Int) {
-                Log.d(
-                    TAG,
-                    "onPageScrollStateChanged state=${pageScrollStateName(state)} " +
-                        "current=${viewPager.currentItem}"
-                )
+                pages.getOrNull(position)?.first?.let { tabName ->
+                    reportTabExposure(position, tabName)
+                }
             }
         }.also { callback ->
             viewPager.registerOnPageChangeCallback(callback)
@@ -156,13 +139,16 @@ class HomeFragment : BaseViewModelFragment<FragmentHomeBinding, HomeTabsViewMode
         viewPager.setCurrentItem(0, false)
         binding.magicIndicator.onPageSelected(0)
         binding.magicIndicator.onPageScrolled(0, 0f, 0)
-        reportTabExposure(pages.first().first)
+        reportTabExposure(0, pages.first().first)
         viewPager.removeTheRipples()
         binding.lsv.showContent()
     }
 
     /** 记录当前 Tab 展示，用于区分用户实际看到的主页内容。 */
-    private fun reportTabExposure(tabName: String) {
+    private fun reportTabExposure(position: Int, tabName: String) {
+        // ViewPager2 初始化回调与显式首 Tab 上报可能同时到达，按位置去重。
+        if (lastReportedTabPosition == position) return
+        lastReportedTabPosition = position
         EventManager.onFirebaseTrack(
             FirebaseEvent.Category.HOME,
             FirebaseEvent.Action.HOME_TAB_SHOW,
@@ -209,13 +195,4 @@ class HomeFragment : BaseViewModelFragment<FragmentHomeBinding, HomeTabsViewMode
         super.onDestroy()
     }
 
-    /** 将 ViewPager2 状态转为便于日志阅读的名称。 */
-    private fun pageScrollStateName(state: Int): String {
-        return when (state) {
-            ViewPager2.SCROLL_STATE_IDLE -> "IDLE"
-            ViewPager2.SCROLL_STATE_DRAGGING -> "DRAGGING"
-            ViewPager2.SCROLL_STATE_SETTLING -> "SETTLING"
-            else -> state.toString()
-        }
-    }
 }
