@@ -13,6 +13,7 @@ import com.kuaigeglobal.epnova.databinding.ItemHomeDramaBinding
 import com.kuaigeglobal.epnova.feature.play.DramasPlayPagerActivity
 import com.nhsd.basic.item.BindingViewHolder
 
+/** Home 作品分页适配器，负责卡片绑定、作品点击埋点和播放页跳转。 */
 class HomeAdapter(
     private val tabName: String?,
     var bookshelfName: String? = null
@@ -39,14 +40,17 @@ class HomeAdapter(
     inner class ViewHolder(binding: ItemHomeDramaBinding) :
         BindingViewHolder<ItemHomeDramaBinding>(binding) {
 
+        /** 为当前作品创建展示 VM，并把点击事件交给统一的播放入口。 */
         override fun bind(position: Int) {
             getItem(position)?.let { item ->
 //                item.workId?.let { workId ->
 //                    if (viewedDramaIds.add(workId)) {
 //                    }
 //                }
+                // 使用 ItemHomeDramaVm 保存卡片状态，Adapter 只负责注入页面级点击行为。
                 val transVM = binding.getVm(position, item, ItemHomeDramaVm::class.java).apply {
                     onItemClick.value = {
+                        // 埋点使用当前 Tab 和书架名称区分作品的展示来源。
                         EventManager.onFirebaseTrack(
                             FirebaseEvent.Category.HOME,
                             FirebaseEvent.Action.DRAMA_CLICK,
@@ -70,6 +74,7 @@ class HomeAdapter(
 
 
     companion object {
+        // workId 是作品稳定标识，内容变化交给 areContentsTheSame 刷新卡片。
         private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<WorkVOInfo>() {
             override fun areItemsTheSame(
                 oldItem: WorkVOInfo,

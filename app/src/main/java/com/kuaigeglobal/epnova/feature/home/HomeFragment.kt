@@ -32,11 +32,13 @@ class HomeFragment : BaseViewModelFragment<FragmentHomeBinding, HomeTabsViewMode
     companion object {
         private const val TAG = "HomePagerTouch"
 
+        /** 创建主页容器，具体 Tab 内容在配置加载后按书架类型生成。 */
         fun newInstance(): HomeFragment = HomeFragment()
     }
 
     private var pageChangeCallback: ViewPager2.OnPageChangeCallback? = null
 
+    /** 初始化固定的搜索栏、Tab 容器和主页状态监听。 */
     override fun onPrepareView() {
         super.onPrepareView()
         initViewPager()
@@ -44,6 +46,7 @@ class HomeFragment : BaseViewModelFragment<FragmentHomeBinding, HomeTabsViewMode
         dataUpdate()
     }
 
+    /** Home 从隐藏状态恢复时刷新奖励未读数，并按当前可见性触发登录引导数据请求。 */
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
         if (hidden) return
@@ -51,6 +54,7 @@ class HomeFragment : BaseViewModelFragment<FragmentHomeBinding, HomeTabsViewMode
         triggerGuideLoginIfVisible()
     }
 
+    /** 回到前台时复用已有 Tab 页面，同时刷新顶部奖励入口状态。 */
     override fun onResume() {
         super.onResume()
         initViewPager()
@@ -58,6 +62,7 @@ class HomeFragment : BaseViewModelFragment<FragmentHomeBinding, HomeTabsViewMode
         triggerGuideLoginIfVisible()
     }
 
+    /** 绑定重试、搜索和奖励入口；页面内容请求仍由 ViewModel 和子 Fragment 负责。 */
     private fun initListener() {
         binding.lsv.setRetryListener { mRealVM.loadBookShelfConfig() }
         binding.lsv.setNoDataButton(getString(R.string.retry)) { mRealVM.loadBookShelfConfig() }
@@ -73,6 +78,7 @@ class HomeFragment : BaseViewModelFragment<FragmentHomeBinding, HomeTabsViewMode
         }
     }
 
+    /** 根据缓存的书架配置创建固定的 Trending/All Dramas 子页并绑定 Tab。 */
     private fun initViewPager() {
         val viewPager = binding.viewPager
         // 已有可展示的页面时，后台刷新失败也继续使用缓存内容。
@@ -80,6 +86,7 @@ class HomeFragment : BaseViewModelFragment<FragmentHomeBinding, HomeTabsViewMode
             binding.lsv.showContent()
             return
         }
+        // 书架配置中的 tab 类型决定子页；未知类型不参与展示。
         val pages = Config.get().bookShelfConfigList.mapNotNull { config ->
             val sections = config.bookshelfSectionList.orEmpty()
             val tabName = config.bookshelfTabName.orEmpty()
@@ -154,6 +161,7 @@ class HomeFragment : BaseViewModelFragment<FragmentHomeBinding, HomeTabsViewMode
         binding.lsv.showContent()
     }
 
+    /** 记录当前 Tab 展示，用于区分用户实际看到的主页内容。 */
     private fun reportTabExposure(tabName: String) {
         EventManager.onFirebaseTrack(
             FirebaseEvent.Category.HOME,
@@ -162,18 +170,21 @@ class HomeFragment : BaseViewModelFragment<FragmentHomeBinding, HomeTabsViewMode
         )
     }
 
+    /** 监听配置变化、登录奖励弹窗数据和跨模块配置刷新事件。 */
     private fun dataUpdate() {
         mRealVM.bookShelfConfigLoadState.observe(viewLifecycleOwner) {
             initViewPager()
         }
         observeEvents {
             on<Events.ConfigChangeEvent> { event ->
+                // 书架配置变化后重新尝试构建容器，保持 Tab 与本地配置一致。
                 if (event.contain(Config.BOOKSHELF_CONFIG_LIST)) {
                     initViewPager()
                 }
             }
         }
         mRealVM.loginTaskData.observe(viewLifecycleOwner) {
+            // 同一天只展示一次登录奖励欢迎弹窗，日期标记由 Config 持久化。
             val todayDate = com.kuaigeglobal.epnova.common.utils.DateUtil.getDateTime()
             if (Config.get().loginRewardsDialog != todayDate) {
                 RewardWelcomeDialog.newInstance(it).show(childFragmentManager)
@@ -182,6 +193,7 @@ class HomeFragment : BaseViewModelFragment<FragmentHomeBinding, HomeTabsViewMode
         }
     }
 
+    /** 只在主页真正可见且访客尚未拿到任务数据时请求登录引导内容。 */
     private fun triggerGuideLoginIfVisible() {
         if (!isResumed || isHidden || !isVisible) return
         if (User.get().isGuest && mRealVM.loginTaskData.value == null) {
@@ -189,6 +201,7 @@ class HomeFragment : BaseViewModelFragment<FragmentHomeBinding, HomeTabsViewMode
         }
     }
 
+    /** 注销 ViewPager 回调并释放子页面适配器，避免容器销毁后继续回调。 */
     override fun onDestroy() {
         pageChangeCallback?.let { binding.viewPager.unregisterOnPageChangeCallback(it) }
         pageChangeCallback = null
@@ -196,6 +209,7 @@ class HomeFragment : BaseViewModelFragment<FragmentHomeBinding, HomeTabsViewMode
         super.onDestroy()
     }
 
+    /** 将 ViewPager2 状态转为便于日志阅读的名称。 */
     private fun pageScrollStateName(state: Int): String {
         return when (state) {
             ViewPager2.SCROLL_STATE_IDLE -> "IDLE"

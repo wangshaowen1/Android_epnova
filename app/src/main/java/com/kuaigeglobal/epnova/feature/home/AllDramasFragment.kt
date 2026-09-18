@@ -28,6 +28,7 @@ class AllDramasFragment :
         private const val ARG_BOOKSHELF_SECTION_LIST = "bookshelfSectionList"
         private const val ARG_TAB_NAME = "tabName"
 
+        /** 创建 All Dramas 子页，并把主页配置的区块列表和 Tab 名称固定在参数中。 */
         fun newInstance(bookshelfSectionList: List<BookShelfSectionInfo>, tabName: String): AllDramasFragment =
             AllDramasFragment().apply {
                 arguments = Bundle().apply {
@@ -37,6 +38,7 @@ class AllDramasFragment :
             }
     }
 
+    /** 主页传入的横滑书架配置；子页只读取，不从容器反向获取可变状态。 */
     val bookshelfSectionList: List<BookShelfSectionInfo> by lazy {
         arguments?.getParcelableArrayListValue(
             ARG_BOOKSHELF_SECTION_LIST,
@@ -44,6 +46,7 @@ class AllDramasFragment :
         ).orEmpty()
     }
 
+    /** 用于作品点击埋点的 Tab 名称，同时传给横滑书架和底部作品适配器。 */
     private val tabName by lazy { arguments?.getString(ARG_TAB_NAME) }
 
     // 底部 All Dramas 作品分页列表：展示封面、标题和播放量，点击作品进入播放页。
@@ -99,12 +102,14 @@ class AllDramasFragment :
         }
     }
 
+    /** 初始化列表结构后加载配置驱动的横滑区块。 */
     override fun onPrepareView() {
         super.onPrepareView()
         initList()
         mRealVM.loadSections(bookshelfSectionList)
     }
 
+    /** 绑定视图生命周期内的数据收集，并在首次展示时处理恢复位置。 */
     override fun onViewLifecycleReady(view: View, savedInstanceState: Bundle?) {
         super.onViewLifecycleReady(view, savedInstanceState)
         // 恢复页面时保留已有位置，仅全新进入时允许首屏自动定位。
@@ -113,17 +118,20 @@ class AllDramasFragment :
         dataUpdate()
     }
 
+    /** 页面离开后禁止下一次数据回调把列表强制滚回顶部。 */
     override fun onPause() {
         allowInitialScrollToTop = false
         super.onPause()
     }
 
+    /** 清理滚动监听，避免 View 销毁后继续引用旧的 RecyclerView。 */
     override fun onDestroyView() {
         allowInitialScrollToTop = false
         binding.recyclerView.removeOnScrollListener(initialScrollListener)
         super.onDestroyView()
     }
 
+    /** 收集底部分页、横滑区块和合并后的刷新状态，并同步给页面控件。 */
     private fun dataUpdate() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -163,6 +171,7 @@ class AllDramasFragment :
         }
     }
 
+    /** 组合横滑区块、标题、三列作品和页脚，并配置各自的网格占位规则。 */
     private fun initList() {
         titleAdapter.setTitle(getString(R.string.tab_all_dramas))
         titleAdapter.isVisible = true
@@ -206,6 +215,7 @@ class AllDramasFragment :
         binding.lsv.setRetryListener { refreshData() }
     }
 
+    /** 同时刷新横滑区块和底部作品分页，完成后把列表滚回顶部。 */
     private fun refreshData() {
         allowInitialScrollToTop = false
         scrollToTopAfterRefresh = true
