@@ -2,6 +2,8 @@ package com.kuaigeglobal.epnova.feature.series
 
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
+import androidx.databinding.ObservableBoolean
+import androidx.databinding.ObservableField
 import androidx.databinding.ObservableInt
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -15,9 +17,11 @@ import com.blankj.utilcode.util.PathUtils
 import com.kuaige.videoedit.resource.UrlResource
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.base.viewmodel.AppRepositoryViewModel
+import com.kuaigeglobal.epnova.common.Constant
 import com.kuaigeglobal.epnova.common.Constants
 import com.kuaigeglobal.epnova.common.PagedProxy
 import com.kuaigeglobal.epnova.common.adapter.QuickAdapter
+import com.kuaigeglobal.epnova.core.Config
 import com.kuaigeglobal.epnova.core.Events
 import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.ext.launch
@@ -57,6 +61,9 @@ class SeriesViewModel : AppRepositoryViewModel<SeriesRepository>(), DownloadingV
     val workId by lazy { mBundle.getString(Constants.Extra.ID) }
     val loadState by lazy { ObservableInt(LoadStateViewHolder.CONTENT) }
     val workInfo by lazy { MutableLiveData<CreatorWorkInfo?>() }
+
+    val showPublishTutorial by lazy { ObservableBoolean((Config.get().appConfig.publishTutorialDto?.enableSwitch ?: 0) == Constant.Switch.SHOW) }
+    val publishTutorialUrl by lazy { ObservableField<String>(Config.get().appConfig.publishTutorialDto?.imgPath ?: "") }
 
     private var episodePagingSource: EpisodePagingSource? = null
     private var episodePollingJob: Job? = null

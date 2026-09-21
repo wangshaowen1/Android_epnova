@@ -517,6 +517,15 @@ class SeriesActivity :
                     confirmRejectionPublish = { showRejectionPublishConfirm(it) }
                 )
             }
+
+            R.id.ivPublishTutorial -> {
+                val dto = Config.get().appConfig.publishTutorialDto
+                if (mRealVM.showPublishTutorial.get()) {
+                    dto?.jumpUri?.let {
+                        SimpleBrowserActivity.launch(this, it)
+                    }
+                }
+            }
         }
     }
 

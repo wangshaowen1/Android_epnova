@@ -186,6 +186,11 @@ class AppConfigData {
      * 20260917 1.5.0 提现最小额度 分单位
      */
     val incomeWithdrawMinLimit: Long? = null
+
+    /**
+     * 20260921 1.5.2 发布教程网页url
+     */
+    val publishTutorialDto: PublishTutorialDto? = null
 }
 
 data class SimpleBannerInfo(
@@ -210,6 +215,15 @@ data class WorkPointPowerPopUpDto(
     val enableSwitch: Int? = null,//是否开启（0-关，1-开）
     val jumpUri: String? = null,
     val titleText: String? = null,
+)
+
+data class PublishTutorialDto(
+    /** 是否开启（0-关，1-开）*/
+    val enableSwitch: Int? = null,
+    /** 教程跳转链接 */
+    val jumpUri: String? = null,
+    /** 教程卡片图片链接 */
+    val imgPath: String? = null,
 )
 
 /**

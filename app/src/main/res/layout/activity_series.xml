@@ -250,15 +250,20 @@
                                     android:layout_height="24dp"/>
 
                                 <ImageView
+                                    android:id="@+id/ivPublishTutorial"
+                                    singleClick="@{layout.clickHandler::onClick}"
+                                    setVisible="@{layout.showPublishTutorial}"
+                                    loadUri="@{layout.publishTutorialUrl}"
+                                    placeHolder="@{@drawable/img_default_cover_16_9}"
                                     android:layout_marginHorizontal="15dp"
+                                    android:layout_marginTop="12dp"
                                     app:layout_constraintStart_toStartOf="parent"
                                     app:layout_constraintEnd_toEndOf="parent"
-                                    android:layout_marginTop="12dp"
                                     app:layout_constraintTop_toBottomOf="@id/tvEpisodeTitle"
-                                    app:srcCompat="@drawable/ic_series_episodes_tips_board"
-                                    app:layout_constraintDimensionRatio="345:62"
+                                    tools:src="@drawable/ic_series_episodes_tips_board"
+                                    android:scaleType="fitXY"
                                     android:layout_width="match_parent"
-                                    android:layout_height="0dp"/>
+                                    android:layout_height="wrap_content"/>
                                 
                             </androidx.constraintlayout.widget.ConstraintLayout>
 
