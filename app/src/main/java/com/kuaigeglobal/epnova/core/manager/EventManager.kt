@@ -249,7 +249,7 @@ object FirebaseEvent {
         /** 登录。 */
         const val LOGIN = "login"
         /** 注册 */
-        const val REGISTER = " register"
+        const val REGISTER = "register"
         /** 首页。 */
         const val HOME = "home"
         /** 创作流程。 */
