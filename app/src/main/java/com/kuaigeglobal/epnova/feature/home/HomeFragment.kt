@@ -59,7 +59,6 @@ class HomeFragment : BaseViewModelFragment<FragmentHomeBinding, HomeTabsViewMode
     /** 回到前台时复用已有 Tab 页面，同时刷新顶部奖励入口状态。 */
     override fun onResume() {
         super.onResume()
-        initViewPager()
         mRealVM.getRewardUserUncheck()
         triggerGuideLoginIfVisible()
     }
@@ -83,12 +82,9 @@ class HomeFragment : BaseViewModelFragment<FragmentHomeBinding, HomeTabsViewMode
     /** 根据缓存的书架配置创建固定的 Trending/All Dramas 子页并绑定 Tab。 */
     private fun initViewPager() {
         val viewPager = binding.viewPager
-        val tabCount = Config.get().bookShelfConfigList.count {
-            it.bookshelfTab == 1 || it.bookshelfTab == 2
-        }
-        binding.magicIndicator.visibility = if (tabCount > 1) View.VISIBLE else View.GONE
         // 已有可展示的页面时，后台刷新失败也继续使用缓存内容。
         if (viewPager.adapter != null) {
+            binding.magicIndicator.visibility = if ((viewPager.adapter?.itemCount ?: 0) > 1) View.VISIBLE else View.GONE
             binding.lsv.showContent()
             return
         }
@@ -103,6 +99,7 @@ class HomeFragment : BaseViewModelFragment<FragmentHomeBinding, HomeTabsViewMode
             }
             tabName to fragment
         }
+        binding.magicIndicator.visibility = if (pages.size > 1) View.VISIBLE else View.GONE
         if (pages.isEmpty()) {
             when (val state = mRealVM.bookShelfConfigLoadState.value) {
                 null, LoadState.Loading -> binding.lsv.showLoading()
