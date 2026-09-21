@@ -44,7 +44,8 @@
                     setVisible="@{layout.buttonText(layout.step,layout.cost).length() > 0}"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingVertical="10dp">
+                    android:paddingTop="10dp"
+                    android:paddingBottom="@dimen/bottom_nav_bar_size">
 
                     <TextView
                         android:id="@+id/btnNext"

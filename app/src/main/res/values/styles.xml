@@ -68,6 +68,7 @@
 
         <item name="powerCheckBg">@color/color_12_ff2e55</item>
         <item name="creditsCheckBg">@color/color_12_3f2eff</item>
+        <item name="modelCheckBg">@color/color_10_3b82f6</item>
 
         <item name="colorPrimary">@color/theme_color_1_dark</item>
         <item name="android:windowBackground">@color/bg_color_1_dark</item>

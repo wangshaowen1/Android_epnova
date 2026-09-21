@@ -16,14 +16,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/bg_color2_tr20"
-        android:paddingBottom="30dp">
+        android:paddingBottom="46dp">
 
         <TextView
             android:id="@+id/title"
             style="@style/Text16.Outfit.Medium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_l"
+            android:layout_marginTop="22dp"
             android:text="@string/generate_story_switch_model"
             android:textColor="?attr/textColor1"
             app:layout_constraintEnd_toEndOf="parent"
@@ -35,7 +35,7 @@
             style="@style/Text13.Outfit.Regular"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_s"
+            android:layout_marginTop="10dp"
             android:text="@string/generate_story_switch_reset_tip"
             android:textColor="?attr/textColor4"
             app:layout_constraintEnd_toEndOf="parent"
@@ -44,11 +44,11 @@
 
         <ImageView
             android:id="@+id/close"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/spacing_l"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginEnd="12dp"
             android:padding="3dp"
-            android:src="@drawable/icon_close"
+            android:src="@drawable/icon_close_gray"
             app:layout_constraintBottom_toBottomOf="@id/title"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/title" />

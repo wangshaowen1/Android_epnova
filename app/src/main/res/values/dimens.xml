@@ -2,6 +2,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingDefaultResource">
     <dimen name="font_18">18sp</dimen>
     <dimen name="action_bar_size">44dp</dimen>
+    <dimen name="bottom_nav_bar_size">34dp</dimen>
     <dimen name="lineSpacingExtraShort">3dp</dimen>
     <dimen name="lineSpacingExtra">5dp</dimen>
     <dimen name="lineSpacingExtraLarge">8dp</dimen>

@@ -65,6 +65,7 @@
     <attr name="strokeTextWidth" format="dimension" />
     <attr name="powerCheckBg" format="color"/>
     <attr name="creditsCheckBg" format="color"/>
+    <attr name="modelCheckBg" format="color"/>
     <declare-styleable name="PageMenuLayout">
         <attr name="pagemenu_row_count" format="integer" />
         <attr name="pagemenu_span_count" format="integer" />

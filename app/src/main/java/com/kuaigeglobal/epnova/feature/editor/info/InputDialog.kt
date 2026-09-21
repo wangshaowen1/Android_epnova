@@ -9,6 +9,9 @@ import android.text.style.ForegroundColorSpan
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatDialog
 import androidx.core.os.bundleOf
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
 import com.blankj.utilcode.util.ActivityUtils
@@ -85,6 +88,16 @@ class InputDialog :
         return AppCompatDialog(requireContext(), com.nhsd.basic.R.style.Dialog_BottomPush).apply {
             setCanceledOnTouchOutside(true)
             onBackPressedDispatcher.addCallback(this@InputDialog, backPressedCallback)
+        }.also {
+            // 隐藏底部导航栏或手势条
+            it.window?.let { window ->
+                WindowCompat.setDecorFitsSystemWindows(window, false) // 设置全屏
+                val windowInsetsController = WindowCompat.getInsetsController(window, window.decorView)
+//                    windowInsetsController.hide(WindowInsetsCompat.Type.systemBars()) // 隐藏system bars
+                windowInsetsController.hide(WindowInsetsCompat.Type.navigationBars()) // 隐藏navigation bars
+                // 上滑显示后自动隐藏行为
+                windowInsetsController.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+            }
         }
     }
 

@@ -2,6 +2,7 @@ package com.kuaigeglobal.epnova.feature.creator.generate
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import androidx.activity.OnBackPressedCallback
@@ -14,6 +15,8 @@ import com.kuaigeglobal.epnova.feature.creator.data.DramaGenerateConstants
 import com.kuaigeglobal.epnova.feature.creator.storyboard.StoryboardDesignFragment
 import com.kuaigeglobal.epnova.feature.editor.info.DramaTitleEditDialog
 import com.nhsd.basic.BaseViewModelActivity
+import com.nhsd.basic.BasicEdgeToEdgeConfig
+import com.nhsd.basic.ext.setupTranslucentStatus
 
 /**
  * 作品生成根界面（灵感模式有5步，小说模式只有4步，从剧本生成开始）
@@ -21,6 +24,17 @@ import com.nhsd.basic.BaseViewModelActivity
  */
 class StoryEditorActivity :
     BaseViewModelActivity<ActivityStoryEditorBinding, StoryEditorViewModel>() {
+
+    // 单独设置当前页面内容可延伸到导航栏区域
+    override val edgeToEdgeStrategy: BasicEdgeToEdgeConfig.Strategy
+        get() = super.edgeToEdgeStrategy.copy(
+            rootInsetsMode = BasicEdgeToEdgeConfig.RootInsetsMode.NONE,
+        )
+
+    override fun setTranslucentStatus() {
+        // 导航栏图标浅色、背景透明
+        setupTranslucentStatus(false, Color.TRANSPARENT)
+    }
 
     private val backPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {

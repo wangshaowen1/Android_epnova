@@ -191,9 +191,9 @@
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="30dp"
+            android:paddingTop="10dp"
             android:paddingHorizontal="@dimen/spacing_l"
-            android:paddingVertical="@dimen/spacing_m">
+            android:paddingBottom="@dimen/bottom_nav_bar_size">
 
             <Button
                 android:id="@+id/btnNext"
