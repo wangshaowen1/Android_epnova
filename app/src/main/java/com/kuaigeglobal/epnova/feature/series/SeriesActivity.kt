@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.kuaigeglobal.epnova.R
+import com.kuaigeglobal.epnova.common.Constant
 import com.kuaigeglobal.epnova.common.Constants
 import com.kuaigeglobal.epnova.common.ext.showCommonDialog
 import com.kuaigeglobal.epnova.common.ext.showConfirmPrompt
@@ -92,7 +93,13 @@ class SeriesActivity :
             FirebaseEvent.Category.PUBLISH,
             FirebaseEvent.Action.WORK_DETAIL_SHOW
         )
-        binding.toolbarLayout.minimumHeight = (32 + 62 + 12).dp
+        binding.toolbarLayout.minimumHeight = (
+            if ((Config.get().appConfig.publishTutorialDto?.enableSwitch ?: Constant.Switch.HIDE) == Constant.Switch.SHOW) {
+                32 + 90 + 12 // 8 + 24 + 12 + 90 上间距+自身+底部间距+卡片高度
+            } else {
+                40 // 24 + 8 + 8 自身加上下间距
+            }
+        ).dp
         initView()
         //数据更新
         observeData()
