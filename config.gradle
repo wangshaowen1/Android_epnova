@@ -19,10 +19,10 @@ ext {
             minSdkVersion     : 24,
             targetSdkVersion  : 36,
             buildToolsVersion : "36.0.0",
-            versionCodeRelease: 19,
-            versionCodeDebug  : 19,
+            versionCodeRelease: 20,
+            versionCodeDebug  : 20,
             //版本名称
-            versionName       : "1.5.0",
+            versionName       : "1.5.2",
 
             //数据库版本号
             databaseVersion   : 100000

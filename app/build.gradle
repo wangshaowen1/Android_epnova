@@ -331,8 +331,9 @@ dependencies {
     // 经典的字符探测库，体积小，零外部依赖
     implementation("com.googlecode.juniversalchardet:juniversalchardet:1.0.3")
 
-
-    implementation 'com.android.billingclient:billing-ktx:9.1.0'
+    def billing_version = "9.1.0"
+    implementation "com.android.billingclient:billing:$billing_version"
+    implementation "com.android.billingclient:billing-ktx:$billing_version"
     implementation 'com.google.android.gms:play-services-base:18.9.0'
     implementation libs.play.services.auth
     implementation libs.play.services.ads.identifier
