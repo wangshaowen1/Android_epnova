@@ -223,7 +223,7 @@ object EventManager {
             label4?.let { put(FirebaseEvent.Label.LABEL_4, it) }
         }
         Logger.d("[onFirebaseTrack] GA4 Event: $event, Action: $action")
-        AnalyticsHelper.logEvent(event, params)
+        AnalyticsHelper.logEvent(event.trim(), params)
     }
 
     fun reportRegister() {
