@@ -1,6 +1,7 @@
 package com.kuaigeglobal.epnova.feature.home
 
 import android.util.Log
+import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import com.kuaigeglobal.epnova.R
@@ -82,6 +83,10 @@ class HomeFragment : BaseViewModelFragment<FragmentHomeBinding, HomeTabsViewMode
     /** 根据缓存的书架配置创建固定的 Trending/All Dramas 子页并绑定 Tab。 */
     private fun initViewPager() {
         val viewPager = binding.viewPager
+        val tabCount = Config.get().bookShelfConfigList.count {
+            it.bookshelfTab == 1 || it.bookshelfTab == 2
+        }
+        binding.magicIndicator.visibility = if (tabCount > 1) View.VISIBLE else View.GONE
         // 已有可展示的页面时，后台刷新失败也继续使用缓存内容。
         if (viewPager.adapter != null) {
             binding.lsv.showContent()
