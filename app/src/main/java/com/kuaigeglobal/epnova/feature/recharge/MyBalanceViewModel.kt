@@ -291,6 +291,8 @@ class MyBalanceViewModel(
                 }
                 if (result is PurchaseResult.Success) {
                     loadConfig()
+                } else {
+                    R.string.system_payment_failed.getResString().showToast()
                 }
                 _purchaseEvent.emit(result)
             }
