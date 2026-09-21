@@ -6,6 +6,8 @@ package com.kuaigeglobal.epnova.core.network.apis.response
 data class MemberSubscriptionPrepareData(
     /** 购买确认或主动释放准备状态时原样回传的不透明令牌。 */
     val purchasePrepareToken: String? = null,
+    /** 平台内部订单号，用于商店侧支付失败事件上报。 */
+    val orderNo: String? = null,
     /** Apple Product ID 或 Google Subscription Product ID。 */
     val productId: String? = null,
     /** Google Base Plan ID；Apple 返回空。 */

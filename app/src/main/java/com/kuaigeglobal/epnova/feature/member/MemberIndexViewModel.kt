@@ -22,12 +22,14 @@ import com.kuaigeglobal.epnova.core.google.billing.MemberBillingResult
 import com.kuaigeglobal.epnova.core.google.billing.MemberSubscriptionRecoveryManager
 import com.kuaigeglobal.epnova.core.google.billing.MemberSubscriptionRecoveryStore
 import com.kuaigeglobal.epnova.core.google.billing.MemberSubscriptionStorePreparationResult
+import com.kuaigeglobal.epnova.core.google.billing.PaymentFailureReportManager
 import com.kuaigeglobal.epnova.core.manager.EventManager
 import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
 import com.kuaigeglobal.epnova.core.network.apis.ApiException
 import com.kuaigeglobal.epnova.core.network.apis.request.GoogleMemberSubscriptionBody
 import com.kuaigeglobal.epnova.core.network.apis.request.MemberSubscriptionPrepareBody
 import com.kuaigeglobal.epnova.core.network.apis.request.MemberSubscriptionPrepareReleaseBody
+import com.kuaigeglobal.epnova.core.network.apis.request.PaymentFailureReasonEnum
 import com.kuaigeglobal.epnova.core.network.apis.response.MemberActionEnum
 import com.kuaigeglobal.epnova.core.network.apis.response.MemberBenefitItemInfo
 import com.kuaigeglobal.epnova.core.network.apis.response.MemberBenefitItemType
@@ -64,6 +66,16 @@ class MemberIndexViewModel : AppRepositoryViewModel<AppRepository>() {
 
         /** 官方凭证交叉校验失败：保留恢复信号，重新查询商店后再决定是否 sync。 */
         private const val MEMBER_ERROR_PURCHASE_CROSS_CHECK_FAILED = 300185
+
+        /** 网络、连接和已拥有交易都不能认定为商店侧失败，按文档只走恢复查询。 */
+        private val MEMBER_PAYMENT_TRANSIENT_BILLING_CODES = setOf(
+            BillingClient.BillingResponseCode.ITEM_ALREADY_OWNED,
+            BillingClient.BillingResponseCode.SERVICE_TIMEOUT,
+            BillingClient.BillingResponseCode.SERVICE_DISCONNECTED,
+            BillingClient.BillingResponseCode.SERVICE_UNAVAILABLE,
+            BillingClient.BillingResponseCode.NETWORK_ERROR,
+            BillingClient.BillingResponseCode.ERROR,
+        )
 
         /**
          * 已有有效订阅、状态不支持切换、账号归属、配置、环境及原平台限制都属于明确业务
@@ -292,6 +304,58 @@ class MemberIndexViewModel : AppRepositoryViewModel<AppRepository>() {
         }
     }
 
+    /**
+     * 上报一笔已经确认的商店侧失败。订单号只使用 purchase/prepare 返回值，绝不复用准备令牌。
+     * 当前恢复标记不再属于该目标时，忽略迟到回调，避免串到新账号或新订单。
+     */
+    private fun reportMemberPaymentFailure(
+        context: ActiveMemberPurchaseContext,
+        reasonCode: PaymentFailureReasonEnum,
+        platformErrorCode: Int? = null,
+    ) {
+        if (context.paymentFailureReported || context.orderNo.isNullOrBlank()) return
+        if (
+            MemberSubscriptionRecoveryStore.getForCurrentUser()
+                ?.hasSameTarget(context.productId, context.obfuscatedAccountId) != true
+        ) {
+            return
+        }
+        if (
+            PaymentFailureReportManager.report(
+                orderNo = context.orderNo,
+                reasonCode = reasonCode,
+                platformErrorCode = platformErrorCode?.toString(),
+            )
+        ) {
+            context.paymentFailureReported = true
+        }
+    }
+
+    /** 将会员 Billing 的明确失败映射为联调文档中的三个原因码。 */
+    private fun reportMemberBillingFailure(
+        context: ActiveMemberPurchaseContext,
+        failure: MemberBillingResult.Failed,
+    ) {
+        val billingFailure = failure as? MemberBillingResult.Failed.Billing ?: return
+        val responseCode = billingFailure.responseCode
+        if (responseCode in MEMBER_PAYMENT_TRANSIENT_BILLING_CODES) return
+
+        val reasonCode = when (responseCode) {
+            BillingClient.BillingResponseCode.ITEM_UNAVAILABLE ->
+                PaymentFailureReasonEnum.PRODUCT_UNAVAILABLE
+
+            BillingClient.BillingResponseCode.BILLING_UNAVAILABLE ->
+                PaymentFailureReasonEnum.PAYMENT_METHOD_UNAVAILABLE
+
+            else -> PaymentFailureReasonEnum.STORE_LAUNCH_FAILED
+        }
+        reportMemberPaymentFailure(
+            context = context,
+            reasonCode = reasonCode,
+            platformErrorCode = responseCode,
+        )
+    }
+
     private fun membershipPeriodLabel(periodUnit: String?): String? {
         return when (periodUnit) {
             MEMBER_PERIOD_UNIT_WEEK -> FirebaseEvent.Value.MEMBERSHIP_PERIOD_WEEKLY
@@ -394,9 +458,10 @@ class MemberIndexViewModel : AppRepositoryViewModel<AppRepository>() {
         currentProductId: String?,
         prepareData: MemberSubscriptionPrepareData?,
     ) {
-        // 56700820 要求平台内部 orderNo；当前会员 purchase/prepare 契约只返回
-        // purchasePrepareToken，不能把 opaque token 当作 orderNo 进行失败上报。
+        // 56700820 使用 purchase/prepare 返回的稳定平台内部 orderNo；purchasePrepareToken
+        // 仍只用于后续 confirm/release，不能混用。
         val prepareToken = prepareData?.purchasePrepareToken?.takeIf { it.isNotBlank() }
+        val orderNo = prepareData?.orderNo?.takeIf { it.isNotBlank() }
         val preparedProductId = prepareData?.productId?.takeIf { it.isNotBlank() }
         val preparedBasePlanId = prepareData?.basePlanId?.takeIf { it.isNotBlank() }
         val obfuscatedAccountId = prepareData?.obfuscatedAccountId?.takeIf { it.isNotBlank() }
@@ -420,6 +485,7 @@ class MemberIndexViewModel : AppRepositoryViewModel<AppRepository>() {
             actionType = actionType,
             periodUnit = selectedPlan.periodUnit,
             purchasePrepareToken = prepareToken,
+            orderNo = orderNo,
             productId = preparedProductId,
             basePlanId = preparedBasePlanId,
             requestedOfferId = selectedPlan.offerId,
@@ -500,6 +566,28 @@ class MemberIndexViewModel : AppRepositoryViewModel<AppRepository>() {
             }
 
             is MemberSubscriptionStorePreparationResult.Failed -> {
+                when (result) {
+                    is MemberSubscriptionStorePreparationResult.Failed.ProductQueryFailed -> {
+                        if (result.responseCode !in MEMBER_PAYMENT_TRANSIENT_BILLING_CODES) {
+                            reportMemberPaymentFailure(
+                                context = context,
+                                reasonCode = PaymentFailureReasonEnum.PRODUCT_UNAVAILABLE,
+                                platformErrorCode = result.responseCode,
+                            )
+                        }
+                    }
+
+                    MemberSubscriptionStorePreparationResult.Failed.ProductNotFound,
+                    MemberSubscriptionStorePreparationResult.Failed.BasePlanNotFound,
+                    MemberSubscriptionStorePreparationResult.Failed.OfferNotFound -> {
+                        reportMemberPaymentFailure(
+                            context = context,
+                            reasonCode = PaymentFailureReasonEnum.PRODUCT_UNAVAILABLE,
+                        )
+                    }
+
+                    else -> Unit
+                }
                 // Product/Offer/旧订阅匹配失败发生在拉起商店之前，能够确定没有新官方交易，
                 // 因此可以安全释放后端 prepare。
                 releaseMemberPrepare(
@@ -644,6 +732,7 @@ class MemberIndexViewModel : AppRepositoryViewModel<AppRepository>() {
                             // 查询与 sync，不再允许释放 prepare。
                             queryMemberSubscriptionsForRecovery()
                         } else if (context != null && context.billingLaunchStarted) {
+                            reportMemberBillingFailure(context, result)
                             releaseMemberPrepare(
                                 context = context,
                                 toastRes = R.string.system_payment_failed,
@@ -819,6 +908,7 @@ class MemberIndexViewModel : AppRepositoryViewModel<AppRepository>() {
             actionType = "",
             periodUnit = null,
             purchasePrepareToken = prepareToken,
+            orderNo = null,
             productId = "",
             basePlanId = "",
             requestedOfferId = null,
@@ -1479,6 +1569,7 @@ class MemberIndexViewModel : AppRepositoryViewModel<AppRepository>() {
         val actionType: String,
         val periodUnit: String?,
         val purchasePrepareToken: String,
+        val orderNo: String?,
         val productId: String,
         val basePlanId: String,
         val requestedOfferId: String?,
@@ -1492,6 +1583,8 @@ class MemberIndexViewModel : AppRepositoryViewModel<AppRepository>() {
         var recoveryQueryOnResume = false
         var releaseRequested = false
         var analyticsResultReported = false
+        // 支付失败是否已上报
+        var paymentFailureReported = false
         // 微单位金额 例如 7_990_000  相当于 7.99
         var priceAmountMicros: Long? = null
         // 币种，例如 USD
