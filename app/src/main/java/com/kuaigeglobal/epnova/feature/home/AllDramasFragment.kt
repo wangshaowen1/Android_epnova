@@ -6,6 +6,7 @@ import android.view.View
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -19,6 +20,7 @@ import com.nhsd.basic.ext.dp
 import com.nhsd.basic.ext.getParcelableArrayListValue
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import androidx.paging.LoadState as PagingLoadState
 
 /** All Dramas 页：配置驱动的横滑预览 + 独立的全部作品分页。 */
 class AllDramasFragment :
@@ -73,6 +75,7 @@ class AllDramasFragment :
             hostAdapter = homeAdapter,
             displayEmptyState = false,
             noMoreThreshold = 1,
+            requestButtonDisplay = true,
             refresh = {
                 allowInitialScrollToTop = false
                 mRealVM.retrySections()
@@ -158,6 +161,7 @@ class AllDramasFragment :
             }
         }
         mRealVM.footerLoadState.observe(viewLifecycleOwner) { state ->
+            footerAdapter.displayEmptyState = state is PagingLoadState.Error
             footerAdapter.loadState = state
         }
         mRealVM.isRefreshing.observe(viewLifecycleOwner) { refreshing ->

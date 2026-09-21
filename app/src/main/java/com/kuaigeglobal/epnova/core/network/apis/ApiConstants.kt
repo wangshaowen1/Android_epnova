@@ -991,6 +991,9 @@ object ApiConstants {
     /** 首页-All Dramas 全部作品分页，不依赖书架配置。 */
     const val BOOKSHELF_ALL_DRAMAS_PAGE = "app/bookshelf/v2/all/dramas/page"
 
+    /** 首页-按区块编码分页查询书架瀑布流。 */
+    const val BOOKSHELF_WATERFALL_PAGE = "app/bookshelf/v2/waterfall/page"
+
     /**
      * 播放器-作品剧集目录分集分页
      */

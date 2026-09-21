@@ -201,6 +201,7 @@ import com.kuaigeglobal.epnova.core.network.apis.response.FeedbackDetailData
 import com.kuaigeglobal.epnova.core.network.apis.response.FeedbackPageData
 import com.kuaigeglobal.epnova.core.network.apis.response.FollowingData
 import com.kuaigeglobal.epnova.core.network.apis.entity.BookShelfConfigInfo
+import com.kuaigeglobal.epnova.core.network.apis.request.BookShelfWaterfallPagedBody
 import com.kuaigeglobal.epnova.core.network.apis.response.HomeBookShelfData
 import com.kuaigeglobal.epnova.core.network.apis.response.LikeData
 import com.kuaigeglobal.epnova.core.network.apis.response.MemberCardData
@@ -1467,6 +1468,10 @@ interface ApiService {
     /** 首页-All Dramas 全部作品分页。 */
     @POST(ApiConstants.BOOKSHELF_ALL_DRAMAS_PAGE)
     suspend fun bookShelfAllDramasPage(@Body body: PagedBody): ApiResponse<PagedList<WorkVOInfo>?>
+
+    /** 首页-Trending 按配置区块查询瀑布流作品。 */
+    @POST(ApiConstants.BOOKSHELF_WATERFALL_PAGE)
+    suspend fun bookShelfWaterfallPage(@Body body: BookShelfWaterfallPagedBody): ApiResponse<PagedList<WorkVOInfo>?>
 
     /**
      * 首页-分页查询书架瀑布流

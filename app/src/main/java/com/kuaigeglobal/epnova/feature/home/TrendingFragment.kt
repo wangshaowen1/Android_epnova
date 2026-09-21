@@ -6,17 +6,16 @@ import android.widget.ImageView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.paging.LoadState
 import androidx.recyclerview.widget.ConcatAdapter
+import androidx.recyclerview.widget.RecyclerView
 import com.kuaigeglobal.epnova.R
-import com.kuaigeglobal.epnova.common.ext.startRefreshWithAdapter
 import com.kuaigeglobal.epnova.core.databinding.loadUri
 import com.kuaigeglobal.epnova.core.manager.EventManager
 import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
 import com.kuaigeglobal.epnova.core.network.apis.entity.BannerInfo
 import com.kuaigeglobal.epnova.core.network.apis.entity.BookShelfSectionInfo
-import com.kuaigeglobal.epnova.core.network.apis.response.Section
 import com.kuaigeglobal.epnova.databinding.FragmentTrendingBinding
+import com.kuaigeglobal.epnova.feature.home.bookshelf.BookShelfListActivity
 import com.kuaigeglobal.epnova.router.AppRouter
 import com.kuaigeglobal.epnova.widget.decoration.StaggeredGridSpaceItemDecoration
 import com.kuaigeglobal.epnova.widget.stateful.paging.MyMultiStatePagingFooterAdapter
@@ -30,11 +29,11 @@ import com.zhpan.bannerview.BaseBannerAdapter
 import com.zhpan.bannerview.BaseViewHolder
 import com.zhpan.indicator.enums.IndicatorStyle
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlin.math.abs
+import androidx.paging.LoadState as PagingLoadState
 
-/** Trending 页，沿用原首页的 Banner、书架和瀑布流逻辑。 */
+/** Trending 页：配置驱动的横滑书架 + 配置驱动的瀑布流。 */
 class TrendingFragment : BaseViewModelFragment<FragmentTrendingBinding, HomeViewModel>() {
 
     companion object {
@@ -60,13 +59,47 @@ class TrendingFragment : BaseViewModelFragment<FragmentTrendingBinding, HomeView
     private val tabName by lazy { arguments?.getString(ARG_TAB_NAME) }
     private val homeAdapter by lazy { HomeAdapter(tabName) }
     private val titleAdapter by lazy { WaterfallTitleAdapter() }
-    private val shelfContainerAdapter by lazy { ShelfContainerAdapter(tabName) }
     private lateinit var bannerAdapter: BaseBannerAdapter<BannerInfo>
+    private val shelfSectionAdapter by lazy {
+        ShelfSectionAdapter(tabName) { section, entryType ->
+            section.bookshelfSectionCode?.let { sectionCode ->
+                BookShelfListActivity.start(
+                    activity = activity,
+                    bookshelfSectionCode = sectionCode.toString(),
+                    bookshelfName = section.bookshelfName,
+                    entryType = entryType
+                )
+            }
+        }
+    }
+    private val footerAdapter by lazy {
+        MyMultiStatePagingFooterAdapter(
+            hostAdapter = homeAdapter,
+            displayEmptyState = false,
+            requestButtonDisplay = true,
+            noMoreThreshold = 1,
+            refresh = {
+                allowInitialScrollToTop = false
+                mRealVM.retrySections()
+                homeAdapter.retry()
+            }
+        )
+    }
+
+    private var scrollToTopAfterRefresh = false
+    private var allowInitialScrollToTop = true
+    private val initialScrollListener = object : RecyclerView.OnScrollListener() {
+        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+            if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                allowInitialScrollToTop = false
+            }
+        }
+    }
 
     override fun onPrepareView() {
         super.onPrepareView()
         initView()
-        dataUpdate()
+        mRealVM.loadSections(bookshelfSectionList)
     }
 
     private fun initView() {
@@ -116,83 +149,100 @@ class TrendingFragment : BaseViewModelFragment<FragmentTrendingBinding, HomeView
         initList()
     }
 
+    override fun onViewLifecycleReady(view: View, savedInstanceState: Bundle?) {
+        super.onViewLifecycleReady(view, savedInstanceState)
+        if (savedInstanceState != null) allowInitialScrollToTop = false
+        binding.recyclerView.addOnScrollListener(initialScrollListener)
+        dataUpdate()
+    }
+
+    override fun onPause() {
+        allowInitialScrollToTop = false
+        super.onPause()
+    }
+
+    override fun onDestroyView() {
+        allowInitialScrollToTop = false
+        binding.recyclerView.removeOnScrollListener(initialScrollListener)
+        super.onDestroyView()
+    }
+
     private fun dataUpdate() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                mRealVM.feedFlow.collectLatest { pagingData ->
-                    homeAdapter.submitData(pagingData)
+                launch {
+                    mRealVM.trendingFeedFlow.collectLatest { pagingData ->
+                        homeAdapter.submitData(pagingData)
+                    }
+                }
+                launch {
+                    homeAdapter.loadStateFlow.collect { states ->
+                        mRealVM.onPagingLoadStateChanged(states, homeAdapter.itemCount)
+                    }
                 }
             }
         }
-        viewLifecycleOwner.lifecycleScope.launch {
-            homeAdapter.loadStateFlow.first {
-                it.refresh is LoadState.NotLoading && homeAdapter.itemCount > 0
+        mRealVM.shelfSections.observe(viewLifecycleOwner) { sections ->
+            shelfSectionAdapter.submitList(sections) {
+                if (allowInitialScrollToTop && sections.isNotEmpty()) {
+                    allowInitialScrollToTop = false
+                    binding.recyclerView.scrollToPosition(0)
+                }
             }
-            binding.recyclerView.scrollToPosition(0)
         }
         mRealVM.bannerData.observe(viewLifecycleOwner) { banners ->
             val data = banners.orEmpty()
             updateBannerVisible(data.isNotEmpty())
             binding.banner.refreshData(data)
         }
-        mRealVM.bookShelfData.observe(viewLifecycleOwner) { data ->
-            val sections = data?.sections.orEmpty()
-            shelfContainerAdapter.submitList(
-               sections.filter { it.bookshelfType == 1 && !it.horizontalWorks.isNullOrEmpty() }
-            )
-            updateWaterfallSection(sections)
+        mRealVM.waterfallSection.observe(viewLifecycleOwner) { section ->
+            homeAdapter.bookshelfName = section?.bookshelfName
+            titleAdapter.setTitle(section?.bookshelfName)
+            titleAdapter.isVisible = section != null
         }
-        mRealVM.bookShelfError.observe(viewLifecycleOwner) { error ->
-            if (error != null && shelfContainerAdapter.itemCount == 0 && homeAdapter.itemCount == 0) {
-                updateBannerVisible(false)
-                binding.lsv.showRetry(error)
+        mRealVM.footerLoadState.observe(viewLifecycleOwner) { state ->
+            footerAdapter.displayEmptyState = state is PagingLoadState.Error
+            footerAdapter.loadState = state
+        }
+        mRealVM.isRefreshing.observe(viewLifecycleOwner) { refreshing ->
+            if (!refreshing) {
+                binding.srl.finishRefresh()
+                if (scrollToTopAfterRefresh) {
+                    scrollToTopAfterRefresh = false
+                    binding.recyclerView.scrollToPosition(0)
+                }
             }
         }
     }
 
     private fun updateBannerVisible(visible: Boolean) {
-        if (visible) binding.lsv.showContent()
         val visibility = if (visible) View.VISIBLE else View.GONE
         binding.banner.visibility = visibility
         binding.ivIndicator.visibility = visibility
     }
 
     private fun initList() {
-        val waterfallWithFooter = homeAdapter.withLoadStateFooter(
-            MyMultiStatePagingFooterAdapter(
-                hostAdapter = homeAdapter,
-                displayEmptyState = false,
-                noMoreThreshold = 1,
-                refresh = { homeAdapter.retry() }
-            )
-        )
-        val concatAdapter = ConcatAdapter(shelfContainerAdapter, titleAdapter, waterfallWithFooter)
+        titleAdapter.isVisible = false
+        val concatAdapter = ConcatAdapter(shelfSectionAdapter, titleAdapter, homeAdapter, footerAdapter)
         binding.recyclerView.apply {
             isFocusable = false
             itemAnimator = null
             addItemDecoration(StaggeredGridSpaceItemDecoration(2, 10.dp, 0, 0))
             adapter = concatAdapter
         }
-        binding.srl.startRefreshWithAdapter(
-            pagingDataAdapter = homeAdapter,
-            loadStateHolder = binding.lsv,
-            isContentEmpty = { shelfContainerAdapter.itemCount == 0 && homeAdapter.itemCount == 0 },
-            onRetryListener = { retryLoadData() },
-            extraContentAdapters = listOf(shelfContainerAdapter)
-        )
+        binding.srl.setEnableRefresh(true)
+        binding.srl.setEnableLoadMore(false)
+        binding.srl.setOnRefreshListener { refreshData() }
+        binding.lsv.setRetryListener { refreshData() }
     }
 
-    private fun retryLoadData() {
+    private fun refreshData() {
+        allowInitialScrollToTop = false
+        scrollToTopAfterRefresh = true
+        mRealVM.onPagingRefreshStarted()
+        mRealVM.refreshSections()
+        homeAdapter.refresh()
         if (mRealVM.bannerData.value.isNullOrEmpty()) mRealVM.getData()
-        if (mRealVM.bookShelfData.value == null) mRealVM.loadData()
-    }
-
-    private fun updateWaterfallSection(sections: List<Section>) {
-        val waterfallSection = sections.find { it.bookshelfType == 2 }
-        homeAdapter.bookshelfName = waterfallSection?.bookshelfName
-        waterfallSection?.let { titleAdapter.setTitle(it.bookshelfName) }
-        titleAdapter.isVisible = waterfallSection != null
-        mRealVM.currentWaterfallId.value = waterfallSection?.bookshelfId ?: ""
     }
 
     private fun BannerInfo.firebaseBannerId(): String? {
