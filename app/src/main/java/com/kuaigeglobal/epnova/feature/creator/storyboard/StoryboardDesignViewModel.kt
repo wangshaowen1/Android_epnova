@@ -88,10 +88,6 @@ class StoryboardDesignViewModel : AppRepositoryViewModel<AppRepository>() {
     val cost by lazy { ObservableInt() }
     val creationModels = MutableLiveData<List<CreationModelInfo>>()
     val currentCreationModel = MutableLiveData<CreationModelInfo?>()
-    /** key = strategyType（3-动态漫，5-解说漫），value = 单位价格；均在 Main 线程读写 */
-    private val priceCache = mutableMapOf<Int, Int>()
-    /** 正在进行中的价格请求，避免并发重复发起 */
-    private val priceFetchJobs = mutableMapOf<Int, Job>()
     val keyboardHeight by lazy { ObservableInt() }
     var generating = false
         set(value) {
@@ -301,24 +297,10 @@ class StoryboardDesignViewModel : AppRepositoryViewModel<AppRepository>() {
     private fun calcCost() {
         cost.set(0)
         launch {
-            val model = currentCreationModel.value
-//            val type = if (model?.isNarration() == true) 5 else 3
             val type = 7 // 1.5.2 分镜生成的时候，获取算力标准的时候strategyType传7
-            if (!priceCache.containsKey(type)) {
-                // 若已有同 type 的请求在途，直接等它完成，不重复发起
-                val job = priceFetchJobs.getOrPut(type) {
-                    launch {
-                        val pointNum = withContext(Dispatchers.IO) {
-                            mRepo.api.queryAiPrice(StrategyTypeBody(type, workId = workId, storyId = storyId)).data?.pointNum
-                        }
-                        // 写回 Main 线程，与读操作同线程，无并发安全问题
-                        pointNum?.let { priceCache[type] = it }
-                        priceFetchJobs.remove(type)
-                    }
-                }
-                job.join()
+            val price = withContext(Dispatchers.IO) {
+                mRepo.api.queryAiPrice(StrategyTypeBody(type, workId = workId, storyId = storyId)).data?.pointNum ?: 0
             }
-            val price = priceCache[type] ?: 0
             if (price <= 0) {
                 showToast(R.string.request_failed_tips)
                 return@launch
@@ -340,8 +322,7 @@ class StoryboardDesignViewModel : AppRepositoryViewModel<AppRepository>() {
             return
         }
         val cost = cost.get()
-        val type = if (currentCreationModel.value?.isNarration() == true) 5 else 3
-        if (cost == 0 && !priceCache.containsKey(type)) {
+        if (cost == 0) {
             calcCost()
             return
         }
@@ -418,6 +399,7 @@ class StoryboardDesignViewModel : AppRepositoryViewModel<AppRepository>() {
             response(mRepo.api.switchModel(SwitchModelBody(workId, storyId, model?.configCode))) {
                 model?.let {
                     currentCreationModel.value = it
+                    calcCost()
                     callback?.invoke()
                 }
             }
