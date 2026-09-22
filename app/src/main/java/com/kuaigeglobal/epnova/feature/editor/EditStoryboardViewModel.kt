@@ -352,7 +352,8 @@ class EditStoryboardViewModel : AppRepositoryViewModel<EditStoryboardRepository>
         launch {
             withContext(Dispatchers.IO) {
                 val storyboard = storyboard.get()
-                val type = if (storyboard?.isNarration() == true) 5 else 3
+//                val type = if (storyboard?.isNarration() == true) 5 else 3
+                val type = 7 // 1.5.2 分镜生成的时候，获取算力标准的时候strategyType传7
                 mRepo.api.queryAiPrice(StrategyTypeBody(type, workId = storyboard?.workId, storyId = storyboard?.storyId)).data?.pointNum?.let {
                     genVideoPrice = it
                     genVideoCost.set(it * (storyboard?.duration ?: 0))

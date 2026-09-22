@@ -302,7 +302,8 @@ class StoryboardDesignViewModel : AppRepositoryViewModel<AppRepository>() {
         cost.set(0)
         launch {
             val model = currentCreationModel.value
-            val type = if (model?.isNarration() == true) 5 else 3
+//            val type = if (model?.isNarration() == true) 5 else 3
+            val type = 7 // 1.5.2 分镜生成的时候，获取算力标准的时候strategyType传7
             if (!priceCache.containsKey(type)) {
                 // 若已有同 type 的请求在途，直接等它完成，不重复发起
                 val job = priceFetchJobs.getOrPut(type) {
