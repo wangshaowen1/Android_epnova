@@ -2,6 +2,7 @@ package com.kuaigeglobal.epnova.feature.editor.info
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.net.Uri
 import android.text.Editable
 import android.view.View
@@ -20,6 +21,7 @@ import com.kuaigeglobal.epnova.core.network.apis.entity.WorkInfo
 import com.kuaigeglobal.epnova.databinding.ActivityWorkInfoEditBinding
 import com.nhsd.basic.BaseViewModelActivity
 import com.nhsd.basic.bus.FlowEventBus
+import com.nhsd.basic.ext.setupTranslucentStatus
 import com.nhsd.basic.ext.showToast
 import com.nhsd.crop.Crop
 import kotlinx.coroutines.launch
@@ -50,6 +52,11 @@ class DramaInfoEditActivity :
         onResult = { uris -> uris.firstOrNull()?.let(::startCoverCrop) }
     )
 
+    override fun setTranslucentStatus() {
+        // 导航栏图标浅色、背景透明
+        setupTranslucentStatus(false, Color.TRANSPARENT)
+    }
+
     override fun onViewModelCreated() {
         super.onViewModelCreated()
         initView()
@@ -58,7 +65,7 @@ class DramaInfoEditActivity :
     }
 
     private fun initView() {
-        binding.root.applySmartFocusManager()
+        binding.nameInputer.applySmartFocusManager()
         binding.nameInputer.addTextChangedListener(object : SimpleTextWatcher() {
             override fun afterTextChanged(s: Editable?) {
                 if (s.toString() != mRealVM.name.value) {
@@ -67,6 +74,7 @@ class DramaInfoEditActivity :
                 mRealVM.name.value = s.toString()
             }
         })
+        binding.descInputer.applySmartFocusManager()
         binding.descInputer.addTextChangedListener(object : SimpleTextWatcher() {
             override fun afterTextChanged(s: Editable?) {
                 if (s.toString() != mRealVM.desc.value) {
