@@ -85,15 +85,16 @@
 
         <TextView
             android:id="@+id/retry_btn"
-            style="@style/Button.Bold"
+            android:fontFamily="@font/outfit_regular"
             android:layout_width="wrap_content"
-            android:layout_height="36dp"
-            android:layout_marginTop="24dp"
-            android:background="@drawable/btn_theme1_r50"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="36dp"
+            android:background="@drawable/btn_fill1_r6"
             android:gravity="center"
-            android:paddingHorizontal="40dp"
+            android:paddingHorizontal="28dp"
+            android:paddingVertical="4dp"
             android:text="@string/refresh_to_retry"
-            android:textColor="@color/white"
+            android:textColor="@color/theme_color_1_dark"
             android:textSize="14sp" />
 
         <View
