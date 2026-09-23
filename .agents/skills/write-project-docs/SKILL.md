@@ -25,6 +25,7 @@ description: 创建、重构、审计和更新仓库内精简的 Markdown 项目
 2. 只读取足以核实设计的代码、契约和测试；代码证明当前实现，不自动代表目标设计。
 3. 将当前事实、已确认目标和实现状态分开。尚未确认且会改变方案的内容移入“待确认问题”，不得写入目标设计。
 4. 现有目录能承担下述职责时沿用，不为套模板重排文档。
+5. 跨项目同步时先区分通用文档规则与项目事实：可复用规则可回推模板；产品需求、原型链接、资源及实现进度留在所属项目，代码锚点按目标仓库重新核实。
 
 ## 3. 选择稳定位置和唯一类型
 
@@ -36,13 +37,17 @@ docs/
 ├── architecture/
 │   └── <topic-slug>.md        # 长期有效的边界和不变量
 ├── features/
-│   └── <feature-slug>.md      # 一个有明确边界的复杂能力
+│   ├── <feature-slug>.md      # 简单功能：需求和方案合并维护
+│   └── <complex-feature>/     # 仅当需求和方案需要独立维护
+│       ├── README.md          # 当前需求基线和功能入口
+│       └── solution.md        # 需要独立维护的技术方案
 ├── contracts/                 # 可选：多个模块或系统共同依赖的契约
 │   └── <contract-slug>.md
 └── archive/                   # 已失效且仍有历史价值的文档
 ```
 
 - 默认保持扁平；只有同一主题存在多份可独立阅读的文档或本地资源时，才增加主题目录。
+- 简单功能默认使用 `features/<feature>.md`。当前需求基线和解决方案需要独立维护时，使用 `features/<feature>/README.md` 与 `solution.md`；按[复杂功能模板](references/feature.md)的判据选择，并在功能扩展后重新评估，不能只因篇幅短或先做底层能力而一直合并。两份文档不得重复正文。
 - 路径使用稳定的英文小写 `lower-kebab-case`。
 - 目录不使用版本号、开发者或实现阶段。
 - 只使用仓库相对链接和相对代码路径，不记录任何开发机器绝对路径。
@@ -52,7 +57,7 @@ docs/
 
 - docs/README.md：读取[项目导览模板](references/overview.md)。
 - 长期系统或业务域边界：读取[架构文档模板](references/architecture.md)。
-- 需要与实现持续对齐的复杂能力：读取[复杂功能模板](references/feature.md)。
+- 需要与实现持续对齐的复杂能力，或需要判断需求与方案是否拆分：读取[复杂功能模板](references/feature.md)。
 - 多个模块或系统共同依赖的接口、事件或数据语义：读取[契约文档模板](references/contract.md)。
 - 审计、批量收敛或归档旧文档：读取[审计与归档流程](references/audit-and-archive.md)。
 
@@ -126,4 +131,5 @@ python <skill-dir>/scripts/audit_docs.py <repository-or-docs-path>
 - docs/README.md 能把开发者和 AI 路由到完成任务所需的最少文档。
 - 文档能回答当前主题的边界、事实源、关键状态或流程、失败行为和验证方式。
 - 当前事实、目标设计和实现状态与证据一致。
+- 文档组织符合当前维护需要；已拆分功能的架构图、技术取舍和源码参考归入 solution，README 保留需求及方案入口。
 - 正文没有大段代码复述、重复 Schema、实现步骤清单或版本流水账。
