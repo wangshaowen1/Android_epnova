@@ -124,7 +124,7 @@
                     android:layout_height="12dp"
                     android:layout_marginStart="4dp"
                     android:importantForAccessibility="no"
-                    android:src="@drawable/icon_attention"
+                    android:src="@drawable/icon_doubt"
                     app:layout_constraintBottom_toBottomOf="@+id/tv_total_earned"
                     app:layout_constraintStart_toEndOf="@+id/tv_total_earned"
                     app:layout_constraintTop_toTopOf="@+id/tv_total_earned" />
@@ -159,7 +159,7 @@
                     android:layout_height="12dp"
                     android:layout_marginStart="4dp"
                     android:importantForAccessibility="no"
-                    android:src="@drawable/icon_attention"
+                    android:src="@drawable/icon_doubt"
                     app:layout_constraintBottom_toBottomOf="@+id/tv_pending_amount"
                     app:layout_constraintStart_toEndOf="@+id/tv_pending_amount"
                     app:layout_constraintTop_toTopOf="@+id/tv_pending_amount" />
