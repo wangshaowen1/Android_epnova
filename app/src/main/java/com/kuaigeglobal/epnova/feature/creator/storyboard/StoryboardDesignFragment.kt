@@ -87,11 +87,7 @@ class StoryboardDesignFragment :
                 EventManager.onFirebaseTrack(
                     FirebaseEvent.Category.CREATE,
                     FirebaseEvent.Action.STORYBOARD_GENERATE_CLICK,
-                    if (mRealVM.currentCreationModel.value?.isNarration() == true) {
-                        FirebaseEvent.Value.MODEL_NARRATION_COMIC
-                    } else {
-                        FirebaseEvent.Value.MODEL_DYNAMIC_COMIC
-                    }
+                    mRealVM.currentCreationModel.value?.configName
                 )
                 mRealVM.clickNext { workId, storyId, taskId ->
                     EditStoryboardVideoActivity.start(
