@@ -261,7 +261,6 @@
                                     app:layout_constraintEnd_toEndOf="parent"
                                     app:layout_constraintTop_toBottomOf="@id/tvEpisodeTitle"
                                     tools:src="@drawable/img_default_cover_16_9"
-                                    android:scaleType="fitXY"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"/>
                                 

@@ -31,6 +31,7 @@ import com.kuaigeglobal.epnova.feature.series.SeriesActivity
 import com.nhsd.basic.BaseViewModelActivity
 import com.nhsd.basic.BasicEdgeToEdgeConfig
 import com.nhsd.basic.bus.observeEvents
+import com.nhsd.basic.ext.getThemeColor
 import com.nhsd.basic.ext.isActive
 import com.nhsd.basic.ext.setupTranslucentStatus
 import com.nhsd.basic.ext.showToast
@@ -46,15 +47,9 @@ class EditStoryboardVideoActivity : BaseViewModelActivity<ActivityEditStoryboard
         }
     }
 
-    // 单独设置当前页面内容可延伸到导航栏区域
-    override val edgeToEdgeStrategy: BasicEdgeToEdgeConfig.Strategy
-        get() = super.edgeToEdgeStrategy.copy(
-            rootInsetsMode = BasicEdgeToEdgeConfig.RootInsetsMode.NONE,
-        )
-
     override fun setTranslucentStatus() {
         // 导航栏图标浅色、背景透明
-        setupTranslucentStatus(false, Color.TRANSPARENT)
+        setupTranslucentStatus(false, getThemeColor(R.attr.fillColor1))
     }
 
     companion object {
@@ -134,7 +129,7 @@ class EditStoryboardVideoActivity : BaseViewModelActivity<ActivityEditStoryboard
         )
         onBackPressedDispatcher.addCallback(this, backPressedCallback)
         binding.loadState.setNoDataIcon(0)
-        binding.root.applySmartFocusManager()
+        binding.loadState.applySmartFocusManager()
         binding.loadState.setNoDataButton(getString(R.string.generate_storyboard_video)) {
             if (mRealVM.showPublishLockedToast()) return@setNoDataButton
             mRealVM.regenerateStoryboards()

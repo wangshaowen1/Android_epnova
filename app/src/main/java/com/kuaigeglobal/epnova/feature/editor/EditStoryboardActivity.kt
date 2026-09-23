@@ -31,12 +31,6 @@ class EditStoryboardActivity : BaseViewModelActivity<ActivityEditStoryboardBindi
         }
     }
 
-    // 单独设置当前页面内容可延伸到导航栏区域
-    override val edgeToEdgeStrategy: BasicEdgeToEdgeConfig.Strategy
-        get() = super.edgeToEdgeStrategy.copy(
-            rootInsetsMode = BasicEdgeToEdgeConfig.RootInsetsMode.NONE,
-        )
-
     override fun setTranslucentStatus() {
         // 导航栏图标浅色、背景透明
         setupTranslucentStatus(false, Color.TRANSPARENT)
@@ -61,7 +55,7 @@ class EditStoryboardActivity : BaseViewModelActivity<ActivityEditStoryboardBindi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         onBackPressedDispatcher.addCallback(this, backPressedCallback)
-        binding.root.applySmartFocusManager()
+        binding.editStoryboardLayout.applySmartFocusManager()
         binding.tvStoryboardDesc.movementMethod = ScrollingMovementMethod()
         binding.tvStoryboardDesc.setOnSingleClickListener {
             InputDialog.show(

@@ -26,10 +26,10 @@ class StoryEditorActivity :
     BaseViewModelActivity<ActivityStoryEditorBinding, StoryEditorViewModel>() {
 
     // 单独设置当前页面内容可延伸到导航栏区域
-    override val edgeToEdgeStrategy: BasicEdgeToEdgeConfig.Strategy
-        get() = super.edgeToEdgeStrategy.copy(
-            rootInsetsMode = BasicEdgeToEdgeConfig.RootInsetsMode.NONE,
-        )
+//    override val edgeToEdgeStrategy: BasicEdgeToEdgeConfig.Strategy
+//        get() = super.edgeToEdgeStrategy.copy(
+//            rootInsetsMode = BasicEdgeToEdgeConfig.RootInsetsMode.NAVIGATION_BAR,
+//        )
 
     override fun setTranslucentStatus() {
         // 导航栏图标浅色、背景透明
