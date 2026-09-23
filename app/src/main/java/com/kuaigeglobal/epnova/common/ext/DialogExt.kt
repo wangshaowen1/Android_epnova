@@ -7,6 +7,7 @@ import android.content.ContextWrapper
 import android.os.Build
 import android.text.SpannableString
 import android.view.WindowManager
+import androidx.annotation.DrawableRes
 import androidx.fragment.app.FragmentActivity
 import com.kuaigeglobal.epnova.widget.CommonDialog
 
@@ -223,6 +224,7 @@ fun Context.showConfirmPrompt(
     confirmStyle: Boolean? = null,
     cancelable: Boolean? = null,
     system: Boolean? = null,
+    @DrawableRes confirmButtonBackgroundResId: Int? = null,
     cancel: ((CommonDialog) -> Unit)? = null,
     confirm: ((CommonDialog) -> Unit)? = null
 ) {
@@ -236,6 +238,7 @@ fun Context.showConfirmPrompt(
         confirmStyle,
         cancelable,
         system,
+        confirmButtonBackgroundResId,
         cancel,
         confirm
     )
@@ -254,6 +257,7 @@ fun Context.showConfirmPrompt(
     confirmStyle: Boolean? = null,
     cancelable: Boolean? = null,
     system: Boolean? = null,
+    @DrawableRes confirmButtonBackgroundResId: Int? = null,
     cancel: ((CommonDialog) -> Unit)? = null,
     confirm: ((CommonDialog) -> Unit)? = null
 ) {
@@ -294,6 +298,7 @@ fun Context.showConfirmPrompt(
         commonDialog.setCancelable(it)
     }
     confirmText?.let { commonDialog.setPositiveButtonText(it) }
+    confirmButtonBackgroundResId?.let { commonDialog.setConfirmButtonBackgroundResource(it) }
     if (system == true) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             commonDialog.window?.setType(WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY)

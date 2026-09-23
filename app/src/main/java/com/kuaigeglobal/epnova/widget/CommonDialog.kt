@@ -9,6 +9,7 @@ import android.text.method.LinkMovementMethod
 import android.view.View
 import android.view.ViewGroup.MarginLayoutParams
 import androidx.activity.OnBackPressedCallback
+import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AppCompatDialog
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.databinding.DialogCommonBinding
@@ -123,6 +124,10 @@ class CommonDialog @JvmOverloads constructor(context: Context, content: CharSequ
 
     fun setPositiveButtonTextColor(textColor: Int) {
         binding.confirm.setTextColor(textColor)
+    }
+
+    fun setConfirmButtonBackgroundResource(@DrawableRes resId: Int) {
+        binding.confirm.setBackgroundResource(resId)
     }
 
     fun setPositiveButtonText(resId: Int) {

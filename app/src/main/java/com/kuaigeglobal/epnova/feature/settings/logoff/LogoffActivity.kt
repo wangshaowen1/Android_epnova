@@ -41,7 +41,8 @@ class LogoffActivity :
                     showConfirmPrompt(
                         title = getString(R.string.confirm_account_cancellation),
                         cancelText = getString(R.string.cancel),
-                        confirmText = getString(R.string.confirm_ok)
+                        confirmText = getString(R.string.confirm_ok),
+                        confirmButtonBackgroundResId = R.drawable.selector_common_gray_button
                     ) {
                         mRealVM.commitLogoff()
                     }
