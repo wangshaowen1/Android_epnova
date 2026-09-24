@@ -36,15 +36,11 @@ import kotlin.Boolean
 class MineFragment : BaseViewModelFragment<FragmentMineBinding, MineViewModel>() {
 
     private var userId: String? = null
-    private val parentVm by lazy {
-        getViewModelOfActivity<MainViewModel>()
-    }
 
     override fun onPrepareView() {
         super.onPrepareView()
         //数据更新
         dataUpdate()
-        initView()
     }
 
     override fun onHiddenChanged(hidden: Boolean) {
@@ -62,13 +58,6 @@ class MineFragment : BaseViewModelFragment<FragmentMineBinding, MineViewModel>()
 
     private fun dataUpdate() {
         observeEvents {
-//            on<Events.MainTabEvent> { event ->
-//                when (event.type) {
-//                    Events.MainTabEvent.TAB_MY_CREATIONS -> {
-//                        binding.viewPager.setCurrentItem(0, false)
-//                    }
-//                }
-//            }
             /**
              * 登录状态变化
              */
@@ -208,9 +197,5 @@ class MineFragment : BaseViewModelFragment<FragmentMineBinding, MineViewModel>()
                 SettingsActivity.start(requireActivity())
             }
         }
-    }
-
-    private fun initView() {
-
     }
 }
