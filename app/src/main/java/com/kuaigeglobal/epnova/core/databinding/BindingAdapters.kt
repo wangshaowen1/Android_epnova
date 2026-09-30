@@ -78,6 +78,7 @@ import com.kuaige.imageloader.GlideImageLoader
 import com.kuaige.imageloader.transform.BlurTransformation
 import com.kuaige.videoedit.resource.UrlResource
 import com.kuaigeglobal.epnova.App
+import com.kuaigeglobal.epnova.BuildConfig
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.LoadState
 import com.kuaigeglobal.epnova.common.NumberAnimator
@@ -396,6 +397,9 @@ fun loadHQThumbnailUri(
                 target: Target<Drawable?>,
                 isFirstResource: Boolean
             ): Boolean {
+                if (BuildConfig.DEBUG) {
+                    Logger.d("ImageLoader", "resolvedUrl=$model")
+                }
                 listener?.onImageLoaded(false)
                 return false
             }
@@ -407,6 +411,9 @@ fun loadHQThumbnailUri(
                 dataSource: DataSource,
                 isFirstResource: Boolean
             ): Boolean {
+                if (BuildConfig.DEBUG) {
+                    Logger.d("ImageLoader", "resolvedUrl=$model")
+                }
                 listener?.onImageLoaded(true)
                 return false
             }

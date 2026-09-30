@@ -6,7 +6,9 @@ import com.kuaigeglobal.epnova.common.ext.ioScope
 import com.kuaigeglobal.epnova.common.ext.client
 import com.kuaige.imageloader.AliyunOssImageUrlStrategy
 import com.kuaige.imageloader.AverageHueUrlStrategy
+import com.kuaige.imageloader.CloudImageConfig
 import com.kuaige.imageloader.CloudImageUrlProcessor
+import com.kuaige.imageloader.DomainProvider
 import com.kuaige.imageloader.ImageFormat
 import com.kuaige.imageloader.ImageProcessingOptions
 import com.kuaige.imageloader.Resolution
@@ -20,15 +22,23 @@ import okhttp3.Request
 import org.json.JSONObject
 
 object OssHelp {
+    private val aliyunDomainProvider = object : DomainProvider {
+        override fun getDomainList(): List<String> = listOf("file.epnovai.com")
+    }
+
     private val colorCache by lazy { LruCache<String, Int>(500) }
     private val imageUrlProcessor by lazy {
         CloudImageUrlProcessor(
             listOf(
-                AliyunOssImageUrlStrategy(),
+                AliyunOssImageUrlStrategy(aliyunDomainProvider),
                 VolcengineTosImageUrlStrategy(),
                 TencentCosImageUrlStrategy()
             )
         )
+    }
+
+    fun configureImageLoader() {
+        CloudImageConfig.processor = imageUrlProcessor
     }
 
     // suspend 方法用于获取颜色

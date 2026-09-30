@@ -14,6 +14,7 @@ import com.github.gzuliyujiang.oaid.DeviceID
 import com.google.android.gms.ads.MobileAds
 import com.kuaige.oss.OssType
 import com.kuaigeglobal.epnova.common.Cache
+import com.kuaigeglobal.epnova.common.OssHelp
 import com.kuaigeglobal.epnova.common.SP
 import com.kuaigeglobal.epnova.common.ext.ioScope
 import com.kuaigeglobal.epnova.core.Config
@@ -156,6 +157,7 @@ class App : BaseApp() {
         )
         super.onCreate()
         instance = this
+        OssHelp.configureImageLoader()
 
 //                StrictMode.setVmPolicy(
 //            StrictMode.VmPolicy.Builder()
