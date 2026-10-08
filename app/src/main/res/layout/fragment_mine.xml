@@ -664,8 +664,7 @@
                            android:layout_height="54dp"
                            android:gravity="center_vertical"
                            android:orientation="horizontal"
-                           android:paddingHorizontal="@dimen/spacing_l"
-                           android:visibility="gone">
+                           android:paddingHorizontal="@dimen/spacing_l">
 
                            <ImageView
                                android:layout_width="24dp"

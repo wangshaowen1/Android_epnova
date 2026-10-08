@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">EpNova</string>
+    <string name="facebook_app_id">3218717494963372</string>
+    <string name="fb_login_protocol_scheme">fb3218717494963372</string>
+    <string name="facebook_client_token">e79d753cfcf9a9013f8b3e89ba6894dd</string>
     <string name="request_failed_tips">Koneksi lambat. Silakan coba lagi sebentar lagi.</string>
     <string name="no_network_tips">Koneksi gagal. Silakan periksa jaringan Anda.</string>
     <string name="page_load_error">Gagal memuat. Coba refresh.</string>
@@ -11,11 +14,11 @@
     <string name="refresh_to_retry">Refresh &amp; Coba Lagi</string>
     <string name="download_failed">Gagal Mengunduh</string>
     <string name="i_know">Mengerti</string>
-    <string name="permissionx_default_rationale_title">Penjelasan Izin</string>
-    <string name="permissionx_default_denied_forever_rationale_title">Izin Diperlukan</string>
+    <string name="permissionx_default_rationale_title">Penjelasan izin</string>
+    <string name="permissionx_default_denied_forever_rationale_title">Izin diperlukan</string>
     <string name="permissionx_default_denied_forever_rationale_negative">Batal</string>
     <string name="permissionx_default_denied_forever_rationale_positive">Aktifkan</string>
-    <string name="permissionx_default_denied_forever_rationale_message">Untuk menggunakan fitur ini, silakan aktifkan izin yang diperlukan di pengaturan perangkat Anda.</string>
+    <string name="permissionx_default_denied_forever_rationale_message">Aktifkan izin yang diperlukan di pengaturan perangkat.</string>
     <string name="permissionx_open_settings">Buka pengaturan</string>
     <string name="cancel">Batal</string>
     <string name="button_cancel">Batal</string>
@@ -30,8 +33,9 @@
     <string name="wav">WAV</string>
     <string name="tab_home">Beranda</string>
     <string name="tab_hot">Populer</string>
+    <string name="tab_all_dramas">All Dramas</string>
     <string name="tab_message">Pesan</string>
-    <string name="tab_mine">Profil</string>
+    <string name="tab_mine">Saya</string>
     <string name="creation">Buat</string>
     <string name="customize">Kustom</string>
     <string name="confirm_ok">Konfirmasi</string>
@@ -63,6 +67,7 @@
     <string name="toast_commit_success">Berhasil Dikirim</string>
     <string name="tip_sign_out_confirm">Anda yakin ingin keluar?</string>
     <string name="toast_sign_out_success">Telah Keluar</string>
+    <string name="toast_sign_out_fail">Gagal keluar</string>
     <string name="app_id">ID</string>
     <string name="toast_save_success">Tersimpan</string>
     <string name="toast_copied">Disalin</string>
@@ -70,8 +75,8 @@
     <string name="toast_sign_in_fail">Gagal Masuk</string>
     <string name="update_now">Perbarui Sekarang</string>
     <string name="update_cancel">Bukan Sekarang</string>
-    <string name="already_latest_version">Anda sudah menggunakan versi terbaru</string>
-    <string name="wifi_auto_download_update">Anda terhubung ke Wi-Fi. Pembaruan %1$s akan diunduh secara otomatis.</string>
+    <string name="already_latest_version">Versi Anda sudah terbaru</string>
+    <string name="wifi_auto_download_update">Anda terhubung ke Wi-Fi. Pembaruan %1$s akan diunduh otomatis.</string>
     <string name="toast_del_account_success">Akun Dihapus</string>
     <string name="today">Hari Ini</string>
     <string name="tomorrow">Besok</string>
@@ -86,10 +91,10 @@
     <string name="system_payment_success">Pembayaran Berhasil</string>
     <string name="system_payment_cancel">Batalkan Pembayaran</string>
     <string name="system_payment_failed">Pembayaran Gagal</string>
-    <string name="first_recharge_payment_failed_retry">Pembayaran gagal, silakan coba lagi</string>
-    <string name="first_recharge_payment_network_error">Kesalahan jaringan, silakan periksa koneksi Anda</string>
-    <string name="google_payment_unsuccessful_title">Pembayaran Tidak Berhasil</string>
-    <string name="google_payment_unsuccessful_content">Pembayaran Anda telah diproses, tetapi kami belum dapat memverifikasi pesanan Anda. Silakan hubungi dukungan dan kami akan segera membantu menyelesaikannya.</string>
+    <string name="first_recharge_payment_failed_retry">Pembayaran gagal. Coba lagi.</string>
+    <string name="first_recharge_payment_network_error">Kesalahan jaringan. Periksa koneksi Anda.</string>
+    <string name="google_payment_unsuccessful_title">Pembayaran tidak berhasil</string>
+    <string name="google_payment_unsuccessful_content">Pembayaran diproses, tetapi pesanan tidak dapat diverifikasi. Hubungi dukungan.</string>
     <string name="close">Tutup</string>
     <string name="yesterday">Kemarin</string>
     <string name="day_before_yesterday">Dua Hari Lalu</string>
@@ -101,25 +106,26 @@
     <string name="report_content">Detail laporan:</string>
     <string name="request_notification_permission_reason">Digunakan untuk menerima notifikasi aplikasi.</string>
     <string name="generated_on">Dibuat: % s</string>
-    <string name="all">Semua</string>
-    <string name="swipe_left_more">Geser kiri untuk lainnya</string>
-    <string name="pull_to_view_more">Tarik untuk melihat\nlebih banyak</string>
-    <string name="release_to_view_more">Lepaskan untuk melihat\nlebih banyak</string>
+    <string name="all">ALL</string>
+    <string name="swipe_left_more">Geser ke kiri untuk melihat lainnya</string>
+    <string name="pull_to_view_more">Tarik untuk melihat lebih banyak</string>
+    <string name="release_to_view_more">Lepaskan untuk melihat lebih banyak</string>
     <string name="sure">Konfirmasi</string>
     <string name="allow">Aktifkan</string>
     <string name="permission_application_failed">Gagal Meminta Izin</string>
     <string name="camera_permission_description">Digunakan untuk mengirim atau membagikan video/foto, mengunggah foto profil, dan memindai kode QR.</string>
-    <string name="matisse_partial_media_access_description">Hanya foto yang dipilih yang tersedia. Izinkan akses ke semua foto untuk melihat lebih banyak.</string>
+    <string name="matisse_partial_media_access_description">Hanya foto yang dipilih tersedia. Izinkan akses ke semua foto untuk melihat lainnya.</string>
     <string name="button_open_settings">Pengaturan</string>
-    <string name="matisse_camera_permission_description">Akses kamera diperlukan untuk mengambil foto.</string>
-    <string name="matisse_media_permission_description">Izinkan akses untuk memilih lebih banyak foto dan video.</string>
+    <string name="matisse_camera_permission_description">Akses kamera diperlukan untuk mengambil foto dan memperbarui avatar Anda</string>
+    <string name="matisse_media_permission_description">Izinkan akses ke foto dan video lainnya.</string>
     <string name="matisse_add_media">Tambah media</string>
-    <string name="matisse_take_photo">Ambil foto</string>
+    <string name="matisse_take_photo">Ambil Foto</string>
     <string name="sdcard_permission_description">Digunakan untuk mengirim, membagikan, dan mengunduh video/foto, mengunggah foto profil, memindai kode QR, serta menyimpan file dan log.</string>
     <string name="location_permission_description">Digunakan untuk merekomendasikan konten terdekat yang mungkin Anda minati — termasuk postingan, layanan lokal, dan orang — untuk meningkatkan pengalaman menjelajah, atau menampilkan lokasi Anda di postingan dan interaksi.</string>
     <string name="call_phone_permission_description">Hanya digunakan untuk panggilan telepon yang Anda mulai.</string>
     <string name="please_check_policy_below">Silakan setujui syarat di bawah</string>
     <string name="app_google_login">Masuk dengan Google</string>
+    <string name="home_search_tab_recommended_for_u">Direkomendasikan untukmu</string>
     <string name="toast_service_updating">Sistem sedang memperbarui. Silakan coba lagi nanti.</string>
     <string name="copied">Disalin</string>
     <string name="toast_empty_network">Koneksi gagal. Silakan periksa jaringan Anda.</string>
@@ -131,16 +137,12 @@
     <string name="enter_right_phone_num">Silakan masukkan nomor telepon yang valid.</string>
     <string name="get_validate_code_success">Kode terkirim. Silakan periksa SMS Anda.</string>
     <string name="enter_right_validate_code">Silakan masukkan kode verifikasi yang valid.</string>
-    <string name="mobile_phone_prefix">86</string>
     <string name="confirm_binding">Konfirmasi</string>
-    <string name="please_enter_your_phone_number">Masukkan nomor telepon Anda</string>
-    <string name="change_binding_prompt">Setelah memperbarui nomor telepon, Anda dapat menggunakan nomor baru untuk masuk.</string>
     <string name="please_enter_the_verification_code">Masukkan kode verifikasi</string>
     <string name="bind_mobile_number">Hubungkan Nomor Telepon</string>
     <string name="please_agree_protocol">Silakan baca dan setujui syarat masuk.</string>
     <string name="log_in_now">Masuk Sekarang</string>
     <string name="bind_now">Hubungkan Sekarang</string>
-    <string name="wechat_login">Masuk dengan WeChat</string>
     <string name="mobile_login">Masuk Seluler</string>
     <string name="app_not_agree_and_quit">Tolak</string>
     <string name="app_agree_and_sign_in">Setuju</string>
@@ -149,16 +151,12 @@
     <string name="payment_method">Metode Pembayaran</string>
     <string name="top_up_now">Isi Ulang Sekarang</string>
     <string name="verify_payment">Konfirmasi Pembayaran</string>
-    <string name="select_the_payment_method">Silakan pilih metode pembayaran</string>
-    <string name="alipay_payment">Alipay</string>
-    <string name="wechat_pay">WeChat Pay</string>
     <string name="app_log_off">Sebelum meminta penghapusan akun, silakan baca dan konfirmasi hal-hal berikut:
 1. Penghapusan Tidak Dapat Dikembalikan
 a) Setelah dihapus, akun Anda tidak dapat dipulihkan.
 b) Anda tidak akan dapat lagi masuk ke platform ini.
 c) Semua data, catatan, dan hak yang terkait dengan akun ini tidak dapat dipulihkan.
 d) Tindakan ini bersifat permanen dan tidak dapat dibatalkan. Silakan lanjutkan dengan hati-hati.
-
 2. Bagaimana Data Anda Akan Ditangani
 Setelah penghapusan, data Anda akan diproses sebagai berikut sesuai dengan Syarat Layanan, Kebijakan Privasi, dan hukum yang berlaku:
 a) Informasi akun dasar (nama pengguna, foto profil, nomor telepon, dll.) akan dihapus atau dianonimkan.
@@ -166,18 +164,15 @@ b) Karya, riwayat pembuatan, draf, dan riwayat penelusuran Anda akan dihapus ata
 c) Setiap identitas yang terhubung, informasi verifikasi, dan izin akan dicabut.
 d) Konten yang dipublikasikan secara publik dapat disimpan dalam bentuk tanpa identitas dalam batas hukum, hanya untuk audit kepatuhan, analitik, dan catatan keamanan konten.
 e) Informasi tertentu yang diwajibkan oleh hukum dapat disimpan selama periode yang ditentukan secara hukum sebelum dihapus.
-
 3. Aset Virtual &amp; Manfaat
-a) Semua aset virtual di akun Anda (termasuk namun tidak terbatas pada manfaat keanggotaan, kredit, item, kredit pembuatan, dan saldo) akan dibersihkan saat penghapusan.
+a) Semua aset virtual di akun Anda (termasuk namun tidak terbatas pada manfaat keanggotaan, koin, item, koin pembuatan, dan saldo) akan dibersihkan saat penghapusan.
 b) Aset virtual tidak dapat ditransfer, diambil kembali, atau dipulihkan.
 c) Layanan berbayar, fitur, atau manfaat yang telah dibeli namun belum digunakan akan hangus.
 d) Kecuali ditentukan lain oleh hukum, pengembalian dana tidak tersedia setelah penghapusan akun.
-
 4. Akun Terhubung &amp; Koneksi Pihak Ketiga
 a) Nomor telepon dan akun pihak ketiga yang terhubung dengan Anda (misalnya WeChat, Apple) akan secara otomatis diputuskan.
 b) Identitas akun yang dihapus tidak dapat digunakan kembali.
 c) Jika Anda mendaftar lagi di masa depan, itu akan diperlakukan sebagai akun baru.
-
 5. Item Tertunda
 a) Jika akun Anda memiliki pesanan tertunda, banding, penarikan, penyelesaian, atau transaksi aktif lainnya, kami sarankan untuk menyelesaikannya sebelum melanjutkan.
 b) Jika akun Anda sedang dalam peninjauan pelanggaran atau sengketa, platform berhak menunda penghapusan.
@@ -193,7 +188,7 @@ Untuk mengkonfirmasi, ketuk [Minta Penghapusan].</string>
     <string name="copy_the_link">Salin Tautan</string>
     <string name="report">Laporkan</string>
     <string name="binding_prompt">Untuk keamanan akun, silakan hubungkan nomor telepon Anda.</string>
-    <string name="cost">%1$d Kredit</string>
+    <string name="cost">%1$d koin</string>
     <string name="claim_now">Ambil Sekarang</string>
     <string name="customer_service_long_press_to_save">Tekan lama untuk menyimpan gambar, lalu pindai untuk menghubungi dukungan</string>
     <string name="customer_service_time">Dukungan tersedia 9:00 – 18:00</string>
@@ -226,7 +221,7 @@ Untuk mengkonfirmasi, ketuk [Minta Penghapusan].</string>
     <string name="storyboard_redraw">Gambar Ulang Storyboard</string>
     <string name="gen_continue_after_exit">Video akan terus dibuat setelah Anda keluar</string>
     <string name="click_retry">Ketuk untuk Coba Lagi</string>
-    <string name="storyboard_design">Storyboard</string>
+    <string name="storyboard_design">Desain storyboard</string>
     <string name="subtitle_processing">Subtitle sedang dibuat. Video masih dapat diputar.</string>
     <string name="error_subtitle_gen">Gagal Membuat Subtitle</string>
     <string name="video_done_sub_error">Video siap, tetapi pembuatan subtitle gagal</string>
@@ -247,12 +242,14 @@ Untuk mengkonfirmasi, ketuk [Minta Penghapusan].</string>
     <string name="generate_short_video_now">Buat Video Sekarang</string>
     <string name="generating_short_video">Sedang membuat video Anda…</string>
     <string name="estimated_wait_time">Ini biasanya memakan waktu 10–30 detik. Silakan tunggu.</string>
-    <string name="time_15_30_sec"> 15 – 30 detik</string>
+    <string name="time_15_30_sec">15-30 detik</string>
     <string name="start_creation_monetization">Mulai Hasilkan Uang dari Karya Saya</string>
-    <string name="works">Karya</string>
+    <string name="works">Daftar Saya</string>
     <string name="my_balance">Saldo Saya</string>
     <string name="store_select_recharge_amount">Pilih nominal isi ulang</string>
-    <string name="power_validity_period">Kredit berlaku selama 1 tahun</string>
+    <string name="store_coin_subtitle">Dapatkan Koin untuk Menonton Lebih Banyak Drama</string>
+    <string name="store_credits_subtitle">Dapatkan Kredit untuk Membuat Dramamu</string>
+    <string name="power_validity_period">Koin berlaku 1 tahun</string>
     <string name="agree_to_purchase">Dengan membeli, Anda menyetujui</string>
     <string name="payment_agreement_show">Perjanjian Pembayaran</string>
     <string name="sim_card_quick_login">Masuk sekali ketuk dengan nomor ini</string>
@@ -276,7 +273,7 @@ Untuk mengkonfirmasi, ketuk [Minta Penghapusan].</string>
     <string name="network_error">Kesalahan Jaringan</string>
     <string name="all_styles">Semua Gaya</string>
     <string name="saving_to_local">Sedang menyimpan ke perangkat…</string>
-    <string name="edit_story_summary">Edit Sinopsis</string>
+    <string name="edit_story_summary">Sinopsis</string>
     <string name="edit_title">Edit Judul</string>
     <string name="story_title">Judul Cerita</string>
     <string name="share_to">Bagikan ke</string>
@@ -290,10 +287,10 @@ Untuk mengkonfirmasi, ketuk [Minta Penghapusan].</string>
     <string name="and">dan</string>
     <string name="sign_in_kuaichupian">Masuk ke QuickClip</string>
     <string name="terms_and_privacy">Syarat Layanan &amp; Kebijakan Privasi</string>
-    <string name="estimated_compute_cost">Perkiraan Kredit</string>
+    <string name="estimated_compute_cost">Perkiraan koin</string>
     <string name="dont_remind_me_again">Jangan ingatkan saya lagi</string>
-    <string name="recharge_credits">Isi Ulang Kredit</string>
-    <string name="credit_remaining">Saldo Kredit:</string>
+    <string name="recharge_credits">Isi Koin</string>
+    <string name="credit_remaining">Saldo koin:</string>
     <string name="purchase_agreement_show">Syarat Pembelian Layanan</string>
     <string name="reference_historical_avatar">Buat berdasarkan tampilan karakter sebelumnya?</string>
     <string name="historical_character">Tampilan Sebelumnya</string>
@@ -302,12 +299,13 @@ Untuk mengkonfirmasi, ketuk [Minta Penghapusan].</string>
     <string name="reference">Dengan Referensi</string>
     <string name="report_desc">Deskripsi Laporan</string>
     <string name="please_describe_the_reason">Silakan jelaskan masalah secara detail. Kami akan menyelidikinya secepat mungkin.</string>
-    <string name="wechat_qq_phone_email">WeChat / QQ / Telepon / Email</string>
+    <string name="wechat_qq_phone_email">Email</string>
     <string name="text_parsing">Analisis Teks</string>
     <string name="ai_structural_analysis">AI akan menganalisis seluruh karya dan mengekstrak strukturnya.</string>
-    <string name="estimated_compute_usage">Perkiraan Kredit</string>
+    <string name="estimated_compute_usage">Perkiraan koin</string>
     <string name="sensitive_word_detected">Konten Sensitif Terdeteksi</string>
-    <string name="sensitive_content_refunded">Konten sensitif terdeteksi. Kredit telah dikembalikan. Silakan edit dan kirim ulang.</string>
+    <string name="sensitive_content_refunded">Konten sensitif terdeteksi. Koin telah dikembalikan.
+Edit dan kirim ulang.</string>
     <string name="upload_completed_novel">Unggah Teks Novel Lengkap</string>
     <string name="upload">Unggah</string>
     <string name="new_version_found">Versi Baru Tersedia</string>
@@ -346,9 +344,19 @@ Untuk mengkonfirmasi, ketuk [Minta Penghapusan].</string>
     <string name="help_center">Pusat Bantuan</string>
     <string name="suggest_and_feedback">Saran &amp; Umpan Balik</string>
     <string name="my_list_my_creations">Karya Saya</string>
+    <string name="my_creations_episode_progress">%1$d/%2$d EP</string>
+    <string name="my_creations_publish_tip">Selesaikan %lu episode lagi untuk menerbitkan dramamu.</string>
+    <string name="my_creations_publish_tip_highlight">%ld episode lagi</string>
+    <string name="my_creations_publish_tip_2">Terus berkarya untuk menghidupkan dramamu</string>
+    <string name="my_creations_publish_tip_3">Terus buat episode untuk menjangkau lebih banyak penonton.</string>
+    <string name="my_creations_publish_tip_over">🎉Berhasil! Dramamu kini sudah selesai!</string>
+    <string name="my_creations_all_over">Semua episode sudah selesai. Ayo buat karya baru!</string>
+    <string name="my_creations_all_list">Semua Episode</string>
+    <string name="my_creations_continue_creating">Lanjutkan Berkarya</string>
     <string name="last_3_months_data_only">Hanya menampilkan 3 bulan terakhir. Data mungkin tertunda.</string>
     <string name="limited_time_free">Gratis untuk Waktu Terbatas</string>
     <string name="to_be_created">Menunggu Pembuatan</string>
+    <string name="create">Buat</string>
     <string name="drama_detail_draft">Draf</string>
     <string name="waiting_to_synthesize">Menunggu Komposisi</string>
     <string name="vol_number">Ep.</string>
@@ -373,17 +381,17 @@ Untuk mengkonfirmasi, ketuk [Minta Penghapusan].</string>
     <string name="login_for_more_highlights">Lebih banyak konten setelah masuk</string>
     <string name="bind_phone_number">Hubungkan Nomor Telepon</string>
     <string name="login_as_registration">Login pertama akan membuat akun Anda</string>
-    <string name="feedback_details_required_10_plus">Harap masukkan minimal 10 karakter. (wajib)</string>
+    <string name="feedback_details_required_10_plus">Harap masukkan minimal 10 karakter (wajib)</string>
     <string name="empty_creation_history">Belum ada karya. Mulai berkreasi!</string>
     <string name="single_episode_short">Episode Tunggal</string>
     <string name="file_picker_click">Ketuk untuk Memilih File</string>
     <string name="reselect">Pilih Ulang</string>
-    <string name="upload_photo_limit">Unggah Gambar</string>
+    <string name="upload_photo_limit">Unggah Gambar (%1$d/%2$d)</string>
     <string name="episode_number_format">Episode %1$d</string>
     <string name="account_deletion_title">Pemberitahuan Penghapusan Akun</string>
     <string name="creation_progress_format">%1$d dari %2$d Episode Dibuat</string>
     <string name="image_description_limit">Deskripsi Gambar</string>
-    <string name="episode_progress_format">Ep. %1$d / %2$d</string>
+    <string name="episode_progress_format">Ep.  %1$d / %2$d</string>
     <string name="auto_saved_as_draft">Tersimpan otomatis sebagai draf</string>
     <string name="ai_generating_auto_saved">AI sedang membuat. Tersimpan otomatis sebagai draf.</string>
     <string name="ai_generating_auto_saved_2">AI sedang membuat. Tersimpan otomatis.</string>
@@ -401,7 +409,7 @@ Untuk mengkonfirmasi, ketuk [Minta Penghapusan].</string>
     <string name="status_appeal_reviewing">Sedang Ditinjau</string>
     <string name="appeal_reason_min_length_hint">Alasan harus minimal 10 karakter.</string>
     <string name="confirm_submit_appeal">Konfirmasi pengiriman?</string>
-    <string name="action_not_now">Tidak Sekarang</string>
+    <string name="action_not_now">Bukan Sekarang</string>
     <string name="account_deletion_notice_period">Jika tidak dibatalkan dalam 7 hari, akun Anda akan dihapus secara permanen.</string>
     <string name="select_browser">Pilih Browser</string>
     <string name="add_scene">Tambah Adegan</string>
@@ -415,22 +423,23 @@ Untuk mengkonfirmasi, ketuk [Minta Penghapusan].</string>
     <string name="delete_impact_warning">Menghapus ini dapat memengaruhi pembuatan video</string>
     <string name="missing_asset_description">Beberapa aset tidak memiliki deskripsi. Harap isi sebelum melanjutkan.</string>
     <string name="btn_one_click_generate">Buat Semua</string>
-    <string name="btn_one_click_generate_cost">Hasilkan Sekali Klik %1$s %2$d</string>
+    <string name="btn_one_click_generate_cost">Buat Semua %1$s %2$d</string>
     <string name="btn_image_generating">Membuat Gambar…</string>
     <string name="btn_retry_failed">Coba Ulang yang Gagal</string>
     <string name="btn_retry_failed_cost">Coba Ulang yang Gagal %1$s %2$d</string>
     <string name="btn_next_step_storyboard">Berikutnya: Desain Storyboard</string>
     <string name="toast_save_fail">Gagal Menyimpan</string>
     <string name="video_file_missing">File komposisi tidak ditemukan</string>
+    <string name="storyboard_video_resource_missing">Ada video yang hilang di episode ini. Buka ulang halaman untuk memuatnya kembali.</string>
     <string name="video_composition_failed">Komposisi Video Gagal</string>
     <string name="enter_content">Masukkan konten</string>
     <string name="change_phone">Ganti Nomor Telepon</string>
     <string name="bind_success">Berhasil Dihubungkan</string>
     <string name="download_image_failed">Unduhan Gambar Gagal</string>
     <string name="consumption_details">Detail Penggunaan</string>
-    <string name="compute_details">Detail Transaksi</string>
+    <string name="compute_details">Rincian Koin</string>
     <string name="downloading_please_wait">Mengunduh. Harap tunggu…</string>
-    <string name="input_min_length">Harap masukkan minimal %1$d karakter.</string>
+    <string name="input_min_length">Silakan masukkan setidaknya %1$d karakter</string>
     <string name="select_type_please">Harap pilih jenis</string>
     <string name="input_contract_info_please">Masukkan info kontak Anda</string>
     <string name="continued_creation_s">Dilanjutkan: %1$s</string>
@@ -448,14 +457,17 @@ Untuk mengkonfirmasi, ketuk [Minta Penghapusan].</string>
     <string name="save_changes_prompt">Anda memiliki perubahan yang belum disimpan. Simpan sebelum keluar?</string>
     <string name="discard">Buang</string>
     <string name="save_and_exit">Simpan &amp; Keluar</string>
+    <string name="discard_changes_title">Buang perubahan?</string>
+    <string name="discard_changes_content">Perubahanmu belum disimpan. Jika keluar sekarang, perubahan akan hilang.</string>
     <string name="edit_work">Edit Karya</string>
     <string name="please_enter_work_name">Harap masukkan judul</string>
     <string name="please_enter_work_description">Harap masukkan sinopsis</string>
     <string name="cover_uploading_please_wait">Mengunggah sampul. Harap tunggu…</string>
     <string name="image_validation_failed">Validasi Gambar Gagal</string>
     <string name="upload_success">Terunggah</string>
-    <string name="upload_fail">Unggah Gagal</string>
+    <string name="upload_fail">Gagal Mengunggah</string>
     <string name="redraw_cover_confirm">Menggambar ulang akan menggantikan video episode ini. Lanjutkan?</string>
+    <string name="creator_player_next_episode">Terus Berkarya</string>
     <string name="download">Unduh</string>
     <string name="already_last_episode">Ini adalah episode terakhir</string>
     <string name="download_success_check_album">Terunduh. Periksa galeri foto Anda.</string>
@@ -472,18 +484,18 @@ Untuk mengkonfirmasi, ketuk [Minta Penghapusan].</string>
     <string name="video_generating">Membuat Video</string>
     <string name="video_generation_failed">Pembuatan Video Gagal</string>
     <string name="please_enter_storyboard_description">Harap isi deskripsi storyboard terlebih dahulu</string>
-    <string name="storyboard_description_generating_please_wait">Sedang membuat deskripsi storyboard. Mohon tunggu…</string>
+    <string name="storyboard_description_generating_please_wait">Membuat deskripsi storyboard. Harap tunggu…</string>
     <string name="storyboard_generating">Membuat storyboard…</string>
     <string name="video_redrawing">Menggambar ulang video…</string>
     <string name="feedback_success">Masukan Terkirim</string>
-    <string name="my_feedback">Feedback Saya</string>
-    <string name="feedback_type">Jenis</string>
+    <string name="my_feedback">Masukan Saya</string>
+    <string name="feedback_type">Tipe</string>
     <string name="feedback_type_value">Jenis · %1$s</string>
     <string name="feedback_submitted_on">Dikirim Pada</string>
     <string name="feedback_description">Deskripsi</string>
     <string name="feedback_support_reply">Balasan Dukungan</string>
     <string name="feedback_thanks">Terima kasih atas masukan Anda..</string>
-    <string name="feedback_waiting_reply">Kami akan membalas dalam 1–3 hari kerja.</string>
+    <string name="feedback_waiting_reply">Kami akan membalas dalam 1-3 hari kerja.</string>
     <string name="ten_thousand_format">%sW</string>
     <string name="saved_to_album">Tersimpan ke galeri foto</string>
     <string name="prop_description">Prompt Properti</string>
@@ -493,6 +505,7 @@ Untuk mengkonfirmasi, ketuk [Minta Penghapusan].</string>
     <string name="please_enter_prop_name">Harap isi nama properti terlebih dahulu</string>
     <string name="role_description">Prompt Karakter</string>
     <string name="role_name">Nama Karakter</string>
+    <string name="generate">Buat</string>
     <string name="please_enter_role_description">Harap isi deskripsi karakter terlebih dahulu</string>
     <string name="please_enter_role_name">Harap isi nama karakter terlebih dahulu</string>
     <string name="scene_description">Prompt Adegan</string>
@@ -503,7 +516,7 @@ Untuk mengkonfirmasi, ketuk [Minta Penghapusan].</string>
     <string name="please_complete_storyboard_description">Beberapa frame storyboard tidak memiliki deskripsi. Harap isi sebelum melanjutkan.</string>
     <string name="in_progress">Sedang Berlangsung</string>
     <string name="storyboard_s">Storyboard %1$d</string>
-    <string name="frame_s">Frame %1$d</string>
+    <string name="frame_s">Bingkai %1$d</string>
     <string name="please_agree_to_cancellation_terms">Untuk mengonfirmasi penghapusan, harap baca dan setujui ketentuan penghapusan.</string>
     <string name="confirm_account_cancellation">Hapus akun Anda?</string>
     <string name="confirm_cancel_cancellation_request">Batalkan permintaan penghapusan?</string>
@@ -514,8 +527,8 @@ Untuk mengkonfirmasi, ketuk [Minta Penghapusan].</string>
     <string name="confirm_delete_work">Hapus karya ini?</string>
     <string name="generate_asset_image">Buat Gambar Aset</string>
     <string name="redraw_storyboard_video">Gambar Ulang Video Storyboard</string>
-    <string name="insufficient_balance_please_recharge">Kredit tidak cukup. Harap isi ulang.</string>
-    <string name="report_success">Laporan Terkirim</string>
+    <string name="insufficient_balance_please_recharge">Koin tidak mencukupi. Silakan isi ulang.</string>
+    <string name="report_success">Laporan telah dikirim. Kami akan segera meninjaunya.</string>
     <string name="please_complete_episode_content">Harap selesaikan Episode %1$d terlebih dahulu</string>
     <string name="add_storyboard">Tambah Frame Storyboard</string>
     <string name="extract_storyboard_info">Ekstrak Info Storyboard</string>
@@ -523,7 +536,7 @@ Untuk mengkonfirmasi, ketuk [Minta Penghapusan].</string>
     <string name="total_char_count">Total: %1$s karakter</string>
     <string name="unsupported_file_format_please_select_txt">Format file tidak didukung. Harap pilih file TXT.</string>
     <string name="word_count_not_meet_requirements_please_retry">Jumlah kata di luar batas. Harap sesuaikan dan unggah ulang.</string>
-    <string name="txt_file_size_limit">Hanya file TXT, x-x karakter</string>
+    <string name="txt_file_size_limit">Hanya file TXT, %1$s–%2$s karakter</string>
     <string name="please_select_file">Harap pilih file</string>
     <string name="got_it">Mengerti</string>
     <string name="got_it_s">Mengerti (%ds)</string>
@@ -535,43 +548,49 @@ Untuk mengkonfirmasi, ketuk [Minta Penghapusan].</string>
     <string name="drama_ep_function_unavailable_review">Episode ini sudah dipublikasikan atau sedang ditinjau, fitur ini tidak tersedia.</string>
     <string name="drama_delete_ep_batch_confirm">Apakah Anda yakin ingin menghapus episode-episode ini? Tindakan ini tidak dapat dibatalkan.</string>
     <string name="drama_detail_publish">Publikasikan</string>
-    <string name="tip_publish_ep_number_confirm">Terbitkan Episode %1$s - %2$s?</string>
+    <string name="tip_publish_ep_number_confirm">Terbitkan Episode %1$ld - %2$ld?</string>
     <string name="tip_publish_submit_review_notice">Episode ini akan diajukan untuk ditinjau dan tersedia untuk penonton setelah disetujui. Tindakan ini tidak dapat dibatalkan.</string>
     <string name="tip_application_submit_success">Pengajuan Anda telah dikirimkan.</string>
-    <string name="work_publish_page_unavailable">Publishing page unavailable. Please try again later.</string>
+    <string name="work_publish_page_unavailable">Halaman publikasi tidak tersedia. Coba lagi nanti.</string>
     <string name="tip_publish_no_episode_available">Tidak ada episode yang tersedia untuk diterbitkan.</string>
     <string name="drama_detail_unpublished">Belum Dipublikasikan</string>
     <string name="drama_detail_in_review">Sedang Ditinjau</string>
     <string name="drama_detail_review_failed">Peninjauan Gagal</string>
-    <string name="drama_detail_published">Telah Dipublikasikan</string>
-
-    <string name="credits_validity_period">Kredit berlaku selama 1 tahun sejak pembelian.</string>
-    <string name="credits_usage_description">Kredit dapat digunakan untuk membuat drama pendek Anda sendiri.</string>
-    <string name="help_contact_via_feedback">Jika Anda memiliki pertanyaan lain, silakan hubungi layanan pelanggan melalui Profil → Pengaturan → Umpan Balik &amp; Saran.</string>
+    <string name="drama_detail_published">Diterbitkan</string>
+    <string name="full_screen">Layar Penuh</string>
     <string name="drama_has_ended">Drama ini telah berakhir.</string>
-    <string name="prompt_leave_email">Silakan tinggalkan email Anda agar kami dapat menghubungi Anda nanti.</string>
-    <string name="collection_success">Pengumpulan berhasil</string>
-    <string name="profile_log_in">Masuk</string>
-    <string name="profile_title">Profil</string>
-    <string name="profile_my_creations">Karya saya</string>
-    <string name="profile_history">riwayat</string>
-    <string name="profile_collection">koleksi</string>
+    <string name="drama_delete_work_confirm_title">Hapus karya ini?</string>
     <string name="drama_delete_work_confirm">Apakah Anda yakin ingin menghapus karya ini?</string>
-    <string name="delete_success">Berhasil dihapus.</string>
-    <string name="error_invalid_email">Silakan masukkan alamat email yang valid.</string>
-    <string name="agree_terms_privacy">Dengan melanjutkan, Anda menyetujui Syarat Penggunaan &amp; Kebijakan Privasi kami.</string>
+    <string name="compute_power_validity_period">Masa berlaku daya komputasi: 1 tahun</string>
     <string name="deselect_all">Batalkan Pilih Semua</string>
     <string name="storyboard">Storyboard</string>
-    <string name="welcome_epnova_title">Selamat datang di EpNova!
-Sebelum menggunakan produk atau layanan ini, silakan baca dengan cermat dan pahami sepenuhnya semua syarat dalam Syarat Layanan dan Kebijakan Privasi aplikasi ini, untuk mengetahui konten layanan kami serta aturan yang mengatur bagaimana kami mengumpulkan dan menggunakan informasi pribadi Anda yang relevan.
-Kami menyediakan layanan dan melindungi informasi pribadi Anda sesuai dengan Syarat Layanan dan Kebijakan Privasi secara ketat.
-Jika Anda memilih \"Tidak Setuju\", Anda tidak akan dapat menggunakan produk dan layanan kami.</string>
+    <string name="policy_content">Selamat datang di EpNova!
+Sebelum menggunakan produk atau layanan ini, baca dan pahami seluruh Ketentuan Layanan dan Kebijakan Privasi aplikasi untuk mengetahui layanan kami serta aturan pengumpulan dan penggunaan data pribadi Anda.
+Kami menyediakan layanan dan melindungi data pribadi Anda sesuai ketentuan tersebut.
+Jika memilih \&quot;Tidak Setuju\&quot;, Anda tidak dapat menggunakan produk dan layanan kami.</string>
     <string name="please_set_total_episodes">Atur jumlah total episode</string>
     <string name="please_enter_custom_episodes">Silakan masukkan jumlah episode khusus</string>
     <string name="episode_count_limit_60">Jumlah episode tidak boleh melebihi 60</string>
     <string name="please_select_video_aspect_ratio">Silakan pilih ukuran video</string>
     <string name="please_select_video_style">Silakan pilih gaya video</string>
-    <string name="network_error_fetch_products">Gagal mendapatkan produk. Silakan periksa koneksi jaringan Anda dan coba lagi nanti.</string>
+    <string name="network_error_fetch_products">Gagal memuat produk. Periksa jaringan lalu coba lagi.</string>
+    <string name="credits_validity_period">Kredit berlaku selama 1 tahun sejak pembelian.</string>
+    <string name="credits_usage_description">Kredit dapat digunakan untuk membuat drama pendek Anda sendiri.</string>
+    <string name="help_contact_via_feedback">Jika Anda memiliki pertanyaan lain, silakan hubungi layanan pelanggan melalui Profil → Pengaturan → Umpan Balik &amp; Saran.</string>
+    <string name="prompt_leave_email">Silakan tinggalkan email Anda agar kami dapat menghubungi Anda nanti.</string>
+    <string name="collection_success">Pengumpulan berhasil</string>
+    <string name="profile_log_in">Masuk</string>
+    <string name="profile_title">Profil</string>
+    <string name="profile_my_creations">Karya saya</string>
+    <string name="profile_history">Riwayat</string>
+    <string name="profile_collection">Koleksi</string>
+    <string name="delete_success">Berhasil dihapus.</string>
+    <string name="error_invalid_email">Silakan masukkan alamat email yang valid.</string>
+    <string name="agree_terms_privacy">Dengan melanjutkan, Anda menyetujui Ketentuan Layanan dan Kebijakan Privasi kami.</string>
+    <string name="welcome_epnova_title">Selamat datang di EpNova!
+Sebelum menggunakan produk atau layanan ini, baca dan pahami seluruh Ketentuan Layanan dan Kebijakan Privasi aplikasi untuk mengetahui layanan kami serta aturan pengumpulan dan penggunaan data pribadi Anda.
+Kami menyediakan layanan dan melindungi data pribadi Anda sesuai ketentuan tersebut.
+Jika memilih \&quot;Tidak Setuju\&quot;, Anda tidak dapat menggunakan produk dan layanan kami.</string>
     <string name="enable_camera">Ambil Foto</string>
     <string name="settings_enable_photo_album">Izinkan akses ke lebih banyak foto</string>
     <string name="episode_unlock_previous_required">Silakan buka kunci episode sebelumnya terlebih dahulu.</string>
@@ -583,7 +602,10 @@ Jika Anda memilih \"Tidak Setuju\", Anda tidak akan dapat menggunakan produk dan
     <string name="episode_unlock_success">Anda telah membuka kunci sebuah episode!</string>
     <string name="episode_unlock_ad_not_ready">Iklan belum siap, silakan coba lagi nanti.</string>
     <string name="episode_unlock_ad_free">Buka kunci secara gratis</string>
-    <string name="episode_unlock_come_back">Sisa waktu %s</string>
+    <string name="episode_unlock_come_back">Kembali dalam</string>
+    <string name="episode_unlock_ad_title">Tonton episode ini gratis?</string>
+    <string name="episode_unlock_ad_loading">Memuat iklan…</string>
+    <string name="episode_unlock_ad_verifying">Memverifikasi…</string>
     <string name="episode_unlock_popup_current">Episode ini</string>
     <string name="episode_unlock_popup_balance">Saldo</string>
     <string name="episode_unlock_popup_coin_insufficient">Koin tidak mencukupi. Silakan isi ulang.</string>
@@ -593,25 +615,34 @@ Jika Anda memilih \"Tidak Setuju\", Anda tidak akan dapat menggunakan produk dan
     <string name="newbie_gift_limit_time">Waktu terbatas: 23:59:59</string>
     <string name="newbie_gift_extra_percent">Ekstra +50%</string>
     <string name="newbie_super_bonus_pack">Paket Bonus Super</string>
-    <string name="newbie_one_time_only">Hanya Satu Kali</string>
+    <string name="newbie_one_time_only">Hanya Sekali</string>
     <string name="newbie_coins">Koin</string>
     <string name="newbie_bonus">Bonus</string>
     <string name="newbie_limited_time">Waktu Terbatas</string>
+    <string name="newbie_new_user_exclusive_gift">Hadiah Eksklusif Pengguna Baru !</string>
+    <string name="newbie_current_credits">Kredit Saat Ini</string>
+    <string name="newbie_exclusive_bonus">Bonus Eksklusif</string>
+    <string name="newbie_credits_bonus_detail">Bonus %1$s + %2$s</string>
+    <string name="newbie_limited_time_offer">Penawaran Terbatas:</string>
+    <string name="newbie_pay_now">Bayar Sekarang</string>
     <string name="settings_language">Bahasa</string>
     <string name="settings_auto_unlock_episode">Buka kunci episode secara otomatis</string>
     <string name="store_store">Toko</string>
     <string name="store_history">Riwayat</string>
     <string name="store_coins">Koin</string>
     <string name="store_credits">Kredit</string>
-    <string name="newbie_new_user_exclusive_gift">New User Exclusive Gift！</string>
-    <string name="newbie_current_credits">Current Credits</string>
-    <string name="newbie_exclusive_bonus">Exclusive Bonus</string>
-    <string name="newbie_credits_bonus_detail">%1$s + %2$s Bouns</string>
-    <string name="newbie_limited_time_offer">Limited-Time Offer:</string>
-    <string name="newbie_pay_now">Pay Now</string>
     <string name="store_reward_coins">Koin Hadiah</string>
-    <string name="store_tips_content_coins">1. Koin berlaku selama 1 tahun sejak tanggal pembelian.\n2. Koin dapat digunakan untuk membuka kunci episode secara berurutan.\n3. Koin akan digunakan terlebih dahulu saat membuka kunci episode. Jika jumlah tidak mencukupi, koin hadiah akan digunakan secara otomatis.\n4. Setelah episode dibuka kuncinya dengan koin, episode tersebut dapat ditonton tanpa batas waktu.\n5. Jika Anda memiliki pertanyaan lain, silakan hubungi layanan pelanggan melalui Profil → Saran dan Masukan.\n6. Syarat Layanan dan Kebijakan Privasi.</string>
-    <string name="store_tips_content_credits">1. Kredit berlaku selama 1 tahun sejak tanggal pembelian.\n2. Kredit dapat digunakan untuk membuat drama pendek buatan Anda sendiri.\n3. Setelah kredit digunakan untuk pembuatan, kredit tersebut tidak dapat dikembalikan.\n4. Jika Anda memiliki pertanyaan lain, silakan hubungi layanan pelanggan melalui Profil → Saran dan Masukan.\n5. Syarat Layanan dan Kebijakan Privasi.</string>
+    <string name="store_tips_content_coins">1. Koin berlaku selama 1 tahun sejak tanggal pembelian.
+2. Koin dapat digunakan untuk membuka kunci episode secara berurutan.
+3. Koin akan digunakan terlebih dahulu saat membuka kunci episode. Jika jumlah tidak mencukupi, koin hadiah akan digunakan secara otomatis.
+4. Setelah episode dibuka kuncinya dengan koin, episode tersebut dapat ditonton tanpa batas waktu.
+5. Jika Anda memiliki pertanyaan lain, silakan hubungi layanan pelanggan melalui Profil → Saran dan Masukan.
+6. Ketentuan Layanan dan Kebijakan Privasi.</string>
+    <string name="store_tips_content_credits">1. Kredit berlaku selama 1 tahun sejak tanggal pembelian.
+2. Kredit dapat digunakan untuk membuat drama pendek buatan Anda sendiri.
+3. Setelah kredit digunakan untuk pembuatan, kredit tersebut tidak dapat dikembalikan.
+4. Jika Anda memiliki pertanyaan lain, silakan hubungi layanan pelanggan melalui Profil → Saran dan Masukan.
+5. Syarat Layanan dan Kebijakan Privasi.</string>
     <string name="transaction_history_title">Riwayat Transaksi</string>
     <string name="transaction_history_all">Semua</string>
     <string name="transaction_history_earned">Diperoleh</string>
@@ -624,72 +655,128 @@ Jika Anda memilih \"Tidak Setuju\", Anda tidak akan dapat menggunakan produk dan
     <string name="transaction_history_ad_reward">Hadiah Iklan</string>
     <string name="transaction_no_records">Belum ada catatan</string>
     <string name="home_login_reward_welcome">Selamat Datang di EpNova</string>
-    <string name="home_login_reward_coins">+%s Koin</string>
+    <string name="home_login_reward_coins">+%s koin</string>
     <string name="home_login_reward_claim">Ambil</string>
     <string name="login_epnova">EpNova</string>
     <string name="login_facebook">Masuk dengan Facebook</string>
     <string name="login_apple">Masuk dengan Apple</string>
     <string name="login_google">Masuk dengan Google</string>
-    <string name="login_ai_comic_journey">Mulai perjalanan pembuatan komik AI Anda</string>
+    <string name="login_ai_comic_journey">Mulai ciptakan drama AI Anda</string>
     <string name="login_terms_privacy">Jika melanjutkan, Anda menyetujui Ketentuan Layanan dan Kebijakan Privasi</string>
     <string name="messages_title">Notifikasi</string>
-    <string name="notifications_empty_title">Belum ada notifikasi</string>
-    <string name="notifications_empty_description">Kami akan memberi tahu Anda jika ada sesuatu yang baru.</string>
+    <string name="notifications_empty_title">Bel ada ada notifikasi</string>
+    <string name="notifications_empty_description">Kami akan memberi tahu Anda saat ada hal baru.</string>
     <string name="message_cannot_open">Pesan ini tidak dapat dibuka.</string>
-    <string name="feedback_history_empty_description">Belum ada riwayat\numpan balik</string>
+    <string name="feedback_history_empty_description">Anda belum memiliki catatan Masukan.</string>
     <string name="rewards_title">Hadiah</string>
     <string name="rewards_rules">Peraturan</string>
     <string name="rewards_balance">Saldo</string>
-    <plurals name="rewards_checked_days">
-        <item quantity="other">Sudah check-in selama %1$d hari</item>
-    </plurals>
     <string name="rewards_day_1">Hari %1$d</string>
     <string name="rewards_check_in">Check-in</string>
     <string name="rewards_earn_rewards">Dapatkan Hadiah</string>
-    <string name="rewards_reset_time">Diatur ulang pada %s</string>
+    <string name="rewards_reset_time">Disetel ulang pukul %@</string>
     <string name="rewards_login_any_account">Masuk dengan akun apa saja</string>
     <string name="rewards_go">Lanjut</string>
     <string name="rewards_watch">Tonton</string>
     <string name="rewards_claimed">Sudah Diambil</string>
-    <string name="rewards_50_reward_coins">+%s Koin Hadiah</string>
-    <string name="rewards_watch_video_earn_50">Tonton video untuk mendapatkan +%s koin</string>
+    <string name="rewards_50_reward_coins">+ %ld Koin Hadiah</string>
+    <string name="rewards_watch_video_earn_50">Tonton video untuk mendapat +%s koin</string>
     <string name="rewards_watch_ad">Tonton Iklan</string>
     <string name="rewards_checkin_7days_bonus">Check-in selama 7 hari berturut-turut untuk dapatkan hadiah besar!</string>
-    <string name="rewards_extra_30_coins">Dapatkan %s koin ekstra</string>
+    <string name="rewards_extra_30_coins">Dapatkan %ld koin ekstra</string>
     <string name="rewards_come_back_tomorrow">Kembali besok</string>
-    <string name="rewards_next_refresh">Penyegaran berikutnya dalam %s</string>
+    <string name="rewards_next_refresh">Pembaruan berikutnya dalam %@</string>
     <string name="rewards_rules_title">Peraturan Hadiah</string>
-    <string name="rewards_rules_detail">1.EpNova berhak sepenuhnya untuk menafsirkan koin hadiah.\n2. Anda hanya dapat check-in satu kali per hari.\n3. Jika Anda melewatkan satu hari, masa check-in beruntun akan diatur ulang dan dimulai dari hari pertama.\n 4. Sama seperti koin pembelian, koin hadiah hanya dapat digunakan untuk membuka episode berbayar.\n5. Koin hadiah berlaku selama 30 hari sejak tanggal pengambilan. Silakan gunakan sebelum kedaluwarsa.\n6. Saat membuka kunci episode, koin pembelian akan digunakan terlebih dahulu; jika koin pembelian tidak mencukupi, koin hadiah akan digunakan secara otomatis.\n7. Semua koin gratis diklasifikasikan sebagai koin hadiah.</string>
-    <string name="home_search_placeholder">Cari judul drama…</string>
+    <string name="rewards_rules_detail">1.EpNova berhak sepenuhnya atas interpretasi koin reward.
+2. Anda hanya dapat check-in satu kali per hari. 
+3. Jika Anda melewatkan satu hari, masa check-in beruntun akan diatur ulang dan dimulai dari hari pertama.
+ 4. Sama seperti koin pembelian, koin hadiah hanya dapat digunakan untuk membuka episode berbayar. 
+5. Koin hadiah berlaku selama 30 hari sejak tanggal pengambilan. Silakan gunakan sebelum kedaluwarsa. 
+6. Saat membuka kunci episode, koin pembelian akan digunakan terlebih dahulu; jika koin pembelian tidak mencukupi, koin hadiah akan digunakan secara otomatis. 
+7. Semua koin gratis diklasifikasikan sebagai koin hadiah.</string>
+    <string name="rewards_finish_previous_task">Silakan selesaikan tugas sebelumnya terlebih dahulu.</string>
+    <string name="home_search_placeholder">Cari judul drama...</string>
     <string name="home_search_tab_new_release">Rilis Baru</string>
     <string name="home_search_tab_most_popular">Terpopuler</string>
-    <string name="home_search_tab_recommended_for_u">Direkomendasikan untukmu</string>
-    <string name="home_search_no_results">Tidak ada hasil yang ditemukan</string>
+    <string name="home_search_no_results">Tidak ada hasil ditemukan</string>
     <string name="tab_explore">Jelajahi</string>
     <string name="tab_rewards">Hadiah</string>
     <string name="tab_profile">Profil</string>
+    <string name="tab_my_list">Daftar Saya</string>
     <string name="login_claim_coins">Klaim %s Koin</string>
+    <string name="starring">Telah tayang</string>
+    <string name="click_button_to_watch_full_episodes">Klik tombol platform di bawah untuk menonton episode lengkap</string>
+    <string name="confirm_exit_without_saving">Konten saat ini belum disimpan, perubahan tidak dapat dipulihkan jika keluar. Apakah Anda yakin ingin keluar?</string>
+    <string name="exit_directly">Keluar langsung</string>
+    <string name="edit_story_synopsis">Sinopsis Cerita</string>
+    <string name="download_method_select">Silakan pilih metode unduh video</string>
+    <string name="download_watermarked">Unduh versi dengan watermark</string>
+    <string name="download_watermark_free">Unduh versi tanpa watermark</string>
+    <string name="download_video_considered_as_agreement">Mengunduh video berarti Anda menyetujui Perjanjian Pengunduhan</string>
+    <string name="download_agreement">Perjanjian Pengunduhan</string>
+    <string name="edit_episode_content">Edit Naskah</string>
+    <string name="edit_asset_desc">Edit Deskripsi Aset</string>
+    <string name="edit_storyboard_desc">Deskripsi Storyboard</string>
+    <string name="role_desc">Deskripsi Karakter</string>
+    <string name="prop_desc">Deskripsi Properti</string>
+    <string name="scene_desc">Deskripsi Adegan</string>
+    <string name="btn_regenerate_cost">Buat ulang %1$s %2$d</string>
+    <string name="exit_during_generation_warning">Gambar sumber daya sedang dibuat. Keluar akan membatalkan pembuatan saat ini, apakah yakin keluar?</string>
+    <string name="continue_exit">Keluar Langsung</string>
+    <string name="save_and_overwrite_asset_warning">Gambar sumber daya belum tersimpan, simpan dan timpa sumber daya asli? Penimpaan tidak dapat dikembalikan.</string>
+    <string name="exit_without_saving">Keluar Tanpa Simpan</string>
+    <string name="save_and_overwrite">Simpan dan Timpa</string>
+    <string name="confirm_overwrite_asset_warning">Penyimpanan gambar akan menimpa sumber daya asli dan tidak bisa dipulihkan, konfirmasi lanjutkan?</string>
+    <string name="select_prop">Pilih Properti</string>
+    <string name="select_scene">Pilih Adegan</string>
+    <string name="select_role_image">Pilih Penampilan Karakter</string>
+    <string name="character_appearance">Penampilan Karakter</string>
+    <string name="set_character_appearance">Atur Penampilan Karakter</string>
+    <string name="set_scene">Atur Adegan</string>
+    <string name="set_prop">Atur Properti</string>
+    <string name="image_load_failed_regenerate">Gagal memuat gambar, buat ulang</string>
+    <string name="no_assets_start_creating">Belum ada aset, mulai berkreasi</string>
+    <string name="delete_work_permanent_warning">Penghapusan akan menghapus episode karya beserta semua gambar aset terkait secara permanen dan tidak bisa dipulihkan.</string>
+    <string name="asset_image_limit_reached">Jumlah gambar aset sudah mencapai batas maksimal.</string>
+    <string name="insufficient_balance_recharge_to_continue">Kredit tidak mencukupi, isi ulang untuk lanjut pembuatan.</string>
+    <string name="title_order_appeal">Keluhan Pesanan</string>
+    <string name="order_question_about">Pertanyaan mengenai pesanan</string>
+    <string name="order_status_credited">Sudah Masuk Saldo</string>
+    <string name="order_status_processing">Sedang Diproses</string>
+    <string name="order_status_failed">Gagal</string>
+    <string name="published_short_dramas_count">%s drama pendek telah berhasil diterbitkan</string>
+    <string name="watch_now">Tonton Sekarang</string>
+    <string name="order_appeal">Keluhan Pesanan</string>
+    <string name="content_restriction_warning">Konten yang mengandung gambar IP atau materi terlarang tidak dapat dibuat.</string>
+    <string name="compute_power_notice">Ketentuan Kredit</string>
+    <string name="generate_role">Buat Karakter</string>
+    <string name="balance_fail_hint">AI akan melanjutkan pembuatan otomatis setelah isi ulang tanpa mulai dari awal.</string>
+    <string name="balance_fail_title">Kredit tidak cukup untuk lanjut pembuatan</string>
     <string name="create_page_top_earners">Penghasilan Teratas</string>
     <string name="create_page_resource_center">Pusat Sumber Daya</string>
     <string name="create_page_published">Diterbitkan</string>
     <string name="create_page_income">Penghasilan</string>
+    <string name="create_page_unlocks">unlocks</string>
     <string name="profile_recharge">Isi Ulang</string>
     <string name="profile_credits">Kredit</string>
     <string name="profile_income">Penghasilan</string>
     <string name="profile_feedback_suggestions">Saran dan Masukan</string>
     <string name="feedback_history">Riwayat Masukan</string>
-    <string name="credits_popup_instructions">Kredit dapat digunakan untuk membuat drama pendek buatan Anda sendiri.</string>
+    <string name="credits_popup_instructions">Kredit dapat digunakan untuk membuat drama pendek Anda sendiri.</string>
     <string name="coins_popup_instructions">Koin dapat digunakan untuk membuka kunci episode secara berurutan.</string>
     <string name="income_available_balance">Saldo Tersedia</string>
     <string name="income_withdraw">Tarik Dana</string>
+    <string name="income_withdraw_minium">Minimum Penarikan</string>
     <string name="income_withdraw_request_guide">Silakan ajukan permintaan Anda beserta email di Profil → Saran &amp; Masukan. Kami akan menghubungi Anda melalui email yang Anda berikan.</string>
+    <string name="income_withdraw_minium_tips">Anda dapat menarik penghasilan setelah saldo mencapai $%ld.</string>
+    <string name="income_withdraw_minium_confirm">Mengerti</string>
     <string name="income_total_earned">Total Pendapatan</string>
     <string name="income_pending_amount">Jumlah Tertunda</string>
     <string name="income_tooltip_total_earned_desc">Total jumlah pendapatan yang diperoleh pengguna sejak pendaftaran.</string>
     <string name="income_monthly_income_settlement_desc">Pendapatan bulanan akan ditransfer secara otomatis ke saldo yang dapat ditarik pada pukul 00:00 tanggal 1 setiap bulan.</string>
     <string name="income_exchange_rate">Nilai tukar: 100 Koin = 1 Dolar</string>
+    <string name="income_views_format">%1$s kali tayang</string>
     <string name="transaction_received">Diterima</string>
-    <string name="tab_my_list">Daftar Saya</string>
     <string name="store_tips_title">Tips :</string>
     <string name="transaction_credits_purchase">Pembelian Kredit</string>
     <string name="transaction_image_generation">Pembuatan Gambar</string>
@@ -705,7 +792,7 @@ Jika Anda memilih \"Tidak Setuju\", Anda tidak akan dapat menggunakan produk dan
     <string name="drama_detail_ep_1">%1$s Episode</string>
     <string name="drama_detail_ep_2">%1$s Episode</string>
     <string name="drama_detail_all_eps">Semua Episode</string>
-    <string name="drama_detail_live">Rilis</string>
+    <string name="drama_detail_live">Sudah Tayang</string>
     <string name="drama_detail_episode_number">Episode %1$s</string>
     <string name="drama_detail_more">Lainnya</string>
     <string name="tip_publish_ep_1_15_required">Harap selesaikan episode 1 - 15 sebelum menerbitkan.</string>
@@ -716,7 +803,7 @@ Jika Anda memilih \"Tidak Setuju\", Anda tidak akan dapat menggunakan produk dan
     <string name="rewards_sign_in_day">Berhasil check-in selama %1$s hari</string>
     <string name="rewards_sign_in_days">Berhasil check-in selama %1$s hari</string>
     <string name="rewards_push_notice_open">Aktifkan notifikasi push</string>
-    <string name="my_list_ep_done_ratio">Selesai %1$s / %2$s Episode</string>
+    <string name="my_list_ep_done_ratio">Selesai %1$d/%2$d Episode</string>
     <string name="push_daily_checkin_title">Check-in Harian</string>
     <string name="push_daily_checkin_desc">Selesaikan check-in sekarang dan klaim hadiah eksklusifmu！</string>
     <string name="push_gift_expire_soon_title">Hadiahmu Segera Kedaluwarsa!</string>
@@ -744,55 +831,64 @@ Jika Anda memilih \"Tidak Setuju\", Anda tidak akan dapat menggunakan produk dan
     <string name="generate_story_intro_narration">Storyboard komik AI + pengisi suara narasi cerdas, cocok untuk produksi cepat dan narasi cerita</string>
     <string name="generate_story_intro_dynamic">Komik dinamis + pengisi suara multi‑karakter + efek suara latar + efek transisi, meningkatkan imersi alur cerita</string>
     <string name="generate_story_content_review_failed">Verifikasi konten input gagal, tidak dapat dibuat</string>
-    <string name="download_method_select">Silakan pilih metode unduh video</string>
-    <string name="download_watermarked">Unduh versi berwatermark</string>
-    <string name="download_watermark_free">Unduh versi tanpa watermark</string>
-    <string name="download_video_considered_as_agreement">Mengunduh video berarti Anda menyetujui Perjanjian Pengunduhan</string>
-    <string name="download_agreement">Perjanjian Pengunduhan</string>
-    <string name="edit_story_synopsis">sinopsis cerita</string>
-    <string name="edit_episode_content">Edit Naskah</string>
-    <string name="edit_asset_desc">Edit Deskripsi Aset</string>
-    <string name="edit_storyboard_desc">Edit Deskripsi Storyboard</string>
-    <string name="role_desc">Deskripsi Karakter</string>
-    <string name="prop_desc">Deskripsi Properti</string>
-    <string name="scene_desc">Deskripsi Adegan</string>
-    <string name="btn_regenerate_cost">Buat ulang %1$s %2$d</string>
-    <string name="exit_during_generation_warning">Gambar sumber daya sedang dibuat. Keluar akan membatalkan pembuatan saat ini, apakah yakin keluar?</string>
-    <string name="continue_exit">Keluar Langsung</string>
-    <string name="save_and_overwrite_asset_warning">Gambar sumber daya belum tersimpan, simpan dan timpa sumber daya asli? Penimpaan tidak dapat dikembalikan.</string>
-    <string name="exit_without_saving">Keluar Tanpa Simpan</string>
-    <string name="save_and_overwrite">Simpan dan Timpa</string>
-    <string name="confirm_overwrite_asset_warning">Penyimpanan gambar akan menimpa sumber daya asli dan tidak bisa dipulihkan, konfirmasi lanjutkan?</string>
-    <string name="select_prop">Pilih Properti</string>
-    <string name="select_scene">Pilih Adegan</string>
-    <string name="select_role_image">Pilih Penampilan Karakter</string>
-    <string name="character_appearance">Penampilan Karakter</string>
-    <string name="set_character_appearance">Atur Penampilan Karakter</string>
-    <string name="set_scene">Atur Adegan</string>
-    <string name="set_prop">Atur Properti</string>
-    <string name="image_load_failed_regenerate">Gagal memuat gambar, buat ulang</string>
-    <string name="no_assets_start_creating">Belum ada aset, mulai berkreasi</string>
-    <string name="delete_work_permanent_warning">Penghapusan akan menghapus episode karya beserta semua gambar aset terkait secara permanen dan tidak bisa dipulihkan.</string>
-    <string name="asset_image_limit_reached">Jumlah gambar aset sudah mencapai batas maksimal.</string>
-    <string name="insufficient_balance_recharge_to_continue">Kredit tidak mencukupi, isi ulang untuk lanjut pembuatan.</string>
-    <string name="title_order_appeal">Keluhan Pesanan</string>
-    <string name="order_question_about">Pertanyaan mengenai pesanan</string>
-    <string name="order_status_credited">Sudah Masuk Saldo</string>
-    <string name="order_status_processing">Sedang Diproses</string>
-    <string name="order_status_failed">Gagal Masuk Saldo</string>
-    <string name="published_short_dramas_count">%s drama pendek telah berhasil diterbitkan</string>
-    <string name="watch_now">Tonton Sekarang</string>
-    <string name="order_appeal">Keluhan Pesanan</string>
-    <string name="content_restriction_warning">Konten yang mengandung gambar IP atau materi terlarang tidak dapat dibuat.</string>
-    <string name="compute_power_notice">Ketentuan Kredit</string>
-    <string name="generate_role">Buat Karakter</string>
-    <string name="balance_fail_hint">AI akan melanjutkan pembuatan otomatis setelah isi ulang tanpa mulai dari awal.</string>
-    <string name="balance_fail_title">Kredit tidak cukup untuk lanjut pembuatan</string>
-    <string name="settings_delete_account">Peringatan: Harap konfirmasi informasi berikut sebelum menghapus akun Anda.\n\nMenghapus akun tidak dapat dikembalikan, dan semua informasi akan terhapus secara permanen. Pastikan Anda telah mencadangkan semua data terkait akun sebelum melanjutkan, serta pastikan semua layanan terkait telah ditangani dengan benar. Pendaftaran ulang di kemudian hari hanya akan membuat akun baru sepenuhnya. Harap konfirmasi bahwa informasi berikut akan dihapus:\n\n· Data Pribadi Data pribadi Anda, termasuk alamat email dan nama panggilan, akan dihapus.\n\n· Informasi Akun Pihak Ketiga Riwayat konsumsi, riwayat isi ulang saldo, catatan pembukaan bab, serta serial dalam Daftar Saya.\n\n· Saldo Akun Saldo koin dan kredit Anda akan dihapus menjadi nol.</string>
+    <string name="settings_delete_account">Peringatan: Harap konfirmasi informasi berikut sebelum menghapus akun Anda.
+Penghapusan akun bersifat permanen dan tidak dapat dibatalkan, semua informasi akan dihapus selamanya. Pastikan untuk mencadangkan semua data terkait akun Anda sebelum melanjutkan, dan pastikan semua layanan terkait telah ditangani dengan benar. Pendaftaran ulang setelahnya hanya akan membuat akun baru.
+Harap konfirmasi bahwa informasi berikut akan dihapus:
+∙ Data Pribadi
+Data pribadi Anda, termasuk alamat email dan nama pengguna, akan dihapus.
+∙ Informasi Akun Pihak Ketiga
+Riwayat pembelian, riwayat isi ulang, catatan buka episode, dan serial di Daftar Saya.
+∙ Saldo Akun
+Saldo koin dan kredit Anda akan dikosongkan menjadi nol.</string>
     <string name="video_synthesis_save_failed">Gagal memanggil API penyimpanan.</string>
-    <string name="video_download_watermark">Dihasilkan AI</string>
+    <string name="video_download_watermark">Generasi AI</string>
     <string name="featured">Featured</string>
-    <string name="creation_one_tap_hit_generation">One-tap hit generation</string>
-    <string name="create_dramas_with_ai">Create dramas with AI</string>
+    <string name="creation_one_tap_hit_generation">Buat karya populer sekali ketuk</string>
+    <string name="create_dramas_with_ai">Buat drama dengan AI</string>
+    <string name="creative_description">Deskripsi Ide</string>
+    <string name="creation_hot_case">Naskah Populer</string>
+    <string name="creation_hot_case_desc">Buat versi serupa untuk meningkatkan peluang terbit, jangkauan, dan penghasilan.</string>
+    <string name="creation_hot_case_empty">Belum ada skrip populer</string>
+    <string name="creation_hot_case_recommend_title">Alasan Direkomendasikan</string>
+    <string name="create_same">Buat Versi Serupa</string>
+    <string name="same_story">Buat Karya Serupa</string>
+    <string name="same_story_input_title">Edit Sinopsis</string>
+    <string name="same_story_input_hint">Harap masukkan sinopsis cerita</string>
+    <string name="same_story_input_desc">Cerita yang memuat karakter berhak cipta atau konten terlarang tidak dapat dibuat.</string>
+    <string name="create_same_story_synopsis">Sinopsis Cerita</string>
+    <string name="create_same_story_synopsis_hint">Harap masukkan sinopsis cerita</string>
+    <string name="creation_package_unused_title">Anda memiliki paket kreasi yang belum digunakan</string>
+    <string name="creation_package_select_desc">Pilih paket yang akan digunakan</string>
+    <string name="creation_package_single_desc">Gunakan paket ini untuk kreasi Anda</string>
+    <string name="creation_package_not_use">Bukan Sekarang</string>
+    <string name="creation_package_use_now">Gunakan Sekarang</string>
+    <string name="work_creating">Membuat karya Anda…</string>
+    <string name="edit_storyboard_empty">Belum ada video storyboard</string>
+    <string name="member_creator_plan">Paket Kreator</string>
+    <string name="member_subscribe_now">Berlangganan Sekarang</string>
+    <string name="member_upgrade_now">Ganti Paket</string>
+    <string name="member_upgrade">Tingkatkan</string>
+    <string name="member_cancel_anytime">Diperpanjang otomatis. Batalkan kapan saja</string>
+    <string name="member_intro_offer_hint">%@ untuk minggu pertama, lalu %@/minggu</string>
+    <string name="member_switch_plan_hint">%1$s dimulai saat perpanjangan berikutnya. Tidak ada biaya hari ini.</string>
+    <string name="member_next_super_weekly">Perpanjangan berikutnya dikenakan tarif Super Weekly.</string>
+    <string name="member_publish_earn">Publikasikan &amp; Dapatkan Penghasilan</string>
+    <string name="member_premium_quality">Kualitas Video Premium</string>
+    <string name="member_create_more_drama">Buat Lebih Banyak
+Drama</string>
+    <string name="member_discount_percent">Hemat %1$d%%</string>
+    <string name="member_current_unit">%1$d kredit /%2$s</string>
+    <string name="member_your_current_plan">Paketmu Saat Ini</string>
+    <string name="member_membership_activated">Keanggotaan telah aktif</string>
+    <string name="member_upgrade_scheduled">Peningkatan telah dijadwalkan</string>
+    <string name="member_service_and_policy">Ketentuan Layanan dan Kebijakan Privasi.</string>
+    <string name="app_rating_title_unrated">Suka dengan kreasi AI-mu?</string>
+    <string name="app_rating_subtitle_unrated">Beri tahu kami pendapatmu tentang EpNova.</string>
+    <string name="app_rating_title_rated">Terima kasih atas masukanmu!</string>
+    <string name="app_rating_subtitle_low">Pendapatmu membantu kami meningkatkan EpNova.</string>
+    <string name="app_rating_subtitle_high">Ulasanmu membantu lebih banyak kreator menemukan EpNova.</string>
+    <string name="app_rating_action_continue">Lanjutkan</string>
+    <string name="app_rating_action_done">Selesai</string>
+    <string name="app_rating_action_rate_now">Beri Nilai Sekarang</string>
     <string name="grid_image_description">Gambar %1$d dari %2$d</string>
 </resources>

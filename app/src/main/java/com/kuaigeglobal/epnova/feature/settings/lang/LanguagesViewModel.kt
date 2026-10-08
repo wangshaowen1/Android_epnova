@@ -16,8 +16,12 @@ data class LanguageItem(val code: String, val name: String)
 
 val languagesConfigs = listOf(
     LanguageItem(LocaleHelper.LANGUAGE_EN_US, "English"),
-    LanguageItem(LocaleHelper.LANGUAGE_TH_TH, "ภาษาไทย"),
-    LanguageItem(LocaleHelper.LANGUAGE_ID_ID, "Bahasa Indonesia")
+    LanguageItem(LocaleHelper.LANGUAGE_DE_DE, "German"),
+    LanguageItem(LocaleHelper.LANGUAGE_ES_ES, "Spanish"),
+    LanguageItem(LocaleHelper.LANGUAGE_FR_FR, "French"),
+    LanguageItem(LocaleHelper.LANGUAGE_ID_ID, "Bahasa Indonesia"),
+    LanguageItem(LocaleHelper.LANGUAGE_JA_JA, "Japanese"),
+    LanguageItem(LocaleHelper.LANGUAGE_PT_PT, "Portuguese")
 )
 
 class LanguagesViewModel : AppRepositoryViewModel<LanguagesRepository>() {

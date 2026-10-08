@@ -460,7 +460,7 @@ class Config : NetworkChangedListener {
         private const val NOTIFICATION_ENABLE = "NOTIFICATION_ENABLE"
         private const val SHOW_JUMP_POP = "showJumpPop"
         private const val GOOGLE_INSTALL_REFERRER = "google_install_referrer"
-        private const val APP_LANG = "app_lang"
+        private const val APP_LANG = "epnova_lang"
         private const val EPISODE_AUTO_UNLOCK = "episodeAutoUnlock"
         private const val TODAY_LOGIN_REWARDS_DIALOG = "today_login_rewards_dialog"
         private const val LOGIN_REWARDS = "login_rewards"
