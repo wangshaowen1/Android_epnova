@@ -8,8 +8,8 @@ object LocaleHelper {
     const val LANGUAGE_ES_ES = "es-ES" // 西班牙语
     const val LANGUAGE_FR_FR = "fr-FR" // 法语
     const val LANGUAGE_ID_ID = "id-ID" // 印尼语
-    const val LANGUAGE_JA_JA = "ja-JA" // 日语
-    const val LANGUAGE_PT_PT = "pt-PT" // 葡萄牙语
+    const val LANGUAGE_JA_JA = "ja-JP" // 日语
+    const val LANGUAGE_PT_PT = "pt-BR" // 葡萄牙语
 
     /** 支持的后台语言标识，与 LanguagesViewModel.languagesConfigs 保持一致 */
     private val supportedLanguages = setOf(LANGUAGE_EN_US, LANGUAGE_DE_DE, LANGUAGE_ES_ES, LANGUAGE_FR_FR, LANGUAGE_ID_ID, LANGUAGE_JA_JA, LANGUAGE_PT_PT)

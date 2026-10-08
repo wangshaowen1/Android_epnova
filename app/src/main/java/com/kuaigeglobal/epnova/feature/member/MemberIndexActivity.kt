@@ -8,8 +8,10 @@ import android.text.SpannableString
 import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
+import android.text.style.ForegroundColorSpan
 import android.view.View
 import androidx.core.content.ContextCompat
+import androidx.databinding.Observable
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.Constants
@@ -56,6 +58,13 @@ class MemberIndexActivity : BaseViewModelActivity<ActivityMemberIndexBinding, Me
         }
     }
 
+    private val planModeChangedCallback = object : Observable.OnPropertyChangedCallback() {
+        override fun onPropertyChanged(sender: Observable?, propertyId: Int) {
+            val flag = mRealVM.planMode.get()
+            setupHeaderText(flag)
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initView()
@@ -77,10 +86,35 @@ class MemberIndexActivity : BaseViewModelActivity<ActivityMemberIndexBinding, Me
         }
 
         setupServiceAndPolicy()
+        setupHeaderText(mRealVM.planMode.get())
     }
 
     private fun observeData() {
+        mRealVM.planMode.addOnPropertyChangedCallback(planModeChangedCallback)
+    }
 
+    override fun onDestroy() {
+        mRealVM.planMode.removeOnPropertyChangedCallback(planModeChangedCallback)
+        super.onDestroy()
+    }
+
+    private fun setupHeaderText(flag: Boolean) {
+        val source = (if (flag) { R.string.member_upgrade_top_text } else { R.string.member_subscribe_top_text }).getResString()
+        val target = (if (flag) { R.string.member_upgrade_top_keyword } else { R.string.member_subscribe_top_keyword }).getResString()
+        val spannableString = SpannableString(source)
+        applyColorSpan(spannableString, target)
+        binding.tvMemberTopText.text = spannableString
+    }
+
+    private fun applyColorSpan(spannable: SpannableString, target: String) {
+        val startIndex = spannable.indexOf(target)
+        if (startIndex == -1) return
+        spannable.setSpan(
+            ForegroundColorSpan(ContextCompat.getColor(this@MemberIndexActivity, R.color.color_76AAFF)),
+            startIndex,
+            startIndex + target.length,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
     }
 
     private fun setupServiceAndPolicy() {

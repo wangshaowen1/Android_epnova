@@ -345,8 +345,8 @@ Edita y vuelve a enviar.</string>
     <string name="suggest_and_feedback">Sugerencias y comentarios</string>
     <string name="my_list_my_creations">Mis creaciones</string>
     <string name="my_creations_episode_progress">%1$d/%2$d episodios</string>
-    <string name="my_creations_publish_tip">Completa {count} episodios más para publicar tu serie.</string>
-    <string name="my_creations_publish_tip_highlight">{count} episodios más</string>
+    <string name="my_creations_publish_tip">Completa %1$s episodios más para publicar tu serie.</string>
+    <string name="my_creations_publish_tip_highlight">%1$d episodios más</string>
     <string name="my_creations_publish_tip_2">Sigue creando y da vida a tu drama.</string>
     <string name="my_creations_publish_tip_3">Sigue creando episodios para llegar a más espectadores.</string>
     <string name="my_creations_publish_tip_over">🎉¡Lo lograste! ¡Tu drama está completo!</string>
@@ -548,7 +548,7 @@ Edita y vuelve a enviar.</string>
     <string name="drama_ep_function_unavailable_review">Este episodio está publicado o en revisión. Esta función no está disponible.</string>
     <string name="drama_delete_ep_batch_confirm">¿Quieres eliminar estos episodios? Esta acción no se puede deshacer.</string>
     <string name="drama_detail_publish">Publicar</string>
-    <string name="tip_publish_ep_number_confirm">¿Publicar los episodios {start}–{end}?</string>
+    <string name="tip_publish_ep_number_confirm">¿Publicar los episodios %1$s - %2$s?</string>
     <string name="tip_publish_submit_review_notice">Estos episodios se enviarán a revisión y estarán disponibles para los espectadores tras su aprobación. Esta acción no se puede deshacer.</string>
     <string name="tip_application_submit_success">Tu solicitud se ha enviado.</string>
     <string name="work_publish_page_unavailable">Página de publicación no disponible. Inténtalo más tarde.</string>
@@ -602,7 +602,7 @@ Si eliges «No aceptar», no podrás usar nuestros productos ni servicios.</stri
     <string name="episode_unlock_success">¡Episodio desbloqueado!</string>
     <string name="episode_unlock_ad_not_ready">El anuncio aún no está disponible. Inténtalo más tarde.</string>
     <string name="episode_unlock_ad_free">Desbloquear gratis</string>
-    <string name="episode_unlock_come_back">Vuelve en {time}</string>
+    <string name="episode_unlock_come_back">Vuelve en %s</string>
     <string name="episode_unlock_ad_title">¿Ver este episodio gratis?</string>
     <string name="episode_unlock_ad_loading">Cargando anuncio…</string>
     <string name="episode_unlock_ad_verifying">Verificando…</string>
@@ -674,18 +674,18 @@ Si eliges «No aceptar», no podrás usar nuestros productos ni servicios.</stri
     <string name="rewards_day_1">Día %1$d</string>
     <string name="rewards_check_in">Registrarse</string>
     <string name="rewards_earn_rewards">Ganar recompensas</string>
-    <string name="rewards_reset_time">Se reinicia a las {time}</string>
+    <string name="rewards_reset_time">Se reinicia a las %s</string>
     <string name="rewards_login_any_account">Inicia sesión con cualquier cuenta</string>
     <string name="rewards_go">Ir</string>
     <string name="rewards_watch">Ver</string>
     <string name="rewards_claimed">Reclamado</string>
-    <string name="rewards_50_reward_coins">+{count} monedas extra</string>
+    <string name="rewards_50_reward_coins">+%s monedas extra</string>
     <string name="rewards_watch_video_earn_50">Mira un vídeo y gana +%s monedas</string>
     <string name="rewards_watch_ad">Ver anuncio</string>
     <string name="rewards_checkin_7days_bonus">¡Regístrate 7 días seguidos para obtener una gran bonificación!</string>
-    <string name="rewards_extra_30_coins">Gana {count} monedas extra</string>
+    <string name="rewards_extra_30_coins">Gana %s monedas extra</string>
     <string name="rewards_come_back_tomorrow">Vuelve mañana</string>
-    <string name="rewards_next_refresh">Próxima actualización en {time}</string>
+    <string name="rewards_next_refresh">Próxima actualización en %s</string>
     <string name="rewards_rules_title">Reglas de recompensas</string>
     <string name="rewards_rules_detail">1. EpNova se reserva el derecho de interpretación final sobre las monedas de recompensa.
 2. Solo puedes registrarte una vez al día.
@@ -768,7 +768,7 @@ Si eliges «No aceptar», no podrás usar nuestros productos ni servicios.</stri
     <string name="income_withdraw">Retirar</string>
     <string name="income_withdraw_minium">Retiro mínimo</string>
     <string name="income_withdraw_request_guide">Envía tu solicitud con tu correo en Perfil → Comentarios y sugerencias. Te responderemos al correo indicado.</string>
-    <string name="income_withdraw_minium_tips">Podrás retirar tus ganancias cuando tu saldo alcance ${amount}.</string>
+    <string name="income_withdraw_minium_tips">Podrás retirar tus ganancias cuando tu saldo alcance $%1$d.</string>
     <string name="income_withdraw_minium_confirm">Entendido</string>
     <string name="income_total_earned">Ganancias totales</string>
     <string name="income_pending_amount">Importe pendiente</string>
@@ -803,7 +803,7 @@ Si eliges «No aceptar», no podrás usar nuestros productos ni servicios.</stri
     <string name="rewards_sign_in_day">Registro durante %1$s día</string>
     <string name="rewards_sign_in_days">Registro durante %1$s días</string>
     <string name="rewards_push_notice_open">Activar notificaciones push</string>
-    <string name="my_list_ep_done_ratio">{completed}/{total} episodios completados</string>
+    <string name="my_list_ep_done_ratio">%1$s/%2$s episodios completados</string>
     <string name="push_daily_checkin_title">Registro diario</string>
     <string name="push_daily_checkin_desc">¡Regístrate ahora y consigue recompensas exclusivas!</string>
     <string name="push_gift_expire_soon_title">¡Tu regalo caducará pronto!</string>
@@ -865,7 +865,7 @@ La eliminación es irreversible y toda la información se borrará definitivamen
     <string name="member_upgrade_now">Cambiar plan</string>
     <string name="member_upgrade">Mejorar plan</string>
     <string name="member_cancel_anytime">Renovación automática. Cancela cuando quieras.</string>
-    <string name="member_intro_offer_hint">{first_week_price} la primera semana; después, {weekly_price}/semana.</string>
+    <string name="member_intro_offer_hint">%1$s la primera semana; después, %2$s/semana.</string>
     <string name="member_switch_plan_hint">%1$s empezará en la próxima renovación. Hoy no se te cobrará.</string>
     <string name="member_next_super_weekly">La próxima renovación se cobrará a la tarifa Super Weekly.</string>
     <string name="member_publish_earn">Publica y gana</string>
@@ -877,6 +877,7 @@ La eliminación es irreversible y toda la información se borrará definitivamen
     <string name="member_membership_activated">Membresía activada</string>
     <string name="member_upgrade_scheduled">Cambio programado</string>
     <string name="member_service_and_policy">Términos de Servicio y Política de Privacidad.</string>
+    <string name="member_upgrade_top_keyword">para ahorrar más</string>
     <string name="app_rating_title_unrated">¿Disfrutas de tus creaciones con IA?</string>
     <string name="app_rating_subtitle_unrated">Cuéntanos qué opinas de EpNova.</string>
     <string name="app_rating_title_rated">¡Gracias por tus comentarios!</string>
@@ -886,4 +887,7 @@ La eliminación es irreversible y toda la información se borrará definitivamen
     <string name="app_rating_action_done">Listo</string>
     <string name="app_rating_action_rate_now">Valorar ahora</string>
     <string name="grid_image_description">Imagen %1$d de %2$d</string>
+    <string name="member_subscribe_top_text">Obtenga créditos para crear su propio drama</string>
+    <string name="member_subscribe_top_keyword">Obtenga créditos</string>
+    <string name="member_upgrade_top_text">Cambie para ahorrar más</string>
 </resources>

@@ -38,16 +38,31 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <ImageView
-                    android:id="@+id/iv_member_top_text"
-                    android:layout_width="320dp"
-                    android:layout_height="108dp"
-                    android:layout_marginBottom="18dp"
-                    android:src="@{layout.planMode ? @drawable/icon_member_text_2 : @drawable/icon_member_text_1}"
+<!--                <ImageView-->
+<!--                    android:id="@+id/iv_member_top_text"-->
+<!--                    android:layout_width="320dp"-->
+<!--                    android:layout_height="108dp"-->
+<!--                    android:layout_marginBottom="18dp"-->
+<!--                    android:src="@{layout.planMode ? @drawable/icon_member_text_2 : @drawable/icon_member_text_1}"-->
+<!--                    app:layout_constraintBottom_toBottomOf="@id/iv_member_top"-->
+<!--                    app:layout_constraintEnd_toEndOf="@id/iv_member_top"-->
+<!--                    app:layout_constraintStart_toStartOf="@id/iv_member_top"-->
+<!--                    tools:src="@drawable/icon_member_text_1" />-->
+
+                <TextView
+                    android:id="@+id/tv_member_top_text"
+                    android:layout_marginHorizontal="24dp"
+                    android:layout_marginBottom="27dp"
+                    android:fontFamily="@font/outfit_semibold"
+                    android:textSize="32sp"
+                    android:lineHeight="54dp"
+                    android:textColor="@color/text_color_1_dark"
+                    tools:text="@string/member_subscribe_top_text"
                     app:layout_constraintBottom_toBottomOf="@id/iv_member_top"
                     app:layout_constraintEnd_toEndOf="@id/iv_member_top"
                     app:layout_constraintStart_toStartOf="@id/iv_member_top"
-                    tools:src="@drawable/icon_member_text_1" />
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/member_price_layout"

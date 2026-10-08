@@ -345,8 +345,8 @@ Modifiez et renvoyez votre contenu.</string>
     <string name="suggest_and_feedback">Suggestions et commentaires</string>
     <string name="my_list_my_creations">Mes créations</string>
     <string name="my_creations_episode_progress">%1$d/%2$d épisodes</string>
-    <string name="my_creations_publish_tip">Terminez encore {count} épisodes pour publier votre série.</string>
-    <string name="my_creations_publish_tip_highlight">Encore {count} épisodes</string>
+    <string name="my_creations_publish_tip">Terminez encore %1$s épisodes pour publier votre série.</string>
+    <string name="my_creations_publish_tip_highlight">Encore %1$d épisodes</string>
     <string name="my_creations_publish_tip_2">Continuez à créer pour donner vie à votre série.</string>
     <string name="my_creations_publish_tip_3">Créez d’autres épisodes pour toucher plus de spectateurs.</string>
     <string name="my_creations_publish_tip_over">🎉Bravo ! Votre série est terminée !</string>
@@ -548,7 +548,7 @@ Modifiez et renvoyez votre contenu.</string>
     <string name="drama_ep_function_unavailable_review">Cet épisode est publié ou en cours d’examen. Cette fonction est indisponible.</string>
     <string name="drama_delete_ep_batch_confirm">Voulez-vous supprimer ces épisodes ? Cette action est irréversible.</string>
     <string name="drama_detail_publish">Publier</string>
-    <string name="tip_publish_ep_number_confirm">Publier les épisodes {start} à {end} ?</string>
+    <string name="tip_publish_ep_number_confirm">Publier les épisodes %1$s à %2$s ?</string>
     <string name="tip_publish_submit_review_notice">Ces épisodes seront soumis à examen et accessibles aux spectateurs après approbation. Cette action est irréversible.</string>
     <string name="tip_application_submit_success">Votre demande a été envoyée.</string>
     <string name="work_publish_page_unavailable">Page de publication indisponible. Réessayez plus tard.</string>
@@ -602,7 +602,7 @@ Si vous choisissez « Refuser », vous ne pourrez pas utiliser nos produits et s
     <string name="episode_unlock_success">Épisode débloqué !</string>
     <string name="episode_unlock_ad_not_ready">La publicité n’est pas encore prête. Réessayez plus tard.</string>
     <string name="episode_unlock_ad_free">Débloquer gratuitement</string>
-    <string name="episode_unlock_come_back">Revenez dans {time}</string>
+    <string name="episode_unlock_come_back">Revenez dans %s</string>
     <string name="episode_unlock_ad_title">Regarder cet épisode gratuitement ?</string>
     <string name="episode_unlock_ad_loading">Chargement de l\'annonce…</string>
     <string name="episode_unlock_ad_verifying">Vérification…</string>
@@ -674,18 +674,18 @@ Si vous choisissez « Refuser », vous ne pourrez pas utiliser nos produits et s
     <string name="rewards_day_1">Jour %1$d</string>
     <string name="rewards_check_in">Se connecter</string>
     <string name="rewards_earn_rewards">Gagner des récompenses</string>
-    <string name="rewards_reset_time">Réinitialisation à {time}</string>
+    <string name="rewards_reset_time">Réinitialisation à %s</string>
     <string name="rewards_login_any_account">Connectez-vous avec un compte</string>
     <string name="rewards_go">Aller</string>
     <string name="rewards_watch">Regarder</string>
     <string name="rewards_claimed">Réclamé</string>
-    <string name="rewards_50_reward_coins">+{count} pièces bonus</string>
+    <string name="rewards_50_reward_coins">+%s pièces bonus</string>
     <string name="rewards_watch_video_earn_50">Regardez une vidéo et gagnez +%s pièces</string>
     <string name="rewards_watch_ad">Voir la publicité</string>
     <string name="rewards_checkin_7days_bonus">Connectez-vous 7 jours de suite pour obtenir un gros bonus !</string>
-    <string name="rewards_extra_30_coins">Gagnez {count} pièces supplémentaires</string>
+    <string name="rewards_extra_30_coins">Gagnez %s pièces supplémentaires</string>
     <string name="rewards_come_back_tomorrow">Revenez demain</string>
-    <string name="rewards_next_refresh">Prochaine actualisation dans {time}</string>
+    <string name="rewards_next_refresh">Prochaine actualisation dans %s</string>
     <string name="rewards_rules_title">Règles des récompenses</string>
     <string name="rewards_rules_detail">1. EpNova se réserve le droit d’interprétation finale des pièces bonus.
 2. Une seule connexion quotidienne est possible.
@@ -768,7 +768,7 @@ Si vous choisissez « Refuser », vous ne pourrez pas utiliser nos produits et s
     <string name="income_withdraw">Retirer</string>
     <string name="income_withdraw_minium">Retrait minimum</string>
     <string name="income_withdraw_request_guide">Envoyez votre demande avec votre adresse e-mail via Profil → Avis et suggestions. Nous vous répondrons à cette adresse.</string>
-    <string name="income_withdraw_minium_tips">Vous pouvez retirer vos gains dès que votre solde atteint ${amount}.</string>
+    <string name="income_withdraw_minium_tips">Vous pouvez retirer vos gains dès que votre solde atteint $%1$d.</string>
     <string name="income_withdraw_minium_confirm">Compris</string>
     <string name="income_total_earned">Total des gains</string>
     <string name="income_pending_amount">Montant en attente</string>
@@ -803,7 +803,7 @@ Si vous choisissez « Refuser », vous ne pourrez pas utiliser nos produits et s
     <string name="rewards_sign_in_day">Connexion depuis %1$s jour</string>
     <string name="rewards_sign_in_days">Connexion depuis %1$s jours</string>
     <string name="rewards_push_notice_open">Activer les notifications push</string>
-    <string name="my_list_ep_done_ratio">{completed}/{total} épisodes terminés</string>
+    <string name="my_list_ep_done_ratio">%1$s/%2$s épisodes terminés</string>
     <string name="push_daily_checkin_title">Connexion quotidienne</string>
     <string name="push_daily_checkin_desc">Connectez-vous maintenant et récupérez vos récompenses exclusives !</string>
     <string name="push_gift_expire_soon_title">Votre cadeau expire bientôt !</string>
@@ -865,7 +865,7 @@ La suppression est irréversible et toutes les informations seront définitiveme
     <string name="member_upgrade_now">Changer de formule</string>
     <string name="member_upgrade">Passer à l’offre supérieure</string>
     <string name="member_cancel_anytime">Renouvellement automatique. Annulation à tout moment.</string>
-    <string name="member_intro_offer_hint">{first_week_price} la première semaine, puis {weekly_price}/semaine.</string>
+    <string name="member_intro_offer_hint">%1$s la première semaine, puis %2$s/semaine.</string>
     <string name="member_switch_plan_hint">%1$s commence au prochain renouvellement. Aucun débit aujourd\'hui.</string>
     <string name="member_next_super_weekly">Le prochain renouvellement sera facturé au tarif Super Weekly.</string>
     <string name="member_publish_earn">Publiez et gagnez</string>
@@ -877,6 +877,7 @@ La suppression est irréversible et toutes les informations seront définitiveme
     <string name="member_membership_activated">Abonnement activé</string>
     <string name="member_upgrade_scheduled">Changement programmé</string>
     <string name="member_service_and_policy">Conditions d\'utilisation et politique de confidentialité.</string>
+    <string name="member_upgrade_top_keyword">pour plus d’économies</string>
     <string name="app_rating_title_unrated">Vous aimez vos créations IA ?</string>
     <string name="app_rating_subtitle_unrated">Dites-nous ce que vous pensez d’EpNova.</string>
     <string name="app_rating_title_rated">Merci pour votre avis !</string>
@@ -886,4 +887,7 @@ La suppression est irréversible et toutes les informations seront définitiveme
     <string name="app_rating_action_done">Terminé</string>
     <string name="app_rating_action_rate_now">Noter maintenant</string>
     <string name="grid_image_description">Image %1$d sur %2$d</string>
+    <string name="member_subscribe_top_text">Obtenez des crédits pour créer votre propre drame</string>
+    <string name="member_subscribe_top_keyword">Obtenez des crédits</string>
+    <string name="member_upgrade_top_text">Changez pour plus d’économies</string>
 </resources>

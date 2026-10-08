@@ -345,8 +345,8 @@ b) 違反や紛争の審査中は、プラットフォームが削除を延期�
     <string name="suggest_and_feedback">ご意見・フィードバック</string>
     <string name="my_list_my_creations">マイ作品</string>
     <string name="my_creations_episode_progress">%1$d/%2$d話</string>
-    <string name="my_creations_publish_tip">公開するには、あと{count}話を完成させてください。</string>
-    <string name="my_creations_publish_tip_highlight">あと{count}話</string>
+    <string name="my_creations_publish_tip">公開するには、あと%1$s話を完成させてください。</string>
+    <string name="my_creations_publish_tip_highlight">あと%1$d話</string>
     <string name="my_creations_publish_tip_2">制作を続けて、ドラマを形にしましょう。</string>
     <string name="my_creations_publish_tip_3">エピソードを作り続けて、より多くの視聴者に届けましょう。</string>
     <string name="my_creations_publish_tip_over">🎉やりました！ドラマが完結しました！</string>
@@ -548,7 +548,7 @@ b) 違反や紛争の審査中は、プラットフォームが削除を延期�
     <string name="drama_ep_function_unavailable_review">このエピソードは公開済みまたは審査中のため、この機能は利用できません。</string>
     <string name="drama_delete_ep_batch_confirm">これらのエピソードを削除しますか？この操作は元に戻せません。</string>
     <string name="drama_detail_publish">公開</string>
-    <string name="tip_publish_ep_number_confirm">エピソード{start}～{end}を公開しますか？</string>
+    <string name="tip_publish_ep_number_confirm">エピソード%1$s～%2$sを公開しますか？</string>
     <string name="tip_publish_submit_review_notice">これらのエピソードは審査に提出され、承認後に視聴可能になります。この操作は元に戻せません。</string>
     <string name="tip_application_submit_success">申請を送信しました。</string>
     <string name="work_publish_page_unavailable">公開ページを開けません。後でもう一度お試しください。</string>
@@ -602,7 +602,7 @@ b) 違反や紛争の審査中は、プラットフォームが削除を延期�
     <string name="episode_unlock_success">エピソードを解放しました！</string>
     <string name="episode_unlock_ad_not_ready">広告の準備ができていません。後でもう一度お試しください。</string>
     <string name="episode_unlock_ad_free">無料で解放</string>
-    <string name="episode_unlock_come_back">あと{time}で再開</string>
+    <string name="episode_unlock_come_back">あと%sで再開</string>
     <string name="episode_unlock_ad_title">このエピソードを無料で視聴しますか？</string>
     <string name="episode_unlock_ad_loading">広告を読み込み中…</string>
     <string name="episode_unlock_ad_verifying">確認中…</string>
@@ -674,18 +674,18 @@ b) 違反や紛争の審査中は、プラットフォームが削除を延期�
     <string name="rewards_day_1">%1$d日目</string>
     <string name="rewards_check_in">チェックイン</string>
     <string name="rewards_earn_rewards">報酬を獲得</string>
-    <string name="rewards_reset_time">{time}にリセット</string>
+    <string name="rewards_reset_time">%sにリセット</string>
     <string name="rewards_login_any_account">任意のアカウントでログイン</string>
     <string name="rewards_go">移動</string>
     <string name="rewards_watch">視聴</string>
     <string name="rewards_claimed">受取済み</string>
-    <string name="rewards_50_reward_coins">＋{count}ボーナスコイン</string>
+    <string name="rewards_50_reward_coins">＋%sボーナスコイン</string>
     <string name="rewards_watch_video_earn_50">動画を見て＋%sコイン獲得</string>
     <string name="rewards_watch_ad">広告を見る</string>
     <string name="rewards_checkin_7days_bonus">7日連続でチェックインすると、大きなボーナスを獲得！</string>
-    <string name="rewards_extra_30_coins">追加で{count}コイン獲得</string>
+    <string name="rewards_extra_30_coins">追加で%sコイン獲得</string>
     <string name="rewards_come_back_tomorrow">また明日お越しください</string>
-    <string name="rewards_next_refresh">次の更新まで{time}</string>
+    <string name="rewards_next_refresh">次の更新まで%s</string>
     <string name="rewards_rules_title">報酬ルール</string>
     <string name="rewards_rules_detail">1. EpNovaはボーナスコインに関する最終的な解釈権を有します。
 2. チェックインは1日1回のみです。
@@ -768,7 +768,7 @@ b) 違反や紛争の審査中は、プラットフォームが削除を延期�
     <string name="income_withdraw">出金</string>
     <string name="income_withdraw_minium">最低出金額</string>
     <string name="income_withdraw_request_guide">プロフィール → フィードバックとご意見から、メールアドレスを添えてお問い合わせください。ご登録のメールアドレスに返信します。</string>
-    <string name="income_withdraw_minium_tips">残高が${amount}に達すると収益を引き出せます。</string>
+    <string name="income_withdraw_minium_tips">残高が$%1$dに達すると収益を引き出せます。</string>
     <string name="income_withdraw_minium_confirm">了解</string>
     <string name="income_total_earned">累計収益</string>
     <string name="income_pending_amount">保留中の金額</string>
@@ -803,7 +803,7 @@ b) 違反や紛争の審査中は、プラットフォームが削除を延期�
     <string name="rewards_sign_in_day">%1$s日間チェックイン済み</string>
     <string name="rewards_sign_in_days">%1$s日間チェックイン済み</string>
     <string name="rewards_push_notice_open">プッシュ通知をオンにする</string>
-    <string name="my_list_ep_done_ratio">{completed}/{total}エピソード完了</string>
+    <string name="my_list_ep_done_ratio">%1$s/%2$sエピソード完了</string>
     <string name="push_daily_checkin_title">毎日チェックイン</string>
     <string name="push_daily_checkin_desc">今すぐチェックインして限定報酬を受け取ろう！</string>
     <string name="push_gift_expire_soon_title">ギフトの有効期限がまもなく切れます！</string>
@@ -865,7 +865,7 @@ b) 違反や紛争の審査中は、プラットフォームが削除を延期�
     <string name="member_upgrade_now">プランを変更</string>
     <string name="member_upgrade">アップグレード</string>
     <string name="member_cancel_anytime">自動更新。いつでも解約できます。</string>
-    <string name="member_intro_offer_hint">初週{first_week_price}、以降は週{weekly_price}。</string>
+    <string name="member_intro_offer_hint">初週%1$s、以降は週%2$s。</string>
     <string name="member_switch_plan_hint">%1$sは次回の更新時から適用されます。今日は請求されません。</string>
     <string name="member_next_super_weekly">次回の更新時にはSuper Weekly料金が請求されます。</string>
     <string name="member_publish_earn">公開して収益を得る</string>
@@ -877,6 +877,7 @@ b) 違反や紛争の審査中は、プラットフォームが削除を延期�
     <string name="member_membership_activated">会員登録完了</string>
     <string name="member_upgrade_scheduled">変更を予約済み</string>
     <string name="member_service_and_policy">利用規約とプライバシーポリシー。</string>
+    <string name="member_upgrade_top_keyword">もっとお得に</string>
     <string name="app_rating_title_unrated">AI作品を楽しんでいますか？</string>
     <string name="app_rating_subtitle_unrated">EpNovaのご感想をお聞かせください。</string>
     <string name="app_rating_title_rated">フィードバックありがとうございます！</string>
@@ -886,4 +887,7 @@ b) 違反や紛争の審査中は、プラットフォームが削除を延期�
     <string name="app_rating_action_done">完了</string>
     <string name="app_rating_action_rate_now">今すぐ評価</string>
     <string name="grid_image_description">画像%1$d／%2$d</string>
+    <string name="member_subscribe_top_text">クレジットを獲得して、自分だけのドラマを作成しましょう</string>
+    <string name="member_subscribe_top_keyword">クレジットを獲得して</string>
+    <string name="member_upgrade_top_text">切り替えてもっとお得に</string>
 </resources>

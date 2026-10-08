@@ -345,8 +345,8 @@ Edit dan kirim ulang.</string>
     <string name="suggest_and_feedback">Saran &amp; Umpan Balik</string>
     <string name="my_list_my_creations">Karya Saya</string>
     <string name="my_creations_episode_progress">%1$d/%2$d EP</string>
-    <string name="my_creations_publish_tip">Selesaikan %lu episode lagi untuk menerbitkan dramamu.</string>
-    <string name="my_creations_publish_tip_highlight">%ld episode lagi</string>
+    <string name="my_creations_publish_tip">Selesaikan %1$s episode lagi untuk menerbitkan dramamu.</string>
+    <string name="my_creations_publish_tip_highlight">%1$d episode lagi</string>
     <string name="my_creations_publish_tip_2">Terus berkarya untuk menghidupkan dramamu</string>
     <string name="my_creations_publish_tip_3">Terus buat episode untuk menjangkau lebih banyak penonton.</string>
     <string name="my_creations_publish_tip_over">🎉Berhasil! Dramamu kini sudah selesai!</string>
@@ -674,18 +674,18 @@ Jika memilih \&quot;Tidak Setuju\&quot;, Anda tidak dapat menggunakan produk dan
     <string name="rewards_day_1">Hari %1$d</string>
     <string name="rewards_check_in">Check-in</string>
     <string name="rewards_earn_rewards">Dapatkan Hadiah</string>
-    <string name="rewards_reset_time">Disetel ulang pukul %@</string>
+    <string name="rewards_reset_time">Disetel ulang pukul %s</string>
     <string name="rewards_login_any_account">Masuk dengan akun apa saja</string>
     <string name="rewards_go">Lanjut</string>
     <string name="rewards_watch">Tonton</string>
     <string name="rewards_claimed">Sudah Diambil</string>
-    <string name="rewards_50_reward_coins">+ %ld Koin Hadiah</string>
+    <string name="rewards_50_reward_coins">+%s Koin Hadiah</string>
     <string name="rewards_watch_video_earn_50">Tonton video untuk mendapat +%s koin</string>
     <string name="rewards_watch_ad">Tonton Iklan</string>
     <string name="rewards_checkin_7days_bonus">Check-in selama 7 hari berturut-turut untuk dapatkan hadiah besar!</string>
-    <string name="rewards_extra_30_coins">Dapatkan %ld koin ekstra</string>
+    <string name="rewards_extra_30_coins">Dapatkan %s koin ekstra</string>
     <string name="rewards_come_back_tomorrow">Kembali besok</string>
-    <string name="rewards_next_refresh">Pembaruan berikutnya dalam %@</string>
+    <string name="rewards_next_refresh">Pembaruan berikutnya dalam %s</string>
     <string name="rewards_rules_title">Peraturan Hadiah</string>
     <string name="rewards_rules_detail">1.EpNova berhak sepenuhnya atas interpretasi koin reward.
 2. Anda hanya dapat check-in satu kali per hari. 
@@ -768,7 +768,7 @@ Jika memilih \&quot;Tidak Setuju\&quot;, Anda tidak dapat menggunakan produk dan
     <string name="income_withdraw">Tarik Dana</string>
     <string name="income_withdraw_minium">Minimum Penarikan</string>
     <string name="income_withdraw_request_guide">Silakan ajukan permintaan Anda beserta email di Profil → Saran &amp; Masukan. Kami akan menghubungi Anda melalui email yang Anda berikan.</string>
-    <string name="income_withdraw_minium_tips">Anda dapat menarik penghasilan setelah saldo mencapai $%ld.</string>
+    <string name="income_withdraw_minium_tips">Anda dapat menarik penghasilan setelah saldo mencapai $%1$d.</string>
     <string name="income_withdraw_minium_confirm">Mengerti</string>
     <string name="income_total_earned">Total Pendapatan</string>
     <string name="income_pending_amount">Jumlah Tertunda</string>
@@ -869,7 +869,7 @@ Saldo koin dan kredit Anda akan dikosongkan menjadi nol.</string>
     <string name="member_upgrade_now">Ganti Paket</string>
     <string name="member_upgrade">Tingkatkan</string>
     <string name="member_cancel_anytime">Diperpanjang otomatis. Batalkan kapan saja</string>
-    <string name="member_intro_offer_hint">%@ untuk minggu pertama, lalu %@/minggu</string>
+    <string name="member_intro_offer_hint">%1$s untuk minggu pertama, lalu %2$s/minggu</string>
     <string name="member_switch_plan_hint">%1$s dimulai saat perpanjangan berikutnya. Tidak ada biaya hari ini.</string>
     <string name="member_next_super_weekly">Perpanjangan berikutnya dikenakan tarif Super Weekly.</string>
     <string name="member_publish_earn">Publikasikan &amp; Dapatkan Penghasilan</string>
@@ -882,6 +882,7 @@ Drama</string>
     <string name="member_membership_activated">Keanggotaan telah aktif</string>
     <string name="member_upgrade_scheduled">Peningkatan telah dijadwalkan</string>
     <string name="member_service_and_policy">Ketentuan Layanan dan Kebijakan Privasi.</string>
+    <string name="member_upgrade_top_keyword">untuk Lebih Hemat</string>
     <string name="app_rating_title_unrated">Suka dengan kreasi AI-mu?</string>
     <string name="app_rating_subtitle_unrated">Beri tahu kami pendapatmu tentang EpNova.</string>
     <string name="app_rating_title_rated">Terima kasih atas masukanmu!</string>
@@ -891,4 +892,7 @@ Drama</string>
     <string name="app_rating_action_done">Selesai</string>
     <string name="app_rating_action_rate_now">Beri Nilai Sekarang</string>
     <string name="grid_image_description">Gambar %1$d dari %2$d</string>
+    <string name="member_subscribe_top_text">Dapatkan Kredit untuk Membuat Drama Anda Sendiri</string>
+    <string name="member_subscribe_top_keyword">Dapatkan Kredit</string>
+    <string name="member_upgrade_top_text">Beralih untuk Lebih Hemat</string>
 </resources>

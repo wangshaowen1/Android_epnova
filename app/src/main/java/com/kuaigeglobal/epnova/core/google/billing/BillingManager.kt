@@ -5,6 +5,7 @@ import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.BillingClientStateListener
 import com.android.billingclient.api.BillingFlowParams
 import com.android.billingclient.api.BillingResult
+import com.android.billingclient.api.GetBillingConfigParams
 import com.android.billingclient.api.PendingPurchasesParams
 import com.android.billingclient.api.ProductDetails
 import com.android.billingclient.api.Purchase
@@ -1306,6 +1307,37 @@ object BillingManager {
                         )
                     } else {
                         onResult(queryResult.billingResult, queryResult.purchasesList)
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * 查询商店countryCode
+     */
+    fun queryPlayStoreCountryCode(onResult: (countryCode: String?) -> Unit) {
+        connectIfNeeded { state ->
+            if (state != 2) {
+                onResult(null)
+                return@connectIfNeeded
+            }
+
+            ioScope.launchNoCrash {
+                withContext(Dispatchers.IO) {
+                    try {
+                        val billingConfigParams = GetBillingConfigParams.newBuilder().build()
+                        billingClient?.getBillingConfigAsync(billingConfigParams) { result, billingConfig ->
+                            if (result.responseCode == BillingClient.BillingResponseCode.OK && billingConfig != null) {
+                                val playStoreCC = billingConfig.countryCode
+                                Logger.d(TAG, "Billing service countryCode:${playStoreCC}")
+                                onResult(playStoreCC)
+                            }
+                        }
+                    } catch (cancellation: CancellationException) {
+                        onResult(null)
+                    } catch (e: Exception) {
+                        onResult(null)
                     }
                 }
             }
