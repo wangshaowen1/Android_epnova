@@ -151,32 +151,6 @@
     <string name="payment_method">Zahlungsmethode</string>
     <string name="top_up_now">Jetzt aufladen</string>
     <string name="verify_payment">Zahlung bestätigen</string>
-    <string name="app_log_off">Bitte lies und bestätige Folgendes, bevor du die Kontolöschung beantragst:
-1. Die Löschung ist endgültig
-a) Ein gelöschtes Konto kann nicht wiederhergestellt werden.
-b) Du kannst dich nicht mehr auf dieser Plattform anmelden.
-c) Zugehörige Daten, Aufzeichnungen und Ansprüche können nicht zurückgeholt werden.
-d) Dieser Vorgang ist dauerhaft und unumkehrbar. Gehe sorgfältig vor.
-2. Umgang mit deinen Daten
-Nach der Löschung verarbeiten wir deine Daten gemäß Nutzungsbedingungen, Datenschutzrichtlinie und geltendem Recht:
-a) Grundlegende Kontodaten wie Nutzername, Profilbild und Telefonnummer werden gelöscht oder anonymisiert.
-b) Werke, Erstellungshistorie, Entwürfe und Browserverlauf werden gelöscht oder deidentifiziert.
-c) Verknüpfte Identitäten, Verifizierungsdaten und Berechtigungen werden aufgehoben.
-d) Öffentlich veröffentlichte Inhalte können im gesetzlich zulässigen Rahmen deidentifiziert aufbewahrt werden, ausschließlich für Compliance-Prüfungen, Analysen und Nachweise zur Inhaltssicherheit.
-e) Gesetzlich erforderliche Informationen können bis zum Ablauf der vorgeschriebenen Frist aufbewahrt und danach gelöscht werden.
-3. Virtuelle Guthaben und Vorteile
-a) Alle virtuellen Werte im Konto, darunter Mitgliedsvorteile, Münzen, Gegenstände, Erstellungsmünzen und Saldo, werden gelöscht.
-b) Virtuelle Werte können nicht übertragen, zurückgeholt oder wiederhergestellt werden.
-c) Gekaufte, aber ungenutzte kostenpflichtige Leistungen und Vorteile verfallen.
-d) Soweit gesetzlich nicht anders vorgeschrieben, gibt es nach der Kontolöschung keine Erstattung.
-4. Verknüpfte Konten und Drittanbieter
-a) Telefonnummer und Drittanbieterkonten wie WeChat und Apple werden automatisch entkoppelt.
-b) Die gelöschte Kontoidentität kann nicht erneut verwendet werden.
-c) Eine spätere Registrierung gilt als neues Konto.
-5. Offene Vorgänge
-a) Schließe offene Bestellungen, Einsprüche, Auszahlungen, Abrechnungen und andere laufende Vorgänge möglichst vor der Löschung ab.
-b) Bei laufenden Prüfungen von Verstößen oder Streitfällen darf die Plattform die Löschung aufschieben.
-Tippe zur Bestätigung auf [Löschung beantragen].</string>
     <string name="app_cancel_02">1. Du kannst dich nicht mehr anmelden;</string>
     <string name="app_cancel_03">2. Deine personenbezogenen Daten wie Profilbild und Benutzername werden dauerhaft gelöscht;</string>
     <string name="app_cancel_04">3. Deine verknüpfte Telefonnummer, WeChat und QQ werden automatisch entkoppelt.</string>
@@ -304,8 +278,7 @@ Tippe zur Bestätigung auf [Löschung beantragen].</string>
     <string name="ai_structural_analysis">Die KI analysiert das gesamte Werk und ermittelt seine Struktur.</string>
     <string name="estimated_compute_usage">Voraussichtliche Münzen</string>
     <string name="sensitive_word_detected">Problematischer Inhalt erkannt</string>
-    <string name="sensitive_content_refunded">Unzulässiger Inhalt erkannt. Münzen wurden erstattet.
-Bitte bearbeiten und erneut senden.</string>
+    <string name="sensitive_content_refunded">Unzulässiger Inhalt erkannt. Münzen wurden erstattet.\nBitte bearbeiten und erneut senden.</string>
     <string name="upload_completed_novel">Vollständigen Romantext hochladen</string>
     <string name="upload">Hochladen</string>
     <string name="new_version_found">Neue Version verfügbar</string>
@@ -564,10 +537,7 @@ Bitte bearbeiten und erneut senden.</string>
     <string name="compute_power_validity_period">Rechenleistung gültig: 1 Jahr</string>
     <string name="deselect_all">Alle abwählen</string>
     <string name="storyboard">Storyboard</string>
-    <string name="policy_content">Willkommen bei EpNova!
-Bitte lies und verstehe vor der Nutzung dieses Produkts oder Dienstes alle Bestimmungen der Nutzungsbedingungen und Datenschutzrichtlinie der App. Dort erfährst du mehr über unsere Dienste und den Umgang mit deinen personenbezogenen Daten.
-Wir bieten unsere Dienste gemäß diesen Bestimmungen an und schützen deine Daten.
-Wenn du „Ablehnen“ wählst, kannst du unsere Produkte und Dienste nicht nutzen.</string>
+    <string name="policy_content">Willkommen bei EpNova!\nBitte lies und verstehe vor der Nutzung dieses Produkts oder Dienstes alle Bestimmungen der Nutzungsbedingungen und Datenschutzrichtlinie der App. Dort erfährst du mehr über unsere Dienste und den Umgang mit deinen personenbezogenen Daten.\nWir bieten unsere Dienste gemäß diesen Bestimmungen an und schützen deine Daten.\nWenn du „Ablehnen“ wählst, kannst du unsere Produkte und Dienste nicht nutzen.</string>
     <string name="please_set_total_episodes">Gesamtzahl der Folgen festlegen</string>
     <string name="please_enter_custom_episodes">Bitte gib eine benutzerdefinierte Folgenzahl ein</string>
     <string name="episode_count_limit_60">Maximal 60 Episoden</string>
@@ -587,10 +557,7 @@ Wenn du „Ablehnen“ wählst, kannst du unsere Produkte und Dienste nicht nutz
     <string name="delete_success">Erfolgreich gelöscht.</string>
     <string name="error_invalid_email">Bitte gib eine gültige E-Mail-Adresse ein.</string>
     <string name="agree_terms_privacy">Wenn du fortfährst, stimmst du unseren Nutzungsbedingungen und der Datenschutzrichtlinie zu.</string>
-    <string name="welcome_epnova_title">Willkommen bei EpNova!
-Bitte lies und verstehe vor der Nutzung dieses Produkts oder Dienstes alle Bestimmungen der Nutzungsbedingungen und Datenschutzrichtlinie der App. Dort erfährst du mehr über unsere Dienste und den Umgang mit deinen personenbezogenen Daten.
-Wir bieten unsere Dienste gemäß diesen Bestimmungen an und schützen deine Daten.
-Wenn du „Ablehnen“ wählst, kannst du unsere Produkte und Dienste nicht nutzen.</string>
+    <string name="welcome_epnova_title">Willkommen bei EpNova!\nBitte lies und verstehe vor der Nutzung dieses Produkts oder Dienstes alle Bestimmungen der Nutzungsbedingungen und Datenschutzrichtlinie der App. Dort erfährst du mehr über unsere Dienste und den Umgang mit deinen personenbezogenen Daten.\nWir bieten unsere Dienste gemäß diesen Bestimmungen an und schützen deine Daten.\nWenn du „Ablehnen“ wählst, kannst du unsere Produkte und Dienste nicht nutzen.</string>
     <string name="enable_camera">Foto aufnehmen</string>
     <string name="settings_enable_photo_album">Zugriff auf weitere Fotos erlauben</string>
     <string name="episode_unlock_previous_required">Bitte schalte zuerst die vorherige Folge frei.</string>
@@ -616,7 +583,7 @@ Wenn du „Ablehnen“ wählst, kannst du unsere Produkte und Dienste nicht nutz
     <string name="newbie_gift_extra_percent">Extra +50 %</string>
     <string name="newbie_super_bonus_pack">Super-Bonuspaket</string>
     <string name="newbie_one_time_only">Nur einmal</string>
-    <string name="newbie_coins">Coins</string>
+    <string name="newbie_coins">Münzen</string>
     <string name="newbie_bonus">Bonus</string>
     <string name="newbie_limited_time">Zeitlich begrenzt</string>
     <string name="newbie_new_user_exclusive_gift">Exklusives Geschenk für neue Nutzer!</string>
@@ -629,20 +596,11 @@ Wenn du „Ablehnen“ wählst, kannst du unsere Produkte und Dienste nicht nutz
     <string name="settings_auto_unlock_episode">Folge automatisch freischalten</string>
     <string name="store_store">Shop</string>
     <string name="store_history">Verlauf</string>
-    <string name="store_coins">Coins</string>
+    <string name="store_coins">Münzen</string>
     <string name="store_credits">Credits</string>
     <string name="store_reward_coins">Belohnungs-Coins</string>
-    <string name="store_tips_content_coins">1. Münzen sind ab Kauf ein Jahr gültig. (Bonusmünzen sind ab Erhalt 30 Tage gültig.)
-2. Damit kannst du Folgen der Reihe nach freischalten.
-3. Zuerst werden gekaufte Münzen verwendet; reichen sie nicht, folgen automatisch Bonusmünzen.
-4. Freigeschaltete Folgen kannst du beliebig oft ansehen.
-5. Bei Fragen kontaktiere den Support über Profil → Feedback und Vorschläge.
-6. Nutzungsbedingungen und Datenschutzrichtlinie.</string>
-    <string name="store_tips_content_credits">1. Credits sind ab Kauf ein Jahr gültig.
-2. Damit kannst du eigene Kurzdramen erstellen.
-3. Für die Erstellung verwendete Credits sind nicht erstattungsfähig.
-4. Bei Fragen kontaktiere den Support über Profil → Feedback und Vorschläge.
-5. Nutzungsbedingungen und Datenschutzrichtlinie.</string>
+    <string name="store_tips_content_coins">1. Münzen sind ab Kauf ein Jahr gültig. (Bonusmünzen sind ab Erhalt 30 Tage gültig.)\n2. Damit kannst du Folgen der Reihe nach freischalten.\n3. Zuerst werden gekaufte Münzen verwendet; reichen sie nicht, folgen automatisch Bonusmünzen.\n4. Freigeschaltete Folgen kannst du beliebig oft ansehen.\n5. Bei Fragen kontaktiere den Support über Profil → Feedback und Vorschläge.\n6. Nutzungsbedingungen und Datenschutzrichtlinie.</string>
+    <string name="store_tips_content_credits">1. Credits sind ab Kauf ein Jahr gültig.\n2. Damit kannst du eigene Kurzdramen erstellen.\n3. Für die Erstellung verwendete Credits sind nicht erstattungsfähig.\n4. Bei Fragen kontaktiere den Support über Profil → Feedback und Vorschläge.\n5. Nutzungsbedingungen und Datenschutzrichtlinie.</string>
     <string name="transaction_history_title">Transaktionsverlauf</string>
     <string name="transaction_history_all">Alle</string>
     <string name="transaction_history_earned">Erhalten</string>
@@ -679,7 +637,7 @@ Wenn du „Ablehnen“ wählst, kannst du unsere Produkte und Dienste nicht nutz
     <string name="rewards_go">Los</string>
     <string name="rewards_watch">Ansehen</string>
     <string name="rewards_claimed">Erhalten</string>
-    <string name="rewards_50_reward_coins">+%s Bonusmünzen</string>
+    <string name="rewards_50_reward_coins">+%s Münzen</string>
     <string name="rewards_watch_video_earn_50">Video ansehen und +%s Münzen erhalten</string>
     <string name="rewards_watch_ad">Werbung ansehen</string>
     <string name="rewards_checkin_7days_bonus">Melde dich 7 Tage in Folge an und erhalte einen großen Bonus!</string>
@@ -687,13 +645,7 @@ Wenn du „Ablehnen“ wählst, kannst du unsere Produkte und Dienste nicht nutz
     <string name="rewards_come_back_tomorrow">Komm morgen wieder</string>
     <string name="rewards_next_refresh">Nächste Aktualisierung in %s</string>
     <string name="rewards_rules_title">Belohnungsregeln</string>
-    <string name="rewards_rules_detail">1. EpNova behält sich die endgültige Auslegung der Bonusmünzen vor.
-2. Ein Check-in ist nur einmal täglich möglich.
-3. Verpasst du einen Tag, beginnt die Serie wieder bei Tag 1.
-4. Bonusmünzen können wie gekaufte Münzen nur Folgen freischalten, für die Münzen erforderlich sind.
-5. Bonusmünzen sind ab Erhalt 30 Tage gültig. Verwende sie vor Ablauf.
-6. Beim Freischalten werden gekaufte Münzen zuerst verwendet; reichen sie nicht, folgen automatisch Bonusmünzen.
-7. Alle kostenlosen Münzen gelten als Bonusmünzen.</string>
+    <string name="rewards_rules_detail">1. EpNova behält sich die endgültige Auslegung der Bonusmünzen vor.\n2. Ein Check-in ist nur einmal täglich möglich.\n3. Verpasst du einen Tag, beginnt die Serie wieder bei Tag 1.\n4. Bonusmünzen können wie gekaufte Münzen nur Folgen freischalten, für die Münzen erforderlich sind.\n5. Bonusmünzen sind ab Erhalt 30 Tage gültig. Verwende sie vor Ablauf.\n6. Beim Freischalten werden gekaufte Münzen zuerst verwendet; reichen sie nicht, folgen automatisch Bonusmünzen.\n7. Alle kostenlosen Münzen gelten als Bonusmünzen.</string>
     <string name="rewards_finish_previous_task">Bitte schließe zuerst die vorherige Aufgabe ab.</string>
     <string name="home_search_placeholder">Dramatitel suchen ...</string>
     <string name="home_search_tab_new_release">Neuerscheinungen</string>
@@ -831,11 +783,7 @@ Wenn du „Ablehnen“ wählst, kannst du unsere Produkte und Dienste nicht nutz
     <string name="generate_story_intro_narration">KI-Comic-Storyboard mit intelligenter Erzählstimme, ideal für schnelle Videoproduktion und Geschichtenkommentare.</string>
     <string name="generate_story_intro_dynamic">Dynamische Comics mit mehreren Sprecherstimmen, Hintergrundgeräuschen und Übergängen für ein intensiveres Story-Erlebnis.</string>
     <string name="generate_story_content_review_failed">Prüfung der Eingabe fehlgeschlagen. Generierung nicht möglich.</string>
-    <string name="settings_delete_account">Warnung: Bitte bestätige vor der Kontolöschung Folgendes.
-Die Löschung ist unumkehrbar; alle Informationen werden dauerhaft entfernt. Sichere vorher alle Kontodaten und schließe laufende Dienste ab. Eine spätere Registrierung erstellt ein neues Konto. Folgende Informationen werden gelöscht:
-· Personenbezogene Daten: E-Mail-Adresse, Anzeigename usw.
-· Drittanbieter-Kontoinformationen: Kauf- und Aufladehistorie, Freischaltungen von Folgen und Serien in „Meine Liste“.
-· Kontoguthaben: Münzen und Credits werden auf null gesetzt.</string>
+    <string name="settings_delete_account">Warnung: Bitte bestätige vor der Kontolöschung Folgendes.\n\nDie Löschung ist unumkehrbar; alle Informationen werden dauerhaft entfernt. Sichere vorher alle Kontodaten und schließe laufende Dienste ab. Eine spätere Registrierung erstellt ein neues Konto. Folgende Informationen werden gelöscht:\n\n· Personenbezogene Daten: E-Mail-Adresse, Anzeigename usw.\n\n· Drittanbieter-Kontoinformationen: Kauf- und Aufladehistorie, Freischaltungen von Folgen und Serien in „Meine Liste“.\n\n· Kontoguthaben: Münzen und Credits werden auf null gesetzt.</string>
     <string name="video_synthesis_save_failed">Aufruf der Speicher-API fehlgeschlagen.</string>
     <string name="video_download_watermark">KI-Erstellung</string>
     <string name="featured">Vorgestellt</string>

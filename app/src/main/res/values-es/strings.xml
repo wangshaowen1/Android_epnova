@@ -151,32 +151,6 @@
     <string name="payment_method">Método de pago</string>
     <string name="top_up_now">Recargar ahora</string>
     <string name="verify_payment">Confirmar pago</string>
-    <string name="app_log_off">Antes de solicitar la eliminación de tu cuenta, lee y confirma lo siguiente:
-1. La eliminación es irreversible
-a) La cuenta no podrá restaurarse.
-b) Ya no podrás iniciar sesión en esta plataforma.
-c) Los datos, registros y derechos asociados no podrán recuperarse.
-d) La acción es permanente. Procede con cuidado.
-2. Tratamiento de tus datos
-Tras la eliminación, trataremos tus datos conforme a las Condiciones de servicio, la Política de privacidad y la ley:
-a) Los datos básicos (usuario, foto, teléfono, etc.) se eliminarán o anonimizarán.
-b) Tus obras, historial de creación, borradores e historial de navegación se eliminarán o desidentificarán.
-c) Se revocarán identidades vinculadas, datos de verificación y permisos.
-d) El contenido publicado puede conservarse de forma desidentificada dentro de los límites legales, solo para auditorías de cumplimiento, análisis y registros de seguridad del contenido.
-e) Cierta información exigida por ley puede conservarse durante el plazo legal y eliminarse después.
-3. Activos virtuales y beneficios
-a) Se borrarán todos los activos virtuales, incluidos beneficios de membresía, monedas, artículos, monedas de creación y saldo.
-b) No se pueden transferir, recuperar ni restaurar.
-c) Se perderán los servicios y beneficios pagados pero no utilizados.
-d) Salvo exigencia legal, no habrá reembolso tras eliminar la cuenta.
-4. Cuentas vinculadas y terceros
-a) El teléfono y las cuentas de terceros (WeChat, Apple, etc.) se desvincularán automáticamente.
-b) La identidad de la cuenta eliminada no podrá reutilizarse.
-c) Si vuelves a registrarte, será una cuenta nueva.
-5. Asuntos pendientes
-a) Recomendamos completar pedidos, reclamaciones, retiros, liquidaciones y otras transacciones pendientes antes de eliminar la cuenta.
-b) La plataforma podrá retrasar la eliminación si existe una investigación por infracciones o disputas.
-Para confirmar, pulsa [Solicitar eliminación].</string>
     <string name="app_cancel_02">1. Ya no podrás iniciar sesión;</string>
     <string name="app_cancel_03">2. Tus datos personales, como la foto de perfil y el nombre de usuario, se eliminarán de forma permanente;</string>
     <string name="app_cancel_04">3. Tu número de teléfono, WeChat y QQ vinculados se desvincularán automáticamente.</string>
@@ -304,8 +278,7 @@ Para confirmar, pulsa [Solicitar eliminación].</string>
     <string name="ai_structural_analysis">La IA analiza toda la obra y extrae su estructura.</string>
     <string name="estimated_compute_usage">Monedas estimadas</string>
     <string name="sensitive_word_detected">Se detectó contenido sensible</string>
-    <string name="sensitive_content_refunded">Se detectó contenido sensible. Se devolvieron las monedas.
-Edita y vuelve a enviar.</string>
+    <string name="sensitive_content_refunded">Se detectó contenido sensible. Se devolvieron las monedas.\nEdita y vuelve a enviar.</string>
     <string name="upload_completed_novel">Subir el texto completo de la novela</string>
     <string name="upload">Subir</string>
     <string name="new_version_found">Nueva versión disponible</string>
@@ -564,10 +537,7 @@ Edita y vuelve a enviar.</string>
     <string name="compute_power_validity_period">Potencia de cálculo válida durante 1 año</string>
     <string name="deselect_all">Deseleccionar todo</string>
     <string name="storyboard">Storyboard</string>
-    <string name="policy_content">¡Te damos la bienvenida a EpNova!
-Antes de usar este producto o servicio, lee atentamente y comprende todos los términos de los Términos de Servicio y la Política de Privacidad de la aplicación. Allí se explican nuestros servicios y cómo recopilamos y usamos tus datos personales.
-Prestamos nuestros servicios y protegemos tus datos conforme a esos documentos.
-Si eliges «No aceptar», no podrás usar nuestros productos ni servicios.</string>
+    <string name="policy_content">¡Te damos la bienvenida a EpNova!\nAntes de usar este producto o servicio, lee atentamente y comprende todos los términos de los Términos de Servicio y la Política de Privacidad de la aplicación. Allí se explican nuestros servicios y cómo recopilamos y usamos tus datos personales.\nPrestamos nuestros servicios y protegemos tus datos conforme a esos documentos.\nSi eliges «No aceptar», no podrás usar nuestros productos ni servicios.</string>
     <string name="please_set_total_episodes">Establecer el número total de episodios</string>
     <string name="please_enter_custom_episodes">Introduce un número personalizado de episodios</string>
     <string name="episode_count_limit_60">El máximo es de 60 episodios</string>
@@ -587,10 +557,7 @@ Si eliges «No aceptar», no podrás usar nuestros productos ni servicios.</stri
     <string name="delete_success">Eliminado correctamente.</string>
     <string name="error_invalid_email">Introduce una dirección de correo válida.</string>
     <string name="agree_terms_privacy">Al continuar, aceptas nuestros Términos de Servicio y Política de Privacidad.</string>
-    <string name="welcome_epnova_title">¡Te damos la bienvenida a EpNova!
-Antes de usar este producto o servicio, lee atentamente y comprende todos los términos de los Términos de Servicio y la Política de Privacidad de la aplicación. Allí se explican nuestros servicios y cómo recopilamos y usamos tus datos personales.
-Prestamos nuestros servicios y protegemos tus datos conforme a esos documentos.
-Si eliges «No aceptar», no podrás usar nuestros productos ni servicios.</string>
+    <string name="welcome_epnova_title">¡Te damos la bienvenida a EpNova!\nAntes de usar este producto o servicio, lee atentamente y comprende todos los términos de los Términos de Servicio y la Política de Privacidad de la aplicación. Allí se explican nuestros servicios y cómo recopilamos y usamos tus datos personales.\nPrestamos nuestros servicios y protegemos tus datos conforme a esos documentos.\nSi eliges «No aceptar», no podrás usar nuestros productos ni servicios.</string>
     <string name="enable_camera">Tomar fotos</string>
     <string name="settings_enable_photo_album">Permitir acceso a más fotos</string>
     <string name="episode_unlock_previous_required">Desbloquea primero el episodio anterior.</string>
@@ -632,17 +599,8 @@ Si eliges «No aceptar», no podrás usar nuestros productos ni servicios.</stri
     <string name="store_coins">Monedas</string>
     <string name="store_credits">Créditos</string>
     <string name="store_reward_coins">Monedas de recompensa</string>
-    <string name="store_tips_content_coins">1. Las monedas son válidas un año desde su compra. (Las monedas de recompensa son válidas durante 30 días tras reclamarlas.)
-2. Desbloquean episodios en orden.
-3. Se usan primero las monedas compradas; si no bastan, se aplican automáticamente las de recompensa.
-4. Los episodios desbloqueados pueden verse sin límite.
-5. Si tienes preguntas, contacta con asistencia en Perfil → Comentarios y sugerencias.
-6. Condiciones de servicio y Política de privacidad.</string>
-    <string name="store_tips_content_credits">1. Los créditos son válidos un año desde su compra.
-2. Sirven para crear tus propias series cortas.
-3. Los créditos usados en la creación no son reembolsables.
-4. Si tienes preguntas, contacta con asistencia en Perfil → Comentarios y sugerencias.
-5. Condiciones de servicio y Política de privacidad.</string>
+    <string name="store_tips_content_coins">1. Las monedas son válidas un año desde su compra. (Las monedas de recompensa son válidas durante 30 días tras reclamarlas.)\n2. Desbloquean episodios en orden.\n3. Se usan primero las monedas compradas; si no bastan, se aplican automáticamente las de recompensa.\n4. Los episodios desbloqueados pueden verse sin límite.\n5. Si tienes preguntas, contacta con asistencia en Perfil → Comentarios y sugerencias.\n6. Condiciones de servicio y Política de privacidad.</string>
+    <string name="store_tips_content_credits">1. Los créditos son válidos un año desde su compra.\n2. Sirven para crear tus propias series cortas.\n3. Los créditos usados en la creación no son reembolsables.\n4. Si tienes preguntas, contacta con asistencia en Perfil → Comentarios y sugerencias.\n5. Condiciones de servicio y Política de privacidad.</string>
     <string name="transaction_history_title">Historial de transacciones</string>
     <string name="transaction_history_all">Todo</string>
     <string name="transaction_history_earned">Obtenido</string>
@@ -687,13 +645,7 @@ Si eliges «No aceptar», no podrás usar nuestros productos ni servicios.</stri
     <string name="rewards_come_back_tomorrow">Vuelve mañana</string>
     <string name="rewards_next_refresh">Próxima actualización en %s</string>
     <string name="rewards_rules_title">Reglas de recompensas</string>
-    <string name="rewards_rules_detail">1. EpNova se reserva el derecho de interpretación final sobre las monedas de recompensa.
-2. Solo puedes registrarte una vez al día.
-3. Si faltas un día, la racha se reinicia desde el día 1.
-4. Las monedas de recompensa, como las compradas, solo sirven para desbloquear episodios que requieren monedas.
-5. Son válidas 30 días desde que se reclaman. Úsalas antes de que caduquen.
-6. Se usan primero las monedas compradas; si no bastan, se aplican automáticamente las de recompensa.
-7. Todas las monedas gratuitas se consideran monedas de recompensa.</string>
+    <string name="rewards_rules_detail">1. EpNova se reserva el derecho de interpretación final sobre las monedas de recompensa.\n2. Solo puedes registrarte una vez al día.\n3. Si faltas un día, la racha se reinicia desde el día 1.\n4. Las monedas de recompensa, como las compradas, solo sirven para desbloquear episodios que requieren monedas.\n5. Son válidas 30 días desde que se reclaman. Úsalas antes de que caduquen.\n6. Se usan primero las monedas compradas; si no bastan, se aplican automáticamente las de recompensa.\n7. Todas las monedas gratuitas se consideran monedas de recompensa.</string>
     <string name="rewards_finish_previous_task">Completa primero la tarea anterior.</string>
     <string name="home_search_placeholder">Buscar título de la serie...</string>
     <string name="home_search_tab_new_release">Estrenos</string>
@@ -831,11 +783,7 @@ Si eliges «No aceptar», no podrás usar nuestros productos ni servicios.</stri
     <string name="generate_story_intro_narration">Storyboard de cómic con IA y narración inteligente, ideal para crear vídeos rápidamente y comentar historias.</string>
     <string name="generate_story_intro_dynamic">Cómics dinámicos, voces de varios personajes, sonidos de fondo y transiciones para una mayor inmersión.</string>
     <string name="generate_story_content_review_failed">Falló la verificación del contenido. No se puede generar.</string>
-    <string name="settings_delete_account">Advertencia: confirma lo siguiente antes de eliminar tu cuenta.
-La eliminación es irreversible y toda la información se borrará definitivamente. Haz una copia de seguridad de los datos y resuelve los servicios pendientes antes de continuar. Si vuelves a registrarte, se creará una cuenta nueva. Se eliminará:
-· Datos personales: correo electrónico, apodo, etc.
-· Información de cuentas de terceros: historial de compras y recargas, episodios desbloqueados y series de «Mi lista».
-· Saldo de la cuenta: monedas y créditos se reducirán a cero.</string>
+    <string name="settings_delete_account">Advertencia: confirma lo siguiente antes de eliminar tu cuenta.\n\nLa eliminación es irreversible y toda la información se borrará definitivamente. Haz una copia de seguridad de los datos y resuelve los servicios pendientes antes de continuar. Si vuelves a registrarte, se creará una cuenta nueva. Se eliminará:\n\n· Datos personales: correo electrónico, apodo, etc.\n\n· Información de cuentas de terceros: historial de compras y recargas, episodios desbloqueados y series de «Mi lista».\n\n· Saldo de la cuenta: monedas y créditos se reducirán a cero.</string>
     <string name="video_synthesis_save_failed">Error al llamar a la API de guardado.</string>
     <string name="video_download_watermark">Generación con IA</string>
     <string name="featured">Destacado</string>
@@ -876,7 +824,7 @@ La eliminación es irreversible y toda la información se borrará definitivamen
     <string name="member_your_current_plan">Tu plan actual</string>
     <string name="member_membership_activated">Membresía activada</string>
     <string name="member_upgrade_scheduled">Cambio programado</string>
-    <string name="member_service_and_policy">Términos de Servicio y Política de Privacidad.</string>
+    <string name="member_service_and_policy">Términos de servicio y Política de privacidad.</string>
     <string name="member_upgrade_top_keyword">para ahorrar más</string>
     <string name="app_rating_title_unrated">¿Disfrutas de tus creaciones con IA?</string>
     <string name="app_rating_subtitle_unrated">Cuéntanos qué opinas de EpNova.</string>

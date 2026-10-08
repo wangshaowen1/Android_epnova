@@ -151,32 +151,6 @@
     <string name="payment_method">Forma de pagamento</string>
     <string name="top_up_now">Recarregar agora</string>
     <string name="verify_payment">Confirmar pagamento</string>
-    <string name="app_log_off">Antes de solicitar a exclusão da conta, leia e confirme o seguinte:
-1. A exclusão é irreversível
-a) A conta excluída não pode ser restaurada.
-b) Você não poderá mais entrar nesta plataforma.
-c) Dados, registros e direitos associados não poderão ser recuperados.
-d) A ação é permanente. Prossiga com cuidado.
-2. Tratamento dos dados
-Após a exclusão, seus dados serão tratados conforme os Termos de Serviço, a Política de Privacidade e a lei:
-a) Dados básicos (nome de usuário, foto, telefone etc.) serão excluídos ou anonimizados.
-b) Obras, histórico de criação, rascunhos e navegação serão excluídos ou desidentificados.
-c) Identidades vinculadas, dados de verificação e permissões serão revogados.
-d) Conteúdos publicados podem ser mantidos de forma desidentificada, nos limites legais, apenas para auditorias de conformidade, análises e registros de segurança do conteúdo.
-e) Informações exigidas por lei podem ser mantidas pelo prazo legal e depois excluídas.
-3. Ativos virtuais e benefícios
-a) Todos os ativos virtuais da conta, incluindo benefícios de assinatura, moedas, itens, moedas de criação e saldo, serão apagados.
-b) Esses ativos não podem ser transferidos, recuperados nem restaurados.
-c) Serviços e benefícios pagos, mas não utilizados, serão perdidos.
-d) Salvo exigência legal, não haverá reembolso após a exclusão.
-4. Contas vinculadas e terceiros
-a) O telefone e as contas de terceiros (WeChat, Apple etc.) serão desvinculados automaticamente.
-b) A identidade da conta excluída não poderá ser reutilizada.
-c) Um futuro cadastro será tratado como uma nova conta.
-5. Pendências
-a) Recomendamos concluir pedidos, contestações, saques, liquidações e outras transações pendentes antes da exclusão.
-b) A plataforma pode adiar a exclusão durante investigações de violações ou disputas.
-Para confirmar, toque em [Solicitar exclusão].</string>
     <string name="app_cancel_02">1. Você não poderá mais fazer login;</string>
     <string name="app_cancel_03">2. Seus dados pessoais, como foto de perfil e nome de usuário, serão excluídos permanentemente;</string>
     <string name="app_cancel_04">3. Seu número de telefone, WeChat e QQ vinculados serão desvinculados automaticamente.</string>
@@ -304,8 +278,7 @@ Para confirmar, toque em [Solicitar exclusão].</string>
     <string name="ai_structural_analysis">A IA analisa a obra inteira e extrai sua estrutura.</string>
     <string name="estimated_compute_usage">Moedas estimadas</string>
     <string name="sensitive_word_detected">Conteúdo sensível detectado</string>
-    <string name="sensitive_content_refunded">Conteúdo sensível detectado. Moedas reembolsadas.
-Edite e reenvie.</string>
+    <string name="sensitive_content_refunded">Conteúdo sensível detectado. Moedas reembolsadas.\nEdite e reenvie.</string>
     <string name="upload_completed_novel">Enviar o texto completo do romance</string>
     <string name="upload">Enviar</string>
     <string name="new_version_found">Nova versão disponível</string>
@@ -564,10 +537,7 @@ Edite e reenvie.</string>
     <string name="compute_power_validity_period">Poder de processamento válido por 1 ano</string>
     <string name="deselect_all">Desmarcar tudo</string>
     <string name="storyboard">Storyboard</string>
-    <string name="policy_content">Boas-vindas ao EpNova!
-Antes de usar este produto ou serviço, leia e compreenda os Termos de Serviço e a Política de Privacidade do aplicativo. Eles explicam nossos serviços e como coletamos e usamos seus dados pessoais.
-Prestamos os serviços e protegemos seus dados conforme esses documentos.
-Se você escolher “Não concordo”, não poderá usar nossos produtos e serviços.</string>
+    <string name="policy_content">Boas-vindas ao EpNova!\nAntes de usar este produto ou serviço, leia e compreenda os Termos de Serviço e a Política de Privacidade do aplicativo. Eles explicam nossos serviços e como coletamos e usamos seus dados pessoais.\nPrestamos os serviços e protegemos seus dados conforme esses documentos.\nSe você escolher “Não concordo”, não poderá usar nossos produtos e serviços.</string>
     <string name="please_set_total_episodes">Definir o número total de episódios</string>
     <string name="please_enter_custom_episodes">Digite um número personalizado de episódios</string>
     <string name="episode_count_limit_60">Máximo de 60 episódios</string>
@@ -587,10 +557,7 @@ Se você escolher “Não concordo”, não poderá usar nossos produtos e servi
     <string name="delete_success">Excluído com sucesso.</string>
     <string name="error_invalid_email">Digite um endereço de e-mail válido.</string>
     <string name="agree_terms_privacy">Ao continuar, você concorda com nossos Termos de Serviço e Política de Privacidade.</string>
-    <string name="welcome_epnova_title">Boas-vindas ao EpNova!
-Antes de usar este produto ou serviço, leia e compreenda os Termos de Serviço e a Política de Privacidade do aplicativo. Eles explicam nossos serviços e como coletamos e usamos seus dados pessoais.
-Prestamos os serviços e protegemos seus dados conforme esses documentos.
-Se você escolher “Não concordo”, não poderá usar nossos produtos e serviços.</string>
+    <string name="welcome_epnova_title">Boas-vindas ao EpNova!\nAntes de usar este produto ou serviço, leia e compreenda os Termos de Serviço e a Política de Privacidade do aplicativo. Eles explicam nossos serviços e como coletamos e usamos seus dados pessoais.\nPrestamos os serviços e protegemos seus dados conforme esses documentos.\nSe você escolher “Não concordo”, não poderá usar nossos produtos e serviços.</string>
     <string name="enable_camera">Tirar fotos</string>
     <string name="settings_enable_photo_album">Permitir acesso a mais fotos</string>
     <string name="episode_unlock_previous_required">Desbloqueie primeiro o episódio anterior.</string>
@@ -632,17 +599,8 @@ Se você escolher “Não concordo”, não poderá usar nossos produtos e servi
     <string name="store_coins">Moedas</string>
     <string name="store_credits">Créditos</string>
     <string name="store_reward_coins">Moedas de recompensa</string>
-    <string name="store_tips_content_coins">1. As moedas valem por um ano após a compra. (As moedas de recompensa valem por 30 dias após o resgate.)
-2. Desbloqueiam episódios em ordem.
-3. As moedas compradas são usadas primeiro; se faltarem, as de recompensa serão aplicadas automaticamente.
-4. Episódios desbloqueados podem ser assistidos sem limite.
-5. Em caso de dúvidas, contate o suporte em Perfil → Comentários e sugestões.
-6. Termos de Serviço e Política de Privacidade.</string>
-    <string name="store_tips_content_credits">1. Os créditos valem por um ano após a compra.
-2. Podem ser usados para criar suas próprias séries curtas.
-3. Créditos usados na criação não são reembolsáveis.
-4. Em caso de dúvidas, contate o suporte em Perfil → Comentários e sugestões.
-5. Termos de Serviço e Política de Privacidade.</string>
+    <string name="store_tips_content_coins">1. As moedas valem por um ano após a compra. (As moedas de recompensa valem por 30 dias após o resgate.)\n2. Desbloqueiam episódios em ordem.\n3. As moedas compradas são usadas primeiro; se faltarem, as de recompensa serão aplicadas automaticamente.\n4. Episódios desbloqueados podem ser assistidos sem limite.\n5. Em caso de dúvidas, contate o suporte em Perfil → Comentários e sugestões.\n6. Termos de Serviço e Política de Privacidade.</string>
+    <string name="store_tips_content_credits">1. Os créditos valem por um ano após a compra.\n2. Podem ser usados para criar suas próprias séries curtas.\n3. Créditos usados na criação não são reembolsáveis.\n4. Em caso de dúvidas, contate o suporte em Perfil → Comentários e sugestões.\n5. Termos de Serviço e Política de Privacidade.</string>
     <string name="transaction_history_title">Histórico de transações</string>
     <string name="transaction_history_all">Todos</string>
     <string name="transaction_history_earned">Recebido</string>
@@ -687,13 +645,7 @@ Se você escolher “Não concordo”, não poderá usar nossos produtos e servi
     <string name="rewards_come_back_tomorrow">Volte amanhã</string>
     <string name="rewards_next_refresh">Próxima atualização em %s</string>
     <string name="rewards_rules_title">Regras de recompensas</string>
-    <string name="rewards_rules_detail">1. A EpNova reserva para si a interpretação final das moedas de recompensa.
-2. O check-in pode ser feito apenas uma vez por dia.
-3. Se perder um dia, a sequência recomeça no dia 1.
-4. Assim como as moedas compradas, as moedas de recompensa só desbloqueiam episódios que exigem moedas.
-5. Elas valem por 30 dias após o resgate. Use-as antes do vencimento.
-6. As moedas compradas são usadas primeiro; se faltarem, as de recompensa serão usadas automaticamente.
-7. Todas as moedas gratuitas são classificadas como moedas de recompensa.</string>
+    <string name="rewards_rules_detail">1. A EpNova reserva para si a interpretação final das moedas de recompensa.\n2. O check-in pode ser feito apenas uma vez por dia.\n3. Se perder um dia, a sequência recomeça no dia 1.\n4. Assim como as moedas compradas, as moedas de recompensa só desbloqueiam episódios que exigem moedas.\n5. Elas valem por 30 dias após o resgate. Use-as antes do vencimento.\n6. As moedas compradas são usadas primeiro; se faltarem, as de recompensa serão usadas automaticamente.\n7. Todas as moedas gratuitas são classificadas como moedas de recompensa.</string>
     <string name="rewards_finish_previous_task">Conclua a tarefa anterior primeiro.</string>
     <string name="home_search_placeholder">Buscar título da série...</string>
     <string name="home_search_tab_new_release">Lançamentos</string>
@@ -831,11 +783,7 @@ Se você escolher “Não concordo”, não poderá usar nossos produtos e servi
     <string name="generate_story_intro_narration">Storyboard de quadrinhos com IA e narração inteligente, ideal para produzir vídeos rápidos e comentar histórias.</string>
     <string name="generate_story_intro_dynamic">Quadrinhos dinâmicos, vozes de vários personagens, sons de fundo e transições para maior imersão.</string>
     <string name="generate_story_content_review_failed">Falha na verificação do conteúdo. Não foi possível gerar.</string>
-    <string name="settings_delete_account">Atenção: confirme o seguinte antes de excluir sua conta.
-A exclusão é irreversível e todas as informações serão apagadas permanentemente. Faça backup dos dados e resolva os serviços pendentes antes de prosseguir. Um novo cadastro criará uma nova conta. Serão apagados:
-· Dados pessoais: e-mail, apelido etc.
-· Informações de contas de terceiros: histórico de compras e recargas, episódios desbloqueados e séries em “Minha lista”.
-· Saldo da conta: moedas e créditos serão zerados.</string>
+    <string name="settings_delete_account">Atenção: confirme o seguinte antes de excluir sua conta.\n\nA exclusão é irreversível e todas as informações serão apagadas permanentemente. Faça backup dos dados e resolva os serviços pendentes antes de prosseguir. Um novo cadastro criará uma nova conta. Serão apagados:\n\n· Dados pessoais: e-mail, apelido etc.\n\n· Informações de contas de terceiros: histórico de compras e recargas, episódios desbloqueados e séries em “Minha lista”.\n\n· Saldo da conta: moedas e créditos serão zerados.</string>
     <string name="video_synthesis_save_failed">Falha ao chamar a API de salvamento.</string>
     <string name="video_download_watermark">Geração com IA</string>
     <string name="featured">Destaques</string>

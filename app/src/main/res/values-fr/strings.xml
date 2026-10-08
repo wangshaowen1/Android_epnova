@@ -151,32 +151,6 @@
     <string name="payment_method">Mode de paiement</string>
     <string name="top_up_now">Recharger maintenant</string>
     <string name="verify_payment">Confirmer le paiement</string>
-    <string name="app_log_off">Avant de demander la suppression de votre compte, lisez et confirmez les points suivants :
-1. Suppression irréversible
-a) Un compte supprimé ne peut pas être restauré.
-b) Vous ne pourrez plus vous connecter à cette plateforme.
-c) Les données, historiques et droits liés au compte seront irrécupérables.
-d) Cette action est définitive. Procédez avec prudence.
-2. Traitement des données
-Après la suppression, vos données seront traitées conformément aux Conditions d’utilisation, à la Politique de confidentialité et à la loi :
-a) Les informations de base (nom d’utilisateur, photo, téléphone, etc.) seront supprimées ou anonymisées.
-b) Vos œuvres, historiques de création, brouillons et historique de navigation seront supprimés ou dépersonnalisés.
-c) Les identités liées, données de vérification et autorisations seront révoquées.
-d) Les contenus publics peuvent être conservés sous forme dépersonnalisée dans les limites de la loi, uniquement pour les audits de conformité, les analyses et les archives de sécurité des contenus.
-e) Certaines informations exigées par la loi peuvent être conservées pendant la durée légale, puis supprimées.
-3. Actifs virtuels et avantages
-a) Les actifs virtuels du compte, notamment avantages d’abonnement, pièces, objets, pièces de création et solde, seront effacés.
-b) Ils ne peuvent être ni transférés, ni récupérés, ni restaurés.
-c) Les services et avantages payés mais non utilisés seront perdus.
-d) Sauf obligation légale contraire, aucun remboursement n’est possible après la suppression.
-4. Comptes liés et services tiers
-a) Votre téléphone et vos comptes tiers (WeChat, Apple, etc.) seront automatiquement dissociés.
-b) L’identité du compte supprimé ne peut être réutilisée.
-c) Une nouvelle inscription sera considérée comme un nouveau compte.
-5. Opérations en cours
-a) Nous recommandons de régler les commandes, recours, retraits, versements et autres transactions en cours avant la suppression.
-b) La plateforme peut reporter la suppression si le compte fait l’objet d’une enquête pour infraction ou d’un litige.
-Pour confirmer, appuyez sur [Demander la suppression].</string>
     <string name="app_cancel_02">1. Vous ne pourrez plus vous connecter ;</string>
     <string name="app_cancel_03">2. Vos données personnelles, comme la photo de profil et le nom d’utilisateur, seront définitivement supprimées ;</string>
     <string name="app_cancel_04">3. Votre numéro de téléphone, WeChat et QQ associés seront automatiquement dissociés.</string>
@@ -304,8 +278,7 @@ Pour confirmer, appuyez sur [Demander la suppression].</string>
     <string name="ai_structural_analysis">L’IA analyse l’œuvre entière et en extrait la structure.</string>
     <string name="estimated_compute_usage">Pièces estimées</string>
     <string name="sensitive_word_detected">Contenu sensible détecté</string>
-    <string name="sensitive_content_refunded">Contenu sensible détecté. Pièces remboursées.
-Modifiez et renvoyez votre contenu.</string>
+    <string name="sensitive_content_refunded">Contenu sensible détecté. Pièces remboursées.\nModifiez et renvoyez votre contenu.</string>
     <string name="upload_completed_novel">Importer le texte intégral du roman</string>
     <string name="upload">Importer</string>
     <string name="new_version_found">Nouvelle version disponible</string>
@@ -564,10 +537,7 @@ Modifiez et renvoyez votre contenu.</string>
     <string name="compute_power_validity_period">Puissance de calcul valable 1 an</string>
     <string name="deselect_all">Tout désélectionner</string>
     <string name="storyboard">Storyboard</string>
-    <string name="policy_content">Bienvenue sur EpNova !
-Avant d\'utiliser ce produit ou service, veuillez lire attentivement et comprendre les Conditions d\'utilisation et la Politique de confidentialité de l\'application. Elles décrivent nos services et la façon dont nous collectons et utilisons vos données personnelles.
-Nous fournissons nos services et protégeons vos données conformément à ces documents.
-Si vous choisissez « Refuser », vous ne pourrez pas utiliser nos produits et services.</string>
+    <string name="policy_content">Bienvenue sur EpNova !\nAvant d\'utiliser ce produit ou service, veuillez lire attentivement et comprendre les Conditions d\'utilisation et la Politique de confidentialité de l\'application. Elles décrivent nos services et la façon dont nous collectons et utilisons vos données personnelles.\nNous fournissons nos services et protégeons vos données conformément à ces documents.\nSi vous choisissez « Refuser », vous ne pourrez pas utiliser nos produits et services.</string>
     <string name="please_set_total_episodes">Définir le nombre total d’épisodes</string>
     <string name="please_enter_custom_episodes">Saisissez un nombre d’épisodes personnalisé</string>
     <string name="episode_count_limit_60">60 épisodes maximum</string>
@@ -587,10 +557,7 @@ Si vous choisissez « Refuser », vous ne pourrez pas utiliser nos produits et s
     <string name="delete_success">Supprimé avec succès.</string>
     <string name="error_invalid_email">Veuillez saisir une adresse e-mail valide.</string>
     <string name="agree_terms_privacy">En continuant, vous acceptez nos conditions d\'utilisation et notre politique de confidentialité.</string>
-    <string name="welcome_epnova_title">Bienvenue sur EpNova !
-Avant d\'utiliser ce produit ou service, veuillez lire attentivement et comprendre les Conditions d\'utilisation et la Politique de confidentialité de l\'application. Elles décrivent nos services et la façon dont nous collectons et utilisons vos données personnelles.
-Nous fournissons nos services et protégeons vos données conformément à ces documents.
-Si vous choisissez « Refuser », vous ne pourrez pas utiliser nos produits et services.</string>
+    <string name="welcome_epnova_title">Bienvenue sur EpNova !\nAvant d\'utiliser ce produit ou service, veuillez lire attentivement et comprendre les Conditions d\'utilisation et la Politique de confidentialité de l\'application. Elles décrivent nos services et la façon dont nous collectons et utilisons vos données personnelles.\nNous fournissons nos services et protégeons vos données conformément à ces documents.\nSi vous choisissez « Refuser », vous ne pourrez pas utiliser nos produits et services.</string>
     <string name="enable_camera">Prendre une photo</string>
     <string name="settings_enable_photo_album">Autoriser l’accès à davantage de photos</string>
     <string name="episode_unlock_previous_required">Débloquez d’abord l’épisode précédent.</string>
@@ -632,17 +599,8 @@ Si vous choisissez « Refuser », vous ne pourrez pas utiliser nos produits et s
     <string name="store_coins">Pièces</string>
     <string name="store_credits">Crédits</string>
     <string name="store_reward_coins">Pièces bonus</string>
-    <string name="store_tips_content_coins">1. Les pièces sont valables un an après l’achat. (Les pièces bonus sont valables 30 jours après leur obtention.)
-2. Elles débloquent les épisodes dans l’ordre.
-3. Les pièces achetées sont utilisées en premier ; si elles ne suffisent pas, les pièces bonus prennent le relais.
-4. Un épisode débloqué peut être regardé sans limite.
-5. Pour toute question, contactez l’assistance via Profil → Avis et suggestions.
-6. Conditions d’utilisation et Politique de confidentialité.</string>
-    <string name="store_tips_content_credits">1. Les crédits sont valables un an après l’achat.
-2. Ils servent à créer vos propres mini-séries.
-3. Les crédits utilisés pour la création ne sont pas remboursables.
-4. Pour toute question, contactez l’assistance via Profil → Avis et suggestions.
-5. Conditions d’utilisation et Politique de confidentialité.</string>
+    <string name="store_tips_content_coins">1. Les pièces sont valables un an après l’achat. (Les pièces bonus sont valables 30 jours après leur obtention.)\n2. Elles débloquent les épisodes dans l’ordre.\n3. Les pièces achetées sont utilisées en premier ; si elles ne suffisent pas, les pièces bonus prennent le relais.\n4. Un épisode débloqué peut être regardé sans limite.\n5. Pour toute question, contactez l’assistance via Profil → Avis et suggestions.\n6. Conditions d’utilisation et Politique de confidentialité.</string>
+    <string name="store_tips_content_credits">1. Les crédits sont valables un an après l’achat.\n2. Ils servent à créer vos propres mini-séries.\n3. Les crédits utilisés pour la création ne sont pas remboursables.\n4. Pour toute question, contactez l’assistance via Profil → Avis et suggestions.\n5. Conditions d’utilisation et Politique de confidentialité.</string>
     <string name="transaction_history_title">Historique des transactions</string>
     <string name="transaction_history_all">Tout</string>
     <string name="transaction_history_earned">Gagné</string>
@@ -687,13 +645,7 @@ Si vous choisissez « Refuser », vous ne pourrez pas utiliser nos produits et s
     <string name="rewards_come_back_tomorrow">Revenez demain</string>
     <string name="rewards_next_refresh">Prochaine actualisation dans %s</string>
     <string name="rewards_rules_title">Règles des récompenses</string>
-    <string name="rewards_rules_detail">1. EpNova se réserve le droit d’interprétation finale des pièces bonus.
-2. Une seule connexion quotidienne est possible.
-3. Si vous manquez un jour, la série de connexions recommence au jour 1.
-4. Comme les pièces achetées, les pièces bonus ne servent qu’à débloquer les épisodes nécessitant des pièces.
-5. Elles sont valables 30 jours après leur réception. Utilisez-les avant expiration.
-6. Les pièces achetées sont utilisées en premier, puis les pièces bonus si elles ne suffisent pas.
-7. Toutes les pièces gratuites sont considérées comme des pièces bonus.</string>
+    <string name="rewards_rules_detail">1. EpNova se réserve le droit d’interprétation finale des pièces bonus.\n2. Une seule connexion quotidienne est possible.\n3. Si vous manquez un jour, la série de connexions recommence au jour 1.\n4. Comme les pièces achetées, les pièces bonus ne servent qu’à débloquer les épisodes nécessitant des pièces.\n5. Elles sont valables 30 jours après leur réception. Utilisez-les avant expiration.\n6. Les pièces achetées sont utilisées en premier, puis les pièces bonus si elles ne suffisent pas.\n7. Toutes les pièces gratuites sont considérées comme des pièces bonus.</string>
     <string name="rewards_finish_previous_task">Veuillez d’abord terminer la tâche précédente.</string>
     <string name="home_search_placeholder">Rechercher un titre de série...</string>
     <string name="home_search_tab_new_release">Nouveautés</string>
@@ -831,11 +783,7 @@ Si vous choisissez « Refuser », vous ne pourrez pas utiliser nos produits et s
     <string name="generate_story_intro_narration">Storyboard BD par IA et narration intelligente, idéal pour créer rapidement des vidéos et commenter une histoire.</string>
     <string name="generate_story_intro_dynamic">BD animée, voix de plusieurs personnages, sons d’ambiance et transitions pour mieux vous plonger dans l’intrigue.</string>
     <string name="generate_story_content_review_failed">Échec de la vérification du contenu saisi. Génération impossible.</string>
-    <string name="settings_delete_account">Attention : confirmez les informations suivantes avant de supprimer votre compte.
-La suppression est irréversible et toutes les informations seront définitivement effacées. Sauvegardez les données du compte et réglez les services en cours au préalable. Une nouvelle inscription créera un nouveau compte. Les informations suivantes seront effacées :
-· Données personnelles : adresse e-mail, pseudonyme, etc.
-· Informations de comptes tiers : historique des achats et rechargements, épisodes débloqués et séries de « Ma liste ».
-· Solde du compte : vos pièces et crédits seront remis à zéro.</string>
+    <string name="settings_delete_account">Attention : confirmez les informations suivantes avant de supprimer votre compte.\n\nLa suppression est irréversible et toutes les informations seront définitivement effacées. Sauvegardez les données du compte et réglez les services en cours au préalable. Une nouvelle inscription créera un nouveau compte. Les informations suivantes seront effacées :\n\n· Données personnelles : adresse e-mail, pseudonyme, etc.\n\n· Informations de comptes tiers : historique des achats et rechargements, épisodes débloqués et séries de « Ma liste ».\n\n· Solde du compte : vos pièces et crédits seront remis à zéro.</string>
     <string name="video_synthesis_save_failed">Échec de l\'appel de l\'API de sauvegarde.</string>
     <string name="video_download_watermark">Génération IA</string>
     <string name="featured">À la une</string>
@@ -876,7 +824,7 @@ La suppression est irréversible et toutes les informations seront définitiveme
     <string name="member_your_current_plan">Votre formule actuelle</string>
     <string name="member_membership_activated">Abonnement activé</string>
     <string name="member_upgrade_scheduled">Changement programmé</string>
-    <string name="member_service_and_policy">Conditions d\'utilisation et politique de confidentialité.</string>
+    <string name="member_service_and_policy">Conditions d’utilisation et Politique de confidentialité.</string>
     <string name="member_upgrade_top_keyword">pour plus d’économies</string>
     <string name="app_rating_title_unrated">Vous aimez vos créations IA ?</string>
     <string name="app_rating_subtitle_unrated">Dites-nous ce que vous pensez d’EpNova.</string>

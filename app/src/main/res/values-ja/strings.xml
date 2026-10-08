@@ -151,32 +151,6 @@
     <string name="payment_method">支払い方法</string>
     <string name="top_up_now">今すぐチャージ</string>
     <string name="verify_payment">支払いを確認</string>
-    <string name="app_log_off">アカウント削除を申請する前に、以下をよく読み、確認してください。
-1. 削除は取り消せません
-a) 削除したアカウントは復元できません。
-b) このプラットフォームにログインできなくなります。
-c) 関連するすべてのデータ、記録、権利は復元できません。
-d) この操作は永続的です。慎重に進めてください。
-2. データの取扱い
-削除後、利用規約、プライバシーポリシーおよび適用法に従い、データを以下のように処理します。
-a) ユーザー名、プロフィール画像、電話番号などの基本情報を削除または匿名化します。
-b) 作品、制作履歴、下書き、閲覧履歴を削除または非識別化します。
-c) 連携した本人確認情報、認証情報、権限を無効にします。
-d) 公開済みコンテンツは、法令の範囲内で非識別化して保存し、コンプライアンス監査、分析、コンテンツ安全記録にのみ使用する場合があります。
-e) 法令上必要な情報は法定期間保存し、その後削除する場合があります。
-3. 仮想資産と特典
-a) 会員特典、コイン、アイテム、制作コイン、残高など、アカウント内の仮想資産は削除時に消去されます。
-b) 仮想資産は譲渡、回収、復元できません。
-c) 購入済みで未使用の有料サービス、機能、特典は失効します。
-d) 法令に別段の定めがない限り、削除後の返金はできません。
-4. 連携アカウントと外部サービス
-a) 電話番号やWeChat、Appleなどの外部アカウントとの連携は自動的に解除されます。
-b) 削除したアカウントのIDは再利用できません。
-c) 再登録した場合は新規アカウントとして扱われます。
-5. 未完了の手続き
-a) 未処理の注文、異議申し立て、出金、精算などがある場合、削除前に完了してください。
-b) 違反や紛争の審査中は、プラットフォームが削除を延期する場合があります。
-確認するには、［削除を申請］をタップしてください。</string>
     <string name="app_cancel_02">1. ログインできなくなります。</string>
     <string name="app_cancel_03">2. プロフィール画像やユーザー名などの個人データは完全に削除されます。</string>
     <string name="app_cancel_04">3. 連携した電話番号、WeChat、QQは自動的に解除されます。</string>
@@ -304,8 +278,7 @@ b) 違反や紛争の審査中は、プラットフォームが削除を延期�
     <string name="ai_structural_analysis">AIが作品全体を分析し、構成を抽出します。</string>
     <string name="estimated_compute_usage">獲得予定コイン</string>
     <string name="sensitive_word_detected">不適切なコンテンツが検出されました</string>
-    <string name="sensitive_content_refunded">不適切な内容が検出されました。コインを返金しました。
-編集して再送信してください。</string>
+    <string name="sensitive_content_refunded">不適切な内容が検出されました。コインを返金しました。\n編集して再送信してください。</string>
     <string name="upload_completed_novel">小説の全文をアップロード</string>
     <string name="upload">アップロード</string>
     <string name="new_version_found">新しいバージョンがあります</string>
@@ -564,10 +537,7 @@ b) 違反や紛争の審査中は、プラットフォームが削除を延期�
     <string name="compute_power_validity_period">計算力の有効期間：1年</string>
     <string name="deselect_all">すべて選択解除</string>
     <string name="storyboard">絵コンテ</string>
-    <string name="policy_content">EpNovaへようこそ！
-本製品・サービスをご利用になる前に、アプリの利用規約とプライバシーポリシーのすべての条項をよく読み、内容をご理解ください。サービスの内容や、個人情報の収集・利用に関する規則をご確認いただけます。
-当社は利用規約とプライバシーポリシーに従ってサービスを提供し、お客様の個人情報を保護します。
-「同意しない」を選択すると、製品・サービスをご利用いただけません。</string>
+    <string name="policy_content">EpNovaへようこそ！\n本製品・サービスをご利用になる前に、アプリの利用規約とプライバシーポリシーのすべての条項をよく読み、内容をご理解ください。サービスの内容や、個人情報の収集・利用に関する規則をご確認いただけます。\n当社は利用規約とプライバシーポリシーに従ってサービスを提供し、お客様の個人情報を保護します。\n「同意しない」を選択すると、製品・サービスをご利用いただけません。</string>
     <string name="please_set_total_episodes">エピソードの総数を設定</string>
     <string name="please_enter_custom_episodes">エピソード数を入力してください</string>
     <string name="episode_count_limit_60">エピソード数は60話を超えられません</string>
@@ -587,10 +557,7 @@ b) 違反や紛争の審査中は、プラットフォームが削除を延期�
     <string name="delete_success">削除しました。</string>
     <string name="error_invalid_email">有効なメールアドレスを入力してください。</string>
     <string name="agree_terms_privacy">続行すると、利用規約とプライバシーポリシーに同意したものとみなされます。</string>
-    <string name="welcome_epnova_title">EpNovaへようこそ！
-本製品・サービスをご利用になる前に、アプリの利用規約とプライバシーポリシーのすべての条項をよく読み、内容をご理解ください。サービスの内容や、個人情報の収集・利用に関する規則をご確認いただけます。
-当社は利用規約とプライバシーポリシーに従ってサービスを提供し、お客様の個人情報を保護します。
-「同意しない」を選択すると、製品・サービスをご利用いただけません。</string>
+    <string name="welcome_epnova_title">EpNovaへようこそ！\n本製品・サービスをご利用になる前に、アプリの利用規約とプライバシーポリシーのすべての条項をよく読み、内容をご理解ください。サービスの内容や、個人情報の収集・利用に関する規則をご確認いただけます。\n当社は利用規約とプライバシーポリシーに従ってサービスを提供し、お客様の個人情報を保護します。\n「同意しない」を選択すると、製品・サービスをご利用いただけません。</string>
     <string name="enable_camera">写真を撮る</string>
     <string name="settings_enable_photo_album">他の写真へのアクセスを許可</string>
     <string name="episode_unlock_previous_required">先に前のエピソードを解放してください。</string>
@@ -632,17 +599,8 @@ b) 違反や紛争の審査中は、プラットフォームが削除を延期�
     <string name="store_coins">コイン</string>
     <string name="store_credits">クレジット</string>
     <string name="store_reward_coins">報酬コイン</string>
-    <string name="store_tips_content_coins">1. コインは購入日から1年間有効です。（報酬コインは受け取り後30日間有効です。）
-2. コインでエピソードを順番に解放できます。
-3. 解放時は購入コインを優先し、不足分にはボーナスコインが自動で使われます。
-4. コインで解放したエピソードは回数制限なく視聴できます。
-5. ご不明点はプロフィール → フィードバックとご意見からお問い合わせください。
-6. 利用規約とプライバシーポリシー。</string>
-    <string name="store_tips_content_credits">1. クレジットは購入日から1年間有効です。
-2. ご自身のショートドラマの制作に使えます。
-3. 制作に使用したクレジットは返金できません。
-4. ご不明点はプロフィール → フィードバックとご意見からお問い合わせください。
-5. 利用規約とプライバシーポリシー。</string>
+    <string name="store_tips_content_coins">1. コインは購入日から1年間有効です。（報酬コインは受け取り後30日間有効です。）\n2. コインでエピソードを順番に解放できます。\n3. 解放時は購入コインを優先し、不足分にはボーナスコインが自動で使われます。\n4. コインで解放したエピソードは回数制限なく視聴できます。\n5. ご不明点はプロフィール → フィードバックとご意見からお問い合わせください。\n6. 利用規約とプライバシーポリシー。</string>
+    <string name="store_tips_content_credits">1. クレジットは購入日から1年間有効です。\n2. ご自身のショートドラマの制作に使えます。\n3. 制作に使用したクレジットは返金できません。\n4. ご不明点はプロフィール → フィードバックとご意見からお問い合わせください。\n5. 利用規約とプライバシーポリシー。</string>
     <string name="transaction_history_title">取引履歴</string>
     <string name="transaction_history_all">すべて</string>
     <string name="transaction_history_earned">獲得</string>
@@ -687,13 +645,7 @@ b) 違反や紛争の審査中は、プラットフォームが削除を延期�
     <string name="rewards_come_back_tomorrow">また明日お越しください</string>
     <string name="rewards_next_refresh">次の更新まで%s</string>
     <string name="rewards_rules_title">報酬ルール</string>
-    <string name="rewards_rules_detail">1. EpNovaはボーナスコインに関する最終的な解釈権を有します。
-2. チェックインは1日1回のみです。
-3. 1日でも欠かすと連続日数はリセットされ、1日目から再開します。
-4. ボーナスコインは購入コインと同様、コインが必要なエピソードの解放にのみ使えます。
-5. 受取日から30日間有効です。期限前にお使いください。
-6. エピソード解放時は購入コインを優先し、不足分にボーナスコインを自動使用します。
-7. 無料コインはすべてボーナスコインに分類されます。</string>
+    <string name="rewards_rules_detail">1. EpNovaはボーナスコインに関する最終的な解釈権を有します。\n2. チェックインは1日1回のみです。\n3. 1日でも欠かすと連続日数はリセットされ、1日目から再開します。\n4. ボーナスコインは購入コインと同様、コインが必要なエピソードの解放にのみ使えます。\n5. 受取日から30日間有効です。期限前にお使いください。\n6. エピソード解放時は購入コインを優先し、不足分にボーナスコインを自動使用します。\n7. 無料コインはすべてボーナスコインに分類されます。</string>
     <string name="rewards_finish_previous_task">先に前のタスクを完了してください。</string>
     <string name="home_search_placeholder">ドラマのタイトルを検索...</string>
     <string name="home_search_tab_new_release">新作</string>
@@ -831,11 +783,7 @@ b) 違反や紛争の審査中は、プラットフォームが削除を延期�
     <string name="generate_story_intro_narration">AI漫画の絵コンテとスマートナレーション。素早い動画制作やストーリー解説に最適。</string>
     <string name="generate_story_intro_dynamic">動く漫画、複数キャラクターの音声、背景効果音、画面切り替え効果で物語への没入感を高めます。</string>
     <string name="generate_story_content_review_failed">入力内容の確認に失敗したため、生成できません。</string>
-    <string name="settings_delete_account">警告：アカウントを削除する前に、次の内容を確認してください。
-アカウント削除は取り消せず、すべての情報が完全に消去されます。事前に関連データをバックアップし、利用中のサービスの手続きを完了してください。再登録すると新規アカウントになります。次の情報が消去されることを確認してください。
-・個人情報：メールアドレス、ニックネームなど。
-・外部アカウント関連情報：購入履歴、チャージ履歴、エピソード解放履歴、マイリスト内の作品。
-・アカウント残高：コインとクレジットはゼロになります。</string>
+    <string name="settings_delete_account">警告：アカウントを削除する前に、次の内容を確認してください。\n\nアカウント削除は取り消せず、すべての情報が完全に消去されます。事前に関連データをバックアップし、利用中のサービスの手続きを完了してください。再登録すると新規アカウントになります。次の情報が消去されることを確認してください。\n\n・個人情報：メールアドレス、ニックネームなど。\n\n・外部アカウント関連情報：購入履歴、チャージ履歴、エピソード解放履歴、マイリスト内の作品。\n\n・アカウント残高：コインとクレジットはゼロになります。</string>
     <string name="video_synthesis_save_failed">保存APIの呼び出しに失敗しました。</string>
     <string name="video_download_watermark">AI生成</string>
     <string name="featured">注目</string>
