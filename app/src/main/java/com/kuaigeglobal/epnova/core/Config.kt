@@ -54,6 +54,8 @@ class Config : NetworkChangedListener {
         private set
     var appsFlyerId: String by MmkvDelegate(APPSFLYER_ID, "") { mmkv }
         private set
+    var storeCountryCode: String by MmkvDelegate(PLAY_STORE_COUNTRY_CODE, Constants.DEFAULT_COUNTRY_CODE) { mmkv }
+        private set
     var objectId: String? by MmkvDelegate(OBJECT_ID, "1") { mmkv }
         private set
     var isInReview: Boolean by MmkvDelegate(IN_REVIEW, ifInitialStatusInReview()) { mmkv }
@@ -241,6 +243,10 @@ class Config : NetworkChangedListener {
 
     fun storeAppsFlyerId(appsFlyerId: String) {
         this.appsFlyerId = appsFlyerId
+    }
+
+    fun storeCountryCode(countryCode: String) {
+        this.storeCountryCode = countryCode
     }
 
     fun storeDeviceToken(deviceToken: String?) {
@@ -470,6 +476,7 @@ class Config : NetworkChangedListener {
         const val ONLINE: Int = 3
         const val DEVICE_TOKEN = "DEVICE_TOKEN"
         const val APPSFLYER_ID: String = "appsFlyerId"
+        const val PLAY_STORE_COUNTRY_CODE: String = "playStoreCountryCode"
 
         /**
          * Application.attachBaseContext 阶段 App.instance.config 还未初始化，

@@ -21,6 +21,7 @@ import com.kuaigeglobal.epnova.core.Config
 import com.kuaigeglobal.epnova.core.Global
 import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.google.GoogleServices
+import com.kuaigeglobal.epnova.core.google.billing.BillingManager
 import com.kuaigeglobal.epnova.core.google.billing.OneTimePurchaseRecoveryManager
 import com.kuaigeglobal.epnova.core.google.event.AnalyticsHelper
 import com.kuaigeglobal.epnova.core.google.event.CrashlyticsHelper
@@ -324,6 +325,11 @@ class App : BaseApp() {
 
         sdkAfterAgreeInitialized = true
         try {
+            BillingManager.queryPlayStoreCountryCode { countryCode ->
+                countryCode?.let {
+                    Config.get().storeCountryCode(countryCode)
+                }
+            }
             if (!User.get().isLogin) {
                 Global.guestLogin({
                     User.get().updateFrom(it)

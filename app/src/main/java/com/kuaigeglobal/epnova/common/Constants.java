@@ -43,6 +43,7 @@ public class Constants {
     public static final long PAGE_BEFORE_DELAY_MS = 0;
     public static final long PAGE_AFTER_DELAY_MS = 0;
     public static final int INTERNATIONALIZATION_RATIO = 5;
+    public static final String DEFAULT_COUNTRY_CODE = "US";
     /**
      * 视频单张图片时长
      */

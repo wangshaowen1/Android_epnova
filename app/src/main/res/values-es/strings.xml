@@ -838,4 +838,11 @@
     <string name="member_subscribe_top_text">Obtenga créditos para crear su propio drama</string>
     <string name="member_subscribe_top_keyword">Obtenga créditos</string>
     <string name="member_upgrade_top_text">Cambie para ahorrar más</string>
+    <string name="setting_language_en">Inglés</string>
+    <string name="setting_language_fr">Francés</string>
+    <string name="setting_language_id">Indonesio</string>
+    <string name="setting_language_de">Alemán</string>
+    <string name="setting_language_es">Español</string>
+    <string name="setting_language_ja">Japonés</string>
+    <string name="setting_language_pt">Portugués</string>
 </resources>

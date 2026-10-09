@@ -15,13 +15,13 @@ import com.nhsd.basic.ext.getResString
 data class LanguageItem(val code: String, val name: String)
 
 val languagesConfigs = listOf(
-    LanguageItem(LocaleHelper.LANGUAGE_EN_US, "English"),
-    LanguageItem(LocaleHelper.LANGUAGE_DE_DE, "German"),
-    LanguageItem(LocaleHelper.LANGUAGE_ES_ES, "Spanish"),
-    LanguageItem(LocaleHelper.LANGUAGE_FR_FR, "French"),
-    LanguageItem(LocaleHelper.LANGUAGE_ID_ID, "Bahasa Indonesia"),
-    LanguageItem(LocaleHelper.LANGUAGE_JA_JA, "Japanese"),
-    LanguageItem(LocaleHelper.LANGUAGE_PT_PT, "Portuguese")
+    LanguageItem(LocaleHelper.LANGUAGE_EN_US, R.string.setting_language_en.getResString()),
+    LanguageItem(LocaleHelper.LANGUAGE_DE_DE, R.string.setting_language_de.getResString()),
+    LanguageItem(LocaleHelper.LANGUAGE_ES_ES, R.string.setting_language_es.getResString()),
+    LanguageItem(LocaleHelper.LANGUAGE_FR_FR, R.string.setting_language_fr.getResString()),
+    LanguageItem(LocaleHelper.LANGUAGE_ID_ID, R.string.setting_language_id.getResString()),
+    LanguageItem(LocaleHelper.LANGUAGE_JA_JA, R.string.setting_language_ja.getResString()),
+    LanguageItem(LocaleHelper.LANGUAGE_PT_PT, R.string.setting_language_pt.getResString())
 )
 
 class LanguagesViewModel : AppRepositoryViewModel<LanguagesRepository>() {

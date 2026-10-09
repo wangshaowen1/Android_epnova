@@ -56,6 +56,10 @@ public class AppHeader {
      */
     private String deviceFingerprint;
     private String riskKey;
+    /**
+     * 商店区域
+     */
+    private String storeCountryCode;
 
     public AppHeader() {
         super();
@@ -69,6 +73,7 @@ public class AppHeader {
             this.mobileSys = Session.getInstance().getOsVersion();
             this.opid = Config.get().getOpid();
             this.regChannelCode = Config.get().getRegChannelCode();
+            this.storeCountryCode = Config.get().getStoreCountryCode();
 
 
             String mac = Session.getInstance().getMac();
