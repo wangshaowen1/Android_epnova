@@ -658,48 +658,6 @@
                        android:orientation="vertical">
 
                        <LinearLayout
-                           android:id="@+id/ll_languages"
-                           singleClick="@{layout.clickHandler::onClick}"
-                           android:layout_width="match_parent"
-                           android:layout_height="54dp"
-                           android:gravity="center_vertical"
-                           android:orientation="horizontal"
-                           android:paddingHorizontal="@dimen/spacing_l">
-
-                           <ImageView
-                               android:layout_width="24dp"
-                               android:layout_height="24dp"
-                               android:importantForAccessibility="no"
-                               android:src="@drawable/icon_mine_language" />
-
-                           <TextView
-                               style="@style/Text.Regular"
-                               android:layout_width="0dp"
-                               android:layout_height="wrap_content"
-                               android:layout_marginStart="@dimen/spacing_m"
-                               android:layout_weight="1"
-                               android:text="@string/settings_language"
-                               android:textColor="@color/color_96_ffffff"
-                               android:textSize="14sp" />
-
-                           <TextView
-                               style="@style/Text.Regular"
-                               android:layout_width="wrap_content"
-                               android:layout_height="wrap_content"
-                               android:layout_marginEnd="8dp"
-                               android:text="@{layout.language.name}"
-                               android:textColor="?attr/textColor4"
-                               android:textSize="14sp"
-                               tools:text="English" />
-
-                           <ImageView
-                               android:layout_width="16dp"
-                               android:layout_height="16dp"
-                               android:importantForAccessibility="no"
-                               android:src="@drawable/arrow_right_gray36" />
-                       </LinearLayout>
-
-                       <LinearLayout
                            android:id="@+id/ll_messages"
                            singleClick="@{layout.clickHandler::onClick}"
                            android:layout_width="match_parent"
@@ -821,6 +779,48 @@
                                android:text="@string/title_settings"
                                android:textColor="@color/color_96_ffffff"
                                android:textSize="14sp" />
+
+                           <ImageView
+                               android:layout_width="16dp"
+                               android:layout_height="16dp"
+                               android:importantForAccessibility="no"
+                               android:src="@drawable/arrow_right_gray36" />
+                       </LinearLayout>
+
+                       <LinearLayout
+                           android:id="@+id/ll_languages"
+                           singleClick="@{layout.clickHandler::onClick}"
+                           android:layout_width="match_parent"
+                           android:layout_height="54dp"
+                           android:gravity="center_vertical"
+                           android:orientation="horizontal"
+                           android:paddingHorizontal="@dimen/spacing_l">
+
+                           <ImageView
+                               android:layout_width="24dp"
+                               android:layout_height="24dp"
+                               android:importantForAccessibility="no"
+                               android:src="@drawable/icon_mine_language" />
+
+                           <TextView
+                               style="@style/Text.Regular"
+                               android:layout_width="0dp"
+                               android:layout_height="wrap_content"
+                               android:layout_marginStart="@dimen/spacing_m"
+                               android:layout_weight="1"
+                               android:text="@string/settings_language"
+                               android:textColor="@color/color_96_ffffff"
+                               android:textSize="14sp" />
+
+                           <TextView
+                               style="@style/Text.Regular"
+                               android:layout_width="wrap_content"
+                               android:layout_height="wrap_content"
+                               android:layout_marginEnd="8dp"
+                               android:text="@{layout.language.name}"
+                               android:textColor="?attr/textColor4"
+                               android:textSize="14sp"
+                               tools:text="English" />
 
                            <ImageView
                                android:layout_width="16dp"

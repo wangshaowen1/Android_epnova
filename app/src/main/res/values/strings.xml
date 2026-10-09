@@ -878,11 +878,4 @@
     <string name="member_subscribe_top_text">Get Credits to Create Your Own Drama</string>
     <string name="member_subscribe_top_keyword">Get Credits</string>
     <string name="member_upgrade_top_text">Switch for More Savings</string>
-    <string name="setting_language_en">English</string>
-    <string name="setting_language_de">German</string>
-    <string name="setting_language_es">Spanish</string>
-    <string name="setting_language_fr">French</string>
-    <string name="setting_language_id">Bahasa Indonesia</string>
-    <string name="setting_language_ja">Japanese</string>
-    <string name="setting_language_pt">Portuguese</string>
 </resources>

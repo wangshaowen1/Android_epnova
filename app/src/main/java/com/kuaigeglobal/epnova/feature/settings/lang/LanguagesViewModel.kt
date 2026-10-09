@@ -15,11 +15,21 @@ import com.kuaigeglobal.epnova.core.manager.LocaleHelper.LANGUAGE_ES_ES
 import com.kuaigeglobal.epnova.core.manager.LocaleHelper.LANGUAGE_FR_FR
 import com.kuaigeglobal.epnova.core.manager.LocaleHelper.LANGUAGE_ID_ID
 import com.kuaigeglobal.epnova.core.manager.LocaleHelper.LANGUAGE_JA_JA
-import com.kuaigeglobal.epnova.core.manager.LocaleHelper.LANGUAGE_PT_PT
+import com.kuaigeglobal.epnova.core.manager.LocaleHelper.LANGUAGE_PT_BR
 import com.kuaigeglobal.epnova.feature.settings.lang.data.LanguagesRepository
 import com.nhsd.basic.ext.getResString
 
 data class LanguageItem(val code: String, var name: String)
+
+val languagesConfigs = listOf(
+    LanguageItem(LANGUAGE_EN_US, "English"),
+    LanguageItem(LANGUAGE_FR_FR, "Français"),
+    LanguageItem(LANGUAGE_DE_DE, "Deutsch"),
+    LanguageItem(LANGUAGE_ID_ID, "Bahasa Indonesia"),
+    LanguageItem(LANGUAGE_JA_JA, "日本語"),
+    LanguageItem(LANGUAGE_PT_BR, "Português (Brasil)"),
+    LanguageItem(LANGUAGE_ES_ES, "Español")
+)
 
 class LanguagesViewModel : AppRepositoryViewModel<LanguagesRepository>() {
 

@@ -11,11 +11,11 @@ import com.kuaigeglobal.epnova.core.Config
 import com.kuaigeglobal.epnova.core.Global
 import com.kuaigeglobal.epnova.core.User
 import com.kuaigeglobal.epnova.core.ext.launch
-import com.kuaigeglobal.epnova.core.manager.AppSupportLanguageManager
 import com.kuaigeglobal.epnova.core.network.apis.request.UserTokenBody
 import com.kuaigeglobal.epnova.core.network.apis.response.MemberCardData
 import com.kuaigeglobal.epnova.core.network.apis.response.SimpleBannerInfo
 import com.kuaigeglobal.epnova.core.response
+import com.kuaigeglobal.epnova.feature.settings.lang.languagesConfigs
 import com.nhsd.basic.ext.getResString
 
 /**
@@ -48,7 +48,7 @@ class MineViewModel : AppRepositoryViewModel<AppRepository>() {
     //会员中心卡片
     val memberCard by lazy { ObservableField<MemberCardData>() }
 
-    val language by lazy { AppSupportLanguageManager.languagesConfigs.find { it.code == Config.get().getSavedLanguage() } }
+    val language by lazy { languagesConfigs.find { it.code == Config.get().getSavedLanguage() } }
 
     val loginRewardsValid = ObservableBoolean(User.get().isGuest)
     val loginRewards = ObservableField<String>(Config.get().loginRewards)
