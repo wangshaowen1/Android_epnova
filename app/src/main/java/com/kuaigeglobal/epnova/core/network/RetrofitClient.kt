@@ -77,6 +77,8 @@ object RetrofitClient {
                     .header("Content-Type", "application/json")
                     .header("Accept", "text/event-stream;charset=UTF-8")
                     .header("userToken", userToken)
+                    .header("X-Timezone", TimeZone.getDefault().id)
+                    .header("language", Config.get().getSavedLanguage())
                     .header("appHeader", gson.toJson(AppHeader()))
 
                 val request = requestBuilder.build()
@@ -105,7 +107,6 @@ object RetrofitClient {
                 val requestBuilder = original.newBuilder()
                     .header("Content-Type", "application/json")
                     .header("Accept", "application/json")
-                    .header("userToken", userToken)
                     .header("userToken", userToken)
                     .header("X-Timezone", TimeZone.getDefault().id)
                     .header("language", Config.get().getSavedLanguage())
