@@ -838,4 +838,6 @@
     <string name="member_subscribe_top_text">Dapatkan Kredit untuk Membuat Drama Anda Sendiri</string>
     <string name="member_subscribe_top_keyword">Dapatkan Kredit</string>
     <string name="member_upgrade_top_text">Beralih untuk Lebih Hemat</string>
+    <string name="member_unit_week">minggu</string>
+    <string name="member_unit_monthly">bulanan</string>
 </resources>

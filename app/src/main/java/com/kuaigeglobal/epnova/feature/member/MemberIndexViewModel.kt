@@ -1415,11 +1415,20 @@ class MemberIndexViewModel : AppRepositoryViewModel<AppRepository>() {
         val plan = item?.data?.get()
 
         selectedPeriodPointNum.set(plan?.periodPointNum?.toString().orEmpty())
-        selectedPeriodUnit.set("/${plan?.periodUnit.orEmpty().lowercase()}")
+        selectedPeriodUnit.set("/${unitToString(plan?.periodUnit.orEmpty())}")
         updateBottomHint()
 
         submitPrivileges(item)
         updateSubscribeAvailability()
+    }
+
+
+    private fun unitToString(unit: String): String {
+        return when (unit) {
+            "WEEK" -> R.string.member_unit_week.getResString()
+            "MONTH" -> R.string.member_unit_monthly.getResString()
+            else -> ""
+        }
     }
 
     private fun updateBottomHint() {
