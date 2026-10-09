@@ -46,6 +46,12 @@ object LocaleHelper {
         return if (normalized in supportedLanguages) normalized else LANGUAGE_EN_US
     }
 
+    fun shortLangCode(langCode: String?): String {
+        val normalized = normalizeLanguageCode(langCode)
+        val parts = normalized.split("-", limit = 2)
+        return parts[0]
+    }
+
     fun localeFromLanguageCode(langCode: String?): Locale {
         val normalized = normalizeLanguageCode(langCode)
         val parts = normalized.split("-", limit = 2)

@@ -9,20 +9,17 @@ import com.kuaigeglobal.epnova.core.Config
 import com.kuaigeglobal.epnova.core.manager.AppLanguageManager
 import com.kuaigeglobal.epnova.core.manager.LocaleHelper
 import com.kuaigeglobal.epnova.core.ext.request
+import com.kuaigeglobal.epnova.core.manager.LocaleHelper.LANGUAGE_DE_DE
+import com.kuaigeglobal.epnova.core.manager.LocaleHelper.LANGUAGE_EN_US
+import com.kuaigeglobal.epnova.core.manager.LocaleHelper.LANGUAGE_ES_ES
+import com.kuaigeglobal.epnova.core.manager.LocaleHelper.LANGUAGE_FR_FR
+import com.kuaigeglobal.epnova.core.manager.LocaleHelper.LANGUAGE_ID_ID
+import com.kuaigeglobal.epnova.core.manager.LocaleHelper.LANGUAGE_JA_JA
+import com.kuaigeglobal.epnova.core.manager.LocaleHelper.LANGUAGE_PT_PT
 import com.kuaigeglobal.epnova.feature.settings.lang.data.LanguagesRepository
 import com.nhsd.basic.ext.getResString
 
-data class LanguageItem(val code: String, val name: String)
-
-val languagesConfigs = listOf(
-    LanguageItem(LocaleHelper.LANGUAGE_EN_US, R.string.setting_language_en.getResString()),
-    LanguageItem(LocaleHelper.LANGUAGE_DE_DE, R.string.setting_language_de.getResString()),
-    LanguageItem(LocaleHelper.LANGUAGE_ES_ES, R.string.setting_language_es.getResString()),
-    LanguageItem(LocaleHelper.LANGUAGE_FR_FR, R.string.setting_language_fr.getResString()),
-    LanguageItem(LocaleHelper.LANGUAGE_ID_ID, R.string.setting_language_id.getResString()),
-    LanguageItem(LocaleHelper.LANGUAGE_JA_JA, R.string.setting_language_ja.getResString()),
-    LanguageItem(LocaleHelper.LANGUAGE_PT_PT, R.string.setting_language_pt.getResString())
-)
+data class LanguageItem(val code: String, var name: String)
 
 class LanguagesViewModel : AppRepositoryViewModel<LanguagesRepository>() {
 
@@ -57,7 +54,7 @@ class LanguagesViewModel : AppRepositoryViewModel<LanguagesRepository>() {
         AppLanguageManager.saveLanguage(selectedCode)
         //服务端语言必须保存成功后再执行doneEvent.value = Unit
         request(
-            apiBlock = { mRepo.setAppLanguage() },
+            apiBlock = { mRepo.setAppLanguage(LocaleHelper.shortLangCode(selectedCode)) },
             showToast = true
         ) {
             AppLanguageManager.applySavedLanguage()

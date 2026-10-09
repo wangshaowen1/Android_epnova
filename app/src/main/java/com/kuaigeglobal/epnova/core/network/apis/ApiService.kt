@@ -202,6 +202,7 @@ import com.kuaigeglobal.epnova.core.network.apis.response.FeedbackPageData
 import com.kuaigeglobal.epnova.core.network.apis.response.FollowingData
 import com.kuaigeglobal.epnova.core.network.apis.entity.BookShelfConfigInfo
 import com.kuaigeglobal.epnova.core.network.apis.request.BookShelfWaterfallPagedBody
+import com.kuaigeglobal.epnova.core.network.apis.request.LanguagesSettingBody
 import com.kuaigeglobal.epnova.core.network.apis.response.HomeBookShelfData
 import com.kuaigeglobal.epnova.core.network.apis.response.LikeData
 import com.kuaigeglobal.epnova.core.network.apis.response.MemberCardData
@@ -305,7 +306,7 @@ interface ApiService {
      * 设置App语言
      */
     @POST(ApiConstants.SET_APP_LANGUAGE)
-    suspend fun setAppLanguage(@Body body: UserTokenBody): ApiResponse<Any?>
+    suspend fun setAppLanguage(@Body body: LanguagesSettingBody): ApiResponse<Any?>
 
     /**
      * 注册 FCM 推送 Token

@@ -3,6 +3,7 @@ package com.kuaigeglobal.epnova.feature.settings.lang
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import com.kuaigeglobal.epnova.core.manager.AppSupportLanguageManager
 import com.kuaigeglobal.epnova.databinding.ActivityLanguagesBinding
 import com.nhsd.basic.BaseViewModelActivity
 
@@ -19,8 +20,8 @@ class LanguagesActivity : BaseViewModelActivity<ActivityLanguagesBinding, Langua
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        adapter = LanguagesAdapter(languagesConfigs, mRealVM.selectedCode) { item ->
+        AppSupportLanguageManager.reloadLanguagesConfig()
+        adapter = LanguagesAdapter(AppSupportLanguageManager.languagesConfigs, mRealVM.selectedCode) { item ->
             mRealVM.selectLanguage(item.code)
             adapter.updateSelected(item.code)
         }

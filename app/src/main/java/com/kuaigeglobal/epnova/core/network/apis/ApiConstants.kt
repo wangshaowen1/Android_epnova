@@ -42,7 +42,7 @@ object ApiConstants {
     /**
      * 设置App语言
      */
-    const val SET_APP_LANGUAGE = "user/app/language/set"
+    const val SET_APP_LANGUAGE = "user/setting/language/set"
 
     /**
      * 注册 FCM 推送 Token
