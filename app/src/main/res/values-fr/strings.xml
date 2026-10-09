@@ -556,7 +556,7 @@
     <string name="profile_collection">Ma liste</string>
     <string name="delete_success">Supprimé avec succès.</string>
     <string name="error_invalid_email">Veuillez saisir une adresse e-mail valide.</string>
-    <string name="agree_terms_privacy">En continuant, vous acceptez nos conditions d\'utilisation et notre politique de confidentialité.</string>
+    <string name="agree_terms_privacy">En continuant, vous acceptez nos Conditions d’utilisation et notre Politique de confidentialité.</string>
     <string name="welcome_epnova_title">Bienvenue sur EpNova !\nAvant d\'utiliser ce produit ou service, veuillez lire attentivement et comprendre les Conditions d\'utilisation et la Politique de confidentialité de l\'application. Elles décrivent nos services et la façon dont nous collectons et utilisons vos données personnelles.\nNous fournissons nos services et protégeons vos données conformément à ces documents.\nSi vous choisissez « Refuser », vous ne pourrez pas utiliser nos produits et services.</string>
     <string name="enable_camera">Prendre une photo</string>
     <string name="settings_enable_photo_album">Autoriser l’accès à davantage de photos</string>

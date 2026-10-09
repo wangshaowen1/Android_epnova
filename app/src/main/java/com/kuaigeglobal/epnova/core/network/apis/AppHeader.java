@@ -13,6 +13,7 @@ import com.kuaigeglobal.epnova.core.manager.AdStrategyManager;
 import com.nhsd.basic.Session;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Locale;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class AppHeader {
@@ -61,6 +62,11 @@ public class AppHeader {
      */
     private String storeCountryCode;
 
+    /**
+     * 获取手机系统地区的，注册国家使用的
+     */
+    private String systemCountryCode;
+
     public AppHeader() {
         super();
         this.appVersion = Session.getInstance().getVersionName();
@@ -74,6 +80,7 @@ public class AppHeader {
             this.opid = Config.get().getOpid();
             this.regChannelCode = Config.get().getRegChannelCode();
             this.storeCountryCode = Config.get().getStoreCountryCode();
+            this.systemCountryCode = Locale.getDefault().getCountry();
 
 
             String mac = Session.getInstance().getMac();

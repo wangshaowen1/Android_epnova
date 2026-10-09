@@ -18,6 +18,9 @@
         android:text="@string/terms_and_privacy"
         android:textAppearance="@style/Text16"
         android:textColor="?attr/textColor1"
+        android:layout_marginHorizontal="20dp"
+        android:gravity="center"
+        app:layout_constrainedWidth="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

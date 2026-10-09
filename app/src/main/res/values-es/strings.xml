@@ -556,7 +556,7 @@
     <string name="profile_collection">Mi lista</string>
     <string name="delete_success">Eliminado correctamente.</string>
     <string name="error_invalid_email">Introduce una dirección de correo válida.</string>
-    <string name="agree_terms_privacy">Al continuar, aceptas nuestros Términos de Servicio y Política de Privacidad.</string>
+    <string name="agree_terms_privacy">Al continuar, aceptas nuestros Términos de servicio y Política de privacidad.</string>
     <string name="welcome_epnova_title">¡Te damos la bienvenida a EpNova!\nAntes de usar este producto o servicio, lee atentamente y comprende todos los términos de los Términos de Servicio y la Política de Privacidad de la aplicación. Allí se explican nuestros servicios y cómo recopilamos y usamos tus datos personales.\nPrestamos nuestros servicios y protegemos tus datos conforme a esos documentos.\nSi eliges «No aceptar», no podrás usar nuestros productos ni servicios.</string>
     <string name="enable_camera">Tomar fotos</string>
     <string name="settings_enable_photo_album">Permitir acceso a más fotos</string>
@@ -599,8 +599,8 @@
     <string name="store_coins">Monedas</string>
     <string name="store_credits">Créditos</string>
     <string name="store_reward_coins">Monedas de recompensa</string>
-    <string name="store_tips_content_coins">1. Las monedas son válidas un año desde su compra. (Las monedas de recompensa son válidas durante 30 días tras reclamarlas.)\n2. Desbloquean episodios en orden.\n3. Se usan primero las monedas compradas; si no bastan, se aplican automáticamente las de recompensa.\n4. Los episodios desbloqueados pueden verse sin límite.\n5. Si tienes preguntas, contacta con asistencia en Perfil → Comentarios y sugerencias.\n6. Condiciones de servicio y Política de privacidad.</string>
-    <string name="store_tips_content_credits">1. Los créditos son válidos un año desde su compra.\n2. Sirven para crear tus propias series cortas.\n3. Los créditos usados en la creación no son reembolsables.\n4. Si tienes preguntas, contacta con asistencia en Perfil → Comentarios y sugerencias.\n5. Condiciones de servicio y Política de privacidad.</string>
+    <string name="store_tips_content_coins">1. Las monedas son válidas un año desde su compra. (Las monedas de recompensa son válidas durante 30 días tras reclamarlas.)\n2. Desbloquean episodios en orden.\n3. Se usan primero las monedas compradas; si no bastan, se aplican automáticamente las de recompensa.\n4. Los episodios desbloqueados pueden verse sin límite.\n5. Si tienes preguntas, contacta con asistencia en Perfil → Comentarios y sugerencias.\n6. Términos de servicio y Política de privacidad.</string>
+    <string name="store_tips_content_credits">1. Los créditos son válidos un año desde su compra.\n2. Sirven para crear tus propias series cortas.\n3. Los créditos usados en la creación no son reembolsables.\n4. Si tienes preguntas, contacta con asistencia en Perfil → Comentarios y sugerencias.\n5. Términos de servicio y Política de privacidad.</string>
     <string name="transaction_history_title">Historial de transacciones</string>
     <string name="transaction_history_all">Todo</string>
     <string name="transaction_history_earned">Obtenido</string>

@@ -556,7 +556,7 @@
     <string name="profile_collection">Koleksi</string>
     <string name="delete_success">Berhasil dihapus.</string>
     <string name="error_invalid_email">Silakan masukkan alamat email yang valid.</string>
-    <string name="agree_terms_privacy">Dengan melanjutkan, Anda menyetujui Ketentuan Layanan dan Kebijakan Privasi kami.</string>
+    <string name="agree_terms_privacy">Dengan melanjutkan, Anda menyetujui Syarat Layanan dan Kebijakan Privasi kami.</string>
     <string name="welcome_epnova_title">Selamat datang di EpNova!\nSebelum menggunakan produk atau layanan ini, baca dan pahami seluruh Ketentuan Layanan dan Kebijakan Privasi aplikasi untuk mengetahui layanan kami serta aturan pengumpulan dan penggunaan data pribadi Anda.\nKami menyediakan layanan dan melindungi data pribadi Anda sesuai ketentuan tersebut.\nJika memilih \&quot;Tidak Setuju\&quot;, Anda tidak dapat menggunakan produk dan layanan kami.</string>
     <string name="enable_camera">Ambil Foto</string>
     <string name="settings_enable_photo_album">Izinkan akses ke lebih banyak foto</string>
@@ -599,7 +599,7 @@
     <string name="store_coins">Koin</string>
     <string name="store_credits">Kredit</string>
     <string name="store_reward_coins">Koin Hadiah</string>
-    <string name="store_tips_content_coins">1. Koin berlaku selama 1 tahun sejak tanggal pembelian.\n2. Koin dapat digunakan untuk membuka kunci episode secara berurutan.\n3. Koin akan digunakan terlebih dahulu saat membuka kunci episode. Jika jumlah tidak mencukupi, koin hadiah akan digunakan secara otomatis.\n4. Setelah episode dibuka kuncinya dengan koin, episode tersebut dapat ditonton tanpa batas waktu.\n5. Jika Anda memiliki pertanyaan lain, silakan hubungi layanan pelanggan melalui Profil → Saran dan Masukan.\n6. Ketentuan Layanan dan Kebijakan Privasi.</string>
+    <string name="store_tips_content_coins">1. Koin berlaku selama 1 tahun sejak tanggal pembelian.\n2. Koin dapat digunakan untuk membuka kunci episode secara berurutan.\n3. Koin akan digunakan terlebih dahulu saat membuka kunci episode. Jika jumlah tidak mencukupi, koin hadiah akan digunakan secara otomatis.\n4. Setelah episode dibuka kuncinya dengan koin, episode tersebut dapat ditonton tanpa batas waktu.\n5. Jika Anda memiliki pertanyaan lain, silakan hubungi layanan pelanggan melalui Profil → Saran dan Masukan.\n6. Syarat Layanan dan Kebijakan Privasi.</string>
     <string name="store_tips_content_credits">1. Kredit berlaku selama 1 tahun sejak tanggal pembelian.\n2. Kredit dapat digunakan untuk membuat drama pendek buatan Anda sendiri.\n3. Setelah kredit digunakan untuk pembuatan, kredit tersebut tidak dapat dikembalikan.\n4. Jika Anda memiliki pertanyaan lain, silakan hubungi layanan pelanggan melalui Profil → Saran dan Masukan.\n5. Syarat Layanan dan Kebijakan Privasi.</string>
     <string name="transaction_history_title">Riwayat Transaksi</string>
     <string name="transaction_history_all">Semua</string>
