@@ -172,7 +172,8 @@ class FirstRechargeCreditsViewModel : AppRepositoryViewModel<CoinRepository>() {
     private fun getBonusText(): String {
         val pointText = pointConfig?.pointNum?.toString()
         val marketingText = pointConfig?.pointMarketingText
-        return pointText + marketingText
+        val tagText = pointConfig?.pointMarketingTag
+        return "${pointText}${marketingText} $tagText"
     }
 
     private fun getCurrentPointText(): String {
