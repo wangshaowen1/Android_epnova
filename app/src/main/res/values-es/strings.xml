@@ -318,13 +318,13 @@
     <string name="suggest_and_feedback">Sugerencias y comentarios</string>
     <string name="my_list_my_creations">Mis creaciones</string>
     <string name="my_creations_episode_progress">%1$d/%2$d episodios</string>
-    <string name="my_creations_publish_tip">Completa %1$s episodios más para publicar tu serie.</string>
+    <string name="my_creations_publish_tip">Completa %1$s para publicar tu serie.</string>
     <string name="my_creations_publish_tip_highlight">%1$d episodios más</string>
     <string name="my_creations_publish_tip_2">Sigue creando y da vida a tu drama.</string>
     <string name="my_creations_publish_tip_3">Sigue creando episodios para llegar a más espectadores.</string>
     <string name="my_creations_publish_tip_over">🎉¡Lo lograste! ¡Tu drama está completo!</string>
     <string name="my_creations_all_over">Todos los episodios están listos. ¡Crea algo nuevo!</string>
-    <string name="my_creations_all_list">Todas las listas</string>
+    <string name="my_creations_all_list">Detalles</string>
     <string name="my_creations_continue_creating">Seguir creando</string>
     <string name="last_3_months_data_only">Solo se muestran los últimos 3 meses. Los datos pueden retrasarse.</string>
     <string name="limited_time_free">Gratis por tiempo limitado</string>
@@ -333,7 +333,7 @@
     <string name="drama_detail_draft">Borrador</string>
     <string name="waiting_to_synthesize">Pendiente de composición</string>
     <string name="vol_number">Ep.</string>
-    <string name="vol_unit">Episodios</string>
+    <string name="vol_unit">Ep.</string>
     <string name="single_series_unit">Ep.</string>
     <string name="storyboard_prompt">Prompt del storyboard</string>
     <string name="admin">Administrador</string>
@@ -629,6 +629,10 @@
     <string name="rewards_title">Recompensas</string>
     <string name="rewards_rules">Reglas</string>
     <string name="rewards_balance">Saldo</string>
+    <plurals name="rewards_checked_days">
+        <item quantity="one">Check-in realizado por %1$d día</item>
+        <item quantity="other">Check-in realizado por %1$d días</item>
+    </plurals>
     <string name="rewards_day_1">Día %1$d</string>
     <string name="rewards_check_in">Registrarse</string>
     <string name="rewards_earn_rewards">Ganar recompensas</string>

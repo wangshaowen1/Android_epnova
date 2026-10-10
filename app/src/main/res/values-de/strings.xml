@@ -318,13 +318,13 @@
     <string name="suggest_and_feedback">Vorschläge und Feedback</string>
     <string name="my_list_my_creations">Meine Werke</string>
     <string name="my_creations_episode_progress">%1$d/%2$d Episoden</string>
-    <string name="my_creations_publish_tip">Schließe noch %1$s Episoden ab, um dein Drama zu veröffentlichen.</string>
-    <string name="my_creations_publish_tip_highlight">Noch %1$d Episoden</string>
+    <string name="my_creations_publish_tip">Schließe %1$s ab, um dein Drama zu veröffentlichen.</string>
+    <string name="my_creations_publish_tip_highlight">noch %1$d Episoden</string>
     <string name="my_creations_publish_tip_2">Erstelle weiter und erwecke dein Drama zum Leben.</string>
     <string name="my_creations_publish_tip_3">Erstelle weitere Folgen und erreiche mehr Zuschauer.</string>
     <string name="my_creations_publish_tip_over">🎉Geschafft! Dein Drama ist abgeschlossen!</string>
     <string name="my_creations_all_over">Alle Folgen sind fertig. Erstelle etwas Neues!</string>
-    <string name="my_creations_all_list">Alle Listen</string>
+    <string name="my_creations_all_list">Details</string>
     <string name="my_creations_continue_creating">Weiter erstellen</string>
     <string name="last_3_months_data_only">Es werden nur die letzten 3 Monate angezeigt. Daten können verzögert sein.</string>
     <string name="limited_time_free">Für kurze Zeit kostenlos</string>
@@ -333,8 +333,8 @@
     <string name="drama_detail_draft">Entwurf</string>
     <string name="waiting_to_synthesize">Zusammenstellung ausstehend</string>
     <string name="vol_number">Ep.</string>
-    <string name="vol_unit">Folgen</string>
-    <string name="single_series_unit">Folge</string>
+    <string name="vol_unit">Flg.</string>
+    <string name="single_series_unit">Flg.</string>
     <string name="storyboard_prompt">Storyboard-Prompt</string>
     <string name="admin">Admin</string>
     <string name="loading">Lädt</string>
@@ -529,7 +529,7 @@
     <string name="drama_detail_unpublished">Unveröffentlicht</string>
     <string name="drama_detail_in_review">In Prüfung</string>
     <string name="drama_detail_review_failed">Prüfung nicht bestanden</string>
-    <string name="drama_detail_published">Veröffentlicht</string>
+    <string name="drama_detail_published">Publiziert</string>
     <string name="full_screen">Vollbild</string>
     <string name="drama_has_ended">Diese Serie ist abgeschlossen.</string>
     <string name="drama_delete_work_confirm_title">Dieses Werk löschen?</string>
@@ -629,6 +629,10 @@
     <string name="rewards_title">Belohnungen</string>
     <string name="rewards_rules">Regeln</string>
     <string name="rewards_balance">Guthaben</string>
+    <plurals name="rewards_checked_days">
+        <item quantity="one">Für %1$d Tag eingecheckt</item>
+        <item quantity="other">Für %1$d Tage eingecheckt</item>
+    </plurals>
     <string name="rewards_day_1">Tag %1$d</string>
     <string name="rewards_check_in">Einchecken</string>
     <string name="rewards_earn_rewards">Belohnungen erhalten</string>
@@ -641,7 +645,7 @@
     <string name="rewards_watch_video_earn_50">Video ansehen und +%s Münzen erhalten</string>
     <string name="rewards_watch_ad">Werbung ansehen</string>
     <string name="rewards_checkin_7days_bonus">Melde dich 7 Tage in Folge an und erhalte einen großen Bonus!</string>
-    <string name="rewards_extra_30_coins">%s zusätzliche Münzen verdienen</string>
+    <string name="rewards_extra_30_coins">+%s Extra-Münzen</string>
     <string name="rewards_come_back_tomorrow">Komm morgen wieder</string>
     <string name="rewards_next_refresh">Nächste Aktualisierung in %s</string>
     <string name="rewards_rules_title">Belohnungsregeln</string>
@@ -706,9 +710,9 @@
     <string name="balance_fail_title">Nicht genügend Credits für die weitere Generierung</string>
     <string name="create_page_top_earners">Top-Verdiener</string>
     <string name="create_page_resource_center">Ressourcencenter</string>
-    <string name="create_page_published">Veröffentlicht</string>
+    <string name="create_page_published">Publiziert</string>
     <string name="create_page_income">Einnahmen</string>
-    <string name="create_page_unlocks">Freischaltungen</string>
+    <string name="create_page_unlocks">Freischalt</string>
     <string name="profile_recharge">Aufladen</string>
     <string name="profile_credits">Credits</string>
     <string name="profile_income">Einnahmen</string>

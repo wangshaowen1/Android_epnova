@@ -318,13 +318,13 @@
     <string name="suggest_and_feedback">ご意見・フィードバック</string>
     <string name="my_list_my_creations">マイ作品</string>
     <string name="my_creations_episode_progress">%1$d/%2$d話</string>
-    <string name="my_creations_publish_tip">公開するには、あと%1$s話を完成させてください。</string>
+    <string name="my_creations_publish_tip">公開するには、%1$sを完成させてください。</string>
     <string name="my_creations_publish_tip_highlight">あと%1$d話</string>
     <string name="my_creations_publish_tip_2">制作を続けて、ドラマを形にしましょう。</string>
     <string name="my_creations_publish_tip_3">エピソードを作り続けて、より多くの視聴者に届けましょう。</string>
     <string name="my_creations_publish_tip_over">🎉やりました！ドラマが完結しました！</string>
     <string name="my_creations_all_over">全エピソードが完成しました。新しい作品を作りましょう！</string>
-    <string name="my_creations_all_list">すべてのリスト</string>
+    <string name="my_creations_all_list">詳細</string>
     <string name="my_creations_continue_creating">制作を続ける</string>
     <string name="last_3_months_data_only">過去3か月分のみ表示。データには遅延が生じる場合があります。</string>
     <string name="limited_time_free">期間限定で無料</string>
@@ -333,7 +333,7 @@
     <string name="drama_detail_draft">下書き</string>
     <string name="waiting_to_synthesize">合成待ち</string>
     <string name="vol_number">話</string>
-    <string name="vol_unit">エピソード</string>
+    <string name="vol_unit">話</string>
     <string name="single_series_unit">話</string>
     <string name="storyboard_prompt">絵コンテ用プロンプト</string>
     <string name="admin">管理者</string>
@@ -629,6 +629,10 @@
     <string name="rewards_title">報酬</string>
     <string name="rewards_rules">ルール</string>
     <string name="rewards_balance">残高</string>
+    <plurals name="rewards_checked_days">
+        <item quantity="one">%1$d日間チェックインしました</item>
+        <item quantity="other">%1$d日間チェックインしました</item>
+    </plurals>
     <string name="rewards_day_1">%1$d日目</string>
     <string name="rewards_check_in">チェックイン</string>
     <string name="rewards_earn_rewards">報酬を獲得</string>
@@ -637,8 +641,8 @@
     <string name="rewards_go">移動</string>
     <string name="rewards_watch">視聴</string>
     <string name="rewards_claimed">受取済み</string>
-    <string name="rewards_50_reward_coins">＋%sボーナスコイン</string>
-    <string name="rewards_watch_video_earn_50">動画を見て＋%sコイン獲得</string>
+    <string name="rewards_50_reward_coins">+%sボーナスコイン</string>
+    <string name="rewards_watch_video_earn_50">動画を見て+%sコイン獲得</string>
     <string name="rewards_watch_ad">広告を見る</string>
     <string name="rewards_checkin_7days_bonus">7日連続でチェックインすると、大きなボーナスを獲得！</string>
     <string name="rewards_extra_30_coins">追加で%sコイン獲得</string>
@@ -839,5 +843,5 @@
     <string name="member_subscribe_top_keyword">クレジットを獲得して</string>
     <string name="member_upgrade_top_text">切り替えてもっとお得に</string>
     <string name="member_unit_week">週</string>
-    <string name="member_unit_monthly">月</string>
+    <string name="member_unit_monthly">毎月の</string>
 </resources>

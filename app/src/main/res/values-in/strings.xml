@@ -318,13 +318,13 @@
     <string name="suggest_and_feedback">Saran &amp; Umpan Balik</string>
     <string name="my_list_my_creations">Karya Saya</string>
     <string name="my_creations_episode_progress">%1$d/%2$d EP</string>
-    <string name="my_creations_publish_tip">Selesaikan %1$s episode lagi untuk menerbitkan dramamu.</string>
+    <string name="my_creations_publish_tip">Selesaikan %1$s untuk menerbitkan dramamu.</string>
     <string name="my_creations_publish_tip_highlight">%1$d episode lagi</string>
     <string name="my_creations_publish_tip_2">Terus berkarya untuk menghidupkan dramamu</string>
     <string name="my_creations_publish_tip_3">Terus buat episode untuk menjangkau lebih banyak penonton.</string>
     <string name="my_creations_publish_tip_over">🎉Berhasil! Dramamu kini sudah selesai!</string>
     <string name="my_creations_all_over">Semua episode sudah selesai. Ayo buat karya baru!</string>
-    <string name="my_creations_all_list">Semua Episode</string>
+    <string name="my_creations_all_list">Detail</string>
     <string name="my_creations_continue_creating">Lanjutkan Berkarya</string>
     <string name="last_3_months_data_only">Hanya menampilkan 3 bulan terakhir. Data mungkin tertunda.</string>
     <string name="limited_time_free">Gratis untuk Waktu Terbatas</string>
@@ -629,6 +629,10 @@
     <string name="rewards_title">Hadiah</string>
     <string name="rewards_rules">Peraturan</string>
     <string name="rewards_balance">Saldo</string>
+    <plurals name="rewards_checked_days">
+        <item quantity="one">Telah check-in selama %1$d hari</item>
+        <item quantity="other">Telah check-in selama %1$d hari</item>
+    </plurals>
     <string name="rewards_day_1">Hari %1$d</string>
     <string name="rewards_check_in">Check-in</string>
     <string name="rewards_earn_rewards">Dapatkan Hadiah</string>
@@ -816,7 +820,7 @@
     <string name="member_intro_offer_hint">%1$s untuk minggu pertama, lalu %2$s/minggu</string>
     <string name="member_switch_plan_hint">%1$s dimulai saat perpanjangan berikutnya. Tidak ada biaya hari ini.</string>
     <string name="member_next_super_weekly">Perpanjangan berikutnya dikenakan tarif Super Weekly.</string>
-    <string name="member_publish_earn">Publikasikan &amp; Dapatkan Penghasilan</string>
+    <string name="member_publish_earn">Terbitkan &amp; Raih Uang</string>
     <string name="member_premium_quality">Kualitas Video Premium</string>
     <string name="member_create_more_drama">Buat Lebih Banyak Drama</string>
     <string name="member_discount_percent">Hemat %1$d%%</string>

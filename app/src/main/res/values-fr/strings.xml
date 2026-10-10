@@ -318,13 +318,13 @@
     <string name="suggest_and_feedback">Suggestions et commentaires</string>
     <string name="my_list_my_creations">Mes créations</string>
     <string name="my_creations_episode_progress">%1$d/%2$d épisodes</string>
-    <string name="my_creations_publish_tip">Terminez encore %1$s épisodes pour publier votre série.</string>
-    <string name="my_creations_publish_tip_highlight">Encore %1$d épisodes</string>
+    <string name="my_creations_publish_tip">Terminez %1$s pour publier votre série.</string>
+    <string name="my_creations_publish_tip_highlight">encore %1$d épisodes</string>
     <string name="my_creations_publish_tip_2">Continuez à créer pour donner vie à votre série.</string>
     <string name="my_creations_publish_tip_3">Créez d’autres épisodes pour toucher plus de spectateurs.</string>
     <string name="my_creations_publish_tip_over">🎉Bravo ! Votre série est terminée !</string>
     <string name="my_creations_all_over">Tous les épisodes sont terminés. Créez une nouvelle œuvre !</string>
-    <string name="my_creations_all_list">Toutes les listes</string>
+    <string name="my_creations_all_list">Détails</string>
     <string name="my_creations_continue_creating">Continuer la création</string>
     <string name="last_3_months_data_only">Seuls les 3 derniers mois sont affichés. Les données peuvent être retardées.</string>
     <string name="limited_time_free">Gratuit pour une durée limitée</string>
@@ -333,7 +333,7 @@
     <string name="drama_detail_draft">Brouillon</string>
     <string name="waiting_to_synthesize">Assemblage en attente</string>
     <string name="vol_number">Ép.</string>
-    <string name="vol_unit">Épisodes</string>
+    <string name="vol_unit">Ép.</string>
     <string name="single_series_unit">Ép.</string>
     <string name="storyboard_prompt">Prompt du storyboard</string>
     <string name="admin">Admin</string>
@@ -629,6 +629,10 @@
     <string name="rewards_title">Récompenses</string>
     <string name="rewards_rules">Règles</string>
     <string name="rewards_balance">Solde</string>
+    <plurals name="rewards_checked_days">
+        <item quantity="one">Pointé pendant %1$d jour</item>
+        <item quantity="other">Pointé pendant %1$d jours</item>
+    </plurals>
     <string name="rewards_day_1">Jour %1$d</string>
     <string name="rewards_check_in">Se connecter</string>
     <string name="rewards_earn_rewards">Gagner des récompenses</string>
@@ -641,7 +645,7 @@
     <string name="rewards_watch_video_earn_50">Regardez une vidéo et gagnez +%s pièces</string>
     <string name="rewards_watch_ad">Voir la publicité</string>
     <string name="rewards_checkin_7days_bonus">Connectez-vous 7 jours de suite pour obtenir un gros bonus !</string>
-    <string name="rewards_extra_30_coins">Gagnez %s pièces supplémentaires</string>
+    <string name="rewards_extra_30_coins">+%s pièces bonus</string>
     <string name="rewards_come_back_tomorrow">Revenez demain</string>
     <string name="rewards_next_refresh">Prochaine actualisation dans %s</string>
     <string name="rewards_rules_title">Règles des récompenses</string>
