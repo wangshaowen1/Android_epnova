@@ -3,6 +3,7 @@ package com.kuaigeglobal.epnova.feature.splash.newer
 import androidx.databinding.ObservableField
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.base.viewmodel.AppRepositoryViewModel
 import com.kuaigeglobal.epnova.common.Constants
 import com.kuaigeglobal.epnova.common.ext.topActivity
@@ -18,6 +19,7 @@ import com.kuaigeglobal.epnova.core.response
 import com.kuaigeglobal.epnova.feature.recharge.CoinRepository
 import com.kuaigeglobal.epnova.router.AppNavigator
 import com.nhsd.basic.ext.getParcelableValue
+import com.nhsd.basic.ext.getResString
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -171,9 +173,8 @@ class FirstRechargeCreditsViewModel : AppRepositoryViewModel<CoinRepository>() {
 
     private fun getBonusText(): String {
         val pointText = pointConfig?.pointNum?.toString()
-        val marketingText = pointConfig?.pointMarketingText
-        val tagText = pointConfig?.pointMarketingTag
-        return "${pointText}${marketingText} $tagText"
+        val givePointText = pointConfig?.givePointNum?.toString()
+        return R.string.newbie_credits_bonus_detail.getResString(pointText, givePointText)
     }
 
     private fun getCurrentPointText(): String {
