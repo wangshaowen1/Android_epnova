@@ -122,6 +122,7 @@ class CreatorPlayerViewModel : AppRepositoryViewModel<AppRepository>(), Download
     /**切换当前播放项时同步作品完结状态和操作区。*/
     fun updateCurrentPlayableEpisode(item: CreatorPlayableEpisode?) {
         currentPlayableEpisode.set(item)
+        toolbar.mNavigationText.set(R.string.episode_number_format.getResString(item?.episode?.sortNo ?: 0))
         val workContext = latestWorkContext?.takeIf { it.workId == currentWorkId() }
             ?: item?.workContext
         showKeepCreating.set(item != null && workContext?.isAllEpisodesCompleted() == false)

@@ -201,7 +201,7 @@
             android:orientation="vertical"
             android:paddingHorizontal="@dimen/spacing_l"
             android:paddingTop="10dp"
-            android:paddingBottom="34dp"
+            android:paddingBottom="@dimen/bottom_nav_bar_size"
             app:layout_constraintBottom_toBottomOf="parent">
 
             <Button
