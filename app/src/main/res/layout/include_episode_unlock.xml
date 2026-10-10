@@ -53,7 +53,7 @@
         <!-- 3. 广告解锁 / 次日刷新倒计时固定槽位，避免接口返回后整体居中高度跳变 -->
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="58dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_l">
 
             <!-- 3a. 看广告解锁（有广告次数时） -->
@@ -61,6 +61,7 @@
                 android:id="@+id/llAdUnlock"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:minHeight="58dp"
                 android:background="@drawable/bg_60_000000_stroke_r12"
                 android:clickable="true"
                 android:focusable="true"
@@ -76,7 +77,8 @@
                     android:fontFamily="@font/outfit_medium"
                     android:text="@string/episode_unlock_free"
                     android:textColor="?attr/textColor1"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    android:gravity="center" />
 
                 <TextView
                     style="@style/Text.Regular"
@@ -87,6 +89,7 @@
                     android:text="@{ctrl.adCountText}"
                     android:textColor="?attr/textColor2"
                     android:textSize="12sp"
+                    android:gravity="center"
                     tools:text="Watched today(0/10)" />
             </LinearLayout>
 
@@ -94,11 +97,12 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:minHeight="58dp"
                 android:background="@drawable/bg_80_666666_r12"
                 android:gravity="center"
                 android:orientation="vertical"
                 android:visibility="@{ctrl.contentVisible &amp;&amp; !ctrl.hasAdRemaining ? View.VISIBLE : View.GONE}"
-                tools:visibility="gone">
+                tools:visibility="visible">
 
                 <TextView
                     style="@style/Text.Medium"
@@ -107,6 +111,7 @@
                     android:text="@{ctrl.countdownText}"
                     android:textColor="?attr/textColor3"
                     android:textSize="16sp"
+                    android:gravity="center"
                     tools:text="Come back in 09:31:29" />
 
                 <TextView
@@ -117,6 +122,7 @@
                     android:text="@{ctrl.adCountText}"
                     android:textColor="?attr/textColor3"
                     android:textSize="12sp"
+                    android:gravity="center"
                     tools:text="Watched today(10/10)" />
             </LinearLayout>
         </FrameLayout>
