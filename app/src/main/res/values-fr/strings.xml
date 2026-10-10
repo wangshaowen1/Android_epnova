@@ -317,7 +317,7 @@
     <string name="help_center">Centre d’aide</string>
     <string name="suggest_and_feedback">Suggestions et commentaires</string>
     <string name="my_list_my_creations">Mes créations</string>
-    <string name="my_creations_episode_progress">%1$d/%2$d épisodes</string>
+    <string name="my_creations_episode_progress">%1$d/%2$d ép.</string>
     <string name="my_creations_publish_tip">Terminez %1$s pour publier votre série.</string>
     <string name="my_creations_publish_tip_highlight">encore %1$d épisodes</string>
     <string name="my_creations_publish_tip_2">Continuez à créer pour donner vie à votre série.</string>
@@ -537,7 +537,7 @@
     <string name="compute_power_validity_period">Puissance de calcul valable 1 an</string>
     <string name="deselect_all">Tout désélectionner</string>
     <string name="storyboard">Storyboard</string>
-    <string name="policy_content">Bienvenue sur EpNova !\nAvant d\'utiliser ce produit ou service, veuillez lire attentivement et comprendre les Conditions d\'utilisation et la Politique de confidentialité de l\'application. Elles décrivent nos services et la façon dont nous collectons et utilisons vos données personnelles.\nNous fournissons nos services et protégeons vos données conformément à ces documents.\nSi vous choisissez « Refuser », vous ne pourrez pas utiliser nos produits et services.</string>
+    <string name="policy_content">Bienvenue sur EpNova!\nAvant d’utiliser ce produit ou service, veuillez lire attentivement et comprendre toutes les dispositions des Conditions d’utilisation et de la Politique de confidentialité de l’application. Elles décrivent nos services et les règles de collecte et d’utilisation de vos données personnelles.\nNous fournissons nos services et protégeons vos données personnelles dans le strict respect des Conditions d’utilisation et de la Politique de confidentialité.\nSi vous choisissez « Refuser », vous ne pourrez pas utiliser nos produits et services.</string>
     <string name="please_set_total_episodes">Définir le nombre total d’épisodes</string>
     <string name="please_enter_custom_episodes">Saisissez un nombre d’épisodes personnalisé</string>
     <string name="episode_count_limit_60">60 épisodes maximum</string>
@@ -829,7 +829,7 @@
     <string name="member_membership_activated">Abonnement activé</string>
     <string name="member_upgrade_scheduled">Changement programmé</string>
     <string name="member_service_and_policy">Conditions d’utilisation et Politique de confidentialité.</string>
-    <string name="member_upgrade_top_keyword">pour plus d’économies</string>
+    <string name="member_upgrade_top_keyword">pour économiser davantage</string>
     <string name="app_rating_title_unrated">Vous aimez vos créations IA ?</string>
     <string name="app_rating_subtitle_unrated">Dites-nous ce que vous pensez d’EpNova.</string>
     <string name="app_rating_title_rated">Merci pour votre avis !</string>
@@ -839,9 +839,10 @@
     <string name="app_rating_action_done">Terminé</string>
     <string name="app_rating_action_rate_now">Noter maintenant</string>
     <string name="grid_image_description">Image %1$d sur %2$d</string>
-    <string name="member_subscribe_top_text">Obtenez des crédits pour créer votre propre drame</string>
+    <string name="member_subscribe_top_text">Obtenez des crédits pour créer votre propre série</string>
     <string name="member_subscribe_top_keyword">Obtenez des crédits</string>
-    <string name="member_upgrade_top_text">Changez pour plus d’économies</string>
+    <string name="member_upgrade_top_text">Changez d’abonnement pour économiser davantage</string>
     <string name="member_unit_week">semaine</string>
     <string name="member_unit_monthly">mensuel</string>
+    <string name="common_paste_empty_tips">Le presse-papiers est vide</string>
 </resources>

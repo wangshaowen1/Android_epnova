@@ -252,7 +252,7 @@
 
                 <TextView
                     style="@style/Text12"
-                    text="@{`EP.`+item.data.sortNo}"
+                    text="@{@string/vol_number + item.data.sortNo}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/spacing_s"
@@ -261,7 +261,7 @@
 
                 <TextView
                     style="@style/Text12"
-                    text="@{`/EP.`+item.workInfo.totalEpisodeCnt}"
+                    text="@{`/` + @string/vol_number + item.workInfo.totalEpisodeCnt}"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"

@@ -49,7 +49,8 @@ data class WorkVOInfo(
 
     fun getFormatEp(): String {
         return if (lastSortNo != null && totalEpisodeCnt != null) {
-            "${R.string.vol_number.getResString()}${lastSortNo} / ${R.string.vol_number.getResString()}${totalEpisodeCnt}"
+            "${R.string.episode_progress_format.getResString(lastSortNo, totalEpisodeCnt)}"
+//            "${R.string.vol_number.getResString()}${lastSortNo} / ${R.string.vol_number.getResString()}${totalEpisodeCnt}"
         } else {
             ""
         }

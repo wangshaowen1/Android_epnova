@@ -66,7 +66,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/spacing_m"
                 android:layout_marginTop="@dimen/spacing_m"
-                android:text="@{layout.episodeInfo.formattedPlayCount + ` views`}"
+                android:text="@{layout.episodeInfo.formattedPlayCount()}"
                 android:textColor="?attr/textColor3"
                 app:layout_constraintBottom_toBottomOf="@id/ivCover"
                 app:layout_constraintStart_toEndOf="@id/ivCover"

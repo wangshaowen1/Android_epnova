@@ -1,7 +1,9 @@
 package com.kuaigeglobal.epnova.core.network.apis.response
 
+import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.common.ext.toUnitText
 import com.kuaigeglobal.epnova.core.network.apis.entity.EpisodeRangeInfo
+import com.nhsd.basic.ext.getResString
 
 /**
  * {
@@ -31,4 +33,6 @@ data class EpisodeDirectoryData(
     fun getFormattedPlayCount(): String? {
         return playCount?.toUnitText()
     }
+
+    fun formattedPlayCount() = R.string.income_views_singular.getResString(playCount?.toUnitText())
 }

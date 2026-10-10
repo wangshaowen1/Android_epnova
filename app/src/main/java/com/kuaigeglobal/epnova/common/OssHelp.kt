@@ -23,7 +23,10 @@ import org.json.JSONObject
 
 object OssHelp {
     private val aliyunDomainProvider = object : DomainProvider {
-        override fun getDomainList(): List<String> = listOf("file.epnovai.com")
+        override fun getDomainList(): List<String> = listOf(
+            "file.epnovai.com",
+            "epnova-resource.oss-ap-southeast-1.aliyuncs.com"
+        )
     }
 
     private val colorCache by lazy { LruCache<String, Int>(500) }

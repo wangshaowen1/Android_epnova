@@ -67,6 +67,7 @@ class LanguagesViewModel : AppRepositoryViewModel<LanguagesRepository>() {
             apiBlock = { mRepo.setAppLanguage(LocaleHelper.shortLangCode(selectedCode)) },
             showToast = true
         ) {
+            Config.get().updateConfig()
             AppLanguageManager.applySavedLanguage()
             doneEvent.value = Unit
         }

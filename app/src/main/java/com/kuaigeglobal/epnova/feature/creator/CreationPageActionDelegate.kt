@@ -152,7 +152,14 @@ class CreationPageActionDelegate(
     }
 
     fun pasteInput() {
-        if (!viewModel.isStreaming()) viewModel.input.value = ClipboardUtils.getText().toString()
+        if (!viewModel.isStreaming()) {
+            val clipContent = ClipboardUtils.getText().toString()
+            if (clipContent.isBlank()) {
+                showToast(R.string.common_paste_empty_tips)
+                return
+            }
+            viewModel.input.value = clipContent
+        }
     }
 
     fun uploadStory() {

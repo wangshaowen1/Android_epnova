@@ -880,4 +880,5 @@
     <string name="member_upgrade_top_text">Switch for More Savings</string>
     <string name="member_unit_week">week</string>
     <string name="member_unit_monthly">month</string>
+    <string name="common_paste_empty_tips">Clipboard is empty</string>
 </resources>

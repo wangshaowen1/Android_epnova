@@ -3,12 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:background="@drawable/bg_color3_r20">
+    android:layout_height="wrap_content">
 
     <LinearLayout
-        android:layout_width="160dp"
-        android:layout_height="142dp"
+        android:layout_marginHorizontal="35dp"
+        android:background="@drawable/bg_color3_r20"
+        android:minWidth="160dp"
+        android:minHeight="142dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="vertical"
         android:paddingBottom="4dp">

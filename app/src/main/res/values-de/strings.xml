@@ -317,7 +317,7 @@
     <string name="help_center">Hilfe-Center</string>
     <string name="suggest_and_feedback">Vorschläge und Feedback</string>
     <string name="my_list_my_creations">Meine Werke</string>
-    <string name="my_creations_episode_progress">%1$d/%2$d Episoden</string>
+    <string name="my_creations_episode_progress">%1$d/%2$d Ep.</string>
     <string name="my_creations_publish_tip">Schließe %1$s ab, um dein Drama zu veröffentlichen.</string>
     <string name="my_creations_publish_tip_highlight">noch %1$d Episoden</string>
     <string name="my_creations_publish_tip_2">Erstelle weiter und erwecke dein Drama zum Leben.</string>
@@ -537,7 +537,7 @@
     <string name="compute_power_validity_period">Rechenleistung gültig: 1 Jahr</string>
     <string name="deselect_all">Alle abwählen</string>
     <string name="storyboard">Storyboard</string>
-    <string name="policy_content">Willkommen bei EpNova!\nBitte lies und verstehe vor der Nutzung dieses Produkts oder Dienstes alle Bestimmungen der Nutzungsbedingungen und Datenschutzrichtlinie der App. Dort erfährst du mehr über unsere Dienste und den Umgang mit deinen personenbezogenen Daten.\nWir bieten unsere Dienste gemäß diesen Bestimmungen an und schützen deine Daten.\nWenn du „Ablehnen“ wählst, kannst du unsere Produkte und Dienste nicht nutzen.</string>
+    <string name="policy_content">Willkommen bei EpNova!\nBitte lies und verstehe vor der Nutzung dieses Produkts oder Dienstes alle Bestimmungen der Nutzungsbedingungen und Datenschutzrichtlinie der App. Dort erfährst du mehr über unsere Dienste und die Regeln zur Erhebung und Nutzung deiner personenbezogenen Daten.\nWir bieten unsere Dienste in strikter Übereinstimmung mit den Nutzungsbedingungen und der Datenschutzrichtlinie an und schützen deine personenbezogenen Daten.\nWenn du „Ablehnen“ wählst, kannst du unsere Produkte und Dienste nicht nutzen.</string>
     <string name="please_set_total_episodes">Gesamtzahl der Folgen festlegen</string>
     <string name="please_enter_custom_episodes">Bitte gib eine benutzerdefinierte Folgenzahl ein</string>
     <string name="episode_count_limit_60">Maximal 60 Episoden</string>
@@ -829,7 +829,7 @@
     <string name="member_membership_activated">Mitgliedschaft aktiviert</string>
     <string name="member_upgrade_scheduled">Wechsel vorgemerkt</string>
     <string name="member_service_and_policy">Nutzungsbedingungen und Datenschutzrichtlinie.</string>
-    <string name="member_upgrade_top_keyword">für mehr Einsparungen</string>
+    <string name="member_upgrade_top_keyword">spare mehr</string>
     <string name="app_rating_title_unrated">Gefallen dir deine KI-Kreationen?</string>
     <string name="app_rating_subtitle_unrated">Sag uns, was du von EpNova hältst.</string>
     <string name="app_rating_title_rated">Danke für dein Feedback!</string>
@@ -839,9 +839,10 @@
     <string name="app_rating_action_done">Fertig</string>
     <string name="app_rating_action_rate_now">Jetzt bewerten</string>
     <string name="grid_image_description">Bild %1$d von %2$d</string>
-    <string name="member_subscribe_top_text">Holen Sie sich Credits, um Ihr eigenes Drama zu erstellen</string>
-    <string name="member_subscribe_top_keyword">Holen Sie sich Credits</string>
-    <string name="member_upgrade_top_text">Wechseln Sie für mehr Einsparungen</string>
+    <string name="member_subscribe_top_text">Hol dir Credits, um deine eigene Serie zu erstellen</string>
+    <string name="member_subscribe_top_keyword">Hol dir Credits</string>
+    <string name="member_upgrade_top_text">Wechsle und spare mehr</string>
     <string name="member_unit_week">woche</string>
     <string name="member_unit_monthly">monatlich</string>
+    <string name="common_paste_empty_tips">Zwischenablage ist leer</string>
 </resources>

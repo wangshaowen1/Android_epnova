@@ -364,7 +364,7 @@
     <string name="account_deletion_title">アカウント削除のお知らせ</string>
     <string name="creation_progress_format">全%2$d話中%1$d話を作成済み</string>
     <string name="image_description_limit">画像の説明（%1$d/%2$d）：</string>
-    <string name="episode_progress_format">第%1$d話／全%2$d話</string>
+    <string name="episode_progress_format">第%1$d話/全%2$d話</string>
     <string name="auto_saved_as_draft">下書きとして自動保存しました</string>
     <string name="ai_generating_auto_saved">AIが生成中です。下書きとして自動保存しました。</string>
     <string name="ai_generating_auto_saved_2">AIが生成中です。自動保存しました。</string>
@@ -744,7 +744,7 @@
     <string name="drama_created_ep_plural">%1$s話を作成</string>
     <string name="drama_total_ep_singular">全%1$s話を作成</string>
     <string name="drama_total_ep_plural">全%1$s話を作成</string>
-    <string name="income_views_singular">%1$s回視聴</string>
+    <string name="income_views_singular">%1$s 視聴回数</string>
     <string name="drama_detail_ep_1">%1$s話</string>
     <string name="drama_detail_ep_2">%1$s話</string>
     <string name="drama_detail_all_eps">全エピソード</string>
@@ -839,9 +839,10 @@
     <string name="app_rating_action_done">完了</string>
     <string name="app_rating_action_rate_now">今すぐ評価</string>
     <string name="grid_image_description">画像%1$d／%2$d</string>
-    <string name="member_subscribe_top_text">クレジットを獲得して、自分だけのドラマを作成しましょう</string>
-    <string name="member_subscribe_top_keyword">クレジットを獲得して</string>
+    <string name="member_subscribe_top_text">自分のドラマ制作に使えるクレジットを入手</string>
+    <string name="member_subscribe_top_keyword">クレジットを入手</string>
     <string name="member_upgrade_top_text">切り替えてもっとお得に</string>
     <string name="member_unit_week">週</string>
-    <string name="member_unit_monthly">毎月の</string>
+    <string name="member_unit_monthly">月</string>
+    <string name="common_paste_empty_tips">クリップボードは空です</string>
 </resources>

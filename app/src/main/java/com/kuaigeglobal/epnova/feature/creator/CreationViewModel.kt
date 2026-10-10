@@ -376,7 +376,7 @@ class CreationViewModel : AppRepositoryViewModel<CreationRepository>() {
     fun extractStoryName(input: String?): String? {
         if (input.isNullOrBlank()) return null
         // 兼容中英文标题标签和常见包裹符号；无包裹符号时取标题行剩余内容。
-        val titleLabel = """(?:故事名称|故事标题|作品名称|作品标题|Story\s*Title|Title)"""
+        val titleLabel = """(?:Story\s*Title|Title|作品タイトル|Título|Serientitel|Titre|Judul|Título)"""
         val regex = """$titleLabel\s*[:：]\s*([^\r\n]+)""".toRegex(RegexOption.IGNORE_CASE)
         val title = regex.find(input)?.groups?.get(1)?.value?.trim() ?: return null
 
