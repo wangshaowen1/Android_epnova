@@ -91,7 +91,7 @@ class Config : NetworkChangedListener {
 
 
     var loginRewardsDialog: String? by MmkvDelegate(TODAY_LOGIN_REWARDS_DIALOG, null) { mmkv }
-    var loginRewards: String? by MmkvDelegate(LOGIN_REWARDS, null) { mmkv }
+    var loginRewards: String? by MmkvDelegate(LOGIN_REWARDS, "50") { mmkv }
 
     /** 首页 Tab 书架配置，启动时可直接读取上次保存的结果。 */
     var bookShelfConfigList: List<BookShelfConfigInfo> by MmkvListDelegate(
