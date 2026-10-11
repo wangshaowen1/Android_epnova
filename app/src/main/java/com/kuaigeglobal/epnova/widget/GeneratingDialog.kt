@@ -1,6 +1,7 @@
 package com.kuaigeglobal.epnova.widget
 
 import android.content.Context
+import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatDialog
 import androidx.core.view.isVisible
 import com.kuaigeglobal.epnova.R
@@ -20,6 +21,11 @@ class GeneratingDialog @JvmOverloads constructor(
         setCanceledOnTouchOutside(false)
         setCancelable(backEnable)
         updateContent(title, tips)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
     }
 
     /**
