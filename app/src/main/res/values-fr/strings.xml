@@ -589,7 +589,7 @@
     <string name="newbie_new_user_exclusive_gift">Cadeau exclusif de bienvenue !</string>
     <string name="newbie_current_credits">Crédits disponibles</string>
     <string name="newbie_exclusive_bonus">Bonus exclusif</string>
-    <string name="newbie_credits_bonus_detail">Bonus %1$s + %2$s</string>
+    <string name="newbie_credits_bonus_detail">%1$s + %2$s Bonus</string>
     <string name="newbie_limited_time_offer">Offre à durée limitée :</string>
     <string name="newbie_pay_now">Payer maintenant</string>
     <string name="settings_language">Langue</string>

@@ -6,10 +6,12 @@
     android:layout_height="wrap_content">
 
     <LinearLayout
+        android:layout_gravity="center"
         android:layout_marginHorizontal="35dp"
         android:background="@drawable/bg_color3_r20"
+        android:minWidth="160dp"
         android:minHeight="142dp"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="vertical"
@@ -27,11 +29,11 @@
 
         <TextView
             android:id="@+id/title"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:gravity="center"
-            android:paddingHorizontal="2dp"
+            android:paddingHorizontal="12dp"
             android:textColor="?attr/textColor1"
             android:textSize="14sp"
             android:textStyle="bold"
@@ -40,11 +42,11 @@
 
         <TextView
             android:id="@+id/tips"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:gravity="center"
-            android:paddingHorizontal="2dp"
+            android:paddingHorizontal="12dp"
             android:textColor="?attr/textColor4"
             android:textSize="12sp"
             tools:text="退出后AI会继续生成" />
