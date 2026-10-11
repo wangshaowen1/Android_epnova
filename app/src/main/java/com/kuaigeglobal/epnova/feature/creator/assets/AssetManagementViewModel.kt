@@ -383,11 +383,12 @@ class AssetManagementViewModel : AppRepositoryViewModel<AssetManagementRepositor
         onItemClick.value = click@{ view ->
             when (view?.id) {
                 R.id.ivCover -> {
+                    if (status.get() == 1) return@click
                     assetImage.get()?.let { PhotoPagerActivity.launchWithAiChip(topActivity, it) }
                 }
 
                 R.id.ivCoverBorder -> {
-                    if (status.get() == -1) return@click
+                    if (status.get() == -1 || status.get() == 1) return@click
                     if (assetImage.get().isNullOrEmpty() || (status.get() == 0 || status.get() == 10)) {
                         onAssetImageSelectEvent?.invoke(this)
                         return@click
