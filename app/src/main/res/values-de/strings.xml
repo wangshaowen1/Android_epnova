@@ -11,7 +11,7 @@
     <string name="page_empty">Hier gibt es noch nichts</string>
     <string name="no_more_data">Du hast das Ende erreicht …</string>
     <string name="page_network_error">Prüfe deine Verbindung und versuche es erneut.</string>
-    <string name="refresh_to_retry">Aktualisieren und erneut versuchen</string>
+    <string name="refresh_to_retry">Erneut versuchen</string>
     <string name="download_failed">Download fehlgeschlagen</string>
     <string name="i_know">Verstanden</string>
     <string name="permissionx_default_rationale_title">Berechtigungshinweis</string>
@@ -131,7 +131,7 @@
     <string name="toast_empty_network">Verbindung fehlgeschlagen. Prüfe deine Internetverbindung.</string>
     <string name="agree">Zustimmen</string>
     <string name="disagree">Ablehnen</string>
-    <string name="save">Speichern</string>
+    <string name="save">Sichern</string>
     <string name="send_sms_code">Code anfordern</string>
     <string name="resend_sms_code">Code erneut senden</string>
     <string name="enter_right_phone_num">Gib eine gültige Telefonnummer ein</string>
@@ -175,7 +175,7 @@
     <string name="upgrade">Upgrade</string>
     <string name="income_details">Einnahmendetails</string>
     <string name="terms_of_service">Nutzungsbedingungen</string>
-    <string name="generation_failed">Laden fehlgeschlagen</string>
+    <string name="generation_failed">Ladefehler</string>
     <string name="text_guide_step1">KI-generierte Inhalte gesammelt veröffentlichen, um</string>
     <string name="text_sensitive_warning">Stelle sicher, dass der Inhalt keine Pornografie, Gewalt, politischen Inhalte oder andere verbotene Informationen enthält.</string>
     <string name="unregister_reason">Grund für die Löschung:</string>
@@ -304,7 +304,7 @@
     <string name="estimated_time_remaining">Geschätzte Restzeit</string>
     <string name="ai_generation_continues_on_exit">Die KI erstellt weiter, auch wenn du die Seite verlässt</string>
     <string name="directory">Inhalt</string>
-    <string name="loading_failed">Laden fehlgeschlagen</string>
+    <string name="loading_failed">Ladefehler</string>
     <string name="next_create_script">Weiter: Drehbuch erstellen</string>
     <string name="story_content">Drehbuchinhalt</string>
     <string name="retry">Erneut versuchen</string>
@@ -365,6 +365,7 @@
     <string name="creation_progress_format">%1$d von %2$d Folgen erstellt</string>
     <string name="image_description_limit">Bildbeschreibung (%1$d/%2$d):</string>
     <string name="episode_progress_format">Folge %1$d / %2$d</string>
+    <string name="episode_progress_format_suffix">%d</string>
     <string name="auto_saved_as_draft">Automatisch als Entwurf gespeichert</string>
     <string name="ai_generating_auto_saved">KI erstellt Inhalte. Automatisch als Entwurf gespeichert.</string>
     <string name="ai_generating_auto_saved_2">KI erstellt Inhalte. Automatisch gespeichert.</string>
@@ -845,4 +846,5 @@
     <string name="member_unit_week">woche</string>
     <string name="member_unit_monthly">monatlich</string>
     <string name="common_paste_empty_tips">Zwischenablage ist leer</string>
+    <string name="episode_progress_format_prefix">Folge %d</string>
 </resources>

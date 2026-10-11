@@ -175,7 +175,7 @@
     <string name="upgrade">アップグレード</string>
     <string name="income_details">収益明細</string>
     <string name="terms_of_service">利用規約</string>
-    <string name="generation_failed">読み込みに失敗しました</string>
+    <string name="generation_failed">読込失敗</string>
     <string name="text_guide_step1">AI生成コンテンツをまとめて公開して</string>
     <string name="text_sensitive_warning">コンテンツにポルノ、暴力、政治関連の内容など、禁止されている情報が含まれていないことを確認してください。</string>
     <string name="unregister_reason">削除理由：</string>
@@ -304,7 +304,7 @@
     <string name="estimated_time_remaining">残り時間の目安</string>
     <string name="ai_generation_continues_on_exit">画面を閉じてもAIは生成を続けます</string>
     <string name="directory">目次</string>
-    <string name="loading_failed">読み込みに失敗しました</string>
+    <string name="loading_failed">読込失敗</string>
     <string name="next_create_script">次へ：脚本を作成</string>
     <string name="story_content">脚本の内容</string>
     <string name="retry">再試行</string>
@@ -365,6 +365,8 @@
     <string name="creation_progress_format">全%2$d話中%1$d話を作成済み</string>
     <string name="image_description_limit">画像の説明（%1$d/%2$d）：</string>
     <string name="episode_progress_format">第%1$d話/全%2$d話</string>
+    <string name="episode_progress_format_prefix">第%d話</string>
+    <string name="episode_progress_format_suffix">全%d話</string>
     <string name="auto_saved_as_draft">下書きとして自動保存しました</string>
     <string name="ai_generating_auto_saved">AIが生成中です。下書きとして自動保存しました。</string>
     <string name="ai_generating_auto_saved_2">AIが生成中です。自動保存しました。</string>

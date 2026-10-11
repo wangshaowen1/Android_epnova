@@ -175,7 +175,7 @@
     <string name="upgrade">Tingkatkan</string>
     <string name="income_details">Detail Pendapatan</string>
     <string name="terms_of_service">Syarat Layanan</string>
-    <string name="generation_failed">Gagal Memuat</string>
+    <string name="generation_failed">Gagal memuat</string>
     <string name="text_guide_step1">Konten yang dihasilkan AI, terbitkan semuanya di satu tempat</string>
     <string name="text_sensitive_warning">Pastikan konten tidak mengandung pornografi, kekerasan, konten terkait politik, atau informasi terlarang lainnya.</string>
     <string name="unregister_reason">Alasan penghapusan:</string>
@@ -304,7 +304,7 @@
     <string name="estimated_time_remaining">Perkiraan waktu tersisa</string>
     <string name="ai_generation_continues_on_exit">AI akan terus membuat setelah Anda keluar</string>
     <string name="directory">Konten</string>
-    <string name="loading_failed">Gagal Memuat</string>
+    <string name="loading_failed">Gagal memuat</string>
     <string name="next_create_script">Berikutnya: Buat Skrip</string>
     <string name="story_content">Konten Skrip</string>
     <string name="retry">Coba Lagi</string>
@@ -365,6 +365,7 @@
     <string name="creation_progress_format">%1$d dari %2$d Episode Dibuat</string>
     <string name="image_description_limit">Deskripsi Gambar</string>
     <string name="episode_progress_format">Ep.  %1$d / %2$d</string>
+    <string name="episode_progress_format_suffix">%d</string>
     <string name="auto_saved_as_draft">Tersimpan otomatis sebagai draf</string>
     <string name="ai_generating_auto_saved">AI sedang membuat. Tersimpan otomatis sebagai draf.</string>
     <string name="ai_generating_auto_saved_2">AI sedang membuat. Tersimpan otomatis.</string>
@@ -845,4 +846,5 @@
     <string name="member_unit_week">minggu</string>
     <string name="member_unit_monthly">bulanan</string>
     <string name="common_paste_empty_tips">Clipboard kosong</string>
+    <string name="episode_progress_format_prefix">Ep.  %d</string>
 </resources>

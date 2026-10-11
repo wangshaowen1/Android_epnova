@@ -11,7 +11,7 @@
     <string name="page_empty">Ainda não há conteúdo</string>
     <string name="no_more_data">Você chegou ao fim…</string>
     <string name="page_network_error">Verifique sua conexão e tente novamente.</string>
-    <string name="refresh_to_retry">Atualizar e tentar novamente</string>
+    <string name="refresh_to_retry">Tentar novamente</string>
     <string name="download_failed">Falha no download</string>
     <string name="i_know">Entendi</string>
     <string name="permissionx_default_rationale_title">Explicação das permissões</string>
@@ -175,7 +175,7 @@
     <string name="upgrade">Fazer upgrade</string>
     <string name="income_details">Detalhes da renda</string>
     <string name="terms_of_service">Termos de Serviço</string>
-    <string name="generation_failed">Falha ao carregar</string>
+    <string name="generation_failed">Falha</string>
     <string name="text_guide_step1">Publique todo o conteúdo gerado por IA em um só lugar para</string>
     <string name="text_sensitive_warning">Certifique-se de que o conteúdo não inclua pornografia, violência, conteúdo político ou outras informações proibidas.</string>
     <string name="unregister_reason">Motivo da exclusão:</string>
@@ -304,7 +304,7 @@
     <string name="estimated_time_remaining">Tempo restante estimado</string>
     <string name="ai_generation_continues_on_exit">A IA continua gerando mesmo após você sair</string>
     <string name="directory">Conteúdo</string>
-    <string name="loading_failed">Falha ao carregar</string>
+    <string name="loading_failed">Falha</string>
     <string name="next_create_script">Próximo: criar roteiro</string>
     <string name="story_content">Conteúdo do roteiro</string>
     <string name="retry">Tentar novamente</string>
@@ -365,6 +365,7 @@
     <string name="creation_progress_format">%1$d de %2$d episódios criados</string>
     <string name="image_description_limit">Descrição da imagem (%1$d/%2$d):</string>
     <string name="episode_progress_format">Ep. %1$d / %2$d</string>
+    <string name="episode_progress_format_suffix">%d</string>
     <string name="auto_saved_as_draft">Salvo automaticamente como rascunho</string>
     <string name="ai_generating_auto_saved">A IA está gerando. Salvo automaticamente como rascunho.</string>
     <string name="ai_generating_auto_saved_2">A IA está gerando. Salvo automaticamente.</string>
@@ -845,4 +846,5 @@
     <string name="member_unit_week">semana</string>
     <string name="member_unit_monthly">mensal</string>
     <string name="common_paste_empty_tips">A área de transferência está vazia</string>
+    <string name="episode_progress_format_prefix">Ep. %d</string>
 </resources>

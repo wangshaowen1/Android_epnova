@@ -393,6 +393,8 @@
     <string name="creation_progress_format">%1$d of %2$d Episodes Created</string>
     <string name="image_description_limit">Image Description (%1$d/%2$d): </string>
     <string name="episode_progress_format">Ep. %1$d / %2$d</string>
+    <string name="episode_progress_format_prefix">Ep.%d</string>
+    <string name="episode_progress_format_suffix">%d</string>
     <string name="auto_saved_as_draft">Auto-saved as draft</string>
     <string name="ai_generating_auto_saved">AI is generating. Auto-saved as draft.</string>
     <string name="ai_generating_auto_saved_2">AI is generating. Auto-saved.</string>
