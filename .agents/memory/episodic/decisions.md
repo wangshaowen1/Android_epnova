@@ -209,3 +209,13 @@ STATIC：已核对两类商品接口路由、回调落盘先于网络、账号�
 ### 2026-09-14 分镜预览切回生成中项的播放器回跳原因
 
 静态定位 `EditStoryboardVideoViewModel`：选择非完成分镜时直接 `clearMediaItems()`，Media3 清空最后一个媒体项可能回调 `STATE_ENDED`；监听器无条件调用 `playNext()`，而 `playNext()` 只判断 `videoUrl` 非空，没有判断 `videoGenerated`。重绘/生成中项可能保留旧 `videoUrl`，因此清空已完成项后会被误判为可播放并自动选回下一个已完成分镜，表现为点击生成中分镜后预览切不回去。本轮已将 `playNext()` 门禁收紧为仅 `videoGenerated == true` 且 `videoUrl` 非空才允许自动切换，避免 `clearMediaItems()` 触发的结束回调回跳；同时为视频轮询完成及外部分镜数据更新增加当前条目回调，仅当前分镜完成时重新执行 `select()` 装载新播放器媒体项；按项目规则未跑 Gradle。
+
+### 2026-10-11 自定义集数再次选中的焦点处理
+
+- `VideoSetActivity` 与 `VideoSetDialog` 共用 `VideoSetViewModel.initEpisodeVm()` 和 `item_series_count.xml`。第一版在 item 上等待 pre-draw 并让 item 根布局承接触摸焦点，用户反馈无效；连接设备读取控件树确认自定义已选中但标题内部 `contentInput` 持有焦点，另观察到点击普通选项只取得焦点而未选中。Android `View.onTouchEvent()` 会在触摸获取焦点时跳过点击回调，因此撤掉 item 的触摸焦点属性。
+- 第二版改在稳定的 RecyclerView 上等待布局，并按当前 adapter 位置重新取 holder/binding，不持有可能离屏或被回收的旧 item；如果新 binding 仍请求布局，继续等下一帧。切走自定义和输入法完成时由列表外的页面内容容器承接焦点。回调检查当前选择、绑定对象、可见性和挂载状态，避免旧 item 回调抢焦点。
+- 已核对本地 `utilcodex 1.31.1` 源码，`KeyboardUtils.showSoftInput(view)` 包含 `toggleSoftInput`；此处改用 `InputMethodManager.showSoftInput(..., SHOW_IMPLICIT)`。保留用户注释的页面焦点管理与普通选项收键盘逻辑。
+- 第二版仅完成源码引用、XML 解析和差异静态检查，未运行 Gradle，修改后的版本尚未部署到设备验证；原问题完整焦点时序尚未通过设备日志确认。
+- 用户反馈第二版不再跳标题，但键盘弹出后输入框仍失焦。通过 JDWP 在运行中的设备捕获真实调用栈：数字单行 EditText 居中布局的内部 `scrollX=524228`，`RecyclerView.requestChildFocus()` 发起 `smoothScrollBy(dx=-523478, dy=0)`，后续 ViewFlinger 通过 LinearLayoutManager 回收末端 item，触发 `removeViewInternal -> clearFocusInternal`。
+- 最终在当前 holder 输入框上调用 `setHorizontallyScrolling(false)`，等待其重新布局，并在请求焦点前 `scrollTo(0, 0)` 清理旧布局偏移。设备上通过调试器临时关闭内部横向滚动并取消已发起的异常滚动后，直接点击及“普通集数 -> 自定义”回归均保持 `etInput.focused=true`；正式源码改动仍需重新编译部署验证，未运行 Gradle。
+- 根因确认后按用户要求精简：去掉强制 `scrollToPosition`、重新查 holder 和递归等待布局，直接更新点击 item 的 binding 后在 pre-draw 聚焦；保留关闭内部横向滚动、清零偏移和页面内容容器承接焦点。单复数单位改为 ItemVM 初始化时监听 `input` 一次，避免每次点击叠加 TextWatcher；60 集上限统一检查 `item.input`，避免“完成”后失焦再次读取尚未重绑的旧文本而重复提示。精简版仅做静态检查，未运行 Gradle或部署验证。

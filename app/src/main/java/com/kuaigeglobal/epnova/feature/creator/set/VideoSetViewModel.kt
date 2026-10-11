@@ -4,17 +4,18 @@ import android.graphics.Color
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import android.widget.EditText
-import androidx.appcompat.widget.AppCompatEditText
-import androidx.core.widget.doAfterTextChanged
+import android.view.inputmethod.InputMethodManager
+import androidx.core.view.doOnPreDraw
+import androidx.databinding.DataBindingUtil
+import androidx.databinding.Observable
 import androidx.lifecycle.MutableLiveData
+import androidx.recyclerview.widget.RecyclerView
 import com.blankj.utilcode.util.KeyboardUtils
 import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.base.RecyclerViewVM
 import com.kuaigeglobal.epnova.base.viewmodel.AppRepositoryViewModel
 import com.kuaigeglobal.epnova.base.viewmodel.ToolbarViewModel
 import com.kuaigeglobal.epnova.common.Constants
-import com.kuaigeglobal.epnova.common.ext.getChildByType
 import com.kuaigeglobal.epnova.core.AppRepository
 import com.kuaigeglobal.epnova.core.ext.launch
 import com.kuaigeglobal.epnova.core.ext.request
@@ -24,6 +25,7 @@ import com.kuaigeglobal.epnova.core.network.apis.entity.VideoStyleConfigInfo
 import com.kuaigeglobal.epnova.core.network.apis.request.CreateTaskBody
 import com.kuaigeglobal.epnova.core.network.apis.request.WorkTaskData
 import com.kuaigeglobal.epnova.core.network.apis.response.FirstRechargeDialogData
+import com.kuaigeglobal.epnova.databinding.ItemSeriesCountBinding
 import com.kuaigeglobal.epnova.feature.creator.data.DramaGenerateConstants
 import com.kuaigeglobal.epnova.feature.creator.set.allstyle.ItemCreationStyleVm
 import com.kuaigeglobal.epnova.widget.decoration.GridSpacingItemDecoration
@@ -100,61 +102,74 @@ class VideoSetViewModel : AppRepositoryViewModel<AppRepository>() {
                 checked.set(true)
                 checkedEpisodeSet = this
             }
+            if (ratio.isCustomInput()) {
+                hasSingle.set(input.get()?.toIntOrNull() == 1)
+                input.addOnPropertyChangedCallback(object : Observable.OnPropertyChangedCallback() {
+                    override fun onPropertyChanged(sender: Observable?, propertyId: Int) {
+                        hasSingle.set(input.get()?.toIntOrNull() == 1)
+                    }
+                })
+            }
             onItemClick.value = { view ->
+                val focusContainer = (view?.parent as? RecyclerView)?.parent as? ViewGroup
+                focusContainer?.apply {
+                    isFocusable = true
+                    isFocusableInTouchMode = true
+                }
+                // 在隐藏自定义输入框之前转移焦点，避免系统把焦点分配给作品标题。
+                if (!ratio.isCustomInput() && checkedEpisodeSet?.data?.get()?.isCustomInput() == true) {
+                    focusContainer?.requestFocus()
+                }
                 if (checkedEpisodeSet != this) {
                     checkedEpisodeSet?.checked?.set(false)
-                    this.checked.set(true)
+                    checked.set(true)
                     checkedEpisodeSet = this
                 }
 
                 if (ratio.isCustomInput()) {
-                    val editText = (view as? ViewGroup)?.getChildByType(
-                        EditText::class.java,
-                        AppCompatEditText::class.java
-                    ) as? EditText
-
-                    editText?.apply {
-                        // 若为单集要改变单位，不让统一用复数形式
-                        hasSingle.set(text.toString().toIntOrNull() == 1)
-                        doAfterTextChanged {
-                            hasSingle.set(it?.toString()?.toIntOrNull() == 1)
+                    view?.let { DataBindingUtil.getBinding<ItemSeriesCountBinding>(it) }?.let { binding ->
+                        val editText = binding.etInput
+                        // 居中数字单行输入的横向滚动会产生超大 scrollX，导致 RecyclerView 卷走并回收焦点 item。
+                        editText.setHorizontallyScrolling(false)
+                        editText.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
+                            if (!hasFocus) checkCustomEpisodeCount(this)
                         }
-                        onFocusChangeListener = View.OnFocusChangeListener { v, hasFocus ->
-                            if (!hasFocus) {
-                                val num = text.toString().toIntOrNull() ?: 0
-                                if (num > 60) {
-                                    R.string.episode_count_limit_60.getResString().showToast()
-                                    input.set("60")
-                                }
-                            }
-                        }
-                        setOnEditorActionListener { v, actionId, _ ->
+                        editText.setOnEditorActionListener { v, actionId, _ ->
                             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                                val num = text.toString().toIntOrNull() ?: 0
-                                if (num > 60) {
-                                    R.string.episode_count_limit_60.getResString().showToast()
-                                    input.set("60")
-                                }
-                                clearFocus()
+                                checkCustomEpisodeCount(this)
+                                focusContainer?.requestFocus()
                                 KeyboardUtils.hideSoftInput(v)
                                 true
                             } else false
                         }
+                        binding.executePendingBindings()
+                        binding.root.doOnPreDraw {
+                            if (checkedEpisodeSet !== this || binding.item !== this ||
+                                !editText.isAttachedToWindow || !editText.isShown
+                            ) return@doOnPreDraw
+                            // 聚焦前清掉旧单行布局的偏移，避免抢在 TextView 自身的 pre-draw 之前触发错误滚动。
+                            editText.scrollTo(0, 0)
+                            if (!editText.requestFocus()) return@doOnPreDraw
+                            editText.post {
+                                if (checkedEpisodeSet === this && binding.item === this &&
+                                    editText.isAttachedToWindow && editText.hasFocus()
+                                ) {
+                                    val imm = editText.context.getSystemService(InputMethodManager::class.java)
+                                    // 只显示键盘，避免 utilcodex 的 toggleSoftInput 把已打开的键盘关闭。
+                                    imm?.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT)
+                                }
+                            }
+                        }
                     }
-
-                    // 仅仅使用 post 等待 DataBinding 把 FrameLayout 设为 VISIBLE
-                    view?.post {
-                        // 直接请求焦点弹键盘
-                        // 此时，因为 EditText 已经是 90dp 宽了，
-                        // Android 原生的焦点追踪会平滑且完美地把这 90dp 全部推到屏幕内！
-                        editText?.requestFocus()
-                        editText?.let { KeyboardUtils.showSoftInput(it) }
-                    }
-
-                } else {
-                    view?.let { KeyboardUtils.hideSoftInput(it) }
                 }
             }
+        }
+    }
+
+    private fun checkCustomEpisodeCount(item: ItemVideoConfigVm) {
+        if ((item.input.get()?.toIntOrNull() ?: 0) > 60) {
+            item.input.set("60")
+            R.string.episode_count_limit_60.getResString().showToast()
         }
     }
 
