@@ -195,7 +195,7 @@
     <string name="storyboard_redraw">Storyboard neu zeichnen</string>
     <string name="gen_continue_after_exit">Die Videogenerierung läuft auch nach dem Verlassen weiter</string>
     <string name="click_retry">Zum erneuten Versuch tippen</string>
-    <string name="storyboard_design">Storyboard-Design</string>
+    <string name="storyboard_design">Storyboard-Beschreibung</string>
     <string name="subtitle_processing">Untertitel werden erstellt. Das Video kann weiterhin abgespielt werden.</string>
     <string name="error_subtitle_gen">Untertitelgenerierung fehlgeschlagen</string>
     <string name="video_done_sub_error">Video fertig, aber Untertitelgenerierung fehlgeschlagen</string>

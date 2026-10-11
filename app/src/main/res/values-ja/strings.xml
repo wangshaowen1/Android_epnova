@@ -195,7 +195,7 @@
     <string name="storyboard_redraw">絵コンテを描き直す</string>
     <string name="gen_continue_after_exit">画面を閉じても動画の生成は続きます</string>
     <string name="click_retry">タップして再試行</string>
-    <string name="storyboard_design">絵コンテの設計</string>
+    <string name="storyboard_design">絵コンテの説明</string>
     <string name="subtitle_processing">字幕を生成中です。動画は引き続き再生できます。</string>
     <string name="error_subtitle_gen">字幕の生成に失敗しました</string>
     <string name="video_done_sub_error">動画は完成しましたが、字幕の生成に失敗しました</string>

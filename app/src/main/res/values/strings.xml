@@ -223,7 +223,7 @@
     <string name="storyboard_redraw">Redraw Storyboard</string>
     <string name="gen_continue_after_exit">Video will continue generating after you exit</string>
     <string name="click_retry">Tap to Retry</string>
-    <string name="storyboard_design">Storyboard Design</string>
+    <string name="storyboard_design">Storyboard Description</string>
     <string name="subtitle_processing">Subtitles are generating. Video is still playable.</string>
     <string name="error_subtitle_gen">Subtitle Generation Failed</string>
     <string name="video_done_sub_error">Video ready, but subtitle generation failed</string>

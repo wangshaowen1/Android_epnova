@@ -195,7 +195,7 @@
     <string name="storyboard_redraw">Redesenhar storyboard</string>
     <string name="gen_continue_after_exit">O vídeo continuará sendo gerado após você sair</string>
     <string name="click_retry">Toque para tentar novamente</string>
-    <string name="storyboard_design">Design do storyboard</string>
+    <string name="storyboard_design">Descrição do storyboard</string>
     <string name="subtitle_processing">As legendas estão sendo geradas. O vídeo ainda pode ser reproduzido.</string>
     <string name="error_subtitle_gen">Falha ao gerar legendas</string>
     <string name="video_done_sub_error">Vídeo pronto, mas houve falha ao gerar legendas</string>
