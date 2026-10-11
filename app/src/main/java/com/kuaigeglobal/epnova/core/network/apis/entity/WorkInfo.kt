@@ -482,6 +482,10 @@ data class EpisodeInfo(
         const val EPISODE_REPAINT_COMPLETED = 50
     }
 
+    fun formatEpisodeNo(): String {
+        return R.string.episode_number_format.getResString(sortNo ?: 0)
+    }
+
     fun isLocked(): Boolean {
         return lockStatus == 2
     }
