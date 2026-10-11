@@ -138,7 +138,7 @@
 
                 <Button
                     android:id="@+id/btnRecharge"
-                    style="@style/Button.Bold"
+                    style="@style/Button.Bold.Blue"
                     android:layout_width="match_parent"
                     android:layout_marginHorizontal="@dimen/spacing_l"
                     android:layout_marginTop="@dimen/spacing_m"
@@ -174,7 +174,7 @@
 
                 <Button
                     android:id="@+id/btnRegenerate"
-                    style="@style/Button.Bold"
+                    style="@style/Button.Bold.Blue"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"

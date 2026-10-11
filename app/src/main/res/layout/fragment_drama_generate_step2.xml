@@ -124,7 +124,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="36dp"
                     android:layout_marginTop="24dp"
-                    android:background="@drawable/btn_theme1_r50"
+                    android:background="@drawable/bg_5a6afe_r50"
                     android:gravity="center"
                     android:paddingHorizontal="40dp"
                     android:text="@string/retry"
