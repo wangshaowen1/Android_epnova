@@ -104,8 +104,7 @@ class VideoSetActivity : BaseViewModelActivity<ActivityVideoSetBinding, VideoSet
     }
 
     private fun initView() {
-//        binding.nameInputer.setText(mRealVM.workTitle)
-        binding.nameInputer.setText("") // 默认为空
+        binding.nameInputer.setText(mRealVM.workTitle)
         updateSameStory(mRealVM.sameStory)
         updateConfirmButtonAlpha()
         binding.scrollView.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
