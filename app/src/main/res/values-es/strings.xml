@@ -196,7 +196,7 @@
     <string name="gen_continue_after_exit">El video seguirá generándose aunque salgas</string>
     <string name="click_retry">Toca para reintentar</string>
     <string name="storyboard_design">Descripción del storyboard</string>
-    <string name="subtitle_processing">Se están generando los subtítulos. El video sigue disponible.</string>
+    <string name="subtitle_processing">Generando subtítulos. Espera.</string>
     <string name="error_subtitle_gen">Error al generar subtítulos</string>
     <string name="video_done_sub_error">Video listo, pero no se pudieron generar los subtítulos</string>
     <string name="storyboard_desc">Descripción del storyboard</string>

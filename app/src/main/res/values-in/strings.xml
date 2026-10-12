@@ -196,7 +196,7 @@
     <string name="gen_continue_after_exit">Video akan terus dibuat setelah Anda keluar</string>
     <string name="click_retry">Ketuk untuk Coba Lagi</string>
     <string name="storyboard_design">Deskripsi Storyboard</string>
-    <string name="subtitle_processing">Subtitle sedang dibuat. Video masih dapat diputar.</string>
+    <string name="subtitle_processing">Subtitle sedang dibuat. Harap tunggu.</string>
     <string name="error_subtitle_gen">Gagal Membuat Subtitle</string>
     <string name="video_done_sub_error">Video siap, tetapi pembuatan subtitle gagal</string>
     <string name="storyboard_desc">Deskripsi Storyboard</string>
