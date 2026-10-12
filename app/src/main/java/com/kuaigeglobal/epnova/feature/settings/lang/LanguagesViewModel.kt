@@ -6,6 +6,7 @@ import com.kuaigeglobal.epnova.R
 import com.kuaigeglobal.epnova.base.viewmodel.AppRepositoryViewModel
 import com.kuaigeglobal.epnova.base.viewmodel.ToolbarViewModel
 import com.kuaigeglobal.epnova.core.Config
+import com.kuaigeglobal.epnova.core.Global
 import com.kuaigeglobal.epnova.core.manager.AppLanguageManager
 import com.kuaigeglobal.epnova.core.manager.LocaleHelper
 import com.kuaigeglobal.epnova.core.ext.request
@@ -68,6 +69,7 @@ class LanguagesViewModel : AppRepositoryViewModel<LanguagesRepository>() {
             showToast = true
         ) {
             Config.get().updateConfig()
+            Global.inspirationContent = ""
             AppLanguageManager.applySavedLanguage()
             doneEvent.value = Unit
         }
