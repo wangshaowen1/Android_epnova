@@ -192,7 +192,7 @@
     <string name="next_step">Weiter</string>
     <string name="creative_gen_inspiration">Inspirationsmodus</string>
     <string name="novel_adapt">Romanadaption</string>
-    <string name="storyboard_redraw">Storyboard neu zeichnen</string>
+    <string name="storyboard_redraw">Neu generieren</string>
     <string name="gen_continue_after_exit">Die Videogenerierung läuft auch nach dem Verlassen weiter</string>
     <string name="click_retry">Zum erneuten Versuch tippen</string>
     <string name="storyboard_design">Storyboard-Beschreibung</string>

@@ -192,7 +192,7 @@
     <string name="next_step">次へ</string>
     <string name="creative_gen_inspiration">インスピレーションモード</string>
     <string name="novel_adapt">小説を映像化</string>
-    <string name="storyboard_redraw">絵コンテを描き直す</string>
+    <string name="storyboard_redraw">再生成</string>
     <string name="gen_continue_after_exit">画面を閉じても動画の生成は続きます</string>
     <string name="click_retry">タップして再試行</string>
     <string name="storyboard_design">絵コンテの説明</string>

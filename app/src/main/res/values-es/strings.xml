@@ -192,7 +192,7 @@
     <string name="next_step">Siguiente</string>
     <string name="creative_gen_inspiration">Modo inspiración</string>
     <string name="novel_adapt">Adaptación de novela</string>
-    <string name="storyboard_redraw">Redibujar storyboard</string>
+    <string name="storyboard_redraw">Regenerar</string>
     <string name="gen_continue_after_exit">El video seguirá generándose aunque salgas</string>
     <string name="click_retry">Toca para reintentar</string>
     <string name="storyboard_design">Descripción del storyboard</string>
