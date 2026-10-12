@@ -16,8 +16,9 @@ sealed class PurchaseResult {
         /**
          * 购买流程启动失败。
          *
-         * [PaymentFailureReasonEnum.PRODUCT_UNAVAILABLE] 表示商品查询或商品配置不可用；
-         * [PaymentFailureReasonEnum.STORE_LAUNCH_FAILED] 表示已经进入商店拉起阶段但未能启动。
+         * [PaymentFailureReasonEnum.PRODUCT_UNAVAILABLE] 表示商品详情未返回或商品不可用；
+         * [PaymentFailureReasonEnum.PAYMENT_METHOD_UNAVAILABLE] 表示 Google 结算能力不可用；
+         * [PaymentFailureReasonEnum.STORE_LAUNCH_FAILED] 表示商店查询或支付页启动失败。
          */
         data class LaunchFailed(
             val reasonCode: PaymentFailureReasonEnum,

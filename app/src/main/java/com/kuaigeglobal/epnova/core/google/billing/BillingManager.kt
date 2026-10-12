@@ -1112,9 +1112,21 @@ object BillingManager {
                     productCache[productId] = list.productDetailsList[0]
                     launchBillingFlow(activity, list.productDetailsList[0], orderId, obfuscatedAccountId)
                 } else {
+                    val reasonCode = when (result.responseCode) {
+                        // 请求成功但是productDetailsList为空
+                        BillingClient.BillingResponseCode.OK,
+                        // 您请求购买的产品目前无法购买。
+                        BillingClient.BillingResponseCode.ITEM_UNAVAILABLE ->
+                            PaymentFailureReasonEnum.PRODUCT_UNAVAILABLE
+                        // 处理过程中发生用户计费错误。
+                        BillingClient.BillingResponseCode.BILLING_UNAVAILABLE ->
+                            PaymentFailureReasonEnum.PAYMENT_METHOD_UNAVAILABLE
+
+                        else -> PaymentFailureReasonEnum.STORE_LAUNCH_FAILED
+                    }
                     finishDefinitiveOneTimeLaunchFailure(
                         orderNo = orderId,
-                        reasonCode = PaymentFailureReasonEnum.PRODUCT_UNAVAILABLE,
+                        reasonCode = reasonCode,
                         platformErrorCode = result.responseCode
                             .takeIf { it != BillingClient.BillingResponseCode.OK }
                             ?.toString(),
