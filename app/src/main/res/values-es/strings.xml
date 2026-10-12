@@ -316,7 +316,7 @@
     <string name="login_or_register">Iniciar sesión / Registrarse</string>
     <string name="help_center">Centro de ayuda</string>
     <string name="suggest_and_feedback">Sugerencias y comentarios</string>
-    <string name="my_list_my_creations">Mis creaciones</string>
+    <string name="my_list_my_creations">Mis obras</string>
     <string name="my_creations_episode_progress">%1$d/%2$d ep.</string>
     <string name="my_creations_publish_tip">Completa %1$s para publicar tu serie.</string>
     <string name="my_creations_publish_tip_highlight">%1$d episodios más</string>

@@ -188,7 +188,8 @@
                        <androidx.constraintlayout.widget.ConstraintLayout
                            setVisible="@{!layout.memberCard.hasMonthly()}"
                            android:layout_width="match_parent"
-                           android:layout_height="209dp"
+                           android:layout_height="wrap_content"
+                           android:minHeight="209dp"
                            android:background="@drawable/icon_mine_member_209"
                            tools:visibility="visible">
 
@@ -226,9 +227,9 @@
                                android:id="@+id/mine_member_privilege_view_1"
                                android:layout_width="72dp"
                                android:layout_height="wrap_content"
+                               android:layout_marginTop="12dp"
                                android:gravity="center"
                                android:orientation="vertical"
-                               app:layout_constraintBottom_toTopOf="@id/mine_member_btn"
                                app:layout_constraintEnd_toStartOf="@id/mine_member_privilege_view_2"
                                app:layout_constraintHorizontal_chainStyle="packed"
                                app:layout_constraintStart_toStartOf="parent"
@@ -257,11 +258,9 @@
                                android:layout_marginHorizontal="34dp"
                                android:gravity="center"
                                android:orientation="vertical"
-                               app:layout_constraintBottom_toBottomOf="@id/mine_member_privilege_view_1"
                                app:layout_constraintEnd_toStartOf="@id/mine_member_privilege_view_3"
                                app:layout_constraintStart_toEndOf="@id/mine_member_privilege_view_1"
-                               app:layout_constraintTop_toTopOf="@id/mine_member_privilege_view_1"
-                               app:layout_constraintVertical_bias="0">
+                               app:layout_constraintTop_toTopOf="@id/mine_member_privilege_view_1">
 
                                <ImageView
                                    android:layout_width="36dp"
@@ -286,11 +285,9 @@
                                android:layout_height="wrap_content"
                                android:gravity="center"
                                android:orientation="vertical"
-                               app:layout_constraintBottom_toBottomOf="@id/mine_member_privilege_view_1"
                                app:layout_constraintEnd_toEndOf="parent"
                                app:layout_constraintStart_toEndOf="@id/mine_member_privilege_view_2"
-                               app:layout_constraintTop_toTopOf="@id/mine_member_privilege_view_1"
-                               app:layout_constraintVertical_bias="0">
+                               app:layout_constraintTop_toTopOf="@id/mine_member_privilege_view_1">
 
                                <ImageView
                                    android:layout_width="36dp"
@@ -309,6 +306,13 @@
 
                            </LinearLayout>
 
+                           <androidx.constraintlayout.widget.Barrier
+                               android:id="@+id/mine_member_privilege_bottom"
+                               android:layout_width="wrap_content"
+                               android:layout_height="wrap_content"
+                               app:barrierDirection="bottom"
+                               app:constraint_referenced_ids="mine_member_privilege_view_1,mine_member_privilege_view_2,mine_member_privilege_view_3" />
+
                            <ImageView
                                android:id="@+id/mine_member_btn"
                                singleClick="@{layout.clickHandler::onClick}"
@@ -316,12 +320,14 @@
                                android:layout_width="0dp"
                                android:layout_height="0dp"
                                android:layout_marginHorizontal="30dp"
+                               android:layout_marginTop="12dp"
                                android:layout_marginBottom="16dp"
                                android:src="@drawable/icon_mine_member_btn"
                                app:layout_constraintBottom_toBottomOf="parent"
                                app:layout_constraintDimensionRatio="285:44"
                                app:layout_constraintEnd_toEndOf="parent"
-                               app:layout_constraintStart_toStartOf="parent" />
+                               app:layout_constraintStart_toStartOf="parent"
+                               app:layout_constraintTop_toBottomOf="@id/mine_member_privilege_bottom" />
 
                            <TextView
                                style="@style/Text.Medium"

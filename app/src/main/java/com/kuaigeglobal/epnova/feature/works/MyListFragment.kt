@@ -55,7 +55,7 @@ class MyListFragment : BaseViewModelFragment<FragmentMyListBinding, MyListModel>
         binding.magicIndicator.navigator = CommonNavigatorUtils.getCommonNavigatorVp2(
             mActivity,
             listOf(
-                getString(R.string.profile_my_creations),
+                getString(R.string.my_list_my_creations),
                 getString(R.string.profile_history),
                 getString(R.string.profile_collection)
             ),
