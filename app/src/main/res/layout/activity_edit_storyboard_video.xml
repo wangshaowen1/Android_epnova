@@ -343,7 +343,7 @@
                     android:background="@drawable/fill_color2_r8"
                     android:overScrollMode="never"
                     android:scrollbars="none"
-                    app:layout_constraintBottom_toTopOf="@+id/btnRegenerate"
+                    app:layout_constraintBottom_toTopOf="@+id/bottomBtnLayout"
                     app:layout_constraintDimensionRatio="345:130">
 
                     <TextView
@@ -359,59 +359,62 @@
 
                 </ScrollView>
 
-                <TextView
-                    android:id="@+id/btnRegenerate"
-                    singleClick="@{layout.clickHandler::onClick}"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:alpha="@{layout.publishLocked ? 0.5f : 1f}"
-                    android:drawableTop="@drawable/icon_ai_image"
-                    android:drawablePadding="8dp"
-                    android:gravity="center"
-                    android:paddingVertical="16dp"
-                    android:text="@string/storyboard_redraw"
-                    android:textAppearance="@style/Text12"
-                    android:fontFamily="@font/outfit_regular"
-                    android:textColor="?attr/textColor3"
+                <LinearLayout
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/btnDownload"
-                    app:layout_constraintHorizontal_chainStyle="packed"
-                    app:layout_constraintStart_toStartOf="parent" />
-
-                <TextView
-                    android:id="@+id/btnDownload"
-                    singleClick="@{layout.clickHandler::onClick}"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:drawableTop="@drawable/icon_download"
-                    android:drawablePadding="8dp"
-                    android:gravity="center"
-                    android:paddingVertical="16dp"
-                    android:text="@string/download_video"
-                    android:textAppearance="@style/Text12"
-                    android:fontFamily="@font/outfit_regular"
-                    android:textColor="?attr/textColor3"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/btnDelete"
-                    app:layout_constraintStart_toEndOf="@+id/btnRegenerate" />
-
-                <TextView
-                    android:id="@+id/btnDelete"
-                    singleClick="@{layout.clickHandler::onClick}"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:alpha="@{layout.publishLocked ? 0.5f : 1f}"
-                    android:drawableTop="@drawable/icon_delete"
-                    android:drawablePadding="8dp"
-                    android:gravity="center"
-                    android:paddingVertical="16dp"
-                    android:text="@string/delete_storyboard"
-                    android:textAppearance="@style/Text12"
-                    android:fontFamily="@font/outfit_regular"
-                    android:textColor="?attr/textColor3"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/btnDownload" />
+                    android:id="@+id/bottomBtnLayout"
+                    android:orientation="horizontal"
+                    android:weightSum="3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:id="@+id/btnRegenerate"
+                        singleClick="@{layout.clickHandler::onClick}"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:alpha="@{layout.publishLocked ? 0.5f : 1f}"
+                        android:drawableTop="@drawable/icon_ai_image"
+                        android:drawablePadding="8dp"
+                        android:gravity="center"
+                        android:paddingVertical="16dp"
+                        android:text="@string/storyboard_redraw"
+                        android:textAppearance="@style/Text12"
+                        android:fontFamily="@font/outfit_regular"
+                        android:textColor="?attr/textColor3" />
+
+                    <TextView
+                        android:id="@+id/btnDownload"
+                        singleClick="@{layout.clickHandler::onClick}"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:drawableTop="@drawable/icon_download"
+                        android:drawablePadding="8dp"
+                        android:gravity="center"
+                        android:paddingVertical="16dp"
+                        android:text="@string/download_video"
+                        android:textAppearance="@style/Text12"
+                        android:fontFamily="@font/outfit_regular"
+                        android:textColor="?attr/textColor3" />
+
+                    <TextView
+                        android:id="@+id/btnDelete"
+                        singleClick="@{layout.clickHandler::onClick}"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:alpha="@{layout.publishLocked ? 0.5f : 1f}"
+                        android:drawableTop="@drawable/icon_delete"
+                        android:drawablePadding="8dp"
+                        android:gravity="center"
+                        android:paddingVertical="16dp"
+                        android:text="@string/delete_storyboard"
+                        android:textAppearance="@style/Text12"
+                        android:fontFamily="@font/outfit_regular"
+                        android:textColor="?attr/textColor3" />
+                </LinearLayout>
 
                 <TextView
                     android:id="@+id/btnGenerate"
