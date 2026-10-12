@@ -38,20 +38,21 @@
             tools:src="@drawable/img_default_cover_4_3" />
 
         <TextView
-            android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:background="@drawable/bg_mask_opacity_60_dark_br8"
             android:gravity="center"
             android:text="@{item.genStatus(item.data)}"
             android:textAppearance="@style/Text12"
             android:fontFamily="@font/outfit_regular"
             android:textColor="?attr/textColor1"
-            android:textSize="10dp"
+            android:textSize="12sp"
+            android:paddingVertical="4dp"
+            app:layout_constrainedWidth="true"
             app:layout_constraintBottom_toBottomOf="@+id/ivCover"
-            app:layout_constraintDimensionRatio="100:24"
             app:layout_constraintEnd_toEndOf="@+id/ivCover"
             app:layout_constraintStart_toStartOf="@+id/ivCover"
-            tools:text="分镜1" />
+            tools:text="分镜1分镜1分镜1分镜1" />
 
         <com.airbnb.lottie.LottieAnimationView
             setVisible="@{item.data.videoGenerating}"
