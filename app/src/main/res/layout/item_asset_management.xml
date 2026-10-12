@@ -150,16 +150,13 @@
             app:layout_constraintTop_toTopOf="@+id/ivCover"
             tools:hint="角色描述词" />
 
-        <com.kuaigeglobal.epnova.widget.RecyclerEditText
+        <TextView
             android:id="@+id/etAssetName"
-            content="@{item.assetName}"
-            onTextInputListener="@{item.assetNameInputListener}"
-            setEditing="@{item.editingAssetName}"
+            android:text="@{item.assetName}"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginTop="6dp"
             android:background="@drawable/fill_color1_r4"
-            android:drawableEnd="@{item.data==null?@drawable/icon_edit_text4_16:null}"
             android:ellipsize="end"
             android:gravity="center_vertical"
             android:hint="@{item.assetNameHint}"
@@ -170,11 +167,12 @@
             android:textColor="?attr/textColor2"
             android:textColorHint="?attr/textColor4"
             android:fontFamily="@font/outfit_regular"
+            android:textSize="12sp"
             app:layout_constraintDimensionRatio="109:32"
             app:layout_constraintStart_toStartOf="@+id/etAssetDesc"
             app:layout_constraintTop_toBottomOf="@+id/etAssetDesc"
             app:layout_constraintWidth_percent="0.29"
-            tools:drawableEnd="@drawable/icon_edit_text4_16"
+            tools:text="屌炸天的角色名有没有超出"
             tools:hint="角色名" />
 
         <View
