@@ -56,6 +56,7 @@ class RewardsViewModel : AppRepositoryViewModel<AppRepository>() {
     private var onceTaskItems: List<OnceTaskItem> = emptyList()
     private var adTaskItems: List<AdTaskItem> = emptyList()
     private var pendingPushNotificationTask: OnceTaskItem? = null
+    private var pushNotificationEnabled = false
     private var nextRefreshCountdownJob: Job? = null
 
     /**
@@ -300,8 +301,15 @@ class RewardsViewModel : AppRepositoryViewModel<AppRepository>() {
 
     // ─── 一次性任务-打开消息通知 ────────────────────────────────────────────────
 
+    fun setPushNotificationEnabled(enabled: Boolean) {
+        pushNotificationEnabled = enabled
+        earnAdapter.items.forEach { item ->
+            if (item.onceTask != null) item.isNotificationEnabled.set(enabled)
+        }
+    }
+
     /**
-     * 用户点击通知任务 Claim 时调用。
+     * 用户点击通知任务 Go / Claim 时调用。
      *
      * FCM token 注册上报是独立链路，不和这个任务绑定；这里仅负责判断通知权限并触发奖励接口。
      */
@@ -315,6 +323,7 @@ class RewardsViewModel : AppRepositoryViewModel<AppRepository>() {
      * 已开启则立即领奖，未开启则跳系统通知设置页。
      */
     fun onPushNotificationPermissionChecked(enabled: Boolean) {
+        setPushNotificationEnabled(enabled)
         if (pendingPushNotificationTask == null) return
         if (enabled) {
             reportPendingPushNotificationTask()
@@ -324,16 +333,10 @@ class RewardsViewModel : AppRepositoryViewModel<AppRepository>() {
     }
 
     /**
-     * 从系统通知设置页返回后回传结果。
-     * 用户仍未开启时清掉 pending，下一次点击 Claim 再重新开始流程。
+     * 从系统通知设置页返回后清掉待处理任务，由用户点击 Claim 再领奖。
      */
-    fun onPushNotificationSettingReturned(enabled: Boolean) {
-        if (pendingPushNotificationTask == null) return
-        if (enabled) {
-            reportPendingPushNotificationTask()
-        } else {
-            pendingPushNotificationTask = null
-        }
+    fun onPushNotificationSettingReturned() {
+        pendingPushNotificationTask = null
     }
 
     private fun reportPendingPushNotificationTask() {
@@ -428,6 +431,7 @@ class RewardsViewModel : AppRepositoryViewModel<AppRepository>() {
 
     private fun buildOnceTaskVM(item: OnceTaskItem): ItemEarnRewardVM {
         return ItemEarnRewardVM(data = null, onceTask = item).apply {
+            isNotificationEnabled.set(pushNotificationEnabled)
             onCheckInAction = { preparePushNotificationTask(this) }
         }
     }

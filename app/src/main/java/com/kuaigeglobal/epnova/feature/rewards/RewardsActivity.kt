@@ -52,9 +52,10 @@ class RewardsActivity : BaseViewModelActivity<ActivityRewardsBinding, RewardsVie
     override fun onResume() {
         super.onResume()
 //        mRealVM.loadData()
+        mRealVM.setPushNotificationEnabled(IntentUtils.isNotificationEnabled(this))
         if (waitingNotificationSettingResult) {
             waitingNotificationSettingResult = false
-            mRealVM.onPushNotificationSettingReturned(IntentUtils.isNotificationEnabled(this))
+            mRealVM.onPushNotificationSettingReturned()
         }
     }
 

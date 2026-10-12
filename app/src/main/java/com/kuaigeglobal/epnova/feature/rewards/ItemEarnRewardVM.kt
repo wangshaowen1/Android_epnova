@@ -39,6 +39,7 @@ class ItemEarnRewardVM(
     val isDone = ObservableBoolean(if (isLoginTask) !User.get().isVisitor else !isOnceTask && data?.taskStatus == 1)
     val isWatch = ObservableBoolean(!isLoginTask && !isOnceTask && data?.taskStatus == 0)
     val isLocked = ObservableBoolean(!isLoginTask && !isOnceTask && data?.taskStatus == 2)
+    val isNotificationEnabled = ObservableBoolean(false)
 
     val iconUrl: String? = onceTask?.iconUrl?.takeIf { it.isNotBlank() } ?: data?.iconUrl?.takeIf { it.isNotBlank() }
     val hasRemoteIcon: Boolean = !iconUrl.isNullOrEmpty()
