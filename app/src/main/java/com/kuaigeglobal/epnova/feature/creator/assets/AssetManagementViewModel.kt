@@ -274,6 +274,8 @@ class AssetManagementViewModel : AppRepositoryViewModel<AssetManagementRepositor
             adapter.items.find { it is ItemRoleVM && it.data.get()?.assetId == role.assetId }?.let {
                 (it as? ItemRoleVM)?.apply {
                     data.set(role)
+                    status.set(role.status ?: -1)
+                    assetImage.set(role.assetImage)
                     loopGenStatus()
                 }
             }
@@ -283,6 +285,8 @@ class AssetManagementViewModel : AppRepositoryViewModel<AssetManagementRepositor
             adapter.items.find { it is ItemSceneVM && it.data.get()?.assetId == scene.assetId }?.let {
                 (it as? ItemSceneVM)?.apply {
                     data.set(scene)
+                    status.set(scene.status ?: -1)
+                    assetImage.set(scene.assetImage)
                     loopGenStatus()
                 }
             }
@@ -292,6 +296,8 @@ class AssetManagementViewModel : AppRepositoryViewModel<AssetManagementRepositor
             adapter.items.find { it is ItemPropVM && it.data.get()?.assetId == prop.assetId }?.let {
                 (it as? ItemPropVM)?.apply {
                     data.set(prop)
+                    status.set(prop.status ?: -1)
+                    assetImage.set(prop.assetImage)
                     loopGenStatus()
                 }
             }

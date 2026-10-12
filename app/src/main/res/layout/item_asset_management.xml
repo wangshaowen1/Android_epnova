@@ -20,6 +20,7 @@
 
         <com.kuaigeglobal.epnova.widget.roundedimageview.RoundedImageView
             android:id="@+id/ivCover"
+            android:enabled="@{item.status != 1}"
             loadThumbnailUri="@{item.assetImage}"
             placeHolder="@{@drawable/img_default_cover_3_4}"
             singleClick="@{(v)->item.onItemClick.invoke(v)}"
@@ -36,6 +37,7 @@
 
         <com.kuaigeglobal.epnova.widget.GradientBorderView
             android:id="@+id/ivCoverBorder"
+            android:enabled="@{item.status != 1}"
             showBackground="@{item.status != 2}"
             singleClick="@{(v)->item.onItemClick.invoke(v)}"
             android:layout_width="0dp"
