@@ -666,7 +666,7 @@
     <string name="confirm_exit_without_saving">El contenido actual no está guardado. Se perderán los cambios al salir. ¿Confirmar?</string>
     <string name="exit_directly">Salir directamente</string>
     <string name="edit_story_synopsis">Sinopsis de la historia</string>
-    <string name="download_method_select">Selecciona cómo descargar el vídeo</string>
+    <string name="download_method_select">Elegir cómo descargar</string>
     <string name="download_watermarked">Descargar con marca de agua</string>
     <string name="download_watermark_free">Descargar sin marca de agua</string>
     <string name="download_video_considered_as_agreement">Al descargar vídeos, aceptas el Acuerdo de descarga</string>

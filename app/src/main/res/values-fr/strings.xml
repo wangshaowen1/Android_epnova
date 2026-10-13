@@ -666,7 +666,7 @@
     <string name="confirm_exit_without_saving">Le contenu actuel n’est pas enregistré. Les modifications seront perdues en quittant. Confirmer ?</string>
     <string name="exit_directly">Quitter sans enregistrer</string>
     <string name="edit_story_synopsis">Résumé de l’histoire</string>
-    <string name="download_method_select">Choisissez la méthode de téléchargement de la vidéo</string>
+    <string name="download_method_select">Choisir le mode de téléchargement</string>
     <string name="download_watermarked">Télécharger avec filigrane</string>
     <string name="download_watermark_free">Télécharger sans filigrane</string>
     <string name="download_video_considered_as_agreement">Télécharger une vidéo signifie accepter le Contrat de téléchargement</string>

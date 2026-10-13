@@ -52,7 +52,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/ivCover"
             app:layout_constraintEnd_toEndOf="@+id/ivCover"
             app:layout_constraintStart_toStartOf="@+id/ivCover"
-            tools:text="分镜1分镜1分镜1分镜1" />
+            tools:text="分镜1" />
 
         <com.airbnb.lottie.LottieAnimationView
             setVisible="@{item.data.videoGenerating}"

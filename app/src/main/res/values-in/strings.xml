@@ -666,7 +666,7 @@
     <string name="confirm_exit_without_saving">Konten saat ini belum disimpan, perubahan tidak dapat dipulihkan jika keluar. Apakah Anda yakin ingin keluar?</string>
     <string name="exit_directly">Keluar langsung</string>
     <string name="edit_story_synopsis">Sinopsis Cerita</string>
-    <string name="download_method_select">Silakan pilih metode unduh video</string>
+    <string name="download_method_select">Pilih cara unduh</string>
     <string name="download_watermarked">Unduh versi dengan watermark</string>
     <string name="download_watermark_free">Unduh versi tanpa watermark</string>
     <string name="download_video_considered_as_agreement">Mengunduh video berarti Anda menyetujui Perjanjian Pengunduhan</string>

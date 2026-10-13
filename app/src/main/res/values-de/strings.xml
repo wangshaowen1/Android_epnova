@@ -666,7 +666,7 @@
     <string name="confirm_exit_without_saving">Der aktuelle Inhalt wurde nicht gespeichert. Beim Verlassen gehen Änderungen verloren. Wirklich verlassen?</string>
     <string name="exit_directly">Direkt verlassen</string>
     <string name="edit_story_synopsis">Handlungsübersicht</string>
-    <string name="download_method_select">Bitte wähle eine Download-Option für das Video</string>
+    <string name="download_method_select">Download-Art wählen</string>
     <string name="download_watermarked">Mit Wasserzeichen herunterladen</string>
     <string name="download_watermark_free">Ohne Wasserzeichen herunterladen</string>
     <string name="download_video_considered_as_agreement">Mit dem Herunterladen von Videos akzeptierst du die Downloadvereinbarung</string>

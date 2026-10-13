@@ -667,7 +667,7 @@
     <string name="confirm_exit_without_saving">現在の内容は保存されていません。終了すると変更が失われます。終了しますか？</string>
     <string name="exit_directly">保存せずに終了</string>
     <string name="edit_story_synopsis">あらすじ</string>
-    <string name="download_method_select">動画のダウンロード方法を選択してください</string>
+    <string name="download_method_select">ダウンロード方法を選択</string>
     <string name="download_watermarked">透かし入りをダウンロード</string>
     <string name="download_watermark_free">透かしなしをダウンロード</string>
     <string name="download_video_considered_as_agreement">動画をダウンロードすると、ダウンロード契約に同意したものとみなされます</string>
