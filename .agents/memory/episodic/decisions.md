@@ -219,3 +219,10 @@ STATIC：已核对两类商品接口路由、回调落盘先于网络、账号�
 - 用户反馈第二版不再跳标题，但键盘弹出后输入框仍失焦。通过 JDWP 在运行中的设备捕获真实调用栈：数字单行 EditText 居中布局的内部 `scrollX=524228`，`RecyclerView.requestChildFocus()` 发起 `smoothScrollBy(dx=-523478, dy=0)`，后续 ViewFlinger 通过 LinearLayoutManager 回收末端 item，触发 `removeViewInternal -> clearFocusInternal`。
 - 最终在当前 holder 输入框上调用 `setHorizontallyScrolling(false)`，等待其重新布局，并在请求焦点前 `scrollTo(0, 0)` 清理旧布局偏移。设备上通过调试器临时关闭内部横向滚动并取消已发起的异常滚动后，直接点击及“普通集数 -> 自定义”回归均保持 `etInput.focused=true`；正式源码改动仍需重新编译部署验证，未运行 Gradle。
 - 根因确认后按用户要求精简：去掉强制 `scrollToPosition`、重新查 holder 和递归等待布局，直接更新点击 item 的 binding 后在 pre-draw 聚焦；保留关闭内部横向滚动、清零偏移和页面内容容器承接焦点。单复数单位改为 ItemVM 初始化时监听 `input` 一次，避免每次点击叠加 TextWatcher；60 集上限统一检查 `item.input`，避免“完成”后失焦再次读取尚未重绑的旧文本而重复提示。精简版仅做静态检查，未运行 Gradle或部署验证。
+### 2026-10-13 卸载重装后语言仍为印尼语的设备排查
+
+- 已连接的 Android 16 设备系统首选语言为 `zh-Hans-CN`，应用单独语言列表为空；当前 `CONFIG_DATA` MMKV 中 `epnova_lang=id-ID`。
+- 设备日志确认 14:11:29 安装后、14:11:32 首次启动前，BackupManager 对 EpNova 执行 `RestoreDescription ... STREAM` 完整数据恢复，并报告 `Restore complete`。因此卸载清除本地数据后，安装阶段又恢复了备份；不能用“卸载过”推断 MMKV 为空。
+- Manifest 的 `allowBackup=true` 且没有排除 `files/mmkv/CONFIG_DATA` 的规则。`Config.readSavedLanguage()` 优先使用恢复的语言值，中文系统首次默认回退英语的分支没有机会生效。本轮只做设备读取、重启日志和静态检查，未清除设备数据、修改业务代码或运行 Gradle。
+- `OverseasFingerprintManager.getFallbackUUID()` 明确依赖 `allowBackup=true` 恢复兜底 UUID，该指纹用于游客登录；不能仅为语言问题直接关闭整包备份。若产品希望重装后重新按系统语言选择，需单独处理语言值的备份范围。
+- 用户决定只迁语言设置且不兼容旧版本语言迁移：`epnova_lang` 改存 `noBackupFilesDir` 下独立 MMKV，`CONFIG_DATA` 仍参与备份，其遗留语言键在 `Config.init()` 清除。未改动其它配置和 `allowBackup`；因默认不运行 Gradle，只做静态检查，运行效果待新版安装验证。

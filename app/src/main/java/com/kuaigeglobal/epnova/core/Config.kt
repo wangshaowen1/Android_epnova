@@ -35,6 +35,7 @@ import org.json.JSONObject
 class Config : NetworkChangedListener {
 
     private val mmkv: MMKV by lazy { MMKV.mmkvWithID(PREF_ID, MMKV.MULTI_PROCESS_MODE) }
+    private val languageMmkv: MMKV by lazy { buildLanguageMmkv(App.instance) }
     private val gson = Gson()
     private var isRequesting = false
     private var appConfigData: AppConfigData? = null
@@ -66,8 +67,6 @@ class Config : NetworkChangedListener {
         private set
     /** 剧集详情页默认使用列表布局，用户切换后通过 MMKV 持久化。 */
     var isGridMode: Boolean by MmkvDelegate(IS_GRID_MODE, false) { mmkv }
-        private set
-    var lang: String by MmkvDelegate(APP_LANG, LocaleHelper.resolveDefaultLanguage()) { mmkv }
         private set
     var episodeAutoUnlock: Boolean
         get() = episodeAutoUnlockKey()?.let { mmkv.decodeBool(it, true) } ?: true
@@ -274,7 +273,7 @@ class Config : NetworkChangedListener {
     }
 
     fun saveLanguage(langCode: String) {
-        this.lang = LocaleHelper.normalizeLanguageCode(langCode)
+        languageMmkv.encode(APP_LANG, LocaleHelper.normalizeLanguageCode(langCode))
     }
 
     fun saveEpisodeAutoUnlock(isAutoUnlock: Boolean) {
@@ -286,9 +285,10 @@ class Config : NetworkChangedListener {
     }
 
     fun getSavedLanguage(): String {
-        val normalized = LocaleHelper.normalizeLanguageCode(this.lang)
-        if (normalized != this.lang) {
-            this.lang = normalized
+        val savedLanguage = languageMmkv.decodeString(APP_LANG, null)
+        val normalized = LocaleHelper.normalizeLanguageCode(savedLanguage ?: LocaleHelper.resolveDefaultLanguage())
+        if (savedLanguage != null && normalized != savedLanguage) {
+            languageMmkv.encode(APP_LANG, normalized)
         }
         return normalized
     }
@@ -450,6 +450,7 @@ class Config : NetworkChangedListener {
 
     companion object {
         private const val PREF_ID = "CONFIG_DATA" // 修正：原来 SP 传入的名称就是这个
+        private const val LANGUAGE_PREF_ID = "APP_LANGUAGE"
         const val REPORT_FIRST_OPEN_APP = "reportFirstOpenApp"
         const val FIRST_OPEN_APP: String = "firstOpenApp"
         private const val OBJECT_ID = "objectId"
@@ -483,11 +484,17 @@ class Config : NetworkChangedListener {
          * BasicLocaleConfig 需要通过 Context 直接读取已保存语言。
          */
         fun readSavedLanguage(context: Context): String {
-            val mmkv = MMKV.mmkvWithID(PREF_ID, MMKV.MULTI_PROCESS_MODE)
-            val savedLanguage = mmkv.decodeString(APP_LANG, null)
-                ?: context.getSharedPreferences(PREF_ID, Context.MODE_PRIVATE)
-                    .getString(APP_LANG, null)
+            val savedLanguage = buildLanguageMmkv(context).decodeString(APP_LANG, null)
             return LocaleHelper.normalizeLanguageCode(savedLanguage ?: LocaleHelper.resolveDefaultLanguage())
+        }
+
+        private fun buildLanguageMmkv(context: Context): MMKV {
+            return MMKV.mmkvWithID(
+                LANGUAGE_PREF_ID,
+                MMKV.MULTI_PROCESS_MODE,
+                null,
+                context.noBackupFilesDir.absolutePath
+            )
         }
 
         @JvmStatic
