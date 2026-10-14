@@ -583,6 +583,10 @@ class DramaGenerateStep1ViewModel : AppRepositoryViewModel<CreationRepository>()
     private fun handleSummaryBusinessError(event: TaskOutputEvent.Error) {
         summaryLastEventId = event.lastEventId
             .takeIf { !it.isNullOrBlank() } ?: summaryLastEventId
+        if (event.errorCode == TaskOutputSseHandler.EVENT_ERROR_CODE_STREAM_HEARTBEAT_TIMEOUT) {
+            handleSummaryPlanB()
+            return
+        }
         handleSummaryStreamError(StoryStreamErrorMapper.fromBusinessError(event))
     }
 
@@ -606,6 +610,17 @@ class DramaGenerateStep1ViewModel : AppRepositoryViewModel<CreationRepository>()
         cancelSummaryStreamingTextEmit()
         cancelSummaryToastCountdown()
         clearSummaryStreamCache()
+    }
+
+    /**
+     * 后端任务超时，启动轮询
+     */
+    private fun handleSummaryPlanB() {
+        cancelSummaryStreamingTextEmit()
+        cancelSummaryToastCountdown()
+        clearSummaryStreamCache()
+
+        pollSummary()
     }
 
     private fun restoreSummaryStreamCacheIfNeeded() {

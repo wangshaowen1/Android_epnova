@@ -476,6 +476,10 @@ class DramaGenerateStep2ViewModel : AppRepositoryViewModel<CreationRepository>()
     private fun handleScriptBusinessError(event: TaskOutputEvent.Error) {
         scriptLastEventId = event.lastEventId
             .takeIf { !it.isNullOrBlank() } ?: scriptLastEventId
+        if (event.errorCode == TaskOutputSseHandler.EVENT_ERROR_CODE_STREAM_HEARTBEAT_TIMEOUT) {
+            handleScriptPlanB()
+            return
+        }
         handleScriptStreamError(StoryStreamErrorMapper.fromBusinessError(event))
     }
 
@@ -498,6 +502,11 @@ class DramaGenerateStep2ViewModel : AppRepositoryViewModel<CreationRepository>()
         outputComplete.value = false
         outputFail.set(true)
         cancelScriptToastCountdown()
+    }
+
+    private fun handleScriptPlanB() {
+        cancelScriptToastCountdown()
+        pollOldScript()
     }
 
     /**

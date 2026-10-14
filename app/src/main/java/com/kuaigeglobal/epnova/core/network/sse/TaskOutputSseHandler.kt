@@ -165,6 +165,8 @@ class TaskOutputSseHandler(
         private const val EVENT_FINAL = "FINAL"
         private const val EVENT_ERROR = "ERROR"
 
+        const val EVENT_ERROR_CODE_STREAM_HEARTBEAT_TIMEOUT = "STREAM_HEARTBEAT_TIMEOUT"
+
         private val taskStreamJson = Json {
             ignoreUnknownKeys = true
         }
