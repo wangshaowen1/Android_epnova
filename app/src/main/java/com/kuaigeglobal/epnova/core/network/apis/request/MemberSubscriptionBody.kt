@@ -8,6 +8,10 @@ data class MemberSubscriptionPrepareBody(
     val actionType: String,
     /** 套餐列表返回的不可变套餐版本编码。 */
     val planVersionCode: String,
+    /** Apple Product ID 或 Google Subscription Product ID，Android、iOS 均必传。 */
+    val productId: String,
+    /** Google Base Plan ID，Android 必传，iOS 不传。 */
+    val basePlanId: String? = null,
     /** af归因id */
     val appsFlyerId: String?
 )

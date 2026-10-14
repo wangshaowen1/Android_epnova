@@ -427,6 +427,8 @@ class MemberIndexViewModel : AppRepositoryViewModel<AppRepository>() {
                     MemberSubscriptionPrepareBody(
                         actionType = actionType,
                         planVersionCode = planVersionCode,
+                        productId = productId,
+                        basePlanId = basePlanId,
                         appsFlyerId = Config.get().appsFlyerId
                     )
                 )
