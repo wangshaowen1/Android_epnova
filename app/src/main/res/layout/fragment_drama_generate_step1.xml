@@ -55,6 +55,36 @@
                         android:textColor="?attr/textColor3"
                         tools:text="唐三在武魂觉醒仪式上，意外觉醒出被视为“废武魂”的蓝银草，却暗中展现出不寻常的天赋..." />
 
+                    <!--故事简纲 版本1.5.6新加-->
+                    <LinearLayout
+                        setVisible="@{layout.storySummaryResult.result.storyOutlineList != null&amp;&amp; !layout.storySummaryResult.result.storyOutlineList.isEmpty()}"
+                        tools:visibility="visible"
+                        android:layout_marginTop="@dimen/spacing_l"
+                        android:orientation="vertical"
+                        android:id="@+id/ll_story_outline"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            style="@style/Text14.Outfit.Medium"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/spacing_m"
+                            android:text="@string/story_outline"
+                            android:textColor="?attr/textColor1"
+                            android:textStyle="normal" />
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/recyclerView_story_outline"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:nestedScrollingEnabled="false"
+                            tools:itemCount="2"
+                            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                            tools:listitem="@layout/item_story_outline_generate" />
+
+                    </LinearLayout>
+
                     <TextView
                         style="@style/Text14.Outfit.Medium"
                         android:layout_width="match_parent"
@@ -69,6 +99,7 @@
                         android:id="@+id/recyclerView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        tools:itemCount="1"
                         android:nestedScrollingEnabled="false"
                         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                         tools:listitem="@layout/item_story_summary_generate" />

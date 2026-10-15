@@ -340,6 +340,7 @@
     <string name="loading">Chargement</string>
     <string name="generated_by_ai">Généré par IA</string>
     <string name="action_like">J’aime</string>
+    <string name="story_outline">Plan de l’histoire</string>
     <string name="story_synopsis">Synopsis</string>
     <string name="story_script">Scénario</string>
     <string name="asset_management">Ressource</string>

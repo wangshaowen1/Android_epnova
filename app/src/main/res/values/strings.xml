@@ -368,6 +368,7 @@
     <string name="loading">Loading</string>
     <string name="generated_by_ai">AI Generated</string>
     <string name="action_like">Like</string>
+    <string name="story_outline">Story Outline</string>
     <string name="story_synopsis">Synopsis</string>
     <string name="story_script">Script</string>
     <string name="asset_management">Asset</string>

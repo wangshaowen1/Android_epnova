@@ -77,11 +77,20 @@ data class RollNovelSummaryResult(
     var workDesc: String? = null,
     val workTitle: String? = null,
     val structureList: List<RollNovelStructure>? = null,
+    // 故事简纲，按列表顺序展示
+    var storyOutlineList: List<StoryOutlineInfo>? = null,
 ) : Parcelable{
     fun getFirstStoryId(): String? {
         return structureList?.get(0)?.storyId
     }
 }
+
+@Parcelize
+data class StoryOutlineInfo(
+    val title: String? = null, // 简纲阶段标题
+    var content: String? = null, // 对应阶段的故事内容
+    val id: String? = null, // 对应阶段的故事内容
+) : Parcelable
 
 /**
  * {

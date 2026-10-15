@@ -340,6 +340,7 @@
     <string name="loading">Memuat</string>
     <string name="generated_by_ai">Dibuat oleh AI</string>
     <string name="action_like">Suka</string>
+    <string name="story_outline">Kerangka Cerita</string>
     <string name="story_synopsis">Sinopsis</string>
     <string name="story_script">Skrip</string>
     <string name="asset_management">Aset</string>

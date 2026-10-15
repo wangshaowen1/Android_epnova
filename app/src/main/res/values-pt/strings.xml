@@ -340,6 +340,7 @@
     <string name="loading">Carregando</string>
     <string name="generated_by_ai">Gerado por IA</string>
     <string name="action_like">Curtir</string>
+    <string name="story_outline">Esboço da história</string>
     <string name="story_synopsis">Sinopse</string>
     <string name="story_script">Roteiro</string>
     <string name="asset_management">Recurso</string>

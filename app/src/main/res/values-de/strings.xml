@@ -340,6 +340,7 @@
     <string name="loading">Lädt</string>
     <string name="generated_by_ai">KI-generiert</string>
     <string name="action_like">Gefällt mir</string>
+    <string name="story_outline">Handlungsentwurf</string>
     <string name="story_synopsis">Inhaltsangabe</string>
     <string name="story_script">Drehbuch</string>
     <string name="asset_management">Asset</string>

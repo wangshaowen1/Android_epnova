@@ -340,6 +340,7 @@
     <string name="loading">読み込み中</string>
     <string name="generated_by_ai">AI生成</string>
     <string name="action_like">いいね</string>
+    <string name="story_outline">物語の構成</string>
     <string name="story_synopsis">あらすじ</string>
     <string name="story_script">脚本</string>
     <string name="asset_management">アセット</string>

@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.style.ImageSpan
+import android.util.Log
+import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.content.ContextCompat
@@ -23,6 +25,7 @@ import com.kuaigeglobal.epnova.common.adapter.QuickAdapter
 import com.kuaigeglobal.epnova.common.ext.showConfirmPrompt
 import com.kuaigeglobal.epnova.core.manager.EventManager
 import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
+import com.kuaigeglobal.epnova.core.network.apis.request.StoryOutlineInfo
 import com.kuaigeglobal.epnova.databinding.FragmentDramaGenerateStep1Binding
 import com.kuaigeglobal.epnova.feature.creator.CreationRootActivity
 import com.kuaigeglobal.epnova.feature.creator.StoryReuploadDialog
@@ -62,6 +65,8 @@ class DramaGenerateStep1Fragment :
     val hostVm by lazy { getViewModelOfActivity<StoryEditorViewModel>() }
     private val markDownTextView by lazy { PrinterMarkDownTextView(mActivity) }
     var episodeAdapter = QuickAdapter<ItemStorySummaryGenerateVm>(R.layout.item_story_summary_generate, emptyList())
+    //故事大纲 故事简纲列表
+    private val storyOutlineAdapter = QuickAdapter<ItemStoryOutlineGenerateVm>(R.layout.item_story_outline_generate, emptyList())
     private var showBackToast = false
     val from by lazy { hostVm?.from }
     private var pendingSummaryMarkdown: String? = null
@@ -103,6 +108,23 @@ class DramaGenerateStep1Fragment :
                 }
             }
         }
+        //故事大纲 故事简纲列表设置
+        binding.recyclerViewStoryOutline.setAdapter(storyOutlineAdapter)
+        storyOutlineAdapter.setOnItemClickListener { _, _, position ->
+            if (mRealVM.isSummaryLoading.get() || mRealVM.isSummaryStreaming.get()) {
+                getString(R.string.story_generating_please_wait).showToast()
+                return@setOnItemClickListener
+            }
+            editWarning {
+                mRealVM.storySummaryResult.value?.result?.storyOutlineList?.get(position)?.let {
+                    InputDialog.show(InputDialog.TYPE_EPISODE_SUMMARY, mRealVM.workId, it.id, it.content, it.title) { text ->
+                        it.content = text
+                        storyOutlineAdapter.getItem(position)?.updateData(it.copy())
+                    }
+                }
+            }
+        }
+
         mRealVM.summaryStreamingText.observe(viewLifecycleOwner) {
             if (mRealVM.isSummaryStreaming.get()) {
                 renderSummaryMarkdown(
@@ -121,6 +143,31 @@ class DramaGenerateStep1Fragment :
                 setTextWithEditIcon(binding.tvStoryDesc, it.result?.workDesc ?: "")
                 episodeAdapter.submitList(it.result?.structureList?.map { info ->
                     return@map ItemStorySummaryGenerateVm(info)
+                })
+                //故事大纲 故事简纲列表设置数据
+                // shortcut: 临时补齐空简纲供 UI 预览，接口接入后删除假数据。
+                mRealVM.storySummaryResult.value?.result?.storyOutlineList = it.result?.storyOutlineList.orEmpty().ifEmpty {
+                    listOf(
+                        StoryOutlineInfo(
+                            title = "开端",
+                            content = "少年意外觉醒罕见能力，为寻找身世真相离开故乡。"
+                        ),
+                        StoryOutlineInfo(
+                            title = "冲突升级",
+                            content = "他在伙伴帮助下逐渐掌握力量，却发现敌人正利用这份力量策划更大的阴谋。"
+                        ),
+                        StoryOutlineInfo(
+                            title = "高潮",
+                            content = "面对同伴背叛与家园危机，他决定直面幕后主使，在关键决战中做出自己的选择。"
+                        ),
+                        StoryOutlineInfo(
+                            title = "结局",
+                            content = "阴谋被揭穿，家园重归平静，主角完成成长，与伙伴踏上新的旅程。"
+                        )
+                    )
+                }
+                storyOutlineAdapter.submitList( it.result?.storyOutlineList?.map { info ->
+                    return@map ItemStoryOutlineGenerateVm(info)
                 })
             } else if (it.isSensitive()) {
                 StoryReuploadDialog.show(it.novelFileName, it.novelCharCount, it.toastTextAuditFailed) {
