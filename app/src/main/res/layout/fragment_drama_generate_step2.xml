@@ -22,6 +22,41 @@
         android:layout_height="match_parent"
         android:keepScreenOn="true">
 
+
+       <LinearLayout
+           setVisible="@{layout.storyScriptResult.storyTitle != null&amp;&amp; !layout.storyScriptResult.storyTitle.isEmpty()}"
+           android:layout_marginStart="@dimen/spacing_l"
+           android:layout_marginTop="20dp"
+           app:layout_constraintStart_toStartOf="parent"
+           app:layout_constraintTop_toTopOf="parent"
+           android:id="@+id/ll_introduction"
+           android:orientation="vertical"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content">
+
+           <TextView
+               style="@style/Text14.Outfit.Medium"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:text="@string/story_summary"
+               tools:text="这一集 标题"
+               android:textColor="?attr/textColor1"
+               app:text="@{layout.storyScriptResult.storyTitle}"
+               android:textStyle="normal" />
+
+           <TextView
+               android:id="@+id/tvStoryIntroduction"
+               style="@style/Text14.Outfit.Regular"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:layout_marginTop="@dimen/spacing_m"
+               android:textColor="?attr/textColor3"
+               app:textWithEditIcon="@{layout.storyScriptResult.storyIntroduction}"
+               tools:text="唐三在武魂觉醒仪式上，意外觉醒出被视为“废武魂”的蓝银草，却暗中展现出不寻常的天赋..." />
+
+       </LinearLayout>
+
+
         <TextView
             android:id="@+id/tvTopTitle"
             style="@style/Text14.Outfit.Medium"
@@ -31,8 +66,8 @@
             android:layout_marginTop="20dp"
             android:text="@string/story_content"
             android:textColor="?attr/textColor1"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@id/ll_introduction"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"

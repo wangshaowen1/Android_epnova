@@ -10,6 +10,7 @@ import com.kuaigeglobal.epnova.common.Constants
 import com.kuaigeglobal.epnova.common.SimpleTextWatcher
 import com.kuaigeglobal.epnova.common.ext.applySmartFocusManager
 import com.kuaigeglobal.epnova.common.ext.showConfirmPrompt
+import com.kuaigeglobal.epnova.core.databinding.setTextWithEditIcon
 import com.kuaigeglobal.epnova.core.ext.sensitiveWordCheck
 import com.kuaigeglobal.epnova.core.manager.EventManager
 import com.kuaigeglobal.epnova.core.manager.FirebaseEvent
@@ -134,7 +135,29 @@ class DramaGenerateStep2Fragment :
             handleNextStep()
         }
         setupTouchInterceptor()
+
+        //这一集简纲编辑
+        binding.tvStoryIntroduction.setOnSingleClickListener {
+            if (mRealVM.isScriptLoading.get() || mRealVM.isScriptStreaming.get()) {
+                return@setOnSingleClickListener
+            }
+                editWarning {
+                    mRealVM.storyScriptResult.value?.storyIntroduction?.let {
+                        InputDialog.show(
+                            type = InputDialog.TYPE_NORMAL,
+                            content = it,
+                            title  =  mRealVM.storyScriptResult.value?.storyTitle
+                        ) { text ->
+                            mRealVM.storyScriptResult.value?.storyIntroduction = text
+                            setTextWithEditIcon(binding.tvStoryIntroduction, text)
+                            //后续调用接口
+
+                        }
+                    }
+                }
+            }
     }
+
 
     private fun handleNextStep() {
         viewLifecycleOwner.lifecycleScope.launch {
@@ -192,6 +215,20 @@ class DramaGenerateStep2Fragment :
 
     var isNotified = false
 
+    private fun editWarning(callback: () -> Unit) {
+        if (isNotified) {
+            callback()
+            return
+        }
+        isNotified = true
+        mActivity.showConfirmPrompt(
+            getString(R.string.edit_text_warning),
+            confirmText = getString(R.string.continue_editing)
+        ) {
+            callback()
+        }
+    }
+
     private fun setupTouchInterceptor() {
         binding.inputView.setOnSingleClickListener {
             if (mRealVM.isScriptLoading.get() || mRealVM.isScriptStreaming.get()) {
@@ -240,6 +277,10 @@ class DramaGenerateStep2Fragment :
         mRealVM.storyScriptResult.observe(viewLifecycleOwner) {
             showBackToast = false
             updateEpisodeTitle(hostVm?.title?.value)
+
+            // shortcut: 临时补齐空简纲供 UI 预览，接口接入后删除假数据。
+            mRealVM.storyScriptResult.value?.storyTitle = "标题1"
+            mRealVM.storyScriptResult.value?.storyIntroduction = "这几一集大纲简述"
         }
 
         mRealVM.mWorkName.observe(viewLifecycleOwner) {

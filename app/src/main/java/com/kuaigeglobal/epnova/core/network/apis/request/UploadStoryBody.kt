@@ -129,6 +129,9 @@ data class PollScriptData(
     val toastTextTime: String? = null,//用户提示-剩余时间文本;例如30-60秒
     val toastTextEstimatedSeconds: Int? = null,//用户提示-预估总秒数;例如30秒
     val storyContent: String? = null,
+    //1.5.6版本加入
+    var storyTitle : String? = null,
+    var storyIntroduction : String? = null,
 ){
     fun isSuccess(): Boolean {
         return genStatus == 2

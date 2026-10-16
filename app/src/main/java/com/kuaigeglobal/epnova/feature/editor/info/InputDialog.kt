@@ -60,6 +60,7 @@ class InputDialog :
             content: String? = null,
             extra: String? = null,
             highlightedContent: CharSequence? = null,
+            title: String? = null,
             callback: (String) -> Unit
         ) {
             val activity = topActivity as? FragmentActivity ?: return
@@ -70,6 +71,7 @@ class InputDialog :
                     Constants.Extra.TYPE to type,
                     Constants.Extra.CONTENT to content,
                     Constants.Extra.EXTRA to extra,
+                    Constants.Extra.TITLE to title,
                     KEY_HIGHLIGHTED_CONTENT to highlightedContent
                 )
                 this.isCancelable = false

@@ -56,6 +56,10 @@ class InputViewModel : AppRepositoryViewModel<AppRepository>() {
     }
 
     fun setTitle() {
+        mBundle.getString(Constants.Extra.TITLE)?.let {
+            title.set(it)
+            return
+        }
         when (type) {
             InputDialog.TYPE_WORK_DESC -> {
                 title.set(getString(R.string.edit_story_summary))
