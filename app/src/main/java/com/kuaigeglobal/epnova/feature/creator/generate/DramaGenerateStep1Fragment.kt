@@ -145,7 +145,16 @@ class DramaGenerateStep1Fragment :
                     return@map ItemStorySummaryGenerateVm(info)
                 })
                 //故事大纲 故事简纲列表设置数据
-                // shortcut: 临时补齐空简纲供 UI 预览，接口接入后删除假数据。
+                // shortcut: 临时补齐空标签和空简纲供 UI 预览，接口接入后删除假数据。
+                val summaryResult = it.result
+                if (summaryResult != null && summaryResult.tags.isNullOrEmpty()) {
+                    mRealVM.storySummaryResult.value = it.copy(
+                        result = summaryResult.copy(
+                            tags = listOf("玄幻仙侠", "热血成长", "异世冒险", "伙伴羁绊", "逆袭", "宿命对决")
+                        )
+                    )
+                    return@observe
+                }
                 mRealVM.storySummaryResult.value?.result?.storyOutlineList = it.result?.storyOutlineList.orEmpty().ifEmpty {
                     listOf(
                         StoryOutlineInfo(

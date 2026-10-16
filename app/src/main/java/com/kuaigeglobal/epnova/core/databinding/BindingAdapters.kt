@@ -35,6 +35,7 @@ import android.webkit.WebSettings
 import android.webkit.WebView
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.RadioGroup
 import android.widget.TextView
 import android.widget.ViewAnimator
@@ -44,6 +45,7 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.FloatRange
 import androidx.annotation.FontRes
 import androidx.annotation.RawRes
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.animation.addListener
@@ -116,6 +118,7 @@ import com.nhsd.basic.ext.dp
 import com.nhsd.basic.ext.getActivity
 import com.nhsd.basic.ext.getResColor
 import com.nhsd.basic.ext.getResString
+import com.nhsd.basic.ext.getThemeColor
 import com.nhsd.basic.ext.inRange
 import com.nhsd.basic.ext.launchNoCrash
 import com.nhsd.basic.ext.setOnSingleClickListener
@@ -865,6 +868,31 @@ fun marginTopPx(view: View, topMargin: Int) {
 @BindingAdapter("setTags")
 fun setTags(tagLayout: TagLayout, tags: List<String?>?) {
     tagLayout.tags = tags
+}
+
+@BindingAdapter("storySummaryTags")
+fun setStorySummaryTags(container: LinearLayout, tags: List<String>?) {
+    container.removeAllViews()
+    val spacing = container.resources.getDimensionPixelSize(R.dimen.spacing_m)
+    val verticalPadding = container.resources.getDimensionPixelSize(R.dimen.spacing_xs)
+    tags?.forEachIndexed { index, tag ->
+        val tagView = AppCompatTextView(container.context).apply {
+            setTextAppearance(R.style.Text12_Outfit_Regular)
+            setTextColor(context.getThemeColor(R.attr.textColor2))
+            setBackgroundResource(R.drawable.bg_06_ffffff_r100)
+            setPadding(10.dp, verticalPadding, 10.dp, verticalPadding)
+            setSingleLine(true)
+            includeFontPadding = false
+            text = tag
+        }
+        val params = LinearLayout.LayoutParams(
+            ViewGroup.LayoutParams.WRAP_CONTENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        ).apply {
+            marginStart = if (index == 0) 0 else spacing
+        }
+        container.addView(tagView, params)
+    }
 }
 
 @BindingAdapter("setTags", "selectedTags", "setTagSelectMode", requireAll = false)

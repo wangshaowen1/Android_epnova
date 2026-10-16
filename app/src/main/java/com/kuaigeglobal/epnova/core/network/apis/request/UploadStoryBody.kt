@@ -79,6 +79,7 @@ data class RollNovelSummaryResult(
     val structureList: List<RollNovelStructure>? = null,
     // 故事简纲，按列表顺序展示
     var storyOutlineList: List<StoryOutlineInfo>? = null,
+    val tags: List<String>? = null, // 只读展示的故事标签
 ) : Parcelable{
     fun getFirstStoryId(): String? {
         return structureList?.get(0)?.storyId
