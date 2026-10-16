@@ -80,7 +80,7 @@ public class AppHeader {
             this.opid = Config.get().getOpid();
             this.regChannelCode = Config.get().getRegChannelCode();
             this.storeCountryCode = Config.get().getStoreCountryCode();
-            this.systemCountryCode = Locale.getDefault().getCountry();
+            this.systemCountryCode = Config.get().getSystemCountryCode();
 
 
             String mac = Session.getInstance().getMac();

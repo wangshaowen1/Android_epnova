@@ -1,7 +1,9 @@
 package com.kuaigeglobal.epnova.core.manager
 
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.app.LocaleManagerCompat
 import androidx.core.os.LocaleListCompat
+import com.kuaigeglobal.epnova.App
 import com.kuaigeglobal.epnova.core.Config
 import com.nhsd.basic.locale.BasicLocaleConfig
 import java.util.Locale
@@ -31,6 +33,10 @@ object AppLanguageManager {
     }
 
     fun applySavedLanguage() {
+        val country = LocaleManagerCompat.getSystemLocales(App.instance).get(0)?.country
+        country?.let { code ->
+            Config.get().registerCountryCode(code)
+        }
         configureBasicLocale()
         applyLanguage(Config.get().getSavedLanguage())
     }
