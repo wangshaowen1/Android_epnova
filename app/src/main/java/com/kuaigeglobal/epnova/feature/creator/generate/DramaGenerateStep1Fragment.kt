@@ -117,7 +117,7 @@ class DramaGenerateStep1Fragment :
             }
             editWarning {
                 mRealVM.storySummaryResult.value?.result?.storyOutlineList?.get(position)?.let {
-                    InputDialog.show(InputDialog.TYPE_EPISODE_SUMMARY, mRealVM.workId, it.id, it.content, it.title) { text ->
+                    InputDialog.show(InputDialog.TYPE_STORY_OUTLINE, mRealVM.workId, it.id, it.content, it.title) { text ->
                         it.content = text
                         storyOutlineAdapter.getItem(position)?.updateData(it.copy())
                     }

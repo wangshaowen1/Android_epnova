@@ -3,6 +3,7 @@ package com.kuaigeglobal.epnova.feature.editor.info
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
+import android.util.Log
 import androidx.core.graphics.toColorInt
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableInt
@@ -44,7 +45,7 @@ class InputViewModel : AppRepositoryViewModel<AppRepository>() {
         maxLength.set(
             (when (type) {
                 InputDialog.TYPE_WORK_DESC -> 500
-                InputDialog.TYPE_EPISODE_SUMMARY -> 300
+                InputDialog.TYPE_EPISODE_SUMMARY, InputDialog.TYPE_STORY_OUTLINE -> 300
                 InputDialog.TYPE_EPISODE_CONTENT -> 5000
                 InputDialog.TYPE_ASSET_DESC -> 200
                 InputDialog.TYPE_STORYBOARD_DESC -> 1000
@@ -62,6 +63,10 @@ class InputViewModel : AppRepositoryViewModel<AppRepository>() {
 
             InputDialog.TYPE_EPISODE_SUMMARY -> {
                 title.set(getString(R.string.edit_story_synopsis))
+            }
+
+            InputDialog.TYPE_STORY_OUTLINE -> {
+                title.set(getString(R.string.story_outline))
             }
 
             InputDialog.TYPE_EPISODE_CONTENT -> {
@@ -103,6 +108,9 @@ class InputViewModel : AppRepositoryViewModel<AppRepository>() {
                 saveStorySummary { onSuccess?.invoke() }
             }
 
+            InputDialog.TYPE_STORY_OUTLINE -> {
+                saveStoryOutline { onSuccess?.invoke() }
+            }
             else -> {
                 onSuccess?.invoke()
             }
@@ -134,6 +142,23 @@ class InputViewModel : AppRepositoryViewModel<AppRepository>() {
         }) {
             onSuccess?.invoke()
         }
+    }
+
+
+    fun saveStoryOutline(onSuccess: (() -> Unit)? = null) {
+        //后续加入接口
+        onSuccess?.invoke()
+       /* requestWithLoading({
+            mRepo.api.updateStorySummary(
+                SaveStorySummaryBody(
+                    input.value,
+                    storyId,
+                    workId
+                )
+            )
+        }) {
+            onSuccess?.invoke()
+        }*/
     }
 
     /**

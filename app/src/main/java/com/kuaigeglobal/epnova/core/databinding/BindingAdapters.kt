@@ -22,6 +22,7 @@ import android.text.TextPaint
 import android.text.method.ScrollingMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
+import android.text.style.ImageSpan
 import android.util.TypedValue
 import android.view.MotionEvent
 import android.view.View
@@ -46,6 +47,7 @@ import androidx.annotation.RawRes
 import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.animation.addListener
+import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
@@ -1454,6 +1456,24 @@ fun setTextStartWithImage(
     "[start]  ${text ?: ""}".replaceSpan("[start]") {
         image.let { CenterImageSpan(it).setDrawableSize(imageWidth.dp, imageHeight.dp) }
     }.let { view.text = it }
+}
+
+@BindingAdapter("textWithEditIcon")
+fun setTextWithEditIcon(textView: TextView, content: String?) {
+    val editIcon = ContextCompat.getDrawable(textView.context, R.drawable.icon_edit_full)!!
+    val textSizePx = textView.textSize.toInt()
+    editIcon.setBounds(0, 0, textSizePx, textSizePx)
+
+    // 一个空格留间距，最后一个空格作为图标占位。
+    val fullText = content.orEmpty() + "  "
+    val spannable = SpannableString(fullText)
+    spannable.setSpan(
+        ImageSpan(editIcon, ImageSpan.ALIGN_BOTTOM),
+        fullText.length - 1,
+        fullText.length,
+        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+    )
+    textView.text = spannable
 }
 
 @BindingAdapter("setRotateCenter", "pivotY", requireAll = false)
