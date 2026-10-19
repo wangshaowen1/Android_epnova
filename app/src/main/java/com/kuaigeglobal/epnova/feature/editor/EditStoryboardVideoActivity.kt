@@ -47,11 +47,6 @@ class EditStoryboardVideoActivity : BaseViewModelActivity<ActivityEditStoryboard
         }
     }
 
-    override fun setTranslucentStatus() {
-        // 导航栏图标浅色、背景透明
-        setupTranslucentStatus(false, getThemeColor(R.attr.fillColor1))
-    }
-
     companion object {
         @JvmStatic
         fun launchIntent(

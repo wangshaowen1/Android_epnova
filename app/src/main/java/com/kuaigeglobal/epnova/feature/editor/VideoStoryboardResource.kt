@@ -5,6 +5,7 @@ import android.util.Size
 import com.arthenica.ffmpegkit.FFmpegKitConfig
 import com.blankj.utilcode.util.FileUtils
 import com.blankj.utilcode.util.PathUtils
+import com.blankj.utilcode.util.ResourceUtils
 import com.kuaigeglobal.epnova.core.network.apis.entity.SimpleStoryboardInfo
 import com.kuaigeglobal.epnova.feature.download.resource.JsonToAssResource
 import com.kuaige.videoedit.ffmpeg.FFmpegCommandBuilder
@@ -29,7 +30,10 @@ class VideoStoryboardResource(private val url: String, private val storyboard: S
         FFmpegKitConfig.setFontDirectoryList(BaseApp.getInstance(), listOf("/system/fonts"), emptyMap())
     }
 
-    override val filename by lazy { "${url.urlToFilename()}_${storyboard.subtitle?.subtitleContent.hashCode()}_${watermark}_v${CACHE_VERSION}.mp4" }
+    override val filename by lazy {
+        val subtitleStyleKey = listOf(ResourceUtils.readAssets2String("ass_template.ass"), SUBTITLE_FORCE_STYLE, JsonToAssResource.LAYOUT_VERSION).hashCode()
+        "${url.urlToFilename()}_${storyboard.subtitle?.subtitleContent.hashCode()}_${watermark}_v${CACHE_VERSION}_${subtitleStyleKey}.mp4"
+    }
     private val cacheFile by lazy {
         val path = "${PathUtils.getExternalAppCachePath()}${File.separator}source_material${File.separator}${filename}"
         File(path).apply {
@@ -68,7 +72,7 @@ class VideoStoryboardResource(private val url: String, private val storyboard: S
             finalV = mapV
         }
         if (subtitleFile?.exists() == true) {
-            builder.addFilter("[$mapV]subtitles='${subtitleFile.absolutePath}':force_style='Outline=1,Shadow=0,PrimaryColour=&H00FFFFFF,SecondaryColour=&H80000000'[v_subtitle]")
+            builder.addFilter("[$mapV]subtitles='${subtitleFile.absolutePath}':force_style='$SUBTITLE_FORCE_STYLE'[v_subtitle]")
             mapV = "v_subtitle"
             finalV = "[$mapV]"
         }
@@ -145,6 +149,7 @@ class VideoStoryboardResource(private val url: String, private val storyboard: S
     }
 
     companion object {
+        private const val SUBTITLE_FORCE_STYLE = "MarginL=40,MarginR=40,Outline=1,Shadow=0,PrimaryColour=&H00FFFFFF,SecondaryColour=&H80000000"
         // 转码规格调整时同步更新版本，避免复用采样率未统一的旧分镜缓存。
         private const val CACHE_VERSION = BuildConfig.VERSION_CODE
         // 拼接前逐段统一为 AAC、48kHz、双声道

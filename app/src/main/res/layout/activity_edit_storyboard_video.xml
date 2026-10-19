@@ -15,6 +15,7 @@
     </data>
 
     <FrameLayout
+        android:background="?android:windowBackground"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -88,7 +89,7 @@
                     app:layout_constraintTop_toTopOf="@+id/playerArea"
                     app:use_controller="false"
                     tools:visibility="invisible" />
-
+                <!--  字幕   -->
                 <TextView
                     setTextSizeDp="@{TextUtils.equals(layout.workRatio,`16:9`)?15f:10f}"
                     setVerticalBias="@{TextUtils.equals(layout.workRatio,`16:9`)?0.9148936f:0.83263598f}"

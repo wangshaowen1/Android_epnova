@@ -1,5 +1,7 @@
 package com.kuaigeglobal.epnova.feature.download.resource
 
+import android.graphics.Paint
+import android.graphics.Typeface
 import android.text.format.DateUtils
 import com.blankj.utilcode.util.FileIOUtils
 import com.blankj.utilcode.util.GsonUtils
@@ -7,6 +9,7 @@ import com.blankj.utilcode.util.ResourceUtils
 import com.google.gson.reflect.TypeToken
 import com.kuaigeglobal.epnova.core.network.apis.entity.SubtitleItem
 import com.kuaige.videoedit.resource.Resource
+import java.text.BreakIterator
 import java.util.Locale
 
 /**
@@ -24,7 +27,15 @@ class JsonToAssResource(
 
     // 生成一个唯一的文件名
     override val filename by lazy {
-        "ass_${storyboardId}_${json.hashCode()}.ass"
+        val styleKey = listOf(
+            ResourceUtils.readAssets2String(assTemplate),
+            videoWidth,
+            videoHeight,
+            fontSize,
+            marginBottom,
+            LAYOUT_VERSION,
+        ).hashCode()
+        "ass_${storyboardId}_${json.hashCode()}_${styleKey}.ass"
     }
 
     override suspend fun doWork(onProgress: ((Int) -> Unit)?) {
@@ -45,7 +56,7 @@ class JsonToAssResource(
 
         // 遍历生成字幕行
         subtitleList.forEachIndexed { index, item ->
-            subtitle.appendLine("Dialogue: 0,${item.startTime?.toAssTime()},${item.endTime?.toAssTime()},Default,${item.text}")
+            subtitle.appendLine("Dialogue: 0,${item.startTime?.toAssTime()},${item.endTime?.toAssTime()},Default,${wrapText(item.text)}")
             // 简单的进度计算
             if (index % 5 == 0) {
                 onProgress?.invoke((index * 100f / subtitleList.size).toInt())
@@ -72,5 +83,39 @@ class JsonToAssResource(
         val millis = (remaining % 1000) / 10 // ASS 使用百分秒 (cs)
 
         return String.format(Locale.getDefault(), "%d:%02d:%02d.%02d", hours, minutes, seconds, millis)
+    }
+
+    /**
+     * 字幕换行处理
+     */
+    private fun wrapText(text: String?): String {
+        val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            textSize = fontSize.toFloat()
+        }
+        // 比 ASS 左右 80 像素边距再留少量余量，容纳字体回退和描边差异。
+        val maxLineWidth = ((videoWidth - 80).coerceAtLeast(videoWidth / 2) * 0.9f)
+        return text.orEmpty().replace("\r\n", "\n").replace('\r', '\n').split('\n').joinToString("\\N") { paragraph ->
+            val lines = mutableListOf<String>()
+            val line = StringBuilder()
+            val characters = BreakIterator.getCharacterInstance(Locale.ROOT).apply { setText(paragraph) }
+            var start = characters.first()
+            var end = characters.next()
+            while (end != BreakIterator.DONE) {
+                val character = paragraph.substring(start, end)
+                if (line.isNotEmpty() && paint.measureText(line.toString() + character) > maxLineWidth) {
+                    lines.add(line.toString().trimEnd())
+                    line.setLength(0)
+                }
+                if (line.isNotEmpty() || !character.isBlank()) line.append(character)
+                start = end
+                end = characters.next()
+            }
+            if (line.isNotEmpty()) lines.add(line.toString().trimEnd())
+            lines.joinToString("\\N")
+        }
+    }
+
+    companion object {
+        const val LAYOUT_VERSION = 2
     }
 }

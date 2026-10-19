@@ -10,8 +10,8 @@ YCbCr Matrix: TV.601
 
 [V4+ Styles]
 Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, Bold, Alignment, MarginL, MarginR, MarginV
-Style: Default,Roboto,#Fontsize#,&H00FFFFFF,&H80FFFFFF,-1,2,0,0,#MarginV#
-Style: Karaoke,Roboto,#Fontsize#,&H00FFFFFF,&H80FFFFFF,-1,2,0,0,#MarginV#
+Style: Default,Roboto,#Fontsize#,&H00FFFFFF,&H80FFFFFF,-1,2,40,40,#MarginV#
+Style: Karaoke,Roboto,#Fontsize#,&H00FFFFFF,&H80FFFFFF,-1,2,40,40,#MarginV#
 
 [Events]
 Format: Layer, Start, End, Style, Text
