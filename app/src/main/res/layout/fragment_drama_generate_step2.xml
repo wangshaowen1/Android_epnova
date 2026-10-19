@@ -41,7 +41,7 @@
                android:text="@string/story_summary"
                tools:text="这一集 标题"
                android:textColor="?attr/textColor1"
-               app:text="@{layout.storyScriptResult.storyTilte}"
+               app:text="@{layout.storyScriptResult.storyTitle}"
                android:textStyle="normal" />
 
            <TextView

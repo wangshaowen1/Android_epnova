@@ -276,7 +276,7 @@ class DramaGenerateStep2ViewModel : AppRepositoryViewModel<CreationRepository>()
             toastTextEstimatedSeconds = sessionInfo?.toastTextEstimatedSeconds
                 ?: current?.toastTextEstimatedSeconds,
             storyContent = current?.storyContent,
-            storyTilte = current?.storyTilte,
+            storyTitle = current?.storyTitle,
             storySummary = current?.storySummary,
             storyNo = current?.storyNo
         )

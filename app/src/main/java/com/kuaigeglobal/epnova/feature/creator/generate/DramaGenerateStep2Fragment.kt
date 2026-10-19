@@ -148,7 +148,7 @@ class DramaGenerateStep2Fragment :
                         workId = mRealVM.workId.value,
                         storyId = mRealVM.episodeId,
                         content = it,
-                        title = mRealVM.storyScriptResult.value?.storyTilte
+                        title = mRealVM.storyScriptResult.value?.storyTitle
                     ) { text ->
                         mRealVM.storyScriptResult.value?.storySummary = text
                         setTextWithEditIcon(binding.tvStoryIntroduction, text)
