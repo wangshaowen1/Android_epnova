@@ -393,6 +393,7 @@
     <string name="asset_generation_partial_failure">Einige Assets konnten nicht erstellt werden. Bitte erneut generieren.</string>
     <string name="confirm_edit">Änderungen bestätigen?</string>
     <string name="edit_text_warning">Textänderungen können die Qualität der KI-Videogenerierung beeinflussen.</string>
+    <string name="edit_episode_script_refresh_warning">Nach dem Bearbeiten und Speichern wird das Drehbuch dieser Folge aktualisiert. Möchtest du fortfahren?</string>
     <string name="continue_editing">Fortfahren</string>
     <string name="confirm_deletion">Löschen?</string>
     <string name="delete_impact_warning">Das Löschen kann die Videogenerierung beeinflussen</string>

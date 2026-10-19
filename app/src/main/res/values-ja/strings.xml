@@ -394,6 +394,7 @@
     <string name="asset_generation_partial_failure">一部のアセットを生成できませんでした。再生成してください。</string>
     <string name="confirm_edit">編集内容を確認しますか？</string>
     <string name="edit_text_warning">テキストを編集すると、AI動画の生成品質に影響する場合があります。</string>
+    <string name="edit_episode_script_refresh_warning">編集して保存すると、このエピソードの脚本が更新されます。続行しますか？</string>
     <string name="continue_editing">続ける</string>
     <string name="confirm_deletion">削除しますか？</string>
     <string name="delete_impact_warning">削除すると動画生成に影響する場合があります</string>

@@ -393,6 +393,7 @@
     <string name="asset_generation_partial_failure">Beberapa aset gagal dibuat. Harap buat ulang.</string>
     <string name="confirm_edit">Konfirmasi pengeditan?</string>
     <string name="edit_text_warning">Mengedit teks dapat memengaruhi kualitas pembuatan video AI.</string>
+    <string name="edit_episode_script_refresh_warning">Setelah Anda mengedit dan menyimpan, skrip episode ini akan diperbarui. Apakah Anda ingin melanjutkan?</string>
     <string name="continue_editing">Lanjutkan</string>
     <string name="confirm_deletion">Hapus ini?</string>
     <string name="delete_impact_warning">Menghapus ini dapat memengaruhi pembuatan video</string>

@@ -393,6 +393,7 @@
     <string name="asset_generation_partial_failure">No se pudieron generar algunos recursos. Vuelve a generarlos.</string>
     <string name="confirm_edit">¿Confirmar cambios?</string>
     <string name="edit_text_warning">Editar el texto puede afectar la calidad del video generado por IA.</string>
+    <string name="edit_episode_script_refresh_warning">Después de editar y guardar, se actualizará el guion de este episodio. ¿Quieres continuar?</string>
     <string name="continue_editing">Continuar</string>
     <string name="confirm_deletion">¿Eliminar?</string>
     <string name="delete_impact_warning">Eliminarlo puede afectar la generación de video</string>

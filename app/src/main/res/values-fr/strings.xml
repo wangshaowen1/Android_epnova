@@ -393,6 +393,7 @@
     <string name="asset_generation_partial_failure">La génération de certaines ressources a échoué. Générez-les à nouveau.</string>
     <string name="confirm_edit">Confirmer les modifications ?</string>
     <string name="edit_text_warning">Modifier le texte peut affecter la qualité de la vidéo générée par IA.</string>
+    <string name="edit_episode_script_refresh_warning">Après modification et enregistrement, le scénario de cet épisode sera actualisé. Voulez-vous continuer ?</string>
     <string name="continue_editing">Continuer</string>
     <string name="confirm_deletion">Supprimer ?</string>
     <string name="delete_impact_warning">La suppression peut affecter la génération vidéo</string>

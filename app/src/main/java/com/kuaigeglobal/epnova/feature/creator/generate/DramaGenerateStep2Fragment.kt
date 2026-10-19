@@ -158,6 +158,22 @@ class DramaGenerateStep2Fragment :
             }
     }
 
+    var isStoryChange = false
+    private fun editWarning(callback: () -> Unit) {
+        if (isStoryChange) {
+            callback()
+            return
+        }
+        mActivity.showConfirmPrompt(
+            getString(R.string.edit_episode_script_refresh_warning),
+            confirmText = getString(R.string.continue_editing)
+        ) {
+            isStoryChange = true
+            callback()
+        }
+    }
+
+
 
     private fun handleNextStep() {
         viewLifecycleOwner.lifecycleScope.launch {
@@ -214,20 +230,6 @@ class DramaGenerateStep2Fragment :
     private var sensitiveHighlightedText: CharSequence? = null
 
     var isNotified = false
-
-    private fun editWarning(callback: () -> Unit) {
-        if (isNotified) {
-            callback()
-            return
-        }
-        isNotified = true
-        mActivity.showConfirmPrompt(
-            getString(R.string.edit_text_warning),
-            confirmText = getString(R.string.continue_editing)
-        ) {
-            callback()
-        }
-    }
 
     private fun setupTouchInterceptor() {
         binding.inputView.setOnSingleClickListener {
