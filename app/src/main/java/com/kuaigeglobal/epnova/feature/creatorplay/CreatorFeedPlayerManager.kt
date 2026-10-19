@@ -130,7 +130,10 @@ class CreatorFeedPlayerManager(
         val mediaKey = item.feedKey ?: item.episode.storyId ?: item.workContext.workId ?: videoUrl
         currentPlayingKey = mediaKey
 
-        if (exoPlayer.currentMediaItem?.mediaId == mediaKey && currentPlayerView == playerView) {
+        if (exoPlayer.currentMediaItem?.mediaId == mediaKey &&
+            exoPlayer.currentMediaItem?.localConfiguration?.uri?.toString() == videoUrl &&
+            currentPlayerView == playerView
+        ) {
             if (startPositionMs > 0L) {
                 exoPlayer.seekTo(startPositionMs)
             }

@@ -16,6 +16,7 @@ import com.kuaigeglobal.epnova.core.AppRepository
 import com.kuaigeglobal.epnova.core.ext.launch
 import com.kuaigeglobal.epnova.core.ext.launchWithLoading
 import com.kuaigeglobal.epnova.core.ext.parseMessage
+import com.kuaigeglobal.epnova.core.ext.request
 import com.kuaigeglobal.epnova.core.network.RetrofitClient
 import com.kuaigeglobal.epnova.core.network.apis.PagedList
 import com.kuaigeglobal.epnova.core.network.apis.entity.CreatorEpisodeInfo
@@ -25,6 +26,7 @@ import com.kuaigeglobal.epnova.core.network.apis.entity.CreatorWorkContext
 import com.kuaigeglobal.epnova.core.network.apis.entity.CreatorWorkInfo
 import com.kuaigeglobal.epnova.core.network.apis.request.WorkIdBody
 import com.kuaigeglobal.epnova.core.network.apis.request.WorkIdPagedBody
+import com.kuaigeglobal.epnova.core.network.apis.request.WorkBody
 import com.kuaigeglobal.epnova.core.response
 import com.kuaigeglobal.epnova.feature.download.DownloadingViewModel
 import com.kuaigeglobal.epnova.feature.creatorplay.data.TopEarnersCreatorFeedRepository
@@ -116,6 +118,19 @@ class CreatorPlayerViewModel : AppRepositoryViewModel<AppRepository>(), Download
             pagingData.map { work ->
                 TopEarnersCreatorMapper.toPlayableEpisode(work, feedIndex = feedIndex++)
             }
+        }
+    }
+
+    /**分镜编辑页返回时更新当前播放单元持有的视频地址和时长。*/
+    fun refreshEditedEpisode(item: CreatorPlayableEpisode, onUpdated: () -> Unit) {
+        val workId = item.workContext.workId ?: item.episode.workId ?: return
+        val storyId = item.episode.storyId ?: return
+        request(apiBlock = { mRepo.api.singleEpisodeDetails(WorkBody(workId, storyId)) }) {
+            val latest = data ?: return@request
+            val videoUrl = latest.videoUrl?.takeIf { it.isNotBlank() } ?: return@request
+            item.episode.videoUrl = videoUrl
+            latest.duration?.let { item.episode.duration = it }
+            onUpdated()
         }
     }
 

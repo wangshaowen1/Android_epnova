@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Gravity
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
 import com.kuaigeglobal.epnova.R
@@ -96,6 +97,9 @@ class CreatorPlayerActivity :
     /**下载方式弹窗回调时使用的当前视频 URL。*/
     private var downloadVideoUrl: String? = null
 
+    /**从分镜编辑页返回后需要重新读取的视频。*/
+    private var editedEpisode: CreatorPlayableEpisode? = null
+
     /** GA4 播放器展示仅在本次页面首次真正开始播放时上报。 */
     private var hasReportedPlayerShow = false
 
@@ -139,6 +143,22 @@ class CreatorPlayerActivity :
     override fun onResume() {
         super.onResume()
         playerManager.resumeOnForeground()
+        editedEpisode?.let { item ->
+            editedEpisode = null
+            mRealVM.refreshEditedEpisode(item) {
+                val position = listController.getCurrentPosition()
+                if (lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED) &&
+                    adapter.peekPlayableItem(position) === item
+                ) {
+                    adapter.notifyItemChanged(position)
+                    binding.recyclerView.post {
+                        if (lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
+                            listController.startInitialPlay(position)
+                        }
+                    }
+                }
+            }
+        }
     }
 
     override fun onPause() {
@@ -591,6 +611,7 @@ class CreatorPlayerActivity :
                 FirebaseEvent.Category.CREATE,
                 FirebaseEvent.Action.REDRAW_CONFIRM_CLICK
             )
+            editedEpisode = item
             CreatorStoryboardEditorLauncher.start(item)
         }
     }
