@@ -139,6 +139,7 @@ class DramaGenerateStep2Fragment :
         //这一集简纲编辑
         binding.tvStoryIntroduction.setOnSingleClickListener {
             if (mRealVM.isScriptLoading.get() || mRealVM.isScriptStreaming.get()) {
+                getString(R.string.script_generating_please_wait).showToast()
                 return@setOnSingleClickListener
             }
             editWarning {

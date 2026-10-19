@@ -377,6 +377,7 @@
     <string name="confirm_exit">Confirmar salida</string>
     <string name="generate_storyboard_video">Generar video del storyboard</string>
     <string name="video_generating_please_wait">El video se está generando. Inténtalo más tarde.</string>
+    <string name="script_generating_please_wait">El guion se está generando. Inténtalo de nuevo más tarde.</string>
     <string name="confirm_delete_scene_warning">Eliminar este video del storyboard es permanente y puede afectar la composición posterior. ¿Confirmas?</string>
     <string name="confirm_del">Confirmar eliminación</string>
     <string name="account_banned_violation">Cuenta suspendida por infringir las normas de la plataforma</string>
@@ -393,7 +394,7 @@
     <string name="asset_generation_partial_failure">No se pudieron generar algunos recursos. Vuelve a generarlos.</string>
     <string name="confirm_edit">¿Confirmar cambios?</string>
     <string name="edit_text_warning">Editar el texto puede afectar la calidad del video generado por IA.</string>
-    <string name="edit_episode_script_refresh_warning">Después de editar y guardar, se actualizará el guion de este episodio. ¿Quieres continuar?</string>
+    <string name="edit_episode_script_refresh_warning">Al editar y guardar, se actualizará el guion de este episodio. ¿Quieres continuar?</string>
     <string name="continue_editing">Continuar</string>
     <string name="confirm_deletion">¿Eliminar?</string>
     <string name="delete_impact_warning">Eliminarlo puede afectar la generación de video</string>

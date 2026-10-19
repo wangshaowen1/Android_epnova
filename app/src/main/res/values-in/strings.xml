@@ -340,7 +340,7 @@
     <string name="loading">Memuat</string>
     <string name="generated_by_ai">Dibuat oleh AI</string>
     <string name="action_like">Suka</string>
-    <string name="story_outline">Kerangka Cerita</string>
+    <string name="story_outline">Alur Cerita</string>
     <string name="story_synopsis">Sinopsis</string>
     <string name="story_script">Skrip</string>
     <string name="asset_management">Aset</string>
@@ -377,6 +377,7 @@
     <string name="confirm_exit">Konfirmasi Keluar</string>
     <string name="generate_storyboard_video">Buat Video Storyboard</string>
     <string name="video_generating_please_wait">Video sedang dibuat. Coba lagi nanti.</string>
+    <string name="script_generating_please_wait">Skrip sedang dibuat. Coba lagi nanti.</string>
     <string name="confirm_delete_scene_warning">Menghapus video storyboard ini bersifat permanen dan dapat memengaruhi komposisi berikutnya. Konfirmasi?</string>
     <string name="confirm_del">Konfirmasi Hapus</string>
     <string name="account_banned_violation">Akun ditangguhkan karena melanggar pedoman platform</string>
@@ -393,7 +394,7 @@
     <string name="asset_generation_partial_failure">Beberapa aset gagal dibuat. Harap buat ulang.</string>
     <string name="confirm_edit">Konfirmasi pengeditan?</string>
     <string name="edit_text_warning">Mengedit teks dapat memengaruhi kualitas pembuatan video AI.</string>
-    <string name="edit_episode_script_refresh_warning">Setelah Anda mengedit dan menyimpan, skrip episode ini akan diperbarui. Apakah Anda ingin melanjutkan?</string>
+    <string name="edit_episode_script_refresh_warning">Setelah diedit dan disimpan, naskah episode ini akan diperbarui. Lanjutkan?</string>
     <string name="continue_editing">Lanjutkan</string>
     <string name="confirm_deletion">Hapus ini?</string>
     <string name="delete_impact_warning">Menghapus ini dapat memengaruhi pembuatan video</string>

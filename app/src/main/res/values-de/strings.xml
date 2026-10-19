@@ -340,7 +340,7 @@
     <string name="loading">Lädt</string>
     <string name="generated_by_ai">KI-generiert</string>
     <string name="action_like">Gefällt mir</string>
-    <string name="story_outline">Handlungsentwurf</string>
+    <string name="story_outline">Handlungsübersicht</string>
     <string name="story_synopsis">Inhaltsangabe</string>
     <string name="story_script">Drehbuch</string>
     <string name="asset_management">Asset</string>
@@ -377,6 +377,7 @@
     <string name="confirm_exit">Beenden bestätigen</string>
     <string name="generate_storyboard_video">Storyboard-Video generieren</string>
     <string name="video_generating_please_wait">Video wird erstellt. Bitte versuche es später erneut.</string>
+    <string name="script_generating_please_wait">Skript wird erstellt. Bitte versuche es später erneut.</string>
     <string name="confirm_delete_scene_warning">Das Löschen dieses Storyboard-Videos ist endgültig und kann die spätere Zusammenstellung beeinflussen. Bestätigen?</string>
     <string name="confirm_del">Löschen bestätigen</string>
     <string name="account_banned_violation">Konto wegen Verstoßes gegen die Plattformrichtlinien gesperrt</string>
@@ -393,7 +394,7 @@
     <string name="asset_generation_partial_failure">Einige Assets konnten nicht erstellt werden. Bitte erneut generieren.</string>
     <string name="confirm_edit">Änderungen bestätigen?</string>
     <string name="edit_text_warning">Textänderungen können die Qualität der KI-Videogenerierung beeinflussen.</string>
-    <string name="edit_episode_script_refresh_warning">Nach dem Bearbeiten und Speichern wird das Drehbuch dieser Folge aktualisiert. Möchtest du fortfahren?</string>
+    <string name="edit_episode_script_refresh_warning">Nach dem Bearbeiten und Speichern wird das Skript dieser Episode aktualisiert. Möchtest du fortfahren?</string>
     <string name="continue_editing">Fortfahren</string>
     <string name="confirm_deletion">Löschen?</string>
     <string name="delete_impact_warning">Das Löschen kann die Videogenerierung beeinflussen</string>

@@ -61,6 +61,7 @@
                     </HorizontalScrollView>
 
                     <TextView
+                        android:layout_marginBottom="@dimen/spacing_l"
                         android:id="@+id/tvStoryDesc"
                         style="@style/Text14.Outfit.Regular"
                         android:layout_width="match_parent"
@@ -73,7 +74,6 @@
                     <LinearLayout
                         setVisible="@{layout.storySummaryResult.result.stages != null&amp;&amp; !layout.storySummaryResult.result.stages.isEmpty()}"
                         tools:visibility="visible"
-                        android:layout_marginTop="@dimen/spacing_l"
                         android:orientation="vertical"
                         android:id="@+id/ll_story_outline"
                         android:layout_width="match_parent"

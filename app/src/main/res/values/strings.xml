@@ -406,6 +406,7 @@
     <string name="confirm_exit">Confirm Exit</string>
     <string name="generate_storyboard_video">Generate Storyboard Video</string>
     <string name="video_generating_please_wait">Video is generating. Please try again later.</string>
+    <string name="script_generating_please_wait">Script generating. Try again later.</string>
     <string name="confirm_delete_scene_warning">Deleting this storyboard video is permanent and may affect subsequent composition. Confirm?</string>
     <string name="confirm_del">Confirm Delete</string>
     <string name="account_banned_violation">Account suspended for violating platform guidelines</string>
