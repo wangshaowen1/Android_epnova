@@ -160,6 +160,7 @@ import com.kuaigeglobal.epnova.core.network.apis.request.RewardAdTaskPrepareBody
 import com.kuaigeglobal.epnova.core.network.apis.request.RoleIdPagedBody
 import com.kuaigeglobal.epnova.core.network.apis.request.RollNovelSummaryResult
 import com.kuaigeglobal.epnova.core.network.apis.request.SaveStorySummaryBody
+import com.kuaigeglobal.epnova.core.network.apis.request.StoryOutlineInfo
 import com.kuaigeglobal.epnova.core.network.apis.request.StoryStreamSessionBody
 import com.kuaigeglobal.epnova.core.network.apis.request.StoryUnlockAdCompleteBody
 import com.kuaigeglobal.epnova.core.network.apis.request.StoryUnlockCoinsBody
@@ -170,6 +171,7 @@ import com.kuaigeglobal.epnova.core.network.apis.request.SynthesisUploadBody
 import com.kuaigeglobal.epnova.core.network.apis.request.TaskIdBody
 import com.kuaigeglobal.epnova.core.network.apis.request.TipOffBody
 import com.kuaigeglobal.epnova.core.network.apis.request.UpdateScriptOutlineBody
+import com.kuaigeglobal.epnova.core.network.apis.request.UpdateOutlineStageBody
 import com.kuaigeglobal.epnova.core.network.apis.request.UploadStoryBody
 import com.kuaigeglobal.epnova.core.network.apis.request.UserPlayBody
 import com.kuaigeglobal.epnova.core.network.apis.request.UserShareUrlBody
@@ -1681,6 +1683,12 @@ interface ApiService {
      */
     @POST(ApiConstants.UPDATE_STORY_SUMMARY)
     suspend fun updateStorySummary(@Body body: SaveStorySummaryBody): ApiResponse<Any?>
+
+    /**
+     * 灵感作品-修改大纲阶段；保存后不触发生成
+     */
+    @POST(ApiConstants.UPDATE_OUTLINE_STAGE)
+    suspend fun updateOutlineStage(@Body body: UpdateOutlineStageBody): ApiResponse<StoryOutlineInfo?>
 
     /**
      * 600 灵感作品-修改本集剧情概览；成功仅表示保存完成

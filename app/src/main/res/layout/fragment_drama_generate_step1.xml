@@ -71,7 +71,7 @@
 
                     <!--故事简纲 版本1.5.6新加-->
                     <LinearLayout
-                        setVisible="@{layout.storySummaryResult.result.storyOutlineList != null&amp;&amp; !layout.storySummaryResult.result.storyOutlineList.isEmpty()}"
+                        setVisible="@{layout.storySummaryResult.result.stages != null&amp;&amp; !layout.storySummaryResult.result.stages.isEmpty()}"
                         tools:visibility="visible"
                         android:layout_marginTop="@dimen/spacing_l"
                         android:orientation="vertical"

@@ -45,7 +45,7 @@ class InputDialog :
         const val TYPE_ASSET_DESC = 4
         const val TYPE_STORYBOARD_DESC = 5
         const val TYPE_SAME_STORY = 6
-        // shortcut: 简纲保存接口未定义，暂仅回调更新页面，接口明确后接入保存。
+        // 故事简纲阶段，保存后不触发生成。
         const val TYPE_STORY_OUTLINE = 7
         // 本集剧情概览，保存成功后由调用方刷新剧本。
         const val TYPE_SCRIPT_OUTLINE = 8
@@ -54,6 +54,7 @@ class InputDialog :
         const val TYPE_NORMAL = 2
 
         private const val KEY_HIGHLIGHTED_CONTENT = "key_highlighted_content"
+        const val KEY_SETTING_ID = "key_setting_id"
 
         fun show(
             type: Int? = TYPE_NORMAL,
@@ -63,6 +64,7 @@ class InputDialog :
             extra: String? = null,
             highlightedContent: CharSequence? = null,
             title: String? = null,
+            settingId: String? = null,
             callback: (String) -> Unit
         ) {
             val activity = topActivity as? FragmentActivity ?: return
@@ -70,6 +72,7 @@ class InputDialog :
                 arguments = bundleOf(
                     Constants.Extra.WORK_ID to workId,
                     Constants.Extra.STORY_ID to storyId,
+                    KEY_SETTING_ID to settingId,
                     Constants.Extra.TYPE to type,
                     Constants.Extra.CONTENT to content,
                     Constants.Extra.EXTRA to extra,

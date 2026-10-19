@@ -116,8 +116,14 @@ class DramaGenerateStep1Fragment :
                 return@setOnItemClickListener
             }
             editWarning {
-                mRealVM.storySummaryResult.value?.result?.storyOutlineList?.get(position)?.let {
-                    InputDialog.show(InputDialog.TYPE_STORY_OUTLINE, mRealVM.workId, it.id, it.content, it.title) { text ->
+                mRealVM.storySummaryResult.value?.result?.stages?.get(position)?.let {
+                    InputDialog.show(
+                        type = InputDialog.TYPE_STORY_OUTLINE,
+                        workId = mRealVM.workId,
+                        settingId = it.settingId,
+                        content = it.content,
+                        extra = it.name
+                    ) { text ->
                         it.content = text
                         storyOutlineAdapter.getItem(position)?.updateData(it.copy())
                     }
@@ -144,38 +150,7 @@ class DramaGenerateStep1Fragment :
                 episodeAdapter.submitList(it.result?.structureList?.map { info ->
                     return@map ItemStorySummaryGenerateVm(info)
                 })
-                //故事大纲 故事简纲列表设置数据
-                // shortcut: 临时补齐空标签和空简纲供 UI 预览，接口接入后删除假数据。
-                val summaryResult = it.result
-                if (summaryResult != null && summaryResult.tags.isNullOrEmpty()) {
-                    mRealVM.storySummaryResult.value = it.copy(
-                        result = summaryResult.copy(
-                            tags = listOf("玄幻仙侠", "热血成长", "异世冒险", "伙伴羁绊", "逆袭", "宿命对决")
-                        )
-                    )
-                    return@observe
-                }
-                mRealVM.storySummaryResult.value?.result?.storyOutlineList = it.result?.storyOutlineList.orEmpty().ifEmpty {
-                    listOf(
-                        StoryOutlineInfo(
-                            title = "开端",
-                            content = "少年意外觉醒罕见能力，为寻找身世真相离开故乡。"
-                        ),
-                        StoryOutlineInfo(
-                            title = "冲突升级",
-                            content = "他在伙伴帮助下逐渐掌握力量，却发现敌人正利用这份力量策划更大的阴谋。"
-                        ),
-                        StoryOutlineInfo(
-                            title = "高潮",
-                            content = "面对同伴背叛与家园危机，他决定直面幕后主使，在关键决战中做出自己的选择。"
-                        ),
-                        StoryOutlineInfo(
-                            title = "结局",
-                            content = "阴谋被揭穿，家园重归平静，主角完成成长，与伙伴踏上新的旅程。"
-                        )
-                    )
-                }
-                storyOutlineAdapter.submitList( it.result?.storyOutlineList?.map { info ->
+                storyOutlineAdapter.submitList( it.result?.stages?.map { info ->
                     return@map ItemStoryOutlineGenerateVm(info)
                 })
             } else if (it.isSensitive()) {

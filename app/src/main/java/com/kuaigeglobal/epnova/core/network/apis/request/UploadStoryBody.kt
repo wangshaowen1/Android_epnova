@@ -78,8 +78,8 @@ data class RollNovelSummaryResult(
     val workTitle: String? = null,
     val structureList: List<RollNovelStructure>? = null,
     // 故事简纲，按列表顺序展示
-    var storyOutlineList: List<StoryOutlineInfo>? = null,
-    val tags: List<String>? = null, // 只读展示的故事标签
+    var stages: List<StoryOutlineInfo>? = null,
+    val tags: List<String>? = null, // 只读展示的故事标签 //2026/10/16新增，作品标签，按设定排序；无值及500作品返回[]。
 ) : Parcelable{
     fun getFirstStoryId(): String? {
         return structureList?.get(0)?.storyId
@@ -88,9 +88,9 @@ data class RollNovelSummaryResult(
 
 @Parcelize
 data class StoryOutlineInfo(
-    val title: String? = null, // 简纲阶段标题
-    var content: String? = null, // 对应阶段的故事内容
-    val id: String? = null, // 对应阶段的故事内容
+    val name: String? = null, // 阶段名称，可编辑；不通过名称推算集数。
+    var content: String? = null, // 阶段内容，可编辑 。
+    val settingId: String? = null, // 阶段设定记录ID，供修改阶段接口使用。
 ) : Parcelable
 
 /**

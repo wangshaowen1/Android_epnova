@@ -15,6 +15,7 @@ import com.kuaigeglobal.epnova.common.Constants
 import com.kuaigeglobal.epnova.core.AppRepository
 import com.kuaigeglobal.epnova.core.ext.requestWithLoading
 import com.kuaigeglobal.epnova.core.network.apis.request.SaveStorySummaryBody
+import com.kuaigeglobal.epnova.core.network.apis.request.UpdateOutlineStageBody
 import com.kuaigeglobal.epnova.core.network.apis.request.UpdateScriptOutlineBody
 import com.kuaigeglobal.epnova.core.network.apis.request.WorkInfoUpdateBody
 import com.nhsd.basic.ext.getResString
@@ -28,6 +29,7 @@ class InputViewModel : AppRepositoryViewModel<AppRepository>() {
     val workId by lazy { mBundle.getString(Constants.Extra.WORK_ID) }
     val content by lazy { mBundle.getString(Constants.Extra.CONTENT) }
     val storyId by lazy { mBundle.getString(Constants.Extra.STORY_ID) }
+    val settingId by lazy { mBundle.getString(InputDialog.KEY_SETTING_ID) }
     val input = MutableLiveData<String>()
     val title = ObservableField<String>()
     val maxLength = ObservableInt()
@@ -177,19 +179,26 @@ class InputViewModel : AppRepositoryViewModel<AppRepository>() {
     }
 
     fun saveStoryOutline(onSuccess: (() -> Unit)? = null) {
-        //后续加入接口
-        onSuccess?.invoke()
-       /* requestWithLoading({
-            mRepo.api.updateStorySummary(
-                SaveStorySummaryBody(
-                    input.value,
-                    storyId,
-                    workId
+        val targetWorkId = workId?.toLongOrNull()
+        val targetSettingId = settingId?.toLongOrNull()
+        val stageName = extra.orEmpty()
+        val stageContent = input.value?.trim().orEmpty()
+        if (targetWorkId == null || targetSettingId == null || stageName.isBlank() || stageContent.isBlank()) {
+            R.string.toast_save_fail.getResString().showToast()
+            return
+        }
+        requestWithLoading({
+            mRepo.api.updateOutlineStage(
+                UpdateOutlineStageBody(
+                    workId = targetWorkId,
+                    settingId = targetSettingId,
+                    name = stageName,
+                    content = stageContent
                 )
             )
         }) {
             onSuccess?.invoke()
-        }*/
+        }
     }
 
     /**
