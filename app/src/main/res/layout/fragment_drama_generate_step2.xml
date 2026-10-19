@@ -24,7 +24,7 @@
 
 
        <LinearLayout
-           setVisible="@{layout.storyScriptResult.storyTitle != null&amp;&amp; !layout.storyScriptResult.storyTitle.isEmpty()}"
+           setVisible="@{layout.storyScriptResult.storyNo != null&amp;&amp; !layout.storyScriptResult.storyNo.isEmpty()}"
            android:layout_marginStart="@dimen/spacing_l"
            android:layout_marginTop="20dp"
            app:layout_constraintStart_toStartOf="parent"
@@ -41,7 +41,7 @@
                android:text="@string/story_summary"
                tools:text="这一集 标题"
                android:textColor="?attr/textColor1"
-               app:text="@{layout.storyScriptResult.storyTitle}"
+               app:text="@{layout.storyScriptResult.storyTilte}"
                android:textStyle="normal" />
 
            <TextView
@@ -51,7 +51,7 @@
                android:layout_height="wrap_content"
                android:layout_marginTop="@dimen/spacing_m"
                android:textColor="?attr/textColor3"
-               app:textWithEditIcon="@{layout.storyScriptResult.storyIntroduction}"
+               app:textWithEditIcon="@{layout.storyScriptResult.storySummary}"
                tools:text="唐三在武魂觉醒仪式上，意外觉醒出被视为“废武魂”的蓝银草，却暗中展现出不寻常的天赋..." />
 
        </LinearLayout>

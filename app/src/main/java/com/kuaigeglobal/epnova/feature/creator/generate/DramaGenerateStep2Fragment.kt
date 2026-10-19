@@ -141,21 +141,22 @@ class DramaGenerateStep2Fragment :
             if (mRealVM.isScriptLoading.get() || mRealVM.isScriptStreaming.get()) {
                 return@setOnSingleClickListener
             }
-                editWarning {
-                    mRealVM.storyScriptResult.value?.storyIntroduction?.let {
-                        InputDialog.show(
-                            type = InputDialog.TYPE_NORMAL,
-                            content = it,
-                            title  =  mRealVM.storyScriptResult.value?.storyTitle
-                        ) { text ->
-                            mRealVM.storyScriptResult.value?.storyIntroduction = text
-                            setTextWithEditIcon(binding.tvStoryIntroduction, text)
-                            //后续调用接口
-
-                        }
+            editWarning {
+                mRealVM.storyScriptResult.value?.storySummary?.let {
+                    InputDialog.show(
+                        InputDialog.TYPE_SCRIPT_OUTLINE,
+                        workId = mRealVM.workId.value,
+                        storyId = mRealVM.episodeId,
+                        content = it,
+                        title = mRealVM.storyScriptResult.value?.storyTilte
+                    ) { text ->
+                        mRealVM.storyScriptResult.value?.storySummary = text
+                        setTextWithEditIcon(binding.tvStoryIntroduction, text)
+                        scriptGenerate(retry = true)
                     }
                 }
             }
+        }
     }
 
     var isStoryChange = false
@@ -279,10 +280,6 @@ class DramaGenerateStep2Fragment :
         mRealVM.storyScriptResult.observe(viewLifecycleOwner) {
             showBackToast = false
             updateEpisodeTitle(hostVm?.title?.value)
-
-            // shortcut: 临时补齐空简纲供 UI 预览，接口接入后删除假数据。
-            mRealVM.storyScriptResult.value?.storyTitle = "标题1"
-            mRealVM.storyScriptResult.value?.storyIntroduction = "这几一集大纲简述"
         }
 
         mRealVM.mWorkName.observe(viewLifecycleOwner) {

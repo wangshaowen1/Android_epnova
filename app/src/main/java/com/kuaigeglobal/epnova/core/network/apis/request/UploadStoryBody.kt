@@ -131,8 +131,9 @@ data class PollScriptData(
     val toastTextEstimatedSeconds: Int? = null,//用户提示-预估总秒数;例如30秒
     val storyContent: String? = null,
     //1.5.6版本加入
-    var storyTitle : String? = null,
-    var storyIntroduction : String? = null,
+    var storyTilte : String? = null, //2026/10/16 新增，章节标题
+    var storySummary : String? = null,  //2026/10/16新增。当前剧集最新剧情概览/剧本大纲，来自story_summary；无值返回空字符串。可编辑，区别于storyContent剧本正文。
+    var storyNo : String? = null, //storyNo
 ){
     fun isSuccess(): Boolean {
         return genStatus == 2

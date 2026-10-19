@@ -15,8 +15,10 @@ import com.kuaigeglobal.epnova.common.Constants
 import com.kuaigeglobal.epnova.core.AppRepository
 import com.kuaigeglobal.epnova.core.ext.requestWithLoading
 import com.kuaigeglobal.epnova.core.network.apis.request.SaveStorySummaryBody
+import com.kuaigeglobal.epnova.core.network.apis.request.UpdateScriptOutlineBody
 import com.kuaigeglobal.epnova.core.network.apis.request.WorkInfoUpdateBody
 import com.nhsd.basic.ext.getResString
+import com.nhsd.basic.ext.showToast
 import java.util.regex.Pattern
 
 class InputViewModel : AppRepositoryViewModel<AppRepository>() {
@@ -45,7 +47,7 @@ class InputViewModel : AppRepositoryViewModel<AppRepository>() {
         maxLength.set(
             (when (type) {
                 InputDialog.TYPE_WORK_DESC -> 500
-                InputDialog.TYPE_EPISODE_SUMMARY, InputDialog.TYPE_STORY_OUTLINE -> 300
+                InputDialog.TYPE_EPISODE_SUMMARY, InputDialog.TYPE_STORY_OUTLINE, InputDialog.TYPE_SCRIPT_OUTLINE -> 300
                 InputDialog.TYPE_EPISODE_CONTENT -> 5000
                 InputDialog.TYPE_ASSET_DESC -> 200
                 InputDialog.TYPE_STORYBOARD_DESC -> 1000
@@ -65,7 +67,7 @@ class InputViewModel : AppRepositoryViewModel<AppRepository>() {
                 title.set(getString(R.string.edit_story_summary))
             }
 
-            InputDialog.TYPE_EPISODE_SUMMARY -> {
+            InputDialog.TYPE_EPISODE_SUMMARY, InputDialog.TYPE_SCRIPT_OUTLINE -> {
                 title.set(getString(R.string.edit_story_synopsis))
             }
 
@@ -115,6 +117,10 @@ class InputViewModel : AppRepositoryViewModel<AppRepository>() {
             InputDialog.TYPE_STORY_OUTLINE -> {
                 saveStoryOutline { onSuccess?.invoke() }
             }
+
+            InputDialog.TYPE_SCRIPT_OUTLINE -> {
+                saveScriptOutline { onSuccess?.invoke() }
+            }
             else -> {
                 onSuccess?.invoke()
             }
@@ -148,6 +154,27 @@ class InputViewModel : AppRepositoryViewModel<AppRepository>() {
         }
     }
 
+
+    fun saveScriptOutline(onSuccess: (() -> Unit)? = null) {
+        val targetWorkId = workId?.toLongOrNull()
+        val targetStoryId = storyId?.toLongOrNull()
+        val storySummary = input.value?.trim().orEmpty()
+        if (targetWorkId == null || targetStoryId == null || storySummary.isBlank()) {
+            R.string.toast_save_fail.getResString().showToast()
+            return
+        }
+        requestWithLoading({
+            mRepo.api.updateScriptOutline(
+                UpdateScriptOutlineBody(
+                    workId = targetWorkId,
+                    storyId = targetStoryId,
+                    storySummary = storySummary
+                )
+            )
+        }) {
+            onSuccess?.invoke()
+        }
+    }
 
     fun saveStoryOutline(onSuccess: (() -> Unit)? = null) {
         //后续加入接口

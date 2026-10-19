@@ -141,8 +141,9 @@ object StoryStreamFinalMapper {
             toastTextTime = decoded?.toastTextTime,
             toastTextEstimatedSeconds = decoded?.toastTextEstimatedSeconds,
             storyContent = decoded?.storyContent ?: eventData.content ?: textResult,
-            storyTitle = decoded?.storyTitle,
-            storyIntroduction = decoded?.storyIntroduction
+            storyTilte = decoded?.storyTilte,
+            storySummary = decoded?.storySummary,
+            storyNo = decoded?.storyNo
         )
     }
 

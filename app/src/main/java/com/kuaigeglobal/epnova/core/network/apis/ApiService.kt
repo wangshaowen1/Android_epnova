@@ -169,6 +169,7 @@ import com.kuaigeglobal.epnova.core.network.apis.request.SwitchModelBody
 import com.kuaigeglobal.epnova.core.network.apis.request.SynthesisUploadBody
 import com.kuaigeglobal.epnova.core.network.apis.request.TaskIdBody
 import com.kuaigeglobal.epnova.core.network.apis.request.TipOffBody
+import com.kuaigeglobal.epnova.core.network.apis.request.UpdateScriptOutlineBody
 import com.kuaigeglobal.epnova.core.network.apis.request.UploadStoryBody
 import com.kuaigeglobal.epnova.core.network.apis.request.UserPlayBody
 import com.kuaigeglobal.epnova.core.network.apis.request.UserShareUrlBody
@@ -1680,6 +1681,12 @@ interface ApiService {
      */
     @POST(ApiConstants.UPDATE_STORY_SUMMARY)
     suspend fun updateStorySummary(@Body body: SaveStorySummaryBody): ApiResponse<Any?>
+
+    /**
+     * 600 灵感作品-修改本集剧情概览；成功仅表示保存完成
+     */
+    @POST(ApiConstants.UPDATE_SCRIPT_OUTLINE)
+    suspend fun updateScriptOutline(@Body body: UpdateScriptOutlineBody): ApiResponse<Any?>
 
     /**
      * 获取作品剧集分镜配置

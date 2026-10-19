@@ -1157,6 +1157,11 @@ object ApiConstants {
      */
     const val UPDATE_STORY_SUMMARY = "work/updateStorySummary"
 
+    /**
+     * 600 灵感作品-修改本集剧情概览
+     */
+    const val UPDATE_SCRIPT_OUTLINE = "work/story/updateScriptOutline"
+
 
     /**
      * 获取作品剧集分镜配置

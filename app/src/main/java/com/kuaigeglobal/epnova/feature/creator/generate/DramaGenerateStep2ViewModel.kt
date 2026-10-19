@@ -275,7 +275,10 @@ class DramaGenerateStep2ViewModel : AppRepositoryViewModel<CreationRepository>()
             toastTextTime = nextToastTextTime,
             toastTextEstimatedSeconds = sessionInfo?.toastTextEstimatedSeconds
                 ?: current?.toastTextEstimatedSeconds,
-            storyContent = current?.storyContent
+            storyContent = current?.storyContent,
+            storyTilte = current?.storyTilte,
+            storySummary = current?.storySummary,
+            storyNo = current?.storyNo
         )
 //        startScriptToastCountdownIfNeeded(sessionInfo)
     }
@@ -556,7 +559,14 @@ class DramaGenerateStep2ViewModel : AppRepositoryViewModel<CreationRepository>()
         nextStepEnabled.set(false)
         outputFail.set(false)
         outputComplete.value = false
-        storyScriptResult.value = null
+        // 重新生成只清除旧剧本和生成状态，保留已保存的本集概览。
+        storyScriptResult.value = storyScriptResult.value?.copy(
+            genStatus = null,
+            toastTextProgress = null,
+            toastTextTime = null,
+            toastTextEstimatedSeconds = null,
+            storyContent = null
+        )
     }
 
     private fun handlePollingSuccess(data: PollScriptData?) {

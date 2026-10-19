@@ -47,6 +47,8 @@ class InputDialog :
         const val TYPE_SAME_STORY = 6
         // shortcut: 简纲保存接口未定义，暂仅回调更新页面，接口明确后接入保存。
         const val TYPE_STORY_OUTLINE = 7
+        // 本集剧情概览，保存成功后由调用方刷新剧本。
+        const val TYPE_SCRIPT_OUTLINE = 8
 
         /**通用类型，只编辑文案，不需要其他逻辑*/
         const val TYPE_NORMAL = 2
