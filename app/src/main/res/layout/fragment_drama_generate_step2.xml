@@ -74,7 +74,7 @@
             android:layout_height="0dp"
             android:layout_marginHorizontal="@dimen/spacing_l"
             android:layout_marginTop="@dimen/spacing_m"
-            android:layout_marginBottom="38dp"
+            android:layout_marginBottom="10dp"
             android:layout_weight="1"
             android:background="@drawable/bg_fill_color_1_r8"
             app:layout_constraintBottom_toTopOf="@id/btnNext"
