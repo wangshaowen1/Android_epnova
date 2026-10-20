@@ -24,7 +24,7 @@
 
 
        <LinearLayout
-           setVisible="@{layout.storyScriptResult.storyNo != null&amp;&amp; !layout.storyScriptResult.storyNo.isEmpty()}"
+           setVisible="@{layout.storyScriptResult.storySummary != null&amp;&amp; !layout.storyScriptResult.storySummary.isEmpty()}"
            android:layout_marginStart="@dimen/spacing_l"
            android:layout_marginTop="20dp"
            app:layout_constraintStart_toStartOf="parent"

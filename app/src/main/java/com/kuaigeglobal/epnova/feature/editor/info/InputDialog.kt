@@ -182,7 +182,11 @@ class InputDialog :
                         dismissAllowingStateLoss()
                     },
                     confirm = {
-                        save()
+                        if (binding.inputView.text.trim().isEmpty()) {
+                            getString(R.string.enter_update_content).showToast()
+                        } else {
+                            save()
+                        }
                     })
             }
         } else {
