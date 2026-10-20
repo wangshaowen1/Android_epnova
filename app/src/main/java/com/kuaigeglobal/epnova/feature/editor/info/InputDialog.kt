@@ -129,7 +129,7 @@ class InputDialog :
 
         mRealVM.input.observe(this) {
             if (it != binding.inputView.text) {
-                binding.inputView.setTextNoSelection(it)
+                binding.inputView.setText(it)
             }
         }
 
