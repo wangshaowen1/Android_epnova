@@ -18,7 +18,9 @@ import android.net.Uri
 import android.text.Html
 import android.text.SpannableString
 import android.text.Spanned
+import android.text.StaticLayout
 import android.text.TextPaint
+import android.text.TextUtils
 import android.text.method.ScrollingMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
@@ -51,6 +53,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.animation.addListener
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.view.doOnLayout
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.widget.NestedScrollView
@@ -1492,16 +1495,49 @@ fun setTextWithEditIcon(textView: TextView, content: String?) {
     val textSizePx = textView.textSize.toInt()
     editIcon.setBounds(0, 0, textSizePx, textSizePx)
 
-    // 一个空格留间距，最后一个空格作为图标占位。
-    val fullText = content.orEmpty() + "  "
-    val spannable = SpannableString(fullText)
-    spannable.setSpan(
-        ImageSpan(editIcon, ImageSpan.ALIGN_BOTTOM),
-        fullText.length - 1,
-        fullText.length,
-        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-    )
-    textView.text = spannable
+    fun withEditIcon(text: String): SpannableString {
+        // 一个空格留间距，最后一个空格作为图标占位。
+        val fullText = text + "  "
+        return SpannableString(fullText).apply {
+            setSpan(
+                ImageSpan(editIcon, ImageSpan.ALIGN_BOTTOM),
+                fullText.length - 1,
+                fullText.length,
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+        }
+    }
+
+    val originalText = content.orEmpty()
+    val fullText = withEditIcon(originalText)
+    textView.text = fullText
+    if (textView.maxLines !in 1 until Int.MAX_VALUE) return
+
+    textView.contentDescription = originalText
+    textView.doOnLayout {
+        val width = (textView.width - textView.compoundPaddingLeft - textView.compoundPaddingRight)
+            .coerceAtLeast(1)
+        fun layoutBuilder(text: CharSequence) =
+            StaticLayout.Builder.obtain(text, 0, text.length, textView.paint, width)
+                .setBreakStrategy(textView.breakStrategy)
+                .setHyphenationFrequency(textView.hyphenationFrequency)
+
+        if (layoutBuilder(fullText).build().lineCount <= textView.maxLines) {
+            textView.text = fullText
+            return@doOnLayout
+        }
+
+        // 只省略正文，为末尾的间距和编辑图标预留宽度。
+        val iconWidth = textView.paint.measureText(" ") + textSizePx
+        val layout = layoutBuilder(originalText)
+            .setMaxLines(textView.maxLines)
+            .setEllipsize(TextUtils.TruncateAt.END)
+            .setEllipsizedWidth((width - iconWidth).toInt().coerceAtLeast(1))
+            .build()
+        val lastLine = layout.lineCount - 1
+        val end = layout.getLineStart(lastLine) + layout.getEllipsisStart(lastLine)
+        textView.text = withEditIcon(originalText.take(end).trimEnd() + "\u2026")
+    }
 }
 
 @BindingAdapter("setRotateCenter", "pivotY", requireAll = false)
