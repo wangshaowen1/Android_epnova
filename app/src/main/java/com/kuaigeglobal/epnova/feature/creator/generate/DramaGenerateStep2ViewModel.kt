@@ -15,6 +15,7 @@ import com.kuaigeglobal.epnova.common.ext.topActivity
 import com.kuaigeglobal.epnova.core.ext.PollingState
 import com.kuaigeglobal.epnova.core.ext.launchPolling
 import com.kuaigeglobal.epnova.core.ext.launchWithLoading
+import com.kuaigeglobal.epnova.core.ext.request
 import com.kuaigeglobal.epnova.core.ext.requestWithLoading
 import com.kuaigeglobal.epnova.core.network.apis.entity.StoryStreamSessionInfo
 import com.kuaigeglobal.epnova.core.network.apis.request.ContinueTaskBody
@@ -137,6 +138,7 @@ class DramaGenerateStep2ViewModel : AppRepositoryViewModel<CreationRepository>()
 
     private var scriptPollingJob: Job? = null
     private var scriptSessionJob: Job? = null
+   // private var scriptOverviewJob: Job? = null
     private var scriptToastCountdownJob: Job? = null
     private var scriptToastCountdownKey: String? = null
     private var scriptToastCountdownInitialSeconds: Int? = null
@@ -152,9 +154,54 @@ class DramaGenerateStep2ViewModel : AppRepositoryViewModel<CreationRepository>()
         scriptSessionJob?.cancel()
         scriptStreamHandler?.cancel()
         scriptPollingJob?.cancel()
+        //scriptOverviewJob?.cancel()
         cancelScriptToastCountdown()
         isScriptStreaming.set(false)
     }
+
+/*    *//**
+     * 剧本正文生成期间提前查询本集标题和简纲，只合并概览字段，不介入正文生成状态机。
+     *//*
+    fun loadScriptOverview() {
+        val currentWorkId = workId.value ?: return
+        val currentStoryId = episodeId ?: return
+        scriptOverviewJob?.cancel()
+
+        scriptOverviewJob = request(
+            apiBlock = {
+                mRepo.api.pollScriptResult(
+                    PollScriptBody(
+                        workId = currentWorkId,
+                        storyId = currentStoryId,
+                        workType = workType
+                    )
+                )
+            },
+            showToast = false
+        ) {
+            applyScriptOverview(data)
+        }
+    }
+
+    private fun applyScriptOverview(data: PollScriptData?) {
+        val title = data?.storyTitle?.takeIf { it.isNotBlank() }
+        val summary = data?.storySummary?.takeIf { it.isNotBlank() }
+        if (title == null && summary == null) return
+
+        val current = storyScriptResult.value
+        storyScriptResult.value = current?.let {
+            it.copy(
+                storyTitle = title ?: it.storyTitle,
+                storySummary = summary ?: it.storySummary
+            )
+        } ?: PollScriptData(
+            workId = data?.workId ?: workId.value,
+            storyId = data?.storyId ?: episodeId,
+            sortNo = data?.sortNo ?: chapterIndex,
+            storyTitle = title,
+            storySummary = summary
+        )
+    }*/
 
     /**
      * 新流式入口：先轮询 session，待流可订阅后再建立 SSE。
@@ -614,6 +661,7 @@ class DramaGenerateStep2ViewModel : AppRepositoryViewModel<CreationRepository>()
         scriptPollingJob?.cancel()
         scriptSessionJob?.cancel()
         scriptStreamHandler?.cancel()
+        //scriptOverviewJob?.cancel()
         scriptToastCountdownJob?.cancel()
     }
 

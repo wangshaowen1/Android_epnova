@@ -97,6 +97,7 @@ class DramaGenerateStep2Fragment :
             }
         } else {
             mRealVM.createScriptTask(retry) {
+               // mRealVM.loadScriptOverview()
                 mRealVM.startScriptSession(resetContent = true)
                 showBackToast = true
             }
