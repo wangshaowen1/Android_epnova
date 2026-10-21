@@ -134,9 +134,11 @@ class FeedbackActivity :
         imagePicker.pick(binding.photoGrid.photos)
     }
 
-    /** 选择结果去重并限制为最多 4 张，再同步到图片网格。 */
+    /** 追加新选择的图片，去重并限制为最多 4 张，再同步到图片网格。 */
     private fun handleSelectedImages(uris: List<Uri>) {
-        binding.photoGrid.setPhotos(uris.distinct().take(MAX_PHOTO_COUNT))
+        binding.photoGrid.setPhotos(
+            (binding.photoGrid.photos + uris).distinct().take(MAX_PHOTO_COUNT)
+        )
     }
 
     override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
