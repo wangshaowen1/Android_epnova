@@ -88,7 +88,7 @@
             <Button
                 android:fontFamily="@font/outfit_medium"
                 android:id="@+id/btnConfirm"
-                style="@style/Button.Bold"
+                style="@style/Button.Bold.Blue"
                 android:layout_width="0dp"
                 android:layout_marginStart="@dimen/spacing_l"
                 android:layout_weight="1"

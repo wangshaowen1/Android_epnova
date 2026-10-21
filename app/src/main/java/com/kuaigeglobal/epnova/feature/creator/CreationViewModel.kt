@@ -324,7 +324,8 @@ class CreationViewModel : AppRepositoryViewModel<CreationRepository>() {
 
     fun createTask(modelType: Int, body: CreateTaskBody, callback: (WorkTaskData?) -> Unit) {
         workCreating.value = true
-        request(
+        requestWithLoading(
+            showLoading = false,
             apiBlock = {
                 when (modelType) {
                     DramaGenerateConstants.MODEL_STORY_SINGLE -> {
