@@ -286,7 +286,7 @@
                 android:layout_marginBottom="@dimen/spacing_l"
                 android:text="@{layout.input.length()+`/`+layout.maxInputLength}"
                 android:textColor="@{layout.getLimitColor(layout.input.length)}"
-                android:visibility="@{layout.outputFail?View.GONE:View.VISIBLE}"
+                android:visibility="@{!layout.outputFail&amp;&amp;layout.input.length()>0?View.VISIBLE:View.GONE}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 tools:text="0/5000" />
